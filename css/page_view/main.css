@@ -52,7 +52,7 @@ input::placeholder {
 body div {
     float: left;
 }
-.row {
+.datarow {
     clear: both;
     width: 100%;
 }

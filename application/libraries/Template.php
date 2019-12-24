@@ -25,6 +25,32 @@ class Template
         $this->CI=&get_instance();
     }
 
+    public function prepare_public_page($options) {
+        $dat = array();
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+
+        $pagetitle = (isset($options['title']) ? $options['title'] : 'System');
+
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'title' => $pagetitle,
+        ];
+
+
+        $dat['head'] = $this->CI->load->view('public_pages/head_view', $head_options, TRUE);
+
+        return $dat;
+
+    }
+
     public function prepare_pagecontent($options=[]) {
         $dat = array();
         $this->CI->load->model('dashboard_model');

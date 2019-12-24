@@ -98,7 +98,7 @@ Class Menuitems_model extends MY_Model
                 }
                 $session_data['menu'] = $menu;
                 // Save session
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['submenu']=$newsubm;
                 $out['result']=$this->success_result;
             }
@@ -155,7 +155,7 @@ Class Menuitems_model extends MY_Model
                 $menu[$menuidx]['submenu']=$submenu;
                 $session_data['menu'] = $menu;
                 // Save session
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result']=$this->success_result;
             }
         }

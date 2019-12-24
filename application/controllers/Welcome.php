@@ -20,7 +20,7 @@ class Welcome extends MY_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('design/signin_page_view');
+		$this->load->view('design/main_view');
 	}
 
 	public function show_signin() {

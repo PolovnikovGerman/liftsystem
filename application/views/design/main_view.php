@@ -10,7 +10,7 @@
 <body>
 <header>
     <div class="mainheader">
-        <div class="row">
+        <div class="datarow">
             <div class="brands-logos">
                 <div class="bluetrack_logo">
                     <img src="/img/page_view/bluetrack_logo.png"/>
@@ -41,13 +41,13 @@
                 </div>
             </div>
             <div class="userinfo">
-                <div class="row">
+                <div class="datarow">
                     <div class="signout" id="signout">[sign out]</div>
                     <div class="usersigninfo">
                         Sean Glasser
                     </div>
                 </div>
-                <div class="row">
+                <div class="datarow">
                     <div class="dateinfo">
                         <?=date('D, F j, Y')?>
                     </div>
