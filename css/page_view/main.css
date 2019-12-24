@@ -1,0 +1,174 @@
+html {
+    background-color: #dfdfdf;
+    font-family: Helvetica;
+}
+body {
+    margin-left: auto;
+    margin-right: auto;
+    font-family: Helvetica;
+    background-color: #fff;
+    margin-top: 0;
+}
+@font-face {
+    font-family: Helvetica;
+    src: url(/fonts/Helvetica.otf) format("opentype"), url(/fonts/Helvetica.ttf) format('truetype');
+}
+@font-face {
+    font-family: Helvetica-BoldOblique;
+    src: url(/fonts/helveticaboldoblique.ttf) format('truetype');
+}
+@font-face {
+    font-family: Helvetica_cyr-BoldOblique;
+    src: url(/fonts/Helvetica-BoldOblique.otf) format("opentype");
+}
+@font-face {
+    font-family: HelveticaCE-Oblique;
+    src: url(/fonts/HelveticaCE-Oblique.otf) format("opentype"), url(/fonts/helveticaceoblique.ttf) format('truetype');
+}
+@font-face {
+    font-family: Helvetica-Oblique;
+    src: url(/fonts/Helvetica-Oblique.otf) format("opentype");
+}
+@font-face {
+    font-family: Helvetica-Bold;
+    src: url(/fonts/Helvetica-Bold.otf) format("opentype");
+}
+@font-face {
+    font-family: HelveticaNeue-Medium;
+    src: url(/fonts/HelveticaNeue-Medium.otf) format("opentype");
+}
+@font-face {
+    font-family: Helvetica CE;
+    src: url(/fonts/HelveticaCE.otf) format("opentype");
+}
+@font-face {
+    font-family: helveticaneuecyr-black;
+    src: url(/fonts/helveticaneuecyr-black.otf) format("opentype");
+}
+/* Common classes */
+input::placeholder {
+    font-style: italic;
+}
+body div {
+    float: left;
+}
+.row {
+    clear: both;
+    width: 100%;
+}
+.mainheader {
+    width: calc(100% - 10px);
+    height: 72px;
+    background: #252525;
+    padding: 7px 5px;
+}
+.brands-logos {
+    /* width: 282px; */
+}
+.brands-logos > .bluetrack_logo {
+    height: 32px;
+    width: 107px;
+}
+.brands-logos > .stressballs_logo {
+    height: 32px;
+    width: 119px;
+}
+.brands-logos > .lift_logo {
+    height: 17px;
+    padding-top: 15px;
+    width: 49px;
+}
+.period_analitic_info {
+    border: 1px solid #9b9b9b;
+    /* width: 285px; */
+}
+.period_analitic_info > div {
+    height: 26px;
+    line-height: 26px;
+    color: #ffffff;
+}
+.period_analitic_info > .period_name {
+    width: 86px;
+    text-align: center;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 13px;
+    color: #55aeff;
+    text-transform: uppercase;
+}
+.period_analitic_info > .param_value_label {
+    width: 32px;
+    text-align: right;
+    padding-right: 7px;
+    text-transform: uppercase;
+    font-family: Helvetica CE;
+    font-size: 11px;
+    padding-top: 10px;
+    line-height: 12px;
+    height: 19px;
+}
+.period_analitic_info > .param_value {
+    width: 36px;
+    font-family: Helvetica-Bold;
+    font-size: 18px;
+}
+.period_analitic_info > .param_value.money {
+    width: 82px;
+}
+.publicsearch {
+    margin-left: 5px;
+}
+.publicsearch > select.publicsearch_type {
+    height: 29px;
+    line-height: 29px;
+    font-size: 14px;
+    font-family: Arial;
+    padding-left: 6px;
+}
+.publicsearch > input.publicsearch_template {
+    border: 1px solid #088aff;
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    font-family: Arial;
+    padding-left: 6px;
+    width: 130px;
+}
+.publicsearch > .publicsearch_btn {
+    position: relative;
+    float: right;
+    left: -21px;
+    top: 6px;
+    cursor: pointer;
+}
+.userinfo {
+    float: right!important;
+    width: 187px;
+    margin-right: 7px;
+}
+.userinfo .signout {
+    color: #82f8ff;
+    font-family: Helvetica-Oblique;
+    font-size: 12px;
+    font-style: italic;
+    width: 50px;
+    padding-top: 1px;
+    float: right!important;
+}
+.userinfo .usersigninfo {
+    float: right!important;
+    padding-right: 7px;
+    text-align: right;
+    color: #ffffff;
+    font-family: Helvetica-Oblique;
+    font-style: italic;
+    font-size: 14px;
+}
+.userinfo .dateinfo {
+    float: right!important;
+    padding-right: 7px;
+    text-align: right;
+    color: #979797;
+    font-family: Helvetica;
+    font-size: 13px;
+}
