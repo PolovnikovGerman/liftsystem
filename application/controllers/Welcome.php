@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Welcome extends MY_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -20,6 +20,14 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('design/main_view');
+		$this->load->view('design/signin_page_view');
 	}
+
+	public function show_signin() {
+	    if ($this->isAjax()) {
+	        $mdata=[];
+	        $mdata['content']=$this->load->view('design/signin_form_view', [], TRUE);
+	        $this->ajaxResponse($mdata);
+        }
+    }
 }
