@@ -73,6 +73,24 @@ class Template
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
         ];
         $menu_view = $this->CI->load->view('page/menu_view', $menu_options, TRUE);
+        // Admin and Alerts
+        $admin_permission = $alert_permission = 0;
+        $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
+
+        if ($adminchk['result']==$this->success_result) {
+            $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
+            if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
+                $admin_permission = 1;
+            }
+        }
+        
+        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
+        if ($alertchk['result']==$this->success_result) {
+            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
+            if ($alert_permissionchk['result']==$this->success_result && $alert_permissionchk['permission']>0) {
+                $alert_permission = 1;
+            }
+        }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
 
@@ -89,6 +107,8 @@ class Template
             'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
             'total_view' => $total_view,
             'menu_view' => $menu_view,
+            'adminchk' => $admin_permission,
+            'alertchk' => $alert_permission,
         ];
         $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         return $dat;

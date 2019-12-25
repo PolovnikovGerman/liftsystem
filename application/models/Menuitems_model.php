@@ -169,6 +169,7 @@ Class Menuitems_model extends MY_Model
         $this->db->where('u.user_id', $user_id);
         $this->db->where('u.permission_type > ', 0);
         $this->db->where('m.parent_id is null');
+        $this->db->where_not_in('m.menu_section',['adminsection','alertsection']);
         $this->db->order_by('m.menu_order, m.menu_section');
         $menu = $this->db->get()->result_array();
         // Get submenus
