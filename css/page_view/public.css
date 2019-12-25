@@ -16,7 +16,7 @@ input::placeholder {
 body div {
     float: left;
 }
-.row {
+.datarow {
     clear: both;
     width: 100%;
 }
@@ -43,7 +43,7 @@ body div {
     background: url(/img/signin/signin_form.png) no-repeat;
     background-position: bottom right;
 }
-.signin_form > .row {
+.signin_form > .datarow {
     margin-bottom: 13px;
 }
 input.signinformelement {

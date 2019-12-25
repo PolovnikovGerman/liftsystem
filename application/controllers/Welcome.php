@@ -20,14 +20,8 @@ class Welcome extends MY_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('design/signin_page_view');
+
+		$this->load->view('design/main_view');
 	}
 
-	public function show_signin() {
-	    if ($this->isAjax()) {
-	        $mdata=[];
-	        $mdata['content']=$this->load->view('design/signin_form_view', [], TRUE);
-	        $this->ajaxResponse($mdata);
-        }
-    }
 }

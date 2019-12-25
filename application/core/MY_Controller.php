@@ -43,22 +43,22 @@ class MY_Controller extends Base_Controller
         $this->load->model('menuitems_model');
         date_default_timezone_set('America/New_York');
 
-//        $user = $this->user_model->current_user();
-//        if ($user['result']==0) {
-//            if ($this->func->isAjax()) {
-//                $this->func->ajaxResponse(array('url'=>'/login'),'Your connection has been lost. Please log in');
-//            } else {
-//                redirect('/login');
-//            }
-//        }
-//
-//        $userdat = $user['data'];
-//        $this->USR_ROLE = $userdat['user_logged_in'];
-//        $this->USR_ID = $userdat['id'];
-//        $this->USER_NAME = $userdat['user_name'];
-//        $this->URER_LOGO = $userdat['user_logo'];
-//        $this->USER_EMAIL = $userdat['user_email'];
-//        $this->URER_LOGO = $userdat['user_logo'];
+        $user = $this->user_model->current_user();
+        if ($user['result']==0) {
+            if ($this->isAjax()) {
+                $this->ajaxResponse(array('url'=>'/login'),'Your connection has been lost. Please log in');
+            } else {
+                redirect('/login');
+            }
+        }
+
+        $userdat = $user['data'];
+        $this->USR_ROLE = $userdat['user_logged_in'];
+        $this->USR_ID = $userdat['id'];
+        $this->USER_NAME = $userdat['user_name'];
+        $this->URER_LOGO = $userdat['user_logo'];
+        $this->USER_EMAIL = $userdat['user_email'];
+        $this->URER_LOGO = $userdat['user_logo'];
 
     }
 
