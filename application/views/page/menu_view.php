@@ -1,7 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 25.12.19
- * Time: 13:25
- */
+<?php foreach ($permissions as $item) { ?>
+    <div class="menubutton <?=$item['menu_section']?>" data-menulink="<?=$item['item_link']?>"><?=$item['item_name']?></div>
+<?php } ?>
