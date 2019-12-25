@@ -1,7 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 25.12.19
- * Time: 15:57
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Art extends MY_Controller {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index() {
+        $this->load->view('design/main_art_view');
+    }
+}

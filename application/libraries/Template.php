@@ -83,7 +83,7 @@ class Template
                 $admin_permission = 1;
             }
         }
-        
+
         $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
         if ($alertchk['result']==$this->success_result) {
             $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
