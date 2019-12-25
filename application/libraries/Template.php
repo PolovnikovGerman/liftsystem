@@ -55,8 +55,8 @@ class Template
         $dat = array();
         $this->CI->load->model('dashboard_model');
         $this->CI->load->model('menuitems_model');
-        $total_options = $this->CI->dashboard_model->get_totals('day');
-        $total_view = $this->CI->load->view('dashboard_total_view', $total_options, TRUE);
+        $total_options = $this->CI->dashboard_model->get_totals('week');
+        $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
         $styles=[];
         if (isset($options['styles'])) {
             $styles=$options['styles'];
@@ -66,44 +66,51 @@ class Template
             $scripts=$options['scripts'];
         }
 
+        // Build left menu
+        $menu_options = [
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            // 'activeitem' => (isset($options['activeitem']) ? $options['activeitem'] : ''),
+            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
+        ];
+        $menu_view = $this->CI->load->view('page/menu_view', $menu_options, TRUE);
+        // Admin and Alerts
+        $admin_permission = $alert_permission = 0;
+        $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
+
+        if ($adminchk['result']==$this->success_result) {
+            $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
+            if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
+                $admin_permission = 1;
+            }
+        }
+
+        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
+        if ($alertchk['result']==$this->success_result) {
+            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
+            if ($alert_permissionchk['result']==$this->success_result && $alert_permissionchk['permission']>0) {
+                $alert_permission = 1;
+            }
+        }
+
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
 
         $head_options=[
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
-            'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
         ];
 
+        $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
 
-        $dat['head'] = $this->CI->load->view('pages/head_view', $head_options, TRUE);
-
-        // Build left menu
-        $leftmenu_options = [
-            'activelnk'=>$options['activelnk'],
-            'activeitem' => (isset($options['activeitem']) ? $options['activeitem'] : ''),
-            'total' => $total_view,
-            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['userid']),
-        ];
-        $dat['left_menu'] = $this->CI->load->view('pages/leftside_menu_view', $leftmenu_options, TRUE);
         $topmenu_options = [
-            'username' => $options['username'],
-            'usermail' => $options['usermail'],
-            'userlogo' => $options['userlogo'],
-            'admin' => (in_array($options['userrole'],['admin','masteradmin']) ? 1 : 0),
-            'loadcontact' => 0,
-            'loadmessages' =>0,
+            'user_name' => $options['user_name'],
+            'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'total_view' => $total_view,
+            'menu_view' => $menu_view,
+            'adminchk' => $admin_permission,
+            'alertchk' => $alert_permission,
         ];
-        $dat['head_menu'] = $this->CI->load->view('pages/headmenu_view', $topmenu_options, TRUE);
-        $right_options = [
-            'username' => $options['username'],
-            'usermail' => $options['usermail'],
-            'userlogo' => $options['userlogo'],
-            'admin' => (in_array($options['userrole'],['admin','masteradmin']) ? 1 : 0),
-            'loadcontact' => 0,
-            'loadmessages' =>0,
-        ];
-        $dat['right_menu'] = $this->CI->load->view('pages/rightside_menu_view', $right_options, TRUE);
+        $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         return $dat;
     }
 

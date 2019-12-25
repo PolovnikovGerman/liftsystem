@@ -193,10 +193,19 @@ if (!function_exists('uniq_link')) {
         $string = "";
         for($i = 0; $i < $length; $i++)
             $string .= $possible_letters[rand(0, $letter_len)];
-
         return $string;
     }
+}
 
+if (!function_exists('getDatesByWeek')) {
+    function getDatesByWeek($_week_number, $_year = null)
+    {
+        $year = $_year ? $_year : date('Y');
+        $week_number = sprintf('%02d', $_week_number);
+        $date_base = strtotime($year . 'W' . $week_number . '1 00:00:00');
+        $date_limit = strtotime($year . 'W' . $week_number . '7 23:59:59');
+        return array('start_week' => $date_base, 'end_week' => $date_limit);
+    }
 }
 
 ?>

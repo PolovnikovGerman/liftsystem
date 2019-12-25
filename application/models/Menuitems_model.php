@@ -163,12 +163,13 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_user_permissions($user_id) {
-        $this->db->select('m.menu_item_id, m.item_name, m.menu_icon, m.menu_section, m.item_link');
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link');
         $this->db->from('menu_items m');
         $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
         $this->db->where('u.user_id', $user_id);
         $this->db->where('u.permission_type > ', 0);
         $this->db->where('m.parent_id is null');
+        $this->db->where_not_in('m.menu_section',['adminsection','alertsection']);
         $this->db->order_by('m.menu_order, m.menu_section');
         $menu = $this->db->get()->result_array();
         // Get submenus
@@ -185,7 +186,6 @@ Class Menuitems_model extends MY_Model
             $out[] = [
                 'menu_item_id' => $mrow['menu_item_id'],
                 'item_name' => $mrow['item_name'],
-                'menu_icon' => $mrow['menu_icon'],
                 'menu_section' => $mrow['menu_section'],
                 'item_link' => $mrow['item_link'],
                 'submenus' => count($submenu),
