@@ -43,6 +43,12 @@ class Login extends CI_Controller
         }
     }
 
+    public function logout() {
+        $this->load->model('user_model');
+        $this->user_model->signout();
+        redirect('/login');
+    }
+
     private function ajaxResponse($mdata, $merrors = array())
     {
         $aResponse = array(

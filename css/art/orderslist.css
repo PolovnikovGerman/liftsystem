@@ -1,0 +1,383 @@
+.artorder_head_area {
+    clear: both;
+    float: left;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-top: 20px;
+    width: 999px;
+}
+.artorder_head_row {
+    clear: both;
+    float: left;
+    line-height: 26px;
+    height: 26px;
+    width: 100%;
+}
+.artorder_search_form {
+    float: left;
+    width: 368px;
+}
+input.artordersearch {
+    height: 19px;
+}
+.artorder_find {
+    background: url("/img/arts/search_btn.png") no-repeat scroll 0 1px transparent;
+    cursor: pointer;
+    float: left;
+    width: 85px;
+}
+.artorder_clear {
+    background: url("/img/arts/clean_btn.png") no-repeat scroll 0 1px transparent;
+    cursor: pointer;
+    float: left;
+    width: 53px;
+}
+.artorder_filter_area {
+    float: left;
+    margin-left: 20px;
+    width: 324px;
+}
+.artorder_filter_area > select {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid;
+    height: 21px;
+    margin-right: 10px;
+    margin-top: 4px;
+}
+.monitor_pagesviews.artpageorder {
+    float: right;
+    width: 294px;
+}
+.ordertable-art {
+    clear: both;
+    float: left;
+    margin-left: 12px;
+}
+.ordertable-title {
+    background-color: #bcbcbc;
+    border: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    height: 36px;
+    line-height: 36px;
+    width: 993px;
+}
+.addnewordart {
+    border-right: 1px solid #000000;
+    float: left;
+    font-size: 11px;
+    width: 46px;
+}
+.ordeart_actioins {
+    border-right: 1px solid #000000;
+    float: left;
+    height: 25px;
+    text-align: center;
+    width: 46px;
+}
+.ordeart_actioins img {
+    padding-top: 3px;
+    width: 18px;
+    height: 18px;
+}
+.ordart_blank {
+    float: left;
+    width: 36px;
+    border-right: 1px solid #000000;
+}
+.ordart_blank_dat {
+    border-right: 1px solid #000000;
+    float: left;
+    height: 25px;
+    width: 36px;
+}
+.ordart_blank_dat.edit {
+    border-right: medium none;
+    float: left;
+    height: 25px;
+    width: 22px;
+}
+.ordart_date {
+    float: left;
+    width: 55px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.ordart_date:hover {
+    cursor: pointer;
+}
+.ordart_date-dat {
+    border-right: 1px solid;
+    float: left;
+    width: 55px;
+}
+.ordart_date-dat.edit {
+    border-right: 1px solid;
+    float: left;
+    width: 70px;
+}
+.ordart_ordernum {
+    float: left;
+    width: 50px;
+    border-right: 1px solid #000000;
+}
+.ordart_ordernum:hover {
+    cursor:pointer;
+}
+.ordart_ordernum-dat {
+    border-right: 1px solid #000000;
+    color: #0000ff;
+    float: left;
+    width: 50px;
+}
+.ordart_ordernum-dat:hover {
+    cursor: pointer;
+}
+.ordart_customer {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 275px;
+}
+.ordart_customer:hover {
+    cursor: pointer;
+}
+.ordart_customer-dat {
+    float: left;
+    height: 20px;
+    padding-top: 4px;
+    width: 244px;
+}
+.ordart_customer-maildat {
+    float: left;
+    margin-left: 3px;
+    margin-right:3px;
+    width: 22px;
+}
+.ordart_customer-maildat img {
+    padding-top: 3px;
+}
+.ordart_customer-data {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 237px;
+}
+.ordart_item {
+    border-right: 2px solid #000000;
+    float: left;
+    width: 255px;
+}
+.ordart_item-dat {
+    border-right: 2px solid #000000;
+    float: left;
+    height: 21px;
+    padding-top: 4px;
+    width: 265px;
+}
+.ordart_item-data {
+    border-right: 2px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 245px;
+}
+.ordart_item-dataedit {
+    border-right: 2px solid #000000;
+    float: left;
+    height: 25px;
+    width: 255px;
+}
+.ordart_art, .ordart_redrawn, .ordart_vector, .ordart_proofed, .ordart_approve {
+    float: left;
+    width: 28px;
+    border-right: 1px solid #000000;
+}
+.ordart_approve {
+    border-right: 2px solid #000000;
+}
+.ordart_art-dat, .ordart_redrawn-dat, .ordart_vector-dat, .ordart_proofed-dat, .ordart_approve-dat {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 28px;
+}
+.ordart_approve-dat {
+    border-right: 2px solid #000000;
+}
+.chk-ordoption, .chk-ordoptionblank {
+    height: 25px;
+}
+.ordart_code {
+    float: left;
+    width: 74px;
+    border-right: 1px solid #000000;
+}
+.ordart_code-dat {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-top: 4px;
+    width: 81px;
+}
+.ordart_code-data {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding: 0 5px;
+    white-space: nowrap;
+    width: 64px;
+}
+.ordart_note {
+    float: left;
+    width: 46px;
+}
+.ordart_note-dat {
+    float: left;
+    height: 20px;
+    text-align: center;
+    width: 35px;
+}
+.ordart_note-dat:hover {
+    cursor: pointer;
+}
+.ordart_note-dat img {
+    height: 16px;
+    padding-top: 3px;
+}
+.content-art-table {
+    border-bottom: 1px solid #919191;
+    clear: both;
+    float: left;
+    max-height: 530px;
+    overflow-y: auto;
+    width: 997px;
+}
+.ordart_rowdata {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    width: 982px;
+}
+.ordart_rowdata.fullrow {
+    width: 967px;
+}
+.rushorder {
+    background-color: #FF2A00;
+    color: #ffffff;
+    height: 24px;
+}
+/* ART Order EDIT Form */
+form.artordereditform {
+    /* height: 25px;
+    line-height: 25px; */
+}
+form.artordereditform input {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 12px;
+    height: 17px;
+    margin-top: 2px;
+}
+input.artorder_dateinpt {
+    width: 63px;
+}
+.ordernum-nonactive {
+    /* color: #C8C8C8; */
+    color: #000000;
+    font-weight: bold;
+}
+.ordart_customermailarea {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 275px;
+}
+input.ordartcustomer_mail {
+    width: 82px;
+}
+input.ordartcustomer_name {
+    width: 178px;
+}
+.ordart_item-datedit {
+    float: left;
+    text-align: left;
+    width: 247px;
+}
+.ordart_item-datotheritm {
+    border-right: 2px solid #000000;
+    float: left;
+    min-width: 18px;
+    padding-top: 5px;
+    height: 20px;
+}
+select.ordartorder_item {
+    float: left;
+    background: none #FFFFFF;
+    height: 21px;
+    font-size: 12px;
+    width: 246px;
+}
+.ordart_artstage_dat {
+    float: left;
+    width: 144px;
+    border-right: 2px solid #000000;
+}
+input.ordartorder_code {
+    width: 63px;
+}
+/* END ART */
+/* Edit ART NOTE */
+/* Edit ART note */
+/* Edit Attach */
+/* Attach Upload */
+.attach_title {
+    clear: both;
+    float: left;
+    width: 570px;
+    background-color: #e8e8e8;
+    color: #000000;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    height: 24px;
+    padding-top: 4px;
+}
+.attachactions {
+    float: left;
+    width: 40px;
+}
+.attachactions:hover {
+    cursor: pointer;
+}
+.attachdate {
+    float: left;
+    width: 126px;
+}
+.attachdocname {
+    float: left;
+    width: 320px;
+}
+.attach_row {
+    clear: both;
+    float: left;
+    width: 570px;
+    font-size: 13px;
+    font-weight: normal;
+    margin-bottom: 5px;
+}

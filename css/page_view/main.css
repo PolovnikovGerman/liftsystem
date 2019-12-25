@@ -154,6 +154,7 @@ body div {
     width: 50px;
     padding-top: 1px;
     float: right!important;
+    cursor: pointer;
 }
 .userinfo .usersigninfo {
     float: right!important;

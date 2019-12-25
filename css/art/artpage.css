@@ -1,0 +1,13 @@
+.search_action a.find_it {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 3px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}

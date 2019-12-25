@@ -14,6 +14,8 @@ if (!defined('BASEPATH'))
  * @property Items_model items_model
  * @property Sections_model sections_model
  * @property Categories_model categories_model
+ * @property Orders_model orders_model
+ * @property Artproof_model artproof_model
  */
 
 

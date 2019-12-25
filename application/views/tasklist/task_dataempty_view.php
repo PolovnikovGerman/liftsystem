@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.12.19
- * Time: 0:02
- */
+<div class="taskdata_row emptytasklist">No Records</div>

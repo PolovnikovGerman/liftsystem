@@ -51,5 +51,5 @@
             </div>
         <?php } ?>
     </div>
-    <div class="row menurow"><?=$menu_view?></div>
+    <div class="datarow menurow"><?=$menu_view?></div>
 </div>
