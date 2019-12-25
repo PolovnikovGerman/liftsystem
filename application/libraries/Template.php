@@ -111,6 +111,7 @@ class Template
             'alertchk' => $alert_permission,
         ];
         $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);
         return $dat;
     }
 
