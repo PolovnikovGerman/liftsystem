@@ -37,7 +37,7 @@
         <?php if ($alertchk) { ?>
             <div class="infoalerts" id="infoalerts">
                 <div class="alerticon">
-                    <img src="/img/icons/bell_white.svg"/>
+                    <img src="/img/icons/bell_white.svg" class="img-responsive"/>
                 </div>
                 <div class="alerttext">Alerts</div>
             </div>
@@ -45,7 +45,7 @@
         <?php if ($adminchk) { ?>
             <div class="infoalerts" id="admin">
                 <div class="alerticon admin">
-                    <img src="/img/icons/cog_white.svg"/>
+                    <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                 </div>
                 <div class="alerttext">Admin</div>
             </div>
