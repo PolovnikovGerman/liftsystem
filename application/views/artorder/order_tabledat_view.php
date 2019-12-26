@@ -30,7 +30,7 @@
             <?php } ?>
         </div>
         <div class="revenue"><?=$row['revenue']?></div>
-        <div class="salesrepl"><?=$row['user_replic']?></div>
+        <div class="salesrepl"><?=ifset($row, 'user_replic','')?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

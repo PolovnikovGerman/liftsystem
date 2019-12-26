@@ -524,6 +524,139 @@ Class Artwork_model extends MY_Model
         }
     }
 
+    function get_artproofs($artwork_id) {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_proofs');
+        $this->db->where('artwork_id',$artwork_id);
+        $this->db->order_by('artwork_proof_id');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $path_sh=$this->config->item('artwork_proofs_relative');
+        $proofnum=1;
+        $approvenum=1;
+        foreach ($res as $row) {
+            $row['out_approved']='';
+            $row['approve_class']='';
+            $row['dellink']='';
+            // if ($row['sended']==0) {
+            $row['dellink']='<div data-proofid="'.$row['artwork_proof_id'].'" data-artworkid="'.$row['artwork_id'].'" class="artpopup_artredcirkle removeproof">&nbsp;</div>';
+            // }
+            $row['src']=$row['proof_name'];
+            $newname=str_replace($path_sh, '', $row['proof_name']);
+            $row['proof_name']=$newname;
+            $row['out_approved']='<img src="/img/art/artpopup_whitestar.png" alt="proof"/>';
+            $row['approve_class']='proofnotapproved';
+            $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
+            $proofnum++;
+            $row['out_apprname']='';
+            $row['senddoc']=0;
+            if ($row['approved']==1) {
+                $row['out_apprname']='approved_'.str_pad($approvenum, 2, '0', STR_PAD_LEFT);
+                $approvenum++;
+                $row['approve_class']='proofapproved';
+                $row['out_approved']='<img src="/img/art/artpopup_greenstar.png" alt="proof"/>';
+            }
+            $row['deleted']='';
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function send_reminder($data, $attach, $user_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG);
+        if (empty($data['from'])) {
+            $out['msg']='Enter Sender Email';
+            return $out;
+        } elseif (empty($data['customer_email'])) {
+            $out['msg']='Enter Customer Email';
+            return $out;
+        } elseif (empty($data['subject'])) {
+            $out['msg']='Enter Message Subject';
+            return $out;
+        } elseif (empty($data['message'])) {
+            $out['msg']='Enter Message Body';
+            return $out;
+        } else {
+            $from_array=explode(',', $data['customer_email']);
+            foreach ($from_array as $row) {
+                if (!$this->func->valid_email_address(trim($row))) {
+                    $out['msg']='Customer Email Address '.$row.' is Not Valid';
+                    return $out;
+                }
+            }
+            if ($data['cc']!='') {
+                $ccarray=  explode(',', $data['cc']);
+                foreach ($ccarray as $row) {
+                    if (!$this->func->valid_email_address(trim($row))) {
+                        $out['msg']='Email CC '.$row.' is Not Valid';
+                        return $out;
+                    }
+                }
+            }
+            // Send message
+            $path_fl=$this->config->item('artwork_proofs');
+            $this->load->library('email');
+            $config['protocol'] = 'sendmail';
+            $config['charset'] = 'utf8';
+            $config['wordwrap'] = TRUE;
+            $config['mailtype'] = 'text';
+
+            $this->email->initialize($config);
+
+            $this->email->from($data['from']);
+            if ($data['cc']!='') {
+                $this->email->cc($data['cc']);
+            }
+            $this->email->to($data['customer_email']);
+
+            $this->email->subject($data['subject']);
+            $this->email->message($data['message']);
+            $data['msg_details']=NULL;
+            if (count($attach)>0) {
+                $details='';
+                $data['history_msg'].=' '.count($attach).' attachments';
+                foreach ($attach as $row) {
+                    // if (file_exists($row)) {
+                    //            $this->email->attach($row);
+                    $details.=str_replace($path_fl, '', $row).'<br/>'.PHP_EOL;
+                    // }
+                }
+                $data['msg_details']=$details;
+            }
+            $this->email->send();
+            // $msgresult=$this->email->print_debugger();
+            $this->email->clear(TRUE);
+            $logoptions=array(
+                'from'=>$data['from'],
+                'to'=>$data['customer_email'],
+                'subject'=>$data['subject'],
+                'message'=>$data['message'],
+                // 'result'=>$msgresult,
+                'user_id'=>$user_id,
+            );
+            if (!empty($data['cc'])) {
+                $logoptions['cc']=$data['cc'];
+            }
+            if (count($attach)>0) {
+                $logoptions['attachments']=$attach;
+            }
+            $this->load->model('email_model');
+            $this->email_model->logsendmail($logoptions);
+            // Insert into history message about send Reminder
+            $this->db->set('artwork_id',$data['artwork_id']);
+            $this->db->set('user_id',$user_id);
+            $this->db->set('created_time',time());
+            $this->db->set('message',$data['history_msg']);
+            $this->db->set('message_details', $data['msg_details']);
+            $this->db->insert('ts_artwork_history');
+
+            $out['result']= $this->success_result;
+            $out['msg']='';
+        }
+        return $out;
+
+    }
+
 
     private function artworkExist($options) {
         if (empty($options)) {

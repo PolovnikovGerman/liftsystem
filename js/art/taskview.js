@@ -113,7 +113,7 @@ function change_approved_view(stage) {
         params.push({name:'task_direc',value:$("input#aproved_direc").val()});
     }
     params.push({name:'aproved_viewall', value: showallapprov});
-    var url="/arttasks/tasks_stage";
+    var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
@@ -238,7 +238,7 @@ function change_tasksort(tasktype,sorttype) {
     params.push({name:'task_sort',value:sortby});
     params.push({name:'task_direc',value:sort});
     params.push({name:'aproved_viewall', value: showallapprov});
-    var url="/arttasks/tasks_stage";
+    var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors==='') {
@@ -259,10 +259,10 @@ function call_details(obj) {
     var objid=obj.id;
     if (objid.substr(0,3)=='ord') {
         var order_id=objid.substr(3);
-        order_artstage(order_id);
+        // order_artstage(order_id);
     } else {
         var mailid=objid.substr(2);
-        artproof_lead(mailid)
+        // artproof_lead(mailid)
     }
 }
 
@@ -271,8 +271,6 @@ function call_reminder(task_id) {
     var template=$("input#templateslist").val();
     $.post(url, {'task_id':task_id,'template':template}, function(response){
         if (response.errors=='') {
-            // show_popup("mailnoticationarea");
-            // $("div#pop_content").empty().html(response.data.content);
             $("#artModalLabel").empty().html('New Remind Message');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
@@ -330,7 +328,7 @@ function searchtasks() {
     var params=new Array();
     params.push({name:'tasktype', value: $("select#tasksearchselect").val()});
     params.push({name:'tasksearch', value:$("input#tasksearch").val()});
-    var url="/arttasks/tasksearch";
+    var url="/art/tasksearch";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.taskview_datacontent").empty().html(response.data.content);
@@ -346,7 +344,7 @@ function searchtasks() {
 }
 
 function restore_task_view() {
-    var url="/arttasks/restore_task";
+    var url="/art/restore_task";
     $.post(url,{},function(response){
         $("div.taskview_datacontent").empty().html(response.data.content);
         init_tasks_page();

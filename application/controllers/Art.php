@@ -70,7 +70,6 @@ class Art extends MY_Controller {
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
-        // $this->load->view('design/main_art_view');
     }
 
     public function tasks_data() {
@@ -128,6 +127,37 @@ class Art extends MY_Controller {
         }
         show_404();
     }
+
+    /* Change SEPARATE column */
+    public function tasks_stage() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $taskview=$this->input->post('taskview');
+            $inclreq=$this->input->post('showreq',0);
+            $stage=$this->input->post('stage');
+            $task_sort=$this->input->post('task_sort','time');
+            $task_direc=$this->input->post('task_direc','desc');
+            $noteval=0;
+            $aproved_viewall=0;
+            if ($stage=='noart' || $stage=='need_approve') {
+                $noteval=1;
+            }
+            $aproved_viewall=0;
+            if ($stage=='just_approved') {
+                $aproved_viewall=$this->input->post('aproved_viewall');
+            }
+            $this->load->model('artproof_model');
+            $data_task=$this->artproof_model->get_tasks_stage($stage, $taskview, $inclreq, $task_sort, $task_direc, $aproved_viewall);
+            if (count($data_task)==0) {
+                $mdata['content']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
+            } else {
+                $mdata['content']=$this->load->view('tasklist/task_data_view',array('data'=>$data_task,'note'=>$noteval),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     public function task_remindmail() {
         if ($this->isAjax()) {
@@ -234,17 +264,18 @@ class Art extends MY_Controller {
 
     /* Send reminder mail */
     public function task_sendreminder() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $path_sh=$this->config->item('artwork_proofs_relative');
             $path_fl=$this->config->item('artwork_proofs');
             $postdata=$this->input->post();
+            $this->load->model('artwork_model');
             if (substr($postdata['task_id'],0,2)=='pr') {
+                $this->load->model('artproof_model');
                 $email_id=substr($postdata['task_id'], 2);
-                $data=$this->mproofs->get_proof_data($email_id);
+                $data=$this->artproof_model->get_proof_data($email_id);
                 if ($data['email_proofed']==1) {
-                    $proofs=$this->martwork->get_artproofs($postdata['artwork_id']);
+                    $proofs=$this->artwork_model->get_artproofs($postdata['artwork_id']);
                     $attach=array();
                     foreach ($proofs as $row) {
                         $file=  str_replace($path_sh, $path_fl, $row['src']);
@@ -256,16 +287,16 @@ class Art extends MY_Controller {
                     $postdata['history_msg']='Need Art - reminder email sent.<br/>';
                 }
             } else {
+                $this->load->model('orders_model');
                 $order_id=substr($postdata['task_id'], 3);
-                $data=$this->morder->get_order_detail($order_id);
+                $data=$this->orders_model->get_order_detail($order_id);
                 if ($data['order_proofed']==1) {
-                    $proofs=$this->martwork->get_artproofs($postdata['artwork_id']);
+                    $proofs=$this->artwork_model->get_artproofs($postdata['artwork_id']);
                     $attach=array();
                     foreach ($proofs as $row) {
                         $file=  str_replace($path_sh, $path_fl, $row['src']);
                         array_push($attach,$file);
                     }
-                    // $postdata['history_msg']='Art Approval - reminder email sent.<br/>';
                     $postdata['history_msg']='Art proof sent ';
                 } else {
                     $attach=array();
@@ -273,15 +304,77 @@ class Art extends MY_Controller {
                 }
             }
 
-            $res=$this->martwork->send_reminder($postdata, $attach, $this->USR_ID);
-
-            if ($res['result']==Art::ERROR_RESULT) {
-                $error=$res['msg'];
+            $res=$this->artwork_model->send_reminder($postdata, $attach, $this->USR_ID);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
+    public function tasksearch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            if ($postdata['tasktype']=='O') {
+                // Order search
+                $limit=250;
+                $order_by='order_num';
+                $direct = 'desc';
+                $search=$postdata['tasksearch'];
+                $offset=0;
+                /* Get data about orders */
+                $filtr=array(
+                    'search'=>$search,
+                );
+                $filtr['hideart']=1;
+                // $orders=$this->morder->get_orders($filtr,$order_by,$direct,$limit,$offset);
+                $this->load->model('orders_model');
+                $orders=$this->orders_model->get_general_orders($filtr,$order_by,$direct,$limit,$offset, $this->USR_ID);
+
+                if (count($orders)==0) {
+                    $content=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
+                } else {
+                    $content=$this->load->view('artorder/order_tabledat_view',array('orders'=>$orders),TRUE);
+                }
+                $mdata['content']=$this->load->view('tasklist/order_head_view',array('content'=>$content),TRUE);
+                $mdata['type']='order';
+            } else {
+                // Requests
+                $offset=0;
+                $limit=250;
+                $order_by='email_date';
+                $direct = 'desc';
+                // $maxval=$this->input->post('maxval');
+                $search=array();
+                $search['search']=$postdata['tasksearch'];
+                $email_dat=$this->mproofs->get_artproofs($search,$order_by,$direct,$limit,$offset,$limit);
+                if (count($email_dat)==0) {
+                    $content = $this->load->view('artpage/proofs_emptytabledat_view',array(), TRUE);
+                } else {
+                    $data=array('email_dat'=>$email_dat);
+                    $content = $this->load->view('artpage/proofs_tabledat_view',$data, TRUE);
+                }
+                $mdata['content']=$this->load->view('tasklist/proofrequest_head_view',array('content'=>$content),TRUE);
+                $mdata['type']='proofrequest';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // restore_task
+    public function restore_task() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $mdata['content']=$this->load->view('tasklist/restore_task_view',array(),TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     /* LIST view of Orders List */
     public function order_data() {
