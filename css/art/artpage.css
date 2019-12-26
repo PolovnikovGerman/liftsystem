@@ -11,3 +11,12 @@
     text-decoration: none;
     width: 92px;
 }
+.chk-ordoption {
+    background-color: #48e763;
+}
+.chk-ordoption-alert {
+    background-color: #3c1699;
+}
+.chk-ordoptionblank {
+    background-color: #00ff01;
+}

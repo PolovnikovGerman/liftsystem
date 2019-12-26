@@ -52,7 +52,10 @@ class Art extends MY_Controller {
         $head['scripts'][]=array('src'=>'/js/art/page.js');
         $head['styles'][] = array('style'=> '/css/art/artpage.css');
         // Utils
-        $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
+        // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
+        $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -122,6 +125,45 @@ class Art extends MY_Controller {
         }
         show_404();
     }
+
+    /* LIST view of Orders List */
+    public function order_listdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $pagenum=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','asc');
+            $search=$this->input->post('search');
+            $filter=$this->input->post('filter');
+            $add_filter=$this->input->post('add_filtr');
+
+            $offset=$pagenum*$limit;
+
+            /* Get data about orders */
+            $filtr=array(
+                'search'=>$search,
+            );
+            if ($filter!='') {
+                $filtr['artfiltr']=$filter;
+            }
+            if ($add_filter!='') {
+                $filtr['artadd_filtr']=$add_filter;
+            }
+            $filtr['hideart']=1;
+            $this->load->model('orders_model');
+            $orders=$this->orders_model->get_orders($filtr,$order_by,$direct,$limit,$offset);
+            if (count($orders)==0) {
+                $mdata['content']=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
+            } else {
+                $mdata['content']=$this->load->view('artorder/order_tabledat_view',array('orders'=>$orders),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_task_view() {
         $datf=array();

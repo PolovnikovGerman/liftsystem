@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.12.19
- * Time: 11:29
- */
+<div class="tr grey" style="font-size: 14px; text-align: center;">No data selected</div>

@@ -149,6 +149,12 @@ select.ordproofview {
     height: 20px;
     width: 168px;
 }
+.taskdata_row.grey {
+    background-color: #ededed;
+}
+.taskdata_row.white {
+    background-color: #ffffff;
+}
 .emptytasklist {
     font-size: 12px;
     font-weight: bold;

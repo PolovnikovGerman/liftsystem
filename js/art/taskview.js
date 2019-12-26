@@ -66,18 +66,18 @@ function init_tasks_page() {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").bt({
-                fill : '#EDEDED',
-                cornerRadius: 10,
-                width: 310,
-                padding: 10,
-                strokeWidth: '2',
-                positions: "top",
-                strokeStyle : '#FFFFFF',
-                strokeHeight: '18',
-                cssClass: 'green_tooltip',
-                cssStyles: {color: '#OOOOOO'}
-            });
+            // $("div.taskview_order").bt({
+            //     fill : '#EDEDED',
+            //     cornerRadius: 10,
+            //     width: 310,
+            //     padding: 10,
+            //     strokeWidth: '2',
+            //     positions: "top",
+            //     strokeStyle : '#FFFFFF',
+            //     strokeHeight: '18',
+            //     cssClass: 'green_tooltip',
+            //     cssStyles: {color: '#OOOOOO'}
+            // });
         } else {
             $("#loader").hide();
             show_error(response);

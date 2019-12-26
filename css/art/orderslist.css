@@ -21,13 +21,13 @@ input.artordersearch {
     height: 19px;
 }
 .artorder_find {
-    background: url("/img/arts/search_btn.png") no-repeat scroll 0 1px transparent;
+    background: url("/img/art/search_btn.png") no-repeat scroll 0 1px transparent;
     cursor: pointer;
     float: left;
     width: 85px;
 }
 .artorder_clear {
-    background: url("/img/arts/clean_btn.png") no-repeat scroll 0 1px transparent;
+    background: url("/img/art/clean_btn.png") no-repeat scroll 0 1px transparent;
     cursor: pointer;
     float: left;
     width: 53px;
@@ -277,10 +277,15 @@ input.artordersearch {
 .ordart_rowdata.fullrow {
     width: 967px;
 }
+.ordart_rowdata.grey {
+    background-color: #ededed;
+}
+.ordart_rowdata.white {
+    background-color: #ffffff;
+}
 .rushorder {
-    background-color: #FF2A00;
+    background-color: #FF2A00!important;
     color: #ffffff;
-    height: 24px;
 }
 /* ART Order EDIT Form */
 form.artordereditform {

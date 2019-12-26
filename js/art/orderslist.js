@@ -1,4 +1,4 @@
-var mainurl="/artorders";
+var mainurl="/art";
 var emptysearch='Enter order #, customer';
 function init_orderlist_management() {
     /* Search Form */
@@ -102,45 +102,45 @@ function init_orderlistcontent() {
     if (blockheigh<maxheigh) {
         $("div.content-art-table div.ordart_rowdata").addClass('fullrow');
     }
-    $("div.artnoteshow").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("div.ordart_code-data").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 180,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("div.artlastmessageview").each(function(){
-        $(this).bt({
-            ajaxCache: false,
-            fill : '#1DCD19',
-            cornerRadius: 10,
-            width: 220,
-            padding: 10,
-            strokeWidth: '2',
-            positions: "most",
-            strokeStyle : '#000000',
-            strokeHeight: '18',
-            cssClass: 'art_tooltip',
-            ajaxPath: ["$(this).data('messageview')"]
-        });
-    });
+    // $("div.artnoteshow").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 220,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#000000'}
+    // })
+    // $("div.ordart_code-data").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 180,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "top",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#000000'}
+    // })
+    // $("div.artlastmessageview").each(function(){
+    //     $(this).bt({
+    //         ajaxCache: false,
+    //         fill : '#1DCD19',
+    //         cornerRadius: 10,
+    //         width: 220,
+    //         padding: 10,
+    //         strokeWidth: '2',
+    //         positions: "most",
+    //         strokeStyle : '#000000',
+    //         strokeHeight: '18',
+    //         cssClass: 'art_tooltip',
+    //         ajaxPath: ["$(this).data('messageview')"]
+    //     });
+    // });
 
     $("div.ordart_note-dat img").unbind('click').click(function(){
         edit_artordnote(this);
