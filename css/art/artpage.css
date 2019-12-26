@@ -24,3 +24,73 @@ ushgeneralorder {
     background-color: #FF2A00;
     color: #ffffff;
 }
+/* Approve mail */
+.aprovemail_content {
+    background: url("/img/art/artpopup_approveemail_bg.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 442px;
+    margin-top: 9px;
+    width: 356px;
+}
+.approvemaildata_content {
+    clear: both;
+    float: left;
+    margin: 10px 8px 10px 11px;
+    width: 345px;
+}
+.approvemail_row {
+    clear: both;
+    float: left;
+    text-align: left;
+    margin-bottom: 11px;
+    width: 331px;
+}
+.approvemail_label {
+    color: #1A1A1A;
+    float: left;
+    font-size: 12px;
+    padding-top: 4px;
+    text-align: left;
+    width: 46px;
+}
+.approvemail_data {
+    float: left;
+    width: 285px;
+}
+.addbccapprove {
+    text-align: left;
+    color: #0e02ff;
+    font-size: 11px;
+    text-decoration: none;
+    font-style: italic;
+}
+.addbccapprove:hover {
+    cursor: pointer;
+}
+input.aprovemail_input {
+    float: left;
+    border: 1px solid #000000;
+    color: #000;
+    font-size: 12px;
+    width: 283px;
+}
+textarea.aprovemail_message {
+    float: left;
+    height: 241px;
+    margin-top: -6px;
+    overflow-y: auto;
+    resize: none;
+    width: 323px;
+    color: #000;
+    font-size: 12px;
+}
+.approvemail_send {
+    float: left;
+    margin-left: 271px;
+    margin-top: -6px;
+    width: 60px;
+}
+.approvemail_send:hover {
+    cursor: pointer;
+}

@@ -208,4 +208,19 @@ if (!function_exists('getDatesByWeek')) {
     }
 }
 
+if (!function_exists('get_json_param')) {
+    function get_json_param($json_string, $param_name, $default=false )
+    {
+        $json_string = (array) json_decode($json_string);
+        //  $this->quick_log($json_string[ $param_name ]);
+
+        if( isset($json_string[ $param_name ])  && $json_string[ $param_name ])
+            return $json_string[$param_name];
+        else
+            return $default;
+
+    }
+}
+
+
 ?>

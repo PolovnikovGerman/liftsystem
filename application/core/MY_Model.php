@@ -14,6 +14,9 @@
  * @property Categories_model categories_model
  * @property Orders_model orders_model
  * @property Artproof_model artproof_model
+ * @property Artwork_model artwork_model
+ * @property Email_model email_model
+ * @property Leadorder_model leadorder_model
  */
 
 class MY_Model extends CI_Model

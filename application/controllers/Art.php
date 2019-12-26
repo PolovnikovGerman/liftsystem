@@ -6,6 +6,9 @@ class Art extends MY_Controller {
     private $pagelink = '/art';
     protected $artorderperpage=250;
 
+    private $NO_ART_REMINDER='Need Art Reminder';
+    private $NEED_APPROVE_REMINDER='Need Approval Reminder';
+
     public function __construct()
     {
         parent::__construct();
@@ -125,6 +128,160 @@ class Art extends MY_Controller {
         }
         show_404();
     }
+
+    public function task_remindmail() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $task_id=$this->input->post('task_id');
+            $template='';
+            if (!$task_id) {
+                $error='Unknown Task';
+            } else {
+                $this->load->model('artwork_model');
+                $this->load->model('email_model');
+                if (substr($task_id,0,2)=='pr') {
+                    $this->load->model('artproof_model');
+                    $email_id=substr($task_id, 2);
+                    $artdata=$this->artwork_model->get_artwork_proof($email_id, $this->USR_ID);
+
+                    $data=$this->artproof_model->get_proof_data($email_id);
+                    if (!isset($artdata['artwork_id'])) {
+                        $error='Undefined Proof Request';
+                        $this->ajaxResponse($mdata, $error);
+                    } else {
+                        if ($data['email_proofed']==1) {
+                            /* Approve art reminder */
+                            $templdat=$this->email_model->get_emailtemplate_byname($this->NEED_APPROVE_REMINDER);
+                        } else {
+                            $templdat=$this->email_model->get_emailtemplate_byname($this->NO_ART_REMINDER);
+                        }
+
+                        if (isset($templdat['email_template_id'])) {
+                            $template=$templdat['email_template_id'];
+                        }
+                        $artdata['order_date']=strtotime($data['email_date']);
+                        $artdata['order_number']="PR".$artdata['proof_num'];
+                        $artdata['document_type']='Proof Request';
+                    }
+                } else {
+                    $this->load->model('orders_model');
+                    $order_id=substr($task_id, 3);
+                    $artdata=$this->artwork_model->get_artwork_order($order_id, $this->USR_ID);
+                    $data=$this->orders_model->get_order_detail($order_id);
+                    if ($data['order_system']=='new') {
+                        // Get Order Contact with ART
+                        $this->load->model('leadorder_model');
+                        $contacts=$this->leadorder_model->get_order_contacts($order_id);
+                        $artmail='';
+                        foreach ($contacts as $crow) {
+                            if ($crow['contact_art']==1 && !empty($crow['contact_emal'])) {
+                                $artmail.=$crow['contact_emal'].',';
+                            }
+                        }
+                        $artdata['customer_email']=substr($artmail,0,-1);
+                    }
+                    $artdata['order_date']=$data['order_date'];
+                    $artdata['order_number']="BT".$data['order_num'];
+                    $artdata['document_type']='Proof Request';
+                    if ($data['order_proofed']==1) {
+                        /* Approve art reminder */
+                        $templdat=$this->email_model->get_emailtemplate_byname($this->NEED_APPROVE_REMINDER);
+                    } else {
+                        $templdat=$this->email_model->get_emailtemplate_byname($this->NO_ART_REMINDER);
+                    }
+
+                    if (isset($templdat['email_template_id'])) {
+                        $template=$templdat['email_template_id'];
+                    }
+                }
+                // Get Artdata LINKs message
+                $linkmsg=$this->artwork_model->get_needaprovelnk($artdata['artwork_id']);
+
+                if (!$template) {
+                    $msgdat='';
+                    $message='';
+                } else {
+                    $userdat=$this->user_model->get_user_data($this->USR_ID);
+                    $user_name=$userdat['user_name'];
+                    $mail_template=$this->email_model->get_email_template($template);
+                    $message=$mail_template['email_template_body'];
+                    $message=str_replace('<<customer_name>>', $artdata['customer'], $message);
+                    $message=str_replace('<<user_name>>', $user_name, $message);
+                    $message=str_replace('<<order_date>>', date('F j Y',$artdata['order_date']), $message);
+                    $message=str_replace('<<order_number>>', $artdata['order_number'], $message);
+                    $message=str_replace('<<item_name>>', $artdata['item_name'], $message);
+                    $message=str_replace('<<document_type>>',$artdata['document_type'],$message);
+                    $message=str_replace('<<links>>', $linkmsg, $message);
+                    $msgdat=str_replace('<<order_number>>', $artdata['order_number'], $mail_template['email_template_subject']);
+                    $msgdat=str_replace('<<item_name>>', $artdata['item_name'], $msgdat);
+                    $msgdat=str_replace('<<document_type>>',$artdata['document_type'],$msgdat);
+                }
+                $artemail=$this->config->item('art_dept_email');
+                $options=array(
+                    'artwork_id'=>$artdata['artwork_id'],
+                    'from'=>$artemail,
+                    'tomail'=>$artdata['customer_email'],
+                    'subject'=>$msgdat,
+                    'message'=>$message,
+                );
+                $mdata['content']=$this->load->view('artpage/approve_email_view',$options,TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    /* Send reminder mail */
+    public function task_sendreminder() {
+        if ($this->func->isAjax()) {
+            $mdata=array();
+            $error='';
+            $path_sh=$this->config->item('artwork_proofs_relative');
+            $path_fl=$this->config->item('artwork_proofs');
+            $postdata=$this->input->post();
+            if (substr($postdata['task_id'],0,2)=='pr') {
+                $email_id=substr($postdata['task_id'], 2);
+                $data=$this->mproofs->get_proof_data($email_id);
+                if ($data['email_proofed']==1) {
+                    $proofs=$this->martwork->get_artproofs($postdata['artwork_id']);
+                    $attach=array();
+                    foreach ($proofs as $row) {
+                        $file=  str_replace($path_sh, $path_fl, $row['src']);
+                        array_push($attach,$file);
+                    }
+                    $postdata['history_msg']='Art Approval - reminder email sent.<br/>';
+                } else {
+                    $attach=array();
+                    $postdata['history_msg']='Need Art - reminder email sent.<br/>';
+                }
+            } else {
+                $order_id=substr($postdata['task_id'], 3);
+                $data=$this->morder->get_order_detail($order_id);
+                if ($data['order_proofed']==1) {
+                    $proofs=$this->martwork->get_artproofs($postdata['artwork_id']);
+                    $attach=array();
+                    foreach ($proofs as $row) {
+                        $file=  str_replace($path_sh, $path_fl, $row['src']);
+                        array_push($attach,$file);
+                    }
+                    // $postdata['history_msg']='Art Approval - reminder email sent.<br/>';
+                    $postdata['history_msg']='Art proof sent ';
+                } else {
+                    $attach=array();
+                    $postdata['history_msg']='Need Art - reminder email sent.<br/>';
+                }
+            }
+
+            $res=$this->martwork->send_reminder($postdata, $attach, $this->USR_ID);
+
+            if ($res['result']==Art::ERROR_RESULT) {
+                $error=$res['msg'];
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     /* LIST view of Orders List */
     public function order_data() {

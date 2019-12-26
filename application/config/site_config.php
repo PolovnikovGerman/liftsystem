@@ -1,6 +1,180 @@
 <?php
-$config['logip'] = [
-    '127.0.0.1',
-];
 $config['js_version']='1.0';
 $config['css_version']='1.0';
+/* Default Profit percent */
+$config['default_profit']=40;
+$config['default_brand']=1;
+$config['default_brand_name']='BT';
+// $config['netprofit_start']=1349038800;
+$config['netprofit_start']=strtotime('10/01/2012 00:00:00');
+$config['netprofit_bank_start']=strtotime('12/29/2014 00:00:00');
+// $config['balance_start']=946677600; // ('01/01/2000 00:00:00');
+$config['balance_start']=strtotime('01/01/2000 00:00:00');
+$config['default_ccfee']=3;
+/* Short name */
+$config['system_name']="Brown System";
+$config['redraw_system_name']='Redraw System';
+$config['redraw_role']='redraw';
+$config['system_permissions']='System';
+/* Bank calendar */
+$config['bank_calendar']=3;
+/* Auth Payment Fee */
+$config['auth_amexfee']=3.5;
+$config['auth_vmdfee']=0;
+/* Paypal Fee */
+$config['paypal_amexfee']=3.25;
+$config['paypal_vmdfee']=2.2;
+// $config['art_dept_email']="logosbt@gmail.com";
+/* CONSTANTS */
+/* VIRTUAL ITEMS */
+$config['other_id']=-1;
+$config['multy_id']=-2;
+$config['custom_id']=-3;
+$config['custom_itemnum']='00-ZZ000';
+$config['minimal_profitperc']=20;
+switch($_SERVER['SERVER_NAME']){
+    case 'tempsys.net':
+    case 'tempsys.golden-team.org':
+        $config['sean_email']='polovnikov.g@gmail.com';
+        $config['sage_email']='to_german@yahoo.com';
+        $config['taisen_email']='polovnikov.german@gmail.com';
+        $config['email_notification_sender']='support@golden-team.org';
+        $config['redraw_email']='redraw@golden-team.org';
+        $config['art_dept_email']="art@golden-team.org";
+        $config['taisenkatakura_email']='taisen@test.ru';
+        $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['developer_email']='polovnikov.g@gmail.com';
+        break;
+    default :
+        $config['sean_email']='sean@bluetrack.com';
+        $config['sage_email']='sage@bluetrack.com';
+        $config['taisen_email']='taisen@bluetrack.com';
+        $config['email_notification_sender']='support@bluetrack.com';
+        $config['redraw_email']='redraw@bluetrack.com';
+        $config['art_dept_email']="art@bluetrack.com";
+        $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
+        $config['developer_email']='polovnikov.g@gmail.com';
+        break;
+}
+switch($_SERVER['SERVER_NAME']){
+    case 'tempsys.net':
+
+        $config['email_setup']=array(
+            'protocol' => 'smtp',
+            'smtp_host' => 'ssl://smtp.gmail.com',
+            'smtp_port' => '465',
+            'smtp_user'=>'logosbt@gmail.com',
+            'smtp_pass'=>'NjfJrL9cHALy',
+            'smtp_timeout'=>'7',
+            'validation'=>TRUE,
+            'charset'=>'utf8',
+            'wordwrap'=> TRUE,
+            'newline'=>'\r\n',
+        );
+        /*
+        $config['email_setup']=array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf8',
+            'wordwrap'=> TRUE,
+        );
+        */
+        $config['artorderdaily_to']='polovnikov.g@gmail.com';
+        $config['artorderdaily_cc']=array(
+            'polovnikov.german@gmail.com',
+            'to_german@yahoo.com',
+        );
+        break;
+    case 'tempsys.golden-team.org':
+        $config['email_setup']=array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf8',
+            'wordwrap'=> TRUE,
+        );
+        $config['artorderdaily_to']='polovnikov.g@gmail.com';
+        $config['artorderdaily_cc']=array(
+            'polovnikov.german@gmail.com',
+            'to_german@yahoo.com',
+        );
+        break;
+    default :
+        $config['email_setup']=array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf8',
+            'wordwrap'=> TRUE,
+        );
+        $config['artorderdaily_to']='sean@bluetrack.com';
+        $config['artorderdaily_cc']=array(
+            'sage@bluetrack.com',
+            'art@bluetrack.com',
+            'robert@bluetrack.com',
+            'darrell.martin@bluetrack.com',
+        );
+        break;
+
+}
+$config['profitpts']=0.08;
+$config['goalestim']=1.20;
+$config['cmpprofitpts']=0.10;
+$config['leadpts']=0.025;
+$config['order_system']='Bluetrack ';
+$config['default_paysystem']='paypal';
+$config['localserver']=array(
+    'tempsys.net',
+    'tempsys.golden-team.org',
+);
+$config['salestax']=7;
+$config['datenewtax']= strtotime('2018-07-23');
+$config['salesnewtax']=6.625;
+
+$config['report_vendors']=array(
+    'Ariel',
+    'Alpi',
+    'Mailine',
+    'Pinnacle',
+    'Jetline',
+);
+// Delivery Services
+$config['delivery_service']=array(
+    'UPS', /* 'FedEx', 'DHL', 'US Postal',*/ 'Local Truck', 'Freight', 'Other',
+);
+// Track Service
+$config['tracking_service']=array(
+    'UPS', 'FedEx', 'DHL', 'US Postal',
+);
+// Default QTY
+$config['defqty_common']=150;
+$config['defqty_custom']=1000;
+// Minimal timeout of lock - 20 min
+$config['max_lock_time']=180;
+// Timeout for edit - 10 min - JS - X 1000
+if ($_SERVER['SERVER_NAME']=='brown.bluetrack.com') {
+    $config['loctimeout']=130;
+} else {
+    $config['loctimeout']=1200;
+}
+// Default Inventory Vendor && Payment Method
+$config['inventory_vendor']=151;
+$config['inventory_paymethod']=5;
+// Minimal # of weeks
+$config['min_stockperc']=33;
+$config['invoutstock']=25;
+$config['invlowstock']=50;
+// Minimal part of Week to show
+$config['show_rolerptweek']=13;
+// Event Date - add 12 Hours
+$config['event_time']=43200;
+$config['logip']=array(
+    '91.218.99.68',
+    '127.0.0.1',
+    '91.219.52.152',
+    '188.163.96.162',
+);
+$config['maxstoretime']=2592000;
+$config['bonus_500']=1;
+$config['bonus_1000']=2;
+$config['bonus_1200']=5;
+$config['bonus_price']=5;
+$config['bonus_week_base']=150;
+$config['netprofit_debt_start']=-160000;
+$config['bonus_time']=strtotime('2019-03-04');

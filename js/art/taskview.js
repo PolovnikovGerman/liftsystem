@@ -271,8 +271,11 @@ function call_reminder(task_id) {
     var template=$("input#templateslist").val();
     $.post(url, {'task_id':task_id,'template':template}, function(response){
         if (response.errors=='') {
-            show_popup("mailnoticationarea");
-            $("div#pop_content").empty().html(response.data.content);
+            // show_popup("mailnoticationarea");
+            // $("div#pop_content").empty().html(response.data.content);
+            $("#artModalLabel").empty().html('New Remind Message');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").modal('show');
             init_remindermanage(task_id)
         } else {
             show_error(response);
@@ -281,9 +284,6 @@ function call_reminder(task_id) {
 }
 
 function init_remindermanage(task_id) {
-    $("a#popupContactClose").click(function(){
-        disablePopup();
-    })
     $("div.approvemail_send").click(function(){
         var artwork_id=$(this).data('artworkid');
         send_reminder(task_id, artwork_id);
@@ -319,7 +319,7 @@ function send_reminder(task_id, artwork_id) {
     var url="/art/task_sendreminder";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#artModal").modal('hide');
         } else {
             show_error(response);
         }

@@ -456,4 +456,39 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    public function get_proof_data($email_id) {
+        $ci=&get_instance();
+        $this->db->select('e.*,lem.leademail_id, l.lead_id, l.lead_number, l.lead_date, l.lead_customer, l.lead_mail');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
+        $this->db->where('e.email_id',$email_id);
+        $res=$this->db->get()->row_array();
+        $res['email_color']='';
+        $res['email_logo']='';
+        if (isset($res['email_id'])) {
+            $res['usercomment']=$res['email_text'];
+            $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
+            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            /* Proof Details */
+            $res['email_text']=get_json_param($res['email_other_info'],'usertext','');
+            $usr_color1=get_json_param($res['email_other_info'],'user_color1','');
+            $usr_color2=get_json_param($res['email_other_info'],'user_color2','');
+            $res['email_color']=$usr_color1.($usr_color2=='' ? '' : ','.$usr_color2);
+            $res['item_colors']=get_json_param($res['email_other_info'],'itemcolors','');
+            $logo_lnk=get_json_param($res['email_other_info'],'userlogo','');
+            if ($logo_lnk!='') {
+                if ($res['email_websys']=='BT') {
+                    $logo_lnk=$this->bt_main.$logo_lnk;
+                } elseif ($res['email_websys']=='SB') {
+                    $logo_lnk=$this->sb_main.$logo_lnk;
+                }
+                $res['email_logo']="<a href='".$logo_lnk."' target='_blank'>User Logo</a>";
+            }
+            $res['email_font']=$this->func->get_json_param($res['email_other_info'],'user_font','');
+        }
+        return $res;
+    }
+
+
 }

@@ -148,10 +148,6 @@ select.ordproofview {
     float: left;
     width: 168px;
 }
-.taskdata_row div {
-    height: 20px;
-    line-height: 20px!important;
-}
 .taskdata_row.grey {
     background-color: #ededed;
 }

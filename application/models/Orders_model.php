@@ -468,8 +468,21 @@ Class Orders_model extends MY_Model
         }
 
         return $out;
-
     }
 
+    public function get_order_detail($order_id) {
+        $this->db->select('o.*, br.brand_name, itm.item_name as item_name');
+        $this->db->from('ts_orders o');
+        $this->db->join('brands br','br.brand_id=o.brand_id','left');
+        $this->db->join('v_itemsearch itm','itm.item_id=o.item_id','left');
+        $this->db->where('o.order_id',$order_id);
+        $res=$this->db->get()->row_array();
 
+        if ($res['order_cog']=='') {
+            $res['profit_class']='projprof';
+        } else {
+            $res['profit_class']=profitClass($res['profit_perc']);
+        }
+        return $res;
+    }
 }

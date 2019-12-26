@@ -282,6 +282,15 @@ Class User_model extends MY_Model
         return $out;
     }
 
+    public function get_user_data($user_id) {
+        $this->db->select('*');
+        $this->db->from('users');
+        $this->db->where('user_id',$user_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+
     public function update_user_status($data) {
         $out=['result'=>$this->error_result,'msg'=>'Unknown user code'];
 
