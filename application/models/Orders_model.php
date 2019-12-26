@@ -153,7 +153,7 @@ Class Orders_model extends MY_Model
         return $res['cnt'];
     }
 
-    function get_orders($filtr,$order_by,$direct,$limit,$offset) {
+    public function get_orders($filtr,$order_by,$direct,$limit,$offset) {
         $this->db->select('o.order_id, o.order_rush, o.order_blank, o.order_date, o.brand_id, o.order_num, o.customer_name, o.customer_email, o.order_items, o.revenue, o.shipping, o.tax,
             o.cc_fee, o.order_art, o.order_redrawn, o.order_vectorized, o.order_proofed, o.order_approved, artwork_alert(o.order_id, "order") as vect_alert, o.order_code, o.art_note, b.brand_name,
             orders_cntattachment(o.order_id) as doccnt, vo.order_proj_status, artwok_bypassredraw(o.order_id, "O") as redraw_bypass',FALSE);
@@ -304,6 +304,171 @@ Class Orders_model extends MY_Model
             $out[]=$row;
         }
         return $out;
+    }
+
+    public function get_general_orders($filtr,$order_by,$direct,$limit,$offset, $usr_id) {
+        $this->load->model('user_model');
+        // $usrdata=$this->user_model->get_user_data($usr_id);
+        $this->db->select('o.order_id, o.order_rush, o.order_blank, o.order_date, o.brand_id, o.order_num, o.customer_name, o.customer_email, o.order_items, o.revenue, o.shipping, o.tax,
+            o.cc_fee, o.order_art, o.order_redrawn, o.order_vectorized, o.order_proofed, o.order_approved, artwork_alert(o.order_id, "order") as vect_alert, o.order_code, o.art_note,
+            orders_cntattachment(o.order_id) as doccnt, vo.order_proj_status, artwok_bypassredraw(o.order_id, "O") as redraw_bypass',FALSE);
+        $this->db->select('o.order_confirmation, o.order_usr_repic, o.weborder, u.user_leadname, u.user_name');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
+        $this->db->join('users u','u.user_id=o.order_usr_repic','left');
+        $this->db->where('o.is_canceled',0);
+        if (count($filtr)>0) {
+            if (isset($filtr['search']) && $filtr['search']) {
+                $this->db->like("concat(ucase(o.customer_name),' ',o.order_num,' ',o.revenue,' ',ucase(o.customer_email)) ",strtoupper($filtr['search']));
+            }
+            if (isset($filtr['hideart']) && $filtr['hideart']==1) {
+                $this->db->where('o.order_arthide',0);
+            }
+            if (isset($filtr['artfiltr'])) {
+                switch ($filtr['artfiltr']) {
+                    case 1:
+                        $this->db->where('vo.order_proj_status',$this->NEED_APPROVAL);
+                        break;
+                    case 2:
+                        $this->db->where('vo.order_proj_status',$this->TO_PROOF);
+                        break;
+                    case 3:
+                        $this->db->where('vo.order_proj_status',$this->NO_VECTOR);
+                        break;
+                    case 4:
+                        $where="vo.order_proj_status = '".$this->REDRAWN."' or artwok_bypassredraw(o.order_id, 'O') > 0 ";
+                        $this->db->where($where);
+                        break;
+                    case 5:
+                        $this->db->where('vo.order_proj_status',$this->NO_ART);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (isset($filtr['artadd_filtr']) && $filtr['artadd_filtr']==1) {
+                $this->db->where('o.order_rush',1);
+            }
+        }
+        $this->db->limit($limit,$offset);
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        $curimg=$prvimg='<img src="/img/art/artarrow.png" alt="Previous" class="prvartstageicon"/>';
+        foreach ($res as $row) {
+            $artclass=($row['order_blank']==1 ? 'chk-ordoptionblank' : 'chk-ordoption');
+            $row['order_date']=($row['order_date']==0 ? '' : date('m/d/y',$row['order_date']));
+            $row['revenue']=(floatval($row['revenue'])==0 ? '-' : '$'.number_format($row['revenue'],2,'.',','));
+            $row['shipping']=(floatval($row['shipping'])==0 ? '-' : '$'.number_format($row['shipping'], 2, '.', ','));
+            $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
+            $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
+            // $lastmsg=$this->get_lastupdate($row['order_id']);
+            // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
+            $artlastupdat="artlastmessageview";
+            $row['lastmsg']='/artorders/order_lastmessage?d='.$row['order_id'];
+            $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
+            $row['out_code']=($row['order_code']=='' ? '&nbsp;' : $row['order_code']);
+            $row['rush_class']=($row['order_rush']==0 ? '' : 'rushorder');
+            if ($row['order_blank']==1) {
+                $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']=$artclass;
+                $row['art_cell']=$row['redrawn_cell']=$row['vectorized_cell']=$row['proofed_cell']=$row['approved_cell']=$curimg;
+                $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']='';
+                $row['approved_title']=$artlastupdat;
+            } else {
+                // $curstage='art_stage';
+                $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
+                $row['art_cell']=$row['redrawn_cell']=$row['vectorized_cell']=$row['proofed_cell']=$row['approved_cell']='&nbsp;';
+                $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
+                /* */
+                switch ($row['order_proj_status']) {
+                    case $this->NO_ART:
+                        break;
+                    case $this->REDRAWN:
+                        $row['art_class']=$artclass;
+                        $row['art_cell']=$curimg;
+                        $row['art_title']=$artlastupdat;
+                        break;
+                    case $this->NO_VECTOR:
+                        $row['art_class']=$artclass;
+                        if ($row['vect_alert']==0) {
+                            $row['redrawn_class']=$artclass;
+                        } else {
+                            $row['redrawn_class']='chk-ordoption-alert';
+                        }
+                        $row['art_cell']=$prvimg;
+                        $row['redrawn_cell']=$curimg;
+                        $row['redrawn_title']=$artlastupdat;
+                        break;
+                    case $this->TO_PROOF:
+                        $row['art_class']=$artclass;
+                        if ($row['redraw_bypass']==0) {
+                            $row['redrawn_class']=$artclass;
+                            $row['redrawn_cell']=$prvimg;
+                        }
+                        $row['vectorized_class']=$artclass;
+                        $row['art_cell']=$prvimg;
+                        $row['vectorized_cell']=$curimg;
+                        $row['vectorized_title']=$artlastupdat;
+                        break;
+                    case $this->JUST_APPROVED:
+                        $row['art_class']=$artclass;
+                        if ($row['redraw_bypass']==0) {
+                            $row['redrawn_class']=$artclass;
+                            $row['redrawn_cell']=$prvimg;
+                        }
+                        $row['vectorized_class']=$artclass;
+                        $row['proofed_class']=$artclass;
+                        $row['approved_class']=$artclass;
+                        $row['art_cell']=$prvimg;
+                        $row['vectorized_cell']=$prvimg;
+                        $row['proofed_cell']=$prvimg;
+                        $row['approved_cell']=$curimg;
+                        $row['approved_title']=$artlastupdat;
+                        break;
+                    case $this->NEED_APPROVAL:
+                        $row['art_class']=$artclass;
+                        if ($row['redraw_bypass']==0) {
+                            $row['redrawn_class']=$artclass;
+                            $row['redrawn_cell']=$prvimg;
+                        }
+
+                        $row['vectorized_class']=$artclass;
+                        $row['proofed_class']=$artclass;
+                        $row['art_cell']=$prvimg;
+                        $row['vectorized_cell']=$prvimg;
+                        $row['proofed_cell']=$curimg;
+                        $row['proofed_title']=$artlastupdat;
+                        break;
+                    default :
+                        $row['art_class']=$artclass;
+                        $row['redrawn_class']=$artclass;
+                        $row['vectorized_class']=$artclass;
+                        $row['proofed_class']=$artclass;
+                        $row['approved_class']=$artclass;
+                        $row['art_cell']=$prvimg;
+                        $row['redrawn_cell']=$prvimg;
+                        $row['vectorized_cell']=$prvimg;
+                        $row['proofed_cell']=$prvimg;
+                        $row['approved_cell']=$curimg;
+                        $row['approved_title']=$artlastupdat;
+                        break;
+                }
+            }
+            $row['usrreplclass']='user';
+            if ($row['order_usr_repic']>0) {
+                $row['user_replic']=($row['user_leadname']=='' ? $row['user_name'] : $row['user_leadname']);
+            } else {
+                if ($row['weborder']==1) {
+                    $row['user_replic']='Website';
+                    $row['usrreplclass']='website';
+                }
+            }
+            $out[]=$row;
+        }
+
+        return $out;
+
     }
 
 

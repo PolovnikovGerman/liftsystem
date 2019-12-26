@@ -322,3 +322,10 @@ body div {
 .choicearea > .bransselectlabel.active {
     color: #000;
 }
+/* Colors rows */
+.whitedatarow {
+    background-color: #ffffff;
+}
+.greydatarow {
+    background-color: #ededed;
+}

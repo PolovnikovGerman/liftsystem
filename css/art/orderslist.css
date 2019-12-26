@@ -1,388 +1,201 @@
-.artorder_head_area {
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jun 12, 2016, 10:58:08 AM
+    Author     : polovnikov-go
+*/
+.generealorder_content {
     clear: both;
     float: left;
-    margin-bottom: 5px;
     margin-left: 10px;
-    margin-top: 20px;
-    width: 999px;
+    margin-top: 14px;
+    width: 1003px;
 }
-.artorder_head_row {
-    clear: both;
+.generealorder_content div {
     float: left;
-    line-height: 26px;
-    height: 26px;
+}
+.generealorder_content > .headrow {
+    clear: both;
+    margin-bottom: 5px;
     width: 100%;
 }
-.artorder_search_form {
+.generealorder_content > .headrow > .searchform {
+    height: 27px;
+    line-height: 27px;
+    width: 360px;
+}
+.generealorder_content > .headrow > .searchform img {
     float: left;
-    width: 368px;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 24px;
 }
-input.artordersearch {
-    height: 19px;
-}
-.artorder_find {
-    background: url("/img/art/search_btn.png") no-repeat scroll 0 1px transparent;
-    cursor: pointer;
-    float: left;
-    width: 85px;
-}
-.artorder_clear {
-    background: url("/img/art/clean_btn.png") no-repeat scroll 0 1px transparent;
-    cursor: pointer;
-    float: left;
-    width: 53px;
-}
-.artorder_filter_area {
-    float: left;
-    margin-left: 20px;
-    width: 324px;
-}
-.artorder_filter_area > select {
-    background: none repeat scroll 0 0 #ffffff;
-    border: 1px solid;
-    height: 21px;
-    margin-right: 10px;
-    margin-top: 4px;
-}
-.monitor_pagesviews.artpageorder {
-    float: right;
-    width: 294px;
-}
-.ordertable-art {
-    clear: both;
-    float: left;
-    margin-left: 12px;
-}
-.ordertable-title {
-    background-color: #bcbcbc;
-    border: 1px solid #919191;
-    clear: both;
-    color: #000000;
+input.generealorder_search {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
     float: left;
     font-size: 13px;
-    text-align: center;
-    height: 36px;
-    line-height: 36px;
-    width: 993px;
-}
-.addnewordart {
-    border-right: 1px solid #000000;
-    float: left;
-    font-size: 11px;
-    width: 46px;
-}
-.ordeart_actioins {
-    border-right: 1px solid #000000;
-    float: left;
-    height: 25px;
-    text-align: center;
-    width: 46px;
-}
-.ordeart_actioins img {
-    padding-top: 3px;
-    width: 18px;
     height: 18px;
+    line-height: 18px;
+    width: 175px;
 }
-.ordart_blank {
-    float: left;
-    width: 36px;
-    border-right: 1px solid #000000;
-}
-.ordart_blank_dat {
-    border-right: 1px solid #000000;
-    float: left;
-    height: 25px;
-    width: 36px;
-}
-.ordart_blank_dat.edit {
-    border-right: medium none;
-    float: left;
-    height: 25px;
-    width: 22px;
-}
-.ordart_date {
-    float: left;
-    width: 55px;
-    text-align: center;
-    border-right: 1px solid #000000;
-}
-.ordart_date:hover {
+.generealorder_content > .headrow > .searchform > .findall {
+    background: url('/img/art/search_btn.png') no-repeat transparent;
     cursor: pointer;
-}
-.ordart_date-dat {
-    border-right: 1px solid;
     float: left;
-    width: 55px;
+    height: 27px;
+    width: 87px;
 }
-.ordart_date-dat.edit {
-    border-right: 1px solid;
-    float: left;
-    width: 70px;
-}
-.ordart_ordernum {
-    float: left;
-    width: 50px;
-    border-right: 1px solid #000000;
-}
-.ordart_ordernum:hover {
-    cursor:pointer;
-}
-.ordart_ordernum-dat {
-    border-right: 1px solid #000000;
-    color: #0000ff;
-    float: left;
-    width: 50px;
-}
-.ordart_ordernum-dat:hover {
+.generealorder_content > .headrow > .searchform > .clearsrch {
+    background: url('/img/art/clean_btn.png') no-repeat transparent;
     cursor: pointer;
-}
-.ordart_customer {
-    border-right: 1px solid #000000;
     float: left;
-    width: 275px;
+    height: 27px;
+    width: 51px;
 }
-.ordart_customer:hover {
+.generealorder_content > .headrow > .filtersarea {
+    height: 27px;
+    line-height: 27px;
+    margin-left: 306px;
+    width: 332px;
+}
+.generealorder_content > .headrow > .filtersarea select {
+    height: 27px;
+}
+.generealorder_content > .headrow > .addneworder {
     cursor: pointer;
-}
-.ordart_customer-dat {
-    float: left;
-    height: 20px;
-    padding-top: 4px;
-    width: 244px;
-}
-.ordart_customer-maildat {
-    float: left;
-    margin-left: 3px;
-    margin-right:3px;
-    width: 22px;
-}
-.ordart_customer-maildat img {
-    padding-top: 3px;
-}
-.ordart_customer-data {
-    border-right: 1px solid #000000;
-    float: left;
-    overflow: hidden;
-    padding-left: 5px;
-    padding-right: 5px;
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 237px;
-}
-.ordart_item {
-    border-right: 2px solid #000000;
-    float: left;
-    width: 255px;
-}
-.ordart_item-dat {
-    border-right: 2px solid #000000;
-    float: left;
-    height: 21px;
-    padding-top: 4px;
-    width: 265px;
-}
-.ordart_item-data {
-    border-right: 2px solid #000000;
-    float: left;
-    overflow: hidden;
-    padding-left: 5px;
-    padding-right: 5px;
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 245px;
-}
-.ordart_item-dataedit {
-    border-right: 2px solid #000000;
-    float: left;
-    height: 25px;
-    width: 255px;
-}
-.ordart_art, .ordart_redrawn, .ordart_vector, .ordart_proofed, .ordart_approve {
-    float: left;
-    width: 28px;
-    border-right: 1px solid #000000;
-}
-.ordart_approve {
-    border-right: 2px solid #000000;
-}
-.ordart_art-dat, .ordart_redrawn-dat, .ordart_vector-dat, .ordart_proofed-dat, .ordart_approve-dat {
-    border-right: 1px solid #000000;
-    float: left;
-    width: 28px;
-}
-.ordart_approve-dat {
-    border-right: 2px solid #000000;
-}
-.chk-ordoption, .chk-ordoptionblank {
-    height: 25px;
-}
-.ordart_code {
-    float: left;
-    width: 74px;
-    border-right: 1px solid #000000;
-}
-.ordart_code-dat {
-    border-right: 1px solid #000000;
-    float: left;
-    padding-top: 4px;
-    width: 81px;
-}
-.ordart_code-data {
-    border-right: 1px solid #000000;
-    float: left;
-    overflow: hidden;
-    padding: 0 5px;
-    white-space: nowrap;
+    background: url('/img/art/addnew_btn.png') no-repeat transparent;
+    height: 27px;
     width: 64px;
 }
-.ordart_note {
-    float: left;
+.generealorder_content > .headrow > .monitor_pagesviews {
+    float: right;
+    width: 206px;
+}
+.generealorder_content > .tablehead {
+    clear: both;
+    background-color: #BCBCBC;
+    border: 1px solid #919191;
+    color: #000000;
+    width: 1001px;
+}
+.generealorder_content > .tablehead div {
+    font-size: 13px;
+    text-align: center;
+    height: 31px;
+    line-height: 31px;
+}
+.generealorder_content > .tablehead > .date {
+    width: 55px;
+}
+.generealorder_content > .tablehead > .ordernum {
+    width: 50px;
+}
+.generealorder_content > .tablehead > .orderconf {
+    width: 64px;
+}
+.generealorder_content > .tablehead > .customer {
+    width: 212px;
+}
+.generealorder_content > .tablehead > .item {
+    border-right: 2px solid #000000;
+    width: 212px;
+}
+.generealorder_content > .tablehead > .art {
+    width: 28px;
+}
+.generealorder_content > .tablehead > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.generealorder_content > .tablehead > .ordercode {
     width: 46px;
 }
-.ordart_note-dat {
-    float: left;
-    height: 20px;
-    text-align: center;
-    width: 35px;
+.generealorder_content > .tablehead > .ordernote {
+    width: 39px;
 }
-.ordart_note-dat:hover {
-    cursor: pointer;
+.generealorder_content > .tablehead > .revenue {
+    width: 73px;
 }
-.ordart_note-dat img {
-    height: 16px;
-    padding-top: 3px;
+.generealorder_content > .tablehead > .salesrepl {
+    width: 75px;
 }
-.content-art-table {
+.generealorder_content > .tabledata {
     border-bottom: 1px solid #919191;
-    clear: both;
-    float: left;
-    max-height: 530px;
-    overflow-y: auto;
-    width: 997px;
-}
-.ordart_rowdata {
     border-left: 1px solid #919191;
-    border-right: 1px solid #919191;
     clear: both;
-    color: #000000;
-    float: left;
+    max-height: 551px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 1001px;
+}
+.generealorder_content > .tabledata > .rowdata {
+    clear: both;
     font-size: 12px;
+    width: 1001px;
+}
+.generealorder_content > .tabledata > .rowdata.rushgeneralorder {
+    background-color: #FF2A00;
+    color: #ffffff;
+}
+.generealorder_content > .tabledata > .rowdata > div {
     height: 25px;
     line-height: 25px;
     text-align: center;
-    width: 982px;
 }
-.ordart_rowdata.fullrow {
-    width: 967px;
+.generealorder_content > .tabledata > .rowdata > .date {
+    border-right: 1px solid #919191;
+    width: 54px;
 }
-.ordart_rowdata.grey {
-    background-color: #ededed;
-}
-.ordart_rowdata.white {
-    background-color: #ffffff;
-}
-.rushorder {
-    background-color: #FF2A00!important;
-    color: #ffffff;
-}
-/* ART Order EDIT Form */
-form.artordereditform {
-    /* height: 25px;
-    line-height: 25px; */
-}
-form.artordereditform input {
-    background: none repeat scroll 0 0 #ffffff;
-    border: 1px solid #000000;
-    color: #000000;
-    font-size: 12px;
-    height: 17px;
-    margin-top: 2px;
-}
-input.artorder_dateinpt {
-    width: 63px;
-}
-.ordernum-nonactive {
-    /* color: #C8C8C8; */
-    color: #000000;
-    font-weight: bold;
-}
-.ordart_customermailarea {
-    border-right: 1px solid #000000;
-    float: left;
-    width: 275px;
-}
-input.ordartcustomer_mail {
-    width: 82px;
-}
-input.ordartcustomer_name {
-    width: 178px;
-}
-.ordart_item-datedit {
-    float: left;
-    text-align: left;
-    width: 247px;
-}
-.ordart_item-datotheritm {
-    border-right: 2px solid #000000;
-    float: left;
-    min-width: 18px;
-    padding-top: 5px;
-    height: 20px;
-}
-select.ordartorder_item {
-    float: left;
-    background: none #FFFFFF;
-    height: 21px;
-    font-size: 12px;
-    width: 246px;
-}
-.ordart_artstage_dat {
-    float: left;
-    width: 144px;
-    border-right: 2px solid #000000;
-}
-input.ordartorder_code {
-    width: 63px;
-}
-/* END ART */
-/* Edit ART NOTE */
-/* Edit ART note */
-/* Edit Attach */
-/* Attach Upload */
-.attach_title {
-    clear: both;
-    float: left;
-    width: 570px;
-    background-color: #e8e8e8;
-    color: #000000;
-    font-size: 13px;
-    font-weight: bold;
-    text-align: center;
-    height: 24px;
-    padding-top: 4px;
-}
-.attachactions {
-    float: left;
-    width: 40px;
-}
-.attachactions:hover {
+.generealorder_content > .tabledata > .rowdata > .ordernum {
+    border-right: 1px solid #919191;
+    color: #0000FF;
     cursor: pointer;
+    width: 49px;
 }
-.attachdate {
-    float: left;
-    width: 126px;
+.generealorder_content > .tabledata > .rowdata > .orderconf {
+    border-right: 1px solid #919191;
+    width: 63px;
 }
-.attachdocname {
-    float: left;
-    width: 320px;
+.generealorder_content > .tabledata > .rowdata > .customer {
+    border-right: 1px solid #919191;
+    text-align: left;
+    padding-left: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 208px;
 }
-.attach_row {
-    clear: both;
-    float: left;
-    width: 570px;
-    font-size: 13px;
-    font-weight: normal;
-    margin-bottom: 5px;
+.generealorder_content > .tabledata > .rowdata > .item {
+    border-right: 2px solid #000000;
+    padding-left: 3px;
+    text-align: left;
+    width: 209px;
+}
+.generealorder_content > .tabledata > .rowdata > .art {
+    width: 28px;
+}
+.generealorder_content > .tabledata > .rowdata > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.generealorder_content > .tabledata > .rowdata > .ordercode {
+    border-right: 1px solid #919191;
+    width: 45px;
+}
+.generealorder_content > .tabledata > .rowdata > .ordernote {
+    border-right: 1px solid #919191;
+    width: 38px;
+}
+.generealorder_content > .tabledata > .rowdata > .revenue {
+    border-right: 1px solid #919191;
+    width: 72px;
+}
+.generealorder_content > .tabledata > .rowdata > .salesrepl {
+    text-align: left;
+    padding-left: 2px;
+    width: 73px;
 }

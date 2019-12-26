@@ -15,7 +15,7 @@ function init_page(objid) {
     switch (objid) {
         case 'orderlist':
             $("#orderlist").show();
-            init_orderlist();
+            init_orders();
             break;
         case 'requestlist':
             $("#requestlist").show();

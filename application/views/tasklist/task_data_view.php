@@ -1,7 +1,7 @@
 <?php $nrow=0;?>
 <?php $numpp=1;?>
 <?php foreach ($data as $row) {?>
-    <div class="taskdata_row <?=($nrow%2==0 ? 'grey' : 'white')?>" id="task">
+    <div class="taskdata_row <?=($nrow%2==0 ? 'greydatarow' : 'whitedatarow')?>" id="task">
         <div class="taskview_seqnum"><?=$numpp?>.</div>
         <div class="taskview_rush"><?=$row['order_rush']?></div>
         <div class="taskview_time"><?=$row['diff']?></div>

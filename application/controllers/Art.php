@@ -127,38 +127,40 @@ class Art extends MY_Controller {
     }
 
     /* LIST view of Orders List */
-    public function order_listdata() {
+    public function order_data() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $pagenum=$this->input->post('offset',0);
+            $offset=$this->input->post('offset',0);
             $limit=$this->input->post('limit',10);
             $order_by=$this->input->post('order_by');
             $direct = $this->input->post('direction','asc');
-            $search=$this->input->post('search');
+            $searchval=$this->input->post('search','');
+            $add_filtr=$this->input->post('add_filtr');
             $filter=$this->input->post('filter');
-            $add_filter=$this->input->post('add_filtr');
-
-            $offset=$pagenum*$limit;
-
-            /* Get data about orders */
-            $filtr=array(
-                'search'=>$search,
-            );
+            $search=array();
+            if ($searchval) {
+                $search['search']=$searchval;
+            }
             if ($filter!='') {
-                $filtr['artfiltr']=$filter;
+                $search['artfiltr']=$filter;
             }
-            if ($add_filter!='') {
-                $filtr['artadd_filtr']=$add_filter;
+            if ($add_filtr!='') {
+                $search['artadd_filtr']=$add_filtr;
             }
-            $filtr['hideart']=1;
+            $offset=$offset*$limit;
+            /* Fetch data about prices */
             $this->load->model('orders_model');
-            $orders=$this->orders_model->get_orders($filtr,$order_by,$direct,$limit,$offset);
-            if (count($orders)==0) {
-                $mdata['content']=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
+            $ordersdat=$this->orders_model->get_general_orders($search,$order_by,$direct,$limit,$offset, $this->USR_ID);
+            if (count($ordersdat)==0) {
+                $content=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
             } else {
-                $mdata['content']=$this->load->view('artorder/order_tabledat_view',array('orders'=>$orders),TRUE);
+                $data=array(
+                    'orders'=>$ordersdat,
+                );
+                $content = $this->load->view('artorder/order_tabledat_view',$data, TRUE);
             }
+            $mdata['content']=$content;
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -182,7 +184,18 @@ class Art extends MY_Controller {
     }
 
     private function _prepare_orderlist_view() {
-        $options=array(
+        $datqs=array();
+        $datqs['perpage']=$this->artorderperpage;
+        $search=array('hideart'=>0);
+        $this->load->model('orders_model');
+        $datqs['total_rec']=$this->orders_model->get_count_orders($search);
+        $datqs['order_by']='order_num';
+        $datqs['direction']='desc';
+        $datqs['cur_page']=0;
+        $datqs['assign']='';
+        $datqs['hideart']=0;
+
+/*        $options=array(
             'hideart'=>1,
         );
         $this->load->model('orders_model');
@@ -194,8 +207,8 @@ class Art extends MY_Controller {
             'direc'=>'desc',
             'total'=>$totals,
             'curpage'=>0,
-        );
-        $content=$this->load->view('artorder/page_view',$options_view,TRUE);
+        );*/
+        $content=$this->load->view('artorder/page_view',$datqs,TRUE);
         return $content;
     }
 
