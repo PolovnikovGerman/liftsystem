@@ -5,7 +5,7 @@
         <div class="taskview_seqnum"><?=$numpp?>.</div>
         <div class="taskview_rush"><?=$row['order_rush']?></div>
         <div class="taskview_time"><?=$row['diff']?></div>
-        <div class="taskview_order <?=$row['bypass_class']?> <?=$row['order_overclass']?>" title="<?=$row['task_title']?>" id="<?=$row['order_disp_id']?>">
+        <div class="taskview_order <?=$row['bypass_class']?> <?=$row['order_overclass']?>" data-content="<?=$row['task_title']?>" id="<?=$row['order_disp_id']?>">
             <?=$row['order_num']?>
         </div>
         <div class="taskview_note <?=($note==1 ? 'reminderarea' : '')?>" data-taskid="<?=$row['order_disp_id']?>">

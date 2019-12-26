@@ -23,6 +23,7 @@ function init_page(objid) {
             break;
         case 'taskview':
             $("#taskview").show();
+            init_tasks_management();
             init_tasks_page();
             break;
     }

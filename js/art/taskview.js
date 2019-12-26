@@ -1,15 +1,15 @@
 function init_tasks_management() {
-    $("select#ordproofview").change(function(){
+    $("select#ordproofview").unbind('change').change(function(){
         init_tasks_page();
     })
-    $("input#ordersproofs").change(function(){
+    $("input#ordersproofs").unbind('change').change(function(){
         change_approved_view('need_approve');
     })
-    $("div.taskview_timetitle").click(function(){
+    $("div.taskview_timetitle").unbind('click').click(function(){
         var tasktype=$(this).parent("div.taskview_devstage_subtitle").prop('id');
         change_tasksort(tasktype,'time');
     })
-    $("div.taskview_ordertitle").click(function(){
+    $("div.taskview_ordertitle").unbind('click').click(function(){
         var tasktype=$(this).parent("div.taskview_devstage_subtitle").prop('id');
         change_tasksort(tasktype,'order');
     })
@@ -20,7 +20,7 @@ function init_tasks_management() {
     $("a#find_tasks").unbind('click').click(function(){
         searchtasks();
     })
-    $("input#viewallapproved").change(function(){
+    $("input#viewallapproved").unbind('change').change(function(){
         change_approved_view('just_approved');
     })
 }
@@ -65,6 +65,11 @@ function init_tasks_page() {
             $("div.reminderarea").click(function(){
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
+            });
+            $("div.taskview_order").popover({
+                html: true,
+                trigger: 'hover',
+                placement: 'left'
             });
             // $("div.taskview_order").bt({
             //     fill : '#EDEDED',
@@ -125,17 +130,10 @@ function change_approved_view(stage) {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").bt({
-                fill : '#EDEDED',
-                cornerRadius: 10,
-                width: 310,
-                padding: 10,
-                strokeWidth: '2',
-                positions: "top",
-                strokeStyle : '#FFFFFF',
-                strokeHeight: '18',
-                cssClass: 'green_tooltip',
-                cssStyles: {color: '#OOOOOO'}
+            $("div.taskview_order").popover({
+                html: true,
+                trigger: 'hover',
+                placement: 'left'
             });
             $("#loader").hide();
         } else {
