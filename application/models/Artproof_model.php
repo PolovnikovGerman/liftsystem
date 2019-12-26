@@ -4,6 +4,9 @@ Class Artproof_model extends MY_Model
 {
     private $EMAIL_TYPE='Art_Submit';
     private $order_status=3;
+    private $void_status=4;
+    private $active_status=1;
+
     private $noart_common_overdue=3600000; /* 24 h */
     private $noart_rush_overdue=3600000; /* 2 h */
     private $redraw_common_overdue=3600000; /* 8 h */
@@ -290,6 +293,167 @@ Class Artproof_model extends MY_Model
         $res=$this->db->get()->result_array();
 
         return $res;
+    }
+
+
+    public function get_artproofs($search,$order_by,$direct,$limit,$offset,$maxval) {
+        $this->db->select('e.*,l.lead_number, l.lead_id,vo.order_proj_status,artwork_alert(e.email_id, "email") as vect_alert,
+            artwok_bypassredraw(e.email_id,"R") as redraw_bypass',FALSE);
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
+        $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        if (isset($search['search'])) {
+            $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,""),e.proof_num)) ',  strtoupper($search['search']));
+        }
+        if (isset($search['assign'])) {
+            $this->db->where('lem.email_id is null');
+            $this->db->where('e.email_include_lead',1);
+        }
+        if (isset($search['brand'])) {
+            $this->db->where('e.email_websys',$search['brand']);
+        }
+        if (isset($search['show_deleted'])) {
+            $this->db->where('e.email_status != ',3);
+        } else {
+            $this->db->where('e.email_status < ',3);
+        }
+        $this->db->limit($limit,$offset);
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        if ($offset>$maxval) {
+            $ordnum = $maxval;
+        } else {
+            $ordnum = $maxval - $offset;
+        }
+        $incl_icon='<img src="/img/art/noninclide_lead_icon.png" alt="Include"/>';
+        $nonincl_icon='<img src="/img/art/inclide_lead_icon.png" alt="Non Include"/>';
+        $curimg=$prvimg='<img src="/img/art/artarrow.png" alt="Previous" class="prvartstageicon"/>';
+        $parsericon='<img src="/img/art/parsed.png" alt="Parser"/>';
+        $emptynote='<img src="/img/art/empty_square.png" alt="Notes"/>';
+        $fullnote='<img src="/img/art/lightblue_square.png" alt="Notes" />';
+        $revert_icon="<img src='/img/art/refund.png' alt='Revert' title='Revert' data-type='revert'/>";
+        $delete_icon="<img src='/img/art/cancel_order.png' alt='Cancel' title='Cancel' data-type='delete'/>";
+
+        foreach ($res as $row) {
+            // $lastmsg=$this->get_lastupdate($row['email_id'],'artproofs');
+            // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
+            $artlastupdat="prooflastmessageview";
+            $row['lastmsg']='/artproofs/proof_lastmessage?d='.$row['email_id'];
+            $row['ordnum']=$ordnum;
+            $row['email']=($row['email_sendermail']=='' ? '' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>');
+            $row['emailparsed']=($row['email_webpage']=='EMAILPARSER' ? $parsericon : '&nbsp;');
+            $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'title="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
+            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
+            $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
+            $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
+            $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
+            switch ($row['order_proj_status']) {
+                case $this->NO_ART:
+                    // $curstage='art_stage';
+                    break;
+                case $this->REDRAWN:
+                    $row['art_class']='chk-ordoption';
+                    $row['art_cell']=$curimg;
+                    $row['art_title']=$artlastupdat;
+                    break;
+                case $this->NO_VECTOR:
+                    $row['art_class']='chk-ordoption';
+                    if ($row['vect_alert']==0) {
+                        $row['redrawn_class']='chk-ordoption';
+                    } else {
+                        $row['redrawn_class']='chk-ordoption-alert';
+                    }
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$curimg;
+                    $row['redrawn_title']=$artlastupdat;
+                    break;
+                case $this->TO_PROOF:
+                    $row['art_class']='chk-ordoption';
+                    if ($row['redraw_bypass']==0) {
+                        $row['redrawn_class']='chk-ordoption';
+                        $row['redrawn_cell']=$prvimg;
+                    }
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['vectorized_cell']=$curimg;
+                    $row['vectorized_title']=$artlastupdat;
+                    break;
+                case $this->NEED_APPROVAL:
+                    $row['art_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['proofed_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['vectorized_cell']=$prvimg;
+                    $row['proofed_cell']=$curimg;
+                    $row['proofed_title']=$artlastupdat;
+                    if ($row['redraw_bypass']==0) {
+                        $row['redrawn_class']='chk-ordoption';
+                        $row['redrawn_cell']=$prvimg;
+                    }
+                    break;
+                case $this->JUST_APPROVED:
+                    $curstage='approved_stage';
+                    $row['art_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['proofed_class']='chk-ordoption';
+                    $row['approved_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['vectorized_cell']=$prvimg;
+                    $row['proofed_cell']=$prvimg;
+                    $row['approved_cell']=$curimg;
+                    $row['approved_title']=$artlastupdat;
+                    if ($row['redraw_bypass']==0) {
+                        $row['redrawn_class']='chk-ordoption';
+                        $row['redrawn_cell']=$prvimg;
+                    }
+                    break;
+                default :
+                    $curstage='approved_stage';
+                    $row['art_class']='chk-ordoption';
+                    $row['redrawn_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['proofed_class']='chk-ordoption';
+                    $row['approved_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$prvimg;
+                    $row['vectorized_cell']=$prvimg;
+                    $row['proofed_cell']=$prvimg;
+                    $row['approved_cell']=$curimg;
+                    $row['approved_title']=$artlastupdat;
+                    break;
+            }
+            $row['assigned']=($row['lead_id']=='' ? 'leadassign' : '');
+            $row['email_sender']=($row['email_sender']=='' ? '&nbsp;' : $row['email_sender']);
+            $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
+            $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
+            $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
+
+            if ($row['email_questions']=='') {
+                $row['proof_note']=$emptynote;
+                $row['note_title']='';
+            } else {
+                $row['proof_note']=$fullnote;
+                $row['note_title']=$row['email_questions'];
+            }
+            if ($row['email_status']==$this->void_status) {
+                $row['action_icon']=$revert_icon;
+            } else {
+                $row['action_icon']=$delete_icon;
+            }
+            if ($row['email_include_lead']==1) {
+                $row['inclicon']=$incl_icon;
+            } else {
+                $row['inclicon']=$nonincl_icon;
+            }
+
+            $out[]=$row;
+            $ordnum--;
+        }
+        return $out;
     }
 
 }

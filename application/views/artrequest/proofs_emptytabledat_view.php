@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.12.19
- * Time: 12:50
- */
+<div class="proof_tabrow greydatarow" style="font-size: 14px; text-align: center">No records</div>

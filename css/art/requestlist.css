@@ -114,7 +114,7 @@ select.proofhideproof {
 }
 .proof_leadnum_dat.leadassign {
     color: #ffffff;
-    background: url('/img/assign_lead_btn.png') no-repeat transparent;
+    background: url('/img/art/assign_lead_btn.png') no-repeat transparent;
     height: 21px;
 }
 .proof_leadnum_dat:hover {
@@ -146,14 +146,14 @@ select.proofhideproof {
     cursor: pointer;
 }
 .proof_status_mark {
-    background: url("/img/emailblok-1.png") no-repeat transparent;
+    background: url("/img/art/emailblok-1.png") no-repeat transparent;
     float: left;
     margin-left: 4px;
     margin-top: 2px;
     width: 15px;
 }
 .proof_replica {
-    background: url("/img/emailblok-2.png") no-repeat transparent;
+    background: url("/img/art/emailblok-2.png") no-repeat transparent;
     float: left;
     height: 17px;
     margin-left: 4px;
@@ -339,26 +339,26 @@ select.proofhideproof {
     width: 980px;
 }
 .quest_tablefoot_left {
-    background: url("/img/tableend-messages-left.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/art/tableend-messages-left.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 7px;
     width: 113px;
 }
 .quest_tablefoot_center {
-    background: url("/img/tableend-messages-center.png") repeat-x scroll 0 0 transparent;
+    background: url("/img/art/tableend-messages-center.png") repeat-x scroll 0 0 transparent;
     float: left;
     height: 7px;
     width: 795px;
 }
 .quest_tablefoot_right {
-    background: url("/img/tableend-messages-right.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/art/tableend-messages-right.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 7px;
     width: 62px;
 }
 /* Profit POPUP */
 .proof_popup_content {
-    background: url("/img/tooltip-fon-emails-customsb.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/art/tooltip-fon-emails-customsb.png") no-repeat scroll 0 0 transparent;
     clear: both;
     float: left;
     height: 443px;
@@ -573,4 +573,8 @@ select.leadopenlist {
     width: 110px;
     margin-top: 10px;
     padding-left: 435px;
+}
+.proof_pagination {
+    float: right!important;
+    margin-right: 15px;
 }

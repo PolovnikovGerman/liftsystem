@@ -60,7 +60,7 @@ class Art extends MY_Controller {
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,
-            'active_lnk' => $this->pagelink,
+            'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
         ];
@@ -165,6 +165,57 @@ class Art extends MY_Controller {
         }
         show_404();
     }
+
+    public function proof_listdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $show_deleted=$this->input->post('show_deleted');
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','desc');
+            $maxval=$this->input->post('maxval');
+            $brand=$this->input->post('brand');
+            $search_val=$this->input->post('search');
+            $assign=$this->input->post('assign');
+            $search=array();
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($search_val) {
+                $search['search']=$search_val;
+            }
+            if ($brand) {
+                $search['brand']=$brand;
+            }
+            if ($show_deleted==1) {
+                $search['show_deleted']=1;
+            }
+
+            $ordoffset=$offset*$limit;
+            $offset=$offset*$limit;
+
+            if ($ordoffset>$maxval) {
+                $ordnum = $maxval;
+            } else {
+                $ordnum = $maxval - $ordoffset;
+            }
+            $this->load->model('artproof_model');
+            $email_dat=$this->artproof_model->get_artproofs($search,$order_by,$direct,$limit,$offset,$maxval);
+
+            if (count($email_dat)==0) {
+                $content = $this->load->view('artrequest/proofs_emptytabledat_view',array(), TRUE);
+            } else {
+                $data=array('email_dat'=>$email_dat);
+                $content = $this->load->view('artrequest/proofs_tabledat_view',$data, TRUE);
+
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
 
 
     private function _prepare_task_view() {

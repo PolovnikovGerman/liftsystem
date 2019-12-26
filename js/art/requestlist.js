@@ -1,13 +1,13 @@
 var empty_proofsearch='Customer,company, email..';
-var main_proofurl="/artproofs"
-function init_proof_management() {
-    $("select#proof_status").change(function(){
+var main_proofurl="/art"
+function init_proofdata() {
+    $("select#proof_status").unbind('change').change(function(){
         search_proofs();
     })
-    $("select#proofbrand").change(function(){
+    $("select#proofbrand").unbind('change').change(function(){
         search_proofs();
     })
-    $("select#hidedelproofs").change(function(){
+    $("select#hidedelproofs").unbind('change').change(function(){
         search_proofs();
     })
     /* Enter as start search */
@@ -17,18 +17,15 @@ function init_proof_management() {
         }
     });
     /* Search actions */
-    $("a#clear_proof").click(function(){
+    $("a#clear_proof").unbind('click').click(function(){
         $("select#proof_status").val(1);
         $("select#proofbrand").val("");
         $("input#proofsearch").val('');
         search_proofs();
     })
-    $("a#find_proof").click(function(){
+    $("a#find_proof").unbind('click').click(function(){
         search_proofs();
     })
-
-}
-function init_proofdata() {
     initProofPagination();
 }
 
@@ -156,46 +153,46 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         edit_note(mailid);
     })
-    $("div.proof_note_dat").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("div.proof_parsedata").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-
-    $("div.prooflastmessageview").each(function(){
-        $(this).bt({
-            ajaxCache: false,
-            fill : '#1DCD19',
-            cornerRadius: 10,
-            width: 220,
-            padding: 10,
-            strokeWidth: '2',
-            positions: "most",
-            strokeStyle : '#000000',
-            strokeHeight: '18',
-            cssClass: 'art_tooltip',
-            ajaxPath: ["$(this).data('messageview')"]
-        });
-    });
+    // $("div.proof_note_dat").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 220,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#000000'}
+    // })
+    // $("div.proof_parsedata").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 220,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#000000'}
+    // })
+    //
+    // $("div.prooflastmessageview").each(function(){
+    //     $(this).bt({
+    //         ajaxCache: false,
+    //         fill : '#1DCD19',
+    //         cornerRadius: 10,
+    //         width: 220,
+    //         padding: 10,
+    //         strokeWidth: '2',
+    //         positions: "most",
+    //         strokeStyle : '#000000',
+    //         strokeHeight: '18',
+    //         cssClass: 'art_tooltip',
+    //         ajaxPath: ["$(this).data('messageview')"]
+    //     });
+    // });
 
     $("div.proof_includ_dat").click(function(){
         var mailid=$(this).data('proofid');
