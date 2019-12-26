@@ -84,45 +84,33 @@ function pageGeneralCallback(page_index){
 }
 
 function general_view_init() {
-    // $("div.artnoteshow").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 160,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // });
-    // $("div.ordercode").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 160,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // });
-    // $("div.artlastmessageview").each(function(){
-    //     $(this).bt({
-    //         ajaxCache: false,
-    //         fill : '#1DCD19',
-    //         cornerRadius: 10,
-    //         width: 220,
-    //         padding: 10,
-    //         strokeWidth: '2',
-    //         positions: "most",
-    //         strokeStyle : '#000000',
-    //         strokeHeight: '18',
-    //         cssClass: 'art_tooltip',
-    //         ajaxPath: ["$(this).data('messageview')"]
-    //     });
-    // });
+    var arttemplate='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    $("div.artnoteshow").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $("div.ordercode").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $('div.artlastmessageview').hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('messageview'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'left',
+                    html: true,
+                    template: arttemplate
+                }).popover('show');
+            });
+        },
+        function(){
+            $(this).popover('hide');
+        }
+    );
     $("div.ordernum").unbind('click').click(function(){
         var order_id=$(this).data('orderid');
         order_artstage(order_id);
@@ -154,10 +142,10 @@ function general_view_init() {
         change_generalcc(order_id);
     })
 
-    $("div.artstage").unbind('click').click(function(){
-        var order_id=$(this).data('orderid');
-        order_artstage(order_id);
-    })
+    // $("div.artstage").unbind('click').click(function(){
+    //     var order_id=$(this).data('orderid');
+    //     order_artstage(order_id);
+    // })
 
     $("div.rowdata").find('div.ordernote').unbind('click').click(function(){
         var order_id=$(this).data('orderid');
@@ -167,7 +155,6 @@ function general_view_init() {
         // var order_id=$(this).data('orderid');
         order_artstage(0);
     });
-
 }
 /* Inline Edit */
 function edit_generalorder(orderid) {
@@ -321,7 +308,7 @@ function search_generaldata() {
     var filter=$("select#generalfilter_options").val();
     var add_filtr=$("select#generalorder_options").val();
     /* Recalculate total number */
-    var url="/generalorders/search_orders";
+    var url="/art/search_orders";
     $.post(url, {'search':search, 'filter':filter, 'add_filtr':add_filtr}, function(response){
         if (response.errors=='') {
             $("#totalrec").val(response.data.totals);

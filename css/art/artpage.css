@@ -94,3 +94,29 @@ textarea.aprovemail_message {
 .approvemail_send:hover {
     cursor: pointer;
 }
+.current_row {
+    background-color: #BCBCBC !important;
+}
+.art_tooltip {
+    background-color: #1DCD19;
+    float: left;
+    padding: 7px;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+    border-radius: 10px 0px 0px 10px;
+    line-height: 18px!important;
+}
+
+/* Beauty Tips */
+.green_tooltip {
+    background-color: #EDEDED;
+    float: left;
+    padding: 0px;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+}
+.green_background {
+    background: #1DCD19;
+}

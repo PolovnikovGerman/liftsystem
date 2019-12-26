@@ -405,8 +405,13 @@ class Art extends MY_Controller {
             if (count($ordersdat)==0) {
                 $content=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
             } else {
+                $orders = [];
+                foreach ($ordersdat as $row) {
+                    $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
+                    $orders[]=$row;
+                }
                 $data=array(
-                    'orders'=>$ordersdat,
+                    'orders'=>$orders,
                 );
                 $content = $this->load->view('artorder/order_tabledat_view',$data, TRUE);
             }
@@ -415,6 +420,36 @@ class Art extends MY_Controller {
         }
         show_404();
     }
+
+    /* Calculate qty of Orders */
+    function search_orders() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $search=$this->input->post('search');
+            $filter=$this->input->post('filter');
+            $add_filtr=$this->input->post('add_filtr');
+
+            $options=array();
+
+            $options['search']=$search;
+            $options['artfiltr']=$filter;
+            $options['artadd_filtr']=$add_filtr;
+            /* count number of orders */
+            $this->load->model('orders_model');
+            $mdata['totals']=$this->orders_model->get_count_orders($options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function order_lastmessage() {
+        $order_id=$this->input->get('d');
+        $this->load->model('orders_model');
+        $out_msg=$this->orders_model->get_lastupdate($order_id,'order');
+        echo $out_msg;
+    }
+
 
     public function proof_listdata() {
         if ($this->isAjax()) {

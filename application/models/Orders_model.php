@@ -485,4 +485,24 @@ Class Orders_model extends MY_Model
         }
         return $res;
     }
+
+    public function get_lastupdate($order_id,$mode='order') {
+        $this->db->select('ah.message');
+        $this->db->from('ts_artwork_history ah');
+        $this->db->join('ts_artworks a','a.artwork_id=ah.artwork_id');
+        if ($mode=='order') {
+            $this->db->where('a.order_id',$order_id);
+        } else {
+            $this->db->where('a.mail_id',$order_id);
+        }
+        $this->db->order_by('ah.artwork_history_id','desc');
+        $this->db->limit(1);
+        $res=$this->db->get()->row_array();
+        if (isset($res['message'])) {
+            return $res['message'];
+        } else {
+            return 'No User Messages';
+        }
+    }
+
 }

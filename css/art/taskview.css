@@ -213,24 +213,6 @@ select.ordproofview {
 .reminderarea:hover {
     cursor:pointer;
 }
-.art_tooltip {
-    background-color: #1DCD19;
-    float: left;
-    padding: 0px;
-    font-size: 13px;
-    color: #000;
-    text-align: justify;
-}
-
-/* Beauty Tips */
-.green_tooltip {
-    background-color: #EDEDED;
-    float: left;
-    padding: 0px;
-    font-size: 13px;
-    color: #000;
-    text-align: justify;
-}
 /* task_rushicon.png */
 /* reminder.png */
 /* Task Search */

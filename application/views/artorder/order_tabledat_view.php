@@ -21,8 +21,8 @@
         <div class="approve artstage <?=$row['approved_class']?> <?=$row['approved_title']?>" data-orderid="<?=$row['order_id']?>" data-messageview="<?=$row['lastmsg']?>" >
             <?=$row['approved_cell']?>
         </div>
-        <div class="ordercode" title="<?=$row['order_code']?>"><?=$row['order_code']?></div>
-        <div class="ordernote <?=($row['art_note']=='' ? '' : 'artnoteshow')?>" <?=($row['art_note']=='' ? '' : 'title="'.$row['art_note'].'"')?> data-orderid="<?=$row['order_id']?>">
+        <div class="ordercode" data-content="<?=$row['order_code']?>"><?=$row['order_code']?></div>
+        <div class="ordernote <?=($row['art_note']=='' ? '' : 'artnoteshow')?>" <?=($row['art_note']=='' ? '' : 'data-content="'.$row['art_note'].'"')?> data-orderid="<?=$row['order_id']?>">
             <?php if ($row['art_note']=='') { ?>
                 <img src="/img/art/empty_square.png" alt="Notes" id="artnote<?=$row['order_id']?>"/>
             <?php } else { ?>
