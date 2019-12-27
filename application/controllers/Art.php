@@ -59,7 +59,7 @@ class Art extends MY_Controller {
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
         // Searchable
-        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+        // $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -586,14 +586,187 @@ class Art extends MY_Controller {
             if (count($email_dat)==0) {
                 $content = $this->load->view('artrequest/proofs_emptytabledat_view',array(), TRUE);
             } else {
-                $data=array('email_dat'=>$email_dat);
+                $emails = [];
+                foreach ($email_dat as $row) {
+                    $row['lastmsg']='/art/proof_lastmessage?d='.$row['email_id'];
+                    $emails[]=$row;
+                }
+                $data=array('email_dat'=>$emails);
                 $content = $this->load->view('artrequest/proofs_tabledat_view',$data, TRUE);
-
             }
             $mdata['content']=$content;
             $this->ajaxResponse($mdata,$error);
         }
     }
+
+    public function create_leadmessage() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $email_id = $this->input->post('mail_id');
+            $leademail_id = $this->input->post('leademail_id');
+            $type = $this->input->post('type');
+            $this->load->model('leads_model');
+            $chkrel = $this->leads_model->check_leadrelation($email_id);
+            if ($chkrel) {
+                $error = 'This Request Related with Lead. Please, reload page';
+                $this->ajaxResponse($mdata, $error);
+            }
+
+            switch ($type) {
+                case 'Question':
+                    $this->load->model('questions_model');
+                    $maildat = $this->questions_model->get_quest_data($email_id);
+                    $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
+                    break;
+                case 'Quote':
+                    $this->load->model('quotes_model');
+                    $maildat = $this->quotes_model->get_quote_dat($email_id);
+                    $res = $this->leads_model->create_leadquote($maildat, $leademail_id, $this->USR_ID);
+                    break;
+                case 'Proof';
+                    $this->load->view('artproof_model');
+                    $maildat = $this->artproof_model->get_proof_data($email_id);
+                    $res = $this->leads_model->create_leadproof($maildat, $leademail_id, $this->USR_ID);
+                    break;
+                default:
+                    break;
+            }
+
+            $error = $res['msg'];
+
+            if ($res['result'] == $this->success_result) {
+                $error = '';
+//                $mdata['total_proof'] = $this->mproofs->get_count_proofs(array('assign' => 1));
+//                $mdata['total_quote'] = $this->mquotes->get_count_quotes(array('assign' => 1));
+//                $mdata['total_quest'] = $this->mquests->get_count_questions(array('assign' => 1));
+//                $mdata['sumquote'] = $this->mquotes->get_todays();
+//                $mdata['sumproofs'] = $this->mproofs->get_todays();
+//                $mdata['sumquest'] = $this->mquests->get_todays();
+                $mdata['leadid'] = $res['result'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    /* Data about new lead */
+    public function change_leadrelation() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $lead_id=$this->input->post('lead_id');
+            if (!$lead_id) {
+                $error='Unknown Lead';
+            } else {
+                $this->load->model('leads_model');
+                $leaddata=$this->leads_model->get_lead($lead_id);
+                if (!isset($leaddata['lead_id'])) {
+                    $error='Lead not found';
+                } else {
+                    $mdata['lead_date']=($leaddata['lead_date']==0 ? '' : 'Date: '.date('m/d/y',$leaddata['lead_date']));
+                    $mdata['lead_customer']='Name: '.$leaddata['lead_customer'];
+                    $mdata['lead_mail']='Email: '.$leaddata['lead_mail'];
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function savequeststatus() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quest=$this->input->post();
+            /* Get data about question */
+            $this->load->model('leads_model');
+            $res=$this->leads_model->save_leadrelation($quest);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $this->load->model('questions_model');
+                $data=$this->questions_model->get_quest_data($quest['mail_id']);
+                /* Recalculate Totals New  */
+                $mdata['type']=$data['email_type'];
+//                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
+//                $mdata['total_quote']=$this->mquotes->get_count_quotes(array('assign'=>1));
+//                $mdata['total_quest']=$this->mquests->get_count_questions(array('assign'=>1));
+//                $mdata['sumquote']=$this->mquotes->get_todays();
+//                $mdata['sumproofs']=$this->mproofs->get_todays();
+//                $mdata['sumquest']=$this->mquests->get_todays();
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    /* Open Order note */
+    public function proof_openartnote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+
+            $mail_id=$this->input->post('mail_id');
+            $this->load->model('artproof_model');
+            $order_dat=$this->artproof_model->get_proof_data($mail_id);
+            $options=array(
+                'title'=>' Proof Request # '.$order_dat['proof_num'],
+                'order_id'=>$order_dat['email_id'],
+                'art_note'=>$order_dat['email_questions'],
+            );
+            $mdata['content']=$this->load->view('artrequest/order_noteedit_view',$options,TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    /* Save order note */
+    public function proof_saveartnote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $mail_id=$this->input->post('mail_id');
+            $email_questions=$this->input->post('art_note');
+            $this->load->model('artproof_model');
+            $res=$this->artproof_model->save_artnote($mail_id,$email_questions);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+    // Last Art message
+    public function proof_lastmessage() {
+        $order_id=$this->input->get('d');
+        $this->load->model('artproof_model');
+        $out_msg=$this->artproof_model->get_lastupdate($order_id,'artproofs');
+        echo $out_msg;
+    }
+
+    /* Include Proofs */
+    public function proof_include() {
+        if ($this->isAjax()) {
+            $mdata=array();
+
+            $email_id=$this->input->post('email_id');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->get_proof_data($email_id);
+            if ($data['email_include_lead']==1) {
+                $newval=0;
+            } else {
+                $newval=1;
+            }
+            $res=$this->artproof_model->update_proof_include($email_id, $newval);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $mdata['content']=$res['newicon'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
 
 

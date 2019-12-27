@@ -34,7 +34,7 @@
                 <?=$row['approved_cell']?>
             </div>
         </div>
-        <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title']=='' ? '' : 'title="'.$row['note_title'].'"')?>><?=$row['proof_note']?></div>
+        <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title']=='' ? '' : 'data-content="'.$row['note_title'].'"')?>><?=$row['proof_note']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

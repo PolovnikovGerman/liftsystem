@@ -335,46 +335,46 @@ Class Leads_model extends MY_Model
 //        return $out;
 //    }
 //
-//    /* Lead Data by ID */
-//    function get_lead($lead_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_leads');
-//        $this->db->where('lead_id',$lead_id);
-//        $res=$this->db->get()->row_array();
-//        return $res;
-//    }
-//
-//    function get_empty_lead() {
-//        $fields=$this->db->list_fields('ts_leads');
-//        $res=array();
-//        foreach ($fields as $fld) {
-//            $res[$fld]='';
-//        }
-//        return $res;
-//
-//    }
-//    /* History */
-//    function get_lead_history($lead_id) {
-//        $this->db->select('h.*, u.user_leadname as user_name');
-//        $this->db->from('ts_lead_logs h');
-//        $this->db->join('users u','u.user_id=h.user_id','left');
-//        $this->db->where('h.lead_id',$lead_id);
-//        $this->db->order_by('h.created_date','desc');
-//        $logs=$this->db->get()->result_array();
-//        return $logs;
-//    }
-//    /* Users replicas */
-//    function get_lead_users($lead_id) {
-//        $this->db->select('user_id');
-//        $this->db->from('ts_lead_users');
-//        $this->db->where('lead_id',$lead_id);
-//        $res=$this->db->get()->result_array();
-//        $out=array();
-//        foreach ($res as $row) {
-//            array_push($out, $row['user_id']);
-//        }
-//        return $out;
-//    }
+    /* Lead Data by ID */
+    public function get_lead($lead_id) {
+        $this->db->select('*');
+        $this->db->from('ts_leads');
+        $this->db->where('lead_id',$lead_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function get_empty_lead() {
+        $fields=$this->db->list_fields('ts_leads');
+        $res=array();
+        foreach ($fields as $fld) {
+            $res[$fld]='';
+        }
+        return $res;
+
+    }
+    /* History */
+    public function get_lead_history($lead_id) {
+        $this->db->select('h.*, u.user_leadname as user_name');
+        $this->db->from('ts_lead_logs h');
+        $this->db->join('users u','u.user_id=h.user_id','left');
+        $this->db->where('h.lead_id',$lead_id);
+        $this->db->order_by('h.created_date','desc');
+        $logs=$this->db->get()->result_array();
+        return $logs;
+    }
+    /* Users replicas */
+    public function get_lead_users($lead_id) {
+        $this->db->select('user_id');
+        $this->db->from('ts_lead_users');
+        $this->db->where('lead_id',$lead_id);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            array_push($out, $row['user_id']);
+        }
+        return $out;
+    }
 //    /* Get Lead Tasks, related with lead */
 //    function get_lead_tasks($lead_id) {
 //        $this->db->select('*');
@@ -395,156 +395,141 @@ Class Leads_model extends MY_Model
 //        return $res;
 //    }
 //
-//    function get_leadnum() {
-//        $this->db->select('max(lead_number) as last_num');
-//        $this->db->from('ts_leads');
-//        $res=$this->db->get()->row_array();
-//        if (!$res['last_num']) {
-//            $outval=$this->init_number;
-//        } else {
-//            $outval=$res['last_num']+1;
-//        }
-//        return $outval;
-//    }
-//
-//
-//    function save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id) {
-//        $out=array('result'=> Leads_model::ERR_FLAG,'msg'=>  Leads_model::INIT_ERRMSG);
-//        $oldlead=array();
-//        if ($leadpost['lead_id']!=0) {
-//            $oldlead=$this->get_lead($leadpost['lead_id']);
-//        }
-//        /* Check incoming */
-//        if (count($lead_usr)==0) {
-//            $out['msg']='Assign Lead executor';
-//        } else {
-//            /* Save Lead main data */
-//            $newhistory='';
-//            $newval=(floatval($leadpost['lead_value']));
-//            if ($newval==0) {
-//                $newval=NULL;
-//            }
-//            $this->db->set('lead_company',$leadpost['lead_company']);
-//            $this->db->set('lead_phone',$leadpost['lead_phone']);
-//            // $this->db->set('lead_value',$leadpost['lead_value']);
-//            $this->db->set('lead_value',$newval);
-//            $this->db->set('lead_needby',$leadpost['lead_needby']);
-//            $this->db->set('lead_customer',$leadpost['lead_customer']);
-//            $this->db->set('lead_mail',$leadpost['lead_mail']);
-//            $this->db->set('lead_itemqty',$leadpost['lead_itemqty']);
-//
-//            $this->db->set('lead_note',$leadpost['lead_note']);
-//
-//            if (isset($leadpost['lead_item_id'])) {
-//                if ($leadpost['lead_item_id']=='') {
-//                    $leadpost['lead_item_id']=NULL;
-//                    $leadpost['lead_item']='';
-//                } else {
-//                    /* Get DATA about Item */
-//                    $itemdat=$this->search_itemid($leadpost['lead_item_id']);
-//                    if ($itemdat['result']==Leads_model::ERR_FLAG) {
-//                        $leadpost['lead_item']='';
-//                        $leadpost['lead_item_id']=NULL;
-//                    } else {
-//                        $leadpost['lead_item']=$itemdat['item_name'];
-//                    }
-//                }
-//                $this->db->set('lead_item',$leadpost['lead_item']);
-//                $this->db->set('lead_item_id',$leadpost['lead_item_id']);
-//            }
-//            if (isset($leadpost['other_item_name'])) {
-//                $this->db->set('other_item_name',$leadpost['other_item_name']);
-//            }
-//            if ($leadpost['lead_status']!='') {
-//                $this->db->set('lead_status',$leadpost['lead_status']);
-//                $this->db->set('update_date', date('Y-m-d H:i:s'));
-//                $newhistory=$leadpost['lead_status'];
-//            }
-//            $this->db->set('lead_type',$leadpost['lead_type']);
-//            if ($leadpost['lead_id']==0) {
-//                /* New Record */
-//                $this->db->set('lead_date',time());
-//                $this->db->set('lead_assign_time',time());
-//                $this->db->set('create_user',$usr_id);
-//                $this->db->set('update_usr',$usr_id);
-//                $this->db->set('create_date',date('Y-m-d H:i:s'));
-//                $leadnum=$this->get_leadnum();
-//                $this->db->set('lead_number',$leadnum);
-//                $this->db->insert('ts_leads');
-//                $lead_id=$this->db->insert_id();
-//                if ($lead_id==0) {
-//                    $out['msg']='Unable to add record. Try later';
-//                } else {
-//                    $leadpost['lead_id']=$lead_id;
-//                    $leadpost['lead_number']=$leadnum;
-//                }
-//            } else {
-//                $this->db->set('update_usr',$usr_id);
-//                $this->db->where('lead_id',$leadpost['lead_id']);
-//                $this->db->update('ts_leads');
-//                $leadpost['lead_number']=$oldlead['lead_number'];
-//            }
-//            // Change Type
-//            if ($leadpost['lead_type']==4) {
-//                if (empty($oldlead) || $oldlead['lead_type']!=4) {
-//                    // Close
-//                    $this->db->select('ul.userdeed_log_id, ul.deed_type, ul.user_id, u.user_name');
-//                    $this->db->from('ts_userdeed_logs ul');
-//                    $this->db->join('users u','u.user_id=ul.user_id');
-//                    $this->db->where('ul.deed_type','LEAD_CLOSE');
-//                    $this->db->where('ul.user_id',$usr_id);
-//                    $usrlog=$this->db->get()->row_array();
-//                    if (isset($usrlog['user_id'])) {
-//                        $this->db->select('user_email');
-//                        $this->db->from('users');
-//                        $this->db->where('mail_notification',1);
-//                        $mails=$this->db->get()->result_array();
-//                        if (count($mails)>0) {
-//                            $this->func->leadclose_log($leadpost, $oldlead, $usrlog, $mails);
-//                        }
-//                    }
-//                }
-//            }
-//            /* Update - create related data */
-//            if ($leadpost['lead_id']!=0) {
-//                /* History */
-//                if ($newhistory) {
-//                    $this->db->set('lead_id',$leadpost['lead_id']);
-//                    $this->db->set('user_id',$usr_id);
-//                    $this->db->set('created_date',time());
-//                    $this->db->set('history_message',$newhistory);
-//                    $this->db->insert('ts_lead_logs');
-//                }
-//                /* clean users */
-//                $this->db->where('lead_id',$leadpost['lead_id']);
-//                $this->db->delete('ts_lead_users');
-//                foreach ($lead_usr as $row) {
-//                    $this->db->set('lead_id',$leadpost['lead_id']);
-//                    $this->db->set('user_id',$row);
-//                    $this->db->insert('ts_lead_users');
-//                }
-//                /* tasks */
-//                // $this->db->set('send_quote',$lead_tasks['send_quote']);
-//                // $this->db->set('send_artproof',$lead_tasks['send_artproof']);
-//                // $this->db->set('send_sample',$lead_tasks['send_sample']);
-//                // $this->db->set('answer_question',$lead_tasks['answer_question']);
-//                // $this->db->set('other',$lead_tasks['other']);
-//                // if ($lead_tasks['leadtask_id']==0) {
-//                /* New task instance */
-//                //     $this->db->set('lead_id',$leadpost['lead_id']);
-//                //     $this->db->insert('ts_lead_tasks');
-//                // } else {
-//                //    $this->db->where('leadtask_id',$lead_tasks['leadtask_id']);
-//                //     $this->db->update('ts_lead_tasks');
-//                // }
-//                $out['msg']='';
-//                $out['result']=$leadpost['lead_id'];
-//            }
-//
-//        }
-//        return $out;
-//    }
-//
+    public function get_leadnum() {
+        $this->db->select('max(lead_number) as last_num');
+        $this->db->from('ts_leads');
+        $res=$this->db->get()->row_array();
+        if (!$res['last_num']) {
+            $outval=$this->init_number;
+        } else {
+            $outval=$res['last_num']+1;
+        }
+        return $outval;
+    }
+
+
+    public function save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id) {
+        $out=array('result'=> $this->error_result,'msg'=>  $this->INIT_ERRMSG);
+        $oldlead=array();
+        if ($leadpost['lead_id']!=0) {
+            $oldlead=$this->get_lead($leadpost['lead_id']);
+        }
+        /* Check incoming */
+        if (count($lead_usr)==0) {
+            $out['msg']='Assign Lead executor';
+        } else {
+            /* Save Lead main data */
+            $newhistory='';
+            $newval=(floatval($leadpost['lead_value']));
+            if ($newval==0) {
+                $newval=NULL;
+            }
+            $this->db->set('lead_company',$leadpost['lead_company']);
+            $this->db->set('lead_phone',$leadpost['lead_phone']);
+            // $this->db->set('lead_value',$leadpost['lead_value']);
+            $this->db->set('lead_value',$newval);
+            $this->db->set('lead_needby',$leadpost['lead_needby']);
+            $this->db->set('lead_customer',$leadpost['lead_customer']);
+            $this->db->set('lead_mail',$leadpost['lead_mail']);
+            $this->db->set('lead_itemqty',$leadpost['lead_itemqty']);
+
+            $this->db->set('lead_note',$leadpost['lead_note']);
+
+            if (isset($leadpost['lead_item_id'])) {
+                if ($leadpost['lead_item_id']=='') {
+                    $leadpost['lead_item_id']=NULL;
+                    $leadpost['lead_item']='';
+                } else {
+                    /* Get DATA about Item */
+                    $itemdat=$this->search_itemid($leadpost['lead_item_id']);
+                    if ($itemdat['result']==Leads_model::ERR_FLAG) {
+                        $leadpost['lead_item']='';
+                        $leadpost['lead_item_id']=NULL;
+                    } else {
+                        $leadpost['lead_item']=$itemdat['item_name'];
+                    }
+                }
+                $this->db->set('lead_item',$leadpost['lead_item']);
+                $this->db->set('lead_item_id',$leadpost['lead_item_id']);
+            }
+            if (isset($leadpost['other_item_name'])) {
+                $this->db->set('other_item_name',$leadpost['other_item_name']);
+            }
+            if ($leadpost['lead_status']!='') {
+                $this->db->set('lead_status',$leadpost['lead_status']);
+                $this->db->set('update_date', date('Y-m-d H:i:s'));
+                $newhistory=$leadpost['lead_status'];
+            }
+            $this->db->set('lead_type',$leadpost['lead_type']);
+            if ($leadpost['lead_id']==0) {
+                /* New Record */
+                $this->db->set('lead_date',time());
+                $this->db->set('lead_assign_time',time());
+                $this->db->set('create_user',$usr_id);
+                $this->db->set('update_usr',$usr_id);
+                $this->db->set('create_date',date('Y-m-d H:i:s'));
+                $leadnum=$this->get_leadnum();
+                $this->db->set('lead_number',$leadnum);
+                $this->db->insert('ts_leads');
+                $lead_id=$this->db->insert_id();
+                if ($lead_id==0) {
+                    $out['msg']='Unable to add record. Try later';
+                } else {
+                    $leadpost['lead_id']=$lead_id;
+                    $leadpost['lead_number']=$leadnum;
+                }
+            } else {
+                $this->db->set('update_usr',$usr_id);
+                $this->db->where('lead_id',$leadpost['lead_id']);
+                $this->db->update('ts_leads');
+                $leadpost['lead_number']=$oldlead['lead_number'];
+            }
+            // Change Type
+            if ($leadpost['lead_type']==4) {
+                if (empty($oldlead) || $oldlead['lead_type']!=4) {
+                    // Close
+                    $this->db->select('ul.userdeed_log_id, ul.deed_type, ul.user_id, u.user_name');
+                    $this->db->from('ts_userdeed_logs ul');
+                    $this->db->join('users u','u.user_id=ul.user_id');
+                    $this->db->where('ul.deed_type','LEAD_CLOSE');
+                    $this->db->where('ul.user_id',$usr_id);
+                    $usrlog=$this->db->get()->row_array();
+                    if (isset($usrlog['user_id'])) {
+                        $this->db->select('user_email');
+                        $this->db->from('users');
+                        $this->db->where('mail_notification',1);
+                        $mails=$this->db->get()->result_array();
+                        if (count($mails)>0) {
+                            $this->_leadclose_log($leadpost, $oldlead, $usrlog, $mails);
+                        }
+                    }
+                }
+            }
+            /* Update - create related data */
+            if ($leadpost['lead_id']!=0) {
+                /* History */
+                if ($newhistory) {
+                    $this->db->set('lead_id',$leadpost['lead_id']);
+                    $this->db->set('user_id',$usr_id);
+                    $this->db->set('created_date',time());
+                    $this->db->set('history_message',$newhistory);
+                    $this->db->insert('ts_lead_logs');
+                }
+                /* clean users */
+                $this->db->where('lead_id',$leadpost['lead_id']);
+                $this->db->delete('ts_lead_users');
+                foreach ($lead_usr as $row) {
+                    $this->db->set('lead_id',$leadpost['lead_id']);
+                    $this->db->set('user_id',$row);
+                    $this->db->insert('ts_lead_users');
+                }
+                $out['msg']='';
+                $out['result']=$leadpost['lead_id'];
+            }
+        }
+        return $out;
+    }
+
 //    /* Add New PR request */
 //    public function add_proof_request($leadpost, $usr_id, $usr_name) {
 //        $out=array('result'=>  Leads_model::ERR_FLAG, 'msg'=>  Leads_model::INIT_ERRMSG);
@@ -739,253 +724,250 @@ Class Leads_model extends MY_Model
         $res=$this->db->get()->result_array();
         return $res;
     }
-//
-//    /* Relation between message & Lead*/
-//    function save_leadrelation($quest) {
-//        $out=array('result'=>  Questions_model::ERR_FLAG,'msg'=>  Questions_model::INIT_ERRMSG);
-//        if (!isset($quest['mail_id'])) {
-//            $out['msg']='Unknown question';
-//        } elseif(!$quest['mail_id']) {
-//            $out['msg']='Wrong Question';
-//        } elseif (empty($quest['lead_id'])) {
-//            $out['msg']='Enter Lead for Question or Create New';
-//        } elseif ($this->check_leadrelation($quest['mail_id'])) {
-//            $out['msg']='This Request Related with Lead. Please, select other Request';
-//        } else {
-//            /* Lead Relations */
-//            $this->db->set('lead_id',$quest['lead_id']);
-//            if (intval($quest['leademail_id'])==0) {
-//                $this->db->set('email_id',$quest['mail_id']);
-//                $this->db->insert('ts_lead_emails');
-//                if ($this->db->insert_id()==0) {
-//                    $out['msg']='Error during building of Lead-Message relation';
-//                } else {
-//                    $this->db->set('lead_assign_time',  time());
-//                    $this->db->where('lead_id',$quest['lead_id']);
-//                    $this->db->update('ts_leads');
-//                    $out['msg']='';
-//                    $out['result']=Leads_model::SUCCESS_RESULT;
-//                }
-//            } else {
-//                $this->db->where('leademail_id',$quest['leademail_id']);
-//                $this->db->update('ts_lead_emails');
-//                $this->db->set('lead_assign_time',  time());
-//                $this->db->where('lead_id',$quest['lead_id']);
-//                $this->db->update('ts_leads');
-//                $out['result']=Leads_model::SUCCESS_RESULT;
-//                $out['msg']='';
-//            }
-//        }
-//        return $out;
-//    }
-//
-//    /* Create Lead from quote */
-//    function create_leadquote($maildat,$leademail_id, $user_id) {
-//        $out=array('result'=>  Questions_model::ERR_FLAG,'msg'=>  Questions_model::INIT_ERRMSG);
-//        /* Create array with Lead data */
-//        $lead_usr=array($user_id);
-//        /* Try to get Item ID */
-//        $item_id='';
-//        $ci=&get_instance();
-//        $ci->load->model('artwork_model');
-//        if (!empty($maildat['email_other_info'])) {
-//            $item_id=$this->func->get_json_param($maildat['email_other_info'],'item_id','');
-//        }
-//        if ($item_id=='') {
-//            if (!empty($maildat['email_item_id'])) {
-//                $item_id=$maildat['email_item_id'];
-//            } elseif (!empty($maildat['email_item_number'])) {
-//                $itemoption=array(
-//                    'item_num'=>$maildat['email_item_number'],
-//                );
-//                $itemdat=$ci->artwork_model->get_item_details($itemoption);
-//                if (count($itemdat)==1) {
-//                    $item_id=$itemdat[0]['item_id'];
-//                }
-//            } elseif (!empty($maildat['email_item_name'])) {
-//                $itemoption=array(
-//                    'item_name'=>$maildat['email_item_name'],
-//                );
-//                $itemdat=$ci->artwork_model->get_item_details($itemoption);
-//                if (count($itemdat)==1) {
-//                    $item_id=$itemdat[0]['item_id'];
-//                }
-//            }
-//        }
-//
-//        $leadpost=array(
-//            'lead_id'=>0,
-//            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
-//            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
-//            'lead_value'=>(floatval($maildat['email_total'])==0 ? NULL : $maildat['email_total']),
-//            'lead_needby'=>($maildat['email_due']=='' ? NULL : $maildat['email_due']),
-//            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
-//            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
-//            'lead_itemqty'=>(intval($maildat['email_qty'])==0 ? NULL : $maildat['email_qty']),
-//            'lead_item'=>($maildat['email_item_name']=='' ? NULL : $maildat['email_item_name']),
-//            'lead_item_id'=>($item_id=='' ? NULL : $item_id),
-//            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
-//            'lead_status'=>'',
-//            'lead_type'=>$this->init_lead_type,
-//        );
-//        $lead_tasks=array(
-//            'send_quote'=>1,
-//            'send_artproof'=>0,
-//            'send_sample'=>0,
-//            'answer_question'=>0,
-//            'other'=>NULL,
-//            'leadtask_id'=>0,
-//        );
-//        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
-//        if ($res['result']==Leads_model::ERR_FLAG) {
-//            $out['msg']=$res['msg'];
-//        } else {
-//            $out['result']=$res['result'];
-//            /* Create relations between Mail and Leads */
-//            $this->db->set('lead_id',$res['result']);
-//            if (intval($leademail_id)==0) {
-//                $this->db->set('email_id',$maildat['email_id']);
-//                $this->db->insert('ts_lead_emails');
-//                if ($this->db->insert_id()==0) {
-//                    $out['msg']='Error during build relations';
-//                    /* Delete Lead */
-//                } else {
-//                    //$out['result']=Leads_model::SUCCESS_RESULT;
-//                    $out['msg']='';
-//                }
-//            }
-//        }
-//        return $out;
-//    }
-//
-//    /* Create Lead from Questions */
-//    function create_leadquest($maildat,$leademail_id,$user_id) {
-//        $out=array('result'=>  Questions_model::ERR_FLAG,'msg'=>  Questions_model::INIT_ERRMSG);
-//        /* Create array with Lead data */
-//        $lead_usr=array($user_id);
-//        $leadpost=array(
-//            'lead_id'=>0,
-//            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
-//            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
-//            'lead_value'=>NULL,
-//            'lead_needby'=>NULL,
-//            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
-//            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
-//            'lead_itemqty'=>NULL,
-//            'lead_item'=>NULL,
-//            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
-//            'lead_status'=>'',
-//            'lead_type'=>$this->init_lead_type,
-//        );
-//        $lead_tasks=array(
-//            'send_quote'=>0,
-//            'send_artproof'=>0,
-//            'send_sample'=>0,
-//            'answer_question'=>1,
-//            'other'=>NULL,
-//            'leadtask_id'=>0,
-//        );
-//        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
-//        if ($res['result']==Leads_model::ERR_FLAG) {
-//            $out['msg']=$res['msg'];
-//        } else {
-//            $out['result']=$res['result'];
-//            /* Create relations between Mail and Leads */
-//            $this->db->set('lead_id',$res['result']);
-//            if (intval($leademail_id)==0) {
-//                $this->db->set('email_id',$maildat['email_id']);
-//                $this->db->insert('ts_lead_emails');
-//                if ($this->db->insert_id()==0) {
-//                    $out['msg']='Error during build relations';
-//                    /* Delete Lead */
-//                } else {
-//                    // $out['result']=Leads_model::SUCCESS_RESULT;
-//                    $out['msg']='';
-//                }
-//            }
-//        }
-//        return $out;
-//    }
-//
-//    /* Create Lead from Art Proof */
-//    function create_leadproof($maildat,$leademail_id, $user_id) {
-//        $out=array('result'=>  Questions_model::ERR_FLAG,'msg'=>  Questions_model::INIT_ERRMSG);
-//        /* Create array with Lead data */
-//        $lead_usr=array($user_id);
-//        /* Try to get Item ID */
-//        $item_id='';
-//        $ci=&get_instance();
-//        $ci->load->model('artwork_model');
-//        if (!empty($maildat['email_other_info'])) {
-//            $item_id=$this->func->get_json_param($maildat['email_other_info'],'item_id','');
-//        }
-//        if ($item_id=='') {
-//            if (!empty($maildat['email_item_id'])) {
-//                $item_id=$maildat['email_item_id'];
-//            } elseif (!empty($maildat['email_item_number'])) {
-//                $itemoption=array(
-//                    'item_num'=>$maildat['email_item_number'],
-//                );
-//                $itemdat=$ci->artwork_model->get_item_details($itemoption);
-//                if (count($itemdat)==1) {
-//                    $item_id=$itemdat[0]['item_id'];
-//                }
-//            } elseif (!empty($maildat['email_item_name'])) {
-//                $itemoption=array(
-//                    'item_name'=>$maildat['email_item_name'],
-//                );
-//                $itemdat=$ci->artwork_model->get_item_details($itemoption);
-//                if (count($itemdat)==1) {
-//                    $item_id=$itemdat[0]['item_id'];
-//                }
-//            }
-//        }
-//
-//        $leadpost=array(
-//            'lead_id'=>0,
-//            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
-//            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
-//            'lead_value'=>(floatval($maildat['email_total'])==0 ? NULL : $maildat['email_total']),
-//            'lead_needby'=>($maildat['email_due']=='' ? NULL : $maildat['email_due']),
-//            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
-//            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
-//            'lead_itemqty'=>(intval($maildat['email_qty'])==0 ? NULL : $maildat['email_qty']),
-//            'lead_item'=>($maildat['email_item_name']=='' ? NULL : $maildat['email_item_name']),
-//            'lead_item_id'=>($item_id=='' ? NULL : $item_id),
-//            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
-//            'lead_status'=>'',
-//            'lead_type'=>$this->init_lead_type,
-//        );
-//        $lead_tasks=array(
-//            'send_quote'=>0,
-//            'send_artproof'=>1,
-//            'send_sample'=>0,
-//            'answer_question'=>0,
-//            'other'=>NULL,
-//            'leadtask_id'=>0,
-//        );
-//        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
-//        if ($res['result']==Leads_model::ERR_FLAG) {
-//            $out['msg']=$res['msg'];
-//        } else {
-//            $out['result']=$res['result'];
-//            /* Create relations between Mail and Leads */
-//            $this->db->set('lead_id',$res['result']);
-//            if (intval($leademail_id)==0) {
-//                $this->db->set('email_id',$maildat['email_id']);
-//                $this->db->insert('ts_lead_emails');
-//                if ($this->db->insert_id()==0) {
-//                    $out['msg']='Error during build relations';
-//                    /* Delete Lead */
-//                } else {
-//                    //$out['result']=Leads_model::SUCCESS_RESULT;
-//                    $out['msg']='';
-//                }
-//            }
-//        }
-//        return $out;
-//    }
-//
+
+    /* Relation between message & Lead*/
+    public function save_leadrelation($quest) {
+        $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
+        if (!isset($quest['mail_id'])) {
+            $out['msg']='Unknown question';
+        } elseif(!$quest['mail_id']) {
+            $out['msg']='Wrong Question';
+        } elseif (empty($quest['lead_id'])) {
+            $out['msg']='Enter Lead for Question or Create New';
+        } elseif ($this->check_leadrelation($quest['mail_id'])) {
+            $out['msg']='This Request Related with Lead. Please, select other Request';
+        } else {
+            /* Lead Relations */
+            $this->db->set('lead_id',$quest['lead_id']);
+            if (intval($quest['leademail_id'])==0) {
+                $this->db->set('email_id',$quest['mail_id']);
+                $this->db->insert('ts_lead_emails');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during building of Lead-Message relation';
+                } else {
+                    $this->db->set('lead_assign_time',  time());
+                    $this->db->where('lead_id',$quest['lead_id']);
+                    $this->db->update('ts_leads');
+                    $out['msg']='';
+                    $out['result']=$this->success_result;
+                }
+            } else {
+                $this->db->where('leademail_id',$quest['leademail_id']);
+                $this->db->update('ts_lead_emails');
+                $this->db->set('lead_assign_time',  time());
+                $this->db->where('lead_id',$quest['lead_id']);
+                $this->db->update('ts_leads');
+                $out['result']=$this->success_result;
+                $out['msg']='';
+            }
+        }
+        return $out;
+    }
+
+    /* Create Lead from quote */
+    function create_leadquote($maildat,$leademail_id, $user_id) {
+        $out=array('result'=> $this->error_result, 'msg'=> $this->INIT_ERRMSG);
+        /* Create array with Lead data */
+        $lead_usr=array($user_id);
+        /* Try to get Item ID */
+        $item_id='';
+
+        $this->load->model('artwork_model');
+        if (!empty($maildat['email_other_info'])) {
+            $item_id=get_json_param($maildat['email_other_info'],'item_id','');
+        }
+        if ($item_id=='') {
+            if (!empty($maildat['email_item_id'])) {
+                $item_id=$maildat['email_item_id'];
+            } elseif (!empty($maildat['email_item_number'])) {
+                $itemoption=array(
+                    'item_num'=>$maildat['email_item_number'],
+                );
+                $itemdat=$this->artwork_model->get_item_details($itemoption);
+                if (count($itemdat)==1) {
+                    $item_id=$itemdat[0]['item_id'];
+                }
+            } elseif (!empty($maildat['email_item_name'])) {
+                $itemoption=array(
+                    'item_name'=>$maildat['email_item_name'],
+                );
+                $itemdat=$this->artwork_model->get_item_details($itemoption);
+                if (count($itemdat)==1) {
+                    $item_id=$itemdat[0]['item_id'];
+                }
+            }
+        }
+
+        $leadpost=array(
+            'lead_id'=>0,
+            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
+            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
+            'lead_value'=>(floatval($maildat['email_total'])==0 ? NULL : $maildat['email_total']),
+            'lead_needby'=>($maildat['email_due']=='' ? NULL : $maildat['email_due']),
+            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
+            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
+            'lead_itemqty'=>(intval($maildat['email_qty'])==0 ? NULL : $maildat['email_qty']),
+            'lead_item'=>($maildat['email_item_name']=='' ? NULL : $maildat['email_item_name']),
+            'lead_item_id'=>($item_id=='' ? NULL : $item_id),
+            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
+            'lead_status'=>'',
+            'lead_type'=>$this->init_lead_type,
+        );
+        $lead_tasks=array(
+            'send_quote'=>1,
+            'send_artproof'=>0,
+            'send_sample'=>0,
+            'answer_question'=>0,
+            'other'=>NULL,
+            'leadtask_id'=>0,
+        );
+        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
+        $out['msg']=$res['msg'];
+        if ($res['result']==$this->success_result) {
+            $out['result']=$res['result'];
+            /* Create relations between Mail and Leads */
+            $this->db->set('lead_id',$res['result']);
+            if (intval($leademail_id)==0) {
+                $this->db->set('email_id',$maildat['email_id']);
+                $this->db->insert('ts_lead_emails');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during build relations';
+                    /* Delete Lead */
+                } else {
+                    //$out['result']=Leads_model::SUCCESS_RESULT;
+                    $out['msg']='';
+                }
+            }
+        }
+        return $out;
+    }
+
+    /* Create Lead from Questions */
+    public function create_leadquest($maildat,$leademail_id,$user_id) {
+        $out=array('result'=>  $this->error_result,'msg'=>  $this->INIT_ERRMSG);
+        /* Create array with Lead data */
+        $lead_usr=array($user_id);
+        $leadpost=array(
+            'lead_id'=>0,
+            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
+            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
+            'lead_value'=>NULL,
+            'lead_needby'=>NULL,
+            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
+            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
+            'lead_itemqty'=>NULL,
+            'lead_item'=>NULL,
+            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
+            'lead_status'=>'',
+            'lead_type'=>$this->init_lead_type,
+        );
+        $lead_tasks=array(
+            'send_quote'=>0,
+            'send_artproof'=>0,
+            'send_sample'=>0,
+            'answer_question'=>1,
+            'other'=>NULL,
+            'leadtask_id'=>0,
+        );
+        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
+        if ($res['result']==Leads_model::ERR_FLAG) {
+            $out['msg']=$res['msg'];
+        } else {
+            $out['result']=$res['result'];
+            /* Create relations between Mail and Leads */
+            $this->db->set('lead_id',$res['result']);
+            if (intval($leademail_id)==0) {
+                $this->db->set('email_id',$maildat['email_id']);
+                $this->db->insert('ts_lead_emails');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during build relations';
+                    /* Delete Lead */
+                } else {
+                    // $out['result']=Leads_model::SUCCESS_RESULT;
+                    $out['msg']='';
+                }
+            }
+        }
+        return $out;
+    }
+
+    /* Create Lead from Art Proof */
+    public function create_leadproof($maildat,$leademail_id, $user_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        /* Create array with Lead data */
+        $lead_usr=array($user_id);
+        /* Try to get Item ID */
+        $item_id='';
+        $this->load->model('artwork_model');
+        if (!empty($maildat['email_other_info'])) {
+            $item_id=get_json_param($maildat['email_other_info'],'item_id','');
+        }
+        if ($item_id=='') {
+            if (!empty($maildat['email_item_id'])) {
+                $item_id=$maildat['email_item_id'];
+            } elseif (!empty($maildat['email_item_number'])) {
+                $itemoption=array(
+                    'item_num'=>$maildat['email_item_number'],
+                );
+                $itemdat=$this->artwork_model->get_item_details($itemoption);
+                if (count($itemdat)==1) {
+                    $item_id=$itemdat[0]['item_id'];
+                }
+            } elseif (!empty($maildat['email_item_name'])) {
+                $itemoption=array(
+                    'item_name'=>$maildat['email_item_name'],
+                );
+                $itemdat=$this->artwork_model->get_item_details($itemoption);
+                if (count($itemdat)==1) {
+                    $item_id=$itemdat[0]['item_id'];
+                }
+            }
+        }
+
+        $leadpost=array(
+            'lead_id'=>0,
+            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
+            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
+            'lead_value'=>(floatval($maildat['email_total'])==0 ? NULL : $maildat['email_total']),
+            'lead_needby'=>($maildat['email_due']=='' ? NULL : $maildat['email_due']),
+            'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
+            'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
+            'lead_itemqty'=>(intval($maildat['email_qty'])==0 ? NULL : $maildat['email_qty']),
+            'lead_item'=>($maildat['email_item_name']=='' ? NULL : $maildat['email_item_name']),
+            'lead_item_id'=>($item_id=='' ? NULL : $item_id),
+            'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
+            'lead_status'=>'',
+            'lead_type'=>$this->init_lead_type,
+        );
+        $lead_tasks=array(
+            'send_quote'=>0,
+            'send_artproof'=>1,
+            'send_sample'=>0,
+            'answer_question'=>0,
+            'other'=>NULL,
+            'leadtask_id'=>0,
+        );
+        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
+        $out['msg']=$res['msg'];
+        if ($res['result']==$this->success_result) {
+            $out['result']=$res['result'];
+            /* Create relations between Mail and Leads */
+            $this->db->set('lead_id',$res['result']);
+            if (intval($leademail_id)==0) {
+                $this->db->set('email_id',$maildat['email_id']);
+                $this->db->insert('ts_lead_emails');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during build relations';
+                    /* Delete Lead */
+                } else {
+                    //$out['result']=Leads_model::SUCCESS_RESULT;
+                    $out['msg']='';
+                }
+            }
+        }
+        return $out;
+    }
+
 //    /* Duplicate Lead */
 //    function duplicate_lead($lead_id,$user_id) {
 //        /* Select Lead */
@@ -1962,6 +1944,64 @@ Class Leads_model extends MY_Model
 //        }
 //        return $out;
 //    }
+
+    private function _leadclose_log($leadpost, $oldlead, $usrlog, $mails)
+    {
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype']='html';
+        $config['wordwrap'] = TRUE;
+
+        $this->email->initialize($config);
+
+        $email_from=$this->config->item('email_notification_sender');
+
+        $email_to=array();
+        foreach ($mails as $row) {
+            array_push($email_to,$row['user_email']);
+        }
+
+        $email_body='At '.date('hA:i').' on '.date('m/d/y').' '.$usrlog['user_name'].' changed lead # '.$leadpost['lead_number'].' ';
+        if (isset($leadpost['lead_itemqty']) && $leadpost['lead_itemqty']) {
+            $email_body.='for '.$leadpost['lead_itemqty'].' ';
+        }
+        if (isset($leadpost['lead_item']) && $leadpost['lead_item']) {
+            $email_body.=$leadpost['lead_item'].' ';
+        }
+        if (isset($leadpost['lead_customer']) && $leadpost['lead_customer']) {
+            $email_body.='by '.$leadpost['lead_customer'].' ';
+        }
+        $email_body.'into a Closed Order.';
+        if (empty($oldlead)) {
+            $email_body.='<br/>It is a new Lead';
+        } else {
+            $email_body.='Below is the status update saved:<br/>';
+            switch ($oldlead['lead_type']) {
+                case '1':
+                    $email_body.='Priority';
+                    break;
+                case '2':
+                    $email_body.='Open';
+                    break;
+                case '3':
+                    $email_body.='Dead';
+                    break;
+                case '4':
+                    $email_body.='Closed';
+                    break;
+            }
+        }
+
+        $this->email->from($email_from);
+        $this->email->to($email_to);
+        $subj=$usrlog['user_name']." closed Lead #".$leadpost['lead_id'];
+        $this->email->subject($subj);
+        $this->email->message($email_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+        return TRUE;
+    }
+
 
 }
 /* End of file leads_model.php */

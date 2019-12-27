@@ -19,6 +19,7 @@
  * @property Leadorder_model leadorder_model
  * @property Leads_model leads_model
  * @property Questions_model questions_model
+ * @property Quotes_model quotes_model
  */
 
 class MY_Model extends CI_Model

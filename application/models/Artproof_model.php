@@ -343,11 +343,11 @@ Class Artproof_model extends MY_Model
             // $lastmsg=$this->get_lastupdate($row['email_id'],'artproofs');
             // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $artlastupdat="prooflastmessageview";
-            $row['lastmsg']='/artproofs/proof_lastmessage?d='.$row['email_id'];
+            // $row['lastmsg']='/artproofs/proof_lastmessage?d='.$row['email_id'];
             $row['ordnum']=$ordnum;
             $row['email']=($row['email_sendermail']=='' ? '' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>');
             $row['emailparsed']=($row['email_webpage']=='EMAILPARSER' ? $parsericon : '&nbsp;');
-            $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'title="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
+            $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'data-content="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
             $row['email_date']=date('m/d/y',strtotime($row['email_date']));
             $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
             $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
@@ -486,7 +486,7 @@ Class Artproof_model extends MY_Model
                 }
                 $res['email_logo']="<a href='".$logo_lnk."' target='_blank'>User Logo</a>";
             }
-            $res['email_font']=$this->func->get_json_param($res['email_other_info'],'user_font','');
+            $res['email_font']=get_json_param($res['email_other_info'],'user_font','');
         }
         return $res;
     }
@@ -516,5 +516,74 @@ Class Artproof_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_lastupdate($order_id,$mode='artproofs') {
+        $this->db->select('ah.message');
+        $this->db->from('ts_artwork_history ah');
+        $this->db->join('ts_artworks a','a.artwork_id=ah.artwork_id');
+        if ($mode=='order') {
+            $this->db->where('a.order_id',$order_id);
+        } else {
+            $this->db->where('a.mail_id',$order_id);
+        }
+        $this->db->order_by('ah.artwork_history_id','desc');
+        $this->db->limit(1);
+        $res=$this->db->get()->row_array();
+        if (isset($res['message'])) {
+            return $res['message'];
+        } else {
+            return 'No User Messages';
+        }
+    }
+
+    function update_proof_include($email_id, $newval) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+
+        $incl_icon='<img src="/img/art/noninclide_lead_icon.png" alt="Include"/>';
+        $nonincl_icon='<img src="/img/art/inclide_lead_icon.png" alt="Non Include"/>';
+
+        $this->db->set('email_include_lead',  $newval);
+        $this->db->where('email_id',$email_id);
+        $this->db->update('ts_emails');
+        if ($this->db->affected_rows()==1) {
+            $out['result']=  $this->success_result;
+            $out['newicon']=($newval==1 ? $incl_icon : $nonincl_icon );
+            /* Get Today total */
+            $today=$this->get_todays();
+            if (floatval($today)==0) {
+                $out['newclass']='empval';
+            } else {
+                $out['newclass']='curmail';
+            }
+            /* Get Totals */
+            $msgopt=array(
+                'assign'=>1,
+            );
+            $non_assign=$this->get_count_proofs($msgopt);
+        } else {
+            $out['msg']='Error during change data';
+        }
+        return $out;
+    }
+
+    function get_todays() {
+        // $todaybgn=strtotime($this->startdate);
+        $this->db->select('count(e.email_id) as cnt');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('email_type', $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        $this->db->where('e.email_status != ',$this->void_status);
+        // $this->db->where('unix_timestamp(email_date) >=',$todaybgn);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $retval='';
+        } else {
+            $retval=$res['cnt'];
+        }
+        return $retval;
+    }
+
 
 }

@@ -29,6 +29,26 @@ function init_proofdata() {
     initProofPagination();
 }
 
+function search_proofs() {
+    var search=$("input#proofsearch").val();
+    if (search==empty_proofsearch) {
+        search='';
+    }
+    var assign=$("select#proof_status").val();
+    var brand=$("select#proofbrand").val();
+    // var showdel=$("input#hidedelproofs").prop('checked');
+    var deleted=$("select#hidedelproofs").val();
+    var url=main_proofurl+"/proof_count";
+    $.post(url, {'assign':assign,'search':search, 'brand':brand,'show_deleted':deleted}, function(response){
+        if (response.errors=='') {
+            $("input#totalproof").val(response.data.total_rec);
+            initProofPagination();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
 function initProofPagination() {
     // count entries inside the hidden content
     var num_entries = $('#totalproof').val();
@@ -94,6 +114,8 @@ function pageProofsCallback(page_index) {
 
 function init_prooflistmanage() {
     /* change size */
+    var arttemplate='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+
     var maxh=$("div.proof_tabledat").css('max-height');
     maxh=parseInt(maxh.replace('px',''));
     var dath=$("div.proof_tabledat").css('height');
@@ -115,20 +137,24 @@ function init_prooflistmanage() {
     // $("div.proof_replica").click(function(){
     $("div.artdata").click(function(){
         var mailid=$(this).parent("div.artdataarea").data('proofid');
-        artproof_lead(mailid);
+        // POPUP
+        // artproof_lead(mailid);
         return false;
     });
     $("div.proof_brand_dat").click(function(){
         var mailid=$(this).data('proofid');
-        artproof_lead(mailid);
+        // POPUP
+        // artproof_lead(mailid);
         return false;
     })
     /* All other divs */
+    /* NON Exist DIV
     $("div.showproofdetails").click(function(){
         var proofid=$(this).parent("div.proof_tabrow").prop('id');
         showproofdetails(proofid);
         return false;
     })
+    */
     $("div.proof_deldata").click(function(){
         var proof_id=$(this).data('proofid');
         var proofnum=$("div#profrow"+proof_id+" div.proof_brand_dat").text();
@@ -138,7 +164,7 @@ function init_prooflistmanage() {
         } else {
             revert_proof(proof_id, proofnum);
         }
-    })
+    });
     $("div.proof_leadnum_dat").click(function(){
         var lead_id=$(this).data('leadid');
         var mailid=$(this).data('proofid');
@@ -147,131 +173,43 @@ function init_prooflistmanage() {
         } else {
             profedit_lead(lead_id);
         }
-    })
+    });
 
     $("div.proof_note_dat").click(function(){
         var mailid=$(this).data('proofid');
         edit_note(mailid);
-    })
-    // $("div.proof_note_dat").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 220,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    // $("div.proof_parsedata").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 220,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    //
-    // $("div.prooflastmessageview").each(function(){
-    //     $(this).bt({
-    //         ajaxCache: false,
-    //         fill : '#1DCD19',
-    //         cornerRadius: 10,
-    //         width: 220,
-    //         padding: 10,
-    //         strokeWidth: '2',
-    //         positions: "most",
-    //         strokeStyle : '#000000',
-    //         strokeHeight: '18',
-    //         cssClass: 'art_tooltip',
-    //         ajaxPath: ["$(this).data('messageview')"]
-    //     });
-    // });
+    });
+    $("div.proof_note_dat").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $("div.proof_parsedata").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $('div.prooflastmessageview').hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('messageview'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'left',
+                    html: true,
+                    template: arttemplate
+                }).popover('show');
+            });
+        },
+        function(){
+            $(this).popover('hide');
+        }
+    );
 
     $("div.proof_includ_dat").click(function(){
         var mailid=$(this).data('proofid');
         proof_include(mailid);
     })
-}
-
-function proof_include(mailid) {
-    var url=main_proofurl+"/proof_include";
-    $.post(url, {'email_id': mailid}, function(response){
-        if (response.errors=='') {
-            $("div.proof_includ_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
-
-function showproofdetails(objid) {
-    var proof_id=objid.substr(7);
-    var url=main_proofurl+"/proof_details";
-    $.post(url, {'proof_id':proof_id}, function(response){
-        if (response.errors=='') {
-            show_popup('proof_dialog');
-            $("div#pop_content").empty().html(response.data.content);
-            $("a#popupContactClose").click(function(){
-                disablePopup();
-            })
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
-
-
-function create_leadproof() {
-    var mail_id=$("input#mail_id").val();
-    var type='Proof';
-    var leademail_id=$("input#leademail_id").val();
-    var url="/leads/create_leadmessage";
-    $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
-        if (response.errors=='') {
-            disablePopup();
-            $("div#newprooftotal").empty().html(response.data.total_proof);
-            $("div#newquotestotal").empty().html(response.data.total_quote);
-            $("div#newquestionstotal").empty().html(response.data.total_quest);
-            show_new_lead(response.data.leadid, 'proof');
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
-
-
-function search_proofs() {
-    var search=$("input#proofsearch").val();
-    if (search==empty_proofsearch) {
-        search='';
-    }
-    var assign=$("select#proof_status").val();
-    var brand=$("select#proofbrand").val();
-    // var showdel=$("input#hidedelproofs").prop('checked');
-    var deleted=$("select#hidedelproofs").val();
-    var url=main_proofurl+"/proof_count";
-    $.post(url, {'assign':assign,'search':search, 'brand':brand,'show_deleted':deleted}, function(response){
-        if (response.errors=='') {
-            $("input#totalproof").val(response.data.total_rec);
-            initProofPagination();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
-
-/* Call email client */
-function replyquestmail(mail) {
-    var mailtourl = "mailto:"+mail;
-    location.href = mailtourl;
-    return false;
 }
 
 function delete_proof(proof_id, proofnum) {
@@ -304,13 +242,11 @@ function prooflead(mailid) {
     var url="/art/change_status";
     $.post(url, {'quest_id':mailid, 'type':'proof'}, function(response){
         if (response.errors=='') {
-            // show_popup('editmail_form');
-            // $("div#pop_content").empty().html(response.data.content);
             $("#artModalLabel").empty().html('Lead Assign');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
             /* Activate close */
-            $("select#lead_id").searchable();
+            // $("select#lead_id").searchable();
             /* Change Lead data */
             $("select#lead_id").change(function(){
                 change_leaddata();
@@ -328,32 +264,44 @@ function prooflead(mailid) {
     return false;
 }
 
-function edit_note(mailid) {
-    var url=main_proofurl+"/proof_openartnote";
-    $.post(url, {'mail_id':mailid}, function(response){
+function change_leaddata() {
+    var lead_id=$("#lead_id").val();
+    var url="/art/change_leadrelation";
+    $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
-            show_popup("edit_area");
-            $("div#pop_content").empty().html(response.data.content);
-            $("div#pop_content div.saveordernote").click(function(){
-                save_proofnote();
-            })
-            $("a#popupContactClose").unbind('click').click(function(){
-                disablePopup();
-            })
+            $("div#artModal div.leaddate").empty().html(response.data.lead_date);
+            $("div#artModal div.leadcustomer").empty().html(response.data.lead_customer);
+            $("div#artModal div.leadcustommail").empty().html(response.data.lead_mail);
+        } else {
+            show_error(response);
+        }
+    }, 'json')
+}
+
+function update_queststatus() {
+    var url="/art/savequeststatus";
+    var dat=$("form#msgstatus").serializeArray();
+    $.post(url, dat, function(response){
+        if (response.errors=='') {
+            // disablePopup();
+            $("#artModal").modal('hide');
+            initProofPagination();
         } else {
             show_error(response);
         }
     }, 'json');
 }
 
-function save_proofnote() {
-    var mail_id=$("div#pop_content input#order_id").val();
-    var art_note=$("div#pop_content #art_note").val();
-    var url=main_proofurl+"/proof_saveartnote";
-    $.post(url, {'mail_id':mail_id,'art_note':art_note}, function(response){
-        if(response.errors=='') {
-            disablePopup();
-            initProofPagination();
+function create_leadproof() {
+    var mail_id=$("input#mail_id").val();
+    var type='Proof';
+    var leademail_id=$("input#leademail_id").val();
+    var url="/art/create_leadmessage";
+    $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
+        if (response.errors=='') {
+            $("#artModal").modal('hide');
+            // POPUP
+            // show_new_lead(response.data.leadid, 'proof');
         } else {
             show_error(response);
         }
@@ -364,9 +312,51 @@ function profedit_lead(lead_id) {
     var url="/leads/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
-            show_popup('leadpopupdat');
-            $("div#pop_content").empty().html(response.data.content);
-            init_edits();
+            // POPUP
+            // show_popup('leadpopupdat');
+            // $("div#pop_content").empty().html(response.data.content);
+            // init_edits();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function edit_note(mailid) {
+    var url=main_proofurl+"/proof_openartnote";
+    $.post(url, {'mail_id':mailid}, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html('Edit Lead Note');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").modal('show');
+            $("div#artModal div.saveordernote").click(function(){
+                save_proofnote();
+            });
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function save_proofnote() {
+    var mail_id=$("input#order_id").val();
+    var art_note=$("#art_note").val();
+    var url=main_proofurl+"/proof_saveartnote";
+    $.post(url, {'mail_id':mail_id,'art_note':art_note}, function(response){
+        if(response.errors=='') {
+            $("#artModal").modal('hide');
+            initProofPagination();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function proof_include(mailid) {
+    var url=main_proofurl+"/proof_include";
+    $.post(url, {'email_id': mailid}, function(response){
+        if (response.errors=='') {
+            $("div.proof_includ_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
         } else {
             show_error(response);
         }

@@ -654,9 +654,23 @@ Class Artwork_model extends MY_Model
             $out['msg']='';
         }
         return $out;
-
     }
 
+    public function get_item_details($options) {
+        $this->db->select("item_name, item_number, item_id",FALSE);
+        $this->db->from('v_itemsearch');
+        if (isset($options['item_num'])) {
+            $this->db->where('item_number', $options['item_num']);
+        }
+        if (isset($options['item_name'])) {
+            $this->db->where('item_name',$options['item_name']);
+        }
+        if (isset($options['item_id'])) {
+            $this->db->where('item_id',$options['item_id']);
+        }
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
 
     private function artworkExist($options) {
         if (empty($options)) {
