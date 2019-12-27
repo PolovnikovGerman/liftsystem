@@ -56,6 +56,11 @@ input.generealorder_search {
     height: 27px;
     width: 51px;
 }
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+}
 .generealorder_content > .headrow > .filtersarea {
     height: 27px;
     line-height: 27px;
@@ -64,6 +69,12 @@ input.generealorder_search {
 }
 .generealorder_content > .headrow > .filtersarea select {
     height: 27px;
+}
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+    margin-left: 10px;
 }
 .generealorder_content > .headrow > .addneworder {
     cursor: pointer;

@@ -33,12 +33,12 @@ function initGeneralPagination() {
     var num_entries=$('#totalrec').val();
     var perpage = $("#perpage").val();
     if (parseInt(num_entries) < parseInt(perpage)) {
-        $("div#genorders .Pagination").empty();
+        $(".artOrderPagination").empty();
         pageGeneralCallback(0);
     } else {
         var curpage=$("#curpage").val();
         // Create content inside pagination element
-        $("div#genorders .Pagination").mypagination(num_entries, {
+        $(".artOrderPagination").mypagination(num_entries, {
             current_page: curpage,
             callback: pageGeneralCallback,
             items_per_page: perpage, // Show only one item per page

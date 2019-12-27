@@ -34,7 +34,7 @@
     <div class="headrow">
         <div class="addneworder">&nbsp;</div>
         <div class="monitor_pagesviews">
-            <div class="Pagination"></div>
+            <div class="artOrderPagination"></div>
         </div>
 
     </div>
