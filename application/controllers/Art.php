@@ -450,6 +450,99 @@ class Art extends MY_Controller {
         echo $out_msg;
     }
 
+    /* Count # of Proofs */
+    public function proof_count() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $brand=$this->input->post('brand');
+            $search_val=$this->input->post('search');
+            $assign=$this->input->post('assign');
+            $show_deleted=$this->input->post('show_deleted',0);
+            $search=array();
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($search_val) {
+                $search['search']=$search_val;
+            }
+            if ($brand) {
+                $search['brand']=$brand;
+            }
+            if ($show_deleted==1) {
+                $search['show_deleted']=1;
+            }
+            $this->load->model('artproof_model');
+            $mdata['total_rec']=$this->artproof_model->get_count_proofs($search);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+    /* Mark proof as Void */
+    public function proof_delete() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $proof_id=$this->input->post('proof_id');
+            $type=$this->input->post('type');
+            /* Mark need proof as deleted / VOID */
+            $this->load->model('artproof_model');
+            if ($type=='delete') {
+                $res=$this->artproof_model->delete_proof($proof_id);
+            } else {
+                $res=$this->artproof_model->revert_proof($proof_id);
+            }
+
+            if ($res['result']==$this->error_result) {
+                /* Get data about proofs */
+                $error=$res['msg'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    function change_status() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quest_id=$this->input->post('quest_id');
+            $type=$this->input->post('type');
+            $this->load->model('leads_model');
+            $this->load->model('questions_model');
+            $chkrel=$this->leads_model->check_leadrelation($quest_id);
+            if ($chkrel) {
+                $error='This Request Related with Lead. Please, reload page';
+                $this->ajaxResponse($mdata, $error);
+            }
+            /* Get data about question */
+            $quest=$this->questions_model->get_quest_data($quest_id);
+
+            /* Get open leads  */
+            $options=array(
+                'orderby'=>'lead_number',
+                'direction'=>'desc',
+            );
+            $leaddat=$this->leads_model->get_lead_list($options);
+            $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
+            switch ($type) {
+                case 'quote':
+                    $options['title']='Quote Details';
+                    break;
+                case 'question':
+                    $options['title']='Question Details';
+                    break;
+                case 'proof':
+                    $options['title']='Proof Details';
+                    break;
+                default:
+                    $options['title']='Message Details';
+                    break;
+            }
+            $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
+            $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     public function proof_listdata() {
         if ($this->isAjax()) {

@@ -19,6 +19,8 @@ if (!defined('BASEPATH'))
  * @property Artwork_model artwork_model
  * @property Email_model email_model
  * @property Leadorder_model leadorder_model
+ * @property Leads_model leads_model
+ * @property Questions_model questions_model
  */
 
 

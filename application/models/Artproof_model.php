@@ -3,6 +3,7 @@
 Class Artproof_model extends MY_Model
 {
     private $EMAIL_TYPE='Art_Submit';
+    private $INIT_ERRMSG='Unknown error. Try later';
     private $order_status=3;
     private $void_status=4;
     private $active_status=1;
@@ -490,5 +491,30 @@ Class Artproof_model extends MY_Model
         return $res;
     }
 
+    function delete_proof($proof_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        $this->db->set('email_status',  $this->void_status);
+        $this->db->where('email_id',$proof_id);
+        $this->db->update('ts_emails');
+        $out['msg']='Unknown proof request';
+        if ($this->db->affected_rows()==1) {
+            $out['result']= $this->success_result;
+            $out['msg']='';
+        }
+        return $out;
+    }
+
+    function revert_proof($proof_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        $this->db->set('email_status',  $this->active_status);
+        $this->db->where('email_id',$proof_id);
+        $this->db->update('ts_emails');
+        $out['msg']='Unknown proof request';
+        if ($this->db->affected_rows()==1) {
+            $out['result']=  $this->success_result;
+            $out['msg']='';
+        }
+        return $out;
+    }
 
 }

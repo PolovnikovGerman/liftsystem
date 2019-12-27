@@ -301,15 +301,15 @@ function revert_proof(proof_id, proofnum) {
 }
 
 function prooflead(mailid) {
-    var url="/leads/change_status";
+    var url="/art/change_status";
     $.post(url, {'quest_id':mailid, 'type':'proof'}, function(response){
         if (response.errors=='') {
-            show_popup('editmail_form');
-            $("div#pop_content").empty().html(response.data.content);
+            // show_popup('editmail_form');
+            // $("div#pop_content").empty().html(response.data.content);
+            $("#artModalLabel").empty().html('Lead Assign');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").modal('show');
             /* Activate close */
-            $("a#popupContactClose").click(function(){
-                disablePopup();
-            })
             $("select#lead_id").searchable();
             /* Change Lead data */
             $("select#lead_id").change(function(){
