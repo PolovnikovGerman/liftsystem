@@ -14,6 +14,14 @@ if (!defined('BASEPATH'))
  * @property Items_model items_model
  * @property Sections_model sections_model
  * @property Categories_model categories_model
+ * @property Orders_model orders_model
+ * @property Artproof_model artproof_model
+ * @property Artwork_model artwork_model
+ * @property Email_model email_model
+ * @property Leadorder_model leadorder_model
+ * @property Leads_model leads_model
+ * @property Questions_model questions_model
+ * @property Quotes_model quotes_model
  */
 
 

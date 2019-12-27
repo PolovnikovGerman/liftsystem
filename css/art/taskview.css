@@ -1,0 +1,345 @@
+.taskview_conteiner {
+    clear: both;
+    float: left;
+    margin-left: 15px;
+    margin-top: 18px;
+    width: 946px;
+}
+.taskview_manage {
+    clear: both;
+    float: left;
+    margin-bottom: 3px;
+    width: 964px;
+}
+.tasklist_search {
+    float: left;
+    width: 510px;
+}
+.tasksearchselect {
+    float: left;
+    width: 125px;
+}
+select.tasksearch_select {
+    float: left;
+    width: 121px;
+}
+.ordproofinclude {
+    float: left;
+    padding-top: 3px;
+    text-align: center;
+    width: 29px;
+}
+.ordproofinclude_label {
+    color: #010101;
+    float: left;
+    font-size: 13px;
+    padding-top: 5px;
+    width: 119px;
+}
+.ordproofviewselect {
+    float: left;
+    margin-left: 104px;
+    width: 144px;
+}
+.ordproofviewselect.taskview {
+    margin-left: 14px;
+}
+select.ordproofview {
+    font-size: 12px;
+    color: #161616;
+    width: 128px;
+    padding-left: 3px;
+}
+.taskview_datacontent {
+    clear: both;
+    float: left;
+    width: 974px;
+}
+/* Headers for details */
+.taskview_devstage {
+    float: left;
+    width: 190px;
+}
+.taskview_devstage_title {
+    background: url("/img/art/taskview_header.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    float: left;
+    font-size: 17px;
+    font-weight: bold;
+    height: 32px;
+    margin-top: 0;
+    padding-top: 6px;
+    text-align: center;
+    width: 185px;
+}
+.taskview_devstage_subtitle {
+    background: url("/img/art/taskview_subheader.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    float: left;
+    font-size: 17px;
+    font-weight: bold;
+    height: 27px;
+    text-align: center;
+    width: 185px;
+}
+.taskview_rushtitle {
+    float: left;
+    width: 16px;
+}
+.taskview_sortarea {
+    float: left;
+    margin-top: 7px;
+    width: 16px;
+}
+.sortactive {
+    color: #FFFFFF !important;
+    font-size: 12px !important;
+}
+.taskview_timetitle {
+    color: #918CFF;
+    float: left;
+    font-size: 11px;
+    margin-top: 6px;
+    width: 42px;
+}
+.taskview_timetitle:hover {
+    cursor: pointer;
+}
+.taskview_ordertitle {
+    color: #918CFF;
+    float: left;
+    font-size: 11px;
+    margin-top: 6px;
+    width: 37px;
+}
+.taskview_ordertitle:hover {
+    cursor: pointer;
+}
+.taskview_notetitle {
+    width: 42px;
+    float: left;
+}
+/* body */
+.taskview_devstage_data {
+    border-bottom: 1px solid #000000;
+    border-left: 1px solid #000000;
+    clear: both;
+    float: left;
+    height: 543px;
+    overflow-y: scroll;
+    width: 183px;
+}
+/* CENTERED DATA HOLDERS */
+.centerdat {
+    margin-left: 1px;
+}
+.sorttaskdesc {
+    background: url('/img/art/taskview_desc.png') no-repeat transparent;
+}
+.sorttaskasc {
+    background: url('/img/art/taskview_asc.png') no-repeat transparent;
+}
+.justapproved {
+    margin-left: 10px;
+}
+/* DATA */
+.taskdata_row {
+    clear: both;
+    float: left;
+    width: 168px;
+}
+.taskdata_row.grey {
+    background-color: #ededed;
+}
+.taskdata_row.white {
+    background-color: #ffffff;
+}
+.emptytasklist {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+.taskview_seqnum {
+    float: left;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+    width: 14px;
+}
+.taskview_rush {
+    float: left;
+    padding-top: 1px;
+    text-align: center;
+    width: 18px;
+}
+.taskview_rush img {
+    width: 16px;
+    height: 16px;
+}
+.taskview_time {
+    color: #7B7B7B;
+    float: left;
+    font-size: 11px;
+    padding-top: 3px;
+    text-align: center;
+    width: 50px;
+}
+.taskview_order {
+    color: #0000FF;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 2px;
+    text-align: center;
+    width: 62px;
+}
+.taskview_order:hover {
+    cursor: pointer;
+}
+.taskview_order.taskoverdue {
+    background: none #B40404;
+    color: #FFFFFF;
+    height: 18px;
+}
+.taskview_order.bypass {
+    color: #008000;
+}
+.taskview_note {
+    float: left;
+    width: 20px;
+    padding-top: 2px;
+    text-align: center;
+}
+.reminderarea:hover {
+    cursor:pointer;
+}
+/* task_rushicon.png */
+/* reminder.png */
+/* Task Search */
+.taskview_datacontent > .ordertable-art {
+    float: left;
+    width: 100%;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title {
+    float: left;
+    width: 100%;
+    background-color: #bcbcbc;
+    border: 1px solid #919191;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > div {
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    height: 31px;
+    line-height: 31px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .date {
+    width: 55px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .ordernum {
+    width: 50px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .orderconf {
+    width: 64px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .customer {
+    width: 212px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .item {
+    border-right: 2px solid #000000;
+    width: 212px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .art {
+    width: 28px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .ordercode {
+    width: 46px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .ordernote {
+    width: 39px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .revenue {
+    width: 73px;
+}
+.taskview_datacontent > .ordertable-art > .ordertable-title > .salesrepl {
+    width: 75px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table {
+    border-bottom: 1px solid #919191;
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    max-height: 551px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 974px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    width: 975px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > div {
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .date {
+    border-right: 1px solid #919191;
+    width: 54px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .ordernum {
+    border-right: 1px solid #919191;
+    color: #0000ff;
+    cursor: pointer;
+    width: 49px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .orderconf {
+    border-right: 1px solid #919191;
+    width: 63px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .customer {
+    border-right: 1px solid #919191;
+    overflow: hidden;
+    padding-left: 3px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 208px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .item {
+    border-right: 2px solid #000000;
+    padding-left: 3px;
+    text-align: left;
+    width: 209px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .art {
+    width: 28px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .ordercode {
+    border-right: 1px solid #919191;
+    width: 45px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .ordernote {
+    border-right: 1px solid #919191;
+    width: 38px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .revenue {
+    border-right: 1px solid #919191;
+    width: 72px;
+}
+.taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .salesrepl {
+    padding-left: 2px;
+    text-align: left;
+    width: 73px;
+}

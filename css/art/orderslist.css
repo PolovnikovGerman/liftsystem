@@ -1,0 +1,212 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jun 12, 2016, 10:58:08 AM
+    Author     : polovnikov-go
+*/
+.generealorder_content {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    margin-top: 14px;
+    width: 1003px;
+}
+.generealorder_content div {
+    float: left;
+}
+.generealorder_content > .headrow {
+    clear: both;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.generealorder_content > .headrow > .searchform {
+    height: 27px;
+    line-height: 27px;
+    width: 360px;
+}
+.generealorder_content > .headrow > .searchform img {
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 24px;
+}
+input.generealorder_search {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    height: 18px;
+    line-height: 18px;
+    width: 175px;
+}
+.generealorder_content > .headrow > .searchform > .findall {
+    background: url('/img/art/search_btn.png') no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 87px;
+}
+.generealorder_content > .headrow > .searchform > .clearsrch {
+    background: url('/img/art/clean_btn.png') no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 51px;
+}
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+}
+.generealorder_content > .headrow > .filtersarea {
+    height: 27px;
+    line-height: 27px;
+    margin-left: 306px;
+    width: 332px;
+}
+.generealorder_content > .headrow > .filtersarea select {
+    height: 27px;
+}
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+    margin-left: 10px;
+}
+.generealorder_content > .headrow > .addneworder {
+    cursor: pointer;
+    background: url('/img/art/addnew_btn.png') no-repeat transparent;
+    height: 27px;
+    width: 64px;
+}
+.generealorder_content > .headrow > .monitor_pagesviews {
+    float: right;
+    width: 206px;
+}
+.generealorder_content > .tablehead {
+    clear: both;
+    background-color: #BCBCBC;
+    border: 1px solid #919191;
+    color: #000000;
+    width: 1001px;
+}
+.generealorder_content > .tablehead div {
+    font-size: 13px;
+    text-align: center;
+    height: 31px;
+    line-height: 31px;
+}
+.generealorder_content > .tablehead > .date {
+    width: 55px;
+}
+.generealorder_content > .tablehead > .ordernum {
+    width: 50px;
+}
+.generealorder_content > .tablehead > .orderconf {
+    width: 64px;
+}
+.generealorder_content > .tablehead > .customer {
+    width: 212px;
+}
+.generealorder_content > .tablehead > .item {
+    border-right: 2px solid #000000;
+    width: 212px;
+}
+.generealorder_content > .tablehead > .art {
+    width: 28px;
+}
+.generealorder_content > .tablehead > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.generealorder_content > .tablehead > .ordercode {
+    width: 46px;
+}
+.generealorder_content > .tablehead > .ordernote {
+    width: 39px;
+}
+.generealorder_content > .tablehead > .revenue {
+    width: 73px;
+}
+.generealorder_content > .tablehead > .salesrepl {
+    width: 75px;
+}
+.generealorder_content > .tabledata {
+    border-bottom: 1px solid #919191;
+    border-left: 1px solid #919191;
+    clear: both;
+    max-height: 551px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 1001px;
+}
+.generealorder_content > .tabledata > .rowdata {
+    clear: both;
+    font-size: 12px;
+    width: 1001px;
+}
+.generealorder_content > .tabledata > .rowdata.rushgeneralorder {
+    background-color: #FF2A00;
+    color: #ffffff;
+}
+.generealorder_content > .tabledata > .rowdata > div {
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+.generealorder_content > .tabledata > .rowdata > .date {
+    border-right: 1px solid #919191;
+    width: 54px;
+}
+.generealorder_content > .tabledata > .rowdata > .ordernum {
+    border-right: 1px solid #919191;
+    color: #0000FF;
+    cursor: pointer;
+    width: 49px;
+}
+.generealorder_content > .tabledata > .rowdata > .orderconf {
+    border-right: 1px solid #919191;
+    width: 63px;
+}
+.generealorder_content > .tabledata > .rowdata > .customer {
+    border-right: 1px solid #919191;
+    text-align: left;
+    padding-left: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 208px;
+}
+.generealorder_content > .tabledata > .rowdata > .item {
+    border-right: 2px solid #000000;
+    padding-left: 3px;
+    text-align: left;
+    width: 219px;
+}
+.generealorder_content > .tabledata > .rowdata > .art {
+    width: 28px;
+}
+.generealorder_content > .tabledata > .rowdata > .approve {
+    border-right: 2px solid #000000;
+    width: 28px;
+}
+.generealorder_content > .tabledata > .rowdata > .ordercode {
+    border-right: 1px solid #919191;
+    width: 45px;
+}
+.generealorder_content > .tabledata > .rowdata > .ordernote {
+    border-right: 1px solid #919191;
+    width: 38px;
+}
+.generealorder_content > .tabledata > .rowdata > .revenue {
+    border-right: 1px solid #919191;
+    width: 72px;
+}
+.generealorder_content > .tabledata > .rowdata > .salesrepl {
+    text-align: left;
+    padding-left: 2px;
+    width: 73px;
+}

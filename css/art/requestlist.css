@@ -1,0 +1,585 @@
+.proof_content {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 994px;
+}
+.proof_select_type {
+    color: #353535;
+    float: left;
+    font-size: 13px;
+    width: 861px;
+}
+.showproofdetails:hover {
+    cursor: pointer;
+}
+.proof_selecttype_label {
+    float: left;
+    padding-top: 3px;
+    width: 50px
+}
+select.proof_status_select {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 120px;
+}
+select.proof_brandselect {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 152px;
+}
+input.proofsearch {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 206px;
+}
+.proof_title {
+    background: none repeat scroll 0 0 #BCBCBC;
+    border: 1px solid #2F2F2F;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    width: 969px;
+}
+.proof_title div {
+    height: 26px;
+    line-height: 26px;
+}
+
+.proof_tabledat {
+    clear: both;
+    float: left;
+    max-height: 564px;
+    overflow-y: auto;
+    width: 971px;
+}
+.proof_tabrow {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    width: 954px;
+    text-align: center;
+}
+.proof_ordnum {
+    float: left;
+    height: 24px;
+    /* padding-top: 9px; */
+    width: 43px;
+}
+.proof_ordnum_dat {
+    float: left;
+    width: 42px;
+    margin-top: 5px;
+    height: 20px;
+}
+.proof_titlecentr {
+/*    height: 24px;
+    padding-top: 9px; */
+}
+.proof_brand {
+    float: left;
+    width: 60px;
+}
+.proof_brand_dat {
+    float: left;
+    margin-top: 5px;
+    width: 60px;
+    height: 20px;
+    color: #0000FF;
+}
+.proof_brand_dat:hover {
+    cursor: pointer;
+}
+select.proofhideproof {
+    background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    font-size: 12px;
+    width: 71px;
+}
+.proof_leadnum {
+    float: left;
+    margin-right: 11px;
+    width: 60px;
+}
+.proof_leadnum_dat {
+    float: left;
+    width: 53px;
+    font-size: 13px;
+    margin-top: 5px;
+    color: #999999;
+}
+.proof_leadnum_dat.leadassign {
+    color: #ffffff;
+    background: url('/img/art/assign_lead_btn.png') no-repeat transparent;
+    height: 21px;
+}
+.proof_leadnum_dat:hover {
+    cursor: pointer;
+}
+.proof_includ_dat {
+    float: left;
+    margin-top: 7px;
+    width: 18px;
+}
+.proof_includ_dat img {
+    width: 13px;
+}
+.proof_includ_dat:hover {
+    cursor: pointer;
+}
+.proof_status {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 65px;
+}
+.proof_status_dat {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 65px;
+    height: 20px;
+}
+.proof_status_dat:hover{
+    cursor: pointer;
+}
+.proof_status_mark {
+    background: url("/img/art/emailblok-1.png") no-repeat transparent;
+    float: left;
+    margin-left: 4px;
+    margin-top: 2px;
+    width: 15px;
+}
+.proof_replica {
+    background: url("/img/art/emailblok-2.png") no-repeat transparent;
+    float: left;
+    height: 17px;
+    margin-left: 4px;
+    margin-top: 0px;
+    margin-top: 5px;
+    width: 53px;
+}
+.proof_date {
+    float: left;
+    width: 67px;
+}
+.proof_date_dat {
+    float: left;
+    margin-top: 5px;
+    width: 67px;
+    height: 20px;
+}
+.proof_customer {
+    float: left;
+    width: 201px;
+}
+.proof_customer_dat {
+    float: left;
+    height: 20px;
+    margin-top: 5px;
+    width: 206px;
+}
+.prfart_customer-maildat {
+    float: left;
+    width: 22px;
+    text-align: center;
+}
+.prfart_customer-data {
+    float: left;
+    overflow: hidden;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 179px;
+}
+.proof_item {
+    float: left;
+    /* width: 292px; */
+    width: 238px;
+}
+.proof_item_dat {
+    float: left;
+    height: 20px;
+    margin-top: 5px;
+    overflow: hidden;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 233px;
+}
+.proof_emptydiv {
+    float: left;
+    padding-top: 6px;
+    height: 22px;
+    width: 4px;
+}
+.artdataarea {
+    float: left;
+    width: 144px;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+.proof_del {
+    float: left;
+    margin-left: -13px;
+    /* margin-top: 6px; */
+    width: 61px;
+}
+.proof_deldata {
+    float: left;
+    text-align: center;
+    width: 20px;
+}
+.proof_deldata img {
+    margin-top: 6px;
+    height: 14px;
+}
+.proof_deldata:hover {
+    cursor: pointer;
+}
+.proof_parsedata {
+    float: left;
+    padding-top: 2px;
+    text-align: center;
+    width: 25px;
+}
+.proof_art, .proof_redrawn, .proof_vector, .proof_proofed, .proof_approve {
+    /*border-right: 1px solid #000000;*/
+    float: left;
+    width: 28px;
+}
+.proof_note {
+    float: left;
+    width: 40px;
+}
+.proof_note_dat {
+    float: left;
+    margin-top: 3px;
+    width: 26px;
+}
+.proof_note_dat img {
+    width: 16px;
+}
+.proof_note_dat:hover {
+    cursor: pointer;
+}
+.artdata {
+    height: 24px;
+    padding-top: 4px;
+}
+.artdata:hover {
+    cursor:pointer;
+}
+.proof_email {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 165px;
+}
+.proof_email_dat {
+    float: left;
+    padding-top: 4px;
+    padding-left: 5px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 156px;
+    height: 16px;
+}
+.proof_itemnum {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 70px;
+}
+.proof_itemnum_dat {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-top: 4px;
+    width: 70px;
+    height: 16px;
+}
+.proof_qty {
+    /* border-right: 1px solid #000000; */
+    float: left;
+    width: 54px;
+}
+.proof_qty_dat {
+    float: left;
+    padding-top: 4px;
+    width: 54px;
+    height: 16px;
+}
+.proof_openview {
+    float: left;
+    /* background: url("/img/emailtable-blue-right.png") no-repeat transparent; */
+    height: 24px;
+    padding-top: 9px;
+    width: 145px;
+}
+.proof_openview_dat {
+    float: left;
+    width: 132px;
+}
+.proof_magnifglass {
+    float: left;
+    width: 18px;
+}
+.proof_text {
+    float: left;
+    padding-top: 4px;
+    width: 102px;
+}
+.proof_text a {
+    text-decoration: none;
+}
+.quest_tablefoot {
+    clear: both;
+    float: left;
+    width: 980px;
+}
+.quest_tablefoot_left {
+    background: url("/img/art/tableend-messages-left.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 7px;
+    width: 113px;
+}
+.quest_tablefoot_center {
+    background: url("/img/art/tableend-messages-center.png") repeat-x scroll 0 0 transparent;
+    float: left;
+    height: 7px;
+    width: 795px;
+}
+.quest_tablefoot_right {
+    background: url("/img/art/tableend-messages-right.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 7px;
+    width: 62px;
+}
+/* Profit POPUP */
+.proof_popup_content {
+    background: url("/img/art/tooltip-fon-emails-customsb.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 443px;
+    padding: 10px;
+    width: 889px;
+}
+.artsubmit_details {
+    clear: both;
+    float: left;
+    padding: 15px;
+    width: 827px;
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0 2px 2px #464746, 0 2px 2px #464746;
+
+}
+.artsubmit_details input {
+    background-color: #FFFFFF;
+    color: #000;
+    border: 1px solid #000000;
+    margin-left: 5px;
+}
+.artsubmit_commons {
+    clear: both;
+    float: left;
+    width: 815px;
+    margin-bottom: 15px;
+}
+.artdetail_date {
+    float: left;
+    width: 150px;
+}
+input.artdetail_date_val {
+    width: 76px;
+    margin-left: 5px;
+}
+.artdetail_customer {
+    float: left;
+    width: 220px;
+}
+input.artdetail_customer_val {
+    width: 120px;
+    margin-left: 5px;
+}
+.artdetail_company {
+    float: left;
+    width: 270px;
+}
+input.artdetail_company_val {
+    width: 180px;
+}
+.artdetail_email {
+    float: left;
+    width: 230px;
+}
+input.artdetail_email_val {
+    width: 160px;
+}
+.artdetail_phone {
+    float: left;
+    width: 220px;
+}
+input.artdetail_phone_val {
+    width: 150px;
+}
+.artdetail_itemnumber {
+    float: left;
+    width: 128px;
+}
+input.artdetail_itemnumber_val {
+    width: 65px;
+}
+.artdetail_itemname {
+    float: left;
+    width: 235px;
+}
+input.artdetail_itemname {
+    width: 170px;
+}
+.artdetail_itemcolor {
+    float: left;
+    width: 315px;
+}
+.artdetail_qty {
+    float: left;
+    width: 135px;
+}
+input.artdetail_qty_val {
+    width: 60px;
+}
+.artdetail_text {
+    float: left;
+    width: 80px;
+}
+textarea.artdetail_notes_val {
+    background-color: #FFFFFF;
+    color: #000000;
+    float: left;
+    height: 70px;
+    margin-right: 15px;
+    width: 255px;
+    resize: none;
+}
+.artdetail_color {
+    float: left;
+    width: 380px;
+}
+input.artdetail_color_val {
+    width: 230px;
+}
+.artdetail_logo {
+    float: left;
+    width: 90px;
+}
+.artdetail_logo_val {
+    float: left;
+    width: 110px;
+}
+.artdetail_logo_val a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.artdetail_notes {
+    float: left;
+    width: 190px;
+}
+/* END PROOF RQUEST SECTION*/
+/* POPUP ASSIGN */
+/* Select lead for Question */
+.updatequest_status {
+    clear: both;
+    float: left;
+    width: 540px;
+    height: 320px;
+    background-color: #fff;
+    padding: 10px;
+    font-size: 13px;
+    color: #000000;
+}
+.question_details {
+    clear: both;
+    float: left;
+    width: 530px;
+    margin-bottom: 9px;
+}
+.question_details.label {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.question_qdate {
+    float: left;
+    width: 109px;
+}
+.question_customer {
+    float: left;
+    width: 185px;
+}
+.question_custommail {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 215px;
+}
+.leadselect_label {
+    float: left;
+    width: 120px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.leadselect_input {
+    float: left;
+    width: 140px;
+}
+select.leadopenlist {
+    font-size: 12px;
+    width: 396px;
+}
+.leaddate {
+    float: left;
+    width: 109px;
+}
+.leadcustomer {
+    float: left;
+    width: 185px;
+}
+.leadcustommail {
+    float: left;
+    width: 215px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.leadnew_label {
+    float: left;
+    font-size: 14px;
+    font-weight: bolder;
+    padding-top: 4px;
+    width: 153px;
+}
+.leads_addnew {
+    float: left;
+    width: 70px;
+}
+.leads_addnew:hover {
+    cursor: pointer;
+}
+.savequeststatus {
+    clear: both;
+    float: left;
+    width: 110px;
+    margin-top: 10px;
+    padding-left: 435px;
+}
+.proof_pagination {
+    float: right!important;
+    margin-right: 15px;
+}

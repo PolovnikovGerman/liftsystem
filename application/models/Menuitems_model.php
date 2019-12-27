@@ -223,4 +223,16 @@ Class Menuitems_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_itemsubmenu($user_id, $root_lnk) {
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link');
+        $this->db->from('menu_items mm');
+        $this->db->join('menu_items m','m.parent_id=mm.menu_item_id');
+        $this->db->join('user_permissions u','on m.menu_item_id = u.menu_item_id');
+        $this->db->where('u.user_id', $user_id);
+        $this->db->where('u.permission_type > 0');
+        $this->db->where('mm.item_link', $root_lnk);
+        $this->db->order_by('m.menu_order, m.menu_section');
+        return $res=$this->db->get()->result_array();
+    }
 }
