@@ -58,7 +58,8 @@ class Art extends MY_Controller {
         // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
-
+        // Searchable
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
