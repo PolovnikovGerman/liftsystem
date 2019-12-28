@@ -585,5 +585,92 @@ Class Artproof_model extends MY_Model
         return $retval;
     }
 
+    function get_lead_proofs($lead_id) {
+        $this->db->select('e.*,vo.order_proj_status,artwork_alert(e.email_id, "email") as vect_alert, aproof.cntproof, allproof.allproof',FALSE);
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails el','el.email_id=e.email_id');
+        $this->db->join('(select a.mail_id, count(ap.artwork_proof_id) cntproof from ts_artworks a JOIN ts_artwork_proofs ap on ap.artwork_id=a.artwork_id where ap.approved=1 group by a.mail_id) aproof','aproof.mail_id=e.email_id','left');
+        $this->db->join('(select a.mail_id, count(ap.artwork_proof_id) allproof from ts_artworks a JOIN ts_artwork_proofs ap on ap.artwork_id=a.artwork_id group by a.mail_id) allproof','allproof.mail_id=e.email_id','left');
+        $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('el.lead_id',$lead_id);
+        $this->db->where('e.email_status < ',3);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        $curimg=$prvimg='<img src="/img/art/artarrow.png" alt="Previous" class="prvartstageicon"/>';
+        foreach ($res as $row) {
+            $row['apoofclass']='empty';
+            $row['leadproofcell']='&nbsp;';
+
+            if (intval($row['cntproof'])!=0) {
+                $row['leadproofcell']='<img src="/img/lead/goldstar_24.png" alt="Approve"/>';
+                $row['apoofclass']='proofed';
+            }
+            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
+            $lastmsg=$this->get_lastupdate($row['email_id'],'artproofs');
+            $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
+            $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
+            $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
+            $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
+            switch ($row['order_proj_status']) {
+                case $this->NO_ART:
+                    break;
+                case $this->REDRAWN:
+                    $row['art_class']='chk-ordoption';
+                    $row['art_cell']=$curimg;
+                    $row['art_title']=$artlastupdat;
+                    break;
+                case $this->NO_VECTOR:
+                    $row['art_class']='chk-ordoption';
+                    if ($row['vect_alert']==0) {
+                        $row['redrawn_class']='chk-ordoption';
+                    } else {
+                        $row['redrawn_class']='chk-ordoption-alert';
+                    }
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$curimg;
+                    $row['redrawn_title']=$artlastupdat;
+                    break;
+                case $this->TO_PROOF:
+                    $row['art_class']='chk-ordoption';
+                    $row['redrawn_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$prvimg;
+                    $row['vectorized_cell']=$curimg;
+                    $row['vectorized_title']=$artlastupdat;
+                    break;
+                case $this->NEED_APPROVAL:
+                    $row['art_class']='chk-ordoption';
+                    $row['redrawn_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['proofed_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$prvimg;
+                    $row['vectorized_cell']=$prvimg;
+                    $row['proofed_cell']=$curimg;
+                    $row['proofed_title']=$artlastupdat;
+                    break;
+                case $this->JUST_APPROVED:
+                    $row['art_class']='chk-ordoption';
+                    $row['redrawn_class']='chk-ordoption';
+                    $row['vectorized_class']='chk-ordoption';
+                    $row['proofed_class']='chk-ordoption';
+                    $row['approved_class']='chk-ordoption';
+                    $row['art_cell']=$prvimg;
+                    $row['redrawn_cell']=$prvimg;
+                    $row['vectorized_cell']=$prvimg;
+                    $row['proofed_cell']=$prvimg;
+                    $row['approved_cell']=$curimg;
+                    $row['approved_title']=$artlastupdat;
+                    break;
+                default :
+                    break;
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
 
 }

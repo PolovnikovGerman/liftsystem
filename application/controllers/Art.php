@@ -60,6 +60,10 @@ class Art extends MY_Controller {
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
         // Searchable
         // $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+        // Artwork popup
+        $head['scripts'][]=array('src'=>'/js/artwork/artpopup.js?r='.$this->config->item('js_version'));
+        $head['styles'][]=array('style'=>'/css/artwork/artpopup.css?r='.$this->config->item('css_version'));
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,

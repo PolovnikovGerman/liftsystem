@@ -1,0 +1,1076 @@
+/* POPUP WIN */
+.artpopup_content {
+    background: url("/img/artpopup_bg.png") repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 611px;
+    padding: 9px 11px 0 12px;
+    width: 898px;
+}
+.artpopup_content input {
+    height: 16px;
+    font-size: 13px;
+    font-weight: normal;
+    color: #01010;
+}
+/* COMMON DATA Section */
+.artpopup_itemdetails {
+    background: url('/img/artpopup_itemdetail_bg.png') no-repeat transparent;
+    float: left;
+    height: 111px;
+    margin-bottom: 5px;
+    width: 900px;
+}
+.artpopup_orderdata {
+    border-right: 1px solid #000;
+    clear: both;
+    float: left;
+    height: 93px;
+    padding: 3px 0 0 3px;
+    width: 134px;
+}
+.artpopup_orderrow {
+    clear: both;
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    margin-left: 5px;
+    width: 127px;
+}
+.artpopup_orderlabel {
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    margin-right: 5px;
+    /* padding-top: 4px; */
+    text-align: right;
+    width: 48px;
+}
+.artpopup_orderlabel.rushlabel {
+    width: 57px;
+}
+.artpopup_ordernum {
+    float: left;
+    width: 73px;
+    font-size: 19px;
+    color: #000000;
+    font-weight: bold;
+}
+.artpopup_ordernum#assign_order:hover {
+    cursor: pointer;
+}
+.artpopup_orderproof {
+    color: #07550A;
+    float: left;
+    font-size: 15px;
+    font-style: italic;
+    font-weight: bold;
+    padding-top: 2px;
+    width: 73px;
+}
+.artpopup_orderemp {
+    clear: both;
+    float: left;
+    width: 120px;
+    height: 15px;
+}
+.artpopup_rushinpt {
+    float: left;
+    margin-top: -3px;
+    text-align: center;
+    width: 22px;
+}
+.artpopup_common {
+    float: left;
+    padding-top: 5px;
+    width: 756px;
+}
+.artpopup_commonrow {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    /*  line-height: 17px; */
+    margin-left: 5px;
+    margin-bottom: 3px;
+    width: 755px;
+}
+.artpopup_commonrow.merged {
+    max-height: 47px;
+}
+.artpopup_customerlabel {
+    float: left;
+    padding-top: 4px;
+    width: 66px;
+}
+.artpopup_customerval {
+    float: left;
+    width: 201px;
+}
+input.order_customer {
+    width: 182px;
+}
+.artpopup_contactlabel {
+    float: left;
+    padding-top: 4px;
+    width: 49px;
+}
+.artpopup_contactval {
+    float: left;
+    width: 209px;
+}
+input.order_contact {
+    width: 184px;
+}
+.artpopup_phonelabel {
+    float: left;
+    padding-top: 4px;
+    width: 43px;
+}
+.artpopup_phoneval {
+    float: left;
+    width: 182px;
+}
+input.order_phone {
+    width: 178px;
+}
+.artpopup_common_merged {
+    float: left;
+    width: 266px;
+}
+.artpopup_emaillabel {
+    float: left;
+    padding-top: 4px;
+    width: 36px;
+}
+.artpopup_emailval {
+    float: left;
+    width: 220px;
+}
+input.order_email {
+    width: 207px;
+}
+.artpopup_notelabel {
+    float: left;
+    padding-top: 4px;
+    width: 51px;
+}
+.artpopup_noteval {
+    float: left;
+    width: 437px;
+}
+textarea.order_notes {
+    color: #000000;
+    font-size: 14px;
+    height: 64px;
+    overflow-y: auto;
+    resize: none;
+    width: 430px;
+}
+textarea.parsedorder_notes {
+    color: #000000;
+    font-size: 14px;
+    height: 43px;
+    overflow-y: auto;
+    resize: none;
+    width: 430px;
+}
+.artpopup_itemlabel {
+    float: left;
+    padding-top: 4px;
+    width: 36px;
+}
+.artpopup_itemval {
+    float: left;
+    width: 220px;
+}
+select.order_itemname {
+    width: 207px;
+}
+input.order_itemname {
+    width: 207px;
+}
+.artpopup_itemnumval {
+    float: left;
+    width: 68px;
+}
+input.order_itemnum {
+    width: 62px;
+}
+.artpopup_otheritemarea {
+    float: left;
+    display: none;
+    margin-left: 2px;
+    width: 160px;
+}
+.artpopup_otheritemvalue {
+    float: left;
+    width: 124px;
+}
+input.order_otheritemdat {
+    width: 170px;
+}
+.artpopup_itemcolorval {
+    float: left;
+    width: 250px;
+}
+input.order_colors {
+    width: 243px;
+}
+.artpopup_artarea {
+    clear: both;
+    float: left;
+    width: 910px;
+}
+/* History, Update, User Notes */
+.artpopup_usrmsg {
+    background: url("/img/artpopup_usrmsg_bg.png") no-repeat transparent;
+    float: left;
+    height: 483px;
+    margin-right: 5px;
+    width: 185px;
+}
+.artpopup_custominstuctlabel {
+    color: #010101;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-top: 9px;
+    width: 95px;
+}
+.artpopup_custominstuct {
+    background-color: #FFFFFF;
+    clear: both;
+    color: #010101;
+    float: left;
+    margin-left: 7px;
+    margin-top: 4px;
+    width: 169px;
+}
+.artpopup_historydatalabel {
+    float: left;
+    font-size: 12px;
+    color: #010101;
+    font-style: italic;
+    margin-top: 9px;
+    width: 70px;
+}
+.artpopup_historydatalabel.active {
+    color: #0000ff;
+    cursor: pointer;
+}
+textarea.artpopup_custominstucttxt {
+    color: #000000;
+    font-size: 11px;
+    height: 350px;
+    line-height: 15px;
+    overflow-y: auto;
+    resize: none;
+    width: 161px;
+}
+.clearboth {
+    clear: both;
+}
+a.truncate_more_link {
+    color: #C60000;
+    float: right;
+    font-size: 10px;
+    font-style: italic;
+    width: 48px;
+}
+.artpopup_update {
+    clear: both;
+    float: left;
+    /* margin-top: 24px; */
+    margin-left: 6px;
+    height: 66px;
+    width: 168px;
+}
+textarea.artupdate {
+    height: 60px;
+    resize: none;
+    width: 165px;
+}
+.artpopup_historyarea {
+    background: url('/img/artpopup_history_bg.png') no-repeat;
+    clear: both;
+    float: left;
+    height: 472px;
+    width: 365px;
+}
+.artpopup_historydata {
+    background: none repeat scroll 0 0 #fff;
+    clear: both;
+    float: left;
+    height: 426px;
+    margin-left: 29px;
+    margin-top: 6px;
+    overflow-y: auto;
+    width: 314px;
+}
+.artpopup_historyhead {
+    clear: both;
+    float: left;
+    font-size: 11px;
+    font-style: italic;
+    margin-bottom: 3px;
+    width: 307px;
+}
+.parsedproofrequest {
+    float: right;
+    margin-top: -13px;
+    width: 30px;
+}
+.artpopup_historymsg {
+    clear: both;
+    float: left;
+    font-size: 11px;
+    margin-bottom: 5px;
+    text-align: left;
+    width: 312px;
+}
+.parsedproofrequest:hover {
+    cursor: pointer;
+}
+/* ART Locations */
+.artpopup_locations {
+    float: left;
+    /*max-height: 463px;
+    overflow-y: auto;*/
+    width: 526px;
+}
+.artpopup_locationsarea {
+    float: left;
+    width: 522px;
+}
+.artworksheadarea {
+    clear: both;
+    float: left;
+    width: 513px;
+}
+.artworkshead_label {
+    float: left;
+    width: 65px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+.artworkshead_srclabel {
+    float: left;
+    width: 145px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_redrawlabel {
+    float: left;
+    width: 47px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_rushlabel {
+    float: left;
+    width: 33px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_vectorlabel {
+    float: left;
+    width: 85px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_rdrnoteslabel {
+    float: left;
+    width: 55px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_redolabel {
+    float: left; width: 42px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkshead_dellabel {
+    float: left;
+    width: 40px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+/* Locations List */
+.artworksarea {
+    clear: both;
+    float: left;
+    width: 513px;
+    padding-top: 5px;
+}
+.artworkdata_content {
+    float: left;
+    width: 473px;
+}
+.artworkdata {
+    float: left;
+    height: 23px;
+    margin-bottom: 2px;
+    padding-top: 5px;
+    width: 472px;
+}
+.artworkdata.redrawn {
+    background: url('/img/artlocredrawn_bg.png') no-repeat transparent;
+}
+.artworkdata.source, .artworkdata.source_alert  {
+    background: url('/img/artlocsource_bg.png') no-repeat transparent;
+}
+
+.artworklabel {
+    float: left;
+    width: 50px;
+    text-align: left;
+    margin-left: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+.artworksource {
+    float: left;
+    width: 145px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+    color: #0c00ff;
+}
+.artworktextsource {
+    float: left;
+    width: 145px;
+    text-align: left;
+}
+.artworksource:hover {
+    cursor:pointer;
+}
+.artworkredraw {
+    float: left;
+    width: 47px;
+    margin-top: -2px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkrush {
+    float: left;
+    width: 33px;
+    margin-top: -2px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkvector {
+    float: left;
+    width: 85px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+    color: #0c00ff;
+}
+.artworkvector:hover {
+    cursor: pointer;
+}
+.artworkrdrnote {
+    float: left;
+    width: 55px;
+    margin-top: -2px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    color: #1a1a1a;
+}
+.artworkrdrnote img {
+    width: 15px;
+    height: 18px;
+}
+.artworkrdrnote img:hover {
+    cursor: pointer;
+}
+.artworkredo {
+    color: #1A1A1A;
+    float: left;
+    font-size: 10px;
+    font-weight: normal;
+    margin-top: -2px;
+    text-align: center;
+    width: 38px;
+}
+.artworkoptions {
+    clear: both;
+    float: left;
+    margin-left: 64px;
+    width: 405px;
+}
+.artworkoption_label {
+    float:left;
+    color: #1a1a1a;
+    font-size: 10px;
+    margin-top: 3px;
+    text-align: left;
+    width: 45px;
+}
+.artworkoption_colors {
+    float:left;
+    width: 41px;
+    color: #FFFFFF;
+    font-size: 10px;
+    margin-top: 3px;
+    text-align: left;
+}
+.artworkoption_colors_select {
+    float: left;
+    width: 36px;
+}
+select.artnumcolors {
+    float: left;
+    width: 34px;
+    font-size: 10px;
+}
+.artworkoption_color {
+    color: #FFFFFF;
+    float: left;
+    font-size: 10px;
+    margin-top: 3px;
+    text-align: left;
+    width: 33px;
+}
+.artworkoption_color_choice {
+    background: none no-repeat scroll 0 0 #e5e5e5;
+    border: 1px solid #000000;
+    float: left;
+    height: 11px;
+    margin-right: 3px;
+    margin-top: 3px;
+    width: 30px;
+}
+.artworkoption_color_choice.emptycolor {
+    opacity: 0.2;
+}
+
+.artworkoption_color_choice:hover {
+    cursor: pointer;
+}
+.artworkoption_loclabel {
+    float:left;
+    width: 22px;
+    color: #FFFFFF;
+    font-size: 10px;
+    text-align: left;
+    margin-top: 3px;
+}
+.artworkoption_locselect {
+    float:left;
+    width: 88px;
+    font-size: 10px;
+    text-align: left;
+}
+select.artworkoption_location {
+    float: left;
+    width: 86px;
+    font-size: 10px;
+}
+.artworkdelete {
+    float: left;
+    width: 40px;
+    margin-top: 2px;
+    text-align:  center;
+    color: #1a1a1a;
+}
+.artworkdelete img {
+    width: 20px;
+}
+.artworkdelete:hover {
+    cursor:pointer;
+}
+.artworkdataadd {
+    background: url("/img/artcoladd_button.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 31px;
+    margin-top: 8px;
+    padding-top: 2px;
+    width: 160px;
+}
+select.artdataadd {
+    float: left;
+    font-size: 10px;
+    margin-top: 1px;
+    width: 83px;
+}
+.artworkdataadd:hover {
+    cursor: pointer;
+}
+.artdataaddbutton {
+    float: left;
+    width: 69px;
+}
+textarea.artworkusertext {
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 111px;
+    overflow-y: auto;
+    resize: none;
+    width: 403px;
+}
+.artworkusrtxt {
+    float: left;
+    margin-top: -2px;
+    text-align: center;
+    width: 28px;
+}
+.artworkusrtxt:hover {
+    cursor: pointer;
+}
+.artpopup_fontlabel {
+    float: left;
+    font-size: 10px;
+    width: 34px;
+}
+.artpopup_fontval {
+    float: left;
+    margin-top: -4px;
+    width: 61px;
+}
+input.artfont {
+    font-size: 10px;
+    font-weight: normal;
+    height: 13px;
+    width: 80px;
+}
+input.artrepeat {
+    font-size: 10px;
+    font-weight: normal;
+    height: 13px;
+    width: 80px;
+}
+/* color choice popup */
+.imprintcolors {
+    background: url("/img/popupcolors_bg.png") repeat scroll 0 0 transparent;
+    color: #000000;
+    font-size: 14px;
+    float: left;
+    height: 671px;
+    margin: 0;
+    padding: 25px 25px 0;
+    position: relative;
+    width: 931px;
+}
+.imprintcolors_head {
+    clear: both;
+    color: #0000FF;
+    float: left;
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-top: -18px;
+    text-align: center;
+    width: 930px;
+}
+.imprintcolors_table {
+    clear: both;
+    float: left;
+    width : 930px;
+    margin-top: 15px;
+}
+table.table-imprintcolors {
+    border: none;
+}
+.imprintcolors_table table.table-imprintcolors td.colordat {
+    width: 307px;
+    padding: 3px;
+}
+.radiselect {
+    clear: both;
+    float: left;
+    width: 15px;
+    padding-top: 13px;
+}
+.colorshow {
+    float:left;
+    margin-left: 10px;
+    width: 82px;
+    height: 39px;
+    border: 1px solid #000;
+}
+.colorname {
+    float:left;
+    width:150px;
+    margin-left:10px;
+    padding-top: 12px;
+}
+input.inputcolor {
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 14px;
+    height: 20px;
+    margin-left: -60px;
+    margin-top: 9px;
+    width: 120px;
+}
+.select_color {
+    background: url("/img/select_color_btn.png") repeat scroll 0 0 transparent;
+    color: #000000;
+    font-size: 17px;
+    height: 34px;
+    margin-left: 107px;
+    padding-top: 10px;
+    width: 158px;
+}
+.select_color a {
+    color: #494948;
+    text-decoration: none;
+    font-size: 20px;
+}
+.select_color a.active {
+    color: #000000;
+}
+/* Upload ARTWORK Logos */
+.artlogoupload_container {
+    background: none no-repeat scroll 0 0 #FFFFFF;
+    height: 74px;
+    margin-left: -7px;
+    margin-top: 5px;
+    padding: 15px;
+    width: 293px;
+}
+.artlogoupload_data {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    width: 301px;
+}
+.artlogoupload_title {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 299px;
+}
+.artlogouploads {
+    clear: both;
+    float: left;
+    width: 303px;
+}
+.artlogouploadsave_data {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 110px;
+    width: 80px;
+}
+.artlogouploadsave_data:hover {
+    cursor: pointer;
+}
+.artlogofilename {
+    float: left;
+    height: 24px;
+    overflow: hidden;
+    padding-top: 3px;
+    white-space: nowrap;
+    width: 236px;
+}
+/* Manage code popup */
+.managecodeform {
+    background: none repeat scroll 0 0 border-box #FFFFFF;
+    clear: both;
+    float: left;
+    height: 25px;
+    padding: 20px 15px;
+    width: 319px;
+}
+.managecodeform span {
+    float: left;
+    width: 120px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #000000;
+}
+input.managecodeval {
+    float: left;
+    border: 1px solid #000000;
+    font-size: 13px;
+    color: #000000;
+    width: 90px;
+}
+.managecodesend {
+    float: left;
+    margin-left: 10px;
+    width: 80px;
+}
+.managecodesend:hover {
+    cursor: pointer;
+}
+/* Clay & Preview  */
+.artpopup_clayarea {
+    float: left;
+    margin-top: -19px;
+    width: 147px;
+}
+.artpopup_clayrow {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.claycheck {
+    float: left;
+    margin-left: 28px;
+    width: 52px;
+}
+.claycheck label {
+    color: #1A1A1A;
+    float: left;
+    font-size: 11px;
+    line-height: 20px;
+    width: 32px;
+}
+.previewcheck {
+    float: left;
+    width: 66px;
+}
+.previewcheck label {
+    color: #1a1a1a;
+    font-size: 11px;
+    float: left;
+    line-height: 20px;
+    width: 44px;
+}
+.previewcheck span, .claycheck span {
+    float: left;
+    text-align: center;
+    width: 20px;
+}
+/* Clay Data */
+.claydataarea {
+    background: url("/img/artpopup_clay_bg.png") no-repeat transparent;
+    height: 159px;
+    width: 150px;
+}
+.claydocsarea {
+    clear: both;
+    float: left;
+    padding: 5px;
+    width: 140px;
+}
+.claydocsendbtn {
+    /* clear: both;*/
+    float: left;
+    margin-left: 73px;
+    margin-top: 3px;
+    width: 46px;
+}
+.claydocsendbtn.locked {
+    opacity: 0.4;
+}
+.claydocsendbtn.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.claydocrevisarea {
+    clear: both;
+    float: left;
+    height: 90px;
+    overflow: hidden;
+    width: 100%;
+}
+.claydocrow {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.claydocapprov {
+    float: left;
+    height: 18px;
+    margin-top: 4px;
+    width: 23px;
+}
+.claydocname {
+    color: #0C00FF;
+    float: left;
+    font-size: 11px;
+    line-height: 22px;
+    width: 55px;
+}
+.claydocname:hover {
+    cursor: pointer;
+}
+.claydocsended {
+    float: left;
+    font-size: 11px;
+    width: 40px;
+}
+.claydocmarksend {
+    float: left;
+    text-align: center;
+    width: 18px;
+}
+/* Revisions */
+.clayrevisiondat {
+    clear: both;
+    float: left;
+    margin-bottom: 3px;
+    width: 100%;
+}
+.clayrevisicon {
+    float: left;
+    text-align: center;
+    width: 21px;
+}
+.clayrevisicon img {
+    height: 16px;
+    width: 13px;
+}
+.clayrevisicon:hover {
+    cursor: pointer;
+}
+.clayrevisseparat {
+    display: table-cell;
+    float: left;
+    font-size: 11px;
+    padding-top: 1px;
+    vertical-align: middle;
+    width: 60px;
+}
+.clayrevisdate {
+    float: left;
+    font-size: 11px;
+    padding-top: 1px;
+    text-align: center;
+    width: 40px;
+}
+.claydocmanage {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.claydocadd {
+    float: left;
+    width: 67px;
+}
+.claydocadd.locked {
+    opacity: 0.4;
+}
+.claydocadd.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.clayrevisadd {
+    float: left;
+    width: 67px;
+}
+.clayrevisadd.locked {
+    opacity: 0.4;
+}
+.clayrevisadd.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.claydocexpand {
+    clear: both;
+    float: left;
+    margin-left: 126px;
+    margin-top: -7px;
+    text-align: center;
+    width: 12px;
+}
+.claydocexpand.locked {
+    opacity: 0.4;
+}
+.claydocexpand.active {
+    opacity: 1;
+    cursor: pointer;
+}
+/* Expand version */
+.claydataexpand {
+    background: url("/img/artpopup_clayexpand_bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    clear: both;
+    display: none;
+    float: left;
+    height: 160px;
+    left: 404px;
+    position: absolute;
+    top: 144px;
+    width: 510px;
+}
+.claydocmanage_expand {
+    clear: both;
+    float: left;
+    margin-left: 58px;
+    margin-top: 8px;
+    width: 449px;
+}
+.claydocsendbtn.expand {
+    margin-left: 245px;
+    margin-top: 0;
+}
+.claydocdata_expand {
+    clear: both;
+    float: left;
+    height: 105px;
+    width: 100%;
+}
+.expandcolview {
+    float: left;
+    margin-left: 7px;
+    width: 134px;
+}
+.claycollapse {
+    clear: both;
+    float: left;
+    margin-left: 486px;
+    font-size: 12px;
+    width: 10px;
+}
+.claycollapse:hover {
+    cursor: pointer;
+}
+/* Clay Approved Data */
+.clayapprovedarea {
+    background: url("/img/artpopup_clayapproved_bg.png") no-repeat transparent;
+    height: 61px;
+    width: 150px;
+}
+/* Preview Area */
+.previewdataarea {
+    background: url("/img/artpopup_preview_bg.png") no-repeat transparent;
+    height: 159px;
+    width: 150px;
+}
+/* Approved Preview */
+.previewapprovedarea {
+    background: url("/img/artpopup_previewapproved_bg.png") no-repeat transparent;
+    height: 61px;
+    width: 150px;
+}
+/* Clay Revision Edit */
+.clayrevision_edit {
+    background: none repeat scroll 0 0 #FFFFFF;
+    clear: both;
+    float: left;
+    height: 313px;
+    margin-top: 9px;
+    padding: 10px;
+    width: 703px;
+}

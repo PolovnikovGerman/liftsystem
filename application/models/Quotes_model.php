@@ -129,22 +129,22 @@ Class Quotes_model extends My_Model {
         return $res;
     }
 
-//    function get_lead_quotes($lead_id) {
-//        $this->db->select('e.*');
-//        $this->db->from('ts_emails e');
-//        $this->db->join('ts_lead_emails el','el.email_id=e.email_id');
-//        $this->db->where('e.email_type', Quotes_model::EMAIL_TYPE);
-//        $this->db->where('e.email_subtype',  Quotes_model::EMAIL_SUBTYPE);
-//        $this->db->where('el.lead_id',$lead_id);
-//        $res=$this->db->get()->result_array();
-//        $out=array();
-//        foreach ($res as $row) {
-//            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
-//            $out[]=$row;
-//        }
-//        return $out;
-//    }
-//
+    public function get_lead_quotes($lead_id) {
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails el','el.email_id=e.email_id');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('e.email_subtype',  $this->EMAIL_SUBTYPE);
+        $this->db->where('el.lead_id',$lead_id);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
+            $out[]=$row;
+        }
+        return $out;
+    }
+
 //    function get_todays() {
 //        $todaybgn=strtotime($this->startdate);
 //        $this->db->select('count(e.email_id) as cnt');
