@@ -35,7 +35,7 @@
                 <div class="artpopup_approved">
                     <div id="approvedarea<?=$artwork_id?>"><?=$approved_view?></div>
                 </div>
-                <div class="artpopup_save"><img src="/img/artpopup_savebtn.png" alt="Save"/></div>
+                <div class="artpopup_save"><img src="/img/artpage/artpopup_savebtn.png" alt="Save"/></div>
             </div>
         </div>
     </form>

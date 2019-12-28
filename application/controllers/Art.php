@@ -6,8 +6,19 @@ class Art extends MY_Controller {
     private $pagelink = '/art';
     protected $artorderperpage=250;
 
+    /* Task stages */
+    private $NO_ART = '06_noart';
+    private $REDRAWN = '05_notredr';
+    private $TO_PROOF = '03_notprof';
+    private $NEED_APPROVAL = '02_notapprov';
+    private $JUST_APPROVED = '01_notplaced';
+    private $NO_VECTOR = '04_notvector';
+    private $ART_PROOF='Art Proof';
+
     private $NO_ART_REMINDER='Need Art Reminder';
     private $NEED_APPROVE_REMINDER='Need Approval Reminder';
+
+    protected $restore_artdata_error='Connection Lost. Please, recall function';
 
     public function __construct()
     {
@@ -771,8 +782,134 @@ class Art extends MY_Controller {
         }
     }
 
+    /* Open popup ART */
+    public function proof_artdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $proof_id=$this->input->post('proof_id');
+            /* Get PR Data */
+            $this->load->model('artproof_model');
+            $this->load->model('email_model');
+            $this->load->model('artwork_model');
+            $data=$this->artproof_model->get_proof_data($proof_id);
 
+            /* Current stage */
+            if ($data['email_art']==0) {
+                $curstage=$this->NO_ART;
+            } elseif ($data['email_redrawn']==0) {
+                $curstage=$this->REDRAWN;
+            } elseif ($data['email_vectorized']==0) {
+                $curstage=$this->NO_VECTOR;
+            } elseif ($data['email_proofed']==0) {
+                $curstage=$this->TO_PROOF;
+            } elseif ($data['email_approved']==0) {
+                $curstage=$this->NEED_APPROVAL;
+            } else {
+                $curstage=$this->JUST_APPROVED;
+            }
+            $artwork=$this->artwork_model->get_artwork_proof($proof_id,$this->USR_ID);
 
+            $artwork_id=$artwork['artwork_id'];
+            if ($artwork['item_id']==0) {
+                $artwork['item_id']=$data['email_item_id'];
+            }
+            $artwork['item_qty']=($artwork['item_qty']=='0' ? '' : $artwork['item_qty']);
+            $template=$this->email_model->get_emailtemplate_byname($this->ART_PROOF);
+
+            if (!$artwork['order_num']) {
+                $artwork['ordernum_data']=$this->load->view('artpage/artwork_orderassign_view',array(),TRUE);
+            } else {
+                $artwork['ordernum_data']=$this->load->view('artpage/artwork_ordernum_view',$artwork,TRUE);
+            }
+            $artwork['items_list']=$this->artwork_model->get_items_list();
+            $artwork['other_item_label']='';
+            if ($artwork['item_name']=='Other') {
+                $artwork['other_item_label']='Other';
+            } elseif ($artwork['item_name']=='Multiple') {
+                $artwork['other_item_label']='Multiple';
+            }
+            $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
+            // $artwork['bypass']=0;
+            $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);
+            $item_options=array(
+                'orderview'=>$orderview,
+                'commonview'=>$commondat,
+            );
+            $common_dat=$this->load->view('artpage/popup_itemdat_view',$item_options,TRUE);
+            $mdata['content']=$this->prepare_artwork_content($artwork, $common_dat, $curstage);
+
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function viewartsource() {
+        $art_id=$this->input->get('id');
+        $artsession=$this->input->get('artsession');
+        if (empty($artsession)) {
+            $artdata=$this->func->session('artwork');
+        } else {
+            $artdata=$this->func->session($artsession);
+        }
+
+        if (empty($artdata)) {
+            echo $this->restore_artdata_error;
+            die();
+        }
+        $locations=$artdata['locations'];
+        $found=0;
+        foreach ($locations as $row) {
+            if ($row['artwork_art_id']==$art_id) {
+                $found=1;
+                $filename=$row['logo_srcpath'];
+                break;
+            }
+        }
+        if ($found==0) {
+            echo 'Not Found';
+            die();
+        }
+        if (empty($filename)) {
+            echo 'File Not Found';
+            die();
+        }
+        if ($art_id<0) {
+            // New Location
+            $filesource=  str_replace($this->config->item('pathpreload'), $this->config->item('upload_path_preload') , $filename);
+        } else {
+            $filesource=  str_replace($this->config->item('artwork_logo_relative'), $this->config->item('artwork_logo') , $filename);
+        }
+        if (!file_exists($filesource)) {
+            echo 'Source File '.$filesource.' Not Found ';
+            die();
+        }
+        $viewopt=array(
+            'source'=>$filename,
+        );
+        list($width, $height, $type, $attr) = getimagesize($filesource);
+        // Rate
+        if ($width >= $height) {
+            if ($width<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$width;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        } else {
+            if ($height<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$height;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        }
+        $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
+        echo $content;
+    }
 
     private function _prepare_task_view() {
         $datf=array();
@@ -833,4 +970,125 @@ class Art extends MY_Controller {
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
         return $content;
     }
+
+    private function prepare_artwork_content($artwork, $common_dat, $curstage) {
+        // Create Unique ID for ART session
+        $this->load->model('artwork_model');
+        $artsession='artwork'.uniq_link(15);
+        /* History */
+        $artwork_id=$artwork['artwork_id'];
+        /* Messages, Histories */
+        $artwork['history_class']=(count($artwork['art_history'])==0 ? '' : 'active');
+
+        $usrmsg=$this->load->view('artpage/artwork_mesages_view', $artwork, TRUE);
+        /* Locations */
+        $locations=$this->artwork_model->get_art_locations($artwork_id, $artsession);
+        /* Create artwork copy for session */
+        $artworkdata = array(
+            'artwork_id'=>$artwork_id,
+            'artstage'=>$curstage,
+            'proofs_id'=>$artwork['mail_id'],
+            'order_id'=>$artwork['order_id'],
+            'proof_num'=>$artwork['proof_num'],
+            'order_num'=>$artwork['order_num'],
+            'rush'=>$artwork['artwork_rush'],
+            'oldrush'=>$artwork['artwork_rush'],
+            'blank'=>$artwork['artwork_blank'],
+            'customer_name'=>$artwork['customer'],
+            'contact'=>$artwork['customer_contact'],
+            'customer_phone'=>$artwork['customer_phone'],
+            'customer_email'=>$artwork['customer_email'],
+            'item_name'=>$artwork['item_name'],
+            'other_item'=>$artwork['other_item'],
+            'item_num'=>$artwork['item_number'],
+            'item_id'=>$artwork['item_id'],
+            'notes'=>$artwork['artwork_note'],
+            'item_color'=>$artwork['item_color'],
+            'item_qty'=>$artwork['item_qty'],
+            'customer_instruct'=>$artwork['customer_instruct'],
+            'update_msg'=>'',
+            'locations'=>array(),
+            'proofs'=>array(),
+            'art_history'=>$artwork['art_history'],
+        );
+        foreach ($locations as $lrow) {
+            $i=0;
+            $artworkdata['locations'][]=$lrow;
+        }
+        $imprint_locations=$this->artwork_model->get_location_imprint($artwork['item_id']);
+        $locations_data=array();
+        $i=0;
+        foreach ($locations as $loc) {
+            /* Get Location View */
+            $location_options=array(
+                'artwork_art_id'=>$loc['artwork_art_id'],
+                'locs'=>$imprint_locations,
+                'defval'=>$loc['art_location'],
+            );
+            $loc['imprloc_view']=$this->load->view('artpage/imprint_location_view',$location_options,TRUE);
+            /* colors */
+            $this->load->config('siteart_config');
+            $colordat=$this->artwork_model->colordat_prepare($loc, $this->config->item('imprint_colors'));
+            $loc['optioncolors']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
+            if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
+                $locations_data[]=$this->load->view('artpage/artwork_artlogo_view',$loc,TRUE);
+            } elseif ($loc['art_type']=='Text') {
+                $locations_data[]=$this->load->view('artpage/artwork_arttext_view',$loc,TRUE);
+            } else {
+                $locations_data[]=$this->load->view('artpage/artwork_repeat_view',$loc,TRUE);
+            }
+        }
+        /* Add Location View */
+        $addlocat=$this->load->view('artpage/artwork_advancedadd_view',array('artwork'=>$artwork_id),TRUE);
+
+        $artshead=$this->load->view('artpage/arts_head_view',array(),TRUE);
+
+
+        /* Templates */
+        $templates_view=$this->load->view('artpage/templates_view',array('artwork_id'=>$artwork_id),TRUE);
+
+        /* Get Proofs */
+        $proofdat=$this->artwork_model->get_artproofs($artwork_id);
+
+        $artworkdata['proofs']=$proofdat;
+        // $prdat=array();
+        // $approved=array();
+        $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat),TRUE);
+        $proof_options=array(
+            'artwork_id'=>$artwork_id,
+            'proofs_view'=>$proofs_view,
+        );
+        $proofs=$this->load->view('artpage/proofs_edit_view',$proof_options,TRUE);
+        // Approved
+        $approve_options=array(
+            'proofs'=>$proofdat,
+            'artwork_id'=>$artwork_id,
+        );
+        //$aprove_lists=
+        $approvview=$this->load->view('artpage/approved_view',$approve_options, TRUE);
+        /* Save in session */
+        usersession($artsession,$artworkdata);
+        /* Apply data to form */
+        $popup_options=array(
+            'proof_id'=>$artwork['mail_id'],
+            'order_id'=>$artwork['order_id'],
+            'item_id'=>$artwork['item_id'],
+            'artwork_id'=>$artwork_id,
+            'location_num'=>$i,
+            'artstage'=>$curstage,
+            'common_data'=>$common_dat,
+            'artmsg_data'=>$usrmsg,
+            'locations_data'=>$locations_data,
+            'templates_view'=>$templates_view,
+            'proofs_view'=>$proofs,
+            'approved_view'=>$approvview,
+            'addlocations'=>$addlocat,
+            'parsedalert'=>'',
+            'artshead'=>$artshead,
+            'artsession'=>$artsession,
+        );
+        $content=$this->load->view('artpage/popup_view',$popup_options,TRUE);
+        return $content;
+    }
+
 }

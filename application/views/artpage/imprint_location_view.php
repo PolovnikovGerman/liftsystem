@@ -1,7 +1,5 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 28.12.19
- * Time: 17:46
- */
+<select class="artworkoption_location" data-artworkartid="<?=$artwork_art_id?>">
+    <?php foreach ($locs as $row) {?>
+        <option value="<?=$row['key']?>" <?=($row['key']==$defval ? 'selected="selected"' : '')?> ><?=$row['value']?></option>
+    <?php } ?>
+</select>

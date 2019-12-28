@@ -59,6 +59,7 @@ function artproof_lead(mailid) {
         if (response.errors==='') {
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','928px');
             $("#artModal").modal('show');
             // $("div#pop_content").empty().html(response.data.content);
             /* SAVE, EMAIL, etc buttons */
@@ -146,7 +147,7 @@ function common_update(fldname,value) {
 /* Change Popup COMMON DATA Area */
 function init_commondata() {
 
-    $("select#order_item_id").searchable();
+    // $("select#order_item_id").searchable();
     /* Show other data */
     var itemid=parseInt($("select#order_item_id").val());
     if (itemid<1) {
@@ -384,30 +385,42 @@ function init_proofs() {
         var proof=$(this).data('proofid');
         show_proof(proof);
     })
-    $("div.artpopup_proofname").bt({
-        fill : '#EDEDED',
-        cornerRadius: 10,
-        width: 420,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#OOOOOO'}
+    $("div.artpopup_proofname").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left',
+        content: 'title'
     });
-    $("div.artpopup_proofsend").bt({
-        fill : '#EDEDED',
-        cornerRadius: 10,
-        width: 110,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '16',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#OOOOOO'}
-    })
+    $("div.artpopup_proofsend").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left',
+        content: 'title'
+    });
+    // $("div.artpopup_proofname").bt({
+    //     fill : '#EDEDED',
+    //     cornerRadius: 10,
+    //     width: 420,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "top",
+    //     strokeStyle : '#FFFFFF',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#OOOOOO'}
+    // });
+    // $("div.artpopup_proofsend").bt({
+    //     fill : '#EDEDED',
+    //     cornerRadius: 10,
+    //     width: 110,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "top",
+    //     strokeStyle : '#FFFFFF',
+    //     strokeHeight: '16',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#OOOOOO'}
+    // })
 
 
 }
@@ -659,19 +672,25 @@ function init_approved() {
     $("div.artpopup_approvedname").click(function(){
         var proof=$(this).data('proofid');
         show_proof(proof);
-    })
-    $("div.artpopup_approvedname").bt({
-        fill : '#EDEDED',
-        cornerRadius: 10,
-        width: 420,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#OOOOOO'}
     });
+    $("div.artpopup_approvedname").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left',
+        content: 'title'
+    });
+    // $("div.artpopup_approvedname").bt({
+    //     fill : '#EDEDED',
+    //     cornerRadius: 10,
+    //     width: 420,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "top",
+    //     strokeStyle : '#FFFFFF',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {color: '#OOOOOO'}
+    // });
 }
 
 /* Delete approved */
@@ -958,130 +977,106 @@ function save_newcopy(artwork_id,order_num) {
 
 /* Init Location Management */
 function init_locations() {
-    $("div.artworksource").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
-        var file_type='redraw';
+    $("div.artworksource").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
+        var file_type = 'redraw';
         show_file(art_id, file_type);
     })
-    $("div.artworkvector").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
-        var file_type='vectored';
+    $("div.artworkvector").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
+        var file_type = 'vectored';
         show_file(art_id, file_type);
     });
-    $("div.artworkdelete").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
-        var artname=$("div.artworklabel[data-artworkartid="+art_id+"]").text();
-        if (confirm('Delete Artwork '+artname+'?')) {
+    $("div.artworkdelete").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
+        var artname = $("div.artworklabel[data-artworkartid=" + art_id + "]").text();
+        if (confirm('Delete Artwork ' + artname + '?')) {
             delete_art(art_id, artname);
         }
     })
-    $("input.artfont").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
-        var value=$(this).val();
+    $("input.artfont").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
+        var value = $(this).val();
         change_font(value, art_id);
     });
-    $("div.artworkusrtxt").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
+    $("div.artworkusrtxt").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
         change_usertxt(art_id);
     })
-    $("input.artredraw").unbind('change').change(function(){
-        var art_id=$(this).data('artworkartid');
-        var redraw=0;
-        if ($(this).prop('checked')==true) {
-            redraw=1;
+    $("input.artredraw").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var redraw = 0;
+        if ($(this).prop('checked') == true) {
+            redraw = 1;
         }
         change_redraw(art_id, redraw);
     });
-    $("input.artrush").unbind('change').change(function(){
-        var art_id=$(this).data('artworkartid');
-        var rushval=0;
-        if ($(this).prop('checked')==true) {
-            rushval=1;
+    $("input.artrush").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var rushval = 0;
+        if ($(this).prop('checked') == true) {
+            rushval = 1;
         }
         change_location('rush', rushval, art_id);
     })
-    $("input.artundo").unbind('change').change(function(){
-        var art_id=$(this).data('artworkartid');
-        var undoval=0;
-        if ($(this).prop('checked')==true) {
-            undoval=1;
+    $("input.artundo").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var undoval = 0;
+        if ($(this).prop('checked') == true) {
+            undoval = 1;
         }
         change_location('redo', undoval, art_id);
     })
-    $("div.artworkrdrnote").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
+    $("div.artworkrdrnote").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
         edit_rdnote(art_id);
     })
-    $("select.artnumcolors").unbind('change').change(function(){
-        var art_id=$(this).data('artworkartid');
-        var numcolors=$(this).val();
+    $("select.artnumcolors").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var numcolors = $(this).val();
         edit_artnumcolors(art_id, numcolors);
     })
-    $("div.artworkoption_color_choice").unbind('click').click(function(){
-        var art_id=$(this).data('artworkartid');
-        var color_num=$(this).data('colornum');
+    $("div.artworkoption_color_choice").unbind('click').click(function () {
+        var art_id = $(this).data('artworkartid');
+        var color_num = $(this).data('colornum');
         edit_color(art_id, color_num);
     });
-    $("select.artworkoption_location").unbind('change').change(function(){
-        var art_id=$(this).data('artworkartid');
-        var location=$(this).val();
+    $("select.artworkoption_location").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var location = $(this).val();
         edit_imprintval(art_id, location);
     });
-    $("div.artworkusrtxt img").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'},
-        ajaxCache: false
+    $("div.artworkusrtxt img").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
     });
-    $("div.artworkrdrnote img").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'},
-        ajaxCache: false
+    $("div.artworkrdrnote img").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
     });
-    $("div.artworkoption_color_choice").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 150,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'},
-        ajaxCache: false
+    $("div.artworkoption_color_choice").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
     });
-    $("div.artworksource.viewsource").bt({
-        ajaxCache: false,
-        /* trigger: 'click', */
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',        
-        ajaxPath: ["$(this).data('viewsrc')"]
-    })
+    $("div.artworksource.viewsource").hover(
+        function () {
+            var e = $(this);
+            $.get(e.data('viewsrc'), function (d) {
+                e.popover({
+                    content: d,
+                    placement: 'left',
+                    html: true
+                }).popover('show');
+            });
+        },
+        function () {
+            $(this).popover('hide');
+        }
+    );
 }
-
 function change_usertxt(art_id) {
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
@@ -1390,18 +1385,8 @@ function show_art_history() {
         if (response.errors=='') {
             show_popup1('approvemailarea');
             $("div#popupwin").empty().html(response.data.content);
-            /*$("div.parsedproofrequest").each(function(){
-                $("div#"+$(this).prop('id')).bt({
-                    trigger: 'click',
-                    ajaxCache: false,
-                    width: '200px',
-                    positions: 'most',
-                    ajaxPath: ["$(this).attr('href')"]
-                });
-            });*/
         } else {
             show_error(response);
         }
     },'json');
-
 }

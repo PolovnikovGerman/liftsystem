@@ -1,7 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 28.12.19
- * Time: 18:18
- */
+<div class="artworkdataadd">
+    <div id="artworkdataadd" class="artdataaddbutton"  data-artworkid="<?=$artwork?>">&nbsp;</div>
+    <select class="artdataadd">
+        <option value="Logo">Logo</option>
+        <option value="Text">Text</option>
+        <option value="Repeat">Repeat</option>
+        <option value="Reference">Reference</option>
+    </select>
+</div>

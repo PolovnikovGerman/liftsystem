@@ -138,13 +138,13 @@ function init_prooflistmanage() {
     $("div.artdata").click(function(){
         var mailid=$(this).parent("div.artdataarea").data('proofid');
         // POPUP
-        artproof_lead(mailid);
+        // artproof_lead(mailid);
         return false;
     });
     $("div.proof_brand_dat").click(function(){
         var mailid=$(this).data('proofid');
         // POPUP
-        // artproof_lead(mailid);
+        artproof_lead(mailid);
         return false;
     })
     /* All other divs */

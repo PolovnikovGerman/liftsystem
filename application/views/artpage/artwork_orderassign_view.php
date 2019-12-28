@@ -1,7 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 28.12.19
- * Time: 16:50
- */
+<div class="artpopup_ordernum" id="assign_order">
+    <img src="/img/artpage/artpopup_orderassign_btn.png" alt="Assign"/>
+</div>

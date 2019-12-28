@@ -1,10 +1,10 @@
 /* POPUP WIN */
 .artpopup_content {
-    background: url("/img/artpopup_bg.png") repeat scroll 0 0 transparent;
+    background: url("/img/artpage/artpopup_bg.png") repeat scroll 0 0 transparent;
     clear: both;
     float: left;
     height: 611px;
-    padding: 9px 11px 0 12px;
+    /* padding: 9px 11px 0 12px; */
     width: 898px;
 }
 .artpopup_content input {
@@ -15,7 +15,7 @@
 }
 /* COMMON DATA Section */
 .artpopup_itemdetails {
-    background: url('/img/artpopup_itemdetail_bg.png') no-repeat transparent;
+    background: url('/img/artpage/artpopup_itemdetail_bg.png') no-repeat transparent;
     float: left;
     height: 111px;
     margin-bottom: 5px;
@@ -42,7 +42,6 @@
     float: left;
     font-size: 12px;
     margin-right: 5px;
-    /* padding-top: 4px; */
     text-align: right;
     width: 48px;
 }
@@ -90,7 +89,6 @@
     color: #000000;
     float: left;
     font-size: 12px;
-    /*  line-height: 17px; */
     margin-left: 5px;
     margin-bottom: 3px;
     width: 755px;
@@ -224,7 +222,7 @@ input.order_colors {
 }
 /* History, Update, User Notes */
 .artpopup_usrmsg {
-    background: url("/img/artpopup_usrmsg_bg.png") no-repeat transparent;
+    background: url("/img/artpage/artpopup_usrmsg_bg.png") no-repeat transparent;
     float: left;
     height: 483px;
     margin-right: 5px;
@@ -293,7 +291,7 @@ textarea.artupdate {
     width: 165px;
 }
 .artpopup_historyarea {
-    background: url('/img/artpopup_history_bg.png') no-repeat;
+    background: url('/img/artpage/artpopup_history_bg.png') no-repeat;
     clear: both;
     float: left;
     height: 472px;
@@ -425,16 +423,16 @@ textarea.artupdate {
 }
 .artworkdata {
     float: left;
-    height: 23px;
+    height: 27px;
     margin-bottom: 2px;
     padding-top: 5px;
     width: 472px;
 }
 .artworkdata.redrawn {
-    background: url('/img/artlocredrawn_bg.png') no-repeat transparent;
+    background: url('/img/artpage/artlocredrawn_bg.png') no-repeat transparent;
 }
 .artworkdata.source, .artworkdata.source_alert  {
-    background: url('/img/artlocsource_bg.png') no-repeat transparent;
+    background: url('/img/artpage/artlocsource_bg.png') no-repeat transparent;
 }
 
 .artworklabel {
@@ -604,7 +602,7 @@ select.artworkoption_location {
     cursor:pointer;
 }
 .artworkdataadd {
-    background: url("/img/artcoladd_button.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/artpage/artcoladd_button.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 31px;
     margin-top: 8px;
@@ -666,7 +664,7 @@ input.artrepeat {
 }
 /* color choice popup */
 .imprintcolors {
-    background: url("/img/popupcolors_bg.png") repeat scroll 0 0 transparent;
+    background: url("/img/artpage/popupcolors_bg.png") repeat scroll 0 0 transparent;
     color: #000000;
     font-size: 14px;
     float: left;
@@ -729,7 +727,7 @@ input.inputcolor {
     width: 120px;
 }
 .select_color {
-    background: url("/img/select_color_btn.png") repeat scroll 0 0 transparent;
+    background: url("/img/artpage/select_color_btn.png") repeat scroll 0 0 transparent;
     color: #000000;
     font-size: 17px;
     height: 34px;
@@ -1004,7 +1002,7 @@ input.managecodeval {
 }
 /* Expand version */
 .claydataexpand {
-    background: url("/img/artpopup_clayexpand_bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: url("/img/artpage/artpopup_clayexpand_bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
     clear: both;
     display: none;
     float: left;
@@ -1048,19 +1046,19 @@ input.managecodeval {
 }
 /* Clay Approved Data */
 .clayapprovedarea {
-    background: url("/img/artpopup_clayapproved_bg.png") no-repeat transparent;
+    background: url("/img/artpage/artpopup_clayapproved_bg.png") no-repeat transparent;
     height: 61px;
     width: 150px;
 }
 /* Preview Area */
 .previewdataarea {
-    background: url("/img/artpopup_preview_bg.png") no-repeat transparent;
+    background: url("/img/artpage/artpopup_preview_bg.png") no-repeat transparent;
     height: 159px;
     width: 150px;
 }
 /* Approved Preview */
 .previewapprovedarea {
-    background: url("/img/artpopup_previewapproved_bg.png") no-repeat transparent;
+    background: url("/img/artpage/artpopup_previewapproved_bg.png") no-repeat transparent;
     height: 61px;
     width: 150px;
 }
@@ -1073,4 +1071,153 @@ input.managecodeval {
     margin-top: 9px;
     padding: 10px;
     width: 703px;
+}
+.artpopup_artwork {
+    float: left;
+    width: 188px;
+}
+/* Template description */
+.artpopup_template {
+    background: url('/img/artpage/artpopup_templat_bg.png') no-repeat transparent;
+    float: left;
+    width: 170px;
+    height: 49px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+.artpopup_templrow {
+    clear: both;
+    color: #010101;
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 3px;
+    margin-left: 5px;
+    width: 165px;
+}
+.artpopup_templview {
+    float: left;
+    margin-left: 80px;
+    width: 18px;
+}
+.artpopup_templview:hover {
+    cursor: pointer;
+}
+.artpopup_templviewicon {
+    float: left;
+    width: 18px;
+}
+.artpopup_templviewicon:hover {
+    cursor: pointer;
+}
+.artpopup_templtype {
+    color: #0000FF;
+    float: left;
+    font-size: 12px;
+    padding-top: 3px;
+    width: 36px;
+}
+.artpopup_templtype:hover {
+    cursor: pointer;
+}
+.artpopup_templtypeemp {
+    float: left;
+    width: 57px;
+}
+
+.artpopup_proofs {
+    background: url("/img/artpage/artpopup_proofs_bg.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 254px;
+    margin-bottom: 5px;
+    padding: 5px 5px 5px 1px;
+    width: 177px;
+}
+.artpopup_maildat {
+    float: left;
+    margin-left: 110px;
+    width: 58px;
+    margin-bottom: 15px;
+}
+.artpopup_maildat:hover {
+    cursor: pointer;
+}
+.proofdocsarea {
+    clear: both;
+    float: left;
+    margin-bottom: 10px;
+    max-height: 167px;
+    overflow-y: scroll;
+    width: 177px;
+}
+.artpopup_proofrow {
+    clear: both;
+    float: left;
+    margin-bottom: 3px;
+    /* width: 181px; */
+    width: 164px;
+}
+.addproof {
+    width: 64px;
+}
+.addproof:hover {
+    cursor: pointer;
+}
+.proofnotapproved:hover {
+    cursor: pointer;
+}
+/* artpopup_approve_btn.png */
+/* artpopup_approved_btn.png */
+.artpopup_artproofcheck {
+    float: left;
+    margin-top: -4px;
+    width: 24px;
+}
+.artpopup_proofstar {
+    float: left;
+    margin-top: -1px;
+    width: 20px;
+}
+.artpopup_proofname {
+    float: left;
+    color: #0c00ff;
+    font-size: 11px;
+    width: 75px;
+}
+.artpopup_proofname:hover {
+    cursor: pointer;
+}
+.artpopup_proofsend {
+    float: left;
+    width: 27px;
+    color: #1a1a1a;
+    font-size: 11px;
+    font-style: italic;
+}
+.artpopup_proofsend:hover {
+    cursor: pointer;
+}
+.artpopup_approved {
+    background: url("/img/artpage/artpopup_approved_bg.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 148px;
+    padding: 29px 5px 5px;
+    width: 180px;
+}
+.artpopup_approvedname {
+    float: left;
+    color: #0c00ff;
+    font-size: 11px;
+    width: 75px;
+}
+.artpopup_approvedname:hover {
+    cursor: pointer;
+}
+.artpopup_save {
+    float: left;
+    margin-left: 124px;
+    width: 62px;
+}
+.artpopup_save:hover {
+    cursor: pointer;
 }
