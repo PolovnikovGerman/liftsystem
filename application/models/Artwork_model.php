@@ -579,7 +579,7 @@ Class Artwork_model extends MY_Model
         } else {
             $from_array=explode(',', $data['customer_email']);
             foreach ($from_array as $row) {
-                if (!$this->func->valid_email_address(trim($row))) {
+                if (!valid_email_address(trim($row))) {
                     $out['msg']='Customer Email Address '.$row.' is Not Valid';
                     return $out;
                 }
@@ -587,7 +587,7 @@ Class Artwork_model extends MY_Model
             if ($data['cc']!='') {
                 $ccarray=  explode(',', $data['cc']);
                 foreach ($ccarray as $row) {
-                    if (!$this->func->valid_email_address(trim($row))) {
+                    if (!valid_email_address(trim($row))) {
                         $out['msg']='Email CC '.$row.' is Not Valid';
                         return $out;
                     }
