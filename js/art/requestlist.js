@@ -144,7 +144,7 @@ function init_prooflistmanage() {
     $("div.proof_brand_dat").click(function(){
         var mailid=$(this).data('proofid');
         // POPUP
-        artproof_lead(mailid);
+        artproof_lead(mailid, 'artprooflist');
         return false;
     })
     /* All other divs */
@@ -242,6 +242,7 @@ function prooflead(mailid) {
     var url="/art/change_status";
     $.post(url, {'quest_id':mailid, 'type':'proof'}, function(response){
         if (response.errors=='') {
+            $("#artModal").find('div.modal-dialog').css('width','565px');
             $("#artModalLabel").empty().html('Lead Assign');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
@@ -326,7 +327,8 @@ function edit_note(mailid) {
     var url=main_proofurl+"/proof_openartnote";
     $.post(url, {'mail_id':mailid}, function(response){
         if (response.errors=='') {
-            $("#artModalLabel").empty().html('Edit Lead Note');
+            $("#artModalLabel").empty().html(response.data.title);
+            $("#artModal").find('div.modal-dialog').css('width','569px');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
             $("div#artModal div.saveordernote").click(function(){

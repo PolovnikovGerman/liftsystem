@@ -673,4 +673,26 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    public function save_artnote($mail_id,$email_questions) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  'Unknown proof request');
+        $this->db->set('email_questions',  $email_questions);
+        $this->db->where('email_id',$mail_id);
+        $this->db->update('ts_emails');
+        if ($this->db->affected_rows()==1) {
+            $out['result']= $this->success_result;
+        }
+        return $out;
+    }
+
+    public function add_proofdoc_log($artwork_id, $user_id, $doclink, $source_name, $work) {
+        $this->db->set('user_id', $user_id);
+        $this->db->set('artwork_id', $artwork_id);
+        $this->db->set('proofdoc_link', $doclink);
+        $this->db->set('source_name', $source_name);
+        $this->db->set('work', $work);
+        $this->db->insert('ts_proofdoc_log');
+        return TRUE;
+    }
+
+
 }

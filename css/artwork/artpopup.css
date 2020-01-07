@@ -1221,3 +1221,97 @@ input.managecodeval {
 .artpopup_save:hover {
     cursor: pointer;
 }
+/*  Templates */
+.template_container {
+    background-color: #E9E9E9;
+    float: left;
+    height: 470px;
+    margin: 5px auto 0;
+    padding: 15px;
+    position: relative;
+    width: 600px;
+}
+.itemstemplate_head {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    height: 24px;
+    text-align: center;
+    width: 600px;
+}
+.template_head_itemnum {
+    float: left;
+    width: 66px;
+}
+.template_head_itemname {
+    float: left;
+    width: 350px;
+}
+.template_head_itemfile {
+    float: left;
+    width: 183px;
+}
+.templates_listdata {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    height: 432px;
+    overflow-y: auto;
+    width: 590px;
+    text-align: left;
+}
+.templatesdata_row {
+    clear: both;
+    float: left;
+    height: 20px;
+    padding-top: 3px;
+    width: 573px;
+}
+.template_data_itemnum {
+    float: left;
+    width: 66px;
+}
+.template_data_itemname {
+    float: left;
+    width: 350px;
+}
+.template_data_itemfile {
+    float: left;
+    width: 120px;
+}
+i.templateplayer {
+    color:#2b542c;
+    font-size: 16px;
+}
+.artpopup_artfilename {
+    float: left;
+    font-size: 11px;
+    color: #0c00ff;
+    width: 95px;
+}
+.artpopup_artfilename:hover {
+    cursor: pointer;
+}
+.artpopup_artredcirkle {
+    background: url('/img/art/artpopup_redcircle.png') no-repeat transparent;
+    float: left;
+    width: 13px;
+}
+.artpopup_artredcirkle img {
+    width: 13px;
+    height: 13px;
+}
+.artpopup_artredcirkle:hover {
+    cursor: pointer;
+}
+.artpopup_vectorfilename {
+    float: left;
+    font-size: 11px;
+    color: #0c00ff;
+    width: 95px;
+}
+.artpopup_vectorfilename:hover {
+    cursor: pointer;
+}

@@ -72,8 +72,11 @@ class Art extends MY_Controller {
         // Searchable
         // $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         // Artwork popup
-        $head['scripts'][]=array('src'=>'/js/artwork/artpopup.js?r='.$this->config->item('js_version'));
-        $head['styles'][]=array('style'=>'/css/artwork/artpopup.css?r='.$this->config->item('css_version'));
+        $head['scripts'][]=array('src'=>'/js/artwork/artpopup.js');
+        $head['styles'][]=array('style'=>'/css/artwork/artpopup.css');
+        // Uploader
+        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
 
         $options = [
             'title' => $head['title'],
@@ -725,11 +728,12 @@ class Art extends MY_Controller {
             $this->load->model('artproof_model');
             $order_dat=$this->artproof_model->get_proof_data($mail_id);
             $options=array(
-                'title'=>' Proof Request # '.$order_dat['proof_num'],
+                // 'title'=>' Proof Request # '.$order_dat['proof_num'],
                 'order_id'=>$order_dat['email_id'],
                 'art_note'=>$order_dat['email_questions'],
             );
             $mdata['content']=$this->load->view('artrequest/order_noteedit_view',$options,TRUE);
+            $mdata['title'] = 'Art note for Proof Request # '.$order_dat['proof_num'];
             $this->ajaxResponse($mdata,$error);
         }
         show_404();
@@ -788,6 +792,7 @@ class Art extends MY_Controller {
             $mdata=array();
             $error='';
             $proof_id=$this->input->post('proof_id');
+            $callpage = $this->input->post('callpage');
             /* Get PR Data */
             $this->load->model('artproof_model');
             $this->load->model('email_model');
@@ -824,6 +829,7 @@ class Art extends MY_Controller {
             }
             $artwork['items_list']=$this->artwork_model->get_items_list();
             $artwork['other_item_label']='';
+            $artwork['callpage']=$callpage;
             if ($artwork['item_name']=='Other') {
                 $artwork['other_item_label']='Other';
             } elseif ($artwork['item_name']=='Multiple') {
@@ -1010,6 +1016,7 @@ class Art extends MY_Controller {
             'locations'=>array(),
             'proofs'=>array(),
             'art_history'=>$artwork['art_history'],
+            'callpage' => $artwork['callpage'],
         );
         foreach ($locations as $lrow) {
             $i=0;

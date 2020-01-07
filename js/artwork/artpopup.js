@@ -17,7 +17,6 @@ function order_artstage(order_id) {
     
     var url="/art/order_change";
     var params = {order: order_id, 'page': pagename, 'edit': 0};
-    // $.post(url,{'order_id': order_id}, function(response){
     $.post(url, params, function(response){
         if (response.errors=='') {
             // show_popup('popup_area');
@@ -51,12 +50,13 @@ function order_artstage(order_id) {
 }
 
 /* Proof Request Art Popup */
-function artproof_lead(mailid) {
+function artproof_lead(mailid, callpage) {
     //mailid=mailid.substr(7);
     /* ART POPUP */
     var url="/art/proof_artdata";
-    $.post(url,{'proof_id':mailid},function(response){
+    $.post(url,{'proof_id':mailid, 'callpage': callpage},function(response){
         if (response.errors==='') {
+            $(".popover").popover('hide');
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','928px');
@@ -134,7 +134,7 @@ function common_update(fldname,value) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name:'field', value: fldname});
     params.push({name:'value', value: value});
-    var url="/art/art_commonupdate";    
+    var url="/artproofrequest/art_commonupdate";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artpopup_save").show();
@@ -226,19 +226,19 @@ function init_commondata() {
 
 /* Show Available Orders */
 function assign_order(artid) {
-    var url="/art/art_assignord";
+    var url="/artproofrequest/art_assignord";
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'artwork_id', value: artid});
     $.post(url, params, function(response){
-        if (response.errors=='') {
-            show_popup1('assignorderarea');
-                $("div#popupwin").empty().html(response.data.content);
-                $("div.orderdata").click(function(){
-                    var order_id=$(this).data('orderid');
-                    var ordernum=$(this).find('div.orderassign_num').text();
-                    assignorder(order_id, ordernum);
-                })
+        if (response.errors == '') {
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+            $("div.orderdata").click(function () {
+                var order_id = $(this).data('orderid');
+                var ordernum = $(this).find('div.orderassign_num').text();
+                assignorder(order_id, ordernum);
+            })
         } else {
             show_error(response);
         }
@@ -252,10 +252,10 @@ function assignorder(order_id, ordernum) {
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name: 'order_id', value:order_id});
         params.push({name:'order_num', value:ordernum});
-        var url="/art/art_newassign";
+        var url="/artproofrequest/art_newassign";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                disable_popup1();
+                $("#artNextModal").modal('hide');
                 $("div#assign_order").empty().html(ordernum);
                 $("div#assign_order").unbind('click');
                 $("div.artpopup_save").show();
@@ -269,7 +269,7 @@ function assignorder(order_id, ordernum) {
 
 /* Change Item Name */
 function itemnum_change() {
-    var url="/art/art_itemchange"
+    var url="/artproofrequest/art_itemchange"
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'item_id', value: $("select#order_item_id").val()});
@@ -317,7 +317,7 @@ function init_templateview() {
             var artid=$("input#artwork_id").val();
             show_templates(artid);
         } else {
-            var url="/art/art_showtemplate";
+            var url="/artproofrequest/art_showtemplate";
             $.post(url, {'item_id':itemid}, function(response){
                 if (response.errors=='') {
                     openai(response.data.fileurl, response.data.filename);
@@ -331,14 +331,16 @@ function init_templateview() {
 }
 /* Show search templates select */
 function show_templates(artid) {
-    var url="/art/art_showtemplates";
+    var url="/artproofrequest/art_showtemplates";
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name:'artwork_id', value: artid});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('imprint_area');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-dialog').css('width','640px');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+            // $("div#popupwin").empty().html(response.data.content);
         } else {
             show_error(response);
         }
@@ -363,10 +365,53 @@ function openai(imgurl, imgname) {
 
 /* Init proofs Management */
 function init_proofs() {
-    $("div.addproof").unbind('click').click(function(){
+    /* $("div.addproof").unbind('click').click(function(){
         var artid=$(this).data('artworkid');
         add_proofs(artid);
-    })
+    }); */
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/artpage/artpopup_add_btn.png" alt="Add Proof"/></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('uploadproofdoc'),
+        action: '/artproofrequest/proofattach',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        params: {
+            'artwork_id': $("#uploadproofdoc").data("artworkid")
+        },
+        allowedExtensions: ['pdf','PDF'],
+        onComplete: function(id, fileName, responseJSON){
+            console.log(id+' ID '+fileName+' FileName');
+            console.log('Response');
+            console.log(responseJSON);
+            if (responseJSON.success==true) {
+                var artwork_id = $("#uploadproofdoc").data("artworkid");
+                var url="/artproofrequest/art_saveproofload";
+                var params=new Array();
+                params.push({name: 'artsession', value: $("input#artsession").val()});
+                params.push({name: 'proofdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.srcname});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("div#proofarea"+artwork_id).empty().html(response.data.content);
+                        init_proofs();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+
     $("div.proofnotapproved").unbind('click').click(function(){
         var proofid=$(this).data('proofid');
         var artid=$(this).data('artworkid');
@@ -397,38 +442,13 @@ function init_proofs() {
         placement: 'left',
         content: 'title'
     });
-    // $("div.artpopup_proofname").bt({
-    //     fill : '#EDEDED',
-    //     cornerRadius: 10,
-    //     width: 420,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#OOOOOO'}
-    // });
-    // $("div.artpopup_proofsend").bt({
-    //     fill : '#EDEDED',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '16',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#OOOOOO'}
-    // })
-
 
 }
 /* Delete proof */
 function delproof(proof_id, art_id) {
     var proofname=$("div#proofarea"+art_id+" div.artpopup_proofname[data-proofid="+proof_id+"]").text();
     if (confirm('Delete Proof '+proofname+'?')) {
-        var url="/art/art_approveddelete";
+        var url="/artproofrequest/art_approveddelete";
         var params=new Array();
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name:'artwork_id', value: art_id});
@@ -450,7 +470,7 @@ function delproof(proof_id, art_id) {
 }
 /* Add proof doc */
 function add_proofs(artwork_id) {
-    var url="/art/art_newproofupload";
+    var url="/artproofrequest/art_newproofupload";
     var params=new Array();
     params.push({name:'artsession', value: $("input#artsession").val()});
     params.push({name:'artwork_id', value :artwork_id});
@@ -800,35 +820,14 @@ function save_parsed() {
 }
 function save_art() {
     var dat=$("form#artdetailsform").serializeArray();    
-    var url="/art/artwork_save";
+    var url="/artproofrequest/artwork_save";
     $.post(url, dat, function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#artModal").modal('hide');
             /* Check current page */
-            var curtab;
-            if ($("ul.tabNavigation a.selected").length!=0) {
-                curtab=$("ul.tabNavigation a.selected").prop('id');
-            } else {
-                curtab=$("ul.tabNavigation a.selectedleft").prop('id');
-            }
-            
-            if (curtab=='taskviewlnk') {
-                var search=$("input#tasksearch").val();
-                if (search=='') {
-                    init_tasks_page();
-                } else {
-                    searchtasks();
-                }
-            } else if (curtab=='requestlistlnk') {
+            var callpage = response.data.callpage;
+            if (callpage=='artprooflist') {
                 initProofPagination();
-            } else if (curtab=='orderlistlnk') {
-                initArtPagination();
-            } else if (curtab=='onlineprooflnk') {
-                initProofPagination();
-            } else if (curtab=='genorderslnk') {
-                initGeneralPagination();
-            } else if (curtab=='leadsorderslnk') {
-                search_leadorders();
             }
         } else {
             show_error(response);

@@ -505,4 +505,23 @@ Class Orders_model extends MY_Model
         }
     }
 
+    public function get_nonassignorders() {
+        $this->db->select('order_id, order_id, order_date, order_num, customer_name, order_items, revenue');
+        $this->db->from('ts_orders');
+        $this->db->where('order_cog',NULL);
+        $this->db->where('order_art',0);
+        $this->db->where('order_arthide',0);
+        $this->db->where('is_canceled',0);
+        $this->db->order_by('order_num');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            $row['total']=(floatval($row['revenue'])==0 ? '---' : '$'.number_format($row['revenue'],2,'.',''));
+            $row['item']=$row['order_items'];
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+
 }
