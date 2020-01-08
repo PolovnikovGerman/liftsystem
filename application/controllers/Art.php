@@ -77,6 +77,8 @@ class Art extends MY_Controller {
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+        // File Download
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
 
         $options = [
             'title' => $head['title'],
@@ -847,74 +849,6 @@ class Art extends MY_Controller {
 
             $this->ajaxResponse($mdata,$error);
         }
-    }
-
-    public function viewartsource() {
-        $art_id=$this->input->get('id');
-        $artsession=$this->input->get('artsession');
-        if (empty($artsession)) {
-            $artdata=$this->func->session('artwork');
-        } else {
-            $artdata=$this->func->session($artsession);
-        }
-
-        if (empty($artdata)) {
-            echo $this->restore_artdata_error;
-            die();
-        }
-        $locations=$artdata['locations'];
-        $found=0;
-        foreach ($locations as $row) {
-            if ($row['artwork_art_id']==$art_id) {
-                $found=1;
-                $filename=$row['logo_srcpath'];
-                break;
-            }
-        }
-        if ($found==0) {
-            echo 'Not Found';
-            die();
-        }
-        if (empty($filename)) {
-            echo 'File Not Found';
-            die();
-        }
-        if ($art_id<0) {
-            // New Location
-            $filesource=  str_replace($this->config->item('pathpreload'), $this->config->item('upload_path_preload') , $filename);
-        } else {
-            $filesource=  str_replace($this->config->item('artwork_logo_relative'), $this->config->item('artwork_logo') , $filename);
-        }
-        if (!file_exists($filesource)) {
-            echo 'Source File '.$filesource.' Not Found ';
-            die();
-        }
-        $viewopt=array(
-            'source'=>$filename,
-        );
-        list($width, $height, $type, $attr) = getimagesize($filesource);
-        // Rate
-        if ($width >= $height) {
-            if ($width<=200) {
-                $viewopt['width']=$width;
-                $viewopt['height']=$height;
-            } else {
-                $rate=200/$width;
-                $viewopt['width']=ceil($width*$rate);
-                $viewopt['height']=ceil($height*$rate);
-            }
-        } else {
-            if ($height<=200) {
-                $viewopt['width']=$width;
-                $viewopt['height']=$height;
-            } else {
-                $rate=200/$height;
-                $viewopt['width']=ceil($width*$rate);
-                $viewopt['height']=ceil($height*$rate);
-            }
-        }
-        $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
-        echo $content;
     }
 
     private function _prepare_task_view() {

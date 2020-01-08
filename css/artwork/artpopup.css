@@ -1315,3 +1315,180 @@ i.templateplayer {
 .artpopup_vectorfilename:hover {
     cursor: pointer;
 }
+/* Popup - edit text */
+/* Upload view */
+.vectorupload_container {
+    background-color: #fff;
+    min-height: 160px;
+    padding: 15px;
+    width: 410px;
+}
+.vectorupload_data {
+    float: left;
+    color: #000;
+    font-size: 14px;
+    width: 410px;
+}
+.vectorupload_title {
+    clear: both;
+    float: left;
+    width: 410px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.vectoruploads {
+    clear: both;
+    float: left;
+    width: 400px;
+}
+.vectorfiledat {
+    clear: both;
+    float: left;
+    width: 400px;
+}
+.vectorfilename {
+    float: left;
+    width: 325px;
+    margin-left: 15px;
+    height: 24px;
+}
+.delvectofile {
+    float: left;
+    width: 32px;
+    text-align: center;
+}
+.delvectofile:hover {
+    cursor: pointer;
+}
+.vectorsave_data {
+    clear: both;
+    float: left;
+    width: 80px;
+    margin-left: 180px;
+    display: none;
+}
+.vectorsave_data:hover {
+    cursor: pointer;
+}
+/* Fonts Popup */
+.imprintfonts {
+    background: url("/img/artpage/font_select_bg.png") repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    height: 644px;
+    margin: 0;
+    padding: 91px 25px 10px 38px;
+    position: relative;
+    width: 981px;
+}
+.imprintfonts-row {
+    clear: both;
+    float: left;
+    width: 880px;
+    color: #0000c0;
+    font-family: arial, verdana, sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+}
+.imprintfonts-legend {
+    float: left;
+    width: 535px;
+    text-align: left;
+    padding-left: 15px;
+}
+.imprintcolors-input {
+    float: left;
+    width: 295px;
+    color: #000;
+}
+input.fontmanual {
+    width: 290px;
+    border: 1px solid;
+    font-family: arial, verdana, sans-serif;
+    font-size: 22px;
+    height: 40px;
+}
+.imprintfonts_table {
+    clear: both;
+    float: left;
+    margin-left: -11px;
+    margin-top: 9px;
+    max-height: 358px;
+    overflow-y: auto;
+    width: 922px;
+}
+table.table-fontpopular {
+    border: none;
+}
+.imprintfonts_table table.table-fontpopular td.fontdat {
+    height: 44px;
+    padding: 12px;
+    vertical-align: middle;
+    width: 255px;
+}
+table.table-fontpopular td.fontdat div.fontshow {
+    float: left;
+    text-align: left;
+    width: 250px;
+}
+.fontshow {
+    float: left;
+    width: 380px;
+    text-align: left;
+}
+.select_font_bottom {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+    margin-left: 739px;
+    width: 180px;
+    height: 52px;
+}
+.fontview {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-left: 15px;
+    width: 450px;
+    display: none;
+}
+.fontviewtitle {
+    float: left;
+    font-size: 14px;
+    color: #717174;
+    width: 74px;
+}
+.viewtype {
+    float: left;
+    font-size: 14px;
+    color: #bcbcbd;
+    width: 80px;
+
+}
+.viewtype-active {
+    float: left;
+    font-size: 14px;
+    width: 80px;
+    color: #3d3df8;
+}
+.font_button_select {
+    background: url("/img/artpage/select_font_btn.png") repeat scroll 0 0 transparent;
+    color: #514F4F;
+    float: right;
+    font-size: 23px;
+    font-weight: bold;
+    height: 52px;
+    padding-top: 7px;
+    text-align: center;
+    width: 165px;
+}
+.font_button_select.active {
+    color: #000;
+}
+.font_button_select.active:hover {
+    cursor: pointer;
+}

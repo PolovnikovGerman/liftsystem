@@ -108,75 +108,115 @@ class Artproofrequest extends MY_Controller
     }
 
     /* Add Location */
-    public function art_newlocation() {
-        if ($this->func->isAjax()) {
-            $mdata=array();
-            $error='';
-            $postdata=$this->input->post();
-            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
-            $artdata=$this->func->session($artsession);
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-                $this->func->ajaxResponse($mdata, $error);
-            }
-            $artwork_id=$postdata['artwork_id'];
-            $art_type=$postdata['art_type'];
-            if ($art_type=='Logo' || $art_type=='Reference') {
-                $mdata['content']=$this->load->view('artpage/upload_artlogo_view',array('artwork_id'=>$artwork_id),TRUE);
-            } elseif ($art_type=='Repeat') {
-                /* Get Orders which was approveed */
-                $mdata['content']=$this->load->view('artpage/select_archiveord_view',array('artwork_id'=>$artwork_id),TRUE);
-            } else {
-                $data=array(
-                    'usertext'=>'',
-                    'art_type'=>'Text',
-                );
-                $res=$this->martwork->add_location($artdata, $data, $artwork_id,$art_type, $artsession);
-                if ($res['result']==Art::ERROR_RESULT) {
-                    $error=$res['msg'];
+    public function art_newlocation()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error = $this->restore_artdata_error;
+            $postdata = $this->input->post();
+            $artsession = (isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata = usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $artwork_id = $postdata['artwork_id'];
+                $art_type = $postdata['art_type'];
+                if ($art_type == 'Logo' || $art_type == 'Reference') {
+                    $mdata['content'] = $this->load->view('artpage/upload_artlogo_view', array('artwork_id' => $artwork_id), TRUE);
+                    $error='';
+                } elseif ($art_type == 'Repeat') {
+                    /* Get Orders which was approveed */
+                    $mdata['content'] = $this->load->view('artpage/select_archiveord_view', array('artwork_id' => $artwork_id), TRUE);
+                    $error='';
                 } else {
-                    $newloc=$res['newlocation'];
+                    $data = array('usertext' => '', 'art_type' => 'Text',);
+                    $res = $this->artwork_model->add_location($artdata, $data, $artwork_id, $art_type, $artsession);
+                    $error = $res['msg'];
+                    if ($res['result'] == $this->success_result) {
+                        $error='';
+                        $newloc = $res['newlocation'];
+                        $imprints = $this->artwork_model->get_location_imprint($artdata['item_id']);
 
-                    $imprints=$this->martwork->get_location_imprint($artdata['item_id']);
+                        $improptions = array('artwork_art_id' => $newloc['artwork_art_id'], 'locs' => $imprints, 'defval' => '',);
+                        $newloc['imprloc_view'] = $this->load->view('artpage/imprint_location_view', $improptions, TRUE);
 
-                    $improptions=array(
-                        'artwork_art_id'=>$newloc['artwork_art_id'],
-                        'locs'=>$imprints,
-                        'defval'=>'',
-                    );
-                    $newloc['imprloc_view']=$this->load->view('artpage/imprint_location_view',$improptions,TRUE);
-
-                    /* Build View */
-                    $colordat=$this->martwork->colordat_prepare($newloc, $this->imprint_colors);
-                    $newloc['optioncolors']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
-                    $content=$this->load->view('artpage/artwork_arttext_view',$newloc,TRUE);
-                    $mdata['content']=$content;
+                        /* Build View */
+                        $imprint_colors = $this->config->item('imprint_colors');
+                        $colordat = $this->artwork_model->colordat_prepare($newloc, $imprint_colors);
+                        $newloc['optioncolors'] = $this->load->view('artpage/artwork_coloroptions_view', $colordat, TRUE);
+                        $content = $this->load->view('artpage/artwork_arttext_view', $newloc, TRUE);
+                        $mdata['content'] = $content;
+                    }
                 }
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
+    public function art_redrawattach() {
+        $this->load->helper('upload');
+        $filename = '';
+        $filesize = 0;
+        $file = null;
+        $path = $this->config->item('upload_path_preload');
+
+        $arrayext=array('jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png');
+        if (isset($_GET['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } elseif (isset($_FILES['qqfile'])) {
+            $file = new qqUploadedFileForm();
+        } elseif (isset($_POST['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } else {
+            die('{error: "server-error file not passed"}');
+        }
+
+        if ($file) {
+            $filename = $file->getName();
+            $filesize = $file->getSize();
+
+            if ($filesize == 0)
+                die('{error: "server-error file size is zero"}');
+
+            $pathinfo = pathinfo($file->getName());
+
+            $filename = uniq_link(12);
+            $ext = strtolower($pathinfo['extension']);
+            if (!in_array($ext, $arrayext )) {
+                $these = implode(', ', $arrayext);
+                echo (json_encode(array('success' => false, 'error' => 'File has an invalid extension, it should be one of '. $these . '.')));
+                exit();
+            } else {
+                $file->save($path . $filename . '.' . $ext);
+                echo (json_encode(array('success' => true, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                exit();
+            }
+        } else {
+            echo (json_encode(array('success' => false,'path'=>$path)));
+            exit();
+        }
+
+        die('{error: "server-error query params not passed"}');
+    }
+
     /* Add new ARTWORK location */
     public function art_addlocation() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_artdata_error;
             $data=$this->input->post();
             $artsession=(isset($data['artsession']) ? $data['artsession'] : 'failsession');
             $artwork_id=$data['artwork_id'];
             $art_type=$data['art_type'];
-            $artdata=$this->func->session($artsession);
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-            } else {
-                $res=$this->martwork->add_location($artdata, $data, $artwork_id,$art_type, $artsession);
-                if ($res['result']==Art::ERROR_RESULT) {
-                    $error=$res['msg'];
-                } else {
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->add_location($artdata, $data, $artwork_id,$art_type, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
                     $newloc=$res['newlocation'];
-                    $imprints=$this->martwork->get_location_imprint($artdata['item_id']);
+                    $imprints=$this->artwork_model->get_location_imprint($artdata['item_id']);
                     $improptions=array(
                         'artwork_art_id'=>$newloc['artwork_art_id'],
                         'locs'=>$imprints,
@@ -185,7 +225,8 @@ class Artproofrequest extends MY_Controller
                     $newloc['imprloc_view']=$this->load->view('artpage/imprint_location_view',$improptions,TRUE);
 
                     /* Build View */
-                    $colordat=$this->martwork->colordat_prepare($newloc, $this->imprint_colors);
+                    $imprint_colors = $this->config->item('imprint_colors');
+                    $colordat=$this->artwork_model->colordat_prepare($newloc, $imprint_colors);
                     $newloc['optioncolors']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
                     if ($newloc['art_type']=='Logo' || $newloc['art_type']=='Reference') {
                         $content=$this->load->view('artpage/artwork_artlogo_view',$newloc,TRUE);
@@ -197,7 +238,7 @@ class Artproofrequest extends MY_Controller
                     $mdata['content']=$content;
                 }
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -213,14 +254,14 @@ class Artproofrequest extends MY_Controller
     }
     /* Return name of ART logo file */
     public function art_newartupload() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $filename=$this->input->post('filename');
             $docname=$this->input->post('doc_name');
             $data=$this->input->post('data','1');
             $mdata['content']=$this->load->view('artpage/artlogo_upload_view',array('filename'=>$filename, 'doc_name'=>$docname,'data'=>$data),TRUE);
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -482,23 +523,21 @@ class Artproofrequest extends MY_Controller
 
     /* Mark proof as assign */
     public function art_aproveproof() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_artdata_error;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
 
             $artwork_id=$postdata['artwork_id'];
             $proof_id=$postdata['proof_id'];
-            $artdata=$this->func->session($artsession);
-
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-            } else {
-                $res=$this->martwork->approve_proof($artwork_id, $proof_id, $artdata, $this->USR_ID, $artsession);
-                if ($res['result']==Art::ERROR_RESULT) {
-                    $error=$res['msg'];
-                } else {
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->approve_proof($artwork_id, $proof_id, $artdata, $this->USR_ID, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
                     $proofdat=$res['proofs'];
                     $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
                     $approve_options=array(
@@ -510,27 +549,27 @@ class Artproofrequest extends MY_Controller
                     $mdata['approvecontent']=$approvview;
                 }
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
     /* Prepare Email for Approve */
     public function art_approvemail() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            // $template=$this->input->post('email_template');
-            $template=Art::ART_PROOF;
+            $error=$this->restore_artdata_error;
+            $template=$this->ART_PROOF;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
-            $artdata=$this->func->session($artsession);
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-            } else {
-                $userdat=$this->muser->get_user_data($this->USR_ID);
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('user_model');
+                $this->load->model('email_model');
+                $userdat=$this->user_model->get_user_data($this->USR_ID);
                 $user_name=$userdat['user_name'];
+                $error='';
                 if ($template) {
-                    $mail_template=$this->memail->get_emailtemplate_byname($template);
+                    $mail_template=$this->email_model->get_emailtemplate_byname($template);
                     if ($artdata['order_id']) {
                         $msgdat="BT".$artdata['order_num'];
                         $doc_type='Order';
@@ -555,7 +594,6 @@ class Artproofrequest extends MY_Controller
                     $message=str_replace('<<document_type>>',$doc_type,$message);
                     $subj=str_replace('<<order_number>>', $msgdat, $mail_template['email_template_subject']);
                     $subj=str_replace('<<document_type>>',$doc_type,$subj);
-                    // $subj=str_replace('<<item_name>>', $artdata['item_name'], $subj);
                     $subj=str_replace('<<item_name>>', $itemname, $subj);
                 } else {
                     $subj='BLUETRACK Art proof ';
@@ -573,52 +611,51 @@ class Artproofrequest extends MY_Controller
                 $mdata['content']=$this->load->view('artpage/approve_email_view',$options,TRUE);
 
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
     /* Send proofs to customer */
     public function art_sendproofs() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_artdata_error;
             $data=$this->input->post();
             $artsession=(isset($data['artsession']) ? $data['artsession'] : 'failsession');
-            $artdata=$this->func->session($artsession);
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-            } else {
-                $res=$this->martwork->send_proof_approve($data, $artdata, $this->USR_ID, $artsession);
-                if ($res['result']==Art::SUCCESS_RESULT) {
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->send_proof_approve($data, $artdata, $this->USR_ID, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
                     /* Build new content for proofs */
+                    $error='';
                     $proofdat=$res['proofs'];
                     $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
                     $mdata['content']=$proofs_view;
-                } else {
-                    $error=$res['msg'];
                 }
-
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
     /* Show approved file */
-    function art_approvedshow() {
-        if ($this->func->isAjax()) {
+    public function art_approvedshow() {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_artdata_error;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $proof_id=$postdata['proof_id'];
             $artdata=$this->func->session($artsession);
             if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
             } else {
-                $res=$this->martwork->get_approved($artdata, $proof_id);
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->get_approved($artdata, $proof_id);
+                $error=$res['msg'];
                 if ($res['result']==Art::ERROR_RESULT) {
-                    $error=$out['msg'];
                 } else {
+                    $error='';
                     $mdata['url']=$res['url'];
                     $mdata['filename']=$res['filename'];
                 }
@@ -628,21 +665,20 @@ class Artproofrequest extends MY_Controller
     }
 
     public function art_approvedrevert() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_artdata_error;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $proof_id=$postdata['proof_id'];
             $artwork_id=$postdata['artwork_id'];
-            $artdata=$this->func->session($artsession);
-            if (empty($artdata)) {
-                $error=$this->restore_artdata_error;
-            } else {
-                $res=$this->martwork->art_revert_approved($artdata, $artwork_id, $proof_id, $this->USR_ID, $artsession);
-                if ($res['result']==Art::ERROR_RESULT) {
-                    $error=$res['msg'];
-                } else {
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->art_revert_approved($artdata, $artwork_id, $proof_id, $this->USR_ID, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
                     $proofdat=$res['proofs'];
                     $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artwork_id),TRUE);
                     $mdata['proof_content']=$proofs_view;
@@ -650,7 +686,7 @@ class Artproofrequest extends MY_Controller
                 }
             }
 
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -679,6 +715,256 @@ class Artproofrequest extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    public function art_changeusrtxt() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$postdata['art_id'];
+                $artwork_id=$artdata['artwork_id'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->get_artdata_locusrtxt($artdata, $art_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$this->load->view('artpage/newarttext_view',array('artwork_id'=>$artwork_id,'usrtxt'=>$res['usrtxt'],'title'=>'Enter Customer Text'),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function art_saveusertext() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$postdata['art_id'];
+                $customer_text=$postdata['customer_text'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->save_artdata_locusrtxt($artdata, $art_id, $customer_text, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$res['content'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    /* Open File content */
+    public function art_openimg() {
+        $url = $this->input->post('url');
+        $filename = $this->input->post('file');
+        /* Get extension */
+        $this->func->openfile($url, $filename);
+    }
+
+    /* Delete location */
+    public function art_dellocation() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $art_id=$postdata['art_id'];
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->delete_location($artdata, $art_id, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    /* Popup with FONTS for select */
+    public function art_fontselect() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('artwork_model');
+            $fonts_popular=$this->artwork_model->get_fonts(array('is_popular'=>1));
+            $fonts_other=$this->artwork_model->get_fonts(array('is_popular'=>0));
+            if (count($fonts_popular)+count($fonts_other)==0) {
+                $error='Empty list of fonts';
+            } else {
+                $mdata['content']=$this->load->view('artpage/font_select_view',array('fonts_popular'=>$fonts_popular,'fonts_other'=>$fonts_other),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function art_locationupdate() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $locitem=$postdata['field'];
+                $locvalue=$postdata['value'];
+                $art_id=$postdata['art_id'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->artlocationdata_update($artdata, $locitem, $locvalue, $art_id, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function art_showfile() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $art_id=$postdata['art_id'];
+            $type=$postdata['type'];
+            $artworkdata=usersession($artsession);
+            if (!empty($artworkdata)) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->logofilesrc($artworkdata, $art_id, $type);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $mdata['url']=$res['url'];
+                    $mdata['filename']=$res['filename'];
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function viewartsource() {
+        $art_id=$this->input->get('id');
+        $artsession=$this->input->get('artsession');
+        if (empty($artsession)) {
+            $artdata=usersession('artwork');
+        } else {
+            $artdata=usersession($artsession);
+        }
+
+        if (empty($artdata)) {
+            echo $this->restore_artdata_error;
+            die();
+        }
+        $locations=$artdata['locations'];
+        $found=0;
+        foreach ($locations as $row) {
+            if ($row['artwork_art_id']==$art_id) {
+                $found=1;
+                $filename=$row['logo_srcpath'];
+                break;
+            }
+        }
+        if ($found==0) {
+            echo 'Not Found';
+            die();
+        }
+        if (empty($filename)) {
+            echo 'File Not Found';
+            die();
+        }
+        if ($art_id<0) {
+            // New Location
+            $filesource=  str_replace($this->config->item('pathpreload'), $this->config->item('upload_path_preload') , $filename);
+        } else {
+            $filesource=  str_replace($this->config->item('artwork_logo_relative'), $this->config->item('artwork_logo') , $filename);
+        }
+        if (!file_exists($filesource)) {
+            echo 'Source File '.$filesource.' Not Found ';
+            die();
+        }
+        $viewopt=array(
+            'source'=>$filename,
+        );
+        list($width, $height, $type, $attr) = getimagesize($filesource);
+        // Rate
+        if ($width >= $height) {
+            if ($width<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$width;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        } else {
+            if ($height<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$height;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        }
+        $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
+        echo $content;
+    }
+
+    public function art_rdnoteview() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $artwork_id=$artdata['artwork_id'];
+                $art_id=$postdata['art_id'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->get_artdata_locrdnote($artdata, $art_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $mdata['content']=$this->load->view('artpage/newarttext_view',array('artwork_id'=>$artwork_id,'usrtxt'=>$res['usrtxt'],'title'=>'Type notes to Redraw Team'),TRUE);
+                    $error='';
+                }
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function  art_rdnotesave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$postdata['art_id'];
+                $redraw_message=$postdata['redraw_message'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->save_artdata_locrdnote($artdata, $art_id, $redraw_message, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $mdata['content']=$res['content'];
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     // Save ART Request
     public function artwork_save() {

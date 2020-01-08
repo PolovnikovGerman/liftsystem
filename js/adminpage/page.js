@@ -14,7 +14,7 @@ function show_error(response) {
     alert(response.errors);
     // $('.alert').alert('show');
     if (response.data.url !== undefined) {
-        clearTimeout(timerId)
+        // clearTimeout(timerId)
         window.location.href = response.data.url;
     }
 }

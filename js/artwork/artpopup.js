@@ -468,118 +468,6 @@ function delproof(proof_id, art_id) {
 
 
 }
-/* Add proof doc */
-function add_proofs(artwork_id) {
-    var url="/artproofrequest/art_newproofupload";
-    var params=new Array();
-    params.push({name:'artsession', value: $("input#artsession").val()});
-    params.push({name:'artwork_id', value :artwork_id});
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            show_popup1('logoupload');
-            $("div#popupwin").empty().html(response.data.content);
-            init_proofupload();
-            $("div.vectorsave_data").unbind('click').click(function(){
-                save_proofupload();
-            });
-        }
-    }, 'json');
-}
-
-/* Init upload  */
-function init_proofupload() {    
-    // Init Uploader
-    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
-      '<em>Upload</em></span></div>' +
-      '<ul class="qq-upload-list"></ul>' +
-      '<ul class="qq-upload-drop-area"></ul>'+
-      '<div class="clear"></div></div>';    
-
-    var uploader = new qq.FileUploader({
-        element: document.getElementById('file-uploader'),
-        allowedExtensions: ['pdf','PDF'],
-        action: '/art/proofattach',
-        template: upload_templ,
-        params: {
-            'uploadsession': $("#uploadsession").val()
-        },
-        // multiple: true,
-        multiple: false,
-        debug: false,
-        onSubmit: function(id, fileName){
-            $("div.qq-upload-button").css('visibility','hidden');
-            $("div.vectorsave_data").hide();
-            $("div#loader").show();
-        },
-        onComplete: function(id, fileName, responseJSON){
-            $("div#loader").hide();
-            $("ul.qq-upload-list").css('display','none');
-            if (responseJSON.success==true) {
-                $("div.qq-upload-button").css('visibility','visible');
-                $("#orderattachlists").empty().html(responseJSON.content);
-                init_uploadproof_manage();
-                if (responseJSON.numrecs>0) {
-                    $("div.vectorsave_data").show();
-                } else {
-                    $("div.vectorsave_data").hide();
-                }                
-            } else {
-                alert(responseJSON.error);
-                $("div#loader").hide();
-                $("div.qq-upload-button").css('visibility','visible');
-            }
-        }
-    });
-}
-
-function init_uploadproof_manage() {
-    $("div.delvectofile").unbind('click').click(function(){
-        var uplididx=$(this).data('updloadredraw');
-        remove_uploadproof(uplididx);
-    });
-}
-
-function remove_uploadproof(uplididx) {
-    if (confirm('Remove this Proof Docmument?')) {
-        var url='/art/art_deluplproofdocs';
-        var params=new Array();
-        params.push({name:'uploadsession', value: $("input#uploadsession").val()});
-        params.push({name:'id', value: uplididx});
-        $.post(url,params, function(response){
-            if (response.errors=='') {
-                $("#orderattachlists").empty().html(response.data.content);
-                init_uploadproof_manage();
-                if (response.data.numrec>0) {
-                    $("div.vectorsave_data").show();
-                } else {
-                    $("div.vectorsave_data").hide();
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    }
-}
-
-/* Save new Proof */
-function save_proofupload() {
-    var artwork_id=$("input#artwork_id").val();
-    /* Add New file */
-    var params=new Array();
-    params.push({name: 'artsession', value: $("input#artsession").val()});
-    params.push({name: 'uploadsession', value: $("input#uploadsession").val()});
-    params.push({name: 'artwork_id', value: artwork_id});
-    var url="/art/art_saveproofload";    
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            disable_popup1();
-            $("div#proofarea"+artwork_id).empty().html(response.data.content);
-            init_proofs();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
 
 /* Approve proof */
 function approve_proof(proofid, artworkid) {
@@ -590,7 +478,7 @@ function approve_proof(proofid, artworkid) {
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name: 'artwork_id', value:artworkid});
         params.push({name: 'proof_id', value :proofid});
-        var url="/art/art_aproveproof";        
+        var url="/artproofrequest/art_aproveproof";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#proofarea"+artworkid).empty().html(response.data.proofcontent);
@@ -614,11 +502,12 @@ function approve_mail(artid) {
         var params=new Array();
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name: 'email_template', value :email_template});
-        var url="/art/art_approvemail";        
+        var url="/artproofrequest/art_approvemail";
         $.post(url, params , function(response){
             if (response.errors=='') {
-                show_popup1('approvemailarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
+                // $("div#popupwin").empty().html(response.data.content);
                 $("div.addbccapprove").click(function(){
                     var bcctype=$(this).data('applybcc');
                     if (bcctype=='hidden') {
@@ -630,8 +519,7 @@ function approve_mail(artid) {
                         $("div#emailbccdata").hide();
                         $("textarea.aprovemail_message").css('height','241');
                     }
-                })
-
+                });
                 $("div.approvemail_send").click(function(){
                     send_approvemail();
                 })
@@ -666,12 +554,10 @@ function send_approvemail() {
     })
     params.push({name:'proofs',value:proofs});
     params.push({name:'numproofs',value:num});
-    var url="/art/art_sendproofs";
+    var url="/artproofrequest/art_sendproofs";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
-            // $("div#proofarea"+artwork).empty().html(response.data.content);
-            // init_proofs();
+            $("#artNextModal").modal('hide');
             reinit_artworkpopup();
         } else {
             show_error(response);
@@ -699,18 +585,6 @@ function init_approved() {
         placement: 'left',
         content: 'title'
     });
-    // $("div.artpopup_approvedname").bt({
-    //     fill : '#EDEDED',
-    //     cornerRadius: 10,
-    //     width: 420,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#OOOOOO'}
-    // });
 }
 
 /* Delete approved */
@@ -722,7 +596,7 @@ function delapproved(profid, artid) {
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name: 'artwork_id', value :artid});
         params.push({name: 'proof_id', value :profid});        
-        var url="/art/art_approvedrevert";
+        var url="/artproofrequest/art_approvedrevert";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#approvedarea"+artid).empty().html(response.data.content);
@@ -741,7 +615,7 @@ function show_proof(proof) {
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'proof_id', value :proof});
-    var url="/art/art_approvedshow";
+    var url="/artproofrequest/art_approvedshow";
     $.post(url,params,function(response){
         if (response.errors=='') {
             $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
@@ -842,13 +716,15 @@ function add_location(artwork,art_type) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'artwork_id', value :artwork});
     params.push({name: 'art_type', value :art_type});    
-    var url="/art/art_newlocation";
+    var url="/artproofrequest/art_newlocation";
     $.post(url, params, function(response){
         if (response.errors=='') {
             // show_popup1('logoupload');
             if (art_type=='Logo' || art_type=='Reference') {
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").find('.modal-title').empty().html('New Logo Location');
+                $("#artNextModal").find('.modal-dialog').css('width','305px');
+                $("#artNextModal").modal('show');
                 init_artlogoupload();
                 $("div.artlogouploadsave_data").click(function(){
                     save_newlogoartloc(art_type);
@@ -858,8 +734,10 @@ function add_location(artwork,art_type) {
                 init_locations();
             } else {
                 // Copy
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").find('.modal-title').empty().html('New Repeat Location');
+                $("#artNextModal").find('.modal-dialog').css('width','305px');
+                $("#artNextModal").modal('show');
                 $("div.orderarchive_save").click(function(){
                     var order_num=$("input#archiveord").val();
                     var artwork_id=$("input#newartid").val();
@@ -868,9 +746,7 @@ function add_location(artwork,art_type) {
                     } else {
                         alert('Enter Order Number');
                     }
-
                 });
-
             }
         } else {
             show_error(response);
@@ -880,7 +756,7 @@ function add_location(artwork,art_type) {
 
 /* Uploader for Logo files */
 function init_artlogoupload() {
-    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
+    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
       '<em>Upload</em></span></div>' +
       '<ul class="qq-upload-list"></ul>' +
       '<ul class="qq-upload-drop-area"></ul>'+
@@ -889,13 +765,13 @@ function init_artlogoupload() {
     var uploader = new qq.FileUploader({
         element: document.getElementById('file-uploader'),
         allowedExtensions: ['jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png'],
-        action: '/utils/redrawattach',
-        template: temp,
+        action: '/artproofrequest/art_redrawattach',
+        // template: temp,
         multiple: false,
         debug: false,
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success) {
-                var url="/art/art_newartupload";
+                var url="/artproofrequest/art_newartupload";
                 $("ul.qq-upload-list").css('display','none');
                 $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
                     if (response.errors=='') {
@@ -919,35 +795,17 @@ function init_artlogoupload() {
     });
 }
 
-function save_newtextartloc() {
-    var params=new Array();
-    params.push({name: 'artsession', value: $("input#artsession").val()});
-    params.push({name: 'artwork_id', value: $("input#newartid").val()});
-    params.push({name:'usertext', value:$("textarea.artworkusertext").val()});
-    params.push({name:'art_type', value:'Text'});
-    var url="/art/art_addlocation";
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            $("div.artpopup_locations").append(response.data.content);
-            disable_popup1();
-            init_locations();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
-
 function save_newlogoartloc(art_type) {
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'artwork_id', value: $("input#newartid").val()});
     params.push({name:'logo', value:$("input#filename").val()});
     params.push({name:'art_type', value: art_type});    
-    var url="/art/art_addlocation";
+    var url="/artproofrequest/art_addlocation";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artpopup_locations").append(response.data.content);
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             init_locations();
         } else {
             show_error(response);
@@ -961,11 +819,11 @@ function save_newcopy(artwork_id,order_num) {
     params.push({name: 'artwork_id', value :artwork_id});
     params.push({name: 'repeat_text', value :order_num});
     params.push({name: 'art_type', value :'Repeat'});
-    var url="/art/art_addlocation";    
+    var url="/artproofrequest/art_addlocation";
     $.post(url, params , function(response){
         if (response.errors=='') {
             $("div.artpopup_locations").append(response.data.content);
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             init_locations();
         } else {
             show_error(response);
@@ -1080,11 +938,13 @@ function change_usertxt(art_id) {
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value :art_id});
-    var url="/art/art_changeusrtxt";
+    var url="/artproofrequest/art_changeusrtxt";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('logoupload');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Edit Text Location');
+            $("#artNextModal").find('.modal-dialog').css('width','470px');
+            $("#artNextModal").modal('show');
             $("div.vectorsave_data").show();
             $("div.vectorsave_data").click(function(){
                 save_usertext(art_id);
@@ -1101,11 +961,11 @@ function save_usertext(art_id) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value: art_id});
     params.push({name: 'customer_text', value: usrtxt});    
-    var url="/art/art_saveusertext";
+    var url="/artproofrequest/art_saveusertext";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artworkusrtxt[data-artworkartid="+art_id+"]").empty().html(response.data.content).prop('title',usrtxt);
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             init_locations();
         } else {
             show_error(response);
@@ -1115,13 +975,14 @@ function save_usertext(art_id) {
 
 /* Font Popup */
 function change_font(value, art_id) {
-    var url="/art/art_fontselect";
-    // $.post(url, {'art_id':art_id, 'font':value}, function(response){
+    var url="/artproofrequest/art_fontselect";
     $.post(url, {}, function(response){
         if (response.errors=='') {
-            show_popup1('fontselectarea');
-            $("div#popupwin").empty().html(response.data.content);
-            $("div.imprintfonts").jqTransform();
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Select Font');
+            $("#artNextModal").find('.modal-dialog').css('width','1010px');
+            $("#artNextModal").modal('show');
+            // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
                 $("input#fontselectfor").val(fontval);
@@ -1136,7 +997,7 @@ function change_font(value, art_id) {
             $("div.font_button_select").click(function(){
                 var fontval=$("input#fontselectfor").val();
                 $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
-                disable_popup1();
+                $("#artNextModal").modal('hide');
                 change_location('font',fontval,art_id);
             })
             // active
@@ -1152,7 +1013,7 @@ function change_location(locitem, value, art_id) {
     params.push({name: 'value', value: value});
     params.push({name: 'art_id', value: art_id});
     // {'field':locitem,'value':value,'art_id':art_id}
-    var url="/art/art_locationupdate";
+    var url="/artproofrequest/art_locationupdate";
     $.post(url, params , function(response){
         if (response.errors=='') {
             if (locitem=='redo') {
@@ -1174,7 +1035,7 @@ function show_file(art_id, file_type) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value: art_id});
     params.push({name: 'type', value: file_type});
-    var url="/art/art_showfile";    
+    var url="/artproofrequest/art_showfile";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
@@ -1190,7 +1051,7 @@ function delete_art(art_id) {
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value:art_id});    
-    var url="/art/art_dellocation";
+    var url="/artproofrequest/art_dellocation";
     $.post(url, params , function(response){
         if (response.errors=='') {
             $("div.artworksarea[data-artworkartid="+art_id+"]").remove();
@@ -1206,7 +1067,7 @@ function edit_rdnote(art_id) {
     params.push({name: 'art_id', value: art_id});
     params.push({name: 'mode', value: 'edit'});
     // 
-    var url='/art/art_rdnoteview';
+    var url='/artproofrequest/art_rdnoteview';
     $.post(url, params, function(response){
         if (response.errors=='') {
             show_popup1('logoupload');
@@ -1227,7 +1088,7 @@ function save_rdnote(art_id) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value: art_id});
     params.push({name: 'redraw_message', value: rdnote});
-    var url='/art/art_rdnotesave';
+    var url='/artproofrequest/art_rdnotesave';
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artworkrdrnote[data-artworkartid="+art_id+"]").empty().html(response.data.content);
