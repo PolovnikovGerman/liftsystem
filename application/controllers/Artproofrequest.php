@@ -244,12 +244,12 @@ class Artproofrequest extends MY_Controller
 
     /* redraw add popup */
     public function art_newlogoupload() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $location_id=$this->input->post('location_id',0);
             $mdata['content']=$this->load->view('artpage/redrawlogo_upload_view',array('location_id'=>$location_id),TRUE);
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
     /* Return name of ART logo file */
@@ -267,14 +267,14 @@ class Artproofrequest extends MY_Controller
 
     /* show new redrawn inpopup */
     public function art_newredrawn() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $filename=$this->input->post('filename');
             $docname=$this->input->post('doc_name');
             $data=$this->input->post('data','1');
             $mdata['content']=$this->load->view('artpage/vectorfile_view',array('filename'=>$filename, 'doc_name'=>$docname,'data'=>$data),TRUE);
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -348,7 +348,7 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $order_id=$postdata['order_id'];
             $order_num=$postdata['order_num'];
-            $artdata=$this->func->session($artsession);
+            $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $artdata['order_id']=$order_id;
                 $artdata['order_num']=$order_num;
@@ -431,12 +431,12 @@ class Artproofrequest extends MY_Controller
     }
 
     public function art_showuplproofdocs() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $postdata=$this->input->post();
             $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
-            $data=$this->func->session($uploadsession);
+            $data=usersession($uploadsession);
             if (empty($data)) {
                 $error='Session Expired. Please, recall form';
             } else {
@@ -453,17 +453,17 @@ class Artproofrequest extends MY_Controller
                 $mdata['content']=$content;
                 $mdata['numrec']=count($docs);
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
     public function art_deluplproofdocs() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $postdata=$this->input->post();
             $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
-            $data=$this->func->session($uploadsession);
+            $data=usersession($uploadsession);
             if (empty($data)) {
                 $error='Session Expired. Please, recall form';
             } else {
@@ -482,15 +482,16 @@ class Artproofrequest extends MY_Controller
                         $content.=$this->load->view('artpage/vectorfile_view',$voptions,TRUE);
                     } else {
                         // Find data
-                        $this->func->proofdoclog($data['artwork_id'], $this->USR_ID, $row['filesource'], $row['filename'], 'Cancel Upload');
+                        $this->load->model('artproof_model');
+                        $this->artproof_model->add_proofdoc_log($data['artwork_id'], $this->USR_ID, $row['filesource'], $row['filename'], 'Cancel Upload');
                     }
                 }
                 $data['docs']=$newdocs;
                 $mdata['content']=$content;
                 $mdata['numrec']=  count($newdocs);
-                $this->func->session($uploadsession, $data);
+                usersession($uploadsession, $data);
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -647,20 +648,20 @@ class Artproofrequest extends MY_Controller
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $proof_id=$postdata['proof_id'];
-            $artdata=$this->func->session($artsession);
+            $artdata=usersession($artsession);
             if (empty($artdata)) {
             } else {
                 $this->load->model('artwork_model');
                 $res=$this->artwork_model->get_approved($artdata, $proof_id);
                 $error=$res['msg'];
-                if ($res['result']==Art::ERROR_RESULT) {
+                if ($res['result']==$this->error_result) {
                 } else {
                     $error='';
                     $mdata['url']=$res['url'];
                     $mdata['filename']=$res['filename'];
                 }
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -766,7 +767,7 @@ class Artproofrequest extends MY_Controller
         $url = $this->input->post('url');
         $filename = $this->input->post('file');
         /* Get extension */
-        $this->func->openfile($url, $filename);
+        openfile($url, $filename);
     }
 
     /* Delete location */

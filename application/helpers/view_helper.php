@@ -289,4 +289,33 @@ if (!function_exists('extract_filename')) {
         return false;
     }
 }
+if (!function_exists('openfile')) {
+    function openfile($url, $filename) {
+        $filenamedetails = $this->extract_filename($filename);
+        switch ($filenamedetails['ext']) {
+            case 'jpg':
+                header('Content-type: images/jpeg');
+                break;
+            case 'docx':
+            case 'doc':
+                header('Content-type: application/msword');
+                break;
+            case 'xls':
+                header('Content-type: application/vnd.ms-excel');
+            case 'pdf':
+                header('Content-Type: application/pdf');
+                break;
+            default :
+                header('Content-Type: application/octet-stream');
+                break;
+        }
+        $url = base_url() . $url;
+        // We'll be outputting a PDF
+        // It will be called downloaded.pdf
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        // The PDF source is in original.pdf
+        readfile($url);
+    }
+}
+
 ?>
