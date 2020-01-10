@@ -2859,6 +2859,24 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
+
+    public function get_artdata_locrdnote($artdata, $art_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG, 'usrtxt'=>'');
+        $found=0;
+        foreach ($artdata['locations'] as $lrow) {
+            if ($lrow['artwork_art_id']==$art_id) {
+                $found=1;
+                $out['result']= $this->success_result;
+                $out['msg']='';
+                $out['usrtxt']=$lrow['redraw_message'];
+            }
+            if ($found==1) {
+                break;
+            }
+        }
+        return $out;
+    }
+
     public function save_artdata_locrdnote($artdata, $art_id, $redraw_message, $artsession) {
         $out=array('result'=> $this->error_result, 'msg'=> $this->INIT_MSG,'content'=>'');
         $found=0;
@@ -2867,7 +2885,7 @@ Class Artwork_model extends MY_Model
             if ($lrow['artwork_art_id']==$art_id) {
                 $found=1;
                 $artdata['locations'][$idx]['redraw_message']=$redraw_message;
-                $this->func->session($artsession, $artdata);
+                usersession($artsession, $artdata);
                 $out['result']=$this->success_result;
                 $out['msg']='';
                 if ($redraw_message=='') {
@@ -2884,4 +2902,88 @@ Class Artwork_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_artcolors($artdata,$art_id) {
+        $out=array(
+            'art_color1'=>'',
+            'art_color2'=>'',
+            'art_color3'=>'',
+            'art_color4'=>'',
+        );
+        $found=0;
+        foreach ($artdata['locations'] as $lrow) {
+            if ($lrow['artwork_art_id']==$art_id) {
+                $found=1;
+                $out['art_color1']=$lrow['art_color1'];
+                $out['art_color2']=$lrow['art_color2'];
+                $out['art_color3']=$lrow['art_color3'];
+                $out['art_color4']=$lrow['art_color4'];
+            }
+            if ($found==1) {
+                break;
+            }
+        }
+        return $out;
+    }
+
+    public function get_artloc_numcolors($artdata, $art_id) {
+        $out=array('result'=>$this->success_result,'msg'=>'Artwork was not found');
+        $found=0;
+        foreach ($artdata['locations'] as $lrow) {
+            if ($lrow['artwork_art_id']==$art_id) {
+                $found=1;
+                $out['result']= $this->success_result;
+                $out['msg']='';
+                $out['art_numcolors']=intval($lrow['art_numcolors']);
+            }
+            if ($found==1) {
+                break;
+            }
+        }
+        return $out;
+    }
+
+    /* change parameter REDRAWVECT */
+    public function art_redraw_update($artdata, $art_id, $redraw, $artsession) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
+        $idxloc=0;
+        $found=0;
+        foreach ($artdata['locations'] as $lrow) {
+            if ($lrow['artwork_art_id']==$art_id) {
+                $found=1;
+                $artdata['locations'][$idxloc]['redrawvect']=$redraw;
+                usersession($artsession,$artdata);
+                $out['result']= $this->success_result;
+                $out['msg']='';
+                if ($lrow['art_type']=='Logo') {
+                    if ($redraw==0) {
+                        $out['artwork_class']='redrawn';
+                    } else {
+                        $out['artwork_class']='source';
+                        $logodat=$lrow['logo_src'];
+                        if ($logodat) {
+                            $logodetails=$this->func->extract_filename($logodat);
+                            if (in_array($logodetails['ext'], $this->nonredrawn)) {
+                                $out['artwork_class']='source_alert';
+                            }
+                        }
+                    }
+                } else {
+                    if ($redraw==1) {
+                        $out['artwork_class']='source';
+                    } else {
+                        $out['artwork_class']='redrawn';
+                    }
+                }
+            }
+            if ($found==1) {
+                break;
+            }
+            $idxloc++;
+        }
+        return $out;
+    }
+
+
+
 }

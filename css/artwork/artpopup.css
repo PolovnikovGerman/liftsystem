@@ -562,6 +562,96 @@ select.artnumcolors {
     margin-top: 3px;
     width: 30px;
 }
+.artworkoption_color_choice.blackcolor {
+    background: #000000;
+}
+.artworkoption_color_choice.forestgreen {
+    background: #254c25;
+}
+.artworkoption_color_choice.aquacolor {
+    background: #2287bf;
+}
+.artworkoption_color_choice.whitecolor {
+    background: #ffffff;
+}
+.artworkoption_color_choice.yellowcolor {
+    background: #ffff00;
+}
+.artworkoption_color_choice.tealcolor {
+    background: #3893af;
+}
+.artworkoption_color_choice.lightblue {
+    background: #9cb6ff;
+}
+.artworkoption_color_choice.yellowishorange {
+    background: #eabf0a;
+}
+.artworkoption_color_choice.peachcolor {
+    background: #ffbdae;
+}
+.artworkoption_color_choice.royalblue {
+    background: #0000ff;
+}
+.artworkoption_color_choice.orangecolor {
+    background: #ff6700;
+}
+.artworkoption_color_choice.tancolor {
+    background: #ba7735;
+}
+.artworkoption_color_choice.reflexblue {
+    background: #0404aa;
+}
+.artworkoption_color_choice.burntorange {
+    background: #bc6506;
+}
+.artworkoption_color_choice.browncolor {
+    background: #603f0f;
+}
+.artworkoption_color_choice.navyblue {
+    background: #030356;
+}
+.artworkoption_color_choice.scarletred {
+    background: #ff0000;
+}
+.artworkoption_color_choice.lightgreycolor {
+    background: #e5e5e5;
+}
+.artworkoption_color_choice.lightgreen {
+    background: #5fffc2;
+}
+.artworkoption_color_choice.marooncolor {
+    background: #6d0303;
+}
+.artworkoption_color_choice.medgrey {
+    background: #999999;
+}
+.artworkoption_color_choice.limegreen {
+    background: #00ff00;
+}
+.artworkoption_color_choice.pinkcolor {
+    background: #ee87f9;
+}
+.artworkoption_color_choice.darkgreycolor {
+    background: #494948;
+}
+.artworkoption_color_choice.grassgreen {
+    background: #009345;
+}
+.artworkoption_color_choice.purplecolor {
+    background: #3c1699;
+}
+.artworkoption_color_choice.metallicsilver {
+    background: #e5e5e5;
+}
+.artworkoption_color_choice.originalgreen {
+    background: #21937d;
+}
+.artworkoption_color_choice.lavender {
+    background: #b69ef2;
+}
+.artworkoption_color_choice.metallicgold {
+    background: #baba4f;
+}
 .artworkoption_color_choice.emptycolor {
     opacity: 0.2;
 }
@@ -668,11 +758,11 @@ input.artrepeat {
     color: #000000;
     font-size: 14px;
     float: left;
-    height: 671px;
+    height: 698px;
     margin: 0;
     padding: 25px 25px 0;
     position: relative;
-    width: 931px;
+    width: 982px;
 }
 .imprintcolors_head {
     clear: both;
@@ -727,12 +817,13 @@ input.inputcolor {
     width: 120px;
 }
 .select_color {
-    background: url("/img/artpage/select_color_btn.png") repeat scroll 0 0 transparent;
+    background: url("/img/artpage/select_color_btn.png") no-repeat scroll 0 0 transparent;
     color: #000000;
     font-size: 17px;
-    height: 34px;
+    height: 45px;
     margin-left: 107px;
     padding-top: 10px;
+    text-align: center;
     width: 158px;
 }
 .select_color a {

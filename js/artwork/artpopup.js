@@ -1070,7 +1070,10 @@ function edit_rdnote(art_id) {
     var url='/artproofrequest/art_rdnoteview';
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('logoupload');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Redraw Note');
+            $("#artNextModal").find('.modal-dialog').css('width','459px');
+            $("#artNextModal").modal('show');
             $("div#popupwin").empty().html(response.data.content);
             $("div.vectorsave_data").show();
             $("div.vectorsave_data").click(function(){
@@ -1092,7 +1095,7 @@ function save_rdnote(art_id) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artworkrdrnote[data-artworkartid="+art_id+"]").empty().html(response.data.content);
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             init_locations();
         } else {
             show_error(response);
@@ -1106,7 +1109,7 @@ function edit_artnumcolors(art_id, numcolors) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value: art_id});
     params.push({name: 'numcolors', value: numcolors});
-    var url="/art/art_savenumcolors";    
+    var url="/artproofrequest/art_savenumcolors";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.artworkoption_color_choices[data-artworkartid="+art_id+"]").empty().html(response.data.content);
@@ -1123,25 +1126,29 @@ function edit_color(art_id, color_num) {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value :art_id});
     params.push({name: 'color_num', value :color_num});
-    var url="/art/art_colorchoice";
+    var url="/artproofrequest/art_colorchoice";
     $.post(url, params , function(response){
         if (response.errors=='') {
-            show_popup1('colorchoicearea');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Edit Color');
+            $("#artNextModal").find('.modal-dialog').css('width','1004px');
+            $("#artNextModal").modal('show');
+            // show_popup1('colorchoicearea');
+            // $("div#popupwin").empty().html(response.data.content);
             /* save color choice */
-            $("div.imprintcolors_table").jqTransform();
+            // $("div.imprintcolors_table").jqTransform();
             $(".colorradio").click(function(){
                 var colorval=$(this).attr('id').substr(5);
                 colorval="#"+colorval;
                 if (this.id=='color2') {
-                    $("div#artloader #usrcolor").attr('readonly',false);
+                    $("#usrcolor").attr('readonly',false);
                 } else {
-                    $("div#artloader #usrcolor").attr('readonly',true);
+                    $("#usrcolor").attr('readonly',true);
                     $("input#userchkcolor").val(colorval)
                 }
 
-                $("div#artloader a#select_color").attr('disabled', false).addClass('active').click(function(){
-                    var usercolor=$("div#artloader input#userchkcolor").val();
+                $("a#select_color").attr('disabled', false).addClass('active').click(function(){
+                    var usercolor=$("input#userchkcolor").val();
                     save_artwork_color(art_id, color_num, usercolor);
                 });
             });
@@ -1152,7 +1159,7 @@ function edit_color(art_id, color_num) {
 }
 
 function save_artwork_color(art_id, color_num, usercolor) {
-    var url="/art/art_savecolor";
+    var url="/artproofrequest/art_savecolor";
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name: 'art_id', value :art_id});
@@ -1160,7 +1167,7 @@ function save_artwork_color(art_id, color_num, usercolor) {
     params.push({name: 'color_code', value :usercolor});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("div.artworkoption_color_choices[data-artworkartid="+art_id+"]").empty().html(response.data.content);
             init_locations();
         } else {
@@ -1176,10 +1183,9 @@ function edit_imprintval(art_id, location) {
     params.push({name: 'field', value : 'art_location'});
     params.push({name: 'value', value: location});
     params.push({name: 'art_id', value: art_id});
-    var url="/art/art_locationupdate";
+    var url="/artproofrequest/art_locationupdate";
     $.post(url, params, function(response){
         if (response.errors=='') {
-
         } else {
             show_error(response);
         }
@@ -1187,7 +1193,7 @@ function edit_imprintval(art_id, location) {
 }
 
 function change_redraw(art_id, redraw) {
-    var url="/art/art_redrawupd";
+    var url="/artproofrequest/art_redrawupd";
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});
     params.push({name:'art_id', value :art_id});
@@ -1203,7 +1209,7 @@ function change_redraw(art_id, redraw) {
 
 function reinit_artworkpopup() {
     var dat=$("form#artdetailsform").serializeArray();
-    var url="/art/artwork_save";
+    var url="/artproofrequest/artwork_save";
     $("#loader").show();
     $.post(url, dat, function(response){
         if (response.errors=='') {
@@ -1238,13 +1244,15 @@ function reinit_artworkpopup() {
 }
 
 function show_art_history() {
-    var url="/art/artwork_history";
+    var url="/artproofrequest/artwork_history";
     var params=new Array();
     params.push({name: 'artsession', value: $("input#artsession").val()});    
     $.post(url, params,function(response){
         if (response.errors=='') {
-            show_popup1('approvemailarea');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('View History');
+            $("#artNextModal").find('.modal-dialog').css('width','395px');
+            $("#artNextModal").modal('show');
         } else {
             show_error(response);
         }

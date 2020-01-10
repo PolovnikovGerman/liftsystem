@@ -939,7 +939,7 @@ class Artproofrequest extends MY_Controller
                     $error='';
                 }
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -965,6 +965,172 @@ class Artproofrequest extends MY_Controller
         }
     }
 
+    /* Change number of colors */
+    public function art_savenumcolors() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Connection Lost. Please, recall function';
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$postdata['art_id'];
+                $numcolors=$postdata['numcolors'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->artlocationdata_update($artdata, 'art_numcolors', $numcolors, $art_id, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    switch ($numcolors) {
+                        case '':
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color1', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color2', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color3', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color4', '', $art_id, $artsession);
+                            break;
+                        case 1:
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color2', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color3', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color4', '', $art_id, $artsession);
+                            break;
+                        case 2:
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color3', '', $art_id, $artsession);
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color4', '', $art_id, $artsession);
+                            break;
+                        case 3:
+                            $artdata=usersession($artsession);
+                            $this->artwork_model->artlocationdata_update($artdata, 'art_color4', '', $art_id, $artsession);
+                            break;
+                        default:
+                            break;
+                    }
+                    $artdata=usersession($artsession);
+                    $artcolors=$this->artwork_model->get_artcolors($artdata, $art_id);
+                    $artcolors['artwork_art_id']=$art_id;
+                    $imprint_colors = $this->config->item('imprint_colors');
+                    $colordat=$this->artwork_model->colordat_prepare($artcolors, $imprint_colors);
+                    $mdata['content']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+    /* show form for colorcolorchoice */
+    public function art_colorchoice() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$postdata['art_id'];
+                $color_num=$postdata['color_num'];
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->get_artloc_numcolors($artdata, $art_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    if ($res['art_numcolors']<$color_num) {
+                        $error='Change #Colors for Edit Color';
+                    } else {
+                        $mdata['content']=$this->load->view('artpage/art_colorchoice_view',array('colors'=>$this->config->item('imprint_colors')),TRUE);
+                        $error='';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    /* Save color choice */
+    public function art_savecolor() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $this->load->model('artwork_model');
+                $art_id=$postdata['art_id'];
+                $color_num=$postdata['color_num'];
+                $color_code=$postdata['color_code'];
+                /* find color name */
+                $color_title='';
+                $imprint_colors = $this->config->item('imprint_colors');
+                foreach ($imprint_colors as $colrow) {
+                    if ($colrow['code']==$color_code) {
+                        $color_title=$colrow['name'];
+                        break;
+                    }
+                }
+                if ($color_title=='') {
+                    $error='Unknown Color Code';
+                } else {
+                    $fld_name='art_color'.$color_num;
+                    $res=$this->artwork_model->artlocationdata_update($artdata, $fld_name, $color_title, $art_id, $artsession);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $artdata=usersession($artsession);
+                        $artcolors=$this->artwork_model->get_artcolors($artdata, $art_id);
+                        $artcolors['artwork_art_id']=$art_id;
+                        $colordat=$this->artwork_model->colordat_prepare($artcolors, $imprint_colors);
+                        $mdata['content']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function art_redrawupd() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = $this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $art_id=$this->input->post('art_id');
+                $redraw=$this->input->post('redraw');
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->art_redraw_update($artdata, $art_id, $redraw, $artsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['newclass']=$res['artwork_class'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function artwork_history() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_artdata_error;
+            $postdata=$this->input->post();
+            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata=usersession($artsession);
+            if (!empty($artdata)) {
+                $error='';
+                $history=$artdata['art_history'];
+                $mdata['content']=$this->load->view('artpage/history_view', array('history'=>$history), TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
     // Save ART Request
     public function artwork_save() {
