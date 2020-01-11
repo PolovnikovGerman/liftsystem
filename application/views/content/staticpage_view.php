@@ -1,7 +1,10 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 11.01.20
- * Time: 1:41
- */
+<div class="statcipage_content">
+    <div class="buttons"><?=$buttons_view?></div>
+    <div class="metadataarea">
+        <?=$meta_view?>
+    </div>
+    <!-- Special content -->
+    <?php if (!empty($special_content)) { ?>
+        <?=$special_content?>
+    <?php } ?>
+</div>
