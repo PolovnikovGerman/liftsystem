@@ -48,6 +48,13 @@ class Content extends MY_Controller
         // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
         // $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         // $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+        $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+        $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+        $head['scripts'][]=array('src'=>'/js/fancybox/jquery.fancybox.js');
+        $head['styles'][]=array('style'=>'/css/fancybox/jquery.fancybox.css');
+
         // Searchable
         // $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
@@ -103,6 +110,32 @@ class Content extends MY_Controller
         show_404();
     }
 
+    public function edit_customcontent() {
+        if ($this->isAjax()) {
+            $page_name = 'custom';
+            $page_name_full = 'Custom Shaped Stress Balls';
+            $session_id = uniq_link(15);
+            $this->load->model('staticpages_model');
+            $meta = $this->staticpages_model->get_metadata($page_name);
+            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
+            $session_data = usersession($session_id);
+            $session_data['meta'] = $meta;
+            $session_data['deleted'] = []; // type , id
+            usersession($session_id, $session_data);
+            $button_options = ['page'=>'custom', 'content_name' => $page_name_full, 'session'=> $session_id];
+            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+            $options = [
+                'meta_view' => $meta_view,
+                'buttons_view' => $buttons_view,
+                'special_content' => $special_content,
+            ];
+            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
         $data = $this->staticpages_model->get_page_inner_content($page_name);
@@ -116,10 +149,10 @@ class Content extends MY_Controller
                 'maxitems' => $this->config->item('max_slider_galleryitems'),
             ];
             if ($edit_mode == 0) {
-                $gallery_view = $this->load->view('contents/custom_galleries_view', $gallery_options, TRUE);
+                $gallery_view = $this->load->view('content/custom_galleries_view', $gallery_options, TRUE);
             } else {
-                $editgallery = $this->load->view('contents/custom_galleryitems_edit', $gallery_options, TRUE);
-                $gallery_view = $this->load->view('contents/custom_galleries_edit', ['gallery_view'=>$editgallery], TRUE);
+                $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                $gallery_view = $this->load->view('content/custom_galleries_edit', ['gallery_view'=>$editgallery], TRUE);
             }
             // Get data about Case Study
             $casestudy_options = [
@@ -127,10 +160,10 @@ class Content extends MY_Controller
                 'maxitems' => $this->config->item('max_slider_casestudy'),
             ];
             if ($edit_mode == 0) {
-                $casestudy_view = $this->load->view('contents/custom_casestudy_view', $casestudy_options, TRUE);
+                $casestudy_view = $this->load->view('content/custom_casestudy_view', $casestudy_options, TRUE);
             } else {
-                $editcasestudy = $this->load->view('contents/custom_casestudyitems_edit', $casestudy_options, TRUE);
-                $casestudy_view = $this->load->view('contents/custom_casestudy_edit', ['casestudy_view'=>$editcasestudy], TRUE);
+                $editcasestudy = $this->load->view('content/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                $casestudy_view = $this->load->view('content/custom_casestudy_edit', ['casestudy_view'=>$editcasestudy], TRUE);
             }
             $page_options = [
                 'data' => $data,
@@ -141,12 +174,12 @@ class Content extends MY_Controller
                 $page_options['session'] = $session;
             }
             if ($edit_mode == 0) {
-                $content = $this->load->view('contents/customshaped_custom_view', $page_options, TRUE);
+                $content = $this->load->view('content/customshaped_custom_view', $page_options, TRUE);
             } else {
-                $content = $this->load->view('contents/customshaped_custom_edit', $page_options, TRUE);
+                $content = $this->load->view('content/customshaped_custom_edit', $page_options, TRUE);
                 // Save data to session
                 $session_data = ['data' => $data, 'galleries' => $galleries, 'case_study' => $case_study];
-                $this->func->session($session, $session_data);
+                usersession($session, $session_data);
             }
         } elseif ($page_name=='faq') {
             $faq_sections = $this->staticpages_model->get_faq_sections();

@@ -1,7 +1,7 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 12.01.20
- * Time: 0:25
- */
+<div class="casestudyinfotitle">
+    <div class="displaycasestudy show">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+    <div class="title">CASE STUDIES:</div>
+</div>
+<div class="custom_casestudies_area"><?=$casestudy_view?></div>

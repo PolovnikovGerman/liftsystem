@@ -67,3 +67,15 @@ function init_contentpage(page_name) {
         }
     },'json');
 }
+
+function window_alignment() {
+    if ($(".container").length > 0 && $(".content_window").length > 0) {
+        var contentheigth = parseInt($(".container").css('height'));
+        var wincontent = parseInt($(".content_window").css('height'))+125;
+        if (wincontent > contentheigth ) {
+            $(".container").css('height',wincontent+'px');
+        } else {
+            $(".content_window").css('height',(contentheigth-125)+'px');
+        }
+    }
+}

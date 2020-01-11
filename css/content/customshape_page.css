@@ -1,11 +1,11 @@
 div.custom_maintitle {
-    width: 84px;
+    width: 90px;
 }
 input.custom_maintitle {
     width: 198px;
 }
 div.custom_secondarytext {
-    width: 122px;
+    width: 128px;
 }
 input.custom_secondarytext {
     width: 345px;
@@ -91,13 +91,13 @@ div.custom_mainimage {
     line-height: 22px!important;
 }
 div.custom_belowimagetext {
-    width: 141px;
+    width: 147px;
 }
 input.custom_belowimagetext {
     width: 454px;
 }
 div.custom_fivebulletpoints {
-    width: 117px;
+    width: 123px;
 }
 div.custom_fivebulletpoints_area {
     width: 197px;
@@ -107,14 +107,14 @@ input.custom_fivebulletpoints {
     margin-bottom: 14px;
 }
 div.custom_longerbodytext {
-    width: 141px;
+    width: 147px;
 }
 textarea.custom_longerbodytext {
     width: 557px;
     height: 124px;
 }
 div.custom_abovegallerytext {
-    width: 152px;
+    width: 158px;
 }
 input.custom_abovegallerytext {
     width: 457px;
@@ -139,16 +139,18 @@ input.custom_gallerytitle {
     width: 23px;
     cursor: pointer;
     margin-left: 8px;
+    margin-top: 3px;
 }
 .galleryinfotitle .title {
     margin-left: 5px;
+    line-height: 28px;
 }
 .custom_galleries_area {
     margin-top: 16px;
     padding-left: 20px;
 }
 div.custom_gallerytitle {
-    width: 110px;
+    width: 116px;
 }
 input.custom_gallerytitle {
     width: 235px;
@@ -289,7 +291,7 @@ input.custom_gallerytitle {
 }
 /* Below gallery inputs */
 div.custom_belowgallerrytext {
-    width: 147px;
+    width: 153px;
 }
 input.custom_belowgallerrytext {
     width: 553px;
@@ -299,13 +301,13 @@ input.custom_belowgallerrysubtext {
     width: 553px;
 }
 div.custom_stepprocesstitle {
-    width: 153px;
+    width: 159px;
 }
 input.custom_stepprocesstitle {
     width: 407px;
 }
 div.custom_belowstepstext {
-    width: 139px;
+    width: 145px;
 }
 textarea.custom_belowstepstext {
     width: 690px;

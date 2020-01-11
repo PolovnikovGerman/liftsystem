@@ -1,7 +1,7 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 12.01.20
- * Time: 0:26
- */
+<div class="content_name"><span>Content: </span> <?=$content_name?></div>
+<div class="content_preview">&nbsp;</div>
+<div class="editmode">
+    You are in Edit Mode
+    <div class="save_button" data-page="<?=$page?>">&nbsp;</div>
+    <div class="cancel_button" data-page="<?=$page?>">&nbsp;</div>
+</div>

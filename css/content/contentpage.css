@@ -1,5 +1,6 @@
 .contentpagearea {
     display: none;
+    width: 1070px;
 }
 .statcipage_content {
     clear: both;
@@ -84,6 +85,7 @@
     color: #ffffff;
     font-size: 20px;
     font-family: Helvetica-Oblique;
+    line-height: 48px;
 }
 .statcipage_content .buttons .editmode .cancel_button {
     background: url(/img/contents/cancel_button_bg.png);

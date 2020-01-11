@@ -80,10 +80,10 @@ function display_casestudy() {
 }
 
 function init_customshape_edit() {
-    var url = "/contents/edit_customcontent";
+    var url = "/content/edit_customcontent";
     $.post(url, {}, function (response) {
         if (response.errors=='') {
-            $("#customshape").empty().html(response.data.content);
+            $("#customshappedview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {
                 var url=$("#custom_previewurl").val();
                 $.fancybox.open({
@@ -128,7 +128,7 @@ function init_customshape_editcontent() {
     $(".save_button[data-page='custom']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#custom_session").val()});
-        var url="/contents/save_customcontent";
+        var url="/content/save_customcontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 init_contentpage('custom');
@@ -144,7 +144,7 @@ function init_customshape_editcontent() {
         params.push({name: 'type', value: 'meta'});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -158,7 +158,7 @@ function init_customshape_editcontent() {
         params.push({name: 'type', value: 'meta'});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -173,7 +173,7 @@ function init_customshape_editcontent() {
         params.push({name: 'type', value: 'data'});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -188,7 +188,7 @@ function init_customshape_editcontent() {
         params.push({name: 'type', value: 'data'});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -217,7 +217,7 @@ function init_customshape_editcontent() {
                         params.push({name: 'type', value: 'data'});
                         params.push({name: 'field', value: 'custom_mainimage'});
                         params.push({name: 'newval', value: responseJSON.filename});
-                        var url="/contents/change_customparam";
+                        var url="/content/change_customparam";
                         $.post(url, params, function (response) {
                             if (response.errors=='') {
                                 $("#custom_mainimagearea").empty().html(response.data.content);
@@ -234,7 +234,7 @@ function init_customshape_editcontent() {
             params.push({name: 'type', value: 'data'});
             params.push({name: 'field', value: 'custom_mainimage'});
             params.push({name: 'newval', value: ''});
-            var url="/contents/change_customparam";
+            var url="/content/change_customparam";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     init_customshape_editcontent();
@@ -291,7 +291,7 @@ function init_customshape_editcontent() {
             params.push({name: 'type', value: 'data'});
             params.push({name: 'field', value: 'custom_homepageimage'});
             params.push({name: 'newval', value: ''});
-            var url="/contents/change_customparam";
+            var url="/content/change_customparam";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     init_customshape_editcontent();
@@ -318,7 +318,7 @@ function init_customshape_editcontent() {
         params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -365,7 +365,7 @@ function init_customshape_editcontent() {
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
             params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
-            var url="/contents/remove_customgalleryitem";
+            var url="/content/remove_customgalleryitem";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);
@@ -392,7 +392,7 @@ function init_customshape_editcontent() {
     $(".add_new_gallery").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#custom_session").val()});
-        var url="/contents/add_customgallery";
+        var url="/content/add_customgallery";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".custom_galleries_area").empty().html(response.data.content);
@@ -413,7 +413,7 @@ function init_customshape_editcontent() {
         params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: newval});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -427,7 +427,7 @@ function init_customshape_editcontent() {
             var params = new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
-            var url="/contents/remove_customgallery";
+            var url="/content/remove_customgallery";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);
@@ -462,7 +462,7 @@ function init_customshape_editcontent() {
                     params.push({name: 'imageorder', value: casestudy});
                     params.push({name: 'imagetype', value: 'casestudy_image'});
                     params.push({name: 'imagesrc', value: responseJSON.filename});
-                    var url='/contents/save_imageupload_custom';
+                    var url='/content/save_imageupload_custom';
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".custom_casestudies_area").empty().html(response.data.content);
@@ -481,7 +481,7 @@ function init_customshape_editcontent() {
             var params=new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'custom_casestudy_id', value: $(this).data('casestudy')});
-            var url="/contents/remove_customcasestudy";
+            var url="/content/remove_customcasestudy";
             $.post(url, params, function(response){
                 if (response.errors=='') {
                     $(".custom_casestudies_area").empty().html(response.data.content);
@@ -509,7 +509,7 @@ function init_customshape_editcontent() {
         params.push({name: 'custom_casestudy_id', value: $(this).data('casestudy')});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -524,7 +524,7 @@ function init_customshape_editcontent() {
         params.push({name: 'custom_casestudy_id', value: $(this).data('casestudy')});
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/contents/change_customparam";
+        var url="/content/change_customparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -534,86 +534,4 @@ function init_customshape_editcontent() {
     });
 }
 
-function upload_customshaped_image(image, idx) {
-    var params=new Array();
-    params.push({name: 'session', value: $("#custom_session").val()});
-    params.push({name: 'image', value: image});
-    params.push({name: 'idx', value: idx});
-    var url='/contents/init_imageupload_custom';
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            show_popup('custom_imagesupload');
-            $("div#pop_content").empty().html(response.data.content);
-            $("div#pop_content a.butttonview").button();
-            $("#delete_image").click(function(){
-                $('input#newimgsrc').val('');
-                $("div.viewpreloadimg img").attr("src","/img/no-camera.png");
-                $("div.saveimgupload").hide();
-                $("div#deleteviewbuttons").hide();
-                init_uploadimg();
-            });
-            $("div.saveimgupload").click(function(){
-                /* Save IMG */
-                save_uploadimg();
-            });
-            init_uploadimg();
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-function init_uploadimg() {
-    var temp= '<div class="qq-uploader">' +
-        '<div class="custom_upload"><span></span></div>' +
-        '</div>';
-    var uploader = new qq.FileUploader({
-        element: document.getElementById('uploadimgsrc'),
-        action: '/utils/save_itemimg',
-        /* template: temp,            */
-        uploadButtonText: '',
-        multiple: false,
-        debug: false,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-        onComplete: function(id, fileName, responseJSON){
-            $("li.qq-upload-success").hide();
-            $('.qq-uploader').fadeOut('100', function(){
-                $('div#deleteviewbuttons').fadeIn('200');
-            });
-            $('input#newimgsrc').val(responseJSON.filename);
-            $("div.viewpreloadimg img").attr("src",responseJSON.filename);
-            $("div.saveimgupload").show();
-        }
-    })
-}
-
-function save_uploadimg() {
-    var newimg=$("#newimgsrc").val();
-    if (newimg!='') {
-        var params=new Array();
-        params.push({name: 'session', value: $("#custom_session").val()});
-        params.push({name: 'imageorder', value: $("#newimgorder").val()});
-        params.push({name: 'imagetype', value: $("#imagetype").val()});
-        params.push({name: 'imagesrc', value: newimg});
-        var url='/contents/save_imageupload_custom';
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                if (response.data.custom_mainimage) {
-                    $("#custom_mainimagearea").empty().html(response.data.content);
-                } else if (response.data.custom_homepageimage) {
-                    $("#custom_homepageimagearea").empty().html(response.data.content);
-                } else if (response.data.gallery) {
-                    $(".custom_galleries_area").empty().html(response.data.content);
-                } else if (response.data.casestudy) {
-                    $(".custom_casestudies_area").empty().html(response.data.content);
-                }
-                init_customshape_editcontent();
-            } else {
-                show_error(response);
-            }
-        },'json');
-
-    }
-    disablePopup();
-}
 
