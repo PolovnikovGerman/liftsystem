@@ -273,7 +273,7 @@ function init_customshape_editcontent() {
                         params.push({name: 'type', value: 'data'});
                         params.push({name: 'field', value: 'custom_homepageimage'});
                         params.push({name: 'newval', value: responseJSON.filename});
-                        var url="/contents/change_customparam";
+                        var url="/content/change_customparam";
                         $.post(url, params, function (response) {
                             if (response.errors=='') {
                                 $("#custom_homepageimagearea").empty().html(response.data.content);
@@ -345,7 +345,7 @@ function init_customshape_editcontent() {
                     params.push({name: 'imageorder', value: gallery});
                     params.push({name: 'imagetype', value: 'gallery_image'});
                     params.push({name: 'imagesrc', value: responseJSON.filename});
-                    var url='/contents/save_imageupload_custom';
+                    var url='/content/save_imageupload_custom';
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".custom_galleries_area").empty().html(response.data.content);

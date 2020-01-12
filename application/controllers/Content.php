@@ -136,6 +136,168 @@ class Content extends MY_Controller
         show_404();
     }
 
+    public function change_customparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->update_customshaped_param($session_data, $postdata, $session_id, $this->USER);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($postdata['type']=='data' && $postdata['field']=='custom_mainimage' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('contents/custom_mainimage_view',['src'=>$postdata['newval']], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='custom_homepageimage'&& !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('contents/custom_homepageimage_view',['src'=>$postdata['newval']], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_imageupload_custom() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->save_customshape_imageupload($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    if ($postdata['imagetype']=='custom_mainimage') {
+                        $mdata['content']=$this->load->view('content/custom_mainimage_view', ['src' => $res['custom_mainimage']], TRUE);
+                        $mdata['custom_mainimage'] = 1;
+                    } elseif ($postdata['imagetype']=='custom_homepageimage') {
+                        $mdata['content']=$this->load->view('content/custom_homepageimage_view',['src' => $res['custom_homepageimage']], TRUE);
+                        $mdata['custom_homepageimage'] = 1;
+                    } elseif ($postdata['imagetype']=='gallery_image') {
+                        $mdata['gallery'] = 1;
+                        $gallery_options = [
+                            'galleries' => $res['galleries'],
+                            'maxitems' => $this->config->item('max_slider_galleryitems'),
+                        ];
+                        $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    } elseif ($postdata['imagetype']=='casestudy_image') {
+                        $mdata['casestudy'] = 1;
+                        $casestudy_options = [
+                            'casestudy' => $res['case_study'],
+                            'maxitems' => $this->config->item('max_slider_casestudy'),
+                        ];
+                        $mdata['content'] = $this->load->view('content/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function remove_customgalleryitem() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_customgalleryitem($session_data, $postdata, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $gallery_options = [
+                        'galleries' => $res['galleries'],
+                        'maxitems' => $this->config->item('max_slider_galleryitems'),
+                    ];
+                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function add_customgallery() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->add_customgallery($session_data, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $gallery_options = [
+                        'galleries' => $res['galleries'],
+                        'maxitems' => $this->config->item('max_slider_galleryitems'),
+                    ];
+                    $mdata['content'] = $this->load->view('contents/custom_galleryitems_edit', $gallery_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function remove_customgallery() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata=$this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_customgallery($session_data, $postdata, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $gallery_options = [
+                        'galleries' => $res['galleries'],
+                        'maxitems' => $this->config->item('max_slider_galleryitems'),
+                    ];
+                    $mdata['content'] = $this->load->view('contents/custom_galleryitems_edit', $gallery_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function remove_customcasestudy() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata=$this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_customcasestudy($session_data, $postdata, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $casestudy_options = [
+                        'casestudy' => $res['case_study'],
+                        'maxitems' => $this->config->item('max_slider_casestudy'),
+                    ];
+                    $mdata['content'] = $this->load->view('contents/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
         $data = $this->staticpages_model->get_page_inner_content($page_name);
@@ -283,6 +445,24 @@ class Content extends MY_Controller
         return $content;
     }
 
+    public function save_customcontent() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->save_customshaped($session_data, $postdata, $session_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
 }
 
