@@ -243,7 +243,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('contents/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

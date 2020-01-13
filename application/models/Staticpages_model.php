@@ -471,9 +471,9 @@ Class Staticpages_model extends MY_Model
                         $this->db->where('custom_casestudy_id', $custom_casestudy_id);
                         $this->db->update('sb_custom_casestudy');
                     }
-                    if ($custom_casestudy_id>0 && stripos($item['casestudy_image'],$this->config->item('upload_preload'))!==FALSE) {
+                    if ($custom_casestudy_id>0 && stripos($item['casestudy_image'],$path_preload_short)!==FALSE) {
                         $imagesrc = str_replace($path_preload_short, $path_preload_full, $item['casestudy_image']);
-                        $imagedetails = $this->func->extract_filename($data['custom_homepageimage']);
+                        $imagedetails = extract_filename($data['custom_homepageimage']);
                         $filename = 'casestudy_'.$custom_casestudy_id.'_'.time().'.'.$imagedetails['ext'];
                         $res = @copy($imagesrc, $this->config->item('casestudy_images_relative').$filename);
                         if ($res) {
