@@ -520,13 +520,13 @@ Class Staticpages_model extends MY_Model
                 $data = $session_data['data'];
                 $data[$postdata['field']]=$postdata['newval'];
                 $session_data['data']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='meta') {
                 $data=$session_data['meta'];
                 $data[$postdata['field']]=$postdata['newval'];
                 $session_data['meta']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='faq_section') {
                 $out['msg'] = 'FAQ Section Not Found';
@@ -556,7 +556,7 @@ Class Staticpages_model extends MY_Model
                         $questions[$qidx][$postdata['field']] = $postdata['newval'];
                         $data[$idx]['questions'] = $questions;
                         $session_data['faq_sections'] = $data;
-                        $this->func->session($session_id, $session_data);
+                        usersession($session_id, $session_data);
                         $out['result'] = $this->success_result;
                     }
                 }
@@ -595,7 +595,7 @@ Class Staticpages_model extends MY_Model
                 ];
                 $data[$idx]['questions']=$questions;
                 $session_data['faq_sections']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
                 $out['faq_section'] = $data[$idx];
             }
@@ -634,7 +634,7 @@ Class Staticpages_model extends MY_Model
                     ];
                     $session_data['deleted']=$deleted;
                 }
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
                 $out['faq_section'] = $data[$idx];
             }
@@ -1062,6 +1062,31 @@ Class Staticpages_model extends MY_Model
         $out['result']=$this->success_result;
         return $out;
     }
+
+    public function get_faq_sections() {
+        $this->db->select('faq_section, count(faq_id) as cnt',FALSE);
+        $this->db->from('sb_faq');
+        $this->db->group_by('faq_section');
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
+    public function get_faq($options=array()) {
+        $this->db->select('*',FALSE);
+        $this->db->from('sb_faq');
+        if (isset($options['faq_section'])) {
+            $this->db->where('faq_section',$options['faq_section']);
+        }
+        if (isset($options['order_by'])) {
+            $this->db->order_by($options['order_by']);
+        }
+        if (isset($options['limit']) && $options['limit']) {
+            $this->db->limit($options['limit']);
+        }
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
 
     private function _save_page_metadata($meta) {
         $this->db->set('meta_title', $meta['meta_title']);

@@ -42,9 +42,13 @@ class Content extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/content/extraservices.css');
                 $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
             }
-            if ($row['item_link'] =='#aboutusview') {
+            if ($row['item_link'] == '#aboutusview') {
                 $head['styles'][]=array('style'=>'/css/content/aboutus.css');
                 $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
+            }
+            if ($row['item_link'] == '#faqview') {
+                $head['styles'][]=array('style'=>'/css/content/faqpage.css');
+                $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -503,6 +507,119 @@ class Content extends MY_Controller
         }
     }
 
+    public function edit_faqcontent() {
+        if ($this->isAjax()) {
+            $page_name = 'faq';
+            $page_name_full = 'Frequently Asked Questions';
+            $session_id = uniq_link(15);
+            $this->load->model('staticpages_model');
+            $meta = $this->staticpages_model->get_metadata($page_name);
+            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
+            $session_data = usersession($session_id);
+            $session_data['meta'] = $meta;
+            $session_data['deleted'] = []; // type , id
+            usersession($session_id, $session_data);
+            $button_options = ['page'=>'faq', 'content_name' => $page_name_full, 'session'=> $session_id];
+            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+            $options = [
+                'meta_view' => $meta_view,
+                'buttons_view' => $buttons_view,
+                'special_content' => $special_content,
+            ];
+            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
+    public function change_faqparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->update_faqparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function add_faqquestion() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->add_faqquestion($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options=[
+                        'faq'=>$res['faq_section'],
+                        'faq_section'=>$postdata['faq_section'],
+                    ];
+                    $mdata['content'] = $this->load->view('content/faqsection_item_edit',$options,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function remove_faqquestion() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_faqquestion($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options=[
+                        'faq'=>$res['faq_section'],
+                        'faq_section'=>$postdata['faq_section'],
+                    ];
+                    $mdata['content'] = $this->load->view('content/faqsection_item_edit',$options,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function save_faqpagecontent() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $this->USER);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
         $data = $this->staticpages_model->get_page_inner_content($page_name);
@@ -557,10 +674,10 @@ class Content extends MY_Controller
                 $faq_sections[$idx]['questions'] = $quest;
                 $faq_sections[$idx]['title'] = ucfirst($row['faq_section']).' Questions';
                 if ($edit_mode==0) {
-                    $faq_content.=$this->load->view('contents/faqsection_view', ['faq'=>$faq_sections[$idx]], TRUE);
+                    $faq_content.=$this->load->view('content/faqsection_view', ['faq'=>$faq_sections[$idx]], TRUE);
                 } else {
-                    $faq_items = $this->load->view('contents/faqsection_item_edit',['faq'=>$faq_sections[$idx],'faq_section'=>$faq_sections[$idx]['faq_section']],TRUE);
-                    $faq_content.=$this->load->view('contents/faqsection_edit', ['faq'=>$faq_sections[$idx],'details'=>$faq_items], TRUE);
+                    $faq_items = $this->load->view('content/faqsection_item_edit',['faq'=>$faq_sections[$idx],'faq_section'=>$faq_sections[$idx]['faq_section']],TRUE);
+                    $faq_content.=$this->load->view('content/faqsection_edit', ['faq'=>$faq_sections[$idx],'details'=>$faq_items], TRUE);
                 }
                 $idx++;
             }
@@ -572,11 +689,11 @@ class Content extends MY_Controller
                 $page_options['session'] = $session;
             }
             if ($edit_mode==0) {
-                $content = $this->load->view('contents/faq_custom_view', $page_options, TRUE);
+                $content = $this->load->view('content/faq_custom_view', $page_options, TRUE);
             } else {
-                $content = $this->load->view('contents/faq_custom_edit', $page_options, TRUE);
+                $content = $this->load->view('content/faq_custom_edit', $page_options, TRUE);
                 $session_data = ['data' => $data, 'faq_sections' => $faq_sections];
-                $this->func->session($session, $session_data);
+                usersession($session, $session_data);
             }
         } elseif ($page_name=='terms') {
             $terms=$this->staticpages_model->get_terms();

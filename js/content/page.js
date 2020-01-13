@@ -26,15 +26,9 @@ function init_page(objid) {
         case 'aboutusview':
             init_contentpage('about');
             break;
-/*        case 'requestlist':
-            $("#requestlist").show();
-            init_proofdata();
+        case 'faqview':
+            init_contentpage('faq');
             break;
-        case 'taskview':
-            $("#taskview").show();
-            init_tasks_management();
-            init_tasks_page();
-            break; */
     }
 }
 
@@ -49,9 +43,9 @@ function init_contentpage(page_name) {
             } else if (page_name=='custom') {
                  $("#customshappedview").show().empty().html(response.data.content);
                  init_customshape_view();
-            // } else if (page_name=='faq') {
-            //     $("#faq").empty().html(response.data.content);
-            //     init_faqpage_view();
+            } else if (page_name=='faq') {
+                 $("#faqview").show().empty().html(response.data.content);
+                 init_faqpage_view();
             // } else if (page_name=='terms') {
             //     $("#terms").empty().html(response.data.content);
             //     init_terms_view();
