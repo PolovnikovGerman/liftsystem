@@ -23,6 +23,9 @@ function init_page(objid) {
         case 'serviceview':
             init_contentpage('extraservice');
             break;
+        case 'aboutusview':
+            init_contentpage('about');
+            break;
 /*        case 'requestlist':
             $("#requestlist").show();
             init_proofdata();
@@ -52,9 +55,9 @@ function init_contentpage(page_name) {
             // } else if (page_name=='terms') {
             //     $("#terms").empty().html(response.data.content);
             //     init_terms_view();
-            // } else if (page_name=='about') {
-            //     $("#aboutus").empty().html(response.data.content);
-            //     init_aboutpage_view();
+            } else if (page_name=='about') {
+                 $("#aboutusview").empty().html(response.data.content);
+                 init_aboutpage_view();
             // } else if (page_name=='contactus') {
             //     $("#contactus").empty().html(response.data.content);
             //     init_contactus_view();

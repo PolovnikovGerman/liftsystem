@@ -42,6 +42,9 @@ class Content extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/content/extraservices.css');
                 $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
             }
+            if ($row['item_link'] =='#aboutusview') {
+
+            }
         }
         $content_options['menu'] = $menu;
         $content_view = $this->load->view('content/page_view', $content_options, TRUE);
