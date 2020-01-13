@@ -688,13 +688,13 @@ Class Staticpages_model extends MY_Model
                 $data = $session_data['data'];
                 $data[$postdata['field']]=$postdata['newval'];
                 $session_data['data']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='meta') {
                 $data=$session_data['meta'];
                 $data[$postdata['field']]=$postdata['newval'];
                 $session_data['meta']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='terms') {
                 $out['msg'] = 'Term Not Found';
@@ -711,7 +711,7 @@ Class Staticpages_model extends MY_Model
                 if ($found == 1) {
                     $data[$idx][$postdata['field']]=$postdata['newval'];
                     $session_data['terms'] = $data;
-                    $this->func->session($session_id, $session_data);
+                    usersession($session_id, $session_data);
                     $out['result'] = $this->success_result;
                     $out['terms'] = $data;
                 }
@@ -742,7 +742,7 @@ Class Staticpages_model extends MY_Model
                 ];
                 $session_data['deleted']=$deleted;
             }
-            $this->func->session($session_id, $session_data);
+            usersession($session_id, $session_data);
             $out['result'] = $this->success_result;
             $out['terms'] = $newterms;
         }
@@ -772,7 +772,7 @@ Class Staticpages_model extends MY_Model
             'term_text' => '',
         ];
         $session_data['terms'] = $data;
-        $this->func->session($session_id, $session_data);
+        usersession($session_id, $session_data);
         $out['result'] = $this->success_result;
         $out['terms'] = $data;
 
@@ -792,7 +792,7 @@ Class Staticpages_model extends MY_Model
             }
         }
         if ($found == 1) {
-            $this->func->session($session_id, $session_data);
+            usersession($session_id, $session_data);
             $out['result'] = $this->success_result;
             $out['terms'] = $newterms;
         }
@@ -817,7 +817,7 @@ Class Staticpages_model extends MY_Model
             $newterms['term_text'] = $postdata['newcontent'];
             $data[$idx]=$newterms;
             $session_data['terms']=$data;
-            $this->func->session($session_id, $session_data);
+            usersession($session_id, $session_data);
             $out['result'] = $this->success_result;
             $out['terms'] = $newterms;
         }
@@ -854,7 +854,7 @@ Class Staticpages_model extends MY_Model
                 }
             }
         }
-        $this->func->session($session_id,null);
+        usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
     }
@@ -1087,6 +1087,75 @@ Class Staticpages_model extends MY_Model
         return $result;
     }
 
+    public function get_terms() {
+        $this->db->select('*',FALSE);
+        $this->db->from('sb_terms');
+        $this->db->order_by('term_order, term_id');
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
+    public function get_term_details($term_id) {
+        $this->db->select('*');
+        $this->db->from('sb_terms');
+        $this->db->where('term_id',$term_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function save_terms($data) {
+        $out=array('result'=>0, 'msg'=>'Unknown Error. Try Later');
+        if (empty($data['term_title'])) {
+            $out['msg']='Enter Term Title';
+        } else {
+            //$data['term_text']=htmlspecialchars($data['textarea']);
+            $data['term_text']=$data['textarea'];
+            if ($data['term_id']==0) {
+                $maxord=$this->max_term_order();
+            }
+            $this->db->set('term_header',$data['term_title']);
+            $this->db->set('term_text',$data['term_text']);
+            if ($data['term_id']==0) {
+                $this->db->set('term_order',$maxord);
+                $this->db->insert('sb_terms');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during insert Data. Try Later';
+                } else {
+                    $out['result']=1;
+                    $out['msg']='';
+                }
+            } else {
+                $this->db->where('term_id',$data['term_id']);
+                $this->db->update('sb_terms');
+                $out['result']=1;
+                $out['msg']='';
+            }
+        }
+        return $out;
+    }
+
+    private function max_term_order() {
+        $this->db->select('max(term_order) as val');
+        $this->db->from('sb_terms');
+        $res=$this->db->get()->row_array();
+        if (!isset($res['val'])) {
+            $out_val=0;
+        } else {
+            $out_val=$res['val'];
+        }
+        $out_val++;
+        return $out_val;
+    }
+
+    public function delete_term($term_id) {
+        $this->db->where('term_id',$term_id);
+        $this->db->delete('sb_terms');
+        if ($this->db->affected_rows()==0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
 
     private function _save_page_metadata($meta) {
         $this->db->set('meta_title', $meta['meta_title']);

@@ -54,6 +54,10 @@ class Content extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/content/contactus.css');
                 $head['scripts'][]=array('src'=>'/js/content/contactus.js');
             }
+            if ($row['item_link'] == '#termsview') {
+                $head['styles'][]=array('style'=>'/css/content/terms.css');
+                $head['scripts'][]=array('src'=>'/js/content/terms.js');
+            }
         }
         $content_options['menu'] = $menu;
         $content_view = $this->load->view('content/page_view', $content_options, TRUE);
@@ -688,6 +692,174 @@ class Content extends MY_Controller
         }
     }
 
+    public function edit_termscontent() {
+        if ($this->isAjax()) {
+            $page_name = 'terms';
+            $page_name_full = 'Terms & Polices';
+            $session_id = uniq_link(15);
+            $this->load->model('staticpages_model');
+            $meta = $this->staticpages_model->get_metadata($page_name);
+            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
+            $session_data = usersession($session_id);
+            $session_data['meta'] = $meta;
+            $session_data['deleted'] = []; // type , id
+            usersession($session_id, $session_data);
+            $button_options = ['page'=>'terms', 'content_name' => $page_name_full, 'session'=> $session_id];
+            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+            $options = [
+                'meta_view' => $meta_view,
+                'buttons_view' => $buttons_view,
+                'special_content' => $special_content,
+            ];
+            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
+    public function change_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->update_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function remove_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('content/terms_data_edit', ['terms'=>$res['terms']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function add_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->add_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('content/terms_data_edit', ['terms'=>$res['terms']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function edit_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->edit_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('content/termsdata_editor', $res['terms'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function canceledit_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->edit_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('content/termsdata_view', $res['terms'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveedit_termsparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->saveedit_termsparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('content/termsdata_view', $res['terms'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_termspagecontent() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->save_termspagecontent($session_data, $session_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
         $data = $this->staticpages_model->get_page_inner_content($page_name);
@@ -766,9 +938,9 @@ class Content extends MY_Controller
         } elseif ($page_name=='terms') {
             $terms=$this->staticpages_model->get_terms();
             if ($edit_mode==0) {
-                $terms_view = $this->load->view('contents/terms_data_view', ['terms'=>$terms], TRUE);
+                $terms_view = $this->load->view('content/terms_data_view', ['terms'=>$terms], TRUE);
             } else {
-                $terms_view = $this->load->view('contents/terms_data_edit', ['terms'=>$terms], TRUE);
+                $terms_view = $this->load->view('content/terms_data_edit', ['terms'=>$terms], TRUE);
             }
             $page_options = [
                 'data' => $data,
@@ -778,11 +950,11 @@ class Content extends MY_Controller
                 $page_options['session'] = $session;
             }
             if ($edit_mode==0) {
-                $content = $this->load->view('contents/terms_custom_view', $page_options, TRUE);
+                $content = $this->load->view('content/terms_custom_view', $page_options, TRUE);
             } else {
-                $content = $this->load->view('contents/terms_custom_edit', $page_options, TRUE);
+                $content = $this->load->view('content/terms_custom_edit', $page_options, TRUE);
                 $session_data = ['data' => $data, 'terms' => $terms];
-                $this->func->session($session, $session_data);
+                usersession($session, $session_data);
             }
         } elseif ($page_name=='about') {
             $address = $this->staticpages_model->get_page_inner_content('address');

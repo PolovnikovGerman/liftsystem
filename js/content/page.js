@@ -32,6 +32,9 @@ function init_page(objid) {
         case 'contactusview':
             init_contentpage('contactus');
             break;
+        case 'termsview':
+            init_contentpage('terms');
+            break;
     }
 }
 
@@ -49,9 +52,9 @@ function init_contentpage(page_name) {
             } else if (page_name=='faq') {
                  $("#faqview").show().empty().html(response.data.content);
                  init_faqpage_view();
-            // } else if (page_name=='terms') {
-            //     $("#terms").empty().html(response.data.content);
-            //     init_terms_view();
+            } else if (page_name=='terms') {
+                 $("#termsview").show().empty().html(response.data.content);
+                 init_terms_view();
             } else if (page_name=='about') {
                  $("#aboutusview").show().empty().html(response.data.content);
                  init_aboutpage_view();
