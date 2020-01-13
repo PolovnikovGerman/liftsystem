@@ -29,6 +29,9 @@ function init_page(objid) {
         case 'faqview':
             init_contentpage('faq');
             break;
+        case 'contactusview':
+            init_contentpage('contactus');
+            break;
     }
 }
 
@@ -52,9 +55,9 @@ function init_contentpage(page_name) {
             } else if (page_name=='about') {
                  $("#aboutusview").show().empty().html(response.data.content);
                  init_aboutpage_view();
-            // } else if (page_name=='contactus') {
-            //     $("#contactus").empty().html(response.data.content);
-            //     init_contactus_view();
+            } else if (page_name=='contactus') {
+                 $("#contactusview").show().empty().html(response.data.content);
+                 init_contactus_view();
             // } else if (page_name=='categories') {
             //     $("#categories").empty().html(response.data.content);
             //     init_categories_page();

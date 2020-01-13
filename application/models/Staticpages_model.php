@@ -960,19 +960,19 @@ Class Staticpages_model extends MY_Model
                 $data = $session_data['meta'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['meta'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='data') {
                 $data = $session_data['data'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['data'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='address') {
                 $data = $session_data['address'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['address'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             }
         }
@@ -989,7 +989,7 @@ Class Staticpages_model extends MY_Model
         // Static content
         $this->_save_page_params($data, $user);
         $this->_save_page_params($address, $user);
-        $this->func->session($session_id,null);
+        usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
     }
