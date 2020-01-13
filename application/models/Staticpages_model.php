@@ -14,13 +14,15 @@ Class Staticpages_model extends MY_Model
         $this->db->from('sb_static_pages');
         $this->db->where('page_name',$page_name);
         $res = $this->db->get()->row_array();
-        if (!array_key_exists('meta_title',$res)) {
+        if (empty($res) || !array_key_exists('meta_title',$res)) {
             $result=array(
                 'meta_title'=>$this->config->item('meta_title'),
                 'meta_keywords'=>$this->config->item('meta_keywords'),
                 'meta_description'=>$this->config->item('meta_description'),
                 'bottom_text'=>$this->config->item('bottom_text'),
                 'rollover_help'=>1,
+                'page_name' => $page_name,
+                'page_id' => -1,
             );
         } else {
             $result=$res;
@@ -999,13 +1001,13 @@ Class Staticpages_model extends MY_Model
                 $data = $session_data['meta'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['meta'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='data') {
                 $data = $session_data['data'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['data'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             }
         }
@@ -1028,7 +1030,7 @@ Class Staticpages_model extends MY_Model
         // Meta
         $this->_save_page_metadata($meta);
         // Static content
-        if ($data['service_mainimage'] && stripos($data['service_mainimage'],$this->config->item('upload_preload'))!==FALSE) {
+        if ($data['service_mainimage'] && stripos($data['service_mainimage'],$path_preload_short)!==FALSE) {
             // Save image
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['service_mainimage']);
             $imagedetails = $this->func->extract_filename($data['service_mainimage']);
@@ -1042,7 +1044,7 @@ Class Staticpages_model extends MY_Model
         // Services images
         for ($j=1; $j<9; $j++) {
             $imagename = 'service_image'.$j;
-            if ($data[$imagename] && stripos($data[$imagename],$this->config->item('upload_preload'))!==FALSE) {
+            if ($data[$imagename] && stripos($data[$imagename],$path_preload_short)!==FALSE) {
                 // Save image
                 $imagesrc = str_replace($path_preload_short, $path_preload_full, $data[$imagename]);
                 $imagedetails = $this->func->extract_filename($data[$imagename]);
@@ -1056,7 +1058,7 @@ Class Staticpages_model extends MY_Model
         }
         // Static content
         $this->_save_page_params($data, $user);
-        $this->func->session($session_id,null);
+        usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
     }
@@ -1066,8 +1068,13 @@ Class Staticpages_model extends MY_Model
         $this->db->set('meta_keywords', $meta['meta_keywords']);
         $this->db->set('meta_description', $meta['meta_description']);
         $this->db->set('internal_keywords', $meta['internal_keywords']);
-        $this->db->where('page_id', $meta['page_id']);
-        $this->db->update('sb_static_pages');
+        if ($meta['page_id']<0) {
+            $this->db->set('page_name', $meta['page_name']);
+           $this->db->insert('sb_static_pages');
+        } else {
+            $this->db->where('page_id', $meta['page_id']);
+            $this->db->update('sb_static_pages');
+        }
 
     }
 

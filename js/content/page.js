@@ -20,6 +20,9 @@ function init_page(objid) {
         case 'customshappedview':
             init_contentpage('custom');
             break;
+        case 'serviceview':
+            init_contentpage('extraservice');
+            break;
 /*        case 'requestlist':
             $("#requestlist").show();
             init_proofdata();
@@ -43,7 +46,7 @@ function init_contentpage(page_name) {
             } else if (page_name=='custom') {
                  $("#customshappedview").show().empty().html(response.data.content);
                  init_customshape_view();
-            } else if (page_name=='faq') {
+            // } else if (page_name=='faq') {
             //     $("#faq").empty().html(response.data.content);
             //     init_faqpage_view();
             // } else if (page_name=='terms') {
@@ -58,9 +61,9 @@ function init_contentpage(page_name) {
             // } else if (page_name=='categories') {
             //     $("#categories").empty().html(response.data.content);
             //     init_categories_page();
-            // } else if (page_name=='extraservice') {
-            //     $("#service").empty().html(response.data.content);
-            //     init_service_page();
+            } else if (page_name=='extraservice') {
+                 $("#serviceview").show().empty().html(response.data.content);
+                 init_service_page();
             }
         } else {
             show_error(response);

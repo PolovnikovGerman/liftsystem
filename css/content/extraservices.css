@@ -1,0 +1,134 @@
+.extraservicecontent-area {
+    margin-top: 16px;
+    padding-left: 20px;
+    margin-bottom: 52px;
+}
+div.service__maintitle {
+    width: 81px;
+}
+input.service__maintitle {
+    width: 184px;
+}
+div.service_secondarytext {
+    width: 122px;
+}
+input.service_secondarytext {
+    width: 334px;
+}
+.service_mainimagearea {
+    clear: both;
+    margin-bottom: 15px;
+}
+div.service_mainimage {
+    width: 91px;
+}
+.service_imagesubtitle {
+    color: #000000;
+    font-family: Helvetica-Oblique;
+    font-size: 12px;
+    margin-top: 7px;
+}
+.service_imagesubtitlesize {
+    color: #000000;
+    font-family: Helvetica-Oblique;
+    font-size: 12px;
+}
+div.service_mainimagesrc,
+div.service_mainimagesrcempty {
+    border: 1px solid #ededed;
+    height: 136px;
+    /* width: 250px; */
+    width: 426px;
+}
+div.service_mainimagesrc img {
+    width: 100%;
+}
+div.remove_service_mainimage {
+    height: 24px;
+    width: 33px;
+    background: #000000;
+    z-index: 10;
+    position: relative;
+    top: 0px;
+    right: 16px;
+    cursor: pointer;
+    margin-left: -18px;
+}
+div.remove_service_mainimage i {
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+    width: 33px;
+    line-height: 22px;
+}
+div.uploadservicemainimage {
+    margin-top: 63px;
+    margin-left: 184px;
+}
+div.service_belowimagetext {
+    width: 140px;
+}
+textarea.service_belowimagetext {
+    width: 543px;
+    height: 136px;
+}
+.serviceslabel {
+    margin-top: 22px;
+    margin-bottom: 22px;
+    font-size: 22px;
+}
+.service_title {
+    width: 112px;
+}
+input.service_title {
+    width: 220px;
+}
+.service_serviceimageplace {
+    width: 344px;
+    margin-right: 25px;
+}
+.service_imagesize {
+    width: 106px;
+}
+.service_imageenlarge {
+    width: 127px;
+    float: right;
+}
+div.service_text {
+    width: 139px;
+}
+div.service_imagesrc,
+div.service_imagesrcempty {
+    border: 1px solid #ededed;
+    width: 342px;
+    height: 199px;
+}
+div.service_imagesrc img {
+    width: 100%;
+}
+div.remove_service_image {
+    height: 24px;
+    width: 33px;
+    background: #000000;
+    z-index: 10;
+    position: relative;
+    top: -199px;
+    left: 328px;
+    cursor: pointer;
+    margin-left: -18px;
+}
+div.remove_service_image i {
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+    width: 33px;
+    line-height: 22px;
+}
+.uploadserviceimage {
+    margin-top: 90px;
+    margin-left: 128px;
+}
+textarea.service_text {
+    width: 369px;
+    height: 190px;
+}

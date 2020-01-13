@@ -38,6 +38,10 @@ class Content extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
                 $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
             }
+            if ($row['item_link'] == '#serviceview') {
+                $head['styles'][]=array('style'=>'/css/content/extraservices.css');
+                $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
+            }
         }
         $content_options['menu'] = $menu;
         $content_view = $this->load->view('content/page_view', $content_options, TRUE);
@@ -297,6 +301,90 @@ class Content extends MY_Controller
         }
     }
 
+    public function edit_servicecontent() {
+        if ($this->isAjax()) {
+            $page_name = 'extraservice';
+            $page_name_full = 'Services';
+            $session_id = uniq_link(15);
+            $this->load->model('staticpages_model');
+            $meta = $this->staticpages_model->get_metadata($page_name);
+            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
+            $session_data = usersession($session_id);
+            $session_data['meta'] = $meta;
+            $session_data['deleted'] = []; // type , id
+            usersession($session_id, $session_data);
+            $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
+            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+            $options = [
+                'meta_view' => $meta_view,
+                'buttons_view' => $buttons_view,
+                'special_content' => $special_content,
+            ];
+            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            $this->ajaxResponse($mdata, '');
+
+        }
+    }
+
+    public function change_serviceparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->change_serviceparam($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($postdata['field']=='service_mainimage' && !empty($postdata['newval'])) {
+                        $options=[
+                            'image' => $postdata['newval'],
+                        ];
+                        $mdata['content']=$this->load->view('content/service_mainimage_edit', $options,TRUE);
+                    }
+                    if (($postdata['field']=='service_image1' || $postdata['field']=='service_image2' || $postdata['field']=='service_image3'
+                            || $postdata['field']=='service_image4' || $postdata['field']=='service_image5' || $postdata['field']=='service_image6'
+                            || $postdata['field']=='service_image7' || $postdata['field']=='service_image8') && !empty($postdata['newval'])) {
+                        $options=[
+                            'image' => $postdata['newval'],
+                            'service' => $postdata['service'],
+                        ];
+                        $mdata['content']=$this->load->view('content/service_image_edit', $options,TRUE);
+
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_servicepagecontent() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->save_extraservice($session_data,  $session_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
+
 
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
@@ -434,11 +522,11 @@ class Content extends MY_Controller
                 $page_options['session'] = $session;
             }
             if ($edit_mode==0) {
-                $content = $this->load->view('contents/extraservices_custom_view', $page_options, TRUE);
+                $content = $this->load->view('content/extraservices_custom_view', $page_options, TRUE);
             } else {
-                $content = $this->load->view('contents/extraservices_custom_edit', $page_options, TRUE);
+                $content = $this->load->view('content/extraservices_custom_edit', $page_options, TRUE);
                 $session_data = ['data' => $data,];
-                $this->func->session($session, $session_data);
+                usersession($session, $session_data);
             }
 
         }
