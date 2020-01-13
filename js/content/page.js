@@ -56,7 +56,7 @@ function init_contentpage(page_name) {
             //     $("#terms").empty().html(response.data.content);
             //     init_terms_view();
             } else if (page_name=='about') {
-                 $("#aboutusview").empty().html(response.data.content);
+                 $("#aboutusview").show().empty().html(response.data.content);
                  init_aboutpage_view();
             // } else if (page_name=='contactus') {
             //     $("#contactus").empty().html(response.data.content);

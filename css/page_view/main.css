@@ -308,6 +308,7 @@ body div {
     font-weight: bold;
     background: #ffffff;
     cursor: default;
+    line-height: 24px!important;
 }
 .maincontent_view {
     background: #ffffff;

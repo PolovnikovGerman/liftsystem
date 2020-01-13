@@ -142,25 +142,38 @@
     width: 448px;
 }
 .statcipage_content div.label {
+    /*
     height: 25px;
     line-height: 19px!important;
     font-family: Helvetica-Bold;
     font-size: 15px;
     color: #000053;
+    */
+    height: 25px;
+    line-height: 19px!important;
+    font-family: Helvetica-Bold;
+    font-size: 15px;
+    color: #000053;
+    padding: 0;
+    display: block;
+    font-weight: normal;
+    text-align: left;
+    vertical-align: unset;
+    border-radius: 0;
 }
 .statcipage_content div.metatitle {
-    width: 91px;
+    width: 86px;
 }
 .statcipage_content div.metakeywords {
     margin-top: 10px;
-    width: 134px;
+    width: 128px;
 }
 .statcipage_content div.internalkeywords {
     margin-top: 10px;
-    width: 149px;
+    width: 143px;
 }
 .statcipage_content div.metadescription {
-    width: 95px;
+    width: 88px;
 }
 .statcipage_content input.metatitle {
     width: 448px;

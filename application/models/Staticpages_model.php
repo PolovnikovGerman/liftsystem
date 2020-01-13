@@ -866,32 +866,32 @@ Class Staticpages_model extends MY_Model
                 $data = $session_data['meta'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['meta'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='data') {
                 $data = $session_data['data'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['data'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='address') {
                 $data = $session_data['address'];
                 $data[$postdata['field']] = $postdata['newval'];
                 $session_data['address'] = $data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='affilate_img') {
                 $data = $session_data['data'];
                 $paramname = 'about_affilationsrc'.$postdata['imageorder'];
                 $data[$paramname]=$postdata['imagesrc'];
                 $session_data['data']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='main_image') {
                 $data = $session_data['data'];
                 $data[$postdata['field']]=$postdata['newval'];
                 $session_data['data']=$data;
-                $this->func->session($session_id, $session_data);
+                usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             }
         }
@@ -908,14 +908,14 @@ Class Staticpages_model extends MY_Model
         if (!file_exists($full_path)) {
             mkdir($full_path, 0777, true);
         }
-        $path_preload_short = $this->config->item('upload_preload');
+        $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         // Meta
         $this->_save_page_metadata($meta);
-        if ($data['about_mainimage'] && stripos($data['about_mainimage'],$this->config->item('upload_preload'))!==FALSE) {
+        if ($data['about_mainimage'] && stripos($data['about_mainimage'],$path_preload_short)!==FALSE) {
             // Save image
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_mainimage']);
-            $imagedetails = $this->func->extract_filename($data['about_mainimage']);
+            $imagedetails = extract_filename($data['about_mainimage']);
             $filename = 'about_mainimage_'.time().'.'.$imagedetails['ext'];
             $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
             $data['about_mainimage']='';
@@ -923,10 +923,10 @@ Class Staticpages_model extends MY_Model
                 $data['about_mainimage']=$this->config->item('contents_images').$filename;
             }
         }
-        if ($data['about_affilationsrc1'] && stripos($data['about_affilationsrc1'],$this->config->item('upload_preload'))!==FALSE) {
+        if ($data['about_affilationsrc1'] && stripos($data['about_affilationsrc1'],$path_preload_short)!==FALSE) {
             // Save image
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc1']);
-            $imagedetails = $this->func->extract_filename($data['about_affilationsrc1']);
+            $imagedetails = extract_filename($data['about_affilationsrc1']);
             $filename = 'about_affilationsrc_1_'.time().'.'.$imagedetails['ext'];
             $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
             $data['about_affilationsrc1']='';
@@ -934,7 +934,7 @@ Class Staticpages_model extends MY_Model
                 $data['about_affilationsrc1']=$this->config->item('contents_images').$filename;
             }
         }
-        if ($data['about_affilationsrc2'] && stripos($data['about_affilationsrc2'],$this->config->item('upload_preload'))!==FALSE) {
+        if ($data['about_affilationsrc2'] && stripos($data['about_affilationsrc2'],$path_preload_short)!==FALSE) {
             // Save image
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc2']);
             $imagedetails = $this->func->extract_filename($data['about_affilationsrc2']);
@@ -948,7 +948,7 @@ Class Staticpages_model extends MY_Model
         // Static content
         $this->_save_page_params($data, $user);
         $this->_save_page_params($address, $user);
-        $this->func->session($session_id,null);
+        usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
     }
@@ -1023,7 +1023,7 @@ Class Staticpages_model extends MY_Model
         if (!file_exists($full_path)) {
             mkdir($full_path, 0777, true);
         }
-        $path_preload_short = $this->config->item('upload_preload');
+        $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         // Meta
 
