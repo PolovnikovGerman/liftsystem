@@ -1,7 +1,6 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 14.01.20
- * Time: 20:28
- */
+<div class="custom_homepageimagesrc">
+    <img src="<?=$src?>" alt="Main Image"/>
+    <div class="custom_homeimageremove">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+    </div>
+</div>
