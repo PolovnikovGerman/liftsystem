@@ -1033,7 +1033,7 @@ Class Staticpages_model extends MY_Model
         if ($data['service_mainimage'] && stripos($data['service_mainimage'],$path_preload_short)!==FALSE) {
             // Save image
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['service_mainimage']);
-            $imagedetails = $this->func->extract_filename($data['service_mainimage']);
+            $imagedetails = extract_filename($data['service_mainimage']);
             $filename = 'service_mainimage_'.time().'.'.$imagedetails['ext'];
             $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
             $data['service_mainimage']='';
@@ -1047,7 +1047,7 @@ Class Staticpages_model extends MY_Model
             if ($data[$imagename] && stripos($data[$imagename],$path_preload_short)!==FALSE) {
                 // Save image
                 $imagesrc = str_replace($path_preload_short, $path_preload_full, $data[$imagename]);
-                $imagedetails = $this->func->extract_filename($data[$imagename]);
+                $imagedetails = extract_filename($data[$imagename]);
                 $filename = 'service_image_'.$j.'_'.time().'.'.$imagedetails['ext'];
                 $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
                 $data[$imagename]='';
