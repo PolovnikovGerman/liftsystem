@@ -617,7 +617,7 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $this->USER);
+                $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
