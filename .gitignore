@@ -19,4 +19,4 @@ composer.lock
 /tests/tests/
 /tests/results/
 .htaccess
-/uploads
+/uploads/
