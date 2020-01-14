@@ -1,7 +1,6 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 14.01.20
- * Time: 18:33
- */
+<div class="homepage_iconsrc">
+    <img src="<?=$icon_homepage?>" alt="Dropdown Image"/>
+</div>
+<div class="remove_homepage_icon">
+    <i class="fa fa-trash" aria-hidden="true"></i>
+</div>

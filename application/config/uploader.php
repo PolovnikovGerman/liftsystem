@@ -58,6 +58,9 @@ $config['invpics_relative']='/uploads/pics/';
 /*Path To Inventory Item Label PIC */
 $config['invitemlabel']=BASEPATH.'../uploads/itemlabel/';
 $config['invitemlabel_relative']='/uploads/itemlabel/';
+// Categories Images
+$config['category_images']='/uploads/categories_images/';
+$config['category_images_relative']=BASEPATH.'../uploads/categories_images/';
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

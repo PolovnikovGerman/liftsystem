@@ -1,7 +1,2 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 14.01.20
- * Time: 18:18
- */
+<div class="save_button" data-category="<?=$category_id?>">&nbsp;</div>
+<div class="cancel_button" data-category="<?=$category_id?>">&nbsp;</div>

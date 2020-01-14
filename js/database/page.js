@@ -13,9 +13,8 @@ function init_page(objid) {
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
-        case 'itempriceview':
-            $("#itempriceview").show();
-            init_orders();
+        case 'categoryview':
+            init_contentpage('categories');
             break;
         case 'requestlist':
             $("#requestlist").show();
@@ -27,5 +26,26 @@ function init_page(objid) {
             init_tasks_page();
             break;
     }
-
 }
+
+function init_contentpage(page_name) {
+    var params=new Array();
+    params.push({name:'page_name', value: page_name});
+    var url = '/database/get_content_view';
+    $.post(url, params, function(response) {
+        if (response.errors=='') {
+            if (page_name=='categories') {
+                $("#categoryview").show().empty().html(response.data.content);
+                init_categories_page();
+            // } else if (page_name=='extraservice') {
+            //     $("#service").empty().html(response.data.content);
+            //     init_service_page();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+
+// $("#categoryview").show().empty().html();

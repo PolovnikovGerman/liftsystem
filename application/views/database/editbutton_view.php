@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 14.01.20
- * Time: 15:26
- */
+<div class="edit_button" data-category="<?=$category_id?>">&nbsp;</div>

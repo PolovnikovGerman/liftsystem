@@ -1,7 +1,2 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 14.01.20
- * Time: 15:19
- */
+<div class="content_name" id="button_category_name"></div>
+<div class="viewmode" id="button_category_view"></div>

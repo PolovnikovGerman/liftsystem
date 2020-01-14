@@ -5,14 +5,14 @@
     </div>
     <div class="category_data_area">
         <div class="metainfotitle">
-            <div class="displaymeta show">
+            <div class="displaymeta shown">
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </div>
             <div class="title">Meta Info</div>
         </div>
         <div class="category_metadata_area"></div>
         <div class="contentinfotitle">
-            <div class="displaycontent show">
+            <div class="displaycontent shown">
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </div>
             <div class="title">Content</div>
