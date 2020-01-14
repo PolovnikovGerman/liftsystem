@@ -676,7 +676,7 @@ Class Staticpages_model extends MY_Model
                 }
             }
         }
-        $this->func->session($session_id,null);
+        usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
     }
