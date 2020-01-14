@@ -57,6 +57,8 @@ class Content extends MY_Controller
             if ($row['item_link'] == '#termsview') {
                 $head['styles'][]=array('style'=>'/css/content/terms.css');
                 $head['scripts'][]=array('src'=>'/js/content/terms.js');
+                $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
             }
         }
         $content_options['menu'] = $menu;
@@ -70,8 +72,6 @@ class Content extends MY_Controller
         // $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
-        $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
-        $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
         $head['scripts'][]=array('src'=>'/js/fancybox/jquery.fancybox.js');
         $head['styles'][]=array('style'=>'/css/fancybox/jquery.fancybox.css');
 
