@@ -59,7 +59,7 @@
     font-family: Helvetica-Oblique;
 }
 .statcipage_content .buttons .edit_button {
-    background: url(/img/content/edit_button_bg.png);
+    background: url(/img/contents/edit_button_bg.png);
     height: 31px;
     width: 98px;
     cursor: pointer;
@@ -68,7 +68,7 @@
     margin-left: 9px;
 }
 .statcipage_content .buttons .content_preview {
-    background: url(/img/content/preview_button_bg.png);
+    background: url(/img/contents/preview_button_bg.png);
     height: 31px;
     width: 141px;
     cursor: pointer;
@@ -84,7 +84,7 @@
     font-family: Helvetica-Oblique;
 }
 .statcipage_content .buttons .editmode .cancel_button {
-    background: url(/img/content/cancel_button_bg.png);
+    background: url(/img/contents/cancel_button_bg.png);
     height: 31px;
     width: 98px;
     cursor: pointer;
@@ -93,7 +93,7 @@
     margin-left: 5px;
 }
 .statcipage_content .buttons .editmode .save_button {
-    background: url(/img/content/save_button_bg.png);
+    background: url(/img/contents/save_button_bg.png);
     height: 31px;
     width: 98px;
     cursor: pointer;
