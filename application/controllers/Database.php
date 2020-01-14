@@ -33,7 +33,7 @@ class Database extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
         foreach ($menu as $row) {
-            if ($row['item_link'] == '#customshappedview') {
+            if ($row['item_link'] == '#itempriceview') {
                 // Custom shaped
                 $head['styles'][] = array('style' => '/css/content/customshape_page.css');
                 $head['scripts'][] = array('src' => '/js/content/custom_shaped.js');
@@ -48,10 +48,10 @@ class Database extends MY_Controller
 
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
-        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
-        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
-        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
-        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+        // $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        // $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        // $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        // $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
 
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
