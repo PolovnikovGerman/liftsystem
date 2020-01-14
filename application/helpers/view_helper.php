@@ -276,4 +276,24 @@ if (!function_exists('valid_url')) {
     }
 }
 
+if (!function_exists('getuploadid')) {
+    function getuploadid() {
+        return uniq_link(12,'digits');
+    }
+}
+
+if (!function_exists('extract_filename')) {
+    function extract_filename($filename){
+        if(!$filename) return false;
+        $result=array();
+        $index = mb_strrpos($filename, '.');
+        if($index){
+            $result['ext']  = mb_substr($filename, $index+1);
+            $result['name'] = mb_substr($filename, 0, $index);
+            return $result;
+        }
+        return false;
+    }
+}
+
 ?>
