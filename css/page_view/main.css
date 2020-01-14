@@ -221,15 +221,11 @@ body div {
     font-size: 14px;
     margin-right: 4px;
     text-align: center;
+    font-weight: bold;
 }
 .menubutton.adminbutton {
     background: #ff1c1c;
     background: linear-gradient(to top, #e11919, #ff2d2d);
-    color: #ffffff;
-}
-.menubutton.marketbtn {
-    background: #5656ff;
-    background: linear-gradient(to top, #4e4ee7, #6666ff);
     color: #ffffff;
 }
 .menubutton.marketbtn {
@@ -250,7 +246,7 @@ body div {
 .activemenubutton {
     width: 92px;
     height: 30px;
-    line-height: 23px!important;
+    line-height: 25px!important;
     font-family: Arial Black;
     font-size: 14px;
     margin-right: 4px;
