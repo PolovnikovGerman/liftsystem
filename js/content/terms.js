@@ -234,7 +234,7 @@ function init_termspage_editcontent() {
         params.push({name: 'session', value: $("#terms_session").val()});
         params.push({name: 'term_id', value: term });
         params.push({name: 'newcontent', value: newcontent});
-        var url="/contents/saveedit_termsparam";
+        var url="/content/saveedit_termsparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".termsdatarow[data-term='"+term+"']").empty().html(response.data.content);
