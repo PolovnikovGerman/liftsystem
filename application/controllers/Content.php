@@ -287,7 +287,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('contents/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -310,7 +310,7 @@ class Content extends MY_Controller
                         'casestudy' => $res['case_study'],
                         'maxitems' => $this->config->item('max_slider_casestudy'),
                     ];
-                    $mdata['content'] = $this->load->view('contents/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_casestudyitems_edit', $casestudy_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
