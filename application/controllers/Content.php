@@ -170,10 +170,10 @@ class Content extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     if ($postdata['type']=='data' && $postdata['field']=='custom_mainimage' && !empty($postdata['newval'])) {
-                        $mdata['content']=$this->load->view('contents/custom_mainimage_view',['src'=>$postdata['newval']], TRUE);
+                        $mdata['content']=$this->load->view('content/custom_mainimage_view',['src'=>$postdata['newval']], TRUE);
                     }
                     if ($postdata['type']=='data' && $postdata['field']=='custom_homepageimage'&& !empty($postdata['newval'])) {
-                        $mdata['content']=$this->load->view('contents/custom_homepageimage_view',['src'=>$postdata['newval']], TRUE);
+                        $mdata['content']=$this->load->view('content/custom_homepageimage_view',['src'=>$postdata['newval']], TRUE);
                     }
                 }
             }
