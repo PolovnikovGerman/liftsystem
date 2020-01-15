@@ -16,9 +16,8 @@ function init_page(objid) {
         case 'categoryview':
             init_contentpage('categories');
             break;
-        case 'requestlist':
-            $("#requestlist").show();
-            init_proofdata();
+        case 'itempriceview':
+            init_contentpage('itemprice');
             break;
         case 'taskview':
             $("#taskview").show();
@@ -37,9 +36,9 @@ function init_contentpage(page_name) {
             if (page_name=='categories') {
                 $("#categoryview").show().empty().html(response.data.content);
                 init_categories_page();
-            // } else if (page_name=='extraservice') {
-            //     $("#service").empty().html(response.data.content);
-            //     init_service_page();
+            } else if (page_name=='itemprice') {
+                $("#itempriceview").show().empty().html(response.data.content);
+                init_dbprice_view();
             }
         } else {
             show_error(response);

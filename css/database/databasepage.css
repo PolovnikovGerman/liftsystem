@@ -181,3 +181,196 @@
     cursor: pointer;
     margin-left: 8px;
 }
+/* DB Item Pages */
+.content_header {
+    clear: both;
+    float: left;
+    width: 1015px;
+}
+.legend {
+    color: #646464;
+    float: left;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 5px;
+    position: relative;
+    width: 100%;
+}
+.navigation {
+    color: #646464;
+    float: left;
+    font-size: 13px;
+    margin-left: 382px;
+    margin-top: -6px;
+    position: relative;
+    width: 629px;
+    z-index: 10;
+}
+.madmin-navigation {
+    clear: both;
+    float: left;
+    width: 555px;
+}
+.navigation_title {
+    clear: both;
+    float: left;
+    width: 72px;
+    padding-top: 6px;
+}
+
+.button-prices {
+    width: 61px;
+    height: 27px;
+    text-align: center;
+    margin-left: 3px;
+    float: left;
+}
+.button-categories, .button-sequence {
+    width: 80px;
+    height: 25px;
+    text-align: center;
+    float: left;
+}
+.button-missinginfo {
+    width: 93px;
+    height: 25px;
+    text-align: center;
+    float: left;
+}
+.button-profit {
+    width: 53px;
+    float: left;
+    height: 25px;
+    text-align: center;
+}
+.button-templates {
+    width: 78px;
+    float: left;
+    height: 25px;
+    text-align: center;
+}
+.button-specialcheck {
+    width: 96px;
+    float: left;
+    height: 25px;
+    text-align: center;
+}
+.newitemadd {
+    float: left;
+    padding-bottom: 0;
+    padding-left: 24px;
+    padding-right: 0;
+}
+.overflowtext {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.searchbox {
+    clear: both;
+    float: left;
+    padding-left: 8px;
+    width: 373px;
+}
+.sortupdatetimearea {
+    float: left;
+    margin-top: 5px;
+    width: 110px;
+}
+select.sortupdatetim {
+    background: none repeat scroll 0 0 #ffffff;
+    font-size: 12px;
+    height: 21px;
+    width: 106px;
+}
+.searchbox > input {
+    /* background: url("../img/search-box.png") no-repeat scroll 0 0 transparent;
+    border: medium none;*/
+    border: 1px solid #9e9e9e;
+    background-color: #e0e0e0;
+    color: #494948;
+    float: left;
+    font-size: 12px;
+    /* height: 23px;
+    line-height: 23px;*/
+    margin: 5px 0 0;
+    padding: 2px 2px;
+    width: 158px;
+}
+.searchbox > a.find_it {
+    background: url("/img/database/search_button_bg.png") no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 29px;
+    margin: 3px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}
+.newitemadd_area {
+    float: left;
+    background: url('../img/newitem_typearea_bg.png') no-repeat transparent;
+    height: 110px;
+    margin: 0;
+    padding: 14px;
+    position: relative;
+    width: 310px;
+}
+.newitemadd_title {
+    clear: both;
+    float: left;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0;
+    text-align: center;
+    width: 300px;
+}
+.newitem_type {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 300px;
+    font-size: 14px;
+}
+.newitem_type_label {
+    float: left;
+    width: 135px;
+    padding-top: 4px;
+    color: #000000;
+}
+.newitem_type_data {
+    float: left;
+    width: 160px;
+}
+select.newitemtype {
+    font-size: 12px;
+    color: #000;
+    width: 150px;
+}
+.newitem_create {
+    background: url("/img/database/newitem_create_button.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    height: 26px;
+    margin-left: 213px;
+    padding-top: 6px;
+    text-align: center;
+    width: 90px;
+}
+.newitem_create:hover {
+    cursor: pointer;
+}
+a.itemtitle {
+    cursor: pointer;
+    text-decoration: none;
+    color:#000000;
+}
+a.itemtitle.nearlyupdate {
+    color: #0000FF;
+}

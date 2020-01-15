@@ -346,3 +346,7 @@ body div {
 .greydatarow {
     background-color: #ededed;
 }
+
+.clearfix {
+    clear: both;
+}

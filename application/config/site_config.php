@@ -178,3 +178,6 @@ $config['bonus_price']=5;
 $config['bonus_week_base']=150;
 $config['netprofit_debt_start']=-160000;
 $config['bonus_time']=strtotime('2019-03-04');
+/* Diff for pricing - in Cents */
+$config['price_diff']=3;
+$config['dbview_perpage'] = 200;
