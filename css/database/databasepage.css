@@ -374,3 +374,28 @@ a.itemtitle {
 a.itemtitle.nearlyupdate {
     color: #0000FF;
 }
+/* POPOVER BG */
+.popover.green_background {
+    background: #86FF80;
+    color: #000000;
+}
+.popover.white_background {
+    background: #FFFFFF;
+    color: #000000;
+}
+.popover.red_background {
+    background: #FF0000;
+    color: #000000;
+}
+.popover.orange_background {
+    background: #FFA500;
+    color: #000000;
+}
+.popover.black_background {
+    background: #000000;
+    color: #ffffff;
+}
+.popover.maroon_background {
+    background: #800000;
+    color: #ffffff;
+}

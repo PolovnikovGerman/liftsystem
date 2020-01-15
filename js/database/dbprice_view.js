@@ -164,7 +164,7 @@ function pageDbpriceselectCallback(page_index){
             $("#curpagedbprice").val(page_index);
             $('#dbpricetabinfo').find("div.table-row:last").addClass('last_row');
             $("#loader").css('display','none');
-            // profit_init();
+            profit_init();
         } else {
             show_error(response);
         }
@@ -173,90 +173,57 @@ function pageDbpriceselectCallback(page_index){
 }
 
 function profit_init() {
-    $("a.greenprof").bt({
-        fill : '#86FF80',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '18',
-        cssClass: 'green_tooltip',
-        cssStyles: {color: '#FFFFF'}
-    });
-    $("a.whiteprof").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("a.redprof").bt({
-        fill : '#FF0000',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'red_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("a.orangeprof").bt({
-        fill : '#FFA500',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'orange_tooltip',
-        cssStyles: {color: '#000000'}
-    })
-    $("a.blackprof").bt({
-        fill : '#000000',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '18',
-        cssClass: 'black_tooltip',
-        cssStyles: {color: '#FFFFFF'}
-    });
-    $("a.maroonprof").bt({
-        fill : '#800000',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "top",
-        strokeStyle : '#FFFFFF',
-        strokeHeight: '18',
-        cssClass: 'maroon_tooltip',
-        cssStyles: {color: '#FFFFFF'}
-    })
+    var greenpopover_template='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    var whitepopover_template='<div class="popover white_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    var redpopover_template='<div class="popover red_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    var orangepopover_template='<div class="popover orange_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    var blackpopover_template='<div class="popover black_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+    var maroonpopover_template='<div class="popover maroon_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
 
+    $("a.greenprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: greenpopover_template,
+    });
+    $("a.whiteprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: whitepopover_template,
+    });
+    $("a.redprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: redpopover_template,
+    });
+    $("a.orangeprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: orangepopover_template,
+    });
+    $("a.blackprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: blackpopover_template,
+    });
+    $("a.maroonprof").popover({
+        placement: 'left',
+        trigger: 'hover',
+        html: true,
+        template: maroonpopover_template,
+    });
 }
 /**
  * Initialisation function for pagination
  */
 /* Sort function */
 function price_sort(colsort,colid) {
-    var perpage = itemsperpage;
-    var cursort = $("#orderby").val();
-    var direction = $("#direction").val();
-    var curpage = $("#curpage").val();
-    var search = $.trim($("#search").val());
+    var cursort = $("#orderbydbprice").val();
+    var direction = $("#directiondbprice").val();
     $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
     $("#"+colid).removeClass('gradient1').addClass('gradient2');
     if (colsort==cursort) {
@@ -268,57 +235,36 @@ function price_sort(colsort,colid) {
     } else {
         direction='asc';
     }
-    $("#orderby").val(colsort);
-    $("#direction").val(direction);
+    $("#orderbydbprice").val(colsort);
+    $("#directiondbprice").val(direction);
     $("select#sortupdatetim").val('');
-    initPagination();
-
-//    $("#dbitemloader").css('display','block');
-//    $.post('/dbitemview/pricedat',{'offset':curpage,'limit':perpage,'order_by':colsort,'direction':direction,'search':search},function(data){
-//        $('#tabinfo').empty().append(data.content);
-//        var infoh=parseInt($('div#tabinfo').css('height').replace('px',''));
-//        if (infoh<541) {
-//            $(".tabinfo").css('overflow','hidden');
-//            $(".table-row").css('width','996px');
-//            $('div#tabinfo .last_col').css('width','72px');
-//        } else {
-//            $(".tabinfo").css('overflow-y','auto');
-//        }
-//        $('#tabinfo').find("div.table-row:last").addClass('last_row');
-//        $("#dbitemloader").css('display','none');
-//        /* class for profit */
-//        profit_init();
-//    },'json');
+    initDBPricePagination();
 }
 
 function search_data() {
-    var search=$("#searchtemplate").val();
-    if (search=='Enter keyword or item #') {
-        search='';
-    }
+    var search=$("#searchdbprice").val();
     var vend=$("select#vendorselect").val();
-    $.post('/dbitemview/searchcount', {'search':search, 'vendor_id':vend}, function(response){
+    $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
         if (response.data.result==0) {
             alert('No search result');
-            $("#searchtemplate").val('');
+            $("#searchdbprice").val('');
             $("select#vendorselect").val('');
         } else {
-            $("#search").val(search);
-            $("#curpage").val(0);
-            $("#totalrec").val(response.data.result);
-            initPagination();
+            $("#searchdbprice").val(search);
+            $("#curpagedbprice").val(0);
+            $("#totalrecdbprice").val(response.data.result);
+            initDBPricePagination();
         }
     }, 'json');
 }
 
 function clear_search() {
-    $("#searchtemplate").val('Enter keyword or item #');
-    $("#search").val('');
+    $("#searchdbprice").val('');
+    // $("#search").val('');
     $("select#vendorselect").val('');
-    $.post('/dbitemview/searchcount', {'search':''}, function(response){
-        $("#curpage").val(0);
+    $.post('/database/searchcount', {'search':''}, function(response){
+        $("#curpagedbprice").val(0);
         $("#totalrec").val(response.data.result);
-        initPagination();
+        initDBPricePagination();
     },'json');
-
 }

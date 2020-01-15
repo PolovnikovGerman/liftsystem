@@ -273,6 +273,21 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function searchcount() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $search = $this->input->post('search');
+            $vendor_id=$this->input->post('vendor_id','');
+            $this->load->model('items_model');
+            $num_rec=$this->items_model->count_searchres($search, $vendor_id);
+            $mdata['result']=$num_rec;
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+
 
 
     // Prepare pages
