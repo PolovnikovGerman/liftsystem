@@ -126,8 +126,8 @@ function initDBPricePagination() {
 
 function prepare_dbpriceparams() {
     var params=new Array();
-    params.push({name:'offset', value: $("#curpagedbprice")});
-    params.push({name:'limit',value: $("#perpagedbprice")});
+    params.push({name:'offset', value: $("#curpagedbprice").val()});
+    params.push({name:'limit',value: $("#perpagedbprice").val()});
     params.push({name:'order_by', value: $("#orderbydbprice").val()});
     params.push({name:'direction',value: $("#directiondbprice").val()});
     params.push({name:'search', value:$.trim($("#searchdbprice").val())});

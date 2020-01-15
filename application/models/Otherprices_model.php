@@ -2,6 +2,8 @@
 Class Otherprices_model extends My_Model
 {
 
+    private $price_types = [];
+
     function __construct()
     {
         parent::__construct();
@@ -65,7 +67,7 @@ Class Otherprices_model extends My_Model
         }
 
         $results=$this->db->get()->result_array();
-
+        firephplog($this->db->last_query(),'SQL1');
         $out_array=array();
         $curtime=time();
         $diff=86400;
