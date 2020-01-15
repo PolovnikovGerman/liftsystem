@@ -31,199 +31,42 @@ class Leads extends My_Controller {
     protected $LEAD_CLOSED=4;
     private $restore_orderdata_error='Connection Lost. Please, recall form';
 
+    private $pagelink = '/leads';
 
     function __construct() {
         parent::__construct();
-//        $userdat = $this->user_model->current_user();
-//
-//        if ($userdat['id']==0) {
-//            if ($this->func->isAjax()) {
-//                $this->func->ajaxResponse(array('url'=>'/login'),'Your connection has been lost. Please log in');
-//            } else {
-//                redirect('/login');
-//            }
-//        }
-//        $this->USR_ROLE=$userdat['user_logged_in'];
-//        $this->USR_ID=$userdat['id'];
-//        $this->USR_NAME=$userdat['user_name'];
-//        $this->NONPARSED=$userdat['nonparsed'];
-//        if ($this->NONPARSED!=0) {
-//            $this->PARSED_CLASS='needtoparse';
-//        } else {
-//            $this->NONPARSED='';
-//        }
-
-//        if (!$this->mpermiss->check_itempermis($this->USR_ID, $this->ITEMLNK)) {
-//            if ($this->func->isAjax()) {
-//                $this->func->ajaxResponse(array('url'=>'/'),'You have no permissions to do this. Please log in');
-//            } else {
-//                redirect('/');
-//            }
-//        }
-//        $this->load->model('leads_model','mleads');
-//        $this->load->model('questions_model','mquests');
-//        $this->load->model('user_model','muser');
-//        $this->load->model('ordernqb_model','mordernqb');
-//        $this->load->model('quotes_model','mquotes');
-//        $this->load->model('artproof_model','mproofs');
-//        $this->load->model('documents_model','mdocs');
-//        $this->load->model('contact_model');
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        if ($pagedat['result'] == $this->error_result) {
+            show_404();
+        }
+        $page = $pagedat['menuitem'];
+        $permdat = $this->menuitems_model->get_menuitem_userpermisiion($this->USR_ID, $page['menu_item_id']);
+        if ($permdat['result'] == $this->success_result && $permdat['permission'] > 0) {
+        } else {
+            if ($this->isAjax()) {
+                $this->ajaxResponse(array('url' => '/'), 'Your have no permission to this page');
+            } else {
+                redirect('/');
+            }
+        }
     }
 
     function index() {
-//        $start=$this->input->get('start');
-//        /* Fulfillment, Custom SB, Vendors, Art */
-//        $head=array();
-//
-//        $head['title']=$this->config->item('system_name').'::Sales';
-//        $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
-//        $head['styles'][]=array('style'=>'/css/tabspage.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/fin/general.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/sales.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/leads.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/lead_popup.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/documents.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/artpage/proofrequestlist.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/artpage/art.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/artpage/artpopup.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/contacts/list.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/contacts/popup.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/questions.css?r='.$this->config->item('css_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/quotes.css?r='.$this->config->item('css_version'));
-//
-//        $head['scripts'][]=array('src'=>'/js/leads/leads.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/leaddata.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/notqb_art.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/questions.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/quotes.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/art/proofrequestlist.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/documents.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/art/artpopup.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/lead_popup.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/contacts/list.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/contacts/popup.js?r='.$this->config->item('js_version'));
-//        $head['scripts'][]=array('src'=>'/js/contacts/popup_edit.js?r='.$this->config->item('js_version'));
-//        // Lead orders
-//        $head['styles'][]=array('style'=>'/css/leadorder/style.css?r='.$this->config->item('css_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/leadorders.js?r='.$this->config->item('js_version'));
-//        // Lead Order Popup
-//        $head['styles'][]=array('style'=>'/css/leadorder/popup.css?r='.$this->config->item('css_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js?r='.$this->config->item('js_version'));
-//        // Items List
-//        $head['styles'][]=array('style'=>'/css/leads/leaditems.css?r='.$this->config->item('css_version'));
-//        $head['scripts'][]=array('src'=>'/js/leads/leaditems.js?r='.$this->config->item('js_version'));
-//        // Credit App Lines
-//        $head['styles'][]=array('style'=>'/css/fin/creditapp.css?r='.$this->config->item('css_version'));
-//        $head['scripts'][]=array('src'=>'/js/fin/creditapp.js?r='.$this->config->item('js_version'));
-//        /* Dynarc Calendar */
-//        $head['styles'][]=array('style'=>'/css/jscalend/jscal2.css');
-//        $head['styles'][]=array('style'=>'/css/jscalend/border-radius.css');
-//        $head['styles'][]=array('style'=>'/css/jscalend/steel/steel.css');
-//        $head['scripts'][]=array('src'=>'/js/jscalend/jscal2.js');
-//        $head['scripts'][]=array('src'=>'/js/jscalend/lang/en.js');
-//        /* Transform Forms */
-//        $head['scripts'][]=array('src'=>'/js/jquery.jqtransform.js');
-//        $head['styles'][]=array('style'=>'/css/jqtransform.css');
-//        /* Upload File */
-//        $head['scripts'][]=array('src'=>'/js/jquery.fileDownload.js');
-//        /* Checkbox ezmark */
-//        $head['scripts'][]=array('src'=>'/js/ezmark/jquery.ezmark.min.js');
-//        $head['styles'][]=array('style'=>'/css/ezmark/ezmark.css');
-//        /* Color Box  */
-//        $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
-//        $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
-//        /* Flash MSG */
-//        $head['scripts'][]=array('src'=>'/js/jsflash/flash.js');
-//        $head['styles'][]=array('style'=>'/css/jsflash/flash.css');
-//        // Input Mask
-//        $head['scripts'][]=array('src'=>'/js/jquery.maskedinput.js');
-//        // Simple Order
-//        $head['scripts'][]=array('src'=>'/js/leads/simpleorders.js?r='.$this->config->item('js_version'));
-//        $head['styles'][]=array('style'=>'/css/leads/simpleorders.css?r='.$this->config->item('css_version'));
-//        // Font Awesome
-//        $head['styles'][]=array('style'=>"https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css");
-//        $dat = array();
-//        $dat['header']=$this->load->view('html/header_view',$head,TRUE);
-//        // $usr_items=$this->mpermiss->get_mainitems($this->USR_ROLE);
-//        $usr_items=$this->mpermiss->get_mainitems($this->USR_ID);
-//        $submenu=array();
-//        foreach ($usr_items as $urow) {
-//            $options=$this->mpermiss->get_subitemstopmenu($this->USR_ID, $urow);
-//            if (!empty($options)) {
-//                $data=array('menu'=>$options);
-//                $submenu[$urow]=$this->load->view('html/topsubmenu_view', $data, TRUE);
-//            }
-//        }
-//
-//        $dat['usrmenu']=$usr_items;
-//        $menu_options=array(
-//            'current_item'=>'LEADS',
-//            'menu'=>$usr_items,
-//            'nonparsed'=>  $this->NONPARSED,
-//            'parsed_class'=> $this->PARSED_CLASS,
-//            'submenu'=>$submenu,
-//            'user_name'=>$this->USR_NAME,
-//        );
-//
-//        $dat['top_menu']=$this->load->view('html/head_menu_view', $menu_options,TRUE);
-//
-//        $date=array();
-//        // $menu_items=$this->mpermiss->get_subitems($this->USR_ROLE, $this->ITEMLNK);
-//        $menu_items=$this->mpermiss->get_subitems($this->USR_ID, $this->ITEMLNK);
-//        $date['menu_items']=$menu_items;
-//        $msgopt=array(
-//            'assign'=>1,
-//            'hideincl'=>1,
-//        );
-//        $totals=array(
-//            'questions'=>$this->mquests->get_count_questions($msgopt),
-//            'proofrequest'=>$this->mproofs->get_count_proofs($msgopt),
-//            'quotes'=>$this->mquotes->get_count_quotes($msgopt),
-//        );
-//        $totals['questions']=($totals['questions']==0 ? '' : $totals['questions']);
-//        $totals['proofrequest']=($totals['proofrequest']==0 ? '' : $totals['proofrequest']);
-//        $totals['quotes']=($totals['quotes']==0 ? '' : $totals['quotes']);
-//        $date['tabs']=$this->load->view('leads/leads_tabs_view',array('menu_items'=>$menu_items,'totals'=>$totals,'start'=>$start),TRUE);
-//        // $date['loader']=$this->load->view('loader_view',array('loader'=>1,'loader_id'=>'loader','inner_id'=>'loaderimg'),TRUE);
-//
-//        if (in_array('leadslnk',$menu_items)) {
-//            /* Temple for Leads */
-//            $date['leads']=$this->prepare_leads();
-//        }
-//        if (in_array('leadsorderslnk',$menu_items)) {
-//            /* Temple for B Proofs */
-//            $date['leadorders']=$this->prepare_orders();
-//        }
-//        if (in_array('onlinequotelnk',$menu_items)) {
-//            /* Template for Quotes */
-//            $date['quotes']=$this->prepare_quotes();
-//        }
-//        if (in_array('onlineprooflnk',$menu_items)) {
-//            /* Temple for Art Proof */
-//            $date['proof']=$this->prepare_proofs();
-//        }
-//        if (in_array('questionslnk',$menu_items)) {
-//            /* Template for Questions */
-//            $date['quest']=$this->prepare_questions();
-//        }
-//        if (in_array('leadsitemlistlnk', $menu_items)) {
-//            $date['leaditems']=$this->prepare_items();
-//        }
-//
-//        if (in_array('leadsimpleorder', $menu_items)) {
-//            $date['simpleorder']=$this->prepare_simpleorders();
-//        }
-//
-//        // Content
-//        /*
-//        $date['docums']=$this->prepare_docums();
-//        $date['customers']=$this->prepare_customers();
-//        */
-//        $date['loader']=$this->load->view('loader_view',array('loader'=>1,'loader_id'=>'loader','inner_id'=>'loaderimg',),TRUE);
-//        $date['artloader']=$this->load->view('loader_view',array('loader'=>0,'loader_id'=>'artloader','inner_id'=>'popupwin'),TRUE);
-//        $dat['content']=$this->load->view('leads/leads_view',$date,TRUE);
-//
-//        $this->load->view('html/template_view',$dat);
+        $head = [];
+        $head['title'] = 'Leads';
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $content_options = [];
+
+        $content_options['menu'] = $menu;
+        $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
+        // Add main page management
+        $head['scripts'][] = array('src' => '/js/leads/page.js');
+        $head['styles'][] = array('style' => '/css/leads/leadspage.css');
+        // Utils
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
     }
 
 //    /* Get data about LEAD & Account Reminder */
