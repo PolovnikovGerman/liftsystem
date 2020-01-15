@@ -66,55 +66,59 @@ Class Itemcategory_model extends My_Model
         return $out;
     }
 
-//    /* Update category */
-//    function upd_categ($recid,$new_val) {
-//        $this->db->where('item_categories_id',$recid);
-//        $this->db->set('item_categories_categoryid',$new_val);
-//        $this->db->update('sb_item_categories');
-//        return $this->db->affected_rows();
-//    }
-//    /* Delete category */
-//    function del_categ($recid) {
-//        $this->db->where('item_categories_id',$recid);
-//        $this->db->delete('sb_item_categories');
-//        return $this->db->affected_rows();
-//    }
-//    /* Insert new category */
-//    function ins_categ($item_id,$el_val) {
-//        $this->db->set('item_categories_itemid',$item_id);
-//        $this->db->set('item_categories_categoryid',$el_val);
-//        $this->db->insert('sb_item_categories');
-//        return $this->db->insert_id();
-//    }
-//    function chk_itemcateg($item_id,$el_val) {
-//        $this->db->select('count(*) as cnt',FALSE);
-//        $this->db->from('sb_item_categories');
-//        $this->db->where('item_categories_itemid',$item_id);
-//        $this->db->where('item_categories_categoryid',$el_val);
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//    function check_updcateg($recid,$el_val) {
-//        /* select data about item category */
-//        $this->db->select('item_categories_itemid, item_categories_categoryid');
-//        $this->db->from('sb_item_categories');
-//        $this->db->where('item_categories_id',$recid);
-//        $cat_res=$this->db->get()->row_array();
-//        /* Check unique */
-//        $this->db->select('count(item_categories_id) as cnt',FALSE);
-//        $this->db->from('sb_item_categories');
-//        $this->db->where('item_categories_itemid',$cat_res['item_categories_itemid']);
-//        $this->db->where('item_categories_categoryid',$el_val);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            return $res['cnt'];
-//        } else {
-//            return $cat_res['item_categories_categoryid'];
-//        }
-//
-//
-//    }
-//
+    /* Update category */
+    public function upd_categ($recid,$new_val) {
+        $this->db->where('item_categories_id',$recid);
+        $this->db->set('item_categories_categoryid',$new_val);
+        $this->db->update('sb_item_categories');
+        return $this->db->affected_rows();
+    }
+
+    /* Delete category */
+    function del_categ($recid) {
+        $this->db->where('item_categories_id',$recid);
+        $this->db->delete('sb_item_categories');
+        return $this->db->affected_rows();
+    }
+
+    /* Insert new category */
+    public function ins_categ($item_id,$el_val) {
+        $this->db->set('item_categories_itemid',$item_id);
+        $this->db->set('item_categories_categoryid',$el_val);
+        $this->db->insert('sb_item_categories');
+        return $this->db->insert_id();
+    }
+
+    public function chk_itemcateg($item_id,$el_val) {
+        $this->db->select('count(*) as cnt',FALSE);
+        $this->db->from('sb_item_categories');
+        $this->db->where('item_categories_itemid',$item_id);
+        $this->db->where('item_categories_categoryid',$el_val);
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function check_updcateg($recid,$el_val) {
+        /* select data about item category */
+        $this->db->select('item_categories_itemid, item_categories_categoryid');
+        $this->db->from('sb_item_categories');
+        $this->db->where('item_categories_id',$recid);
+        $cat_res=$this->db->get()->row_array();
+        /* Check unique */
+        $this->db->select('count(item_categories_id) as cnt',FALSE);
+        $this->db->from('sb_item_categories');
+        $this->db->where('item_categories_itemid',$cat_res['item_categories_itemid']);
+        $this->db->where('item_categories_categoryid',$el_val);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            return $res['cnt'];
+        } else {
+            return $cat_res['item_categories_categoryid'];
+        }
+
+
+    }
+
 //    /* Get Items for category */
 //    function get_category_items($category_id) {
 //        $this->db->select("ic.item_categories_order,ic.item_categories_id,  i.item_id, i.item_name");

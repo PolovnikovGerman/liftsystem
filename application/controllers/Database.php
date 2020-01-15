@@ -330,10 +330,59 @@ class Database extends MY_Controller
             );
             $mdata['content'] = $this->load->view('database/dbcategory_table_data_view',$data, TRUE);
             $this->ajaxResponse($mdata, $error);
-
-
         }
+    }
 
+    public function updcat() {
+        if ($this->isAjax()) {
+            $err_str='';
+            $mdata=[];
+            $el_id=$this->input->post('id');
+            $el_val=$this->input->post('value');
+            $options=array('show_list'=>1);
+            $this->load->model('itemcategory_model');
+            $this->load->model('categories_model');
+            $categ_list=$this->categories_model->get_categories($options);
+            if (substr($el_id,0,1)=='c') {
+                /* New Category */
+                $item_id=substr($el_id,1,strpos($el_id,'_')-1);
+                if ($el_val!=0) {
+                    $chk=$this->itemcategory_model->chk_itemcateg($item_id,$el_val);
+                    if ($chk!=0) {
+                        $err_str='Non unique category';
+                        $cat_id=$el_id;
+                        $el_val=0;
+                    } else {
+                        $cat_id=$this->itemcategory_model->ins_categ($item_id,$el_val);
+                        $cat_id='ic'.$cat_id.'_'.substr($el_id,1);
+                    }
+                }
+            } else {
+                $recid=substr($el_id,2,  strpos($el_id, '_')-1);
+                $new_elid=substr($el_id,strpos($el_id,'_')+1);
+                if ($el_val==0) {
+                    /* Delete Item Category */
+                    $cat_id=$this->itemcategory_model->del_categ($recid);
+                    $cat_id='c'.$new_elid;
+                } else {
+                    /* Check an unique  */
+                    $res=$this->itemcategory_model->check_updcateg($recid,$el_val);
+                    if ($res!=0) {
+                        /* Error */
+                        $err_str='Non unique category';
+                        $cat_id=$el_id;
+                        $el_val=$res;
+                    } else {
+                        $cat_id=$this->itemcategory_model->upd_categ($recid,$el_val);
+                        $cat_id=$el_id;
+                    }
+                }
+            }
+            /* Load view with el_val */
+            $mdata['content'] = $this->load->view('database/dbcategerory_item_view',array('el_id'=>$cat_id,'catval'=>$el_val,'categ_list'=>$categ_list),TRUE);
+            $this->ajaxResponse($mdata, $err_str);
+        }
+        show_404();
     }
 
 

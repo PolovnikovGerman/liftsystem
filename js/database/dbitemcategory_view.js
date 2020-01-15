@@ -179,15 +179,14 @@ function lockpage() {
 function change_category(obj) {
     var elid=obj.id;
     var value=$("#"+elid).val();
-    var url='/dbitemview/updcat';
     var celid=$("#"+elid).parent().attr('id');
-
-    $.post(url,{'id':elid,'value':value},function(data){
-        if (data.error!='') {
-            alert(data.error);
-            $("#"+celid).empty().html(data.content);
+    var url='/database/updcat';
+    $.post(url,{'id':elid,'value':value},function(response){
+        if (response.errors=='') {
+            $("#"+celid).empty().html(response.data.content);
         } else {
-            $("#"+celid).empty().html(data.content);
+            $("#"+celid).empty().html(response.data.content);
+            alert(data.error);
         }
 
     },'json');
@@ -195,22 +194,21 @@ function change_category(obj) {
 }
 
 function search_data() {
-    var search=$("#searchtemplate").val();
+    var search=$("#searchdbcategory").val();
     if (search=='Enter keyword or item #') {
         search='';
     }
     var vend=$("select#vendorselect").val();
-    var url='/dbitemview/searchcount';
+    var url='/database/searchcount';
     $.post(url, {'search':search,'vendor_id':vend}, function(response){
         if (response.errors=='') {
             if (response.data.result==0) {
                 alert('No search result');
-                $("#searchtemplate").val('');
+                $("#searchdbcategory").val('');
                 $("select#vendorselect").val('');
             } else {
-                $("#search").val(search);
-                $("#curpage").val(0);
-                $("#totalrec").val(response.data.result);
+                $("#curpagedbcateg").val(0);
+                $("#totalrecdbcateg").val(response.data.result);
                 initDBCategoryPagination();
             }
 
@@ -225,10 +223,10 @@ function clear_search() {
     $("#searchtemplate").val('Enter keyword or item #');
     $("#search").val('');
     $("select#vendorselect").val('');
-    $.post('/dbitemview/searchcount', {'search':''}, function(response){
+    $.post('/database/searchcount', {'search':''}, function(response){
         if (response.errors=='') {
-            $("#curpage").val(0);
-            $("#totalrec").val(response.data.result);
+            $("#curpagedbcateg").val(0);
+            $("#totalrecdbcateg").val(response.data.result);
             initDBCategoryPagination();
         } else {
             show_error(response);
