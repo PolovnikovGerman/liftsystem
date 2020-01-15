@@ -1,5 +1,5 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea databasemenu">
+    <div class="maincontentmenuarea marketmenu">
         <div class="maincontentmenu">
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>

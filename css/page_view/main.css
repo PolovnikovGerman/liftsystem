@@ -259,8 +259,9 @@ body div {
     width: 92px;
     height: 30px;
     line-height: 25px!important;
-    font-family: Arial Black;
+    font-family: Arial;
     font-size: 14px;
+    font-weight: bold;
     margin-right: 4px;
     text-align: center;
 }
