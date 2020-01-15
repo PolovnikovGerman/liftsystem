@@ -172,7 +172,7 @@ select.vendorselect {
     color: #000000;
 }
 .red {
-    background: #ff0000;
+    background: #ff0000!important;
     color: #FFFFFF;
 }
 .red a {
@@ -187,7 +187,7 @@ select.vendorselect {
     color: #000000;
 }
 .pink {
-    background: #fe3cd7;
+    background: #fe3cd7!important;
     color: #FFFFFF;
 }
 .pink a {

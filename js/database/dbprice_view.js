@@ -81,21 +81,15 @@ function init_dbprice_view() {
     $("input.pricecomparechk").unbind('change').change(function(){
         search_data();
     })
-    $("#find_it").unbind('click').click(function(){
-        var search=$("#searchtemplate").val();
-        if (search!='Enter keyword or item #' && search!='') {
+    $("#dbpricefind_it").unbind('click').click(function(){
+        search_data();
+    });
+    $("#searchdbprice").keypress(function(event){
+        if (event.which == 13) {
             search_data();
         }
     });
-    $("#searchtemplate").keypress(function(event){
-        if (event.which == 13) {
-            var search=$("#searchtemplate").val();
-            if (search!='Enter keyword or item #' && search!='') {
-                search_data();
-            }
-        }
-    });
-    $("#clear_it").unbind('click').click(function(){
+    $("#dbpriceclear_it").unbind('click').click(function(){
         clear_search();
     });
 }
@@ -216,6 +210,11 @@ function profit_init() {
         html: true,
         template: maroonpopover_template,
     });
+    $(".itemtitle").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+    })
 }
 /**
  * Initialisation function for pagination

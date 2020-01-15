@@ -6,7 +6,6 @@
     <input type="hidden" id='orderbydbprice' value="<?= $order_by ?>"/>
     <input type="hidden" id="directiondbprice" value="<?= $direction ?>"/>
     <input type="hidden" id="curpagedbprice" value="<?= $cur_page ?>"/>
-    <input type="hidden" id="searchdbprice" value="<?= $search ?>"/>
     <input type="hidden" id="perpagedbprice" value="<?=$perpage?>"/>
     <div class="table-price">
         <table cellspacing="0" cellpadding="0">

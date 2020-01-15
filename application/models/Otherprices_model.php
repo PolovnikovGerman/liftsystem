@@ -130,7 +130,7 @@ Class Otherprices_model extends My_Model
                                 $profit_perc=round(($profit/($basecost*intval($res[$i]['item_qty']))*100),0);
                                 $row['item_profit_'.$type['type']]=$profit;
                                 $row['item_profitperc_'.$type['type']]=$profit_perc;
-                                $row['item_profitclass_'.$type['type']]=$this->func->profit_bgclass($profit_perc);
+                                $row['item_profitclass_'.$type['type']]=profit_bgclass($profit_perc);
                             }
                         }
 
@@ -305,7 +305,7 @@ Class Otherprices_model extends My_Model
                                 $profit_perc=round(($profit/($basecost*intval($res[$i]['item_qty']))*100),0);
                                 $row['item_profit_'.$type['type']]=$profit;
                                 $row['item_profitperc_'.$type['type']]=$profit_perc;
-                                $row['item_profitclass_'.$type['type']]=$this->func->profit_bgclass($profit_perc);
+                                $row['item_profitclass_'.$type['type']]=profit_bgclass($profit_perc);
                             }
                         }
 

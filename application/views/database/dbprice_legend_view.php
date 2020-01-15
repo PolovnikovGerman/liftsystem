@@ -11,11 +11,11 @@
     </ul>
     <div class="clearfix"></div>
     <div class="searchbox">
-        <input name="searchtemplate" id="dbpricetemplate" placeholder="Enter keyword or item #" type="text" value="<?=$search?>" />
-        <a class="find_it" id="find_it" href="javascript:void(0);">
+        <input name="searchtemplate" id="searchdbprice" placeholder="Enter keyword or item #" type="text" value="<?=$search?>" />
+        <a class="find_it" id="dbpricefind_it" href="javascript:void(0);">
             Search It
         </a>
-        <a class="find_it" id="clear_it" href="javascript:void(0);">
+        <a class="find_it" id="dbpriceclear_it" href="javascript:void(0);">
             Clear
         </a>
     </div>
