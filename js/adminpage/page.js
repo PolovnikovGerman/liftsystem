@@ -8,13 +8,11 @@ $(document).ready(function () {
             window.location.href='/login/logout';
         }
     })
-});
+})
 
 function show_error(response) {
     alert(response.errors);
-    // $('.alert').alert('show');
-    if (response.data.url !== undefined) {
-        // clearTimeout(timerId)
-        window.location.href = response.data.url;
+    if(response.data.url !== undefined) {
+        window.location.href=response.data.url;
     }
 }

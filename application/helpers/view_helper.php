@@ -276,6 +276,12 @@ if (!function_exists('valid_url')) {
     }
 }
 
+if (!function_exists('getuploadid')) {
+    function getuploadid() {
+        return uniq_link(12,'digits');
+    }
+}
+
 if (!function_exists('extract_filename')) {
     function extract_filename($filename){
         if(!$filename) return false;
@@ -289,33 +295,27 @@ if (!function_exists('extract_filename')) {
         return false;
     }
 }
-if (!function_exists('openfile')) {
-    function openfile($url, $filename) {
-        $filenamedetails = $this->extract_filename($filename);
-        switch ($filenamedetails['ext']) {
-            case 'jpg':
-                header('Content-type: images/jpeg');
-                break;
-            case 'docx':
-            case 'doc':
-                header('Content-type: application/msword');
-                break;
-            case 'xls':
-                header('Content-type: application/vnd.ms-excel');
-            case 'pdf':
-                header('Content-Type: application/pdf');
-                break;
-            default :
-                header('Content-Type: application/octet-stream');
-                break;
+
+if (!function_exists('profit_bgclass')) {
+    function profit_bgclass($profit_perc) {
+        $profit_perc=round($profit_perc,0);
+        $out_class='';
+        if ($profit_perc<=0) {
+            $out_class='black';
+        } elseif($profit_perc>0 && $profit_perc<10) {
+            $out_class='maroon';
+        } elseif ($profit_perc>=10 && $profit_perc<20) {
+            $out_class='red';
+        } elseif ($profit_perc>=20 && $profit_perc<30) {
+            $out_class='orange';
+        } elseif ($profit_perc>=30 && $profit_perc<40) {
+            $out_class='white';
+        } elseif ($profit_perc>=40) {
+            $out_class='green';
         }
-        $url = base_url() . $url;
-        // We'll be outputting a PDF
-        // It will be called downloaded.pdf
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        // The PDF source is in original.pdf
-        readfile($url);
+        return $out_class;
     }
 }
+
 
 ?>
