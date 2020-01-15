@@ -296,4 +296,26 @@ if (!function_exists('extract_filename')) {
     }
 }
 
+if (!function_exists('profit_bgclass')) {
+    function profit_bgclass($profit_perc) {
+        $profit_perc=round($profit_perc,0);
+        $out_class='';
+        if ($profit_perc<=0) {
+            $out_class='black';
+        } elseif($profit_perc>0 && $profit_perc<10) {
+            $out_class='maroon';
+        } elseif ($profit_perc>=10 && $profit_perc<20) {
+            $out_class='red';
+        } elseif ($profit_perc>=20 && $profit_perc<30) {
+            $out_class='orange';
+        } elseif ($profit_perc>=30 && $profit_perc<40) {
+            $out_class='white';
+        } elseif ($profit_perc>=40) {
+            $out_class='green';
+        }
+        return $out_class;
+    }
+}
+
+
 ?>
