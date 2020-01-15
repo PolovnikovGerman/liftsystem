@@ -47,14 +47,14 @@ function init_dbprice_view() {
             price_sort('item_number','itemnum');
         } else {
             $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
-            var pagenum=$("#curpage").val();
+            var pagenum=$("#curpagedbprice").val();
             $("#orderby").val('update_time');
             if (datesort=='upd-desc') {
                 $("#direction").val('desc');
             } else {
                 $("#direction").val('asc');
             }
-            pageselectCallback(pagenum);
+            pageDbpriceselectCallback(pagenum);
         }
     });
     $("select#compareprefs").unbind('change').change(function(){
@@ -73,7 +73,7 @@ function init_dbprice_view() {
                 $(this).removeClass('red').removeClass('orange').removeClass('pink').addClass('white');
                 break;
         }
-        initPagination();
+        initDBPricePagination();
     })
     $("select#vendorselect").unbind('change').change(function(){
         search_data();
