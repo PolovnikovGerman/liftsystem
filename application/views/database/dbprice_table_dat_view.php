@@ -11,7 +11,7 @@
             </div>
             <div class="bor-1 cell-center" style="float: left; width:25px;height: 20px;">
                 <a id="<?=$row['item_id']?>" href="javascript:void(0);" onclick="item_edit(this);">
-                    <img src="/img/pen.png" class="edit_item"/>
+                    <i class="fa fa-pencil-square-o edit_item" aria-hidden="true"></i>
                 </a>
             </div>
             <div class="bor-1 text-2 cell-center" style="float:left;width:60px;height: 20px;">

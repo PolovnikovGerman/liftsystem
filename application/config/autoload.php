@@ -103,7 +103,7 @@ $autoload['helper'] = array('url','file','view_helper');
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array('site_config','uploader');
+$autoload['config'] = array('site_config','uploader','siteart_config');
 
 /*
 | -------------------------------------------------------------------

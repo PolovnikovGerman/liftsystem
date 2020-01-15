@@ -264,7 +264,6 @@ class Database extends MY_Controller
                     } else {
                         $item_dat=$this->otherprices_model->get_compared_pricelimit($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $othervend);
                     }
-                    firephplog(count($item_dat),'CountItems');
                     $data=array('item_dat'=>$item_dat,'offset'=>$offset);
                     $mdata['content'] = $this->load->view('database/dbprice_table_dat_view',$data, TRUE);
                 }

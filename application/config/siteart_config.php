@@ -31,3 +31,17 @@ $config['imprint_colors']=[
     array('name'=>'Lavender (2567)','code'=>'#b69ef2','class'=>'lavender'),
     array('name'=>'Metallic Gold (871)','code'=>'#baba4f','class'=>'metallicgold'),
 ];
+$config['price_types']=[
+    array('type'=>'25'),
+    array('type'=>'75'),
+    array('type'=>'150'),
+    array('type'=>'250'),
+    array('type'=>'500'),
+    array('type'=>'1000'),
+    array('type'=>'2500'),
+    array('type'=>'5000'),
+    array('type'=>'10000'),
+    array('type'=>'20000'),
+    array('type'=>'print'),
+    array('type'=>'setup'),
+];
