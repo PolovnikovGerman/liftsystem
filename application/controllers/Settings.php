@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Accounting extends MY_Controller
+class Settings extends MY_Controller
 {
 
     private $pagelink = '/settings';
