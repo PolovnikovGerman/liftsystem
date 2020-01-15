@@ -8,6 +8,20 @@ Class Categories_model extends MY_Model
         parent::__construct();
     }
 
+    public function get_categories($filtr=array(),$order_by='category_order',$sort='asc') {
+        $this->db->select('*');
+        $this->db->from('sb_categories');
+        $this->db->where('parent_id',NULL);
+        foreach ($filtr as $key=>$val) {
+            $this->db->where($key,$val);
+        }
+        if ($order_by!='') {
+            $this->db->order_by($order_by,$sort);
+        }
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
     // List for edit
     public function get_categories_list() {
         $this->db->select('*');

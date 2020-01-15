@@ -39,7 +39,7 @@ function init_contentpage(page_name) {
                 init_dbprice_view();
             } else if (page_name=='itemcategory') {
                 $("#itemcategoryview").show().empty().html(response.data.content);
-                // init_dbcategory_view();
+                init_dbcategory_view();
             }
         } else {
             show_error(response);

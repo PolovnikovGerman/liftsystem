@@ -40,6 +40,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link'] == '#itempriceview') {
                 $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+            } elseif ($row['item_link']=='#itemcategoryview') {
+                $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
+                $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -71,9 +74,6 @@ class Database extends MY_Controller
             $error='Empty Page Name';
             if (!empty($page_name)) {
                 $error = '';
-                // $this->load->model('staticpages_model');
-                // $meta = $this->staticpages_model->get_metadata($postdata['page_name']);
-                // $meta_view = $this->load->view('contents/metadata_view', $meta, TRUE);
                 $special_content = '';
                 if ($page_name=='categories') {
                     // $page_name_full = 'Categories';
@@ -82,6 +82,8 @@ class Database extends MY_Controller
                     $options = ['buttons_view' => $buttons_view, 'special_content' => $special_content,];
                     $mdata['content'] = $this->load->view('database/category_pagecontent_view', $options, TRUE);
                 } elseif ($page_name=='itemprice') {
+                    $mdata['content'] = $this->_prepare_dbpage_content($page_name);
+                } elseif ($page_name=='itemcategory') {
                     $mdata['content'] = $this->_prepare_dbpage_content($page_name);
                 }
             }
@@ -287,6 +289,52 @@ class Database extends MY_Controller
         show_404();
     }
 
+    // DB Item - Categories
+    public function categorydat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by','i.item_number');
+            $direct = $this->input->post('direction','asc');
+            $pagelock=$this->input->post('pagelock',1);
+            $search = $this->input->post('search');
+            $vendor_id=$this->input->post('vendor_id','');
+
+            usersession('page_name','categview');
+            usersession('curpage', $offset);
+            usersession('order_by', $order_by);
+            usersession('direction', $direct);
+            usersession('search', $search);
+            usersession('vendor_id', $vendor_id);
+
+            $offset=$offset*$limit;
+
+            /* Get data about categories */
+            $options=array();
+            $this->load->model('itemcategory_model');
+            $item_dat=$this->itemcategory_model->get_item_categories($options,$order_by,$direct,$limit,$offset,$search,$vendor_id);
+
+            $options=array('show_list'=>1);
+            $this->load->model('categories_model');
+            $categ_list=$this->categories_model->get_categories($options);
+
+            $data=array(
+                'item_dat'=>$item_dat,
+                'order_by'=>$order_by,
+                'direction'=>$direct,
+                'offset'=>$offset,
+                'categ_list'=>$categ_list,
+                'pagelock'=>$pagelock
+            );
+            $mdata['content'] = $this->load->view('database/dbcategory_table_data_view',$data, TRUE);
+            $this->ajaxResponse($mdata, $error);
+
+
+        }
+
+    }
 
 
 
@@ -298,75 +346,95 @@ class Database extends MY_Controller
             $categories = $this->categories_model->get_categories_list();
             // List view
             $content = $this->load->view('database/categorylist_view',['categories'=>$categories,'current_category'=>-1], TRUE);
-        } elseif ($page_name=='itemprice') {
-            $current_pagename=usersession('page_name');
-            $this->load->model('otherprices_model');
-            $othervendor=$this->otherprices_model->get_othervendors();
-            $cur_page=0;
-            $order_by='item_number';
-            $direction='asc';
-            $search='';
-            $priority='';
-            $vendor_id='';
-            $othervend=array();
-            foreach ($othervendor as $row) {
-                array_push($othervend, $row['other_vendor_id']);
-            }
+        } else {
+            $cur_page = 0;
+            $order_by = 'item_number';
+            $direction = 'asc';
+            $search = '';
+            $vendor_id = '';
+            $current_pagename = usersession('page_name');
             if ($current_pagename == $page_name) {
-                $cur_page=usersession('curpage');
-                $order_by=usersession('order_by');
-                $direction=usersession('direction');
-                $search=usersession('search');
-                $priority=usersession('priority');
-                $othervend=usersession('othervend');
-                $vendor_id=usersession('vendor_id');
+                $cur_page = usersession('curpage');
+                $order_by = usersession('order_by');
+                $direction = usersession('direction');
+                $search = usersession('search');
+                $vendor_id = usersession('vendor_id');
             }
             $this->load->model('items_model');
-            $total_rec=$this->items_model->count_searchres($search, $vendor_id);
-            /* Prepare contetn for display */
-            $content=array();
-            /* View Window Legend */
-            $mindiff=$this->config->item('price_diff');
-            $outvend=array();
-            foreach ($othervendor as $row) {
-                if (in_array($row['other_vendor_id'],$othervend)) {
-                    $row['chk']="checked='checked'";
-                } else {
-                    $row['chk']='';
+            $total_rec = $this->items_model->count_searchres($search, $vendor_id);
+            if ($page_name=='itemprice') {
+                $this->load->model('otherprices_model');
+                $priority = '';
+                $othervendor = $this->otherprices_model->get_othervendors();
+                $othervend = array();
+                foreach ($othervendor as $row) {
+                    array_push($othervend, $row['other_vendor_id']);
                 }
-                $outvend[]=$row;
+                if ($current_pagename == $page_name) {
+                    $priority = usersession('priority');
+                    $othervend = usersession('othervend');
+                }
+                /* Prepare contetn for display */
+                /* View Window Legend */
+                $mindiff = $this->config->item('price_diff');
+                $outvend = array();
+                foreach ($othervendor as $row) {
+                    if (in_array($row['other_vendor_id'], $othervend)) {
+                        $row['chk'] = "checked='checked'";
+                    } else {
+                        $row['chk'] = '';
+                    }
+                    $outvend[] = $row;
+                }
+                $this->load->model('vendors_model');
+                $legend_options = array(
+                    'mindiff' => $mindiff,
+                    'search' => $search,
+                    'vendors' => $this->vendors_model->get_vendors(),
+                    'priority' => $priority,
+                    'othervendor' => $outvend,
+                    'vendor' => $vendor_id,
+                    'order_by' => $order_by,
+                    'direction' => $direction,
+                );
+                if ($this->USR_ROLE == 'general') {
+                    $legend = $this->load->view('database/dbprice_general_legend_view', $legend_options, TRUE);
+                } else {
+                    $legend = $this->load->view('database/dbprice_legend_view', $legend_options, TRUE);
+                }
+                $content_dat = array(
+                    'legend' => $legend,
+                    'order_by' => $order_by,
+                    'direction' => $direction,
+                    'total_rec' => $total_rec,
+                    'cur_page' => $cur_page,
+                    'search' => $search,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                );
+                if ($this->USR_ROLE == 'general') {
+                    $table_dat = $this->load->view('database/dbprice_generaldata_view', $content_dat, TRUE);
+                } else {
+                    $table_dat = $this->load->view('database/dbprice_data_view', $content_dat, TRUE);
+                }
+            } elseif ($page_name=='itemcategory') {
+                $this->load->model('vendors_model');
+                $legend_options=array(
+                    'search'=>$search,
+                    'vendors' => $this->vendors_model->get_vendors(),
+                    'vendor'=>$vendor_id,
+                );
+                $legend=$this->load->view('database/dbcategory_legend_view', $legend_options, TRUE);
+                $content_dat=[
+                    'order_by'=>$order_by,
+                    'total_rec'=>$total_rec,
+                    'direction'=>$direction,
+                    'cur_page'=>$cur_page,
+                    'search'=>$search,
+                    'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                ];
+                $table_dat=$this->load->view('database/dbcategory_data_view',$content_dat,TRUE);
             }
-            $this->load->model('vendors_model');
-            $legend_options=array(
-                'mindiff'=>$mindiff,
-                'search'=>$search,
-                'vendors'=>$this->vendors_model->get_vendors(),
-                'priority'=>$priority,
-                'othervendor'=>$outvend,
-                'vendor'=>$vendor_id,
-                'order_by'=>$order_by,
-                'direction'=>$direction,
-            );
-            if ($this->USR_ROLE=='general') {
-                $legend=$this->load->view('database/dbprice_general_legend_view', $legend_options, TRUE);
-            } else {
-                $legend=$this->load->view('database/dbprice_legend_view', $legend_options, TRUE);
-            }
-            $content_dat=array(
-                'legend' => $legend,
-                'order_by'=>$order_by,
-                'direction'=>$direction,
-                'total_rec'=>$total_rec,
-                'cur_page'=>$cur_page,
-                'search'=>$search,
-                'perpage' => $this->config->item('dbview_perpage'),
-            );
-            if ($this->USR_ROLE=='general') {
-                $table_dat=$this->load->view('database/dbprice_generaldata_view',$content_dat,TRUE);
-            } else {
-                $table_dat=$this->load->view('database/dbprice_data_view',$content_dat,TRUE);
-            }
-
             return $table_dat;
         }
         return $content;

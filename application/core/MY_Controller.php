@@ -24,6 +24,7 @@ if (!defined('BASEPATH'))
  * @property Quotes_model quotes_model
  * @property Otherprices_model otherprices_model
  * @property Vendors_model vendors_model
+ * @property Itemcategory_model itemcategory_model
  */
 
 
