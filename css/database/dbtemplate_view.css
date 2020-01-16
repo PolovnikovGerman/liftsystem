@@ -1,0 +1,194 @@
+.legend ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    position: relative;
+}
+.legend li {
+    padding-left: 10px;
+    display:inline;
+    float:left;
+}
+.navigation {
+    z-index: 10;
+}
+.templatelegend_row {
+    clear: both;
+    float: left;
+    width: 1001px;
+}
+.dbpages_vendors {
+    float: left;
+    margin-top: 6px;
+    margin-left: 15px;
+    width: 175px;
+}
+select.vendorselect {
+    width: 165px;
+}
+.blank_templateloader {
+    clear: both;
+    float: left;
+    width: 931px;
+    background: url(/img/database/blank_template_bg.png) no-repeat;
+    height: 22px;
+    padding-left: 348px;
+}
+.arrow {
+    float: left;
+    width: 15px;
+    text-align: center;
+    padding-top: 4px;
+}
+.blank_templatelink {
+    float: left;
+    width: 230px;
+    padding-top: 4px;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+.blank_templatelink a {
+    text-decoration: none;
+    color: #FFF;
+}
+.table-templates {
+    clear: both;
+    float: left;
+    max-height: 523px;
+    overflow-y: auto;
+    padding-left: 1px;
+    width: 989px;
+}
+#dbcontent {
+    float: left;
+    margin-left: 10px;
+}
+.tabinfo {
+    float: left;
+    height: 590px;
+    margin-left: 1px;
+    width: 972px;
+}
+.table_head {
+    text-align: center;
+    background-color: #ffffff;
+    height:24px;
+}
+.gradient1 {
+    background: #5f5c5c;
+    background: -moz-linear-gradient(top, #5f5c5c, #939191);  /* Firefox 3.6+ */
+    /* Chrome 1-9, Safari 4-5 */
+    background: -webkit-gradient(linear, left top, left bottom,
+    color-stop(0%,#5f5c5c), color-stop(100%,#939191));
+    /* Chrome 10+, Safari 5.1+ */
+    background: -webkit-linear-gradient(top, #5f5c5c, #939191);
+    background: -o-linear-gradient(top, #5f5c5c, #939191); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #5f5c5c, #939191); /* IE10 */
+    background: linear-gradient(top, #5f5c5c, #939191); /* CSS3 */
+    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+}
+.gradient2 {
+    background: #4646db;
+    background: -moz-linear-gradient(top, #4646db, #5959fb); /* Firefox 3.6+ */
+    /* Chrome 1-9, Safari 4-5 */
+    background: -webkit-gradient(linear, left top, left bottom,
+    color-stop(0%,#4646db), color-stop(100%,#5959fb));
+    /* Chrome 10+, Safari 5.1+ */
+    background: -webkit-linear-gradient(top, #4646db, #5959fb);
+    background: -o-linear-gradient(top, #4646db, #5959fb); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #4646db, #5959fb); /* IE10 */
+    background: linear-gradient(top, #4646db, #5959fb); /* CSS3 */
+    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+}
+/* Table columns */
+.bor-1 { border-left: 1px solid #bdbdbd;}
+.bor-2 { border-right: 1px solid #bdbdbd; }
+.bor-3 { border-bottom: 1px solid #bdbdbd; border-left: 1px solid #bdbdbd;}
+.bor-4 { border-bottom: 1px solid #bdbdbd; }
+
+.text-1 {
+    font-size: 12px;
+    color: #ffffff;
+}
+.text-1 a {
+    color: #ffffff;
+}
+.grey-stroka {
+    background-color:#ededed;
+    height:20px;
+    text-align: center;
+}
+.white-stroka {
+    background-color:#ffffff;
+    height:20px;
+    text-align: center;
+}
+.text-2 {
+    font-size: 12px;
+    color: #2c2c2c;
+    overflow: hidden;
+}
+.cell-center {
+    text-align: center;
+}
+.cell-left {
+    text-align: left;
+}
+/* For cover Element */
+.green-bor1 {
+    border-left: 1px solid #185500;
+    border-top: 1px solid #185500;
+    border-bottom: 1px solid #185500;
+}
+.green-bor2 {
+    border-top: 1px solid #185500;
+    border-bottom: 1px solid #185500;
+}
+.green-bor3 {
+    border-right: 1px solid #185500;
+    border-top: 1px solid #185500;
+    border-bottom: 1px solid #185500;
+}
+.green-stroka {
+    background-color:#185500;
+    color: #ffffff;
+    text-align: left;
+}
+.cell5 a {
+    color: #2c2c2c;
+}
+.green-stroka a {
+    color: #ffffff;
+}
+.last_row {
+    border-bottom: 1px solid #bdbdbd;
+}
+.aiupdatestatus {
+    color: #000000;
+}
+.aiupdatestatus.empty {
+    color: #bdbdbd;
+}
+.aiupdatestatus.updated {
+    color: #ffffff;
+    background-color: #0000ff;
+}
+.aiupdatestatus.partialupdate {
+    color: #ffffff;
+    background-color: #00bff3;
+}
+
+.imprint_update_label {
+    float: left;
+    width: 123px;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+}
+.imprint_update_manage {
+    float: left;
+}

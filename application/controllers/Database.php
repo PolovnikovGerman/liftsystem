@@ -52,6 +52,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link']=='#itemprofitview') {
                 $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+            } elseif ($row['item_link']=='#itemtemplateview') {
+                $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -568,6 +571,50 @@ class Database extends MY_Controller
         }
     }
 
+    // DB Template
+    public function templatedat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $numpage=$this->input->post('offset');
+            $limit=$this->input->post('limit');
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction');
+            $search=$this->input->post('search');
+            $vendor_id=$this->input->post('vendor_id','');
+
+            usersession('page_name','temlatesview');
+            usersession('curpage', $numpage);
+            usersession('order_by', $order_by);
+            usersession('direction', $direct);
+            usersession('search', $search);
+            usersession('vendor_id', $vendor_id);
+
+            $offset=$numpage*$limit;
+
+            /* Get Data about about items & categories */
+            $this->load->model('items_model');
+            $item_dat=$this->items_model->get_items(array(),$order_by,$direct,$limit,$offset,$search,$vendor_id);
+            $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
+            $mdata['content'] = $this->load->view('database/dbtemplate_table_data_view',$data, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function update_imprint() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $this->load->model('items_model');
+            $res=$this->items_model->update_imprint_update($postdata);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     // Prepare pages
     private function _prepare_dbpage_content($page_name)
@@ -745,6 +792,25 @@ class Database extends MY_Controller
                 } else {
                     $table_dat=$this->load->view('database/dbprofit_data_view',$content_dat,TRUE);
                 }
+            } elseif ($page_name=='itemtemplates') {
+                /* View Window Legend */
+                $legend_options=array(
+                    'search'=>$search,
+                    'vendors'=>$this->vendors_model->get_vendors(),
+                    'vendor'=>$vendor_id,
+                );
+                $legend=$this->load->view('database/dbtemplate_legend_view',$legend_options,TRUE);
+
+                $content_dat=[
+                    'total_rec'=>$total_rec,
+                    'order_by'=>$order_by,
+                    'direction'=>$order_by,
+                    'cur_page'=>$cur_page,
+                    'search'=>$search,
+                    'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                ];
+                $table_dat=$this->load->view('database/dbtemplate_data_view',$content_dat,TRUE);
             }
             return $table_dat;
         }

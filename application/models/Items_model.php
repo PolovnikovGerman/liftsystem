@@ -21,6 +21,18 @@ Class Items_model extends My_Model
         return $res['cnt'];
     }
 
+    public function update_imprint_update($data) {
+        $out=['result'=>$this->error_result, 'msg'=>'Not All parameters sended'];
+        if (isset($data['item_id']) && isset($data['imprint_update'])) {
+            $this->db->where('item_id', $data['item_id']);
+            $this->db->set('imprint_update', $data['imprint_update']);
+            $this->db->update('sb_items');
+            $out['result']= $this->success_result;
+        }
+        return $out;
+    }
+
+
     public function get_sequence_count($options=[]) {
         $this->db->select('count(i.item_id) as cnt');
         $this->db->from('sb_items i');
@@ -227,5 +239,40 @@ Class Items_model extends My_Model
         return $out_array;
     }
 
+    /* Get array of items */
+    public function get_items($options=array(),$sort_by='item_id',$direct='asc',$limit=0,$offset=0,$search='',$vendor_id='') {
+        $this->db->select('i.*, unix_timestamp(i.update_time) as updtime',FALSE);
+        $this->db->from('sb_items i');
+        foreach ($options as $key=>$val) {
+            $this->db->where($key,$val);
+        }
+        if ($search!='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+            $this->db->where($where);
+        }
+        if ($vendor_id) {
+            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+            $this->db->where('v.vendor_item_vendor',$vendor_id);
+        }
+        $this->db->order_by($sort_by,$direct);
+        if ($limit) {
+            $this->db->limit($limit,$offset);
+        }
+        $result = $this->db->get()->result_array();
+        $out_array=array();
+        $curtime=time();
+        $diff=86400;
+        foreach ($result as $row) {
+            $row['itemnameclass']='';
+            if ($curtime-$row['updtime']<$diff) {
+                $row['itemnameclass']='nearlyupdate';
+            }
+            $row['update_template_class']=$row['update_template']==1 ? 'updated' : '';
+            $row['update_imprint_class']=$row['imprint_update']>0 ? ($row['imprint_update']==1 ? 'partialupdate' : 'updated') : 'empty';
+            $out_array[]=$row;
+
+        }
+        return $out_array;
+    }
 
 }
