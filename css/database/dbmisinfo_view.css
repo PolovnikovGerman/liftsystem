@@ -1,0 +1,183 @@
+.misinfo_legend {
+    float:left;
+    width: 240px;
+    padding-left: 10px;
+}
+.table-misinfo {
+    clear: both;
+    float: left;
+    max-height: 560px;
+    overflow-y: auto;
+    padding-left: 1px;
+    width: 990px;
+}
+.navigation {
+    z-index: 10;
+}
+#dbcontent {
+    float: left;
+    margin-left: 10px;
+}
+.tabinfo {
+    height: 590px;
+}
+.table_head {
+    text-align: center;
+    background-color: #ffffff;
+    height:24px;
+}
+.gradient1 {
+    background: #5f5c5c;
+    background: -moz-linear-gradient(top, #5f5c5c, #939191); /* Firefox 3.6+ */
+    /* Chrome 1-9, Safari 4-5 */
+    background: -webkit-gradient(linear, left top, left bottom,
+    color-stop(0%,#5f5c5c), color-stop(100%,#939191));
+    /* Chrome 10+, Safari 5.1+ */
+    background: -webkit-linear-gradient(top, #5f5c5c, #939191);
+    background: -o-linear-gradient(top, #5f5c5c, #939191); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #5f5c5c, #939191); /* IE10 */
+    background: linear-gradient(top, #5f5c5c, #939191); /* CSS3 */
+    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+}
+.gradient2 {
+    background: #4646db;
+    background: -moz-linear-gradient(top, #4646db, #5959fb); /* Firefox 3.6+ */
+    /* Chrome 1-9, Safari 4-5 */
+    background: -webkit-gradient(linear, left top, left bottom,
+    color-stop(0%,#4646db), color-stop(100%,#5959fb));
+    /* Chrome 10+, Safari 5.1+ */
+    background: -webkit-linear-gradient(top, #4646db, #5959fb);
+    background: -o-linear-gradient(top, #4646db, #5959fb); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #4646db, #5959fb); /* IE10 */
+    background: linear-gradient(top, #4646db, #5959fb); /* CSS3 */
+    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+}
+/* Table columns */
+.bor-1 { border-left: 1px solid #bdbdbd;}
+.bor-2 { border-right: 1px solid #bdbdbd;}
+.text-1 {
+    font-size: 12px;
+    color: #ffffff;
+}
+.text-1 a {
+    color: #ffffff;
+}
+.grey-stroka {
+    background-color:#ededed;
+    height:20px;
+    text-align: center;
+}
+.white-stroka {
+    background-color:#ffffff;
+    height:20px;
+    text-align: center;
+}
+.text-2 {
+    font-size: 12px;
+    color: #2c2c2c;
+    overflow: hidden;
+}
+.head-center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cell-center {
+    text-align: center;
+}
+.cell-left {
+    text-align: left;
+}
+.misinfo_dat {
+    float: left;
+    background-image: url("/img/database/yellow-cell.png");
+    background-repeat: no-repeat;
+    height:16px;
+    width: 56px;
+    margin-left: 1px;
+    text-align: center;
+    font-size: 12px;
+}
+.last_row {
+    border-bottom: 1px solid #bdbdbd;
+}
+/* SPECHIAL CHECKS */
+.pausechecks:hover {
+    cursor: pointer;
+}
+/* Profit Classes */
+.green {
+    background-color: #86FF80;
+}
+td.green:hover, td.maroon:hover, td.red:hover, td.black:hover, td.orange:hover, td.white:hover {
+    cursor: pointer;
+}
+.maroon {
+    background-color: #800000;
+    color: #FFFFFF;
+}
+.red {
+    background-color: #FF0000;
+    color: #FFF;
+}
+.black {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+.white {
+    background-color: #FFFFFF;
+}
+.orange {
+    background-color: #FFA500;
+}
+/*  */
+.green_tooltip {
+    background-color: #86FF80;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.white_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.red_tooltip {
+    background-color: #FF0000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #FFF;
+    text-align: justify;
+}
+.orange_tooltip {
+    background-color: #FFA500;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.black_tooltip {
+    background-color: #000000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #FFFFFF;
+    text-align: justify;
+}
+.maroon_tooltip {
+    background-color: #800000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #FFFFFF;
+    text-align: justify;
+}

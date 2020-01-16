@@ -25,6 +25,9 @@ function init_page(objid) {
         case 'itemsequenceview':
             init_contentpage('itemsequence');
             break;
+        case 'itemmisinfoview':
+            init_contentpage('itemmisinfo');
+            break;
     }
 }
 
@@ -46,6 +49,9 @@ function init_contentpage(page_name) {
             } else if (page_name=='itemsequence') {
                 $("#itemsequenceview").show().empty().html(response.data.content);
                 init_dbsequence_view();
+            } else if (page_name=='itemmisinfo') {
+                $("#itemmisinfoview").show().empty().html(response.data.content);
+                init_misinfo_view();
             }
         } else {
             show_error(response);

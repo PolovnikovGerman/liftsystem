@@ -140,4 +140,92 @@ Class Items_model extends My_Model
         }
     }
 
+    function get_missinginfo($options=array(),$order='item_name',$direc='asc',$limit=0,$offset=0,$search='', $vendor_id='') {
+        $this->db->select('v.*,(v.size+v.weigth+v.material+v.lead_a+v.lead_b+v.lead_c+v.colors+v.categories+v.images+v.prices) as missings',FALSE);
+        $this->db->select('unix_timestamp(i.update_time) as updtime');
+        $this->db->from('v_item_missinginfo v');
+        $this->db->join('sb_items i','i.item_id=v.item_id');
+        foreach ($options as $key=>$value) {
+            $this->db->where($key,$value);
+        }
+
+        if ($vendor_id) {
+            $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+            $this->db->where('vi.vendor_item_vendor',$vendor_id);
+        }
+
+        if ($search!='') {
+            $where="lower(concat(item_number,item_name)) like '%".strtolower($search)."%'";
+            $this->db->where($where);
+        }
+        $this->db->order_by($order,$direc);
+        if ($limit) {
+            $this->db->limit($limit,$offset);
+        }
+        $result=$this->db->get()->result_array();
+
+        $out_array=array();
+        $curtime=time();
+        $diff=86400;
+        foreach ($result as $row) {
+            $row['itemnameclass']='';
+            if ($curtime-$row['updtime']<$diff) {
+                $row['itemnameclass']='nearlyupdate';
+            }
+            $missings=array();
+            if ($row['colors']==1) {
+                $missings[]=array('type'=>'colors');
+            }
+            if ($row['size']==1) {
+                $missings[]=array('type'=>'size');
+            }
+            if ($row['images']==1) {
+                $missings[]=array('type'=>'images');
+            }
+            if ($row['weigth']==1) {
+                $missings[]=array('type'=>'weight');
+            }
+            if ($row['material']==1) {
+                $missings[]=array('type'=>'material');
+            }
+            if ($row['lead_a']==1) {
+                $missings[]=array('type'=>'lead_a');
+            }
+            if ($row['lead_b']==1) {
+                $missings[]=array('type'=>'lead_b');
+            }
+            if ($row['lead_c']==1) {
+                $missings[]=array('type'=>'lead_c');
+            }
+            if ($row['categories']==1) {
+                $missings[]=array('type'=>'category');
+            }
+            if ($row['prices']==1) {
+                $missings[]=array('type'=>'prices');
+            }
+            if ($row['item_keywords']==1) {
+                $missings[]=array('type'=>'item kw');
+            }
+            if ($row['url']==1) {
+                $missings[]=array('type'=>'url');
+            }
+            if ($row['meta_title']==1) {
+                $missings[]=array('type'=>'meta title');
+            }
+            if ($row['meta_description']==1) {
+                $missings[]=array('type'=>'descript');
+            }
+            if ($row['meta_keywords']==1) {
+                $missings[]=array('type'=>'meta KW');
+            }
+            if ($row['attributes']==1) {
+                $missings[]=array('type'=>'attributes');
+            }
+
+            $out_array[]=array('item_id'=>$row['item_id'],'item_number'=>$row['item_number'],'item_name'=>$row['item_name'],'missings'=>$missings, 'itemnameclass'=>$row['itemnameclass']);
+        }
+        return $out_array;
+    }
+
+
 }

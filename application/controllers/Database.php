@@ -46,6 +46,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link'] == '#itemsequenceview') {
                 $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+            } elseif ($row['item_link']=='#itemmisinfoview') {
+                $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -488,6 +491,44 @@ class Database extends MY_Controller
         }
         show_404();
     }
+    // DB Miss Info
+    public function misinfodat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by','i.item_number');
+            $direct = $this->input->post('direction','asc');
+            $search = $this->input->post('search');
+            $vendor_id=$this->input->post('vendor_id','');
+            $sess_dat=array(
+                'page_name'=>'misinfo',
+                'curpage'=>$offset,
+                'order_by'=>$order_by,
+                'direction'=>$direct,
+                'search'=>$search,
+                'vendor_id'=>$vendor_id,
+            );
+            usersession('page_name','misinfo');
+            usersession('curpage', $offset);
+            usersession('order_by', $order_by);
+            usersession('direction', $direct);
+            usersession('search', $search);
+            usersession('vendor_id', $vendor_id);
+
+            $offset=$offset*$limit;
+
+            /* Get Data about items & missing info */
+            $this->load->model('items_model');
+            $item_dat=$this->items_model->get_missinginfo(array(),$order_by,$direct,$limit,$offset,$search,$vendor_id);
+
+            $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
+
+            $mdata['content'] = $this->load->view('database/dbmisinfo_table_data_view',$data, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
 
     // Prepare pages
@@ -612,6 +653,26 @@ class Database extends MY_Controller
                     'perpage' => $this->config->item('dbview_perpage'),
                 );
                 $table_dat=$this->load->view('database/dbsequence_data_view',$content_dat,TRUE);
+            } elseif ($page_name=='itemmisinfo') {
+                /* View Window Legend */
+                $legend_options=array(
+                    'search'=>$search,
+                    'vendors'=>$this->vendors_model->get_vendors(),
+                    'vendor'=>$vendor_id,
+                );
+                $legend=$this->load->view('database/dbmisinfo_legend_view',$legend_options,TRUE);
+
+                $content_dat=[
+                    'total_rec'=>$total_rec,
+                    'order_by'=>$order_by,
+                    'direction'=>$direction,
+                    'cur_page'=>$cur_page,
+                    'new_available' => 1,
+                    'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                ];
+                $table_dat=$this->load->view('database/dbmisinfo_data_view',$content_dat,TRUE);
+
             }
             return $table_dat;
         }
