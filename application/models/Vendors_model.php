@@ -19,4 +19,31 @@ Class Vendors_model extends My_Model
         return $result;
     }
 
+    public function get_itemseq_vendors() {
+        $vend=[
+            'Stressballs.com','Ariel','Alpi','Mailine','Pinnacle','Jetline','Hit',
+        ];
+        $out=[];
+        foreach ($vend as $vrow) {
+            $this->db->select('*');
+            $this->db->from('vendors');
+            $this->db->where('vendor_name',$vrow);
+            $vres=$this->db->get()->row_array();
+            $out[]=$vres;
+        }
+        $out[]=[
+            'vendor_id' => -1,
+            'vendor_name' => '----------------------',
+        ];
+        $this->db->select('*');
+        $this->db->from('vendors');
+        $this->db->where_not_in('vendor_name', $vend);
+        $this->db->order_by('vendor_name');
+        $otherres = $this->db->get()->result_array();
+        foreach ($otherres as $row) {
+            $out[]=$row;
+        }
+        return $out;
+    }
+
 }

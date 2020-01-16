@@ -43,6 +43,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link']=='#itemcategoryview') {
                 $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+            } elseif ($row['item_link'] == '#itemsequenceview') {
+                $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -74,16 +77,13 @@ class Database extends MY_Controller
             $error='Empty Page Name';
             if (!empty($page_name)) {
                 $error = '';
-                $special_content = '';
                 if ($page_name=='categories') {
                     // $page_name_full = 'Categories';
                     $special_content = $this->_prepare_dbpage_content($page_name);
                     $buttons_view = $this->load->view('database/content_viewbuttons_view', [], TRUE);
                     $options = ['buttons_view' => $buttons_view, 'special_content' => $special_content,];
                     $mdata['content'] = $this->load->view('database/category_pagecontent_view', $options, TRUE);
-                } elseif ($page_name=='itemprice') {
-                    $mdata['content'] = $this->_prepare_dbpage_content($page_name);
-                } elseif ($page_name=='itemcategory') {
+                } else {
                     $mdata['content'] = $this->_prepare_dbpage_content($page_name);
                 }
             }
@@ -385,6 +385,109 @@ class Database extends MY_Controller
         show_404();
     }
 
+    // DB Sequence
+    public function itemsequence_search() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = '';
+            $mdata=[];
+            $total_options = [];
+            if (isset($postdata['vendor_id']) && !empty($postdata['vendor_id'])) {
+                $total_options['vendor_id']=$postdata['vendor_id'];
+            }
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $total_options['search']=$postdata['search'];
+            }
+            $this->load->model('items_model');
+            $mdata['total']=$this->items_model->get_sequence_count($total_options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsequence_data() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $pagenum = (isset($postdata['offset']) ? $postdata['offset'] : 0);
+            $limit = (isset($postdata['limit']) ? $postdata['limit'] : $this->sequence_perpage);
+            $options = array(
+                'offset' => $pagenum * $limit,
+                'limit' => $limit,
+            );
+            if (isset($postdata['vendor_id']) && !empty($postdata['vendor_id'])) {
+                $options['vendor_id']=$postdata['vendor_id'];
+            }
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=$postdata['search'];
+            }
+            // Get items
+            $this->load->model('items_model');
+            $data = $this->items_model->get_sequence_items($options);
+            $label = 'Displaying ';
+            if (count($data)==0) {
+                $label.='0';
+            } else {
+                $label.=(($pagenum*$limit)+1).' - '.count($data);
+            }
+            $label.=' of '.QTYOutput($postdata['total']);
+            $options=[
+                'items' => $data,
+                'itemperrow' => (isset($postdata['itemperrow']) ? $postdata['itemperrow'] : $this->sequence_inrow),
+            ];
+            $content = $this->load->view('database/dbsequence_page_view', $options, TRUE);
+            $mdata=[
+                'label' => $label,
+                'content' => $content,
+            ];
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsequence_updateitem() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            // Get items
+            $this->load->model('items_model');
+            $mdata=[];
+            $res = $this->items_model->update_item_property($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsequence_updateseq() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            // Get items
+            $this->load->model('items_model');
+            $mdata=[];
+            $res = $this->items_model->update_item_sequence($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsequence_sort() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $this->load->model('items_model');
+            $mdata=[];
+            $error='';
+            $this->items_model->update_itemsequence_sort($postdata);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
 
     // Prepare pages
@@ -395,6 +498,7 @@ class Database extends MY_Controller
             $categories = $this->categories_model->get_categories_list();
             // List view
             $content = $this->load->view('database/categorylist_view',['categories'=>$categories,'current_category'=>-1], TRUE);
+            return $content;
         } else {
             $cur_page = 0;
             $order_by = 'item_number';
@@ -411,6 +515,7 @@ class Database extends MY_Controller
             }
             $this->load->model('items_model');
             $total_rec = $this->items_model->count_searchres($search, $vendor_id);
+            $this->load->model('vendors_model');
             if ($page_name=='itemprice') {
                 $this->load->model('otherprices_model');
                 $priority = '';
@@ -435,7 +540,6 @@ class Database extends MY_Controller
                     }
                     $outvend[] = $row;
                 }
-                $this->load->model('vendors_model');
                 $legend_options = array(
                     'mindiff' => $mindiff,
                     'search' => $search,
@@ -466,7 +570,6 @@ class Database extends MY_Controller
                     $table_dat = $this->load->view('database/dbprice_data_view', $content_dat, TRUE);
                 }
             } elseif ($page_name=='itemcategory') {
-                $this->load->model('vendors_model');
                 $legend_options=array(
                     'search'=>$search,
                     'vendors' => $this->vendors_model->get_vendors(),
@@ -483,10 +586,35 @@ class Database extends MY_Controller
                     'perpage' => $this->config->item('dbview_perpage'),
                 ];
                 $table_dat=$this->load->view('database/dbcategory_data_view',$content_dat,TRUE);
+            } elseif ($page_name=='itemsequence') {
+                $total_options=[];
+                if ($vendor_id) {
+                    $total_options['vendor_id']=$vendor_id;
+                }
+                if (!empty($search)) {
+                    $total_options['search']=$search;
+                }
+                $total_rec=$this->items_model->get_sequence_count($total_options);
+                /* Prepare contetn for display */
+                $content=array();
+                /* View Window Legend */
+                $legend_options=array(
+                    'search'=>$search,
+                    'vendors'=>$this->vendors_model->get_itemseq_vendors(),
+                    'vendor'=>$vendor_id,
+                );
+                $legend=$this->load->view('database/dbsequence_legend_view',$legend_options,TRUE);
+
+                $content_dat=array(
+                    'total_rec'=>$total_rec,
+                    'cur_page'=>$cur_page,
+                    'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                );
+                $table_dat=$this->load->view('database/dbsequence_data_view',$content_dat,TRUE);
             }
             return $table_dat;
         }
-        return $content;
     }
 
 }
