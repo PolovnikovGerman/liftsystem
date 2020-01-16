@@ -1,7 +1,7 @@
 <div class="content_header">
     <div class="legend"><?= $legend ?></div>
 </div>
-<div id="dbcontent">
+<div id="dbsequencecontent">
     <input type="hidden" id="totalrecdbseq" value="<?= $total_rec ?>"/>
     <input type="hidden" id="seqpagenum" value="<?= $cur_page ?>"/>
     <div class="tabinfohead">

@@ -172,17 +172,17 @@ input.salechkbox {
     width: 14px;
 }
 /* Pagination */
-.pagination {
+#dbsequencecontent .pagination {
     font-size: 12px;
     font-style: italic;
     color: #ffffff !important;
 }
-.pagination .current.prev, .pagination .current.next {
+#dbsequencecontent .pagination .current.prev, .pagination .current.next {
     color: #6095ff !important;
 }
-.pagination .current {
+#dbsequencecontent .pagination .current {
     color: #6095ff !important;
 }
-.pagination a {
+#dbsequencecontent .pagination a {
     color: #ffffff !important;
 }
