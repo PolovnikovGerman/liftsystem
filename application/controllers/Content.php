@@ -336,6 +336,28 @@ class Content extends MY_Controller
         }
     }
 
+    public function prepare_customshaped_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'custom');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'galleries' => $session_data['galleries'],
+                'case_study' => $session_data['case_study'],
+                'address' => $this->config->item('address'),
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+            echo $this->load->view('contents_preview/custom_shaped_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
+
+
 
     public function edit_servicecontent() {
         if ($this->isAjax()) {

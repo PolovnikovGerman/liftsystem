@@ -1,5 +1,5 @@
 <input type="hidden" id="custom_session" value="<?=$session?>"/>
-<input type="hidden" id="custom_previewurl" value="/contents/prepare_customshaped_preview?version=<?=$session?>"/>
+<input type="hidden" id="custom_previewurl" value="/content/prepare_customshaped_preview?version=<?=$session?>"/>
 <div class="contentinfotitle">
     <div class="displaycontent show">
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
