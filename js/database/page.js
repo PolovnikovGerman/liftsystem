@@ -28,6 +28,9 @@ function init_page(objid) {
         case 'itemmisinfoview':
             init_contentpage('itemmisinfo');
             break;
+        case 'itemprofitview':
+            init_contentpage('itemprofit');
+            break;
     }
 }
 
@@ -52,6 +55,9 @@ function init_contentpage(page_name) {
             } else if (page_name=='itemmisinfo') {
                 $("#itemmisinfoview").show().empty().html(response.data.content);
                 init_misinfo_view();
+            } else if (page_name=='itemprofit') {
+                $("#itemprofitview").show().empty().html(response.data.content);
+                init_profit_view();
             }
         } else {
             show_error(response);

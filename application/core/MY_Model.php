@@ -24,6 +24,7 @@
  * @property Vendors_model vendors_model
  * @property Itemcategory_model itemcategory_model
  * @property Itemimages_model itemimages_model
+ * @property Prices_model prices_model
  */
 
 class MY_Model extends CI_Model

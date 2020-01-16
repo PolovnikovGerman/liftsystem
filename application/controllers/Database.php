@@ -49,6 +49,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link']=='#itemmisinfoview') {
                 $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+            } elseif ($row['item_link']=='#itemprofitview') {
+                $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
             }
         }
         $content_options['menu'] = $menu;
@@ -502,14 +505,6 @@ class Database extends MY_Controller
             $direct = $this->input->post('direction','asc');
             $search = $this->input->post('search');
             $vendor_id=$this->input->post('vendor_id','');
-            $sess_dat=array(
-                'page_name'=>'misinfo',
-                'curpage'=>$offset,
-                'order_by'=>$order_by,
-                'direction'=>$direct,
-                'search'=>$search,
-                'vendor_id'=>$vendor_id,
-            );
             usersession('page_name','misinfo');
             usersession('curpage', $offset);
             usersession('order_by', $order_by);
@@ -527,6 +522,49 @@ class Database extends MY_Controller
 
             $mdata['content'] = $this->load->view('database/dbmisinfo_table_data_view',$data, TRUE);
             $this->ajaxResponse($mdata, $error);
+        }
+    }
+    // DB Item Profit
+    function profitdat() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+
+            $pagenum=(isset($postdata['offset']) ? $postdata['offset'] : 0);
+            $limit=(isset($postdata['limit']) ? $postdata['limit'] : 10);
+            $order_by=(isset($postdata['order_by']) ? $postdata['order_by'] : 'i.item_number');
+            $direct=(isset($postdata['direction']) ? $postdata['direction'] : 'asc');
+            $search=(isset($postdata['search']) ? $postdata['search'] : '');
+            $profitprefs=(isset($postdata['profitprefs']) ? $postdata['profitprefs'] : '');
+            $vendor_id=(isset($postdata['vendor_id']) ? $postdata['vendor_id'] : '');
+
+            usersession('page_name','profitview');
+            usersession('curpage', $pagenum);
+            usersession('order_by', $order_by);
+            usersession('direction', $direct);
+            usersession('search', $search);
+            usersession('priority', $profitprefs);
+            usersession('vendor_id', $vendor_id);
+
+
+            $offset=$pagenum*$limit;
+
+            /* Get Data about about items & prices */
+            $this->load->model('prices_model');
+            $item_dat=$this->prices_model->get_item_profitprefs($order_by,$direct,$limit,$offset,$search,$profitprefs, $vendor_id);
+
+            $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
+            if ($this->USR_ROLE=='general') {
+                $content = $this->load->view('database/dbprofit_tabledat_general_view',$data, TRUE);
+            } else {
+                $content = $this->load->view('database/dbprofit_tabledat_view',$data, TRUE);
+            }
+
+
+            $mdata['content']=$content;
+
+            $this->ajaxResponse($mdata,$error);
         }
     }
 
@@ -673,6 +711,40 @@ class Database extends MY_Controller
                 ];
                 $table_dat=$this->load->view('database/dbmisinfo_data_view',$content_dat,TRUE);
 
+            } elseif ($page_name=='itemprofit') {
+                $priority = '';
+                if ($current_pagename == $page_name) {
+                    $priority = usersession('priority');
+                }
+                /* View Window Legend */
+                $legend_options=array(
+                    'search'=>$search,
+                    'priority'=>$priority,
+                    'vendors'=>$this->vendors_model->get_vendors(),
+                    'vendor'=>$vendor_id,
+                );
+                if ($this->USR_ROLE=='general') {
+                    $legend=$this->load->view('database/dbprofit_legendgeneral_view', $legend_options, TRUE);
+                } else {
+                    $legend=$this->load->view('database/dbprofit_legend_view', $legend_options, TRUE);
+                }
+
+                $content['new_available']=1;
+
+                $content_dat=[
+                    'total_rec'=>$total_rec,
+                    'order_by'=>$order_by,
+                    'direction'=>$direction,
+                    'cur_page'=>$cur_page,
+                    'search'=>$search,
+                    'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                ];
+                if ($this->USR_ROLE=='general') {
+                    $table_dat=$this->load->view('database/dbprofit_datageneral_view',$content_dat,TRUE);
+                } else {
+                    $table_dat=$this->load->view('database/dbprofit_data_view',$content_dat,TRUE);
+                }
             }
             return $table_dat;
         }
