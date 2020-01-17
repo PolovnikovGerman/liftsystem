@@ -269,6 +269,10 @@ body div {
     background: #2626ff;
     color: #ffffff;
 }
+.activemenubutton.databasebtn {
+    background: #228927;
+    color: #ffffff;
+}
 .maincontent {
     width: 100%;
 }
@@ -282,6 +286,10 @@ body div {
 }
 .maincontentmenuarea.marketmenu {
     background: #2626ff;
+    color: #ffffff;
+}
+.maincontentmenuarea.databasemenu {
+    background: #228927;
     color: #ffffff;
 }
 .maincontentmenu {
@@ -309,6 +317,7 @@ body div {
     font-weight: bold;
     background: #ffffff;
     cursor: default;
+    line-height: 24px!important;
 }
 .maincontent_view {
     background: #ffffff;

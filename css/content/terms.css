@@ -1,0 +1,111 @@
+.statcipage_content .termsinfotitle {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    background: #595959;
+    color: #ffffff;
+    font-size: 17px;
+}
+.statcipage_content .termsinfotitle .displaytermsdata {
+    width: 23px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+.statcipage_content .termsinfotitle .termstitle {
+    margin-left: 5px;
+}
+div.termscontent-area {
+    margin-top: 16px;
+    padding-left: 20px;
+}
+div.term_maintitle {
+    width: 81px;
+}
+input.term_maintitle {
+    width: 362px;
+}
+div.term_smalltext {
+    width: 82px;
+}
+textarea.term_smalltext {
+    width: 834px;
+    height: 65px;
+}
+.termsdata-area {
+    margin-top: 16px;
+    padding-left: 20px;
+    margin-bottom: 52px;
+}
+.termsdatarow {
+    margin-bottom: 10px;
+}
+input.term_header {
+    width: 480px;
+}
+.termsdatarow p {
+    font-size: 16px;
+    width: 95%;
+}
+textarea.termtext {
+    width: 834px;
+    height: 125px;
+    font-size: 16px;
+}
+.termcontenteditrow {
+    margin-left: 10px;
+}
+.termsedit_params {
+    background: #ba00cb;
+    color: #ffffff;
+    font-size: 17px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    width: 80px;
+    cursor: pointer;
+}
+.termsedit_params i {
+    font-size: 21px;
+    margin-left: 5px;
+}
+.termsremove {
+    margin-left: 17px;
+    width: 22px;
+    height: 28px;
+    font-size: 24px;
+    color: #ff0000;
+    line-height: 28px;
+    cursor: pointer;
+}
+.termssave_params {
+    background: #2b542c;
+    color: #ffffff;
+    font-size: 17px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    width: 80px;
+    cursor: pointer;
+}
+.termscancel_edit {
+    background: #ff0000;
+    color: #ffffff;
+    font-size: 17px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    width: 80px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.addnewterm {
+    background: #145224;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0 10px;
+    line-height: 24px;
+    font-weight: bold;
+}
