@@ -1,7 +1,2 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 17.01.20
- * Time: 11:28
- */
+<div class="faq_details_question"><?=$faq_quest?></div>
+<div class="faq_details_answer"><?=$faq_answ?></div>

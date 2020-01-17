@@ -556,6 +556,25 @@ class Content extends MY_Controller
         }
     }
 
+    public function prepare_aboutus_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'about');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'address' => $session_data['address'],
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+            echo $this->load->view('contents_preview/aboutus_page_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
+
     public function edit_faqcontent() {
         if ($this->isAjax()) {
             $page_name = 'faq';
@@ -667,6 +686,68 @@ class Content extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    public function prepare_faqpage_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'custom');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $faq=[];
+            $faq_sections = $session_data['faq_sections'];
+            foreach ($faq_sections as $section) {
+                $questions=$section['questions'];
+                foreach ($questions as $row) {
+                    $faq[$section['faq_section']][]=[
+                        'faq_id'=>$row['faq_id'],
+                        'faq_quest' => $row['faq_quest'],
+                        'faq_answ' => $row['faq_answ'],
+                    ];
+                }
+            }
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'faq' => $faq,
+                'version' => $session_id,
+                'address'=>$this->config->item('address'),
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+
+            echo $this->load->view('contents_preview/faqpage_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
+
+    public function faq_preview_details() {
+        $faq_id=$this->input->get('id');
+        $session_id = $this->input->get('ver');
+        $section = $this->input->get('part');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $data=['faq_quest'=> 'Not Found', 'faq_answ'=> 'Not Found'];
+            $faq_sections = $session_data['faq_sections'];
+            $found=0;
+            foreach ($faq_sections as $sections) {
+                if ($sections['faq_section']==$section) {
+                    $questions = $sections['questions'];
+                    foreach ($questions as $row) {
+                        if ($row['faq_id']==$faq_id) {
+                            $data['faq_quest']=$row['faq_quest'];
+                            $data['faq_answ']=$row['faq_answ'];
+                        }
+                    }
+                }
+            }
+            $content=$this->load->view('contents_preview/faq_details_view',$data, TRUE);
+            echo $content;
+            die();
+        }
+        show_404();
+    }
+
 
     public function edit_contactus() {
         if ($this->isAjax()) {
