@@ -22,6 +22,7 @@ if (!defined('BASEPATH'))
  * @property Leads_model leads_model
  * @property Questions_model questions_model
  * @property Quotes_model quotes_model
+ * @property Staticpages_model staticpages_model
  */
 
 

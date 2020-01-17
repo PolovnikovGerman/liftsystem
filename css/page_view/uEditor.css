@@ -1,0 +1,107 @@
+.uEditor {
+    /* border: 1px solid #CCCCCC; */
+    clear: both;
+    float: left;
+    margin: 10px 0;
+    padding: 0;
+    width: 700px;
+}
+.uEditor ul.uEditorToolbar li {
+    display:inline;
+    margin: 0 5px 0 0;
+    float:left;
+    cursor:pointer;
+}
+.uEditor .uEditorToolbar a {
+    background-repeat: no-repeat;
+    display: block;
+    height: 30px;
+    overflow: hidden;
+    text-decoration: none;
+    text-indent: -1000em;
+    width: 30px;
+}
+.uEditor .uEditorToolbar a:hover {
+    background-position: 0 -30px;
+}
+.uEditor .uEditorToolbar a:active {
+    background-position: 0 -60px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.uEditor .uEditorToolbar li.on a, .uEditor .uEditorToolbar li.on a:hover {
+    background-position: 0 -60px;
+}
+.uEditor .uEditorToolbar li.uEditorButton {
+    background-image: url("/img/ueditor/widgeditor_button_shadow.gif");
+    background-position: right bottom;
+    background-repeat: no-repeat;
+}
+.uEditor .uEditorButtonBold {
+    background-image: url("/img/ueditor/widgeditor_button_bold.gif");
+}
+.uEditor .uEditorButtonHTML {
+    background-image: url("/img/ueditor/widgeditor_button_html.gif");
+}
+.uEditor .uEditorButtonImage {
+    background-image: url("/img/ueditor/widgeditor_button_image.gif");
+}
+.uEditor .uEditorButtonItalic {
+    background-image: url("/img/ueditor/widgeditor_button_italic.gif");
+}
+.uEditor .uEditorButtonHyperlink {
+    background-image: url("/img/ueditor/widgeditor_button_link.gif");
+}
+.uEditor .uEditorButtonOrderedList {
+    background-image: url("/img/ueditor/widgeditor_button_ordered.gif");
+}
+.uEditor .uEditorButtonUnorderedList {
+    background-image: url("/img/ueditor/widgeditor_button_unordered.gif");
+}
+.uEditor .uEditorSource a {
+    background-image: url("/img/ueditor/widgeditor_button_empty.gif");
+    cursor: default;
+}
+.uEditor .uEditorSource li.on a, .uEditorSource li.on a:hover {
+    background-position: 0 0;
+}
+.uEditor .uEditorSource .uEditorButtonHTML {
+    background-image: url("/img/ueditor/widgeditor_button_html.gif");
+}
+.uEditor .uEditorSource .uEditorButtonHTML:hover {
+    cursor: pointer;
+}
+.uEditor .uEditorToolbar {
+    background: none repeat scroll 0 0 #CCCCCC;
+    border: 1px solid #CCCCCC;
+    height: 34px;
+    list-style: none outside none;
+    margin: 0;
+    padding: 3px 0 0 3px;
+    width: 695px;
+}
+* html .uEditor .uEditorToolbar {
+    width: auto;
+}
+.uEditor .uEditorToolbar li {
+    display: inline;
+    float: left;
+    height: 32px;
+    line-height: 30px;
+    margin-left: 7px;
+    margin-top: 9px;
+    width: 32px;
+}
+.uEditor .uEditorIframe {
+    border-top-width: 1px;
+    clear: left;
+    height: 200px;
+    width: 696px;
+}
+.uEditor textarea.uEditorTextarea {
+    border-top-width: 1px;
+    clear: left;
+    height: 200px;
+    padding: 0;
+    width: 690px;
+}
