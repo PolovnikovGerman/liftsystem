@@ -441,6 +441,25 @@ class Content extends MY_Controller
         show_404();
     }
 
+    public function prepare_service_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'service');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+            echo $this->load->view('contents_preview/service_page_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
+
+
     public function edit_aboutcontent() {
         if ($this->isAjax()) {
             $page_name = 'about';

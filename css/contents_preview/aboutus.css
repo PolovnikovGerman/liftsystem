@@ -1,0 +1,239 @@
+.about-text {
+    float: left;
+    width: 50%;
+}
+.about-text p {
+    font-size: 16px;
+    text-align: left;
+}
+.img-about {
+    float: left;
+    margin-left: 15px;
+    margin-top: 35px;
+}
+.img-about img {
+    width: 100%;
+    height: auto;
+}
+.about-text h3 {
+    color: #00004c;
+    font-size: 34px;
+    font-family: Helvetica-Bold;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+.pc-block {
+    margin-top: 10px;
+    margin-left: 16px;
+}
+.title-pc {
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+    font-family: Helvetica-Bold;
+    background: #00004c;
+    border-radius: 5px 5px 0 0;
+    padding: 7px;
+}
+.body-pc {
+    border-radius: 0 0 5px 5px;
+    background: #e7f0f8;
+    border: 1px solid #00004c;
+    padding: 0 20px 20px;
+}
+.body-pc p {
+    font-size: 17px;
+    text-align: left;
+}
+.about-contact-right {
+    float: left;
+    width: 50%;
+}
+.about-contact-left {
+    float: left;
+    width: 50%;
+}
+.about-contact {
+    float: left;
+}
+.about-contact-info {
+    float: left;
+    padding-left: 20px;
+}
+.about-contact-info h4 {
+    float: left;
+    color: #088aff;
+    font-size: 28px;
+    font-family: Helvetica-Bold;
+    text-align: left;
+    margin: 10px 0 0;
+    width: 100%;
+}
+.about-contact-info p {
+    font-size: 18px;
+    text-align: left;
+    padding-left: 45px;
+    float: left;
+    line-height: 24px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+.about-contact-info p a {
+    color: #0000ff;
+    text-decoration: none;
+}
+.grey-line {
+    height: 1px;
+    width: 90%;
+    background: #b0b0b0;
+    float: left;
+    margin: 0 5%;
+}
+.testimonials-block {
+    float: left;
+    margin-top: 20px;
+    width: 100%;
+}
+.testimonials-block-title {
+    float: left;
+    background: #088aff;
+    border-radius: 15px 3px 15px 3px;
+    padding: 15px 20px;
+    width: 1060px;
+}
+.testimonials-block-title h3 {
+    float: left;
+    color: #fff;
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0;
+}
+.testimonials-block-title h3 span {
+    font-weight: 400;
+}
+.google-rating-testimonials {
+    float: right;
+}
+.google-rating-testimonials {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 0 0;
+}
+.google-rating-testimonials img {
+    float: left;
+    height: 25px;
+}
+.google-rating-testimonials span.rating {
+    float: left;
+    color: #fff;
+    font-size: 16px;
+    margin-top: 4px;
+    margin-left: 5px;
+}
+.google-rating-testimonials .stars {
+    float: left;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.google-rating-testimonials span.star img {
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+}
+.hours_affilations {
+    width: 50%;
+    float: left;
+}
+.hours_affilations img {
+    margin-top: 7px;
+}
+.testimonials-slider {
+    float: left;
+    width: 100%;
+}
+.about-testimonials_text {
+    position: relative;
+    margin: 15px 0 0 48px;
+}
+.testimonials_text_area {
+    float: left;
+}
+.testimonials-left,
+.testimonials-right {
+    float: left;
+    border: 2px solid #838383;
+    width: 460px;
+    height: auto;
+    padding: 15px;
+    background: url('/img/page_modern/quote-left.png') no-repeat;
+    background-position-x: 15px;
+    background-position-y: 15px;
+}
+.testimonials-left {
+    margin-right: 15px;
+}
+.autor-testimonial {
+    float: right;
+    width: 100%;
+    margin-bottom: 25px;
+}
+.autor-testimonial p.name {
+    font-family: Helvetica_cyr-BoldOblique;
+    font-size: 24px;
+    margin: 0;
+    text-align: right;
+}
+.autor-testimonial p.location {
+    font-size: 22px;
+    font-family: Helvetica-Oblique;
+    margin: 0;
+    text-align: right;
+}
+.about-testimonials_text p.testimonail-text {
+    font-family: Helvetica-Oblique;
+    font-size: 16px;
+    text-align: left;
+    min-height: 178px;
+}
+.nxt_btm_area {
+    float: left;
+    width: 100%;
+    position: relative;
+    top: 107px;
+}
+.nxt_btm_area_left {
+    float: left;
+}
+.nxt_btm_area_right {
+    float: right;
+}
+.nxt_btm_area_left img,
+.nxt_btm_area_right img {
+    width: 29px;
+}
+.testimonail-paginator {
+    width: 100%;
+    text-align: center;
+    float: left;
+    position: relative;
+    margin: 1% 39% 0 39%;
+}
+.testimonail-paginator a {
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border: 1px solid #838383;
+    float: left;
+    margin-left: 10px;
+    background: #fff;
+    color: #838383;
+    font-family: Helvetica-Bold;
+    text-decoration: none;
+}
+.testimonail-paginator a.activeSlide {
+    border: 1px solid #088aff;
+    background: #088aff;
+    color: #fff;
+}

@@ -1,5 +1,5 @@
 <input type="hidden" id="service_session" value="<?=$session?>"/>
-<input type="hidden" id="service_previewurl" value="/contents/prepare_service_preview?version=<?=$session?>"/>
+<input type="hidden" id="service_previewurl" value="/content/prepare_service_preview?version=<?=$session?>"/>
 <div class="contentinfotitle">
     <div class="displaycontent show">
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
