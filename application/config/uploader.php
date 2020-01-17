@@ -61,6 +61,13 @@ $config['invitemlabel_relative']='/uploads/itemlabel/';
 // Categories Images
 $config['category_images']='/uploads/categories_images/';
 $config['category_images_relative']=BASEPATH.'../uploads/categories_images/';
+/* Content Images */
+$config['contents_images']='/uploads/contents/';
+$config['contents_images_relative']=BASEPATH.'../uploads/contents/';
+$config['gallery_images']='/uploads/gallery/';
+$config['gallery_images_relative']=BASEPATH.'../uploads/gallery/';
+$config['casestudy_images']='/uploads/casestudy/';
+$config['casestudy_images_relative']=BASEPATH.'../uploads/casestudy/';
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

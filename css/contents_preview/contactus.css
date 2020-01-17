@@ -1,0 +1,193 @@
+.contact-page .title-page {
+    color: #00004c;
+    font-size: 34px;
+    font-family: Helvetica-Bold;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+p.subtitle {
+    font-weight: 400;
+    font-size: 30px !important;
+    margin-top: -10px;
+}
+.contact-page p {
+    text-align: center;
+    font-size: 18px;
+}
+p.time-work {
+    color: #0000ff;
+    text-align: center;
+    font-weight: 600;
+    font-size: 24px;
+}
+.contact-body {
+    float: left;
+    /* width: 100%; */
+    padding: 0 87px;
+}
+.contact-body .title-box {
+    float: left;
+    background: #088aff;
+    border-radius: 15px 3px 15px 3px;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    padding: 7px 0;
+    font-size: 24px;
+    font-family: Helvetica-Bold;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0, 0.35);
+}
+.contact-body .phone, .contact-body .email,
+.contact-body .mail, .contact-body .chat,
+.contact-body .questions, .contact-body .hours {
+    float: left;
+    width: 436px;
+    margin-right: 26px;
+}
+p.main-phone {
+    color: #0000ff;
+    font-family: Helvetica-Bold;
+    font-size: 40px !important;
+    margin: 0;
+    letter-spacing: 1.5px;
+}
+p.local-phone {
+    font-size: 30px;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+.contact-body .email a {
+    font-size: 26px;
+    color: #0000ff;
+    text-decoration: none;
+}
+.contact-body p {
+    font-size: 26px;
+}
+.contact-body a.link {
+    font-size: 26px;
+    color: #0000ff;
+    text-decoration: none;
+}
+.contack-email-form {
+    width: 897px;
+    float: left;
+    background: #088aff;
+    border-radius: 15px 3px 15px 3px;
+    padding-bottom: 10px;
+}
+.phone .title-box {margin-bottom: 32px;}
+.email .title-box {margin-bottom: 52px;}
+.mail .title-box {margin-bottom: 30px;}
+.chat .title-box {margin-bottom: 42px;}
+.questions .title-box {margin-bottom: 38px;}
+.hours .title-box {margin-bottom: 36px;}
+
+.contack-email-form h3 {
+    float: left;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    margin: 10px 0 20px 0;
+    font-size: 36px;
+    font-family: Helvetica-Bold;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0, 0.35);
+}
+.input-group-left {
+    width: 334px;
+    margin-left: 20px;
+    float: left;
+}
+.input-group-right {
+    width: 494px;
+    margin-left: 20px;
+    float: left;
+}
+.input-group-left input {
+    float: left;
+    display: block;
+    width: 316px;
+    height: 26px;
+    line-height: 26px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    font-size: 15px;
+}
+.input-group-left select {
+    float: left;
+    display: block;
+    width: 331px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    font-size: 15px;
+}
+.input-group-left select option {
+    padding: 5px 0;
+}
+.input-group-right textarea {
+    float: left;
+    width: 466px;
+    resize: none;
+    height: 94px;
+    padding: 10px;
+    font-size: 15px;
+}
+.input-group-right .radio-group {
+    color: #fff;
+    float: left;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0, 0.35);
+    font-size: 18px;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+.captcha {
+    float: left;
+    width: 74%;
+    color: #ffffff;
+    font-size: 18px;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+.captcha span {
+    float: left;
+    height: 29px;
+    line-height: 29px;
+    margin-right: 10px;
+}
+.captcha input {
+    float: left;
+    display: block;
+    width: 30px;
+    height: 26px;
+    line-height: 26px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+.bnt-send {
+    color: #fff;
+    background: #00004c;
+    float: right;
+    border: none;
+    font-family: Helvetica_cyr-BoldOblique;
+    padding: 8px 33px;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.bnt-send:hover {
+    background-color: #32326f;
+}
+.contack-email-form h4 {
+    float: left;
+    width: 80%;
+    text-align: center;
+    color: #fff;
+    margin: 10px 0;
+    font-size: 32px;
+    font-family: Helvetica-Bold;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0, 0.35);
+    padding: 5% 10%;
+}

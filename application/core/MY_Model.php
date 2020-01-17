@@ -25,6 +25,7 @@
  * @property Itemcategory_model itemcategory_model
  * @property Itemimages_model itemimages_model
  * @property Prices_model prices_model
+ * @property Staticpages_model staticpages_model
  */
 
 class MY_Model extends CI_Model

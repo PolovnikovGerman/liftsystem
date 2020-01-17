@@ -1,0 +1,75 @@
+.contactcontent-area {
+    margin-top: 16px;
+    padding-left: 20px;
+    margin-bottom: 52px;
+}
+div.contact_maintitle,
+div.contact_subtitle,
+div.contact_smalltext,
+div.contact_bluetext {
+    width: 81px;
+}
+input.contact_maintitle,
+input.contact_subtitle {
+    width: 366px;
+}
+input.contact_smalltext {
+    width: 705px;
+}
+input.contact_bluetext {
+    width: 420px;
+}
+.contact_addressarea {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.contact_addressarea .address-left {
+    width: 375px;
+}
+.contact_addressarea .address-right {
+    width: 433px;
+}
+div.contact_bigphone {
+    width: 86px;
+}
+input.contact_bigphone {
+    width: 148px;
+}
+div.contact_smallphone {
+    width: 102px;
+}
+input.contact_smallphone {
+    width: 144px;
+}
+span.contact_smallphone {
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+    margin-left: 7px;
+}
+div.contact_address {
+    width: 73px;
+}
+textarea.contact_address {
+    height: 73px;
+    width: 180px;
+}
+div.contact_email {
+    width: 52px;
+}
+input.contact_email {
+    width: 267px;
+}
+div.contact_hours {
+    width: 85px;
+}
+input.contact_hours,
+input.contact_days {
+    width: 160px;
+}
+div.contact_captchtitle {
+    width: 119px;
+}
+input.contact_captchtitle {
+    width: 151px;
+}
