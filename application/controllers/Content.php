@@ -814,6 +814,27 @@ class Content extends MY_Controller
         }
     }
 
+    public function prepare_contactus_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'contactus');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'address' => $session_data['address'],
+                'math_captcha_question' => $session_data['data']['contact_captchtitle'].' 7 + 3 = ',
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+            echo $this->load->view('contents_preview/contactus_page_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
+
+
     public function edit_termscontent() {
         if ($this->isAjax()) {
             $page_name = 'terms';

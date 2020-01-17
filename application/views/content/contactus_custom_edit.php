@@ -1,5 +1,5 @@
 <input type="hidden" id="contact_session" value="<?=$session?>"/>
-<input type="hidden" id="contactus_previewurl" value="/contents/prepare_contactus_preview?version=<?=$session?>"/>
+<input type="hidden" id="contactus_previewurl" value="/content/prepare_contactus_preview?version=<?=$session?>"/>
 <div class="contentinfotitle">
     <div class="displaycontent show">
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
