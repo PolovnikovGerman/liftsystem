@@ -11,9 +11,6 @@
     padding-left: 1px;
     width: 990px;
 }
-.navigation {
-    z-index: 10;
-}
 #dbcontent {
     float: left;
     margin-left: 10px;

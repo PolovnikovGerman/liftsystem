@@ -1,32 +1,7 @@
-/*.legend {
-    width: 626px;
-}*/
 .profitlegend_row {
     clear: both;
     float: left;
     width: 1001px;
-}
-.legend ul {
-    margin: 0px;
-    padding: 0px 0px;
-    list-style: none;
-    position: relative;
-}
-.navigation {
-    z-index: 10;
-}
-.legend ul.profitlegend {
-    float: left;
-    list-style: none outside none;
-    margin: 0;
-    padding: 9px 0;
-    position: relative;
-    width: 715px;
-}
-.legend li {
-    padding-left: 10px;
-    display:inline;
-    float:left;
 }
 .profit_legend {
     float:left;

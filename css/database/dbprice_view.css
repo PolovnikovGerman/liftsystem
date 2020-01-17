@@ -1,24 +1,8 @@
-.legend ul {
-    margin: 0px;
-    padding: 0px;
-    list-style: none;
-    position: relative;
-}
-.legend li {
-    padding-left: 10px;
-    display:inline;
-    float:left;
-}
-.navigation {
-    z-index: 10;
-}
 .dbpricelegend-left {
-    float: left;
     width: 440px;
 }
 .dbpricelegend-right {
-    float: left;
-    margin-top: 15px;
+    /* margin-top: 15px; */
     /* width: 519px; */
 }
 .pricecompare-area {
@@ -40,7 +24,7 @@
 .priceotherfiltr {
     clear: both;
     float: left;
-    width: 553px;
+    width: 628px;
 }
 .profit_classes {
     float: left;

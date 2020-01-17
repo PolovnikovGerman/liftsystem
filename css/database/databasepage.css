@@ -185,7 +185,7 @@
 .content_header {
     clear: both;
     float: left;
-    width: 1015px;
+    width: 1080px;
 }
 .legend {
     color: #646464;
@@ -195,6 +195,17 @@
     padding-left: 5px;
     position: relative;
     width: 100%;
+}
+.legend ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    position: relative;
+}
+.legend li {
+    padding-left: 10px;
+    display:inline;
+    float:left;
 }
 .navigation {
     color: #646464;
