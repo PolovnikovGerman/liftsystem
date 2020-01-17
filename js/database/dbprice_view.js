@@ -1,97 +1,14 @@
 //var itemsperpage=425;
-var itemsperpage=200;
+// var itemsperpage=200;
+var greenpopover_template='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+var whitepopover_template='<div class="popover white_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+var redpopover_template='<div class="popover red_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+var orangepopover_template='<div class="popover orange_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+var blackpopover_template='<div class="popover black_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+var maroonpopover_template='<div class="popover maroon_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
+
 function init_dbprice_view() {
     initDBPricePagination();
-    $("#itemnum").unbind('click').click(function(){
-        price_sort('item_number','itemnum');
-    });
-    $("#itemname").unbind('click').click(function(){
-        price_sort('item_name','itemname');
-    });
-    $("#price25").unbind('click').click(function(){
-        price_sort('item_price_25','price25')
-    });
-    $("#price50").unbind('click').click(function(){
-        price_sort('item_price_50','price50')
-    });
-    $("#price150").unbind('click').click(function(){
-        price_sort('item_price_150','price150')
-    });
-    $("#price250").unbind('click').click(function(){
-        price_sort('item_price_250','price250')
-    });
-    $("#price500").unbind('click').click(function(){
-        price_sort('item_price_500','price500')
-    });
-    $("#price1000").unbind('click').click(function(){
-        price_sort('item_price_1000','price1000')
-    });
-    $("#price2500").unbind('click').click(function(){
-        price_sort('item_price_2500','price2500')
-    });
-    $("#price5000").unbind('click').click(function(){
-        price_sort('item_price_5000','price5000')
-    });
-    $("#price10000").unbind('click').click(function(){
-        price_sort('item_price_10000','price10000')
-    });
-    $("#price20000").unbind('click').click(function(){
-        price_sort('item_price_20000','price20000')
-    });
-    $("#price_setup").unbind('click').click(function(){
-        price_sort('item_price_setup','price_setup')
-    });
-    $("#sortupdatetim").unbind('change').change(function(){
-        var datesort=$(this).val();
-        if (datesort=='') {
-            price_sort('item_number','itemnum');
-        } else {
-            $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
-            var pagenum=$("#curpagedbprice").val();
-            $("#orderbydbprice").val('update_time');
-            if (datesort=='upd-desc') {
-                $("#directiondbprice").val('desc');
-            } else {
-                $("#directiondbprice").val('asc');
-            }
-            pageDbpriceselectCallback(pagenum);
-        }
-    });
-    $("select#compareprefs").unbind('change').change(function(){
-        var vals=$(this).val();
-        switch(vals) {
-            case '':
-                $(this).removeClass('red').removeClass('orange').removeClass('pink').removeClass('white');
-                break;
-            case 'red':
-                $(this).removeClass('orange').removeClass('pink').removeClass('white').addClass('red');
-                break;
-            case 'pink':
-                $(this).removeClass('red').removeClass('orange').removeClass('white').addClass('pink');
-                break;
-            case 'white':
-                $(this).removeClass('red').removeClass('orange').removeClass('pink').addClass('white');
-                break;
-        }
-        initDBPricePagination();
-    })
-    $("select#vendordbprice").unbind('change').change(function(){
-        search_data();
-    })
-    $("input.pricecomparechk").unbind('change').change(function(){
-        search_data();
-    })
-    $("#dbpricefind_it").unbind('click').click(function(){
-        search_data();
-    });
-    $("#searchdbprice").keypress(function(event){
-        if (event.which == 13) {
-            search_data();
-        }
-    });
-    $("#dbpriceclear_it").unbind('click').click(function(){
-        clear_search();
-    });
 }
 
 function initDBPricePagination() {
@@ -120,7 +37,6 @@ function initDBPricePagination() {
 
 function prepare_dbpriceparams() {
     var params=new Array();
-    params.push({name:'offset', value: $("#curpagedbprice").val()});
     params.push({name:'limit',value: $("#perpagedbprice").val()});
     params.push({name:'order_by', value: $("#orderbydbprice").val()});
     params.push({name:'direction',value: $("#directiondbprice").val()});
@@ -142,6 +58,7 @@ function prepare_dbpriceparams() {
 
 function pageDbpriceselectCallback(page_index){
     var params=prepare_dbpriceparams();
+    params.push({name:'offset', value: page_index});
     var url='/database/pricedat';
     $("#loader").css('display','block');
     $.post(url,params,function(response){
@@ -158,7 +75,7 @@ function pageDbpriceselectCallback(page_index){
             $("#curpagedbprice").val(page_index);
             $('#dbpricetabinfo').find("div.table-row:last").addClass('last_row');
             $("#loader").css('display','none');
-            profit_init();
+            pricetablecontent_init();
         } else {
             show_error(response);
         }
@@ -166,66 +83,122 @@ function pageDbpriceselectCallback(page_index){
     return false;
 }
 
-function profit_init() {
-    var greenpopover_template='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-    var whitepopover_template='<div class="popover white_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-    var redpopover_template='<div class="popover red_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-    var orangepopover_template='<div class="popover orange_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-    var blackpopover_template='<div class="popover black_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-    var maroonpopover_template='<div class="popover maroon_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-
-    $("a.greenprof").popover({
+function pricetablecontent_init() {
+    $(".greenprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: greenpopover_template,
     });
-    $("a.whiteprof").popover({
+    $(".whiteprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: whitepopover_template,
     });
-    $("a.redprof").popover({
+    $(".redprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: redpopover_template,
     });
-    $("a.orangeprof").popover({
+    $(".orangeprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: orangepopover_template,
     });
-    $("a.blackprof").popover({
+    $(".blackprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: blackpopover_template,
     });
-    $("a.maroonprof").popover({
+    $(".maroonprof").popover({
         placement: 'left',
         trigger: 'hover',
         html: true,
         template: maroonpopover_template,
     });
-    $(".itemtitle").popover({
+    $('.pricetable-row').find(".itemtitle").popover({
         placement: 'right',
         trigger: 'hover',
         html: true,
+    });
+    $(".table-price-header").find('.cellsort').unbind('click').click(function(){
+        var fld=$(this).data('sortfld');
+        price_sortdata(fld);
+    });
+    $("select#compareprefs").unbind('change').change(function(){
+        var vals=$(this).val();
+        switch(vals) {
+            case '':
+                $(this).removeClass('red').removeClass('orange').removeClass('pink').removeClass('white');
+                break;
+            case 'red':
+                $(this).removeClass('orange').removeClass('pink').removeClass('white').addClass('red');
+                break;
+            case 'pink':
+                $(this).removeClass('red').removeClass('orange').removeClass('white').addClass('pink');
+                break;
+            case 'white':
+                $(this).removeClass('red').removeClass('orange').removeClass('pink').addClass('white');
+                break;
+            case 'orange':
+                $(this).removeClass('red').removeClass('white').removeClass('pink').addClass('orange');
+                break;
+
+        }
+        initDBPricePagination();
+    });
+
+    $("select#vendordbprice").unbind('change').change(function(){
+        search_pricedata();
     })
+
+    $("input.pricecomparechk").unbind('change').change(function(){
+        search_pricedata();
+    })
+
+    $("#dbpricefind_it").unbind('click').click(function(){
+        search_pricedata();
+    });
+
+    $("#searchdbprice").keypress(function(event){
+        if (event.which == 13) {
+            search_pricedata();
+        }
+    });
+
+    $("#dbpriceclear_it").unbind('click').click(function(){
+        clear_pricesearch();
+    });
+
+    $("#sortupdatetim").unbind('change').change(function(){
+        var datesort=$(this).val();
+        if (datesort=='') {
+            price_sortdata('item_number');
+        } else {
+            $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
+            $(".table-price-header").find('.cellsort[data-sortfld="update_time"]').addClass('gradient2');
+            $("#orderbydbprice").val('update_time');
+            if (datesort=='upd-desc') {
+                $("#directiondbprice").val('desc');
+            } else {
+                $("#directiondbprice").val('asc');
+            }
+            initDBPricePagination();
+        }
+    });
+
 }
-/**
- * Initialisation function for pagination
- */
-/* Sort function */
-function price_sort(colsort,colid) {
+
+function price_sortdata(fld) {
     var cursort = $("#orderbydbprice").val();
     var direction = $("#directiondbprice").val();
     $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
-    $("#"+colid).removeClass('gradient1').addClass('gradient2');
-    if (colsort==cursort) {
+    $(".table-price-header").find('.cellsort[data-sortfld="'+fld+'"]').addClass('gradient2');
+    if (fld==cursort) {
         if (direction=='asc') {
             direction='desc';
         } else {
@@ -234,36 +207,36 @@ function price_sort(colsort,colid) {
     } else {
         direction='asc';
     }
-    $("#orderbydbprice").val(colsort);
+    $("#orderbydbprice").val(fld);
     $("#directiondbprice").val(direction);
     $("select#sortupdatetim").val('');
     initDBPricePagination();
 }
 
-function search_data() {
+function search_pricedata() {
     var search=$("#searchdbprice").val();
     var vend=$("select#vendordbprice").val();
     $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
-        if (response.data.result==0) {
-            alert('No search result');
-            $("#searchdbprice").val('');
-            $("select#vendordbprice").val('');
-        } else {
-            $("#searchdbprice").val(search);
+        if (response.errors=='') {
             $("#curpagedbprice").val(0);
             $("#totalrecdbprice").val(response.data.result);
             initDBPricePagination();
+        } else {
+            show_error(response);
         }
     }, 'json');
 }
 
-function clear_search() {
+function clear_pricesearch() {
     $("#searchdbprice").val('');
-    // $("#search").val('');
     $("select#vendordbprice").val('');
     $.post('/database/searchcount', {'search':''}, function(response){
-        $("#curpagedbprice").val(0);
-        $("#totalrecdbprice").val(response.data.result);
-        initDBPricePagination();
+        if (response.errors=='') {
+            $("#curpagedbprice").val(0);
+            $("#totalrecdbprice").val(response.data.result);
+            initDBPricePagination();
+        } else {
+            show_error(response);
+        }
     },'json');
 }

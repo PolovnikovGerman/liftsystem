@@ -32,6 +32,22 @@
     margin-top: 6px;
     width: 129px;
 }
+.profit_classes.orange {
+    background: #ffcc00;
+    color: #000000;
+}
+.profit_classes.red {
+    background: #ff0000!important;
+    color: #FFFFFF;
+}
+.profit_classes.pink {
+    background: #fe3cd7!important;
+    color: #FFFFFF;
+}
+.profit_classes.white {
+    background: #ffffff;
+    color: #000000;
+}
 .dbpages_vendors_dbprice {
     float: left;
     margin-top: 6px;
@@ -66,11 +82,12 @@ select.compareprefs {
     padding-left: 10px;
     height: 620px;
 }
-.tabinfo {
+.dbpricetabinfo {
     float: left;
     max-height: 541px;
     overflow-y: auto;
-    width: 993px;
+    /* width: 993px; */
+    width: 987px;
 }
 .table_head {
     text-align: center;
@@ -140,85 +157,66 @@ select.compareprefs {
     border-top: 1px solid #bdbdbd;
     border-bottom: 1px solid #bdbdbd;
 }
-/* Table columns */
-.bor-1 { border-left: 1px solid #bdbdbd;}
-.bor-2 { border-right: 1px solid #bdbdbd; /*background: #ffffff;*/}
-.text-1 {
-    font-size: 12px;
-    color: #ffffff;
-    /*border-left: 1px solid #5f5c5c; */
-    /* border-right: 1px solid #5f5c5c; */
+.pricetable-row {
+    width: 100%;
 }
-
-.text-1 a {
-    color: #FFFFFF;
-}
-
-.text-2 {
-    font-size: 12px;
+.pricetable-row > div.pricedatacell {
+    height: 20px;
+    line-height: 20px;
     color: #2c2c2c;
-    overflow: hidden;
-}
-.cell-center {
-    padding-top: 3px;
+    font-size: 12px;
+    border-right: 1px solid #bdbdbd;
     text-align: center;
 }
-.head-center {
-    text-align: center;
-    vertical-align: middle;
+.pricetable-row > div:first-child {
+    border-left: 1px solid #bdbdbd;
 }
-.cell-left {
-    padding-top: 3px;
+.pricetable-row > .numlist {
+    width: 30px;
+}
+.pricetable-row > .editcoll {
+    width: 25px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.pricetable-row > .itemnumber {
+    width: 62px;
+}
+.pricetable-row > .itemtitle {
+    width:171px;
+    padding-left: 5px;
+    margin-right: 7px;
     text-align: left;
 }
-.vendor_empty {
+.pricetable-row > .competitor {
+    width:84px;
+}
+.pricetable-row > .competitor.vendor_empty {
     color: #959595;
 }
-.vendor_multi {
+.pricetable-row > .competitor.vendor_multi {
     color: #FF0101;
 }
-.empty {
-    color: #959595;
+.pricetable-row > .pricevalcell {
+    width: 48px;
 }
-.empty a {
-    color: #959595;
+.pricetable-row > .priceseparator {
+    width:10px;
+    background: #878484;
 }
-.white {
-    color: #000000;
+.pricetable-row > .updatetime {
+    background-color: #030356;
+    color: #FFFFFF!important;
+    width: 55px;
+    text-align: left!important;
+    padding-left: 3px;
 }
-.white a {
-    color: #000000;
-}
-.red {
-    background: #ff0000!important;
-    color: #FFFFFF;
-}
-.red a {
-    color: #FFFFFF;
-}
-.green { background: #86ff80; }
-.orange {
-    background: #ffcc00;
-    color: #000000;
-}
-.orange a {
-    color: #000000;
-}
-.pink {
-    background: #fe3cd7!important;
-    color: #FFFFFF;
-}
-.pink a {
-    color: #FFFFFF;
-}
-.grey { background: #878484; }
-
-.last_row {
+/* Table columns */
+.pricetable-row.last_row {
     border-bottom: 1px solid #bdbdbd;
 }
-.updatelastprice {
-    background-color: #030356;
-    color: #FFFFFF;
+.pricetable-row > div.pricedatacell.empty {
+    color: #959595;
 }
 .green_tooltip {
     background-color: #86FF80;

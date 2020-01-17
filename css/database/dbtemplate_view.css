@@ -20,12 +20,12 @@ select.vendorselect {
     height: 22px;
     padding-left: 348px;
 }
-.arrow {
-    float: left;
-    width: 15px;
-    text-align: center;
-    padding-top: 4px;
-}
+/*.arrow {*/
+    /*float: left;*/
+    /*width: 15px;*/
+    /*text-align: center;*/
+    /*padding-top: 4px;*/
+/*}*/
 .blank_templatelink {
     float: left;
     width: 230px;
