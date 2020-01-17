@@ -48,14 +48,14 @@
                 <option value="white" class="white" <?=($priority=='white' ? 'selected="selected"' : '')?>>We beat</option>
             </select>
         </div>
-        <div class="dbpages_vendors">
-            <select id="vendorselect" name="vendorselect" class="vendorselect">
+        <div class="dbpages_vendors_dbprice">
+            <select id="vendordbprice" name="vendorselect" class="vendorselectdbprice">
                 <option value="">Select Vendor</option>
                 <?php foreach ($vendors as $row) {?>
                     <option value="<?=$row['vendor_id']?>" <?=($row['vendor_id']==$vendor ? 'selected="selected"' : '')?>><?=$row['vendor_name']?></option>
                 <?php } ?>
             </select>
         </div>
-        <div id="dbpricePagination" style="float: right;width: 186px;margin-left: 7px; margin-top: 5px; "></div>
+        <div id="dbpricePagination" class="dbpricepagination"></div>
     </div>
 </div>

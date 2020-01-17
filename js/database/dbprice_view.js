@@ -48,11 +48,11 @@ function init_dbprice_view() {
         } else {
             $(".table-price").find('.gradient2').removeClass('gradient2').addClass('gradient1');
             var pagenum=$("#curpagedbprice").val();
-            $("#orderby").val('update_time');
+            $("#orderbydbprice").val('update_time');
             if (datesort=='upd-desc') {
-                $("#direction").val('desc');
+                $("#directiondbprice").val('desc');
             } else {
-                $("#direction").val('asc');
+                $("#directiondbprice").val('asc');
             }
             pageDbpriceselectCallback(pagenum);
         }
@@ -75,7 +75,7 @@ function init_dbprice_view() {
         }
         initDBPricePagination();
     })
-    $("select#vendorselect").unbind('change').change(function(){
+    $("select#vendordbprice").unbind('change').change(function(){
         search_data();
     })
     $("input.pricecomparechk").unbind('change').change(function(){
@@ -126,7 +126,7 @@ function prepare_dbpriceparams() {
     params.push({name:'direction',value: $("#directiondbprice").val()});
     params.push({name:'search', value:$.trim($("#searchdbprice").val())});
     params.push({name:'compareprefs', value:$("#compareprefs").val()});
-    params.push({name:'vendor_id', value:$("select#vendorselect").val()});
+    params.push({name:'vendor_id', value:$("select#vendordbprice").val()});
     $("input.pricecomparechk").each(function(){
         var dat=$(this).data('othvendor');
         var name='otherved'+dat;
@@ -242,12 +242,12 @@ function price_sort(colsort,colid) {
 
 function search_data() {
     var search=$("#searchdbprice").val();
-    var vend=$("select#vendorselect").val();
+    var vend=$("select#vendordbprice").val();
     $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
         if (response.data.result==0) {
             alert('No search result');
             $("#searchdbprice").val('');
-            $("select#vendorselect").val('');
+            $("select#vendordbprice").val('');
         } else {
             $("#searchdbprice").val(search);
             $("#curpagedbprice").val(0);
@@ -260,10 +260,10 @@ function search_data() {
 function clear_search() {
     $("#searchdbprice").val('');
     // $("#search").val('');
-    $("select#vendorselect").val('');
+    $("select#vendordbprice").val('');
     $.post('/database/searchcount', {'search':''}, function(response){
         $("#curpagedbprice").val(0);
-        $("#totalrec").val(response.data.result);
+        $("#totalrecdbprice").val(response.data.result);
         initDBPricePagination();
     },'json');
 }
