@@ -1002,6 +1002,28 @@ class Content extends MY_Controller
         }
     }
 
+    public function prepare_termspage_preview() {
+        $postdata = $this->input->get();
+        $session_id = (isset($postdata['version']) ? $postdata['version'] : 'custom');
+        $session_data = usersession($session_id);
+        if (!empty($session_data)) {
+            $maxnum = ceil(count($session_data['terms'])/3);
+            $options = [
+                'meta' => $session_data['meta'],
+                'contents' => $session_data['data'],
+                'terms' => $session_data['terms'],
+                'version' => $session_id,
+                'maxnum' => $maxnum,
+                'address'=>$this->config->item('address'),
+                'header' => $this->load->view('contents_preview/preview_header',['address'=>$this->config->item('address')],TRUE),
+                'footer' => $this->load->view('contents_preview/preview_footer',['address'=>$this->config->item('address')], TRUE),
+            ];
+            echo $this->load->view('contents_preview/terms_page_view', $options, TRUE);
+        } else {
+            echo '';
+        }
+        die();
+    }
 
     private function _prepare_custom_content($page_name, $edit_mode=0, $session ='') {
         $this->load->model('staticpages_model');
