@@ -6,7 +6,7 @@ function init_profit_view() {
     $(".profit_head").find('.cellsort').unbind('click').click(function(){
         var fld = $(this).data('sortcell');
         sort_profitdata(fld);
-    })
+    });
     $("#dbprofitfind_it").unbind('click').click(function(){
         search_profitdata();
     });
@@ -78,11 +78,20 @@ function pageDbProfitCallback(page_index){
                 $("div#dbprofittabinfo").css('overflow-y','auto');
             }
             $('#dbprofittabinfo').find("tr:last").find('td').addClass('last_row');
+            init_profitcontent_view();
         } else {
             show_errors(response);
         }
     },'json');
     return false;
+}
+
+function init_profitcontent_view() {
+    $(".profittablerow").find('.itemtitle').popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+    });
 }
 
 function sort_profitdata(fld) {

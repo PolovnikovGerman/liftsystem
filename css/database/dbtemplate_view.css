@@ -3,100 +3,152 @@
     float: left;
     width: 1001px;
 }
-.dbpages_vendors {
+.dbtemplatepages_vendors {
     float: left;
     margin-top: 6px;
     margin-left: 15px;
     width: 175px;
 }
-select.vendorselect {
+select.dbtemplvendorselect {
     width: 165px;
+}
+.dbtemplatpagination {
+    float: right!important;
+    margin-top: 4px;
+    margin-right: 12px;
 }
 .blank_templateloader {
     clear: both;
-    float: left;
     width: 931px;
     background: url(/img/database/blank_template_bg.png) no-repeat;
     height: 22px;
     padding-left: 348px;
+    margin-left: 12px;
 }
-/*.arrow {*/
-    /*float: left;*/
-    /*width: 15px;*/
-    /*text-align: center;*/
-    /*padding-top: 4px;*/
-/*}*/
-.blank_templatelink {
+.template_arrow {
     float: left;
-    width: 230px;
+    width: 15px;
+    text-align: center;
     padding-top: 4px;
+}
+.blank_templatelink {
+    width: 230px;
     color: #FFF;
     font-size: 12px;
     font-weight: bold;
     text-align: center;
+    height: 22px;
+    line-height: 24px!important;
 }
 .blank_templatelink a {
     text-decoration: none;
     color: #FFF;
 }
+.template_head {
+    margin-left: 12px;
+    font-size: 12px;
+}
+.template_head > div {
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: #ffffff;
+}
+.template_head > .numinlist {
+    width: 30px;
+}
+.template_head > .editcoll {
+    font-size: 11px;
+    width: 25px;
+}
+.template_head > .itemnum {
+    width: 61px;
+}
+.template_head > .itemname {
+    width:199px;
+}
+.template_head > .templsource {
+    width:166px;
+}
+.template_head > .updatetemplate {
+    width: 140px;
+}
+.template_head > .imprintareas {
+    width: 361px;
+}
 .table-templates {
-    clear: both;
-    float: left;
-    max-height: 523px;
+    margin-left: 12px;
     overflow-y: auto;
-    padding-left: 1px;
-    width: 989px;
+    overflow-x: hidden;
+    max-height: 523px;
+    width: 982px;
 }
-#dbcontent {
-    float: left;
-    margin-left: 10px;
-}
-.tabinfo {
-    float: left;
-    height: 590px;
-    margin-left: 1px;
-    width: 972px;
-}
-.table_head {
-    text-align: center;
-    background-color: #ffffff;
-    height:24px;
-}
-/* Table columns */
-.bor-1 { border-left: 1px solid #bdbdbd;}
-.bor-2 { border-right: 1px solid #bdbdbd; }
-.bor-3 { border-bottom: 1px solid #bdbdbd; border-left: 1px solid #bdbdbd;}
-.bor-4 { border-bottom: 1px solid #bdbdbd; }
-
-.text-1 {
-    font-size: 12px;
-    color: #ffffff;
-}
-.text-1 a {
-    color: #ffffff;
-}
-.grey-stroka {
-    background-color:#ededed;
-    height:20px;
-    text-align: center;
-}
-.white-stroka {
-    background-color:#ffffff;
-    height:20px;
-    text-align: center;
-}
-.text-2 {
-    font-size: 12px;
+.templatedatarow {
+    border-left: 1px solid #bdbdbd;
     color: #2c2c2c;
-    overflow: hidden;
+    font-size: 12px;
+    width: 982px;
 }
-.cell-center {
+.templatedatarow > div.templatedatacell {
+    height: 22px;
+    line-height: 22px;
+    border-right: 1px solid #bdbdbd;
     text-align: center;
 }
-.cell-left {
-    text-align: left;
+.templatedatarow > .numinlist {
+    width: 30px;
 }
-/* For cover Element */
+.templatedatarow > .editcoll {
+    width: 25px;
+    cursor: pointer;
+}
+.templatedatarow > .itemnum {
+    width: 61px;
+}
+.templatedatarow > .itemtitle {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 199px;
+}
+.templatedatarow > .templatesource {
+    width:166px;
+}
+.templatedatarow > .templatesource a {
+    color: #252525;
+}
+.templatedatarow > .updatetemplate {
+    width: 140px;
+}
+.templatedatarow > .aiupdatestatus {
+    color: #000000;
+}
+.templatedatarow > .aiupdatestatus.empty {
+    color: #bdbdbd;
+}
+.templatedatarow > .aiupdatestatus.updated {
+    color: #ffffff;
+    background-color: #0000ff;
+}
+.templatedatarow > .aiupdatestatus.partialupdate {
+    color: #ffffff;
+    background-color: #00bff3;
+}
+.templatedatarow > .imprint_update_label {
+    width: 123px;
+    border-right: none!important;
+}
+.templatedatarow > .imprint_update_manage {
+    width: 222px;
+    text-align: left!important;
+}
+.green-stroka {
+    background-color:#185500;
+    color: #ffffff;
+}
+.green-stroka a {
+    color: #ffffff!important;
+    text-decoration: none;
+}
 .green-bor1 {
     border-left: 1px solid #185500;
     border-top: 1px solid #185500;
@@ -110,43 +162,4 @@ select.vendorselect {
     border-right: 1px solid #185500;
     border-top: 1px solid #185500;
     border-bottom: 1px solid #185500;
-}
-.green-stroka {
-    background-color:#185500;
-    color: #ffffff;
-    text-align: left;
-}
-.cell5 a {
-    color: #2c2c2c;
-}
-.green-stroka a {
-    color: #ffffff;
-}
-.last_row {
-    border-bottom: 1px solid #bdbdbd;
-}
-.aiupdatestatus {
-    color: #000000;
-}
-.aiupdatestatus.empty {
-    color: #bdbdbd;
-}
-.aiupdatestatus.updated {
-    color: #ffffff;
-    background-color: #0000ff;
-}
-.aiupdatestatus.partialupdate {
-    color: #ffffff;
-    background-color: #00bff3;
-}
-
-.imprint_update_label {
-    float: left;
-    width: 123px;
-    text-align: center;
-    height: 20px;
-    line-height: 20px;
-}
-.imprint_update_manage {
-    float: left;
 }

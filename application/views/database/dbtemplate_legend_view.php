@@ -15,13 +15,13 @@
             Clear
         </a>
     </div>
-    <div class="dbpages_vendors">
-        <select  name="vendorselect" id="dbtemplatvendorselect" class="vendorselect">
+    <div class="dbtemplatepages_vendors">
+        <select  name="vendorselect" id="dbtemplatvendorselect" class="dbtemplvendorselect">
             <option value="">Select Vendor</option>
             <?php foreach ($vendors as $row) {?>
                 <option value="<?=$row['vendor_id']?>" <?=($row['vendor_id']==$vendor ? 'selected="selected"' : '')?>><?=$row['vendor_name']?></option>
             <?php } ?>
         </select>
     </div>
-    <div id="dbtemplatPagination" style="float: left; width: 210px; margin-left: 188px; margin-top: 7px; "></div>
+    <div id="dbtemplatPagination" class="dbtemplatpagination"></div>
 </div>

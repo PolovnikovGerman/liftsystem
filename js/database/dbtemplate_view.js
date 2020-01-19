@@ -26,40 +26,22 @@ function init_templates_view() {
 }
 
 function make_hover() {
-    $("#dbtempltabinfo").find(".whitedatarow").hover(
+    $(".templatedatarow").hover(
         function () {
             $(this).find(".player").attr("src",'/img/database/play-white.png');
-            $(this).find(".cell5").removeClass('text-7').addClass('text-6 green-stroka');
-            $(this).find(".cell4").addClass('green-bor3');
-            $(this).find(".cell3").addClass('green-bor2');
-            $(this).find(".cell2").addClass('green-bor2');
-            $(this).find(".cell1").addClass('green-bor1');
+            $(this).find(".templatesource").removeClass('text-7').addClass('green-stroka');
+            $(this).find(".itemtitle").addClass('green-bor3');
+            $(this).find(".itemnum").addClass('green-bor2');
+            $(this).find(".editcoll").addClass('green-bor2');
+            $(this).find(".numinlist").addClass('green-bor1');
         },
         function () {
             $(this).find(".player").attr("src",'/img/database/play-green.png');
-            $(this).find(".cell5").removeClass('text-6 green-stroka').addClass('text-7');
-            $(this).find(".cell4").removeClass('green-bor3');
-            $(this).find(".cell3").removeClass('green-bor2');
-            $(this).find(".cell2").removeClass('green-bor2');
-            $(this).find(".cell1").removeClass('green-bor1');
-        }
-    );
-    $("#dbtempltabinfo").find(".greydatarow").hover(
-        function () {
-            $(this).find(".player").attr("src",'/img/database/play-white.png');
-            $(this).find(".cell5").removeClass('text-7').addClass('text-6 green-stroka');
-            $(this).find(".cell4").addClass('green-bor3');
-            $(this).find(".cell3").addClass('green-bor2');
-            $(this).find(".cell2").addClass('green-bor2');
-            $(this).find(".cell1").addClass('green-bor1');
-        },
-        function () {
-            $(this).find(".player").attr("src",'/img/database/play-green.png');
-            $(this).find(".cell5").removeClass('text-6 green-stroka').addClass('text-7');
-            $(this).find(".cell4").removeClass('green-bor3');
-            $(this).find(".cell3").removeClass('green-bor2');
-            $(this).find(".cell2").removeClass('green-bor2');
-            $(this).find(".cell1").removeClass('green-bor1');
+            $(this).find(".templatesource").removeClass('green-stroka').addClass('text-7');
+            $(this).find(".itemtitle").removeClass('green-bor3');
+            $(this).find(".itemnum").removeClass('green-bor2');
+            $(this).find(".editcoll").removeClass('green-bor2');
+            $(this).find(".numinlist").removeClass('green-bor1');
         }
     );
     $(".updateimprintradio").unbind('change').change(function(){

@@ -124,7 +124,8 @@
     width: 30px;
 }
 .profittablerow > .editcoll {
-    width:28px
+    width:28px;
+    cursor: pointer;
 }
 .profittablerow > .itemnum {
     width:62px;

@@ -103,6 +103,11 @@ function init_dbcategory_content() {
         var itemcateg_id = $(this).data('itemcategid');
         change_category(item_id, itemcateg_id, item_category, categ_num);
     });
+    $(".categorydatarow").find(".itemtitle").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+    });
 }
 
 function sort_categorydat(fld) {
