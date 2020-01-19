@@ -3,6 +3,53 @@
     width: 240px;
     padding-left: 10px;
 }
+.dbpages_misinfovendors {
+    margin-top: 6px;
+    margin-left: 15px;
+    width: 175px;
+}
+.dbpages_misinfovendors select {
+    width: 165px;
+}
+.misinfopagination {
+    width: 210px;
+    margin-top: 7px;
+    float: right!important;
+    margin-right: 25px;
+}
+.missing_head {
+    width: 994px;
+    border-left: 1px solid #bdbdbd;
+    border-right: 1px solid #bdbdbd;
+    margin-left: 12px;
+}
+.missing_head > div {
+    height: 24px;
+    line-height: 24px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+}
+.missing_head > div.sortcell {
+    cursor: pointer;
+}
+.missing_head > .numinlist {
+    width: 30px;
+}
+.missing_head > .editcoll {
+    width:28px;
+    font-size: 11px;
+}
+.missing_head > .itemnum {
+    width:61px;
+}
+.missing_head > .itemname {
+    width:199px;
+}
+.missing_head > .missingdata {
+    width:674px;
+}
+
 .table-misinfo {
     clear: both;
     float: left;
@@ -10,143 +57,58 @@
     overflow-y: auto;
     padding-left: 1px;
     width: 990px;
+    margin-left: 12px;
 }
-#dbcontent {
-    float: left;
-    margin-left: 10px;
-}
-.tabinfo {
-    height: 590px;
-}
-.table_head {
+.emptymissinfodata {
+    width: 100%;
     text-align: center;
-    background-color: #ffffff;
-    height:24px;
-}
-/* Table columns */
-.bor-1 { border-left: 1px solid #bdbdbd;}
-.bor-2 { border-right: 1px solid #bdbdbd;}
-.text-1 {
+    color: #FF0000;
     font-size: 12px;
-    color: #ffffff;
+    font-weight: bold;
 }
-.text-1 a {
-    color: #ffffff;
+.missinfodatarow {
+    width: 100%;
+    border-left: 1px solid #bdbdbd;
+    border-right: 1px solid #bdbdbd;
 }
-.grey-stroka {
-    background-color:#ededed;
-    height:20px;
+.missinfodatarow > div.misinfocell {
     text-align: center;
-}
-.white-stroka {
-    background-color:#ffffff;
-    height:20px;
-    text-align: center;
-}
-.text-2 {
+    height: 22px;
+    line-height: 22px;
     font-size: 12px;
     color: #2c2c2c;
     overflow: hidden;
+    border-right: 1px solid #bdbdbd;
 }
-.head-center {
-    text-align: center;
-    vertical-align: middle;
+.missinfodatarow > div.misinfocell:last-child {
+    border-right: none;
 }
-
-.cell-center {
-    text-align: center;
+.missinfodatarow > .numinlist {
+    width: 30px;
 }
-.cell-left {
-    text-align: left;
+.missinfodatarow > .editcoll {
+    width:28px;
 }
-.misinfo_dat {
-    float: left;
-    background-image: url("/img/database/yellow-cell.png");
+.missinfodatarow > .itemnum {
+    width: 61px;
+}
+.missinfodatarow > .itemtitle {
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+    width: 199px;
+}
+.missinfodatarow > .missingdata {
+    width:653px;
+}
+.missinfodatarow > .missingdata .misinfo_dat {
+    background-image: url(/img/database/yellow-cell.png);
     background-repeat: no-repeat;
-    height:16px;
+    height: 16px;
     width: 56px;
     margin-left: 1px;
     text-align: center;
     font-size: 12px;
-}
-.last_row {
-    border-bottom: 1px solid #bdbdbd;
-}
-/* SPECHIAL CHECKS */
-.pausechecks:hover {
-    cursor: pointer;
-}
-/* Profit Classes */
-.green {
-    background-color: #86FF80;
-}
-td.green:hover, td.maroon:hover, td.red:hover, td.black:hover, td.orange:hover, td.white:hover {
-    cursor: pointer;
-}
-.maroon {
-    background-color: #800000;
-    color: #FFFFFF;
-}
-.red {
-    background-color: #FF0000;
-    color: #FFF;
-}
-.black {
-    background-color: #000000;
-    color: #FFFFFF;
-}
-.white {
-    background-color: #FFFFFF;
-}
-.orange {
-    background-color: #FFA500;
-}
-/*  */
-.green_tooltip {
-    background-color: #86FF80;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
-}
-.white_tooltip {
-    background-color: #FFFFFF;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
-}
-.red_tooltip {
-    background-color: #FF0000;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #FFF;
-    text-align: justify;
-}
-.orange_tooltip {
-    background-color: #FFA500;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
-}
-.black_tooltip {
-    background-color: #000000;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #FFFFFF;
-    text-align: justify;
-}
-.maroon_tooltip {
-    background-color: #800000;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #FFFFFF;
-    text-align: justify;
+    margin-top: 2px;
+    line-height: 16px;
 }

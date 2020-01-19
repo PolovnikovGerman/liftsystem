@@ -1,36 +1,23 @@
-// var itemsperpage=425;
-// var itemsperpage=200;
 var maxheight=560;
 function init_misinfo_view() {
     initDBMisinfoPagination();
-    $("#itemnum").unbind('click').click(function(){
-        missing_sort('v.item_number','itemnum');
+    $(".missing_head").find(".sortcell").unbind('click').click(function () {
+        var fld=$(this).data('sortcell');
+        sort_missinfo(fld);
     });
-    $("#itemname").unbind('click').click(function(data){
-        missing_sort('v.item_name','itemname');
+    $("#misinfofind_it").unbind('click').click(function(){
+        search_missinfodata();
     });
-    $("#missinfo").unbind('click').click(function(){
-        missing_sort('missings','missinfo');
-    });
-    $("#find_it").unbind('click').click(function(){
-        var search=$("#searchtemplate").val();
-        if (search!='Enter keyword or item #' && search!='') {
-            search_data();
-        }
-    });
-    $("#searchtemplate").keypress(function(event){
+    $("#searchmisinfo").keypress(function(event){
         if (event.which == 13) {
-            var search=$("#searchtemplate").val();
-            if (search!='Enter keyword or item #' && search!='') {
-                search_data();
-            }
+            search_missinfodata();
         }
     });
-    $("#clear_it").unbind('click').click(function(){
-        clear_search();
+    $("#misinfoclear_it").unbind('click').click(function(){
+        clear_searchmissinfo();
     })
-    $("select#vendorselect").change(function(){
-        search_data();
+    $("select#vendorselectmisinfo").unbind('change').change(function(){
+        search_missinfodata();
     })
 };
 
@@ -67,23 +54,23 @@ function pageMisInfoCallback(page_index, jq){
     params.push({name:'limit', value:$("#perpagemisinfo").val()})
     params.push({name:'order_by', value:$("#orderbymisinfo").val()});
     params.push({name:'direction', value:$("#directionmisinfo").val()});
-    params.push({name:'search', value:$("#search").val()});
-    params.push({name:'vendor_id',value:$("select#vendorselect").val()});
-    $("#curpagemisinfo").val(page_index);
+    params.push({name:'search', value:$("#searchmisinfo").val()});
+    params.push({name:'vendor_id',value:$("select#vendorselectmisinfo").val()});
     $("#loader").css('display','block');
     var url='/database/misinfodat';
     $.post(url,params,function(response){
         if (response.errors=='') {
+            $("#curpagemisinfo").val(page_index);
             $('#dbmisinfotabinfo').empty().html(response.data.content);
-            var infoh=parseInt($('div#tabinfo').css('height'));
+            var infoh=parseInt($('div#dbmisinfotabinfo').css('height'));
             if (infoh<maxheight) {
-                $("div#tabinfo").css('overflow','hidden');
-                $("div#tabinfo tr").css('width','996px');
-                $('div#tabinfo .last_col').css('width','672px');
+                $("div#dbmisinfotabinfo").css('overflow','hidden');
+                $("div#dbmisinfotabinfo tr").css('width','996px');
+                $('div#dbmisinfotabinfo .last_col').css('width','672px');
             } else {
-                $("div#tabinfo").css('overflow-y','auto');
+                $("div#dbmisinfotabinfo").css('overflow-y','auto');
             }
-            $('div#tabinfo').find("tr:last").find('td').addClass('last_row');
+            $('div#dbmisinfotabinfo').find("tr:last").find('td').addClass('last_row');
             $("#loader").css('display','none');
         } else {
             $("#loader").css('display','none');
@@ -93,10 +80,10 @@ function pageMisInfoCallback(page_index, jq){
     return false;
 }
 
-function missing_sort(colsort,itemsort) {
+function sort_missinfo(fld) {
     var cursort = $("#orderbymisinfo").val();
     var direction = $("#directionmisinfo").val();
-    if (colsort==cursort) {
+    if (fld==cursort) {
         if (direction=='asc') {
             direction='desc';
         } else {
@@ -105,47 +92,35 @@ function missing_sort(colsort,itemsort) {
     } else {
         direction='asc';
     }
-    $("#orderbymisinfo").val(colsort);
+    $("#orderbymisinfo").val(fld);
     $("#directionmisinfo").val(direction);
     $(".missing_head").find('.gradient2').removeClass('gradient2').addClass('gradient1');
-    $("#"+itemsort).removeClass('gradient1').addClass('gradient2');
-
+    $(".missing_head").find(".sortcell[data-sortcell='"+fld+"']").removeClass('gradient1').addClass('gradient2');
     initDBMisinfoPagination();
 }
 
-function search_data() {
-    var search=$("#searchtemplate").val();
-    if (search=='Enter keyword or item #') {
-        search='';
-    }
-    var vend=$("select#vendorselect").val();
+function search_missinfodata() {
+    var search=$("#searchmisinfo").val();
+    var vend=$("select#vendorselectmisinfo").val();
     $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
         if (response.errors=='') {
-            if (response.data.result==0) {
-                alert('No search result');
-                $("#searchtemplate").val('');
-                $("select#vendorselect").val('');
-            } else {
-                $("#search").val(search);
-                $("#curpage").val(0);
-                $("#totalrec").val(response.data.result);
-                initPagination();
-            }
+            $("#curpagemisinfo").val(0);
+            $("#totalrecmisinfo").val(response.data.result);
+            initDBMisinfoPagination();
         } else {
             show_error(response);
         }
     }, 'json');
 }
 
-function clear_search() {
-    $("#searchtemplate").val('Enter keyword or item #');
-    $("#search").val('');
-    $("select#vendorselect").val('');
+function clear_searchmissinfo() {
+    $("#searchmisinfo").val('');
+    $("select#vendorselectmisinfo").val('');
     $.post('/database/searchcount', {'search':''}, function(response){
         if (response.errors=='') {
-            $("#curpage").val(0);
-            $("#totalrec").val(response.data.result);
-            initPagination();
+            $("#curpagemisinfo").val(0);
+            $("#totalrecmisinfo").val(response.data.result);
+            initDBMisinfoPagination();
         } else {
             show_error(response);
         }
