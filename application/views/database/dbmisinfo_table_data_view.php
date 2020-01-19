@@ -9,7 +9,7 @@
             <div class="misinfocell numinlist"><?= $n_row ?></div>
             <div class="misinfocell editcoll" data-item="<?=$row['item_id']?>"><i class="fa fa-pencil-square-o edit_item" aria-hidden="true"></i></div>
             <div class="misinfocell itemnum"><?= $row['item_number'] ?></div>
-            <div class="misinfocell itemtitle" data-content="<?=$row['item_name']?>"><?= $row['item_name'] ?></div>
+            <div class="misinfocell overflowtext itemtitle" data-content="<?=$row['item_name']?>"><?= $row['item_name'] ?></div>
             <div class="misinfocell missingdata">
                 <?php $ind_miss = 0; ?>
                 <?php foreach ($row['missings'] as $miss) { ?>

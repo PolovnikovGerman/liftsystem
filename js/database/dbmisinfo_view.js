@@ -72,12 +72,21 @@ function pageMisInfoCallback(page_index, jq){
             }
             $('div#dbmisinfotabinfo').find("tr:last").find('td').addClass('last_row');
             $("#loader").css('display','none');
+            init_missinfo_content();
         } else {
             $("#loader").css('display','none');
             show_error(response);
         }
     },'json');
     return false;
+}
+
+function init_missinfo_content() {
+    $('.missinfodatarow').find(".itemtitle").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+    });
 }
 
 function sort_missinfo(fld) {

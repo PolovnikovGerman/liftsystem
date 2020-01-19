@@ -12,17 +12,6 @@
         <li><img src="/img/database/kvadrat-white.png"/> 26% - 39%</li>
         <li><img src="/img/database/kvadrat-green.png"/> 40% and higher</li>
     </ul>
-    <div class="profit_classes" style="float: left; margin-top: 6px; padding-left: 1px; width: 154px;">
-        <select id="dbprofitprofitprefs" name="profitprefs" style="width: 150px">
-            <option value="" <?=($priority=='' ? 'selected="selected"' : '')?>>No Priority</option>
-            <option value="black" class="black" <?=($priority=='black' ? 'selected="selected"' : '')?>>Blacks as Priority</option>
-            <option value="maroon" class="maroon" <?=($priority=='maroon' ? 'selected="selected"' : '')?>>Maroon as Priority</option>
-            <option value="red" class="red" <?=($priority=='red' ? 'selected="selected"' : '')?>>Reds as Priority</option>
-            <option value="orange" class="orange" <?=($priority=='orange' ? 'selected="selected"' : '')?>>Oranges as Priority</option>
-            <option value="white" class="white" <?=($priority=='white' ? 'selected="selected"' : '')?>>Whites as Priority</option>
-            <option value="green" class="green" <?=($priority=='green' ? 'selected="selected"' : '')?>>Greens as Priority</option>
-        </select>
-    </div>
 </div>
 <div class="profitlegend_row" >
     <div class="searchbox">
@@ -34,7 +23,18 @@
             Clear
         </a>
     </div>
-    <div class="dbpages_vendors">
+    <div class="itemprofit_classes">
+        <select id="dbprofitprofitprefs" name="profitprefs">
+            <option value="" <?=($priority=='' ? 'selected="selected"' : '')?>>No Priority</option>
+            <option value="black" class="black_profitpref" <?=($priority=='black' ? 'selected="selected"' : '')?>>Blacks as Priority</option>
+            <option value="maroon" class="maroon_profitpref" <?=($priority=='maroon' ? 'selected="selected"' : '')?>>Maroon as Priority</option>
+            <option value="red" class="red_profitpref" <?=($priority=='red' ? 'selected="selected"' : '')?>>Reds as Priority</option>
+            <option value="orange" class="orange_profitpref" <?=($priority=='orange' ? 'selected="selected"' : '')?>>Oranges as Priority</option>
+            <option value="white" class="white_profitpref" <?=($priority=='white' ? 'selected="selected"' : '')?>>Whites as Priority</option>
+            <option value="green" class="green_profitpref" <?=($priority=='green' ? 'selected="selected"' : '')?>>Greens as Priority</option>
+        </select>
+    </div>
+    <div class="dbprofit_vendors">
         <select  name="vendorselect" id="dbprofitvendorselect" class="vendorselect">
             <option value="">Select Vendor</option>
             <?php foreach ($vendors as $row) {?>
@@ -42,5 +42,5 @@
             <?php } ?>
         </select>
     </div>
-    <div id="dbprofitPagination" style="float: left; width: 210px; margin-left: 188px; margin-top: 7px; "></div>
+    <div id="dbprofitPagination" class="dbprofitpagination"></div>
 </div>

@@ -8,49 +8,29 @@
     <input type="hidden" id="curpagedbprofit" value="<?= $cur_page ?>"/>
     <input type="hidden" id="perpagedbprofit" value="<?=$perpage?>"/>
     <div class="clearfix"></div>
-    <table bordercolor="#bdbdbd" cellspacing="0" cellpadding="0" class="profit_head">
-        <tr style="text-align: center; bgcolor:#ffffff; height:24px">
-            <td class="gradient1 bor-1">
-                <div style="width:30px;">&nbsp;</div>
-            </td>
-            <td style="width:28px;font-size: 11px;" class="gradient1 text-1 head-center">
-                edit
-            </td>
-            <td style="width:62px;"
-                class="<?= ($order_by == 'item_number' ? 'gradient2' : 'gradient1') ?> text-1 head-center" id="itemnum">
-                <a href="javascript:void(0)">Item #</a>
-            </td>
-            <td style="width:193px"
-                class="<?= ($order_by == 'item_name' ? 'gradient2' : 'gradient1') ?> text-1 head-center" id="itemname">
-                <a href="javascript:void(0)">Name</a>
-            </td>
-            <td style="width:48px;"
-                class="<?= ($order_by == 'vendor_item_cost' ? 'gradient2' : 'gradient1') ?> text-1 head-center"
-                id="vendorcost">
-                <a href="javascript:void(0)">Cost</a>
-            </td>
-            <td style="width:53px;"
-                class="<?= ($order_by == 'vendor_name' ? 'gradient2' : 'gradient1') ?> text-1 head-center"
-                id="vendorname">
-                <a href="javascript:void(0)">Vendor</a>
-            </td>
-            <td style="width:4px;" class="gradient1">&nbsp;</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">25</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">75</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">150</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">250</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">500</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">1000</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">2500</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">5000</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">10K</td>
-            <td style="width:47px;" class="gradient1 text-1 head-center">20K</td>
-            <td style="width:4px;" class="gradient1">&nbsp;</td>
-            <td style="width:43px;" class="gradient1 text-1 head-center">Prints</td>
-            <td style="width:43px;" class="gradient1 text-1 head-center">Setup</td>
-            <td style="width:20px" class="gradient1 text-1">&nbsp;</td>
-        </tr>
-    </table>
+    <div class="profit_head">
+        <div class="gradient1 numinlist">&nbsp;</div>
+        <div class="gradient1 editcoll">edit</div>
+        <div class="itemnum <?= ($order_by == 'item_number' ? 'gradient2' : 'gradient1') ?> sortcell" data-sortcell="item_number">Item #</div>
+        <div class="itemname <?= ($order_by == 'item_name' ? 'gradient2' : 'gradient1') ?> sortcell" data-sortcell="item_name">Name</div>
+        <div class="vendorcost <?= ($order_by == 'vendor_item_cost' ? 'gradient2' : 'gradient1') ?> sortcell" data-sortcell="vendor_item_cost">Cost</div>
+        <div class="vendorname <?= ($order_by == 'vendor_name' ? 'gradient2' : 'gradient1') ?> sortcell" data-sortcell="vendor_name">Vendor</div>
+        <div class="gradient1 priceseparator">&nbsp;</div>
+        <div class="gradient1 pricedatacell">25</div>
+        <div class="gradient1 pricedatacell">75</div>
+        <div class="gradient1 pricedatacell">150</div>
+        <div class="gradient1 pricedatacell">250</div>
+        <div class="gradient1 pricedatacell">500</div>
+        <div class="gradient1 pricedatacell">1000</div>
+        <div class="gradient1 pricedatacell">2500</div>
+        <div class="gradient1 pricedatacell">5000</div>
+        <div class="gradient1 pricedatacell">10K</div>
+        <div class="gradient1 pricedatacell">20K</div>
+        <div class="gradient1 emptyspace">&nbsp;</div>
+        <div class="gradient1 pricespecdatacell">Prints</div>
+        <div class="gradient1 pricespecdatacell">Setup</div>
+        <div class="gradient1 emptyspace1">&nbsp;</div>
+    </div>
     <div class="clearfix"></div>
     <div class="table-profit" id="dbprofittabinfo"></div>
 </div>

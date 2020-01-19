@@ -3,34 +3,26 @@
 var maxheight=530;
 function init_profit_view() {
     initDbProfitPagination();
-    $("#itemnum").unbind('click').click(function(){
-        profit_sort('item_number','itemnum');
-    });
-    $("#itemname").unbind('click').click(function(){
-        profit_sort('item_name','itemname');
-    });
-    $("#vendorcost").unbind('click').click(function(){
-        profit_sort('vendor_item_cost','vendorcost');
-    })
-    $("#vendorname").unbind('click').click(function(){
-        profit_sort('vendor_name','vendorname');
+    $(".profit_head").find('.cellsort').unbind('click').click(function(){
+        var fld = $(this).data('sortcell');
+        sort_profitdata(fld);
     })
     $("#dbprofitfind_it").unbind('click').click(function(){
-        search_data();
+        search_profitdata();
     });
     $("#searchdbprofit").keypress(function(event){
         if (event.which == 13) {
-            search_data();
+            search_profitdata();
         }
     });
     $("#dbprofitclear_it").unbind('click').click(function(){
-        clear_search();
+        clear_profitsearch();
     })
     $("#dbprofitprofitprefs").unbind('change').change(function(){
         initDbProfitPagination();
     });
     $("select#dbprofitvendorselect").unbind('change').change(function(){
-        search_data();
+        search_profitdata();
     })
 };
 
@@ -93,11 +85,11 @@ function pageDbProfitCallback(page_index){
     return false;
 }
 
-function profit_sort(colsort,itemsort) {
+function sort_profitdata(fld) {
     var cursort = $("#orderbydbprofit").val();
     var direction = $("#directiondbprofit").val();
 
-    if (colsort==cursort) {
+    if (fld==cursort) {
         if (direction=='asc') {
             direction='desc';
         } else {
@@ -107,13 +99,13 @@ function profit_sort(colsort,itemsort) {
         direction='asc';
     }
     $(".profit_head").find('.gradient2').removeClass('gradient2').addClass('gradient1');
-    $("#"+itemsort).removeClass('gradient1').addClass('gradient2');
-    $("#orderbydbprofit").val(colsort);
+    $(".profit_head").find(".cellsort[data-sortcell='"+fld+"']").removeClass('gradient1').addClass('gradient2');
+    $("#orderbydbprofit").val(fld);
     $("#directiondbprofit").val(direction);
     initDbProfitPagination();
 }
 
-function search_data() {
+function search_profitdata() {
     var search=$("#searchdbprofit").val();
     var vend=$("select#dbprofitvendorselect").val();
     $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
@@ -126,7 +118,7 @@ function search_data() {
         }
     }, 'json');
 }
-function clear_search() {
+function clear_profitsearch() {
     $("#searchdbprofit").val('');
     $("select#dbprofitvendorselect").val('');
     $.post('/database/searchcount', {'search':''}, function(response){
