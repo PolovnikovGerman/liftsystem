@@ -394,6 +394,30 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function upditemcategory() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata = $this->input->post();
+            $options=array('show_dropdown'=>array(1,2),'show_homepage'=>1);
+            $this->load->model('itemcategory_model');
+            $this->load->model('categories_model');
+            $categ_list=$this->categories_model->get_categories($options);
+            $res = $this->itemcategory_model->update_itemcategory($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $viewoptions = array(
+                    'itemcategory_id' => $res['itemcategory_id'],
+                    'catval'=>($postdata['item_category']==0 ? '' : $postdata['item_category']),
+                    'categ_list'=>$categ_list,
+                );
+                $mdata['content'] = $this->load->view('database/dbcategerory_item_view',$viewoptions,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // DB Sequence
     public function itemsequence_search() {
         if ($this->isAjax()) {

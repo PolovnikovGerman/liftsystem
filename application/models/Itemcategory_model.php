@@ -161,5 +161,61 @@ Class Itemcategory_model extends My_Model
 //        return $result;
 //    }
 
+    public function update_itemcategory($data) {
+        $out=['result'=> $this->error_result, 'msg'=> 'Non unique category'];
+        /*
+    params.push({name: 'item_id', value: item_id});
+    params.push({name: 'itemcategory_id', value: itemcateg_id});
+    params.push({name: 'item_category', value: item_category});
+         */
+        if ($data['itemcategory_id']>0 && empty($data['item_category'])) {
+            // delete relation
+            $this->db->where('item_categories_id', $data['itemcategory_id']);
+            $this->db->delete('sb_item_categories');
+            $out['result']=$this->success_result;
+            $out['itemcategory_id'] = -1;
+        } else {
+            // check unique category
+            $this->db->select('count(item_categories_id) as cnt');
+            $this->db->from('sb_item_categories');
+            $this->db->where('item_categories_itemid', $data['item_id']);
+            $this->db->where('item_categories_categoryid', $data['item_category']);
+            $this->db->where('item_categories_id', $data['itemcategory_id']);
+            $chkres=$this->db->get()->row_array();
+            if ($chkres['cnt']==0) {
+                $out['result']=$this->success_result;
+                $out['itemcategory_id'] = $data['itemcategory_id'];
+                if ($data['itemcategory_id']<0) {
+                    // Add new
+                    $this->db->select('max(item_categories_order) as maxord, count(item_categories_id) as cnt');
+                    $this->db->from('sb_item_categories');
+                    $this->db->where('item_categories_itemid', $data['item_id']);
+                    $datres = $this->db->get()->row_array();
+                    if ($datres['cnt']==0) {
+                        $maxord = 1;
+                    } else {
+                        $maxord = $datres['maxord'] + 1;
+                    }
+                    $this->db->set('item_categories_itemid', $data['item_id']);
+                    $this->db->set('item_categories_categoryid', $data['item_category']);
+                    $this->db->set('item_categories_order', $maxord);
+                    $this->db->insert('sb_item_categories');
+                    if ($this->db->insert_id()) {
+                        $out['itemcategory_id']=$this->db->insert_id();
+                    } else {
+                        $out['result']=$this->error_result;
+                        $out['msg']='Error during add Category';
+                    }
+                } else {
+                    // Update exist record
+                    $this->db->where('item_categories_id', $data['itemcategory_id']);
+                    $this->db->set('item_categories_categoryid', $data['item_category']);
+                    $this->db->update('sb_item_categories');
+                }
+            }
+        }
+        return $out;
+    }
+
 
 }
