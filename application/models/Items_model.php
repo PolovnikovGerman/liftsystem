@@ -39,7 +39,7 @@ Class Items_model extends My_Model
         $this->db->where('item_active',1);
         if (isset($options['vendor_id'])) {
             $this->db->join('sb_vendor_items iv','iv.vendor_item_id=i.vendor_item_id');
-            $this->db->join("{$this->vendor_db} v", 'v.vendor_id=iv.vendor_item_vendor');
+            $this->db->join("vendors v", 'v.vendor_id=iv.vendor_item_vendor');
             $this->db->where('v.vendor_id', $options['vendor_id']);
         }
         if (isset($options['search'])) {
@@ -55,7 +55,7 @@ Class Items_model extends My_Model
         $this->db->where('i.item_active',1);
         if (isset($options['vendor_id'])) {
             $this->db->join('sb_vendor_items iv','iv.vendor_item_id=i.vendor_item_id');
-            $this->db->join("{$this->vendor_db} v", 'v.vendor_id=iv.vendor_item_vendor');
+            $this->db->join("vendors v", 'v.vendor_id=iv.vendor_item_vendor');
             $this->db->where('v.vendor_id', $options['vendor_id']);
         }
         if (isset($options['search'])) {

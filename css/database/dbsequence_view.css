@@ -1,6 +1,7 @@
 .dbsequencelegend-left {
     float: left;
-    width: 373px;
+    /* width: 373px; */
+    width: 716px;
 }
 .dbsequencelegend-left h4 {
     color: #000000;
@@ -11,7 +12,7 @@
     line-height: 33px!important;
 }
 .dbsequencelegend-right {
-    margin-top: 28px;
+    margin-top: 50px;
     float: right;
     width: 302px;
 }
@@ -26,18 +27,18 @@ select.iteminrowselect {
     height: 20px;
     width: 117px;
 }
-.dbpages_vendors {
+.dbpages_itemseqvendors {
     float: left;
     margin-top: 6px;
     width: 178px;
 }
-select.vendorselect {
+select.dbseqvendorselect {
     background: none repeat scroll 0 0 #ffffff;
     font-size: 12px;
     height: 20px;
     width: 175px;
 }
-select.vendorselect.activevendor {
+select.dbseqvendorselect.activevendor {
     border: 1px solid #ff0000;
 }
 .tabinfohead {
@@ -62,9 +63,9 @@ select.vendorselect.activevendor {
     height: 22px;
     line-height: 22px!important;
 }
-.sequencinforow > .pagination {
-    float: right;
-    margin-left: 15px;
+.dbseqpagination {
+    float: right!important;
+    margin-right: 12px;
 }
 .pagination-legend {
     float: right !important;
@@ -75,7 +76,7 @@ select.vendorselect.activevendor {
     line-height: 22px!important;
     margin-right: 13px;
 }
-.tabinfo {
+.dbseqtabinfo {
     float: left;
     max-height: 541px;
     overflow-y: auto;
@@ -172,17 +173,17 @@ input.salechkbox {
     width: 14px;
 }
 /* Pagination */
-#dbsequencecontent .pagination {
+.dbseqpagination {
     font-size: 12px;
     font-style: italic;
     color: #ffffff !important;
 }
-#dbsequencecontent .pagination .current.prev, .pagination .current.next {
+.dbseqpagination .current.prev, .pagination .current.next {
     color: #6095ff !important;
 }
-#dbsequencecontent .pagination .current {
+.dbseqpagination .current {
     color: #6095ff !important;
 }
-#dbsequencecontent .pagination a {
+.dbseqpagination a {
     color: #ffffff !important;
 }

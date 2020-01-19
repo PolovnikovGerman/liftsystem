@@ -80,12 +80,9 @@ function init_sequence_content() {
         $(this).blur();
         search_sequence()
     });
-    $("#searchtemplate").keypress(function(event){
+    $("#searchdbseq").keypress(function(event){
         if (event.which == 13) {
-            var search=$("#searchdbseq").val();
-            if (search!='Enter keyword or item #' && search!='') {
-                search_sequence();
-            }
+            search_sequence();
         }
     });
     $("#dbseqclear_it").unbind('click').click(function() {
@@ -124,8 +121,8 @@ function init_sequence_content() {
 
 function search_sequence() {
     var params=new Array();
-    params.push({name: 'search', value: $("#searchtemplate").val()});
-    params.push({name: 'vendor_id', value: $("#vendorselect").val()});
+    params.push({name: 'search', value: $("#searchdbseq").val()});
+    params.push({name: 'vendor_id', value: $("#dbseqvendorselect").val()});
     var url = '/database/itemsequence_search';
     $.post(url, params, function(response){
         if (response.errors=='') {

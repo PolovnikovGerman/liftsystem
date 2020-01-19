@@ -746,7 +746,6 @@ class Database extends MY_Controller
                 }
                 $total_rec=$this->items_model->get_sequence_count($total_options);
                 /* Prepare contetn for display */
-                $content=array();
                 /* View Window Legend */
                 $legend_options=array(
                     'search'=>$search,

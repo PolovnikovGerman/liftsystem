@@ -7,9 +7,9 @@
     <div class="tabinfohead">
         <div class="sequencinforow">
             <div class="title">First 10 Get Top Seller Label</div>
-            <div class="pagination" id="dbseqPagination"></div>
+            <div class="dbseqpagination" id="dbseqPagination"></div>
             <div class="pagination-legend"></div>
         </div>
     </div>
-    <div class="tabinfo" id="dbseqtabinfo"></div>
+    <div class="dbseqtabinfo" id="dbseqtabinfo"></div>
 </div>

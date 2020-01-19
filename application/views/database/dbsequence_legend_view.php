@@ -18,8 +18,8 @@
             <option value="4">4 Items Across</option>
         </select>
     </div>
-    <div class="dbpages_vendors">
-        <select id="dbseqvendorselect" name="vendorselect" class="vendorselect">
+    <div class="dbpages_itemseqvendors">
+        <select id="dbseqvendorselect" name="vendorselect" class="dbseqvendorselect">
             <option value="">Select Vendor</option>
             <?php foreach ($vendors as $row) { ?>
                 <option value="<?=$row['vendor_id']?>" <?=$row['vendor_id']<0 ? 'disabled' : '' ?>><?=$row['vendor_name']?></option>
