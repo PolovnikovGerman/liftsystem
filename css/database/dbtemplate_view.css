@@ -109,6 +109,7 @@ select.dbtemplvendorselect {
     padding-left: 5px;
     padding-right: 5px;
     width: 199px;
+    text-align: left!important;
 }
 .templatedatarow > .templatesource {
     width:166px;
