@@ -311,4 +311,44 @@ Class Items_model extends My_Model
         return $out_array;
     }
 
+    public function get_special_prices($item_id, $edit=0) {
+        $this->db->select('*, price_qty*price as amount',FALSE);
+        $this->db->from('sb_item_specprices');
+        $this->db->where('item_id',$item_id);
+        $this->db->order_by('price_qty');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $num_pp=1;
+        foreach ($res as $row) {
+            $profit=floatval($row['profit']);
+            $row['profit_percent']='';
+            $row['profit_class']='';
+            if ($profit!=0 && floatval($row['price']!=0)) {
+                $prof_perc=$profit/($row['price']*$row['price_qty'])*100;
+                $row['profit_class']=profit_bgclass($prof_perc);
+                $row['profit_percent']=round($prof_perc,0).'%';
+            }
+            if ($edit==0) {
+                $row['price']=(floatval($row['price'])==0 ? '&nbsp;' : '$'.number_format($row['price'],2,'.',''));
+                $row['amount']=(floatval($row['amount'])==0 ? '&nbsp;' : '$'.number_format($row['amount'],2,'.',''));
+            }
+            $out[]=$row;
+            $num_pp++;
+        }
+        if ($edit==1) {
+            for ($j=$num_pp; $j<=$this->config->item('specialcheckout_prices'); $j++) {
+                $out[]=array(
+                    'item_specprice_id'=>$j*(-1),
+                    'price_qty'=>'',
+                    'price'=>'',
+                    'amount'=>'',
+                    'profit'=>'',
+                    'profit_percent'=>'',
+                    'profit_class'=>'',
+                );
+            }
+        }
+        return $out;
+    }
+
 }

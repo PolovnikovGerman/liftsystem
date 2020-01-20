@@ -870,6 +870,7 @@ class Database extends MY_Controller
         $this->load->model('imprints_model');
         $this->load->model('prices_model');
         $this->load->model('otherprices_model');
+        $this->load->model('itemcolors_model');
         $res=$this->items_model->get_item($item_id);
         $out['msg']=$res['msg'];
         if ($res['result']==$this->success_result) {
@@ -984,16 +985,16 @@ class Database extends MY_Controller
             }
 
             $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array(),TRUE);
-            // Special Checkout
-            // Get special checkout data
-            $special_prices=$this->items_model->get_special_prices($item_id,0);
-            $special_options=array(
-                'prices'=>$special_prices,
-                'numprices'=>count($special_prices),
-            );
-            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
-            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
-            /* Get Data about item Imprint Locations */
+//            /* Special Checkout */
+//            /* Get special checkout data */
+//            $special_prices=$this->items_model->get_special_prices($item_id,0);
+//            $special_options=array(
+//                'prices'=>$special_prices,
+//                'numprices'=>count($special_prices),
+//            );
+//            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
+//            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
+//            /* Get Data about item Imprint Locations */
             $imprint = $this->imprints_model->get_imprint_item($item_id);
             if ($mode=='view') {
                 $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
@@ -1004,22 +1005,31 @@ class Database extends MY_Controller
                 'imprint_data'=>$imprintdata,
             );
             $data['imprints']=$this->load->view('itemdetails/imprints_view',$imprint_options,TRUE);
-//            /* Get Data about item Colors */
-//            if (empty($item['printshop_inventory_id'])) {
-//                $colors = $this->itemcolors_model->get_colors_item($item_id);
-//                $color_options=array(
-//                    'option'=>$item['options'],
-//                    'colors'=>$colors,
-//                );
-//                $data['options']=$this->load->view('itemdetails/colorsview_view',$color_options, TRUE);
-//            } else {
-//                $colors = $this->itemcolors_model->get_inventcolors_item($item['printshop_inventory_id']);
-//                $color_options=array(
-//                    'colors'=>$colors,
-//                );
-//                $data['options']=$this->load->view('itemdetails/stockcolorsview_view',$color_options, TRUE);
-//            }
-//            $data['metadata']=$this->load->view('itemdetails/metaview_view',$item,TRUE);
+            /* Get Data about item Colors */
+            if (empty($item['printshop_inventory_id'])) {
+                $colors = $this->itemcolors_model->get_colors_item($item_id, ($mode=='view' ? 0 : 1));
+                $color_options=array(
+                    'option'=>$item['options'],
+                    'colors'=>$colors,
+                );
+                if ($mode=='view') {
+                    $data['options']=$this->load->view('itemdetails/colorsview_view',$color_options, TRUE);
+                } else {
+
+                }
+            } else {
+                $colors = $this->itemcolors_model->get_inventcolors_item($item['printshop_inventory_id']);
+                $color_options=array(
+                    'colors'=>$colors,
+                );
+                $data['options']=$this->load->view('itemdetails/stockcolorsview_view',$color_options, TRUE);
+            }
+            if ($mode=='view') {
+                $data['metadata']=$this->load->view('itemdetails/metaview_view',$item,TRUE);
+            } else {
+
+            }
+
             // Get Data About item_price
             $research_price=array();
 

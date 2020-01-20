@@ -68,3 +68,5 @@ $config['item_specialchars'] = [
     'item_metakeywords',
     'item_meta_title',
 ];
+$config['specialcheckout_prices']=10;
+$config['item_colors']=55;

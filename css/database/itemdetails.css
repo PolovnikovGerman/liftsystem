@@ -713,3 +713,288 @@
 .itemdata .shipcondinlink:hover {
     cursor: pointer;
 }
+/* Special Checkout popup */
+.itemdata .itemspecialcheckout {
+    background: url("/img/itemdetails/specialcheck_itemdetails_bg.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    height: 307px;
+    padding: 15px;
+    width: 503px;
+    /* border: 1px solid #FFFFFF; */
+}
+.itemdata .specialcheckout_title {
+    clear: both;
+    float: left;
+    width: 503px;
+    background-color: #0000FF;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+.itemdata .specialcheckout_data {
+    clear: both;
+    float: left;
+    width: 390px;
+    margin-top: 10px;
+}
+.itemdata .specialcheckout_select_label {
+    float: left;
+    padding-top: 8px;
+    width: 125px;
+}
+.itemdata .specialcheckout_data select {
+    margin-top: 5px;
+}
+.itemdata .specialcheckout_options {
+    clear: both;
+    float: left;
+    width: 507px;
+    margin-top: 10px;
+}
+.itemdata .specialcheckout_specialprices {
+    float: left;
+    width: 157px;
+}
+.itemdata .specialcheckout_shipping {
+    clear: both;
+    float: left;
+    width: 155px;
+}
+.itemdata .specialcheckout_setup {
+    clear: both;
+    float: left;
+    width: 155px;
+    margin-top: 5px;
+}
+.itemdata .specialcheckout_prices {
+    float: left;
+    width: 347px;
+    font-size: 14px;
+}
+.itemdata .specialcheckoutprice {
+    clear: both;
+    float: left;
+    width: 345px;
+    height: 19px;
+}
+.itemdata .specialcheckoutprice.title {
+    margin-bottom: 2px;
+}
+.itemdata .specialcheckoutprice_qty {
+    float: left;
+    width: 70px;
+    height: 20px;
+}
+.itemdata .specialcheckoutprice_qty.title {
+    background-color: #FFF;
+    text-align: center;
+    height: 18px;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_qty.view {
+    text-align: center;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_price {
+    float: left;
+    width: 80px;
+    height: 20px;
+}
+.itemdata .specialcheckoutprice_price.title {
+    background-color: #FFF;
+    text-align: center;
+    height: 18px;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_price.view {
+    text-align: center;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_amount {
+    float: left;
+    width: 70px;
+    height: 20px;
+}
+.itemdata .specialcheckoutprice_amount.title {
+    background-color: #FFF;
+    text-align: center;
+    height: 18px;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_amount.view {
+    text-align: center;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_profit {
+    float: left;
+    width: 70px;
+    padding-top: 2px;
+    text-align: center;
+}
+.itemdata .specialcheckoutprice_profit.title {
+    background-color: #FFF;
+    text-align: center;
+    height: 18px;
+    padding-top: 2px;
+}
+.itemdata .specialcheckoutprice_profitperc {
+    float: left;
+    width: 48px;
+    padding-top: 2px;
+    text-align: center;
+}
+.itemdata .specialcheckoutprice_profitperc.title {
+    background-color: #FFF;
+    text-align: center;
+    height: 18px;
+    padding-top: 2px;
+}
+.itemdata .savespecialcheckout {
+    float: right;
+    margin-right: 20px;
+    width: 80px;
+}
+.itemdata .savespecialcheckout:hover {
+    cursor: pointer;
+}
+.itemdata input.specpriceqty {
+    border: 1px solid #000;
+    font-size: 12px;
+    width: 60px;
+}
+.itemdata input.specpriceval {
+    border: 1px solid #000;
+    font-size: 12px;
+    width: 65px;
+}
+.itemdata input.specialsetupinpt {
+    float: right;
+    font-size: 12px;
+    margin-right: 20px;
+    width: 40px;
+}
+/* Item Options */
+.itemdata .itemoptions {
+    height: 241px;
+    left: 603px;
+    position: absolute;
+    top: 156px;
+    width: 204px;
+}
+.itemdata .option_title {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 14px;
+    padding-left: 6px;
+    padding-top: 2px;
+    width: 70px;
+}
+.itemdata .option_name {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    height: 14px;
+    padding-top: 2px;
+}
+.itemdata .options_data {
+    clear: both;
+    float: left;
+    margin-left: 5px;
+    width: 195px;
+}
+.itemdata .colorsdat-info {
+    clear: both;
+    float: left;
+    height: 206px;
+    margin-top: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 7px;
+    width: 190px;
+}
+.itemdata .colorrow {
+    clear: both;
+    color: #fff;
+    float: left;
+    font-weight: bold;
+    height: 16px;
+    margin-bottom: 3px;
+    overflow: hidden;
+    width: 195px;
+}
+/* Meta & Tags */
+.itemdata .metadatas {
+    height: 315px;
+    left: 816px;
+    position: absolute;
+    top: 176px;
+    width: 191px;
+}
+.itemdata .metatxtdat {
+    clear: both;
+    float: left;
+    padding-left: 9px;
+    padding-top: 7px;
+}
+.itemdata .metatitle {
+    clear:both;
+    float:left;
+    color: #cccccc;
+    margin-bottom: 3px;
+}
+.itemdata .metavalue {
+    clear: both;
+    color: #fff;
+    float: left;
+    font-weight: bold;
+    height: 52px;
+    margin-bottom: 3px;
+    overflow: hidden;
+    padding-left: 8px;
+}
+.itemdata .metavaluetitle {
+    clear: both;
+    float: left;
+    padding-left: 8px;
+    color: #FFF;
+    font-weight: bold;
+    overflow: hidden;
+    margin-bottom: 3px;
+}
+.itemdata .page_url {
+    float: left;
+    color: #FFF;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
+.itemdata textarea.keyword_edit {
+    font-size: 12px;
+    height: 58px;
+    overflow-y: auto;
+    resize: none;
+    width: 166px;
+}
+.itemdata textarea.item_metadescrip {
+    font-size: 12px;
+    height: 58px;
+    overflow-y: auto;
+    padding: 3px;
+    resize: none;
+    width: 163px;
+}
+.itemdata input.meta_edittxt {
+    font-size: 12px;
+    width: 169px;
+}
+.itemdata .attribut_edittxt {
+    font-size: 12px;
+    width: 232px;
+}
