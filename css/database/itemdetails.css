@@ -498,3 +498,218 @@
     color: #ffffff;
     width: 55px;
 }
+/* Vector file */
+.itemdata .vectorfile {
+    height: 89px;
+    left: 136px;
+    position: absolute;
+    top: 175px;
+    width: 77px;
+}
+.itemdata .open_vector_file {
+    background-image: url("/img/itemdetails/vector_file_bg.png");
+    clear: both;
+    font-weight: bold;
+    font-size: 11px;
+    height: 34px;
+    margin-left: 7px;
+    margin-top: 8px;
+    padding-top: 5px;
+    text-align: center;
+    width: 63px;
+}
+.itemdata .open_vector_file a {
+    color : #000;
+    text-decoration: none;
+}
+.itemdata .delvectorfile {
+    clear: both;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    width: 77px;
+    margin-top: 5px;
+    color: #cccccc;
+    cursor: pointer;
+}
+/* Vector Popup */
+.itemdata .savevectorupload {
+    clear: both;
+    margin-left: 200px;
+    width: 80px;
+    display: none;
+}
+.itemdata .checkoutspeciallnk {
+    clear: both;
+    color: #EFEFEF;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 13px;
+    text-align: center;
+    width: 77px;
+    cursor: pointer;
+}
+/* Vendor Data */
+.itemdata .vendorcommon {
+    height: 132px;
+    left: 10px;
+    position: absolute;
+    top: 318px;
+    width: 200px;
+}
+.itemdata .vendor_txtdat {
+    clear: both;
+    float: left;
+    width: 195px;
+    margin-left: 4px;
+    font-size: 12px;
+}
+.itemdata .vendor_title {
+    color: #CCCCCC;
+    float: left;
+    margin-top: 4px;
+    width: 45px;
+}
+.itemdata .vendor_value {
+    float: left;
+    color: #ffffff;
+    margin-left: 5px;
+    font-weight: bold;
+    margin-top: 4px;
+    width: 143px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.itemdata input.vendor_valueinp {
+    width: 138px;
+    font-size: 12px;
+    background-color: #FFFFFF;
+}
+.itemdata .vendor_value_empty {
+    width: 20px;
+    float: left;
+}
+.itemdata .vendor_item {
+    color: #CCCCCC;
+    float: left;
+    margin-top: 4px;
+    width: 72px;
+}
+.itemdata .vendor_itemval {
+    float: left;
+    color: #ffffff;
+    font-weight: bold;
+    margin-top: 4px;
+    width: 122px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.itemdata input.vendor_itemvalinp {
+    width: 117px;
+    font-size: 12px;
+    background-color: #FFFFFF;
+}
+.itemdata .vendor_notes {
+    float: left;
+    width: 185px;
+    max-height: 70px;
+    color: #ffffff;
+    font-weight: bold;
+}
+.itemdata textarea.vendor_notestxt {
+    font-size: 11px;
+    height: 59px;
+    overflow-y: auto;
+    resize: none;
+    width: 174px;
+}
+/* Vendor Prices */
+.itemdata .vendorprices {
+    height: 43px;
+    left: 203px;
+    position: absolute;
+    top: 404px;
+    width: 528px;
+}
+.itemdata .vendprices_qty {
+    clear: both;
+    float: left;
+    width: 520px;
+    font-size: 13px;
+    font-weight: normal;
+    border-bottom: 1px solid #ffffff;
+}
+.itemdata .vendpricelabel {
+    color: #FFFFFF;
+    float: left;
+    height: 18px;
+    padding-top: 1px;
+    text-align: left;
+    width: 47px;
+}
+.itemdata .vendorprice_qty {
+    color: #FFFFFF;
+    float: left;
+    height: 18px;
+    padding-top: 3px;
+    text-align: center;
+    width: 47px;
+}
+.itemdata .vendorprice_qty.prints {
+    border-left: 1px solid #ffffff;
+}
+.itemdata input.vendorprice_qtyinp {
+    font-size: 12px;
+    width: 45px;
+}
+.itemdata .vendprices_price {
+    clear: both;
+    float: left;
+    width: 520px;
+    font-size: 13px;
+    font-weight: normal;
+    border-bottom: 1px solid #fff;
+}
+.itemdata .vendorprice_price {
+    color: #FFFFFF;
+    float: left;
+    height: 18px;
+    padding-top: 1px;
+    text-align: center;
+    width: 47px;
+}
+.itemdata .vendorprice_price.prints {
+    border-left: 1px solid #ffffff;
+}
+.itemdata .vendprices_price_color {
+    clear: both;
+    float: left;
+    width: 520px;
+    font-size: 13px;
+    font-weight: normal;
+}
+.itemdata input.vendpriceblankval, input.vendpricecolorval, input.vendpriceexprintval, input.vendpricesetupval {
+    font-size: 12px;
+    width: 45px;
+}
+/* Ship Conditions Link  */
+.itemdata .shipcondlink {
+    height: 28px;
+    left: 77px;
+    position: absolute;
+    top: 275px;
+    width: 132px;
+}
+.itemdata .shipcondinlink {
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    padding-top: 7px;
+    text-align: center;
+    width: 132px;
+}
+.itemdata .shipcondinlink:hover {
+    cursor: pointer;
+}

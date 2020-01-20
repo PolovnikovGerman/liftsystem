@@ -955,38 +955,51 @@ class Database extends MY_Controller
 //            );
 //            $data['images']=$this->load->view('itemdetails/images_view',$media_options,TRUE);
 //            /* Vector */
-//            $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
-//            /* Vendor Item Dat */
-//            if (empty($item['printshop_inventory_id'])) {
-//                $vendor_dat=$this->vendors_model->get_vendor_item($item['vendor_item_id']);
-//            } else {
-//                $vendor_dat=$this->vendors_model->get_inventory_item($item['printshop_inventory_id']);
-//            }
-//
-//            $vendor_prices=$this->vendors_model->get_vedorprice_item($item['vendor_item_id'],1);
-//            $vend_options=array(
-//                'vendor'=>$vendor_dat,
-//                'vendprice'=>$vendor_prices,
-//            );
-//            if (empty($item['printshop_inventory_id'])) {
-//                $data['vendordata']=$this->load->view('itemdetails/vendordata_view',$vend_options,TRUE);
-//            } else {
-//                $data['vendordata']=$this->load->view('itemdetails/inventoryitemdata_view',$vend_options,TRUE);
-//            }
-//            $data['vendorprices']=$this->load->view('itemdetails/vendorprice_view',$vend_options,TRUE);
-//            $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array(),TRUE);
-//            /* Special Checkout */
-//            /* Get special checkout data */
-//            $special_prices=$this->items_model->get_special_prices($item_id,0);
-//            $special_options=array(
-//                'prices'=>$special_prices,
-//                'numprices'=>count($special_prices),
-//            );
-//            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
-//            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
-//            /* Get Data about item Imprint Locations */
+            if ($mode=='view') {
+                $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
+            } else {
+            }
+            /* Vendor Item Dat */
+            if (empty($item['printshop_inventory_id'])) {
+                $vendor_dat=$this->vendors_model->get_vendor_item($item['vendor_item_id']);
+            } else {
+                $vendor_dat=$this->vendors_model->get_inventory_item($item['printshop_inventory_id']);
+            }
+
+            $vendor_prices=$this->vendors_model->get_vedorprice_item($item['vendor_item_id'],1);
+            $vend_options=array(
+                'vendor'=>$vendor_dat,
+                'vendprice'=>$vendor_prices,
+                'mode' => $mode,
+            );
+            if (empty($item['printshop_inventory_id'])) {
+                $data['vendordata']=$this->load->view('itemdetails/vendordata_view',$vend_options,TRUE);
+            } else {
+                $data['vendordata']=$this->load->view('itemdetails/inventoryitemdata_view',$vend_options,TRUE);
+            }
+            if ($mode=='view') {
+                $data['vendorprices']=$this->load->view('itemdetails/vendorprice_view',$vend_options,TRUE);
+            } else {
+                $mdata['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
+            }
+
+            $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array(),TRUE);
+            // Special Checkout
+            // Get special checkout data
+            $special_prices=$this->items_model->get_special_prices($item_id,0);
+            $special_options=array(
+                'prices'=>$special_prices,
+                'numprices'=>count($special_prices),
+            );
+            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
+            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
+            /* Get Data about item Imprint Locations */
             $imprint = $this->imprints_model->get_imprint_item($item_id);
-            $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
+            if ($mode=='view') {
+                $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
+            } else {
+                $imprintdata=$this->load->view('itemdetails/imprintsedit_view',array('imprint'=>$imprint),TRUE);
+            }
             $imprint_options=array(
                 'imprint_data'=>$imprintdata,
             );
@@ -1019,49 +1032,55 @@ class Database extends MY_Controller
                     $price_dats = $this->prices_model->get_promoprices_edit($item_id);
                     $prices=$price_dats['qty_prices'];
                     $common_prices=$price_dats['common_prices'];
-                    $price_options=array(
-                        'prices'=>$prices,
-                        'common_prices'=>$common_prices,
-                        'numprices'=> $this->MAX_PROMOPRICES-1,
-                    );
-                    $profitdat=$this->load->view('itemdetails/promo_profit_view',$price_options,TRUE);
-                    $prices_view=$this->load->view('itemdetails/promo_itempriceview_view',$price_options,TRUE);
-                    $priceview_options=array(
-                        'profitdat'=>$profitdat,
-                        'pricesdata'=>$prices_view,
-                    );
-                    $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
+                    if ($mode=='view') {
+                        $price_options=array(
+                            'prices'=>$prices,
+                            'common_prices'=>$common_prices,
+                            'numprices'=> $this->MAX_PROMOPRICES-1,
+                        );
+                        $profitdat=$this->load->view('itemdetails/promo_profit_view',$price_options,TRUE);
+                        $prices_view=$this->load->view('itemdetails/promo_itempriceview_view',$price_options,TRUE);
+                        $priceview_options=array(
+                            'profitdat'=>$profitdat,
+                            'pricesdata'=>$prices_view,
+                        );
+                        $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
+                    } else {
+
+                    }
                 } else {
                     $prices=$this->prices_model->get_price_itemedit($item_id);
                     /* Get Data about Research of price */
                     $research_price=$this->otherprices_model->get_prices_item($item_id);
                     $outresearch=$this->otherprices_model->compare_prices_item($prices,$research_price);
-                    $research_options = [
-                        'research_price'=>$outresearch,
-                        'price_types'=>$this->config->item('price_types'),
-                    ];
-                    $research_data=$this->load->view('itemdetails/research_data_view',$research_options,TRUE);
-                    $profit_options = [
-                        'prices'=>$prices,
-                        'price_types'=>$this->config->item('price_types'),
-                    ];
-                    $profitdat=$this->load->view('itemdetails/stressball_profit_view',$profit_options,TRUE);
-                    $numprice=count($this->config->item('price_types'))-1;
-                    $priceview_options = [
-                        'prices'=>$prices,
-                        'price_types'=>$this->config->item('price_types'),
-                        'numprice'=>$numprice,
-                    ];
-                    $prices_view=$this->load->view('itemdetails/stressball_itempriceview_view',$priceview_options,TRUE);
+                    if ($mode=='view') {
+                        $research_options = [
+                            'research_price'=>$outresearch,
+                            'price_types'=>$this->config->item('price_types'),
+                        ];
+                        $research_data=$this->load->view('itemdetails/research_data_view',$research_options,TRUE);
+                        $profit_options = [
+                            'prices'=>$prices,
+                            'price_types'=>$this->config->item('price_types'),
+                        ];
+                        $profitdat=$this->load->view('itemdetails/stressball_profit_view',$profit_options,TRUE);
+                        $numprice=count($this->config->item('price_types'))-1;
+                        $priceview_options = [
+                            'prices'=>$prices,
+                            'price_types'=>$this->config->item('price_types'),
+                            'numprice'=>$numprice,
+                        ];
+                        $prices_view=$this->load->view('itemdetails/stressball_itempriceview_view',$priceview_options,TRUE);
 
-                    $price_options=array(
-                        'researchdata'=>$research_data,
-                        'price_types'=>$this->config->item('price_types'),
-                        'numprice'=>$numprice,
-                        'profit_dat'=>$profitdat,
-                        'prices'=>$prices_view,
-                    );
-                    $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+                        $price_options=array(
+                            'researchdata'=>$research_data,
+                            'price_types'=>$this->config->item('price_types'),
+                            'numprice'=>$numprice,
+                            'profit_dat'=>$profitdat,
+                            'prices'=>$prices_view,
+                        );
+                        $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+                    }
                 }
                 $data['pricearea']='active';
             }

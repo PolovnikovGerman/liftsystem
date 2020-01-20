@@ -3,6 +3,8 @@
 Class Vendors_model extends My_Model
 {
 
+    protected $vend_maxprice=7;
+
     function __construct()
     {
         parent::__construct();
@@ -61,5 +63,106 @@ Class Vendors_model extends My_Model
         }
         return $out;
     }
+
+    public function get_vendor_item($vendor_id) {
+        $this->db->select('vi.*, v.vendor_name as vendor_name, v.vendor_zipcode');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join("vendors v",'v.vendor_id=vi.vendor_item_vendor');
+        $this->db->where('vendor_item_id',$vendor_id);
+        $result=$this->db->get()->row_array();
+        if (!isset($result['vendor_item_id'])) {
+            $result=array(
+                'vendor_item_id'=>'',
+                'vendor_item_vendor'=>'',
+                'vendor_item_number'=>'',
+                'vendor_item_name'=>'',
+                'vendor_item_blankcost'=>0.000,
+                'vendor_item_cost'=>0.000,
+                'vendor_item_exprint'=>0.000,
+                'vendor_item_setup'=>0.000,
+                'vendor_item_notes'=>'',
+                'vendor_item_zipcode'=>'',
+                'vendor_name'=>'',
+                'vendor_zipcode'=>'',
+            );
+        }
+        return $result;
+    }
+
+    public function get_inventory_item($printshop_item_id) {
+        // Get Vendor Data
+        $this->db->select('*');
+        $this->db->from('vendors');
+        $this->db->where('vendor_id', $this->config->item('inventory_vendor'));
+        $vendordata=$this->db->get()->row_array();
+        // Get Printshop Item Data
+        $this->db->select('*');
+        $this->db->from('ts_printshop_items');
+        $this->db->where('printshop_item_id', $printshop_item_id);
+        $inventdata=$this->db->get()->row_array();
+
+        // Add Vendor Item
+        $this->db->select('vi.*, v.vendor_name as vendor_name',FALSE);
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join("$this->vendor_db v",'v.vendor_id=vi.vendor_item_vendor');
+        $this->db->where('printshop_item_id',$printshop_item_id);
+        $result=$this->db->get()->row_array();
+        if (!isset($result['vendor_item_id'])) {
+            // Insert Data
+            $this->db->set('vendor_item_vendor', $this->config->item('inventory_vendor'));
+            $this->db->set('vendor_item_blankcost',0);
+            $this->db->set('vendor_item_cost','0');
+            $this->db->set('vendor_item_exprint',0);
+            $this->db->set('vendor_item_setup',0);
+            $this->db->set('printshop_item_id', $printshop_item_id);
+            $this->db->insert('sb_vendor_items');
+            $this->db->select('vi.*, v.vendor_name as vendor_name',FALSE);
+            $this->db->from('sb_vendor_items vi');
+            $this->db->join("$this->vendor_db v",'v.vendor_id=vi.vendor_item_vendor');
+            $this->db->where('printshop_item_id',$printshop_item_id);
+            $result=$this->db->get()->row_array();
+        }
+        $out=array(
+            'vendor_item_id'=>$result['vendor_item_id'],
+            'vendor_item_vendor'=>$result['vendor_item_vendor'],
+            'vendor_item_number'=>$inventdata['item_num'],
+            'vendor_item_name'=>$inventdata['item_name'],
+            'vendor_item_blankcost'=>$result['vendor_item_blankcost'],
+            'vendor_item_cost' =>$result['vendor_item_cost'],
+            'vendor_item_exprint' =>$result['vendor_item_exprint'],
+            'vendor_item_setup' =>$result['vendor_item_setup'],
+            'vendor_item_notes' =>$inventdata['item_note'],
+            'vendor_item_zipcode' =>$vendordata['vendor_zipcode'],
+            'vendor_name' =>$vendordata['vendor_name'],
+        );
+        return $out;
+    }
+
+    public function get_vedorprice_item($vendor_id,$viewonly=0) {
+        $this->db->select('*');
+        $this->db->from('sb_vendor_prices');
+        $this->db->where('vendor_item_id',$vendor_id);
+        $this->db->order_by('vendorprice_qty');
+        $result=$this->db->get()->result_array();
+        $vendprice=array();
+        $i=0;
+        foreach ($result as $row) {
+            if ($viewonly==1 && $row['vendorprice_qty']>=10000) {
+                $row['vendorprice_qty']=($row['vendorprice_qty']%1000==0 ? intval($row['vendorprice_qty']/1000).'K' : $row['vendorprice_qty']);
+            }
+            $vendprice[]=$row;
+            $i++;
+        }
+        for ($j=$i; $j< $this->vend_maxprice ; $j++) {
+            $vendprice[]=array(
+                'vendorprice_id'=>(-1)*$j,
+                'vendorprice_qty'=>'',
+                'vendorprice_val'=>'',
+                'vendorprice_color'=>'',
+            );
+        }
+        return $vendprice;
+    }
+
 
 }

@@ -57,9 +57,7 @@ Class Otherprices_model extends My_Model
     /* Compare Prices , apply different colors */
     public function compare_prices_item($prices,$research_price) {
         $mindiff=($this->config->item('price_diff')/100);
-        $price_types = $this->config->item('price_types');
-        $price_types[]=['type'=>'print'];
-        $price_types[]=['type'=>'setup'];
+        $price_types = $this->config->item('competitors_prices');
         $return_prices=array();
         foreach ($research_price as $row) {
             foreach ($price_types as $type) {
