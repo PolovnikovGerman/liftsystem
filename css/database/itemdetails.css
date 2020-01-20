@@ -5,10 +5,13 @@
     margin-left: 25px;
     margin-top: 10px;
     width: 1024px;
+    font-size: 12px;
+    font-family: Arial;
 }
 .itemdata input {
     background-color: #fff;
     font-size: 11px;
+    margin: 0;
 }
 .itemdata > .heading {
     clear: both;
@@ -147,4 +150,122 @@
     top: 33px;
     width: 140px;
     cursor: pointer;
+}
+/* Imprint locations */
+.itemdata .imprintlocationsdata {
+    height: 217px;
+    left: 222px;
+    position: absolute;
+    top: 177px;
+    width: 369px;
+}
+.itemdata .imprintlocation_title {
+    border-bottom: 1px solid #FFFFFF;
+    clear: both;
+    margin-left: 6px;
+    /* padding-top: 6px; */
+    width: 360px;
+}
+.itemdata .imprintlocation_title > div {
+    height: 19px;
+    line-height: 19px;
+}
+.itemdata .location_name {
+    width: 146px;
+    color: #cccccc;
+    text-align: center;
+}
+.itemdata .location_size {
+    width: 105px;
+    color: #cccccc;
+    text-align: center;
+}
+.itemdata .location_view {
+    width: 64px;
+    color: #cccccc;
+    text-align: center;
+}
+.itemdata .location_popular {
+    width: 28px;
+    color: #cccccc;
+    text-align: center;
+}
+.itemdata .imprintlocation_dat {
+    clear: both;
+    width: 360px;
+    margin-left: 7px;
+    overflow-y: auto;
+    max-height: 177px;
+    margin-top: 3px;
+}
+.itemdata .imprintdatarow {
+    clear: both;
+    float: left;
+    width: 344px;
+}
+.itemdata .location_name_tab {
+    float: left;
+    width: 139px;
+    color: #FFF;
+    font-weight: bold;
+    height: 16px;
+    text-align: left;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 1px solid #FFFFFF;
+}
+.itemdata .location_size_tab {
+    float: left;
+    width: 110px;
+    height: 16px;
+    color: #FFF;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 1px solid #FFFFFF;
+}
+.itemdata .location_view_tab {
+    float: left;
+    width: 67px;
+    height: 16px;
+    padding-left: 3px;
+    color: #cccccc;
+    text-align: center;
+}
+.itemdata a.locationedit {
+    color:#FFFFFF;
+    text-decoration: none;
+}
+.itemdata .location_upload {
+    float: left;
+    width: 59px;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: bold;
+}
+.itemdata .location_upload.edit {
+    width: 42px;
+}
+.itemdata .location_upload a {
+    text-decoration: none;
+    color : #fff;
+}
+.itemdata .location_del {
+    float: left;
+    width: 23px;
+    color: #cacafc;
+    font-size: 12px;
+    font-weight: normal;
+}
+.itemdata .location_del:hover {
+    cursor: pointer;
+}
+.itemdata .location_popular_tab {
+    width: 24px;
+    text-align: center;
+    height: 16px;
+    line-height: 16px;
 }

@@ -28,6 +28,7 @@ if (!defined('BASEPATH'))
  * @property Itemimages_model itemimages_model
  * @property Prices_model prices_model
  * @property Staticpages_model staticpages_model
+ * @property Imprints_model imprints_model
  */
 
 

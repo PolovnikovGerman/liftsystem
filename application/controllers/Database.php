@@ -864,6 +864,7 @@ class Database extends MY_Controller
         $out = ['result' => $this->error_result,'msg'=>'Item Not Found'];
         $this->load->model('items_model');
         $this->load->model('vendors_model');
+        $this->load->model('imprints_model');
         $res=$this->items_model->get_item($item_id);
         $out['msg']=$res['msg'];
         if ($res['result']==$this->success_result) {
@@ -979,12 +980,12 @@ class Database extends MY_Controller
 //            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
 //            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
 //            /* Get Data about item Imprint Locations */
-//            $imprint = $this->imprints_model->get_imprint_item($item_id);
-//            $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
-//            $imprint_options=array(
-//                'imprint_data'=>$imprintdata,
-//            );
-//            $data['imprints']=$this->load->view('itemdetails/imprints_view',$imprint_options,TRUE);
+            $imprint = $this->imprints_model->get_imprint_item($item_id);
+            $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
+            $imprint_options=array(
+                'imprint_data'=>$imprintdata,
+            );
+            $data['imprints']=$this->load->view('itemdetails/imprints_view',$imprint_options,TRUE);
 //            /* Get Data about item Colors */
 //            if (empty($item['printshop_inventory_id'])) {
 //                $colors = $this->itemcolors_model->get_colors_item($item_id);
