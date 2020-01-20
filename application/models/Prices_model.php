@@ -2,6 +2,9 @@
 
 Class Prices_model extends My_Model
 {
+
+    private $MAX_PROMOPRICES = 10;
+
     function __construct() {
         parent::__construct();
     }
@@ -103,4 +106,178 @@ Class Prices_model extends My_Model
         }
         return $out_array;
     }
+
+    public function get_promoprices_edit($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid',$item_id);
+        $result=$this->db->get()->row_array();
+        if (!isset($result['item_price_id'])) {
+            $result['item_price_id']=0;
+            $result['item_price_setup']=0;
+            $result['item_sale_setup']=0;
+            $result['item_price_print']=0;
+            $result['item_sale_print']=0;
+            $result['profit_print']='';
+            $result['profit_setup']='';
+            $result['profit_print_perc']='';
+            $result['profit_setup_perc']='';
+            $result['profit_print_class']='empty';
+            $result['profit_setup_class']='empty';
+        } else {
+            $base=0;
+            $result['profit_setup_perc']='';
+            $result['profit_setup_class']='empty';
+            $result['profit_print_perc']='';
+            $result['profit_print_class']='empty';
+            if (floatval($result['item_sale_setup'])!=0) {
+                $base=floatval($result['item_sale_setup']);
+            } elseif (floatval($result['item_price_setup'])!=0) {
+                $base=floatval($result['item_price_setup']);
+            }
+            if ($base!=0 && floatval($result['profit_setup'])!=0) {
+                $result['profit_setup_perc']=round($result['profit_setup']/$base*100,0);
+                $result['profit_setup_class']=profit_bgclass($result['profit_setup_perc']);
+            }
+            $base=0;
+            if (floatval($result['item_sale_print'])!=0) {
+                $base=floatval($result['item_sale_print']);
+            } elseif (floatval($result['item_price_print'])!=0) {
+                $base=floatval($result['item_price_print']);
+            }
+            if ($base!=0 && floatval($result['profit_print'])!=0) {
+                $result['profit_print_perc']=round($result['profit_print']/$base*100,0);
+                $result['profit_print_class']=profit_bgclass($result['profit_print_perc']);
+            }
+        }
+        $this->db->select('*');
+        $this->db->from('sb_promo_price');
+        $this->db->where('item_id',$item_id);
+        $this->db->order_by('item_qty');
+        $res=$this->db->get()->result_array();
+        $i=0;
+        $prices=array();
+        foreach ($res as $row) {
+            $base=0;
+            $profit_perc='';
+            $profit_class='empty';
+            if (floatval($row['sale_price'])!=0) {
+                $base=$row['sale_price'];
+            } elseif (floatval($row['price'])!=0) {
+                $base=$row['price'];
+            }
+            if ($base!=0 && floatval($row['profit'])!=0) {
+                $profit_perc=round($row['profit']/($base*$row['item_qty'])*100,0);
+                $profit_class=profit_bgclass($profit_perc);
+            }
+            $prices[]=array(
+                'promo_price_id'=>$row['promo_price_id'],
+                'item_qty'=>$row['item_qty'],
+                'price'=>$row['price'],
+                'sale_price'=>$row['sale_price'],
+                'profit'=>$row['profit'],
+                'profit_perc'=>$profit_perc,
+                'profit_class'=>$profit_class,
+            );
+            $i++;
+        }
+        for ($j=$i; $j < $this->MAX_PROMOPRICES; $j++) {
+            $prices[]=array(
+                'promo_price_id'=>$j*(-1),
+                'item_qty'=>'',
+                'price'=>'',
+                'sale_price'=>'',
+                'profit'=>'',
+                'profit_perc'=>'',
+                'profit_class'=>'empty',
+            );
+        }
+        return array('qty_prices'=>$prices,'common_prices'=>$result);
+    }
+
+    public function get_price_itemedit($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid',$item_id);
+        $result = $this->db->get()->row_array();
+        if (!isset($result['item_price_id'])) {
+            $result=array('item_price_id'=>'',
+                'item_price_itemid'=>$item_id,
+            );
+            foreach ($this->price_types as $row) {
+                $result['item_price_'.$row['type']]='';
+                $result['item_sale_'.$row['type']]='';
+                $result['profit_'.$row['type']]='';
+                $result['profit_'.$row['type'].'_perc']='';
+                $result['profit_'.$row['type'].'_class']='empty';
+            }
+            $result['item_price_print']='';
+            $result['item_sale_print']='';
+            $result['profit_print']='';
+            $result['profit_print_perc']='';
+            $result['profit_print_class']='empty';
+            $result['item_price_setup']='';
+            $result['item_sale_setup']='';
+            $result['profit_setup']='';
+            $result['profit_setup_perc']='';
+            $result['profit_setup_class']='empty';
+        } else {
+            $price_types = $this->config->item('price_types');
+            foreach ($price_types as $row) {
+                $result['profit_'.$row['type'].'_perc']='';
+                $result['profit_'.$row['type'].'_class']='empty';
+                if ($result['profit_'.$row['type']]) {
+                    $base=0;
+                    if (floatval($result['item_sale_'.$row['type']])!=0) {
+                        $base=floatval($result['item_sale_'.$row['type']]);
+                    } elseif (floatval($result['item_price_'.$row['type']])) {
+                        $base=  floatval($result['item_price_'.$row['type']]);
+                    }
+                    if ($base!=0) {
+                        $profit_perc=$result['profit_'.$row['type']]/($base*$row['base'])*100;
+                        $profit_class=profit_bgclass($profit_perc);
+                        $result['profit_'.$row['type'].'_perc']=round($profit_perc,0);
+                        $result['profit_'.$row['type'].'_class']=$profit_class;
+                    }
+                }
+            }
+            $result['profit_print_perc']='';
+            $result['profit_print_class']='empty';
+            if (floatval($result['profit_print'])!=0) {
+                $base=0;
+                if (floatval($result['item_sale_print'])!=0) {
+                    $base=floatval($result['item_sale_print']);
+                } elseif (floatval($result['item_price_print'])) {
+                    $base=floatval($result['item_price_print']);
+                }
+                if ($base!=0) {
+                    $profit_perc = $result['profit_print']/$base* 100;
+                    $profit_class = profit_bgclass($profit_perc);
+                    $result['profit_print_perc'] = round($profit_perc,0);
+                    $result['profit_print_class'] = $profit_class;
+                }
+
+            }
+            $result['profit_setup_perc']='';
+            $result['profit_setup_class']='empty';
+            if (floatval($result['profit_print'])!=0) {
+                $base=0;
+                if (floatval($result['item_sale_setup'])!=0) {
+                    $base=floatval($result['item_sale_setup']);
+                } elseif (floatval($result['item_price_setup'])!=0) {
+                    $base=floatval($result['item_price_setup']);
+                }
+                if ($base!=0) {
+                    $profit_perc=$result['profit_setup']/$base*100;
+                    $profit_class=profit_bgclass($profit_perc);
+                    $result['profit_setup_perc']=round($profit_perc,0);
+                    $result['profit_setup_class']=$profit_class;
+
+                }
+            }
+        }
+        return $result;
+    }
+
+
 }

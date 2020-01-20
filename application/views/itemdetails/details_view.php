@@ -11,7 +11,7 @@
     <!--        <div class="shipcondlink">--><? //=$shiplink_view?><!--</div>-->
             <div class="imprintlocationsdata"><?=$imprints?></div>
     <!--        <div class="itemoptions">--><? //=$options?><!--</div>-->
-    <!--        <div class="pricesdata --><? //=$pricearea?><!--">--><? //=$pricesdat?><!--</div>-->
+            <div class="pricesdata <?=$pricearea?>"><?=$pricesdat?></div>
     <!--        <div class="metadatas">--><? //=$metadata?><!--</div>-->
     <!--        <div class="attributesdatas">--><? //=$attributes?><!--</div>-->
     <!--        <div class="simulardata">--><? //=$simulardata?><!--</div>-->

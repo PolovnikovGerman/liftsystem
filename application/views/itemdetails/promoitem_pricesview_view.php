@@ -1,7 +1,7 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 20.01.20
- * Time: 15:43
- */
+<div id="pricedataview">
+    <?=$pricesdata?>
+</div>
+<img style="padding-left:20px;" src="/img/itemdetails/line-pricing.png"/>
+<div id="profitdataview">
+    <?=$profitdat?>
+</div>

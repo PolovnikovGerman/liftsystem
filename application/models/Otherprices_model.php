@@ -10,6 +10,85 @@ Class Otherprices_model extends My_Model
         $this->price_types = $this->config->item('price_types');
     }
 
+    public function get_prices_item($item_id) {
+        $this->db->select('op.*,o.other_vendor_name as vendor_name,o.other_vendor_url as other_vendor_url,o.other_vendor_id',FALSE);
+        $this->db->from('sb_other_vendor_price op');
+        $this->db->join('sb_other_vendor o','o.other_vendor_id=op.other_vendorprice_vendor');
+        $this->db->where('op.other_vendorprice_item',$item_id);
+        $this->db->order_by('o.other_vendor_id');
+        $result=$this->db->get()->result_array();
+        if (count($result)==0) {
+            /* Empty research data */
+            $this->db->select('other_vendor_name as vendor_name,other_vendor_id as other_vendorprice_vendor,other_vendor_url');
+            $this->db->from('sb_other_vendor');
+            $this->db->order_by('other_vendor_id');
+            $vendors=$this->db->get()->result_array();
+            $result=array();
+            $i=1;
+            foreach ($vendors as $row) {
+                $row['other_vendorprice_id']=(-1)*$i;
+                $row['other_vendor_id']=$row['other_vendorprice_vendor'];
+                $row['other_vendorprice_item']=$item_id;
+                foreach ($this->price_types as $types) {
+                    $row['other_vendorprice_price_'.$types['type']]='';
+                }
+                $row['other_vendor_price_url']=$row['other_vendor_url'];
+                $row['other_vendorprice_created']=time();
+                $row['other_vendorprice_updated']=time();
+                $row['other_vendorprice_updateby']='';
+                $out[]=$row;
+                $i++;
+            }
+        } else {
+            /* Check URL */
+            $out = array();
+            foreach ($result as $row) {
+                if ($row['other_vendor_price_url']=='') {
+                    $row['other_vendor_price_url']=$row['other_vendor_url'];
+                }
+                $row['other_vendorprice_updated']=strtotime($row['other_vendorprice_updated']);
+                $out[]=$row;
+            }
+        }
+
+        return $out;
+    }
+
+    /* Compare Prices , apply different colors */
+    public function compare_prices_item($prices,$research_price) {
+        $mindiff=($this->config->item('price_diff')/100);
+        $price_types = $this->config->item('price_types');
+        $price_types[]=['type'=>'print'];
+        $price_types[]=['type'=>'setup'];
+        $return_prices=array();
+        foreach ($research_price as $row) {
+            foreach ($price_types as $type) {
+                $row['price_'.$type['type'].'_class']='empty_price';
+                if ($row['other_vendorprice_price_'.$type['type']]!='' && $row['other_vendorprice_price_'.$type['type']]!=0) {
+                    $row['price_'.$type['type'].'_class']='white';
+                    $compare_price='';
+                    if (isset($prices['item_sale_'.$type['type']]) && ($prices['item_sale_'.$type['type']]!='' && $prices['item_sale_'.$type['type']]!=0)) {
+                        $compare_price=$prices['item_sale_'.$type['type']];
+                    } elseif (isset($prices['item_price_'.$type['type']]) && ($prices['item_price_'.$type['type']]!='' && $prices['item_price_'.$type['type']]!=0)) {
+                        $compare_price=$prices['item_price_'.$type['type']];
+                    }
+                    if ($compare_price!='') {
+                        if ($compare_price==$row['other_vendorprice_price_'.$type['type']]) {
+                            $row['price_'.$type['type'].'_class']='orange';
+                        } elseif ($compare_price>$row['other_vendorprice_price_'.$type['type']]) {
+                            $row['price_'.$type['type'].'_class']='red';
+                        } elseif (($row['other_vendorprice_price_'.$type['type']]-$compare_price)>=$mindiff) {
+                            $row['price_'.$type['type'].'_class']='blue';
+                        }
+                    }
+                }
+            }
+            /* Add row to result array */
+            $return_prices[]=$row;
+        }
+        return $return_prices;
+    }
+
     public function get_compared_prices($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id) {
         $this->db->select('item.item_id,item.item_number,item.item_name,item.item_template');
         $this->db->select('price_25 as item_price_25, profit_25 as item_profitperc_25, profit_25_class as item_profitclass_25, profit_25_sum as item_profit_25, price_25_class');

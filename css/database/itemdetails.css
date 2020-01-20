@@ -269,3 +269,232 @@
     height: 16px;
     line-height: 16px;
 }
+/* Prices */
+.itemdata .pricesdata {
+    left: 5px;
+    position: absolute;
+    top: 464px;
+    width: 740px;
+    height: 230px;
+    padding: 10px 0 0 0px;
+}
+.itemdata .pricesdata.active {
+    background: url('/img/itemdetails/item_detailsnew_price_bg.png') no-repeat;
+}
+.itemdata table.tablepricetypes {
+    border:none;
+    text-align: left;
+    position:relative;
+    margin:8px 0 -3px 4px;
+    float: left;
+}
+.itemdata table.pricevalues {
+    border:none;
+    position:relative;
+    margin: 3px 3px -2px;
+    float: left;
+}
+.itemdata .researchprices {
+    position:relative;
+    margin:4px 7px -5px;
+    float: left;
+    width: 715px;
+}
+.researchpricesrow {
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
+.itemdata .otherpriceurl {
+    float: right;
+    width: 27px;
+    cursor: pointer;
+}
+/* URL EDIT POPUP */
+.itemdata .urleditform {
+    background: url("/img/itemdetails/otherurl_itemdetails_bg.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 157px;
+    padding-left: 6px;
+    padding-top: 5px;
+    width: 385px;
+}
+.itemdata .urleditform_title {
+    background-color: #0000FF;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 380px;
+}
+.itemdata .urleditform_data {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    width: 377px;
+    padding-left: 7px;
+}
+.itemdata .urleditform_data_label {
+    clear: both;
+    float: left;
+    width: 300px;
+    padding-left: 10px;
+}
+.itemdata .urleditform_data_value {
+    clear: both;
+    float: left;
+    width: 372px;
+    margin-top: 3px;
+}
+.itemdata input.urlinput {
+    float: left;
+    width: 368px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.itemdata .urleditform_save {
+    clear: both;
+    float: left;
+    margin-left: 292px;
+    width: 80px;
+    cursor: pointer;
+}
+/* Prices Cells */
+.itemdata .td-text {
+    font-size: 12px;
+    color: #ffffff;
+    width: 70px;
+    text-align: right;
+    padding: 0 5px 0 5px;
+}
+.itemdata .td-text2 {
+    font-size: 12px;
+    color: #ffffff;
+    width: 48px;
+}
+.itemdata input.itempriceval, input.itemsaleval {
+    font-size: 11px;
+    color:#000;
+    width: 44px;
+}
+.itemdata .pricekeyinfo {
+    color: #CACAFC;
+    float: left;
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+    width: 33px;
+}
+/* Special classes for color TD */
+.itemdata .white {
+    color: #222222;
+    height: 20px;
+    padding-right: 1px;
+    background: url("/img/itemdetails/tdprice_white.png") no-repeat;
+    width: 47px;
+}
+.itemdata .orange {
+    color: #222222;
+    height: 20px;
+    padding-right: 1px;
+    background: url("/img/itemdetails/tdprice_orange.png") no-repeat;
+    width: 47px;
+}
+.itemdata .red {
+    color: #222222;
+    height: 20px;
+    padding-right: 1px;
+    background: url("/img/itemdetails/tdprice_red.png") no-repeat;
+    width: 47px;
+}
+.itemdata .blue {
+    color: #FFFFFF;
+    height: 20px;
+    padding-right: 1px;
+    background: url("/img/itemdetails/tdprice_pink.png") no-repeat;
+    width: 47px;
+}
+.itemdata .green {
+    color: #222222;
+    height: 20px;
+    padding-right: 1px;
+    background: url("/img/itemdetails/tdprice_green.png") no-repeat;
+    width: 47px;
+}
+.itemdata .black {
+    background: url("/img/itemdetails/tdprice_black.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    height: 20px;
+    padding-right: 1px;
+    width: 47px;
+}
+.itemdata .maroon {
+    background-color: #800000;
+    color: #FFFFFF;
+    height: 20px;
+    padding-right: 1px;
+    width: 47px;
+}
+.itemdata input.edit_price {
+    width: 40px;
+    height:16px;
+    margin-bottom:2px;
+    margin-left:2px;
+    text-align: center;
+}
+.itemdata input.edit_promoprice {
+    width: 40px;
+    height:16px;
+    margin-bottom:2px;
+    margin-left:2px;
+    text-align: center;
+}
+.itemdata input.edit_promoqty {
+    width: 40px;
+    height:16px;
+    text-align: left;
+    font-size: 11px;
+}
+/* Sale Prices */
+.itemdata .td-text2-1 {
+    font-size: 12px;
+    color: #ffffff;
+    height: 24px;
+    background: url("/img/itemdetails/pricetd-05-1.png") no-repeat;
+    width: 48px;
+}
+.itemdata .td-text2-2 {
+    font-size: 12px;
+    color: #ffffff;
+    height: 24px;
+    width: 50px;
+    background: url("/img/itemdetails/pricetd-05-2.png") repeat-x;
+    width: 48px;
+}
+.itemdata .td-text2-3 {
+    font-size: 12px;
+    color: #ffffff;
+    height: 24px;
+    width: 55px;
+    background: url("/img/itemdetails/pricetd-05-3-1.png") no-repeat;
+    width: 55px;
+}
+.itemdata .pricing_empty {
+    width: 10px
+}
+.itemdata .td-text3 {
+    font-size: 13px;
+    color: #ffffff;
+    width: 48px;
+}
+.itemdata .td-text3-1 {
+    font-size: 13px;
+    color: #ffffff;
+    width: 55px;
+}

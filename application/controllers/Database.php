@@ -6,6 +6,9 @@ class Database extends MY_Controller
 
     private $pagelink = '/database';
     private $Inventory_Source='Stock';
+    private $STRESSBALL_TEMPLATE='Stressball';
+    private $OTHER_TEMPLATE='Other Item';
+    private $MAX_PROMOPRICES = 10;
 
 
     public function __construct()
@@ -865,6 +868,8 @@ class Database extends MY_Controller
         $this->load->model('items_model');
         $this->load->model('vendors_model');
         $this->load->model('imprints_model');
+        $this->load->model('prices_model');
+        $this->load->model('otherprices_model');
         $res=$this->items_model->get_item($item_id);
         $out['msg']=$res['msg'];
         if ($res['result']==$this->success_result) {
@@ -1002,52 +1007,65 @@ class Database extends MY_Controller
 //                $data['options']=$this->load->view('itemdetails/stockcolorsview_view',$color_options, TRUE);
 //            }
 //            $data['metadata']=$this->load->view('itemdetails/metaview_view',$item,TRUE);
-//            /* Get Data About item_price */
-//            $research_price=array();
-//
-//            if ($this->USR_ROLE==$this->user_general_role) {
-//                $data['pricesdat']='';
-//                $data['pricearea']='';
-//            } else {
-//                if ($item['item_template']==Itemdetails::OTHER_TEMPLATE) {
-//                    /* */
-//                    $price_dats = $this->prices_model->get_promoprices_edit($item_id);
-//                    $prices=$price_dats['qty_prices'];
-//                    $common_prices=$price_dats['common_prices'];
-//                    $price_options=array(
-//                        'prices'=>$prices,
-//                        'common_prices'=>$common_prices,
-//                        'numprices'=>Prices_model::MAX_PROMOPRICES-1,
-//                    );
-//                    $profitdat=$this->load->view('itemdetails/promo_profit_view',$price_options,TRUE);
-//                    $prices_view=$this->load->view('itemdetails/promo_itempriceview_view',$price_options,TRUE);
-//                    $priceview_options=array(
-//                        'profitdat'=>$profitdat,
-//                        'pricesdata'=>$prices_view,
-//                    );
-//                    $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
-//                } else {
-//                    $prices=$this->prices_model->get_price_itemedit($item_id);
-//                    // $outprices=$this->prices_model->profit_price($prices,$vendor_dat);
-//                    /* Get Data about Research of price */
-//                    $research_price=$this->otherprices_model->get_prices_item($item_id);
-//                    $outresearch=$this->otherprices_model->compare_prices_item($prices,$research_price);
-//                    $research_data=$this->load->view('itemdetails/research_data_view',array('research_price'=>$outresearch,'price_types'=>$this->price_types,),TRUE);
-//                    $profitdat=$this->load->view('itemdetails/stressball_profit_view',array('prices'=>$prices,'price_types'=>$this->price_types),TRUE);
-//                    $numprice=count($this->price_types)-1;
-//                    $prices_view=$this->load->view('itemdetails/stressball_itempriceview_view',array('prices'=>$prices,'price_types'=>$this->price_types,'numprice'=>$numprice),TRUE);
-//                    $price_options=array(
-//                        'prices'=>$prices_view,
-//                        'researchdata'=>$research_data,
-//                        'price_types'=>$this->price_types,
-//                        'numprice'=>$numprice,
-//                        'profit_dat'=>$profitdat,
-//                    );
-//                    $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
-//                }
-//                $data['pricearea']='active';
-//            }
-//
+            // Get Data About item_price
+            $research_price=array();
+
+            if ($this->USR_ROLE=='general') {
+                $data['pricesdat']='';
+                $data['pricearea']='';
+            } else {
+                if ($item['item_template']==$this->OTHER_TEMPLATE) {
+                    /* */
+                    $price_dats = $this->prices_model->get_promoprices_edit($item_id);
+                    $prices=$price_dats['qty_prices'];
+                    $common_prices=$price_dats['common_prices'];
+                    $price_options=array(
+                        'prices'=>$prices,
+                        'common_prices'=>$common_prices,
+                        'numprices'=> $this->MAX_PROMOPRICES-1,
+                    );
+                    $profitdat=$this->load->view('itemdetails/promo_profit_view',$price_options,TRUE);
+                    $prices_view=$this->load->view('itemdetails/promo_itempriceview_view',$price_options,TRUE);
+                    $priceview_options=array(
+                        'profitdat'=>$profitdat,
+                        'pricesdata'=>$prices_view,
+                    );
+                    $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
+                } else {
+                    $prices=$this->prices_model->get_price_itemedit($item_id);
+                    /* Get Data about Research of price */
+                    $research_price=$this->otherprices_model->get_prices_item($item_id);
+                    $outresearch=$this->otherprices_model->compare_prices_item($prices,$research_price);
+                    $research_options = [
+                        'research_price'=>$outresearch,
+                        'price_types'=>$this->config->item('price_types'),
+                    ];
+                    $research_data=$this->load->view('itemdetails/research_data_view',$research_options,TRUE);
+                    $profit_options = [
+                        'prices'=>$prices,
+                        'price_types'=>$this->config->item('price_types'),
+                    ];
+                    $profitdat=$this->load->view('itemdetails/stressball_profit_view',$profit_options,TRUE);
+                    $numprice=count($this->config->item('price_types'))-1;
+                    $priceview_options = [
+                        'prices'=>$prices,
+                        'price_types'=>$this->config->item('price_types'),
+                        'numprice'=>$numprice,
+                    ];
+                    $prices_view=$this->load->view('itemdetails/stressball_itempriceview_view',$priceview_options,TRUE);
+
+                    $price_options=array(
+                        'researchdata'=>$research_data,
+                        'price_types'=>$this->config->item('price_types'),
+                        'numprice'=>$numprice,
+                        'profit_dat'=>$profitdat,
+                        'prices'=>$prices_view,
+                    );
+                    $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+                }
+                $data['pricearea']='active';
+            }
+
 //            $data['attributes']=$this->load->view('itemdetails/attribview_view',$item, TRUE);
 //
 //            /* Get Data about Similar Items */
