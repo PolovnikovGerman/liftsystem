@@ -5,6 +5,7 @@ class Database extends MY_Controller
 {
 
     private $pagelink = '/database';
+    private $Inventory_Source='Stock';
 
 
     public function __construct()
@@ -63,7 +64,6 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src' => '/js/database/page.js');
         $head['styles'][] = array('style' => '/css/database/databasepage.css');
         // Utils
-
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
         $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
@@ -71,6 +71,8 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
         $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+        // Item details
+        $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
@@ -640,6 +642,25 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function view_item() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty Item';
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata,'item_id',0);
+            if (!empty($item_id)) {
+                $res = $this->_prepare_itemdetails($item_id, 'view');
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$res['content'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Prepare pages
     private function _prepare_dbpage_content($page_name)
     {
@@ -837,6 +858,226 @@ class Database extends MY_Controller
             }
             return $table_dat;
         }
+    }
+
+    private function _prepare_itemdetails($item_id, $mode='view') {
+        $out = ['result' => $this->error_result,'msg'=>'Item Not Found'];
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $res=$this->items_model->get_item($item_id);
+        $out['msg']=$res['msg'];
+        if ($res['result']==$this->success_result) {
+            $out['result']=$this->success_result;
+            // Begin
+            $item=$res['data'];
+            $data=[];
+            if ($item['item_source']==$this->Inventory_Source) {
+                $inventory_list=$this->vendors_model->get_inventory_list();
+                $invoptions=array(
+                    'printshop_item_id'=>$item['printshop_inventory_id'],
+                    'inventory_list'=>$inventory_list,
+                    'mode' => $mode,
+                );
+                $inventory_view=$this->load->view('itemdetails/inventory_item_view', $invoptions, TRUE);
+            } else {
+                $inventory_view='&nbsp;';
+            }
+
+            $headoptions=array(
+                'item_name'=>$item['item_name'],
+                'item_source'=>$item['item_source'],
+                'inventory_view'=>$inventory_view,
+                'mode' => $mode,
+            );
+            /* Header */
+            $data['header']=$this->load->view('itemdetails/detailhead_view',$headoptions,TRUE);
+
+            $commons=$this->items_model->get_commonterms_item($item_id);
+            $common_terms='';
+            $common_idx='';
+            foreach ($commons as $row) {
+                $common_terms.=$row['common_term'].'|';
+                $common_idx.=$row['term_id'].'|';
+            }
+            if ($common_terms!='') {
+                $common_terms=substr($common_terms,0,-1);
+                $common_idx=substr($common_idx,0,-1);
+            }
+            $item['common_terms']=$common_terms;
+            $item['common_idx']=$common_idx;
+            // Key Info
+            $info_options = [
+                'item' => $item,
+                'mode' => $mode,
+            ];
+            $data['keyinfo']=$this->load->view('itemdetails/keyinfo_view',$info_options,TRUE);
+            // Get Data about Item Colors
+//            $offset=0;$limit=$this->slider_images;
+//            $img_display = $this->itemimages_model->get_images_item($item_id,$limit,$offset);
+//            /* Video View */
+//            $item_dat['videooption']='';
+//            $videodat=$this->itemimages_model->get_item_media($item_id,'VIDEO');
+//            if (isset($videodat['itemmedia_url'])) {
+//                $video=$this->load->view('itemdetails/videodata_view',array('video'=>$videodat,'edit'=>0,'title'=>$item['item_name']),TRUE);
+//            } else {
+//                $video=$this->load->view('itemdetails/videoempty_view',array('edit'=>0),TRUE);
+//            }
+//            $audiodat=$this->itemimages_model->get_item_media($item_id,'AUDIO');
+//            if (isset($audiodat['itemmedia_url'])) {
+//                $audio=$this->load->view('itemdetails/audiodata_view',array('audio'=>$audiodat,'edit'=>0,'title'=>$item['item_name']),TRUE);
+//            } else {
+//                $audio=$this->load->view('itemdetails/audioempty_view',array('edit'=>0,),TRUE);
+//            }
+//            $faces=$this->load->view('itemdetails/faces_view',array('faces'=>$item['faces'],'edit'=>0),TRUE);
+//
+//            $img_options=array(
+//                'images'=>$img_display,
+//                'pos'=>0,
+//                'edit'=>0,
+//                'limit'=>$limit,
+//                'video'=>$video,
+//                'audio'=>$audio,
+//                'faces'=>$faces,
+//            );
+//
+//            $pictures_dat=$this->load->view('itemdetails/pictures_dat_view',$img_options,TRUE);
+//            $pictures_slider=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
+//            $media_options=array(
+//                'imagesdata'=>$pictures_dat,
+//                'slider'=>$pictures_slider,
+//                'images_count'=>count($img_display),
+//            );
+//            $data['images']=$this->load->view('itemdetails/images_view',$media_options,TRUE);
+//            /* Vector */
+//            $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
+//            /* Vendor Item Dat */
+//            if (empty($item['printshop_inventory_id'])) {
+//                $vendor_dat=$this->vendors_model->get_vendor_item($item['vendor_item_id']);
+//            } else {
+//                $vendor_dat=$this->vendors_model->get_inventory_item($item['printshop_inventory_id']);
+//            }
+//
+//            $vendor_prices=$this->vendors_model->get_vedorprice_item($item['vendor_item_id'],1);
+//            $vend_options=array(
+//                'vendor'=>$vendor_dat,
+//                'vendprice'=>$vendor_prices,
+//            );
+//            if (empty($item['printshop_inventory_id'])) {
+//                $data['vendordata']=$this->load->view('itemdetails/vendordata_view',$vend_options,TRUE);
+//            } else {
+//                $data['vendordata']=$this->load->view('itemdetails/inventoryitemdata_view',$vend_options,TRUE);
+//            }
+//            $data['vendorprices']=$this->load->view('itemdetails/vendorprice_view',$vend_options,TRUE);
+//            $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array(),TRUE);
+//            /* Special Checkout */
+//            /* Get special checkout data */
+//            $special_prices=$this->items_model->get_special_prices($item_id,0);
+//            $special_options=array(
+//                'prices'=>$special_prices,
+//                'numprices'=>count($special_prices),
+//            );
+//            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
+//            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
+//            /* Get Data about item Imprint Locations */
+//            $imprint = $this->imprints_model->get_imprint_item($item_id);
+//            $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
+//            $imprint_options=array(
+//                'imprint_data'=>$imprintdata,
+//            );
+//            $data['imprints']=$this->load->view('itemdetails/imprints_view',$imprint_options,TRUE);
+//            /* Get Data about item Colors */
+//            if (empty($item['printshop_inventory_id'])) {
+//                $colors = $this->itemcolors_model->get_colors_item($item_id);
+//                $color_options=array(
+//                    'option'=>$item['options'],
+//                    'colors'=>$colors,
+//                );
+//                $data['options']=$this->load->view('itemdetails/colorsview_view',$color_options, TRUE);
+//            } else {
+//                $colors = $this->itemcolors_model->get_inventcolors_item($item['printshop_inventory_id']);
+//                $color_options=array(
+//                    'colors'=>$colors,
+//                );
+//                $data['options']=$this->load->view('itemdetails/stockcolorsview_view',$color_options, TRUE);
+//            }
+//            $data['metadata']=$this->load->view('itemdetails/metaview_view',$item,TRUE);
+//            /* Get Data About item_price */
+//            $research_price=array();
+//
+//            if ($this->USR_ROLE==$this->user_general_role) {
+//                $data['pricesdat']='';
+//                $data['pricearea']='';
+//            } else {
+//                if ($item['item_template']==Itemdetails::OTHER_TEMPLATE) {
+//                    /* */
+//                    $price_dats = $this->prices_model->get_promoprices_edit($item_id);
+//                    $prices=$price_dats['qty_prices'];
+//                    $common_prices=$price_dats['common_prices'];
+//                    $price_options=array(
+//                        'prices'=>$prices,
+//                        'common_prices'=>$common_prices,
+//                        'numprices'=>Prices_model::MAX_PROMOPRICES-1,
+//                    );
+//                    $profitdat=$this->load->view('itemdetails/promo_profit_view',$price_options,TRUE);
+//                    $prices_view=$this->load->view('itemdetails/promo_itempriceview_view',$price_options,TRUE);
+//                    $priceview_options=array(
+//                        'profitdat'=>$profitdat,
+//                        'pricesdata'=>$prices_view,
+//                    );
+//                    $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
+//                } else {
+//                    $prices=$this->prices_model->get_price_itemedit($item_id);
+//                    // $outprices=$this->prices_model->profit_price($prices,$vendor_dat);
+//                    /* Get Data about Research of price */
+//                    $research_price=$this->otherprices_model->get_prices_item($item_id);
+//                    $outresearch=$this->otherprices_model->compare_prices_item($prices,$research_price);
+//                    $research_data=$this->load->view('itemdetails/research_data_view',array('research_price'=>$outresearch,'price_types'=>$this->price_types,),TRUE);
+//                    $profitdat=$this->load->view('itemdetails/stressball_profit_view',array('prices'=>$prices,'price_types'=>$this->price_types),TRUE);
+//                    $numprice=count($this->price_types)-1;
+//                    $prices_view=$this->load->view('itemdetails/stressball_itempriceview_view',array('prices'=>$prices,'price_types'=>$this->price_types,'numprice'=>$numprice),TRUE);
+//                    $price_options=array(
+//                        'prices'=>$prices_view,
+//                        'researchdata'=>$research_data,
+//                        'price_types'=>$this->price_types,
+//                        'numprice'=>$numprice,
+//                        'profit_dat'=>$profitdat,
+//                    );
+//                    $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+//                }
+//                $data['pricearea']='active';
+//            }
+//
+//            $data['attributes']=$this->load->view('itemdetails/attribview_view',$item, TRUE);
+//
+//            /* Get Data about Similar Items */
+//            $similar = $this->similars_model->get_similar_items($item_id);
+//            $data['simulardata']=$this->load->view('itemdetails/simulitems_view',array('similar'=>$similar),TRUE);
+//            if ($item['item_template']==Itemdetails::STRESSBALL_TEMPLATE) {
+//                $footer_options=array('commons'=>'Common Terms','edit'=>0);
+//            } else {
+//                $footer_options=array('commons'=>'', 'edit'=>0);
+//            }
+//            $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
+//            $data['popups']=$this->load->view('itemdetails/details_popup_view',array(),TRUE);
+//            $data['loader']=$this->load->view('loader_view',array('loader'=>1,'loader_id'=>'loader','inner_id'=>'loaderimg','inner_message'=>'Data Prepare....'),TRUE);
+//
+//            // $item_dat['shippinfo']=$this->load->view('item/shipping_info_view',$item_dat,TRUE);
+//            /* Compile View */
+//            $dat = array();
+//            $dat['header']=$this->load->view('admin_modern/admin_header_view',$head,TRUE);
+//            $dat['top_menu']=$this->load->view('admin_modern/top_menu_view',array('current_item'=>'database'),TRUE);
+            if ($mode=='view') {
+                $content=$this->load->view('itemdetails/details_view',$data,TRUE);
+            } else {
+                $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
+            }
+            $out['content'] = $content;
+//            // $dat['content']=$this->load->view('item/item_dat_view',$item_dat,TRUE);
+//            $this->load->view('admin_modern/admin_template',$dat);
+
+
+        }
+        return $out;
     }
 
 }

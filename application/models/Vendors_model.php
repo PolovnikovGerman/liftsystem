@@ -46,4 +46,20 @@ Class Vendors_model extends My_Model
         return $out;
     }
 
+    public function get_inventory_list() {
+        $this->db->select('*');
+        $this->db->from('ts_printshop_items');
+        $this->db->order_by('item_num');
+        $res=$this->db->get()->result_array();
+        // Get data
+        $out=array();
+        foreach ($res as $row) {
+            $out[]=array(
+                'printshop_item_id'=>$row['printshop_item_id'],
+                'item_name'=>$row['item_num'].' '.trim(str_replace('Stress Balls', '', $row['item_name'])),
+            );
+        }
+        return $out;
+    }
+
 }

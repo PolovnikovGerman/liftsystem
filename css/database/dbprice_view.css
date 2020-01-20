@@ -96,6 +96,8 @@ select.compareprefs {
 }
 .table-price-header {
     clear: both;
+    text-align: center;
+    color: #ffffff;
 }
 .table-price-header > div {
     height:24px;

@@ -12,7 +12,7 @@ $config['netprofit_bank_start']=strtotime('12/29/2014 00:00:00');
 $config['balance_start']=strtotime('01/01/2000 00:00:00');
 $config['default_ccfee']=3;
 /* Short name */
-$config['system_name']="Brown System";
+$config['system_name']="Lift System";
 $config['redraw_system_name']='Redraw System';
 $config['redraw_role']='redraw';
 $config['system_permissions']='System';

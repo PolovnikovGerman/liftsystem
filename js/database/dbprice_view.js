@@ -190,6 +190,10 @@ function pricetablecontent_init() {
             initDBPricePagination();
         }
     });
+    $('.pricetable-row').find(".editcoll").unbind('click').click(function(){
+        var item_id=$(this).data('item');
+        view_itemdetails(item_id);
+    })
 
 }
 

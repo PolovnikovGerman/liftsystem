@@ -2,6 +2,8 @@
 
 Class Items_model extends My_Model
 {
+    private $Inventory_Source='Stock';
+
 
     function __construct()
     {
@@ -32,6 +34,40 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    function get_item($item_id) {
+        $out=['result'=>$this->error_result,'msg'=>'Item Nit Found'];
+        $this->db->select('i.* ');
+        $this->db->from('sb_items i');
+        $this->db->where('i.item_id',$item_id);
+        $result = $this->db->get()->row_array();
+        if (ifset($result,'item_id',0)>0) {
+            if ($result['cartoon_qty']!='' && $result['cartoon_width']!='' && $result['cartoon_heigh']!='' && $result['cartoon_depth']!='' && $result['item_weigth']!='') {
+                $result['shipping_info']='';
+            } else {
+                $result['shipping_info']='Information Missing';
+            }
+            foreach ($this->config->item('item_specialchars') as $row) {
+                $result[$row]=  htmlspecialchars($result[$row]);
+            }
+            $out['result']=$this->success_result;
+            $out['data']=$result;
+        }
+        return $out;
+    }
+
+    public function get_commonterms_item($item_id,$max_val=0) {
+        $this->db->select('*');
+        $this->db->from('sb_item_commonterms');
+        $this->db->where('item_id',$item_id);
+        $result=$this->db->get()->result_array();
+        if ($max_val && count($result)<$max_val) {
+            $cnt=count($result);
+            for ($i=$cnt;$i<$max_val;$i++) {
+                $result[]=array('term_id'=>0, 'item_id'=>$item_id,'common_term'=>'');
+            }
+        }
+        return $result;
+    }
 
     public function get_sequence_count($options=[]) {
         $this->db->select('count(i.item_id) as cnt');

@@ -10,6 +10,7 @@
         <?php foreach ($menu as $item) { ?>
             <div class="dbcontentarea" id="<?=str_replace('#','', $item['item_link'])?>" style="display: none;"></div>
         <?php } ?>
+        <div class="dbcontentarea" id="itemdetailsview" style="display: none;"></div>
     </div>
 </div>
 

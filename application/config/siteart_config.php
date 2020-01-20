@@ -45,3 +45,12 @@ $config['price_types']=[
     array('type'=>'print'),
     array('type'=>'setup'),
 ];
+$config['item_specialchars'] = [
+    'item_size',
+    'item_name',
+    'item_description1',
+    'item_description2',
+    'item_metadescription',
+    'item_metakeywords',
+    'item_meta_title',
+];

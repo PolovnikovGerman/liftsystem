@@ -108,6 +108,10 @@ function init_dbcategory_content() {
         trigger: 'hover',
         html: true,
     });
+    $(".categorydatarow").find('.editcoll').unbind('click').click(function () {
+        var item_id=$(this).data('item');
+        view_itemdetails(item_id);
+    });
 }
 
 function sort_categorydat(fld) {

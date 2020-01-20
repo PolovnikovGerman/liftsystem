@@ -72,5 +72,17 @@ function init_contentpage(page_name) {
     },'json');
 }
 
-
-// $("#categoryview").show().empty().html();
+function view_itemdetails(item_id) {
+    var params=new Array();
+    params.push({name: 'item_id', value: item_id});
+    var url = '/database/view_item';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $(".dbcontentarea").hide();
+            $("#itemdetailsview").show().empty().html(response.data.content);
+            // init_categories_page();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
