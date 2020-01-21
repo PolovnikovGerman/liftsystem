@@ -35,7 +35,6 @@ class Database extends MY_Controller
         $head = [];
         $head['title'] = 'Database';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
-        $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link'] == '#categoryview') {
                 // Custom shaped
@@ -61,11 +60,11 @@ class Database extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
             }
         }
-        $content_options['menu'] = $menu;
-        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/database/page.js');
         $head['styles'][] = array('style' => '/css/database/databasepage.css');
+        // Add Item details
+        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
         // Utils
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
@@ -74,10 +73,16 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
         $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+        $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options = [
+            'menu' => $menu,
+        ];
+        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
+
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -664,6 +669,15 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function restore_databaseview() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $mdata['pagename'] = usersession('page_name');
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     // Prepare pages
     private function _prepare_dbpage_content($page_name)
     {
@@ -1109,11 +1123,13 @@ class Database extends MY_Controller
             } else {
 
             }
-
+            $footer_options=[
+                'edit'=>($mode=='view' ? 0 : 1),
+                'item' => $item,
+                'commons'=>'',
+            ];
             if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
-                $footer_options=array('commons'=>'Common Terms','edit'=>($mode=='view' ? 0 : 1));
-            } else {
-                $footer_options=array('commons'=>'', 'edit'=>($mode=='view' ? 0 : 1));
+                $footer_options['commons']='Common Terms';
             }
             $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
 //            $data['popups']=$this->load->view('itemdetails/details_popup_view',array(),TRUE);

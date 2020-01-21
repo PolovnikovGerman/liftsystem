@@ -80,7 +80,7 @@ function view_itemdetails(item_id) {
         if (response.errors=='') {
             $(".dbcontentarea").hide();
             $("#itemdetailsview").show().empty().html(response.data.content);
-            // init_categories_page();
+            init_itemdetails_view();
         } else {
             show_error(response);
         }
