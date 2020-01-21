@@ -4,7 +4,7 @@
     <div class="closeitemdetails">&nbsp;</div>
     <div class="keyinfo"><?= $keyinfo ?></div>
     <div class="change_picture_order">Change Pictures Order</div>
-    <!--        <div class="images">--><? //=$images?><!--</div>-->
+    <div class="images"><?=$images?></div>
     <div class="vectorfile"><?= $vectorfiledata ?></div>
     <div class="vendorcommon"><?= $vendordata ?></div>
     <div class="vendorprices"><?= $vendorprices ?></div>

@@ -1,7 +1,8 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 21.01.20
- * Time: 12:19
- */
+<input type="hidden" id="cntpics" name="cntpics" value="<?=$images_count?>" />
+<div id="pictures_dat">
+    <?=$imagesdata ?>
+</div>
+<!-- Insert view for pictures -->
+<div id="pictures_slade">
+    <?=$slider ?>
+</div>

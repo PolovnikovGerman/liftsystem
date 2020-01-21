@@ -8,47 +8,47 @@ Class Itemimages_model extends My_Model
         parent::__construct();
     }
 
-//    function get_images_item($item_id,$limit=10,$offset=0) {
-//        $this->db->select('*');
-//        $this->db->from('sb_item_images');
-//        $this->db->where('item_img_item_id',$item_id);
-//        $this->db->order_by('item_img_order');
-//        $this->db->limit($limit,$offset);
-//        $result = $this->db->get()->result_array();
-//        $ret_img = array();
-//        if ($offset==0) {
-//            $offset=1;
-//        }
-//        $num_rec=$limit+$offset;
-//        for ($i=$offset;$i<$num_rec;$i++) {
-//            $ind=0;
-//            if ($i==1) {
-//                $name_img='Main Pic';
-//            } else {
-//                $name_img='Pic '.$i;
-//            }
-//            foreach ($result as $row) {
-//                if ($row['item_img_order']==$i) {
-//                    $ind=$row['item_img_id'];
-//                    $ret_img[]=array('item_img_id'=>$row['item_img_id']
-//                    ,'item_img_item_id'=>$row['item_img_item_id']
-//                    ,'src'=>$row['item_img_name']
-//                    ,'name'=>$name_img
-//                    ,'item_img_order'=>$row['item_img_order']);
-//                    break;
-//                }
-//            }
-//            if ($ind==0) {
-//                $ret_img[]=array('item_img_id'=>''
-//                ,'item_img_item_id'=>''
-//                , 'src'=>''
-//                ,'name'=>$name_img
-//                ,'item_img_order'=>$i);
-//            }
-//        }
-//        return $ret_img;
-//    }
-//
+    function get_images_item($item_id,$limit=10,$offset=0) {
+        $this->db->select('*');
+        $this->db->from('sb_item_images');
+        $this->db->where('item_img_item_id',$item_id);
+        $this->db->order_by('item_img_order');
+        $this->db->limit($limit,$offset);
+        $result = $this->db->get()->result_array();
+        $ret_img = array();
+        if ($offset==0) {
+            $offset=1;
+        }
+        $num_rec=$limit+$offset;
+        for ($i=$offset;$i<$num_rec;$i++) {
+            $ind=0;
+            if ($i==1) {
+                $name_img='Main Pic';
+            } else {
+                $name_img='Pic '.$i;
+            }
+            foreach ($result as $row) {
+                if ($row['item_img_order']==$i) {
+                    $ind=$row['item_img_id'];
+                    $ret_img[]=array('item_img_id'=>$row['item_img_id']
+                    ,'item_img_item_id'=>$row['item_img_item_id']
+                    ,'src'=>$row['item_img_name']
+                    ,'name'=>$name_img
+                    ,'item_img_order'=>$row['item_img_order']);
+                    break;
+                }
+            }
+            if ($ind==0) {
+                $ret_img[]=array('item_img_id'=>''
+                ,'item_img_item_id'=>''
+                , 'src'=>''
+                ,'name'=>$name_img
+                ,'item_img_order'=>$i);
+            }
+        }
+        return $ret_img;
+    }
+
 //    public function update_images($item_images,$item_url,$item_id)  {
 //        $pathsrc=$this->config->item('upload_path_preload');
 //        $pathsrc_sh=$this->config->item('upload_preload');

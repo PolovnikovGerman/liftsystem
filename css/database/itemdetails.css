@@ -1109,3 +1109,112 @@
     width: 131px;
     cursor: pointer;
 }
+.itemdata .images {
+    height: 105px;
+    left: 141px;
+    position: absolute;
+    top: 49px;
+    width: 863px;
+}
+.itemdata .itemmedia {
+    clear: both;
+    float: left;
+    margin-left:36px;
+    margin-top: 5px;
+}
+.itemdata .mediadata {
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    margin-top: 15px;
+    width: 161px;
+}
+.itemdata .video, .audio, .faces, .subcategory {
+    float:left;
+    width: 160px;
+    line-height: 20px;
+    margin-bottom: 2px;
+}
+.itemdata .subcategory select {
+    width: 145px;
+}
+.itemdata .media_left {
+    clear: both;
+    float: left;
+    width: 30px;
+    height: 25px;
+}
+.itemdata .media_right {
+    float: left;
+    width: 125px;
+    padding-left: 5px;
+    padding-top: 2px;
+}
+.itemdata .media_right a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.itemdata .imgcontent {
+    width: 76px;
+}
+.itemdata .imagename {
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 2px;
+    text-align: center;
+    width: 100%;
+}
+/* Picture Slider */
+#slider ul, #slider li{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+#slider, #slider li{
+    height: 100px;
+    overflow: hidden;
+    width: 665px;
+}
+
+#prevBtn, #nextBtn {
+    display: block;
+    height: 77px;
+    left: 9px;
+    position: absolute;
+    top: 44px;
+    width: 30px;
+}
+#nextBtn {
+    left: 655px;
+}
+#prevBtn a, #nextBtn a{
+    display:block;
+    width:30px;
+    height:77px;
+    background:url(/img/itemdetails/left-activ.png) no-repeat 0 0;
+}
+#nextBtn a {
+    background: url(/img/itemdetails/right-activ.png) no-repeat scroll 0 0 transparent;
+}
+.itemdata .pictures {
+    position: relative;
+    float:right;
+    background-image: url("/img/itemdetails/pictures.png");
+    width: 77px;
+    height: 77px;
+}
+.itemdata .picture-none {
+    position: relative;
+    float:right;
+    /* background-image: url("../img/picture-none.png"); */
+    width: 77px;
+    height: 77px;
+}
+.itemdata .close-x {
+    float:right;
+    padding-right: 5px;
+}
+.itemdata .pic {
+    padding-left: 9px;
+}

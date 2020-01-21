@@ -872,6 +872,7 @@ class Database extends MY_Controller
         $this->load->model('otherprices_model');
         $this->load->model('itemcolors_model');
         $this->load->model('similars_model');
+        $this->load->model('itemimages_model');
         $res=$this->items_model->get_item($item_id);
         $out['msg']=$res['msg'];
         if ($res['result']==$this->success_result) {
@@ -920,10 +921,11 @@ class Database extends MY_Controller
             ];
             $data['keyinfo']=$this->load->view('itemdetails/keyinfo_view',$info_options,TRUE);
             // Get Data about Item Colors
-//            $offset=0;$limit=$this->slider_images;
-//            $img_display = $this->itemimages_model->get_images_item($item_id,$limit,$offset);
-//            /* Video View */
-//            $item_dat['videooption']='';
+            $offset=0;
+            $limit=$this->config->item('slider_images');
+            $img_display = $this->itemimages_model->get_images_item($item_id,$limit,$offset);
+            /* Video View */
+            $item_dat['videooption']='';
 //            $videodat=$this->itemimages_model->get_item_media($item_id,'VIDEO');
 //            if (isset($videodat['itemmedia_url'])) {
 //                $video=$this->load->view('itemdetails/videodata_view',array('video'=>$videodat,'edit'=>0,'title'=>$item['item_name']),TRUE);
@@ -937,26 +939,26 @@ class Database extends MY_Controller
 //                $audio=$this->load->view('itemdetails/audioempty_view',array('edit'=>0,),TRUE);
 //            }
 //            $faces=$this->load->view('itemdetails/faces_view',array('faces'=>$item['faces'],'edit'=>0),TRUE);
-//
-//            $img_options=array(
-//                'images'=>$img_display,
-//                'pos'=>0,
-//                'edit'=>0,
-//                'limit'=>$limit,
-//                'video'=>$video,
-//                'audio'=>$audio,
-//                'faces'=>$faces,
-//            );
-//
-//            $pictures_dat=$this->load->view('itemdetails/pictures_dat_view',$img_options,TRUE);
-//            $pictures_slider=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
-//            $media_options=array(
-//                'imagesdata'=>$pictures_dat,
-//                'slider'=>$pictures_slider,
-//                'images_count'=>count($img_display),
-//            );
-//            $data['images']=$this->load->view('itemdetails/images_view',$media_options,TRUE);
-//            /* Vector */
+
+            $img_options=array(
+                'images'=>$img_display,
+                'pos'=>0,
+                'edit'=>0,
+                'limit'=>$limit,
+                'video'=> '', // $video,
+                'audio'=> '', // $audio,
+                'faces'=> '', // $faces,
+            );
+
+            $pictures_dat=$this->load->view('itemdetails/pictures_dat_view',$img_options,TRUE);
+            $pictures_slider=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
+            $media_options=array(
+                'imagesdata'=>$pictures_dat,
+                'slider'=>$pictures_slider,
+                'images_count'=>count($img_display),
+            );
+            $data['images']=$this->load->view('itemdetails/images_view',$media_options,TRUE);
+            // Vector
             if ($mode=='view') {
                 $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
             } else {
@@ -1128,10 +1130,6 @@ class Database extends MY_Controller
                 $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
             }
             $out['content'] = $content;
-//            // $dat['content']=$this->load->view('item/item_dat_view',$item_dat,TRUE);
-//            $this->load->view('admin_modern/admin_template',$dat);
-
-
         }
         return $out;
     }
