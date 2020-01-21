@@ -871,6 +871,7 @@ class Database extends MY_Controller
         $this->load->model('prices_model');
         $this->load->model('otherprices_model');
         $this->load->model('itemcolors_model');
+        $this->load->model('similars_model');
         $res=$this->items_model->get_item($item_id);
         $out['msg']=$res['msg'];
         if ($res['result']==$this->success_result) {
@@ -1094,18 +1095,25 @@ class Database extends MY_Controller
                 }
                 $data['pricearea']='active';
             }
+            if ($mode=='view') {
+                $data['attributes']=$this->load->view('itemdetails/attribview_view',$item, TRUE);
+            } else {
 
-//            $data['attributes']=$this->load->view('itemdetails/attribview_view',$item, TRUE);
-//
-//            /* Get Data about Similar Items */
-//            $similar = $this->similars_model->get_similar_items($item_id);
-//            $data['simulardata']=$this->load->view('itemdetails/simulitems_view',array('similar'=>$similar),TRUE);
-//            if ($item['item_template']==Itemdetails::STRESSBALL_TEMPLATE) {
-//                $footer_options=array('commons'=>'Common Terms','edit'=>0);
-//            } else {
-//                $footer_options=array('commons'=>'', 'edit'=>0);
-//            }
-//            $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
+            }
+            // Get Data about Similar Items
+            $similar = $this->similars_model->get_similar_items($item_id);
+            if ($mode=='view') {
+                $data['simulardata']=$this->load->view('itemdetails/simulitems_view',array('similar'=>$similar),TRUE);
+            } else {
+
+            }
+
+            if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
+                $footer_options=array('commons'=>'Common Terms','edit'=>($mode=='view' ? 0 : 1));
+            } else {
+                $footer_options=array('commons'=>'', 'edit'=>($mode=='view' ? 0 : 1));
+            }
+            $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
 //            $data['popups']=$this->load->view('itemdetails/details_popup_view',array(),TRUE);
 //            $data['loader']=$this->load->view('loader_view',array('loader'=>1,'loader_id'=>'loader','inner_id'=>'loaderimg','inner_message'=>'Data Prepare....'),TRUE);
 //

@@ -998,3 +998,114 @@
     font-size: 12px;
     width: 232px;
 }
+/* Attributes */
+.itemdata .attributesdatas {
+    height: 56px;
+    left: 744px;
+    position: absolute;
+    top: 519px;
+    width: 261px;
+}
+.itemdata .attributes_txtdat {
+    clear:both;
+    float: left;
+    padding-top:12px;
+    padding-left: 15px;
+    width:263px;
+}
+
+.itemdata .attributes_row {
+    clear:both;
+    float:left;
+    margin-left: 5px;
+    color:#FFF;
+    font-weight: bold;
+    margin-bottom: 3px;
+    height:16px;
+    overflow: hidden;
+    width: 235px;
+}
+/* Simular */
+.itemdata .simulardata {
+    height: 57px;
+    left: 744px;
+    position: absolute;
+    top: 601px;
+    width: 261px;
+}
+.itemdata .similar_dat {
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-weight: bold;
+    padding-top: 21px;
+    width: 263px;
+}
+.itemdata .similar_item_dat {
+    float:left;
+    text-align: center;
+    width:87px;
+}
+.itemdata select.simularselect {
+    font-size: 12px;
+    width: 82px;
+}
+/* Footer */
+.itemdata .itemdetails_footer {
+    height: 40px;
+    left: 745px;
+    position: absolute;
+    top: 663px;
+    width: 265px;
+}
+.itemdata .footerslinks {
+    clear: both;
+    float: left;
+    padding-left: 8px;
+    width: 125px;
+}
+.itemdata .bottomtxtlnk {
+    clear: both;
+    color: #0000FF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    width: 120px;
+    cursor: pointer;
+}
+.itemdata .commontermslnk {
+    clear: both;
+    color: #0000FF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    width: 120px;
+    cursor:pointer;
+}
+
+.itemdata .activate_btn {
+    background-image: url("/img/itemdetails/activate.png");
+    color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 43px;
+    margin-top: -4px;
+    padding-top: 12px;
+    text-align: center;
+    width: 131px;
+    cursor: pointer;
+}
+.itemdata .saveedit_btn {
+    background-image: url("/img/itemdetails/saveediting.png");
+    color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 43px;
+    margin-top: -4px;
+    padding-top: 12px;
+    text-align: center;
+    width: 131px;
+    cursor: pointer;
+}

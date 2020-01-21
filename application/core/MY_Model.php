@@ -28,6 +28,7 @@
  * @property Staticpages_model staticpages_model
  * @property Imprints_model imprints_model
  * @property Itemcolors_model itemcolors_model
+ * @property Similars_model similars_model
  */
 
 class MY_Model extends CI_Model
