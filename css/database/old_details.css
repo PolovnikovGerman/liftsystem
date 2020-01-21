@@ -1,0 +1,449 @@
+/* Popup Location */
+.dialog-location-body {
+    background: url('../img/imprinting-itemdetails-bg.png');
+    clear: both;
+    float: left;
+    height: 280px;
+    padding: 17px;
+    width: 429px;
+}
+.dialog-location-row {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 425px;
+}
+.dialog-location-rowlegend {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100px;
+}
+.dialog-location-rowvalue {
+    float:left;
+    margin-left:5px;
+    width:230px;
+}
+.dialog-location-rowvalue.ainame {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    height: 45px;
+    line-height: 45px;
+}
+input.imprintlocationedit {
+    border: 1px solid #000000;
+    font-size: 14px;
+    height: 16px;
+    width: 235px;
+}
+.savelocationload {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 336px;
+    width: 120px;
+}
+/* Popups */
+.common_termspop {
+    display: none;
+    clear: both;
+    float: left;
+    width: 360px;
+    height: 380px;
+    background-color: #fff;
+}
+.bottom_textpop {
+    display: none;
+    width: 480px;
+    height: 350px;
+}
+/* Common Tertm */
+.commonsinfotab {
+    clear: both;
+    float: left;
+    width:320px;
+    height: 340px;
+    background-color: #e8e8e8;
+    padding: 15px;
+}
+.commonsinfo {
+    clear: both;
+    float: left;
+    width: 290px;
+    overflow-y: auto;
+    max-height: 268px;
+    font-size: 14px;
+}
+.commonrow {
+    clear: both;
+    float: left;
+    margin-bottom: 4px;
+    width: 288px;
+}
+input.inputcommondata {
+    border: 1px solid #000;
+    width: 287px;
+    font-size: 12px;
+}
+.savecommonterms {
+    clear: both;
+    float: left;
+    width: 80px;
+    margin-left: 200px;
+}
+.savecommonterms:hover {
+    cursor: pointer;
+}
+/* Bottom Text */
+.itembottomtxt {
+    clear: both;
+    float: left;
+    padding: 15px;
+    width: 440px;
+    font-size: 14px;
+    background-color: #fff;
+    height: 305px;
+}
+.itembottomtxt_title {
+    clear: both;
+    float: left;
+    width: 440px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.itembottomtxt_data {
+    clear: both;
+    float: left;
+    width: 440px;
+    overflow-y: auto;
+    max-height: 248px;
+    margin-bottom: 5px;
+}
+.itembottomtxt_save {
+    background: url("../img/saveediting.png") no-repeat transparent;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    height: 44px;
+    margin-left: 293px;
+    padding-top: 10px;
+    text-align: center;
+    width: 133px;
+}
+.itembottomtxt_save:hover {
+    cursor: pointer;
+}
+textarea.itmbottomedt {
+    resize: none;
+    width: 425px;
+    height: 228px;
+    font-size: 13px;
+    color: #000;
+    overflow-y: auto;
+}
+/* BT classes */
+.right_tooltip {
+    background-color: #494949;
+    float: left;
+    padding: 0px;
+    width: 180px;
+    font-size: 14px;
+    color: #FFF;
+    text-align: justify;
+}
+.white_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    padding: 0px;
+    font-size: 14px;
+    color: #000;
+    text-align: justify;
+}
+/* POPUP for upload Images, Imprints, Vector File */
+.imageupload_pop {
+    width: 580px;
+    height: 312px;
+    display: none;
+}
+.imageuploaddata {
+    background : url('../img/image-itemdetail-bg.png') no-repeat transparent;
+    clear: both;
+    float: left;
+    padding: 0 15px;
+    width: 544px;
+    height: 310px;
+}
+.viewpreloadimg {
+    clear: both;
+    float: left;
+    width: 320px;
+    margin-top: 30px;
+    text-align: center;
+}
+.viewpreloadimg img {
+    width: 200px;
+}
+.manegeupload {
+    float: left;
+    width: 200px;
+    margin-top: 70px;
+}
+.custom_upload {
+    clear: both;
+    background: url("../img/browse.png") no-repeat scroll 0 0 transparent !important;
+    clear: both;
+    height: 80px !important;
+    width: 120px !important;
+}
+.saveimgupload {
+    clear: both;
+    display: none;
+    float: left;
+    margin-bottom: 15px;
+    margin-left: 444px;
+    margin-top: -26px;
+    width: 120px;
+}
+.saveimgupload:hover {
+    cursor: pointer;
+}
+.deleteuploadimg {
+    float: left;
+    width: 200px;
+    margin-top: 25px;
+}
+.viewsrcfile {
+    float: left;
+    width: 200px;
+    margin-top: 25px;
+}
+/* Shipping info */
+.shipping-info-form {
+    background-image: url("../img/shipinfo_bg.png");
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    height: 224px;
+    padding-left: 10px;
+    padding-top: 42px;
+    width: 427px;
+}
+.shipping-info-form .weight {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+    width: 300px;
+}
+.weight-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.weight-input {
+    float: left;
+    width: 55px;
+}
+.weight-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.shipinfo-input {
+    width: 50px;
+    background-color: #ffffff;
+    border: 1px solid  #000;
+}
+.weight-measure {
+    float: left;
+    padding-top: 3px;
+    margin-left: 7px;
+    width: 80px;
+}
+.cartoon-qty {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 300px;
+}
+.cartoon-qty-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.cartoon-qty-input {
+    float: left;
+    width: 55px;
+}
+.cartoon-qty-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.cartoon-dimension {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 425px;
+}
+.cartoon-dimension-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.cartoon-dimension-input {
+    float: left;
+    width: 55px;
+}
+.cartoon-dimension-input.view {
+    height: 16px;
+    background-color: #fff;
+}
+.cartoon-dimension-txttile {
+    float: left;
+    width: 25px;
+    padding-top: 3px;
+    text-align: center;
+}
+.cartoon-dimension-measure {
+    float: left;
+    width: 75px;
+    padding-top: 3px;
+    text-align: left;
+}
+.special-charge-title {
+    margin-top: 20px;
+    float: left;
+    clear: both;
+    font-weight: bold;
+    font-size: 18px;
+}
+.special-charge-area {
+    clear: both;
+    float: left;
+    width: 192px;
+}
+.special-charge-row {
+    clear: both;
+    float: left;
+    margin-top: 5px;
+    width: 262px;
+}
+.special-charge-input {
+    clear: both;
+    float: left;
+    width: 55px;
+}
+.special-charge-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.special-charge-measure {
+    float: left;
+    padding-top: 3px;
+    margin-left: 7px;
+    width: 200px;
+}
+.special-order-restict-area {
+    float: left;
+    width: 224px;
+}
+.special-order-restict-title {
+    clear: both;
+    float: left;
+    width: 224px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.special-order-restict-value {
+    clear: both;
+    float: left;
+    width: 55px;
+    font-weight: normal;
+}
+.special-order-restict-value.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.saveshipping {
+    cursor: pointer;
+    float: left;
+    margin-left: 92px;
+    width: 70px;
+}
+/* Sort Order of pictures */
+.imgsort-scroll {
+    float: left;
+    height: 447px;
+    margin-left: 14px;
+    margin-top: 16px;
+    overflow-y: auto;
+    padding: 4px;
+    width: 469px;
+}
+.imgsortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.imgsortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.imgsortable li {
+    float: left;
+    font-size: 12px;
+    height: 110px;
+    margin: 1px 1px 1px 0;
+    padding: 1px;
+    text-align: center;
+    width: 110px;
+}
+.saveoder {
+    float:left;
+    margin-top: 25px;
+}
+.saveoder:hover {
+    cursor: pointer;
+}
+/* Printshop colors */
+.colorsdat-info > .colorname {
+    border-right: 1px solid #ffffff;
+    color: #ffffff;
+    float: left;
+    font-size: 12px;
+    overflow: hidden;
+    padding-right: 4px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 84px;
+}
+.colorsdat-info > .colorstock {
+    border-right: 1px solid #ffffff;
+    color: #ffffff;
+    float: left;
+    font-size: 11px;
+    height: 14px;
+    padding-right: 2px;
+    text-align: right;
+    width: 40px;
+}
+.colorsdat-info > .coloronroute {
+    color: #ffffff;
+    float: left;
+    font-size: 11px;
+    padding-right: 2px;
+    text-align: right;
+    width: 39px;
+}
