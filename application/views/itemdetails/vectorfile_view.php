@@ -3,4 +3,4 @@
         <?= ($item_vector_img == '' ? '&nbsp;' : '<a href="'.$item_vector_img.'" target="_blank">Vector AI</a>' ) ?>
     </div>
 </div>
-<div class="checkoutspeciallnk">Checkout Specials</div>
+<div class="checkoutspeciallnk" data-item="<?=$item_id?>">Checkout Specials</div>

@@ -81,6 +81,20 @@
     width: 340px;
     font-size: 14px;
 }
+.itemdata .itemsequence_area {
+    float: left;
+    font-size: 13px;
+    margin-left: 11px;
+    width: 150px;
+    height: 30px;
+    line-height: 30px;
+}
+.itemdata .itemsequence_area span {
+    color: #0000ff;
+    font-style: italic;
+    height: 30px;
+    line-height: 30px;
+}
 /* Key INFO Block */
 .itemdata .keyinfo {
     height: 208px;
@@ -245,6 +259,7 @@
     color: #FFF;
     font-size: 12px;
     font-weight: bold;
+    cursor: pointer;
 }
 .itemdata .location_upload.edit {
     width: 42px;
@@ -714,17 +729,16 @@
     cursor: pointer;
 }
 /* Special Checkout popup */
-.itemdata .itemspecialcheckout {
-    background: url("/img/itemdetails/specialcheck_itemdetails_bg.png") no-repeat scroll 0 0 transparent;
+.itemspecialcheckout {
+    background: url(/img/itemdetails/specialcheck_itemdetails_bg.png) no-repeat scroll 0 0 transparent;
     clear: both;
     float: left;
     font-size: 14px;
-    height: 307px;
+    height: 343px;
     padding: 15px;
-    width: 503px;
-    /* border: 1px solid #FFFFFF; */
+    width: 531px;
 }
-.itemdata .specialcheckout_title {
+.specialcheckout_title {
     clear: both;
     float: left;
     width: 503px;
@@ -734,148 +748,146 @@
     font-weight: bold;
     text-align: center;
 }
-.itemdata .specialcheckout_data {
+.specialcheckout_data {
     clear: both;
     float: left;
     width: 390px;
     margin-top: 10px;
 }
-.itemdata .specialcheckout_select_label {
+.specialcheckout_select_label {
     float: left;
     padding-top: 8px;
     width: 125px;
 }
-.itemdata .specialcheckout_data select {
+.specialcheckout_data select {
     margin-top: 5px;
 }
-.itemdata .specialcheckout_options {
+.specialcheckout_options {
     clear: both;
     float: left;
     width: 507px;
     margin-top: 10px;
 }
-.itemdata .specialcheckout_specialprices {
+.specialcheckout_specialprices {
     float: left;
     width: 157px;
 }
-.itemdata .specialcheckout_shipping {
+.specialcheckout_shipping {
     clear: both;
     float: left;
     width: 155px;
 }
-.itemdata .specialcheckout_setup {
+.specialcheckout_setup {
     clear: both;
     float: left;
     width: 155px;
     margin-top: 5px;
 }
-.itemdata .specialcheckout_prices {
+.specialcheckout_prices {
     float: left;
     width: 347px;
     font-size: 14px;
 }
-.itemdata .specialcheckoutprice {
+.specialcheckoutprice {
     clear: both;
     float: left;
     width: 345px;
     height: 19px;
 }
-.itemdata .specialcheckoutprice.title {
+.specialcheckoutprice.title {
     margin-bottom: 2px;
 }
-.itemdata .specialcheckoutprice_qty {
+.specialcheckoutprice_qty {
     float: left;
     width: 70px;
     height: 20px;
 }
-.itemdata .specialcheckoutprice_qty.title {
+.specialcheckoutprice_qty.title {
     background-color: #FFF;
     text-align: center;
     height: 18px;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_qty.view {
+.specialcheckoutprice_qty.view {
     text-align: center;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_price {
+.specialcheckoutprice_price {
     float: left;
     width: 80px;
     height: 20px;
 }
-.itemdata .specialcheckoutprice_price.title {
+.specialcheckoutprice_price.title {
     background-color: #FFF;
     text-align: center;
     height: 18px;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_price.view {
+.specialcheckoutprice_price.view {
     text-align: center;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_amount {
+.specialcheckoutprice_amount {
     float: left;
     width: 70px;
     height: 20px;
 }
-.itemdata .specialcheckoutprice_amount.title {
+.specialcheckoutprice_amount.title {
     background-color: #FFF;
     text-align: center;
     height: 18px;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_amount.view {
+.specialcheckoutprice_amount.view {
     text-align: center;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_profit {
+.specialcheckoutprice_profit {
     float: left;
     width: 70px;
     padding-top: 2px;
     text-align: center;
 }
-.itemdata .specialcheckoutprice_profit.title {
+.specialcheckoutprice_profit.title {
     background-color: #FFF;
     text-align: center;
     height: 18px;
     padding-top: 2px;
 }
-.itemdata .specialcheckoutprice_profitperc {
+.specialcheckoutprice_profitperc {
     float: left;
     width: 48px;
     padding-top: 2px;
     text-align: center;
 }
-.itemdata .specialcheckoutprice_profitperc.title {
+.specialcheckoutprice_profitperc.title {
     background-color: #FFF;
     text-align: center;
     height: 18px;
     padding-top: 2px;
 }
-.itemdata .savespecialcheckout {
+.savespecialcheckout {
     float: right;
     margin-right: 20px;
     width: 80px;
-}
-.itemdata .savespecialcheckout:hover {
     cursor: pointer;
 }
-.itemdata input.specpriceqty {
+input.specpriceqty {
     border: 1px solid #000;
     font-size: 12px;
     width: 60px;
 }
-.itemdata input.specpriceval {
+input.specpriceval {
     border: 1px solid #000;
     font-size: 12px;
     width: 65px;
 }
-.itemdata input.specialsetupinpt {
+input.specialsetupinpt {
     float: right;
     font-size: 12px;
     margin-right: 20px;
     width: 40px;
-}
+                                                                                                                                                                                                                        }
 /* Item Options */
 .itemdata .itemoptions {
     height: 241px;
@@ -1024,6 +1036,14 @@
     height:16px;
     overflow: hidden;
     width: 235px;
+}
+.itemdata .tooltip-descript {
+    color: #ffffff;
+    cursor: pointer;
+}
+.popover.blue_background {
+    background: #0000ff;
+    color: #ffffff;
 }
 /* Simular */
 .itemdata .simulardata {
@@ -1217,4 +1237,248 @@
 }
 .itemdata .pic {
     padding-left: 9px;
+}
+/* Bottom Text */
+.itembottomtxt {
+    clear: both;
+    float: left;
+    padding: 15px;
+    width: 440px;
+    font-size: 14px;
+    background-color: #fff;
+    height: 305px;
+}
+.itembottomtxt_title {
+    clear: both;
+    float: left;
+    width: 440px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.itembottomtxt_data {
+    clear: both;
+    float: left;
+    width: 440px;
+    overflow-y: auto;
+    max-height: 248px;
+    margin-bottom: 5px;
+}
+.itembottomtxt_save {
+    background: url("/img/itemdetails/saveediting.png") no-repeat transparent;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    height: 44px;
+    margin-left: 293px;
+    padding-top: 10px;
+    text-align: center;
+    width: 133px;
+}
+.itembottomtxt_save:hover {
+    cursor: pointer;
+}
+textarea.itmbottomedt {
+    resize: none;
+    width: 425px;
+    height: 228px;
+    font-size: 13px;
+    color: #000;
+    overflow-y: auto;
+}
+/* Common Tertm */
+.commonsinfotab {
+    clear: both;
+    float: left;
+    width:320px;
+    height: 340px;
+    background-color: #e8e8e8;
+    padding: 15px;
+}
+.commonsinfo {
+    clear: both;
+    float: left;
+    width: 290px;
+    overflow-y: auto;
+    max-height: 268px;
+    font-size: 14px;
+}
+.commonrow {
+    clear: both;
+    float: left;
+    margin-bottom: 4px;
+    width: 288px;
+}
+input.inputcommondata {
+    border: 1px solid #000;
+    width: 287px;
+    font-size: 12px;
+}
+.savecommonterms {
+    clear: both;
+    float: left;
+    width: 80px;
+    margin-left: 200px;
+}
+.savecommonterms:hover {
+    cursor: pointer;
+}
+/* Shipping info */
+.shipping-info-form {
+    background-image: url(/img/itemdetails/shipinfo_bg.png);
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    height: 265px;
+    padding-left: 10px;
+    padding-top: 42px;
+    width: 438px;
+}
+.shipping-info-form .weight {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+    width: 300px;
+}
+.weight-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.weight-input {
+    float: left;
+    width: 55px;
+}
+.weight-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.shipinfo-input {
+    width: 50px;
+    background-color: #ffffff;
+    border: 1px solid  #000;
+}
+.weight-measure {
+    float: left;
+    padding-top: 3px;
+    margin-left: 7px;
+    width: 80px;
+}
+.cartoon-qty {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 300px;
+}
+.cartoon-qty-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.cartoon-qty-input {
+    float: left;
+    width: 55px;
+}
+.cartoon-qty-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.cartoon-dimension {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 425px;
+}
+.cartoon-dimension-txt {
+    clear: both;
+    float: left;
+    padding-top: 3px;
+    width: 90px;
+}
+.cartoon-dimension-input {
+    float: left;
+    width: 55px;
+}
+.cartoon-dimension-input.view {
+    height: 16px;
+    background-color: #fff;
+}
+.cartoon-dimension-txttile {
+    float: left;
+    width: 25px;
+    padding-top: 3px;
+    text-align: center;
+}
+.cartoon-dimension-measure {
+    float: left;
+    width: 75px;
+    padding-top: 3px;
+    text-align: left;
+}
+.special-charge-title {
+    margin-top: 20px;
+    float: left;
+    clear: both;
+    font-weight: bold;
+    font-size: 18px;
+}
+.special-charge-area {
+    clear: both;
+    float: left;
+    width: 192px;
+}
+.special-charge-row {
+    clear: both;
+    float: left;
+    margin-top: 5px;
+    width: 262px;
+}
+.special-charge-input {
+    clear: both;
+    float: left;
+    width: 55px;
+}
+.special-charge-input.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.special-charge-measure {
+    float: left;
+    padding-top: 3px;
+    margin-left: 7px;
+    width: 200px;
+}
+.special-order-restict-area {
+    float: left;
+    width: 224px;
+}
+.special-order-restict-title {
+    clear: both;
+    float: left;
+    width: 224px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.special-order-restict-value {
+    clear: both;
+    float: left;
+    width: 55px;
+    font-weight: normal;
+}
+.special-order-restict-value.view {
+    height: 16px;
+    background-color: #FFF;
+}
+.saveshipping {
+    cursor: pointer;
+    float: left;
+    margin-left: 92px;
+    width: 70px;
 }

@@ -894,22 +894,30 @@ class Database extends MY_Controller
             // Begin
             $item=$res['data'];
             $data=[];
-            if ($item['item_source']==$this->Inventory_Source) {
-                $inventory_list=$this->vendors_model->get_inventory_list();
-                $invoptions=array(
-                    'printshop_item_id'=>$item['printshop_inventory_id'],
-                    'inventory_list'=>$inventory_list,
+            $itemsequence_view='&nbsp;';
+            if ($item['item_active']==1) {
+                $seqoptions = [
+                    'item_sequence' => $item['item_sequence'],
+                    'items_total' => $this->items_model->get_items_count(['item_active'=>1]),
                     'mode' => $mode,
-                );
-                $inventory_view=$this->load->view('itemdetails/inventory_item_view', $invoptions, TRUE);
-            } else {
-                $inventory_view='&nbsp;';
+                ];
+                $itemsequence_view = $this->load->view('itemdetails/itemsequence_view',$seqoptions, TRUE);
             }
+//            if ($item['item_source']==$this->Inventory_Source) {
+//                $inventory_list=$this->vendors_model->get_inventory_list();
+//                $invoptions=array(
+//                    'printshop_item_id'=>$item['printshop_inventory_id'],
+//                    'inventory_list'=>$inventory_list,
+//                    'mode' => $mode,
+//                );
+//                $inventory_view=$this->load->view('itemdetails/inventory_item_view', $invoptions, TRUE);
+//            } else {
+//                $inventory_view='&nbsp;';
+//            }
 
             $headoptions=array(
                 'item_name'=>$item['item_name'],
-                'item_source'=>$item['item_source'],
-                'inventory_view'=>$inventory_view,
+                'itemseq_view' => $itemsequence_view,
                 'mode' => $mode,
             );
             /* Header */
@@ -1001,7 +1009,7 @@ class Database extends MY_Controller
                 $mdata['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
             }
 
-            $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array(),TRUE);
+            $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array('item_id'=>$item_id),TRUE);
 //            /* Special Checkout */
 //            /* Get special checkout data */
 //            $special_prices=$this->items_model->get_special_prices($item_id,0);

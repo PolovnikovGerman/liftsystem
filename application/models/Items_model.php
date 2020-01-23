@@ -34,6 +34,16 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    function get_items_count($options=array()) {
+        $this->db->select('count(item_id) as cnt',FALSE);
+        $this->db->from('sb_items');
+        foreach ($options as $key=>$value) {
+            $this->db->where($key,$value);
+        }
+        $result = $this->db->get()->row_array();
+        return $result['cnt'];
+    }
+
     function get_item($item_id) {
         $out=['result'=>$this->error_result,'msg'=>'Item Nit Found'];
         $this->db->select('i.* ');

@@ -9,8 +9,8 @@
         </div>
         <div class="location_view_tab">
             <?php if ($row['item_inprint_view'] != '') { ?>
-                <div class="location_upload" id="upl_<?= $i ?>">
-                    <a class="gallery" title="<?= $row['item_inprint_location'] ?>" href="<?= $row['item_inprint_view'] ?>">click here</a>
+                <div class="location_upload" data-title="<?= $row['item_inprint_location'] ?>" data-srclink="<?= $row['item_inprint_view'] ?>" id="upl_<?= $i ?>">
+                    click here
                 </div>
             <?php } else { ?>
                 <div class="location_upload" id="upl_<?= $i ?>">&nbsp;</div>
