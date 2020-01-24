@@ -108,4 +108,31 @@ class Itemdetails extends MY_Controller
          show_404();
     }
 
+    public function edit_specialcheck() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->session_error;
+            $mdata = [];
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $error = '';
+                $item=$session_data['item'];
+                $special_prices = $session_data['special_prices'];
+                $priceview=$this->load->view('itemdetails/specialcheck_priceedit_view',['prices' => $special_prices], TRUE);
+                $options=array(
+                    'item_name'=>$item['item_name'],
+                    'special_checkout'=>$item['special_checkout'],
+                    'special_shipping'=>$item['special_shipping'],
+                    'special_setup'=>$item['special_setup'],
+                    'prices'=>$priceview,
+                );
+                $mdata['content']=$this->load->view('itemdetails/specialcheckedit_view',$options,TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

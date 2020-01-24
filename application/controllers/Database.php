@@ -692,7 +692,8 @@ class Database extends MY_Controller
         if ($this->isAjax()) {
             $mdata=[];
             $error = '';
-            $mdata['pagename'] = usersession('page_name');
+            $page_name = usersession('page_name');
+            $mdata['pagename'] = (empty($page_name) ? '' : $page_name);
             $this->ajaxResponse($mdata, $error);
         }
     }
@@ -1020,8 +1021,10 @@ class Database extends MY_Controller
 
             $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array('item_id'=>$item_id),TRUE);
 //            /* Special Checkout */
+            if ($mode=='edit') {
+                $session_data['special_prices']=$this->items_model->get_special_prices($item_id,1);
+            }
 //            /* Get special checkout data */
-//            $special_prices=$this->items_model->get_special_prices($item_id,0);
 //            $special_options=array(
 //                'prices'=>$special_prices,
 //                'numprices'=>count($special_prices),
