@@ -29,4 +29,25 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    public function change_specialcheck_parameter($session_data, $data, $session_id) {
+        $out=['result'=>$this->error_result,'msg'=>'Unknown parameter'];
+        $entity = ifset($data,'entity','noname');
+        $fld = ifset($data,'fld','noname');
+        $newval=ifset($data,'newval');
+        $idx = ifset($data,'idx',0);
+        if ($entity=='item') {
+            $item = ifset($session_data,'item', []);
+            $out['msg']='Parameter '.$fld.' Not Found';
+            if (array_key_exists($fld,$item)) {
+                $item[$fld]=$newval;
+                $session_data['item']=$item;
+                usersession($session_id, $session_data);
+                firephplog($session_data,'Session');
+                $out['msg']='';
+                $out['result']=$this->success_result;
+            }
+        }
+        return $out;
+    }
+
 }

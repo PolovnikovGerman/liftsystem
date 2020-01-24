@@ -230,6 +230,20 @@ function init_itemdetails_edit() {
 
 function init_specialcheck_manage() {
     $("select.specialcheckout_selecttype").change(function(){
+        var params=new Array();
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: 0});
+        params.push({name: 'session_id', value: $("#specialsession").val()});
+        var url="/itemdetails/change_specialcheck_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
         if ($(this).val()==1) {
             $("div.specialcheckout_options").fadeIn(200);
         } else {

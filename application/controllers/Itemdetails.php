@@ -120,7 +120,9 @@ class Itemdetails extends MY_Controller
                 $item=$session_data['item'];
                 $special_prices = $session_data['special_prices'];
                 $priceview=$this->load->view('itemdetails/specialcheck_priceedit_view',['prices' => $special_prices], TRUE);
+                $special_session_id = 'spec'.uniq_link();
                 $options=array(
+                    'session_id' => $special_session_id,
                     'item_name'=>$item['item_name'],
                     'special_checkout'=>$item['special_checkout'],
                     'special_shipping'=>$item['special_shipping'],
@@ -128,7 +130,34 @@ class Itemdetails extends MY_Controller
                     'prices'=>$priceview,
                 );
                 $mdata['content']=$this->load->view('itemdetails/specialcheckedit_view',$options,TRUE);
+                $special_session = [
+                    // 'special_checkout'=>$item['special_checkout'],
+                    // 'special_shipping'=>$item['special_shipping'],
+                    // 'special_setup'=>$item['special_setup'],
+                    'item' => $item,
+                    'prices' => $special_prices,
+                ];
+                usersession($special_session_id, $special_session);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
+    public function change_specialcheck_parameter() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->session_error;
+            $mdata = [];
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->change_specialcheck_parameter($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

@@ -818,7 +818,8 @@
     background-color: #FFF;
     text-align: center;
     height: 18px;
-    padding-top: 2px;
+    line-height: 18px;
+    /* padding-top: 2px; */
 }
 .specialcheckoutprice_qty.view {
     text-align: center;
@@ -833,7 +834,8 @@
     background-color: #FFF;
     text-align: center;
     height: 18px;
-    padding-top: 2px;
+    line-height: 18px;
+    /* padding-top: 2px; */
 }
 .specialcheckoutprice_price.view {
     text-align: center;
@@ -848,7 +850,8 @@
     background-color: #FFF;
     text-align: center;
     height: 18px;
-    padding-top: 2px;
+    /* padding-top: 2px; */
+    line-height: 18px;
 }
 .specialcheckoutprice_amount.view {
     text-align: center;
@@ -864,7 +867,8 @@
     background-color: #FFF;
     text-align: center;
     height: 18px;
-    padding-top: 2px;
+    line-height: 18px;
+    /* padding-top: 2px; */
 }
 .specialcheckoutprice_profitperc {
     float: left;
@@ -876,7 +880,8 @@
     background-color: #FFF;
     text-align: center;
     height: 18px;
-    padding-top: 2px;
+    line-height: 18px;
+    /* padding-top: 2px; */
 }
 .savespecialcheckout {
     float: right;
