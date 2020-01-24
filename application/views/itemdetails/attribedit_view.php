@@ -1,7 +1,8 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 23.01.20
- * Time: 20:15
- */
+<div class="attributes_txtdat">
+    <div class="attributes_row overflowtext">
+        <input type="text" class="attribut_edittxt itemactiveinput" id="item_description1" data-fld="item_description1" value="<?= $item_description1 ?>"/>
+    </div>
+    <div class="attributes_row">
+        <input type="text" class="attribut_edittxt itemactiveinput" id="item_description2" data-fld="item_description2" value="<?= $item_description2 ?>"/>
+    </div>
+</div>

@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Itemdetails extends MY_Controller
 {
+    private $session_error = 'Edit session lost. Please, reload page';
 
      public function __construct()
     {
@@ -25,7 +26,7 @@ class Itemdetails extends MY_Controller
                      if ($postdata['param']=='bottom_text') {
                          $mdata['content']=$this->load->view('itemdetails/botttextview_view',array('text'=>$item['bottom_text']),TRUE);
                      } else {
-                         $data = explode('|', $item['common_terms']);
+                         $data = $this->items_model->get_commonterms_item($item_id);
                          $mdata['content']=$this->load->view('itemdetails/commontermsview_view',array('terms'=>$data),TRUE);
                      }
 
@@ -80,6 +81,26 @@ class Itemdetails extends MY_Controller
                      $error = '';
                      $item=$res['data'];
                      $mdata['content']=$this->load->view('itemdetails/shipping_view_info', $item, TRUE);
+                 }
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+    // Edit function
+    public function change_parameter() {
+         if ($this->isAjax()) {
+             $postdata=$this->input->post();
+             $error=$this->session_error;
+             $mdata=[];
+             $session_id=ifset($postdata, 'session_id','defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->change_parameter($session_data, $postdata, $session_id);
+                 $error=$res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
                  }
              }
              $this->ajaxResponse($mdata, $error);

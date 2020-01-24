@@ -12,6 +12,13 @@
     background-color: #fff;
     font-size: 11px;
     margin: 0;
+    color: #2e2e2e;
+}
+.itemdata select {
+    background-color: #fff;
+    font-size: 11px;
+    margin: 0;
+    color: #000;
 }
 .itemdata > .heading {
     clear: both;
@@ -80,6 +87,11 @@
     float: left;
     width: 340px;
     font-size: 14px;
+}
+.itemdata input.itemsequenceinpt {
+    width: 44px;
+    height: 18px;
+    font-size: 12px;
 }
 .itemdata .itemsequence_area {
     float: left;
@@ -940,6 +952,9 @@ input.specialsetupinpt {
     margin-bottom: 3px;
     overflow: hidden;
     width: 195px;
+}
+.itemdata input.coloroptionvalue {
+    width: 171px;
 }
 /* Meta & Tags */
 .itemdata .metadatas {

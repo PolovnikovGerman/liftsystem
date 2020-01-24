@@ -669,6 +669,25 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function edit_item() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty Item';
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata,'item_id',0);
+            if (!empty($item_id)) {
+                $res = $this->_prepare_itemdetails($item_id, 'edit');
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$res['content'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function restore_databaseview() {
         if ($this->isAjax()) {
             $mdata=[];
@@ -893,6 +912,13 @@ class Database extends MY_Controller
             $out['result']=$this->success_result;
             // Begin
             $item=$res['data'];
+            if ($mode=='edit') {
+                $session_id=uniq_link(15);
+                $session_data=[
+                    'item' => $item,
+                ];
+            }
+
             $data=[];
             $itemsequence_view='&nbsp;';
             if ($item['item_active']==1) {
@@ -903,39 +929,20 @@ class Database extends MY_Controller
                 ];
                 $itemsequence_view = $this->load->view('itemdetails/itemsequence_view',$seqoptions, TRUE);
             }
-//            if ($item['item_source']==$this->Inventory_Source) {
-//                $inventory_list=$this->vendors_model->get_inventory_list();
-//                $invoptions=array(
-//                    'printshop_item_id'=>$item['printshop_inventory_id'],
-//                    'inventory_list'=>$inventory_list,
-//                    'mode' => $mode,
-//                );
-//                $inventory_view=$this->load->view('itemdetails/inventory_item_view', $invoptions, TRUE);
-//            } else {
-//                $inventory_view='&nbsp;';
-//            }
 
             $headoptions=array(
                 'item_name'=>$item['item_name'],
                 'itemseq_view' => $itemsequence_view,
                 'mode' => $mode,
             );
+            if ($mode=='edit') {
+                $headoptions['session']=$session_id;
+            }
             /* Header */
             $data['header']=$this->load->view('itemdetails/detailhead_view',$headoptions,TRUE);
-
-            $commons=$this->items_model->get_commonterms_item($item_id);
-            $common_terms='';
-            $common_idx='';
-            foreach ($commons as $row) {
-                $common_terms.=$row['common_term'].'|';
-                $common_idx.=$row['term_id'].'|';
+            if ($mode=='edit') {
+                $session_data['commons']=$this->items_model->get_commonterms_item($item_id,10);
             }
-            if ($common_terms!='') {
-                $common_terms=substr($common_terms,0,-1);
-                $common_idx=substr($common_idx,0,-1);
-            }
-            $item['common_terms']=$common_terms;
-            $item['common_idx']=$common_idx;
             // Key Info
             $info_options = [
                 'item' => $item,
@@ -946,6 +953,9 @@ class Database extends MY_Controller
             $offset=0;
             $limit=$this->config->item('slider_images');
             $img_display = $this->itemimages_model->get_images_item($item_id,$limit,$offset);
+            if ($mode=='edit') {
+                $session_data['item_images']=$img_display;
+            }
             /* Video View */
             $item_dat['videooption']='';
 //            $videodat=$this->itemimages_model->get_item_media($item_id,'VIDEO');
@@ -981,10 +991,7 @@ class Database extends MY_Controller
             );
             $data['images']=$this->load->view('itemdetails/images_view',$media_options,TRUE);
             // Vector
-            if ($mode=='view') {
-                $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
-            } else {
-            }
+            $data['vectorfiledata']=$this->load->view('itemdetails/vectorfile_view',$item,TRUE);
             /* Vendor Item Dat */
             if (empty($item['printshop_inventory_id'])) {
                 $vendor_dat=$this->vendors_model->get_vendor_item($item['vendor_item_id']);
@@ -1006,7 +1013,9 @@ class Database extends MY_Controller
             if ($mode=='view') {
                 $data['vendorprices']=$this->load->view('itemdetails/vendorprice_view',$vend_options,TRUE);
             } else {
-                $mdata['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
+                $data['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
+                $session_data['vendor']=$vendor_dat;
+                $session_data['vendor_prices']=$vendor_prices;
             }
 
             $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array('item_id'=>$item_id),TRUE);
@@ -1025,6 +1034,7 @@ class Database extends MY_Controller
                 $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
             } else {
                 $imprintdata=$this->load->view('itemdetails/imprintsedit_view',array('imprint'=>$imprint),TRUE);
+                $session_data['imprints']=$imprint;
             }
             $imprint_options=array(
                 'imprint_data'=>$imprintdata,
@@ -1040,7 +1050,8 @@ class Database extends MY_Controller
                 if ($mode=='view') {
                     $data['options']=$this->load->view('itemdetails/colorsview_view',$color_options, TRUE);
                 } else {
-
+                    $data['options']=$this->load->view('itemdetails/colorsedit_view',$color_options, TRUE);
+                    $session_data['item_colors']=$colors;
                 }
             } else {
                 $colors = $this->itemcolors_model->get_inventcolors_item($item['printshop_inventory_id']);
@@ -1052,7 +1063,7 @@ class Database extends MY_Controller
             if ($mode=='view') {
                 $data['metadata']=$this->load->view('itemdetails/metaview_view',$item,TRUE);
             } else {
-
+                $data['metadata']=$this->load->view('itemdetails/metaedit_view',$item,TRUE);
             }
 
             // Get Data About item_price
@@ -1081,7 +1092,15 @@ class Database extends MY_Controller
                         );
                         $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
                     } else {
-
+                        $price_options=array(
+                            'prices'=>$prices,
+                            'common_prices'=>$common_prices,
+                            'numprices'=> $this->MAX_PROMOPRICES-1,
+                        );
+                        $data['profitdat']=$this->load->view('itemdetails/promo_profit_view', $price_options,TRUE);
+                        $data['prices_view']=$this->load->view('itemdetails/promo_itempriceedit_view',$price_options,TRUE);
+                        $session_data['item_prices']=$prices;
+                        $session_data['common_prices']=$common_prices;
                     }
                 } else {
                     $prices=$this->prices_model->get_price_itemedit($item_id);
@@ -1115,6 +1134,34 @@ class Database extends MY_Controller
                             'prices'=>$prices_view,
                         );
                         $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+                    } else {
+                        $research_options = [
+                            'research_price'=>$outresearch,
+                            'price_types'=>$this->config->item('price_types'),
+                        ];
+                        $research_data=$this->load->view('itemdetails/researchedit_data_view',$research_options,TRUE);
+                        $profit_options = [
+                            'prices'=>$prices,
+                            'price_types'=>$this->config->item('price_types'),
+                        ];
+                        $profitdat=$this->load->view('itemdetails/stressball_profit_view',$profit_options,TRUE);
+                        $numprice=count($this->config->item('price_types'))-1;
+                        $priceview_options= [
+                            'prices'=>$prices,
+                            'price_types'=>$this->config->item('price_types'),
+                            'numprice'=>$numprice,
+                        ];
+                        $prices_view=$this->load->view('itemdetails/stressball_itempriceedit_view',$priceview_options,TRUE);
+                        // Collect all together
+                        $price_options=array(
+                            'researchdata'=>$research_data,
+                            'price_types'=>$this->config->item('price_types'),
+                            'numprice'=>$numprice,
+                            'profit_dat'=>$profitdat,
+                            'prices'=>$prices_view,
+                        );
+                        $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
+                        $session_data['item_prices']=$prices;
                     }
                 }
                 $data['pricearea']='active';
@@ -1122,14 +1169,15 @@ class Database extends MY_Controller
             if ($mode=='view') {
                 $data['attributes']=$this->load->view('itemdetails/attribview_view',$item, TRUE);
             } else {
-
+                $data['attributes']=$this->load->view('itemdetails/attribedit_view',$item, TRUE);
             }
             // Get Data about Similar Items
             $similar = $this->similars_model->get_similar_items($item_id);
             if ($mode=='view') {
                 $data['simulardata']=$this->load->view('itemdetails/simulitems_view',array('similar'=>$similar),TRUE);
             } else {
-
+                $data['simulardata']=$this->load->view('itemdetails/simuledit_view',array('similar'=>$similar),TRUE);
+                $session_data['simular']=$similar;
             }
             $footer_options=[
                 'edit'=>($mode=='view' ? 0 : 1),
@@ -1140,18 +1188,14 @@ class Database extends MY_Controller
                 $footer_options['commons']='Common Terms';
             }
             $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
-//            $data['popups']=$this->load->view('itemdetails/details_popup_view',array(),TRUE);
-//            $data['loader']=$this->load->view('loader_view',array('loader'=>1,'loader_id'=>'loader','inner_id'=>'loaderimg','inner_message'=>'Data Prepare....'),TRUE);
-//
-//            // $item_dat['shippinfo']=$this->load->view('item/shipping_info_view',$item_dat,TRUE);
-//            /* Compile View */
-//            $dat = array();
-//            $dat['header']=$this->load->view('admin_modern/admin_header_view',$head,TRUE);
-//            $dat['top_menu']=$this->load->view('admin_modern/top_menu_view',array('current_item'=>'database'),TRUE);
-            if ($mode=='view') {
-                $content=$this->load->view('itemdetails/details_view',$data,TRUE);
-            } else {
-                $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
+            $content=$this->load->view('itemdetails/details_view',$data,TRUE);
+//            if ($mode=='view') {
+//                $content=$this->load->view('itemdetails/details_view',$data,TRUE);
+//            } else {
+//                $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
+//            }
+            if ($mode=='edit') {
+                usersession($session_id, $session_data);
             }
             $out['content'] = $content;
         }

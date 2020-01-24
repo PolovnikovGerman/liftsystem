@@ -4,6 +4,6 @@
     </div>
 <?php } else { ?>
     <div class="itemsequence_area">
-        <span>SEQ:</span> <input type="text" id="itemsequence" value="<?=$item_sequence?>"/> of <?=$items_total?>
+        <span>SEQ:</span> <input type="text" class="itemactiveinput itemsequenceinpt" data-fld="item_sequence" value="<?=$item_sequence?>"/> of <?=$items_total?>
     </div>
 <?php } ?>

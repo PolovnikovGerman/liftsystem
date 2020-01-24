@@ -31,6 +31,7 @@ if (!defined('BASEPATH'))
  * @property Imprints_model imprints_model
  * @property Itemcolors_model itemcolors_model
  * @property Similars_model similars_model
+ * @property Itemdetails_model itemdetails_model
  */
 
 

@@ -57,26 +57,13 @@ function init_itemdetails_view() {
         var item=$(this).data('item');
         show_shipping(item);
     });
+    $("div.activate_btn").click(function(){
+        var item=$(this).data('item');
+        activate_edit(item);
+    });
     // $(".viewvideo").click(function(){
     //     show_video();
     // })
-    // $("div.activate_btn").click(function(){
-    //     activate_edit();
-    // });
-    // // Competitors title
-    // $("td.competitorname").bt({
-    //     fill: '#FFFFFF',
-    //     positions: ['right'],
-    //     cornerRadius: 10,
-    //     width: 128,
-    //     padding: 15,
-    //     strokeWidth: 2,
-    //     strokeStyle : '#000000',
-    //     strokeHeight: 18,
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // });
-
 }
 // VIEW Functions
 /* Close Preview */
@@ -158,7 +145,53 @@ function show_shipping(item) {
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
             $("#editModal").modal('show');
         } else {
-
+            show_error(response);
         }
     },'json');
+}
+
+// Activate Edit
+function activate_edit(item) {
+    var params=new Array();
+    params.push({name: 'item_id', value: item});
+    var url='/database/edit_item';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $(".dbcontentarea").hide();
+            $("#itemdetailsview").show().empty().html(response.data.content);
+            init_itemdetails_edit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_itemdetails_edit() {
+    $(".closeitemdetails").click(function(){
+        if (confirm('You realy want to exit without saving?')==true) {
+            console.log('Exit');
+            close_view();
+        }
+    });
+    $("#slider").easySlider({
+        nextText : '',
+        prevText : '',
+        vertical : false
+    });
+    $("input.itemactiveinput").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: 0});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // simularselect
 }
