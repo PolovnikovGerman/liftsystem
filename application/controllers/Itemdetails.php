@@ -130,12 +130,23 @@ class Itemdetails extends MY_Controller
                     'prices'=>$priceview,
                 );
                 $mdata['content']=$this->load->view('itemdetails/specialcheckedit_view',$options,TRUE);
+                $vendor_prices=$session_data['vendor_prices'];
+                usersession($session_id, $session_data);
+                $vend_prices = $session_data['vendor_prices'];
+                $vendor = $session_data['vendor'];
+                $vendor_prices = [];
+                $vendor_prices[]=[
+                    'vendorprice_qty' => 0,
+                    'vendorprice_val' => $vendor['vendor_item_blankcost'],
+                    'vendorprice_color' => $vendor['vendor_item_cost'],
+                ];
+                foreach ($vend_prices as $vrow) {
+                    $vendor_prices[]=$vrow;
+                }
                 $special_session = [
-                    // 'special_checkout'=>$item['special_checkout'],
-                    // 'special_shipping'=>$item['special_shipping'],
-                    // 'special_setup'=>$item['special_setup'],
                     'item' => $item,
                     'prices' => $special_prices,
+                    'vendor_prices' => $vendor_prices,
                 ];
                 usersession($special_session_id, $special_session);
             }
@@ -157,11 +168,60 @@ class Itemdetails extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
+                    if ($res['type']=='price') {
+                        $mdata['amount']=$res['amount'];
+                        $mdata['profit']=$res['profit'];
+                        $mdata['profit_percent']=$res['profit_percent'];
+                        $mdata['profit_class']=$res['profit_class'];
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function save_specialcheckout() {
+         if ($this->isAjax()) {
+             $postdata=$this->input->post();
+             $error=$this->session_error;
+             $mdata=[];
+             $session_id = ifset($postdata, 'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             $specsession_id = ifset($postdata, 'specsession_id', 'specsess');
+             $specsession_data = usersession($specsession_id);
+             if (!empty($session_data) && !empty($specsession_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->save_specialcheckout($session_data, $specsession_data, $session_id, $specsession_id);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                 }
+             }
+             $this->ajaxResponse($mdata,$error);
+         }
+         show_404();
+    }
+
+    // Save item data
+    public function save_itemdetails() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata = [];
+             $error=$this->session_error;
+             $session_id = ifset($postdata, 'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->save_itemdata($session_data, $session_id, $this->USR_ID, $this->USR_ROLE);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                 }
+             }
+             $this->ajaxResponse($mdata,$error);
+         }
+         show_404();
     }
 
 }

@@ -279,5 +279,18 @@ Class Prices_model extends My_Model
         return $result;
     }
 
+    function recalc_special_profit($vendor_price, $spec_qty, $spec_price ) {
+        $base_prof=$vendor_price[0]['vendorprice_color'];
+        /* Init Profits array */
+        foreach ($vendor_price as $row) {
+            if (intval($row['vendorprice_qty'])>0 && $row['vendorprice_qty']<$spec_qty) {
+                $base_prof=floatval($row['vendorprice_color'])==0 ? floatval($row['vendorprice_val']) : $row['vendorprice_color'];
+            }
+        }
+        $profitval=($spec_price-$base_prof)*$spec_qty;
+        return $profitval;
+    }
+
+
 
 }

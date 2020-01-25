@@ -171,9 +171,22 @@ function activate_edit(item) {
 function init_itemdetails_edit() {
     $(".closeitemdetails").click(function(){
         if (confirm('You realy want to exit without saving?')==true) {
-            console.log('Exit');
             close_view();
         }
+    });
+    // Save
+    $("div.saveedit_btn").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/save_itemdetails";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                close_view();
+            } else {
+                show_error(response);
+            }
+        },'json');
+
     });
     $("#slider").easySlider({
         nextText : '',
@@ -231,6 +244,7 @@ function init_itemdetails_edit() {
 function init_specialcheck_manage() {
     $("select.specialcheckout_selecttype").change(function(){
         var params=new Array();
+        var newval = $(this).val();
         params.push({name: 'entity', value: 'item'});
         params.push({name: 'fld', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
@@ -239,82 +253,88 @@ function init_specialcheck_manage() {
         var url="/itemdetails/change_specialcheck_parameter";
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                if (newval==1) {
+                    $("div.specialcheckout_options").fadeIn(200);
+                } else {
+                    $("div.specialcheckout_options").fadeOut(200);
+                }
+                init_specialcheck_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.specialcheckout_checkbox").unbind('change').change(function(){
+        var params=new Array();
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval=1;
+        }
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'idx', value: 0});
+        params.push({name: 'session_id', value: $("#specialsession").val()});
+        var url="/itemdetails/change_specialcheck_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_specialcheck_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.specialsetupinpt").unbind('change').change(function () {
+        var params=new Array();
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: 0});
+        params.push({name: 'session_id', value: $("#specialsession").val()});
+        var url="/itemdetails/change_specialcheck_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_specialcheck_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".specpriceinput").unbind('change').change(function(){
+        var params=new Array();
+        var valueidx=$(this).data('idx');
+        params.push({name: 'entity', value: 'prices'});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'session_id', value: $("#specialsession").val()});
+        var url="/itemdetails/change_specialcheck_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // Update profit
+                // Update amount
+                $("div.specialcheckoutprice_profitperc[data-idx='"+valueidx+"']").removeClass('white').removeClass('green').removeClass('orange').removeClass('red').removeClass('maroon').removeClass('black').empty().html(response.data.profit_percent).addClass(response.data.profit_class);
+                $("div.specialcheckoutprice_profit[data-idx='"+valueidx+"']").empty().html(response.data.profit);
+                $("div.specialcheckoutprice_amount[data-idx='"+valueidx+"']").empty().html(response.data.amount);
+                init_specialcheck_manage();
 
             } else {
                 show_error(response);
             }
         },'json');
-        if ($(this).val()==1) {
-            $("div.specialcheckout_options").fadeIn(200);
-        } else {
-            $("div.specialcheckout_options").fadeOut(200);
-        }
-    })
-    // $("input.specialsetupinpt").change(function(){
-    //     if ($("input.specialsetupinpt").val()=='') {
-    //         $("input#old_special_setup").val('');
-    //     } else {
-    //         newval=parseFloat($("input.specialsetupinpt").val());
-    //         if (isNaN(newval)) {
-    //             $("input.specialsetupinpt").val($("input#old_special_setup").val());
-    //             $.flash('Incorrect Value', {timeout:3000});
-    //         } else {
-    //             newval=newval.toFixed(2);
-    //             $("input.specialsetupinpt").val(newval);
-    //             $("input#old_special_setup").val(newval);
-    //         }
-    //     }
-    // })
-    // $("input.specpriceqty").change(function(){
-    //     /* specpriceqty0 */
-    //     newval=$("#"+this.id).val();
-    //     objid=this.id.substr(12);
-    //     if (newval=='') {
-    //         $("input#old_specpriceqty"+objid).val('');
-    //         $("input#specpriceval"+objid).val('');
-    //         $("input#old_specpriceval"+objid).val('');
-    //         $("input#old_specamount"+objid).val('');
-    //         $("div#amountrow"+objid).empty();
-    //         $("input#profitval"+objid).val('');
-    //         $("div#profitrow"+objid).empty();
-    //         $("div#profperc"+objid).removeClass('white').removeClass('green').removeClass('orange').removeClass('red').removeClass('maroon').removeClass('black').empty();
-    //     } else {
-    //         newval=parseInt(newval);
-    //         if (isNaN(newval)) {
-    //             $("input#"+this.id).val($("input#old_specpriceqty"+objid).val());
-    //             $.flash('Incorrect Value', {timeout:3000});
-    //         } else {
-    //             $("input#"+this.id).val(newval);
-    //             $("input#old_specpriceqty"+objid).val(newval);
-    //             recalc_specamount(objid);
-    //         }
-    //     }
-    // })
-    // $("input.specpriceval").change(function(){
-    //     /* specpriceqty0 */
-    //     newval=$("#"+this.id).val();
-    //     objid=this.id.substr(12);
-    //     if (newval=='') {
-    //         $("input#old_specpriceval"+objid).val('');
-    //         $("input#old_specamount"+objid).val('');
-    //         $("div#amountrow"+objid).empty();
-    //         $("input#profitval"+objid).val('');
-    //         $("div#profitrow"+objid).empty();
-    //         $("div#profperc"+objid).removeClass('white').removeClass('green').removeClass('orange').removeClass('red').removeClass('maroon').removeClass('black').empty();
-    //     } else {
-    //         newval=parseFloat(newval);
-    //         if (isNaN(newval)) {
-    //             $("input#"+this.id).val($("input#old_specpriceval"+objid).val());
-    //             $.flash('Incorrect Value', {timeout:3000});
-    //         } else {
-    //             newval=newval.toFixed(2);
-    //             $("input#"+this.id).val(newval);
-    //             $("input#old_specpriceval"+objid).val(newval);
-    //             recalc_specamount(objid);
-    //         }
-    //     }
-    // })
-    // $("div.savespecialcheckout").click(function(){
-    //     save_specialcheckout();
-    // })
+    });
+    $("div.savespecialcheckout").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'specsession_id', value: $("#specialsession").val()});
+        var url="/itemdetails/save_specialcheckout";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
 }

@@ -1179,7 +1179,12 @@ class Database extends MY_Controller
             if ($mode=='view') {
                 $data['simulardata']=$this->load->view('itemdetails/simulitems_view',array('similar'=>$similar),TRUE);
             } else {
-                $data['simulardata']=$this->load->view('itemdetails/simuledit_view',array('similar'=>$similar),TRUE);
+                $item_list=$this->items_model->get_item_list($item_id);
+                $simular_options =[
+                    'similar'=>$similar,
+                    'item_list' => $item_list,
+                ];
+                $data['simulardata']=$this->load->view('itemdetails/simuledit_view', $simular_options,TRUE);
                 $session_data['simular']=$similar;
             }
             $footer_options=[

@@ -12,7 +12,7 @@
             <input type="text" class="specpriceqty specpriceinput" data-fld="price_qty" data-entity="special_price" data-idx="<?=$row['item_specprice_id']?>" value="<?=$row['price_qty']?>"/>
         </div>
         <div class="specialcheckoutprice_price">
-            <input type="text" class="specpriceval" data-fld="price" data-entity="special_price" data-idx="<?=$row['item_specprice_id']?>" value="<?=$row['price'] ?>"/>
+            <input type="text" class="specpriceval specpriceinput" data-fld="price" data-entity="special_price" data-idx="<?=$row['item_specprice_id']?>" value="<?=$row['price'] ?>"/>
         </div>
         <div class="specialcheckoutprice_amount" data-idx="<?=$row['item_specprice_id']?>">
             <?=(floatval($row['amount'])==0 ? '' : '$'.number_format($row['amount'],2,'.',''))?>

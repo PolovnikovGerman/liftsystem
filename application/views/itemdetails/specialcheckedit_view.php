@@ -22,9 +22,7 @@
             </div>
             <div class="specialcheckout_setup">
                 Setup Price
-                <input type="hidden" id="old_special_setup" value="<?= $special_setup ?>"/>
-                <input type="text" class="specialsetupinpt" id="special_setup" name="special_setup"
-                       value="<?= $special_setup ?>"/>
+                <input type="text" class="specialsetupinpt" data-fld="special_setup"  value="<?= $special_setup ?>"/>
             </div>
         </div>
         <div class="specialcheckout_prices"><?= $prices ?></div>
