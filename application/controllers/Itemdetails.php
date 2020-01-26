@@ -203,6 +203,28 @@ class Itemdetails extends MY_Controller
          show_404();
     }
 
+    public function edit_footer() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            $error = $this->session_error;
+            $mdata=[];
+            if (!empty($session_data)) {
+                $error = '';
+                $item = $session_data['item'];
+                    $mdata['content'] = $this->load->view('itemdetails/botttextedit_view', array('text' => $item['bottom_text']), TRUE);
+//                } else {
+//                    $data = $this->items_model->get_commonterms_item($item_id);
+//                    $mdata['content'] = $this->load->view('itemdetails/commontermsview_view', array('terms' => $data), TRUE);
+//                }
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Save item data
     public function save_itemdetails() {
          if ($this->isAjax()) {

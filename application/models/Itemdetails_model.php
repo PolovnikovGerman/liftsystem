@@ -179,10 +179,10 @@ Class Itemdetails_model extends My_Model
         if (empty(ifset($detal,'item_metadescription',''))) {
             $out_mgs.='Meta description required'.PHP_EOL;
         }
-        if (isset($detal['item_metakeywords']) && empty ($detal['item_metakeywords'])) {
+        if (empty(ifset($detal,'item_metakeywords',''))) {
             $out_mgs.='Meta keywords required'.PHP_EOL;
         }
-        if (isset($detal['item_description1']) && empty($detal['item_description1'])) {
+        if (empty(ifset($detal,'item_description1',''))) {
             $out_mgs.='Attributes (row 1) required'.PHP_EOL;
         }
         if (isset($detal['item_description2']) && empty($detal['item_description2']) && $detal['item_template']=='Stressball') {

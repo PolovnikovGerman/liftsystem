@@ -1,7 +1,7 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.01.20
- * Time: 13:41
- */
+<div class="itembottomtxt">
+    <div class="itembottomtxt_title">Bottom Text</div>
+    <div class="itembottomtxt_data">
+        <textarea class="itmbottomedt" id="itmbottomedt"><?=$text?></textarea>
+    </div>
+    <div class="itembottomtxt_save">Save</div>
+</div>

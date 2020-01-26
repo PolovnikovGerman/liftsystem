@@ -915,6 +915,7 @@ class Database extends MY_Controller
             $item=$res['data'];
             if ($mode=='edit') {
                 $session_id=uniq_link(15);
+                $item['item_vector_id']=1;
                 $session_data=[
                     'item' => $item,
                 ];
