@@ -219,6 +219,9 @@
     color: #cccccc;
     text-align: center;
 }
+.itemdata .location_view.edit {
+    width: 43px;
+}
 .itemdata .location_popular {
     width: 28px;
     color: #cccccc;
@@ -229,13 +232,14 @@
     width: 360px;
     margin-left: 7px;
     overflow-y: auto;
-    max-height: 177px;
+    max-height: 195px;
     margin-top: 3px;
 }
 .itemdata .imprintdatarow {
     clear: both;
     float: left;
-    width: 344px;
+    /* width: 344px; */
+    width: 357px;
 }
 .itemdata .location_name_tab {
     float: left;
@@ -248,6 +252,9 @@
     overflow: hidden;
     white-space: nowrap;
     border-right: 1px solid #FFFFFF;
+}
+.itemdata .location_name_tab.locationedit {
+    cursor: pointer;
 }
 .itemdata .location_size_tab {
     float: left;
@@ -263,7 +270,7 @@
 }
 .itemdata .location_view_tab {
     float: left;
-    width: 67px;
+    /* width: 67px; */
     height: 16px;
     padding-left: 3px;
     color: #cccccc;
@@ -291,11 +298,9 @@
 .itemdata .location_del {
     float: left;
     width: 23px;
-    color: #cacafc;
-    font-size: 12px;
+    color: #ffffff;
+    font-size: 14px;
     font-weight: normal;
-}
-.itemdata .location_del:hover {
     cursor: pointer;
 }
 .itemdata .location_popular_tab {
@@ -1509,4 +1514,73 @@ input.inputcommondata {
     float: left;
     margin-left: 92px;
     width: 70px;
+}
+/* Imprint edit */
+/* Popup Location */
+.dialog-location-body {
+    background: url('/img/itemdetails/imprinting-itemdetails-bg.png');
+    clear: both;
+    float: left;
+    height: 315px;
+    padding: 17px;
+    width: 462px;
+}
+.dialog-location-row {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 425px;
+}
+.dialog-location-rowlegend {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100px;
+}
+.dialog-location-rowvalue {
+    float:left;
+    margin-left:5px;
+    width:230px;
+}
+.dialog-location-rowvalue.ainame {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    height: 45px;
+    line-height: 45px;
+}
+input.imprintlocationedit {
+    border: 1px solid #000000;
+    font-size: 14px;
+    height: 16px;
+    width: 235px;
+}
+.loactionview_preview {
+    float: left;
+    width: 150px;
+    height: 150px;
+}
+.loactionview_preview img {
+    width: 100%;
+}
+.delimprintview {
+    float: left;
+    background: #000;
+    color: #fff;
+    width: 16px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    top: -150px;
+    left: 134px;
+}
+.savelocationload {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 336px;
+    width: 120px;
 }

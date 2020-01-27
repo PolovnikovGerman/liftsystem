@@ -320,7 +320,103 @@ class Itemdetails extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
 
+    public function del_imprintlocation() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata=[];
+             $error = $this->session_error;
+             $session_id = ifset($postdata,'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->del_imprintlocation($postdata, $session_data, $session_id);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                     $mdata['content']=$this->load->view('itemdetails/imprintsedit_view',array('imprint'=>$res['imprints']),TRUE);
+                 }
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+
+    public function edit_imprintlocation() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->edit_imprintlocation($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $imprsession_id = 'imprint'.uniq_link(10);
+                    usersession($imprsession_id, ['imprint'=>$res['imprint']]);
+                    $options = [
+                        'session' => $imprsession_id,
+                        'imprint' => $res['imprint'],
+                    ];
+                    $mdata['content']=$this->load->view('itemdetails/imprintlocationedit_view', $options,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    function change_imprintlocation() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $imprsession = ifset($postdata,'imprsession', 'defsess');
+            $imprsession_data = usersession($imprsession);
+            if (!empty($imprsession_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->change_imprintlocation($postdata, $imprsession_data, $imprsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    if ($res['newfld']=='item_inprint_view') {
+                        $options = [
+                            'item_inprint_view' => $res['imprintview_src'],
+                        ];
+                        $mdata['content']=$this->load->view('itemdetails/iteminprint_preview', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    function save_imprintlocation() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $imprsession = ifset($postdata, 'imprsession','defsess');
+            $imprsession_data = usersession($imprsession);
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($imprsession_data) && !empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->save_imprint($imprsession_data, $imprsession, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$this->load->view('itemdetails/imprintsedit_view',array('imprint'=>$res['imprints']),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     // Save item data

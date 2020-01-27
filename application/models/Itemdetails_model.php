@@ -5,6 +5,7 @@ Class Itemdetails_model extends My_Model
 
     private $STRESSBALL_TEMPLATE='Stressball';
     private $Inventory_Source='Stock';
+    private $IMPRINT_NUMBER=12;
 
     function __construct()
     {
@@ -16,7 +17,7 @@ Class Itemdetails_model extends My_Model
         $entity = ifset($data,'entity','noname');
         $fld = ifset($data,'fld','noname');
         $newval=ifset($data,'newval');
-        $idx = ifset($data,'idx',0);
+        $key = ifset($data,'idx',0);
         if ($entity=='item') {
             $item = ifset($session_data,'item', []);
             $out['msg']='Parameter '.$fld.' Not Found';
@@ -26,6 +27,21 @@ Class Itemdetails_model extends My_Model
                 usersession($session_id, $session_data);
                 $out['msg']='';
                 $out['result']=$this->success_result;
+            }
+        } elseif ($entity=='imprints') {
+            $out['msg']='Imprint Location Not found';
+            $imprints = $session_data['imprints'];
+            $idx = 0;
+            foreach ($imprints as $row) {
+                if ($row['item_inprint_id']==$key) {
+                    $imprints[$idx][$fld]=$newval;
+                    $session_data['imprints']=$imprints;
+                    usersession($session_id, $session_data);
+                    $out['msg']='';
+                    $out['result']=$this->success_result;
+                    break;
+                }
+                $idx++;
             }
         }
         return $out;
@@ -162,6 +178,119 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    public function del_imprintlocation($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Imprint Location Not Found'];
+        $imprints = $session_data['imprints'];
+        $deleted = $session_data['deleted'];
+        $key = ifset($postdata, 'imprint_key', 0);
+        $minidx = 0;
+        $found = 0;
+        $newlocation = [];
+        foreach ($imprints as $row) {
+            if ($row['item_inprint_id']==$key) {
+                $found=1;
+                if ($key>0) {
+                    $deleted[]=[
+                        'entity' => 'imprints',
+                        'key' => $key,
+                    ];
+                }
+            } else {
+                if (!empty($row['item_inprint_location'])) {
+                    $newlocation[] = $row;
+                    if ($minidx>$row['item_inprint_id']) {
+                        $minidx=$row['item_inprint_id'];
+                    }
+                }
+            }
+        }
+        if ($found==1) {
+            $out['result']=$this->success_result;
+            // New imprints
+            $newkey=$minidx-1;
+            for ($i=count($newlocation); $i < $this->IMPRINT_NUMBER; $i++) {
+                $newlocation[]=[
+                    'item_inprint_id'=>$newkey,
+                    'item_inprint_location'=>'',
+                    'item_inprint_size'=>'',
+                    'item_inprint_view'=>'',
+                    'item_imprint_mostpopular' => 0,
+                ];
+                $newkey--;
+            }
+            $out['imprints']=$newlocation;
+            $session_data['imprints']=$newlocation;
+            $session_data['deleted']=$deleted;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
+    public function edit_imprintlocation($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $imprints = $session_data['imprints'];
+        $key = ifset($postdata,'imprint_key',0);
+        foreach ($imprints as $row) {
+            if ($row['item_inprint_id']==$key) {
+                $out['result']=$this->success_result;
+                $out['imprint']=$row;
+            }
+        }
+        return $out;
+    }
+
+    public function change_imprintlocation($postdata, $imprsession_data, $imprsession) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $imprint = $imprsession_data['imprint'];
+        $fld = ifset($postdata,'fld', 'emptyfield');
+        if (array_key_exists($fld, $imprint)) {
+            $newval =ifset($postdata,'newval','');
+            $imprint[$fld]=$newval;
+            $out['result']=$this->success_result;
+            $out['newfld']=$fld;
+            if ($fld=='item_inprint_view') {
+                $out['imprintview_src']=$imprint['item_inprint_view'];
+            }
+            $imprsession_data['imprint']=$imprint;
+            usersession($imprsession, $imprsession_data);
+        }
+        return $out;
+    }
+
+    public function save_imprint($imprsession_data, $imprsession, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $imprint = $imprsession_data['imprint'];
+        if (empty($imprint['item_inprint_location'])) {
+            $out['msg']='Empty Imprint Title';
+        } elseif (empty($imprint['item_inprint_size'])) {
+            $out['msg']='Empty Imprint Size';
+        } elseif (empty($imprint['item_inprint_view'])) {
+            $out['msg']='Empty Imprint View';
+        } else {
+            $out['msg']='Imprint Location Not Found';
+            $imprints = $session_data['imprints'];
+            $key = $imprint['item_inprint_id'];
+            $found = 0;
+            $idx = 0;
+            foreach ($imprints as $row) {
+                if ($row['item_inprint_id']==$key) {
+                    $found = 1;
+                    $imprints[$idx]=$imprint;
+                    break;
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $out['result']=$this->success_result;
+                $out['imprints']=$imprints;
+                $session_data['imprints']=$imprints;
+                usersession($session_id, $session_data);
+                usersession($imprsession, NULL);
+            }
+        }
+        return $out;
+    }
+
     // Save item data
     public function save_itemdata($session_data, $session_id, $user_id, $user_role) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
@@ -186,9 +315,13 @@ Class Itemdetails_model extends My_Model
                 $termres = $this->_save_itemterms($terms, $item_id);
                 $out['msg']=$termres['msg'];
                 if ($termres['result']==$this->success_result) {
-                    $out['result']=$this->success_result;
+                    $imprints = $this->_prepare_imprintlocation($session_data);
+                    $imprres = $this->save_imprintlocations($imprints, $item_id);
+                    $out['msg']=$imprres['msg'];
+                    if ($imprres['result']==$this->success_result) {
+                        $out['result']=$this->success_result;
+                    }
                 }
-
             }
         }
         return $out;
@@ -369,6 +502,51 @@ Class Itemdetails_model extends My_Model
         }
         $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
+    }
+
+    private function _prepare_imprintlocation($session_data) {
+        $full_path = $this->config->item('imprint_images_relative');
+        createPath($full_path);
+        $short_path = $this->config->item('imprint_images');
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        $imprints = $session_data['imprints'];
+        $idx = 0;
+        foreach ($imprints as $imprint) {
+            if (!empty($imprint['item_inprint_view']) && stripos($imprint['item_inprint_view'],$path_preload_short)!==FALSE) {
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $imprint['item_inprint_view']);
+                $imagedetails = extract_filename($imprint['item_inprint_view']);
+                $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $full_path.$filename);
+                $imprints[$idx]['item_inprint_view']='';
+                if ($res) {
+                    $imprints[$idx]['item_inprint_view']=$short_path.$filename;
+                }
+            }
+            $idx++;
+        }
+        return $imprints;
+    }
+
+    private function save_imprintlocations($imprints, $item_id) {
+        foreach ($imprints as $item) {
+            if (!empty($item['item_inprint_location'])) {
+                $this->db->set('item_inprint_location', $item['item_inprint_location']);
+                $this->db->set('item_inprint_size', $item['item_inprint_size']);
+                $this->db->set('item_inprint_view', $item['item_inprint_view']);
+                $this->db->set('item_imprint_mostpopular', $item['item_imprint_mostpopular']);
+                if ($item['item_inprint_id']>0) {
+                    $this->db->where('item_inprint_id', $item['item_inprint_id']);
+                    $this->db->update('sb_item_inprints');
+                } else {
+                    $this->db->set('item_inprint_item', $item_id);
+                    $this->db->insert('sb_item_inprints');
+                }
+            }
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
+
     }
 
 }

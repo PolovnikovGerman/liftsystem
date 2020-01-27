@@ -42,39 +42,41 @@ Class Imprints_model extends My_Model
 //    }
 //
 //
-//    /* Function for edit  */
-//    function get_imprint_edit_item($item_id) {
-//        $this->db->select('*');
-//        $this->db->from('sb_item_inprints');
-//        $this->db->where('item_inprint_item',$item_id);
-//        $this->db->order_by('item_inprint_id');
-//        $result = $this->db->get()->result_array();
-//        $out_res=array();
-//        for ($i=0;$i<Imprints_model::IMPRINT_NUMBER;$i++) {
-//            if (isset ($result[$i]['item_inprint_id'])) {
-//                if ($result[$i]['item_inprint_view']=='') {
-//                    $view='';
-//                } else {
-//                    $view=$result[$i]['item_inprint_view'];
-//                }
-//                $out_res[$i]=array(
-//                    'item_inprint_id'=>$result[$i]['item_inprint_id'],
-//                    'item_inprint_location'=>  htmlspecialchars($result[$i]['item_inprint_location']),
-//                    'item_inprint_size'=>  htmlspecialchars($result[$i]['item_inprint_size']),
-//                    'item_inprint_view'=>$view
-//                );
-//            } else {
-//                $out_res[$i]=array(
-//                    'item_inprint_id'=>0,
-//                    'item_inprint_location'=>'',
-//                    'item_inprint_size'=>'',
-//                    'item_inprint_view'=>''
-//                );
-//            }
-//        }
-//        return $out_res;
-//    }
-//
+    // Function for edit
+    public function get_imprint_edit_item($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_item_inprints');
+        $this->db->where('item_inprint_item',$item_id);
+        $this->db->order_by('item_inprint_id');
+        $result = $this->db->get()->result_array();
+        $out_res=array();
+        for ($i=0;$i<$this->IMPRINT_NUMBER;$i++) {
+            if (isset ($result[$i]['item_inprint_id'])) {
+                if ($result[$i]['item_inprint_view']=='') {
+                    $view='';
+                } else {
+                    $view=$result[$i]['item_inprint_view'];
+                }
+                $out_res[$i]=array(
+                    'item_inprint_id'=>$result[$i]['item_inprint_id'],
+                    'item_inprint_location'=>  htmlspecialchars($result[$i]['item_inprint_location']),
+                    'item_inprint_size'=>  htmlspecialchars($result[$i]['item_inprint_size']),
+                    'item_inprint_view'=>$view,
+                    'item_imprint_mostpopular' => $result[$i]['item_imprint_mostpopular'],
+                );
+            } else {
+                $out_res[$i]=array(
+                    'item_inprint_id'=>(-1)*($i+1),
+                    'item_inprint_location'=>'',
+                    'item_inprint_size'=>'',
+                    'item_inprint_view'=>'',
+                    'item_imprint_mostpopular' => 0,
+                );
+            }
+        }
+        return $out_res;
+    }
+
 //    function insert_locations($item_inprint,$item_id, $old_imprint_update) {
 //        $updflag=0;
 //        foreach ($item_inprint as $row) {

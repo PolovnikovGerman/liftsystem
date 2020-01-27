@@ -229,7 +229,7 @@ function init_itemdetails_edit() {
         var url="/itemdetails/edit_specialcheck";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $("#editModalLabel").empty().html('View Checkout Specials');
+                $("#editModalLabel").empty().html('Edit Checkout Specials');
                 $("#editModal").find('.modal-dialog').css('width','564px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
                 $("#editModal").modal('show');
@@ -261,7 +261,7 @@ function init_itemdetails_edit() {
         var url='/itemdetails/edit_shipping';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $("#editModalLabel").empty().html('View Shipping Details');
+                $("#editModalLabel").empty().html('Edit Shipping Details');
                 $("#editModal").find('.modal-dialog').css('width','468px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
                 $("#editModal").modal('show');
@@ -278,7 +278,7 @@ function init_itemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 // editModal
-                $("#editModalLabel").empty().html('View Common Terms');
+                $("#editModalLabel").empty().html('Edit Common Terms');
                 $("#editModal").find('.modal-dialog').css('width','352px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
                 $("#editModal").modal('show');
@@ -288,7 +288,65 @@ function init_itemdetails_edit() {
             }
         },'json');
     })
+    // Imprint
+    $("div.location_upload").unbind('click').click(function () {
+        var imgsrc = $(this).data('srclink');
+        $.fancybox.open({
+            src  : imgsrc,
+            type : 'image',
+            autoSize : false
+        });
+    });
+    $(".location_del").unbind('click').click(function(){
+        var title=$(this).data('title');
+        if (confirm('Delete Imprint Location '+title+'?')==true) {
+            var params=new Array();
+            params.push({name: 'session_id', value: $("#session_id").val()});
+            params.push({name: 'imprint_key', value: $(this).data('idx')});
+            var url="/itemdetails/del_imprintlocation";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#imprintlocdata").empty().html(response.data.content);
+                    init_itemdetails_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $("div.locationedit").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'imprint_key', value: $(this).data('idx')});
+        var url = "/itemdetails/edit_imprintlocation";
+        $.post(url, params, function (response) {
+            $("#editModalLabel").empty().html('Edit Imprint Location');
+            $("#editModal").find('.modal-dialog').css('width','493px');
+            $("#editModal").find('div.modal-body').empty().html(response.data.content);
+            $("#editModal").modal('show');
+            itemlocation_manage();
+        },'json');
+    });
+    $("input.editimprint").unbind('change').change(function(){
+        var newval =0;
+        if ($(this).prop('checked')==true) {
+            newval=1;
+        }
+        var params = new Array();
+        params.push({name: 'entity', value: 'imprints'});
+        params.push({name: 'fld', value: 'item_imprint_mostpopular'});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
 
+    })
 }
 
 function init_specialcheck_manage() {
@@ -457,4 +515,84 @@ function commonterms_manage() {
             }
         },'json');
     });
+}
+
+function itemlocation_manage() {
+    $("input.imprintlocationedit").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/itemdetails/change_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".savelocationload").show();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".delimprintview").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        params.push({name: 'fld', value: 'item_inprint_view'});
+        params.push({name: 'newval', value: ''});
+        var url="/itemdetails/change_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".savelocationload").show();
+                $("#imprintlocationviewarea").empty().html(response.data.content);
+                $(".savelocationload").show();
+                itemlocation_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("#newimprintlocationview").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('newimprintlocationview'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'imprsession', value: $("#imprsession").val()});
+                    params.push({name: 'fld', value: 'item_inprint_view'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/itemdetails/change_imprintlocation";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#imprintlocationviewarea").empty().html(response.data.content);
+                            $(".savelocationload").show();
+                            itemlocation_manage();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    $(".savelocationload").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/save_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+                $("#imprintlocdata").empty().html(response.data.content);
+                init_itemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+
+
 }

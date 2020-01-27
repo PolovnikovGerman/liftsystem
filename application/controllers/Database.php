@@ -1022,27 +1022,23 @@ class Database extends MY_Controller
             }
 
             $data['shiplink_view']=$this->load->view('itemdetails/shiplink_view',array('item_id'=>$item_id),TRUE);
-//            /* Special Checkout */
+            // Special Checkout
             if ($mode=='edit') {
                 $session_data['special_prices']=$this->items_model->get_special_prices($item_id,1);
             }
-//            /* Get special checkout data */
-//            $special_options=array(
-//                'prices'=>$special_prices,
-//                'numprices'=>count($special_prices),
-//            );
-//            $item['special_prices']=$this->load->view('itemdetails/specialcheckdata_view',$special_options,TRUE);
-//            $data['formdata']=$this->load->view('itemdetails/formdata_view',$item,TRUE);
-//            /* Get Data about item Imprint Locations */
-            $imprint = $this->imprints_model->get_imprint_item($item_id);
+            // Get Data about item Imprint Locations
+
             if ($mode=='view') {
+                $imprint = $this->imprints_model->get_imprint_item($item_id);
                 $imprintdata=$this->load->view('itemdetails/imprintsdata_view',array('imprint'=>$imprint),TRUE);
             } else {
+                $imprint = $this->imprints_model->get_imprint_edit_item($item_id);
                 $imprintdata=$this->load->view('itemdetails/imprintsedit_view',array('imprint'=>$imprint),TRUE);
                 $session_data['imprints']=$imprint;
             }
             $imprint_options=array(
                 'imprint_data'=>$imprintdata,
+                'mode' => $mode,
             );
             $data['imprints']=$this->load->view('itemdetails/imprints_view',$imprint_options,TRUE);
             /* Get Data about item Colors */
@@ -1205,6 +1201,7 @@ class Database extends MY_Controller
 //                $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
 //            }
             if ($mode=='edit') {
+                $session_data['deleted']=[];
                 usersession($session_id, $session_data);
             }
             $out['content'] = $content;
