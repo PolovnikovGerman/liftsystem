@@ -169,7 +169,7 @@ function activate_edit(item) {
 }
 
 function init_itemdetails_edit() {
-    $(".closeitemdetails").click(function(){
+    $(".closeitemdetails").unbind('click').click(function(){
         if (confirm('You realy want to exit without saving?')==true) {
             close_view();
         }
@@ -345,8 +345,88 @@ function init_itemdetails_edit() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".picture-none").each(function(){
+        var img = $(this).prop('id');
+        var item = $(this).data('idx');
+        var uploader = new qq.FileUploader({
+            element: document.getElementById(img),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session_id', value: $("#session_id").val()});
+                    params.push({name: 'entity', value: 'item_images'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'src'});
+                    params.push({name: 'idx', value: item});
+                    var url="/itemdetails/change_parameter";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#pictures_slade").empty().html(response.data.content);
+                            init_itemdetails_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    });
+    $(".close-x").unbind('click').click(function(){
+        if (confirm('Delete Image?')==true) {
+            var params=new Array();
+            params.push({name: 'session_id', value: $("#session_id").val()});
+            params.push({name: 'idx', value: $(this).data('idx')});
+            var url="/itemdetails/del_itemimage";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#pictures_slade").empty().html(response.data.content);
+                    init_itemdetails_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
 
-    })
+        }
+    });
+    $(".pictures").each(function(){
+        var img = $(this).find('div.pic').prop('id');
+        var item = $(this).find('div.pic').data('idx');
+        var uploader = new qq.FileUploader({
+            element: document.getElementById(img),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session_id', value: $("#session_id").val()});
+                    params.push({name: 'entity', value: 'item_images'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'src'});
+                    params.push({name: 'idx', value: item});
+                    var url="/itemdetails/change_parameter";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#pictures_slade").empty().html(response.data.content);
+                            init_itemdetails_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    });
 }
 
 function init_specialcheck_manage() {

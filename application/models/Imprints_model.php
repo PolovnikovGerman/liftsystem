@@ -59,8 +59,8 @@ Class Imprints_model extends My_Model
                 }
                 $out_res[$i]=array(
                     'item_inprint_id'=>$result[$i]['item_inprint_id'],
-                    'item_inprint_location'=>  htmlspecialchars($result[$i]['item_inprint_location']),
-                    'item_inprint_size'=>  htmlspecialchars($result[$i]['item_inprint_size']),
+                    'item_inprint_location'=>  $result[$i]['item_inprint_location'],
+                    'item_inprint_size'=>  $result[$i]['item_inprint_size'],
                     'item_inprint_view'=>$view,
                     'item_imprint_mostpopular' => $result[$i]['item_imprint_mostpopular'],
                 );

@@ -101,6 +101,20 @@ class Itemdetails extends MY_Controller
                  $error=$res['msg'];
                  if ($res['result']==$this->success_result) {
                      $error='';
+                     if ($res['entity']=='item_images') {
+                         // Build new slider
+                         $img_options=array(
+                             'images'=>$res['images'],
+                             'pos'=>0,
+                             'edit'=>0,
+                             'limit'=>$this->config->item('slider_images'),
+                             'video'=> '', // $video,
+                             'audio'=> '', // $audio,
+                             'faces'=> '', // $faces,
+                         );
+                         $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
+
+                     }
                  }
              }
              $this->ajaxResponse($mdata, $error);
@@ -417,6 +431,36 @@ class Itemdetails extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function del_itemimage() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->del_itemimage($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $img_options=array(
+                        'images'=>$res['images'],
+                        'pos'=>0,
+                        'edit'=>0,
+                        'limit'=>$this->config->item('slider_images'),
+                        'video'=> '', // $video,
+                        'audio'=> '', // $audio,
+                        'faces'=> '', // $faces,
+                    );
+                    $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
     }
 
     // Save item data

@@ -70,7 +70,8 @@ $config['casestudy_images']='/uploads/casestudy/';
 $config['casestudy_images_relative']=BASEPATH.'../uploads/casestudy/';
 $config['imprint_images']='/uploads/items_imprint/';
 $config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
-$config['item_images']=BASEPATH.'../uploads/items_images/';
+$config['item_images']='/uploads/items_images/';
+$config['item_images_relative']=BASEPATH.'../uploads/items_images/';
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

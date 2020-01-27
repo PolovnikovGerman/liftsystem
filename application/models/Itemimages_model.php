@@ -39,7 +39,7 @@ Class Itemimages_model extends My_Model
                 }
             }
             if ($ind==0) {
-                $ret_img[]=array('item_img_id'=>''
+                $ret_img[]=array('item_img_id'=>(-1)*$i
                 ,'item_img_item_id'=>''
                 , 'src'=>''
                 ,'name'=>$name_img

@@ -1260,16 +1260,28 @@ input.specialsetupinpt {
 .itemdata .picture-none {
     position: relative;
     float:right;
-    /* background-image: url("../img/picture-none.png"); */
+    background-image: url("/img/itemdetails/picture-none.png");
     width: 77px;
     height: 77px;
+}
+.itemdata .picture-none .qq-upload-button {
+    background: none!important;
+    position: relative;
+    top: 20px;
 }
 .itemdata .close-x {
     float:right;
     padding-right: 5px;
+    position: relative;
+    cursor: pointer;
 }
 .itemdata .pic {
     padding-left: 9px;
+}
+.itemdata .pic .qq-upload-button {
+    background: none!important;
+    position: relative;
+    top: 20px;
 }
 /* Bottom Text */
 .itembottomtxt {

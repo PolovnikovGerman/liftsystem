@@ -15,6 +15,7 @@ Class Itemdetails_model extends My_Model
     public function change_parameter($session_data, $data, $session_id) {
         $out=['result'=>$this->error_result,'msg'=>'Unknown parameter'];
         $entity = ifset($data,'entity','noname');
+        $out['entity']=$entity;
         $fld = ifset($data,'fld','noname');
         $newval=ifset($data,'newval');
         $key = ifset($data,'idx',0);
@@ -40,6 +41,22 @@ Class Itemdetails_model extends My_Model
                     $out['msg']='';
                     $out['result']=$this->success_result;
                     break;
+                }
+                $idx++;
+            }
+        } elseif ($entity=='item_images') {
+            $out['msg']='Item Image Not Found';
+            $images = $session_data['item_images'];
+            $idx = 0;
+            foreach ($images as $item) {
+                if ($item['item_img_id']==$key) {
+                    $images[$idx][$fld]=$newval;
+                    $newimg = $this->_rebuid_images_params($images);
+                    $session_data['item_images']=$newimg;
+                    usersession($session_id, $session_data);
+                    $out['msg']='';
+                    $out['result']=$this->success_result;
+                    $out['images']=$newimg;
                 }
                 $idx++;
             }
@@ -291,6 +308,69 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    public function del_itemimage($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Item Image not Found'];
+        $key = ifset($postdata,'idx',0);
+        $idx = 0;
+        $item_images = $session_data['item_images'];
+        $deleted = $session_data['deleted'];
+        $images = [];
+        $found=0;
+        foreach ($item_images as $row) {
+            if ($row['item_img_id']==$key) {
+                $found=1;
+                if ($key>0) {
+                    $deleted[]=[
+                        'entity' => 'item_images',
+                        'key' => $key,
+                    ];
+                }
+            } else {
+                $images[] = $row;
+            }
+        }
+        if ($found==1) {
+            $out['result']=$this->success_result;
+            $newimages = $this->_rebuid_images_params($images);
+            $session_data['item_images']=$newimages;
+            $session_data['deleted']=$deleted;
+            usersession($session_id, $session_data);
+            $out['images']=$newimages;
+        }
+        return $out;
+    }
+
+    private function _rebuid_images_params($images) {
+        $i=1;
+        $newimg=[];
+        foreach ($images as $row) {
+            if (!empty($row['src'])) {
+                $newimg[]=[
+                    'item_img_id'=>($row['item_img_id']< 0 ? $i*(-1) : $row['item_img_id']),
+                    'item_img_item_id'=>$row['item_img_item_id'],
+                    'src'=>$row['src'],
+                    'name'=>($i==1 ? 'Main Pic' : 'Pic '.$i),
+                    'item_img_order'=>$i,
+                ];
+                $i++;
+            }
+        }
+        $limit=$this->config->item('slider_images');
+        for ($i=0; $i<$limit; $i++) {
+            if (!isset($newimg[$i])) {
+                $newidx = $i+1;
+                $newimg[]=[
+                    'item_img_id'=>$newidx*(-1),
+                    'item_img_item_id'=>'',
+                    'src'=>'',
+                    'name'=>($newidx==1 ? 'Main Pic' : 'Pic '.$newidx),
+                    'item_img_order'=>$newidx,
+                ];
+            }
+        }
+        return $newimg;
+    }
+
     // Save item data
     public function save_itemdata($session_data, $session_id, $user_id, $user_role) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
@@ -319,7 +399,15 @@ Class Itemdetails_model extends My_Model
                     $imprres = $this->save_imprintlocations($imprints, $item_id);
                     $out['msg']=$imprres['msg'];
                     if ($imprres['result']==$this->success_result) {
-                        $out['result']=$this->success_result;
+                        $item_images = $this->_prepare_itemimages($session_data, $item_id);
+                        $imgres = $this->save_item_images($item_images, $item_id);
+                        $out['msg']=$imgres['msg'];
+                        if ($imgres['result']==$this->success_result) {
+                            $deleted = $session_data['deleted'];
+                            $this->_remove_old_data($deleted);
+                            $out['result']=$this->success_result;
+                        }
+
                     }
                 }
             }
@@ -547,6 +635,62 @@ Class Itemdetails_model extends My_Model
         $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
 
+    }
+
+    private function _prepare_itemimages($session_data, $item_id) {
+        $full_path = $this->config->item('item_images_relative');
+        createPath($full_path);
+        $short_path = $this->config->item('item_images');
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        $images = $session_data['item_images'];
+        $idx = 0;
+        foreach ($images as $image) {
+            if (!empty($image['src']) && stripos($image['src'],$path_preload_short)!==FALSE) {
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $image['src']);
+                $imagedetails = extract_filename($image['src']);
+                $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $full_path.$filename);
+                $images[$idx]['src']='';
+                if ($res) {
+                    $images[$idx]['src']=$short_path.$filename;
+                }
+            }
+            $idx++;
+        }
+        return $images;
+    }
+
+    private function save_item_images($item_images, $item_id) {
+        $idx = 1;
+        foreach ($item_images as $image) {
+            if (!empty($image['src'])) {
+                $this->db->set('item_img_name', $image['src']);
+                $this->db->set('item_img_order', $idx);
+                if ($image['item_img_id']>0) {
+                    $this->db->where('item_img_id',$image['item_img_id']);
+                    $this->db->update('sb_item_images');
+                } else {
+                    $this->db->set('item_img_item_id', $item_id);
+                    $this->db->insert('sb_item_images');
+                }
+                $idx++;
+            }
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
+    }
+
+    private function _remove_old_data($deleted) {
+        foreach ($deleted as $row) {
+            if ($row['entity']=='imprints') {
+                $this->db->where('item_inprint_id', $row['key']);
+                $this->db->delete('sb_item_inprints');
+            } elseif ($row['entity']=='item_images') {
+                $this->db->where('item_img_id', $row['key']);
+                $this->db->delete('sb_item_images');
+            }
+        }
     }
 
 }
