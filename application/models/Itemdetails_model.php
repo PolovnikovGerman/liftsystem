@@ -111,6 +111,57 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    public function save_shipping($session_data, $postdata, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $item = $session_data['item'];
+        // Change params
+        $item['item_weigth']=floatval(ifset($postdata,'item_weigth',0));
+        $item['cartoon_qty']=intval(ifset($postdata,'cartoon_qty',0));
+        $item['cartoon_width']=floatval(ifset($postdata,'cartoon_width',0));
+        $item['cartoon_heigh']=floatval(ifset($postdata,'cartoon_heigh',0));
+        $item['cartoon_depth']=floatval(ifset($postdata,'cartoon_depth',0));
+        $item['charge_pereach']=floatval(ifset($postdata,'charge_pereach',0));
+        $item['charge_perorder']=floatval(ifset($postdata,'charge_perorder',0));
+        $item['boxqty']=intval(ifset($postdata,'boxqty',0));
+        $session_data['item']=$item;
+        usersession($session_id, $session_data);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function change_commonterm($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Term Not Found'];
+        $idx = ifset($postdata, 'idx',0);
+        $newval = ifset($postdata,'newval','');
+        $found = 0;
+        $key=0;
+        $terms = $session_data['commons'];
+        foreach ($terms as $row) {
+            if ($idx==$row['term_id']) {
+                $found=1;
+                break;
+            }
+            $key++;
+        }
+        if ($found==1) {
+            $terms[$key]['common_term']=$newval;
+            $session_data['commons']=$terms;
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function save_commonterm($commonsession_data, $commonsession, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Term Not Found'];
+        $terms = $commonsession_data['commons'];
+        $session_data['commons']=$terms;
+        usersession($session_id, $session_data);
+        usersession($commonsession, NULL);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
     // Save item data
     public function save_itemdata($session_data, $session_id, $user_id, $user_role) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
@@ -129,7 +180,15 @@ Class Itemdetails_model extends My_Model
             $res = $this->_save_iteminfo($item, $user_id);
             $out['msg']=$res['msg'];
             if ($res['result']==$this->success_result) {
-                $out['result']=$this->success_result;
+                $item_id = $res['item_id'];
+                $terms = $session_data['commons'];
+                // Save commons
+                $termres = $this->_save_itemterms($terms, $item_id);
+                $out['msg']=$termres['msg'];
+                if ($termres['result']==$this->success_result) {
+                    $out['result']=$this->success_result;
+                }
+
             }
         }
         return $out;
@@ -287,6 +346,28 @@ Class Itemdetails_model extends My_Model
             $this->db->update('sb_items');
             $out=['result'=>$this->success_result, 'msg'=> '', 'item_id'=>$item['item_id']];
         }
+        return $out;
+    }
+
+    private function _save_itemterms($terms, $item_id) {
+        foreach ($terms as $row) {
+            if ($row['term_id']>0) {
+                $this->db->where('term_id', $row['term_id']);
+                if (empty($row['common_term'])) {
+                    $this->db->delete('sb_item_commonterms');
+                } else {
+                    $this->db->set('common_term', $row['common_term']);
+                    $this->db->update('sb_item_commonterms');
+                }
+            } else {
+                if (!empty($row['common_term'])) {
+                    $this->db->set('item_id', $item_id);
+                    $this->db->set('common_term', $row['common_term']);
+                    $this->db->insert('sb_item_commonterms');
+                }
+            }
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
     }
 

@@ -73,7 +73,7 @@ Class Items_model extends My_Model
         if ($max_val && count($result)<$max_val) {
             $cnt=count($result);
             for ($i=$cnt;$i<$max_val;$i++) {
-                $result[]=array('term_id'=>0, 'item_id'=>$item_id,'common_term'=>'');
+                $result[]=array('term_id'=>(-1)*($i+1), 'item_id'=>$item_id,'common_term'=>'');
             }
         }
         return $result;

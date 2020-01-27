@@ -944,6 +944,7 @@ class Database extends MY_Controller
             $data['header']=$this->load->view('itemdetails/detailhead_view',$headoptions,TRUE);
             if ($mode=='edit') {
                 $session_data['commons']=$this->items_model->get_commonterms_item($item_id,10);
+                firephplog($session_data['commons'],'CommonTerm');
             }
             // Key Info
             $info_options = [

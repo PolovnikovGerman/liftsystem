@@ -79,7 +79,7 @@ function close_view() {
                 init_page(start);
             }
         } else {
-            show_errors(response);
+            show_error(response);
         }
     },'json');
 }
@@ -255,6 +255,40 @@ function init_itemdetails_edit() {
             }
         },'json');
     });
+    $("div.shipcondinlink").click(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url='/itemdetails/edit_shipping';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('View Shipping Details');
+                $("#editModal").find('.modal-dialog').css('width','468px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                $("#editModal").modal('show');
+                shipping_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".commontermslnk").click(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url='/itemdetails/edit_commons';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // editModal
+                $("#editModalLabel").empty().html('View Common Terms');
+                $("#editModal").find('.modal-dialog').css('width','352px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                $("#editModal").modal('show');
+                commonterms_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+
 }
 
 function init_specialcheck_manage() {
@@ -371,4 +405,56 @@ function init_bottomtext_manage() {
             }
         },'json');
     })
+}
+
+function shipping_manage() {
+    $("div.saveshipping").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'item_weigth', value: $("#item_weigth").val()});
+        params.push({name: 'cartoon_qty', value: $("#cartoon_qty").val()});
+        params.push({name: 'cartoon_width', value: $("#cartoon_width").val()});
+        params.push({name: 'cartoon_heigh', value: $("#cartoon_heigh").val()});
+        params.push({name: 'cartoon_depth', value: $("#cartoon_depth").val()});
+        params.push({name: 'charge_pereach', value: $("#charge_pereach").val()});
+        params.push({name: 'charge_perorder', value: $("#charge_perorder").val()});
+        params.name({name: 'boxqty', value: $("#boxqty").val()});
+        var url="/itemdetails/save_shipping";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function commonterms_manage() {
+    $("input.inputcommondata").unbind('change').change(function () {
+        var params=new Array();
+        params.push({name: 'commonsession', value: $("#commonsession").val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/itemdetails/change_commonterm";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".savecommonterms").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'commonsession', value: $("#commonsession").val()});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/save_commonterms";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

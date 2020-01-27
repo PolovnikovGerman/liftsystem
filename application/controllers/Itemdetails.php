@@ -213,16 +213,114 @@ class Itemdetails extends MY_Controller
             if (!empty($session_data)) {
                 $error = '';
                 $item = $session_data['item'];
-                    $mdata['content'] = $this->load->view('itemdetails/botttextedit_view', array('text' => $item['bottom_text']), TRUE);
-//                } else {
-//                    $data = $this->items_model->get_commonterms_item($item_id);
-//                    $mdata['content'] = $this->load->view('itemdetails/commontermsview_view', array('terms' => $data), TRUE);
-//                }
-
+                $mdata['content'] = $this->load->view('itemdetails/botttextedit_view', array('text' => $item['bottom_text']), TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function edit_shipping() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata=[];
+             $error = $this->session_error;
+             $session_id = ifset($postdata, 'session_id','defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $error = '';
+                 $item = $session_data['item'];
+                 $mdata['content']=$this->load->view('itemdetails/shipping_edit_info', $item, TRUE);
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+
+    public function save_shipping() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata, 'session_id','defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->save_shipping($session_data, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function edit_commons() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata=[];
+             $error = $this->session_error;
+             $session_id = ifset($postdata, 'session_id','defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $error='';
+                 $commons = $session_data['commons'];
+                 $common_session = 'common'.uniq_link(10);
+                 usersession($common_session, ['commons'=>$commons]);
+                 $options = [
+                     'terms' => $commons,
+                     'session' => $common_session,
+                 ];
+                 $mdata['content']=$this->load->view('itemdetails/commontermsedit_view', $options, TRUE);
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+
+    public function change_commonterm() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $commonsession = ifset($postdata, 'commonsession','defsess');
+            $commonsession_data = usersession($commonsession);
+            if (!empty($commonsession_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->change_commonterm($postdata, $commonsession_data, $commonsession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_commonterms() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $commonsession = ifset($postdata, 'commonsession','defsess');
+            $commonsession_data = usersession($commonsession);
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($commonsession_data) && !empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->save_commonterm($commonsession_data, $commonsession, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+
     }
 
     // Save item data
