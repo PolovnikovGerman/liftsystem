@@ -118,6 +118,20 @@ Class Itemdetails_model extends My_Model
                 }
                 $out['research']=$research;
             }
+        } elseif ($entity=='simular') {
+            $out['msg']='Item Simular Not Found';
+            $items = $session_data['simular'];
+            $idx = 0;
+            foreach ($items as $item) {
+                if ($item['item_similar_id']==$key) {
+                    $items[$idx][$fld]=$newval;
+                    $session_data['simular']=$items;
+                    usersession($session_id, $session_data);
+                    $out['msg']='';
+                    $out['result']=$this->success_result;
+                }
+                $idx++;
+            }
         }
         return $out;
     }
@@ -469,9 +483,15 @@ Class Itemdetails_model extends My_Model
                             }
                             $out['msg']=$itmres['msg'];
                             if ($itmres['result']==$this->success_result) {
-                                $deleted = $session_data['deleted'];
-                                $this->_remove_old_data($deleted);
-                                $out['result']=$this->success_result;
+                                // Simular
+                                $simular = $session_data['simular'];
+                                $simres = $this->save_simular($simular, $item_id);
+                                $out['msg']=$simres['msg'];
+                                if ($simres['result']==$this->success_result) {
+                                    $deleted = $session_data['deleted'];
+                                    $this->_remove_old_data($deleted);
+                                    $out['result']=$this->success_result;
+                                }
                             }
                         }
 
@@ -779,6 +799,26 @@ Class Itemdetails_model extends My_Model
         } else {
             $this->db->where('item_price_id', $prices['item_price_id']);
             $this->db->update('sb_item_prices');
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
+    }
+
+    private function save_simular($simular, $item_id) {
+        foreach ($simular as $row) {
+            if (empty($row['item_similar_similar'])) {
+                $this->db->where('item_similar_id', $row['item_similar_id']);
+                $this->db->delete('sb_item_similars');
+            } else {
+                $this->db->set('item_similar_similar', $row['item_similar_similar']);
+                if ($row['item_similar_id']<0) {
+                    $this->db->set('item_similar_item', $item_id);
+                    $this->db->insert('sb_item_similars');
+                } else {
+                    $this->db->where('item_similar_id', $row['item_similar_id']);
+                    $this->db->update('sb_item_similars');
+                }
+            }
         }
         $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
