@@ -57,6 +57,7 @@ Class Itemdetails_model extends My_Model
                     $out['msg']='';
                     $out['result']=$this->success_result;
                     $out['images']=$newimg;
+                    break;
                 }
                 $idx++;
             }
@@ -129,6 +130,21 @@ Class Itemdetails_model extends My_Model
                     usersession($session_id, $session_data);
                     $out['msg']='';
                     $out['result']=$this->success_result;
+                    break;
+                }
+                $idx++;
+            }
+        } elseif ($entity=='colors') {
+            $out['msg']='Item Option Not Found';
+            $colors = $session_data['item_colors'];
+            $idx = 0;
+            foreach ($colors as $row) {
+                if ($row['item_color_id']==$key) {
+                    $out['result']=$this->success_result;
+                    $colors[$idx][$fld]=$newval;
+                    $session_data['item_colors']=$colors;
+                    usersession($session_id, $session_data);
+                    break;
                 }
                 $idx++;
             }
@@ -488,13 +504,17 @@ Class Itemdetails_model extends My_Model
                                 $simres = $this->save_simular($simular, $item_id);
                                 $out['msg']=$simres['msg'];
                                 if ($simres['result']==$this->success_result) {
-                                    $deleted = $session_data['deleted'];
-                                    $this->_remove_old_data($deleted);
-                                    $out['result']=$this->success_result;
+                                    $colors = $session_data['item_colors'];
+                                    $colres = $this->save_colors($colors, $item_id);
+                                    $out['msg']=$colres['msg'];
+                                    if ($colres['result']==$this->success_result) {
+                                        $deleted = $session_data['deleted'];
+                                        $this->_remove_old_data($deleted);
+                                        $out['result']=$this->success_result;
+                                    }
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -824,4 +844,26 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    private function save_colors($colors, $item_id) {
+        firephplog($colors,'Colors');
+        foreach ($colors as $row) {
+            if (empty($row['item_color'])) {
+                if ($row['item_color_id']>0) {
+                    $this->db->where('item_color_id', $row['item_color_id']);
+                    $this->db->delete('sb_item_colors');
+                }
+            } else {
+                $this->db->set('item_color', $row['item_color']);
+                if ($row['item_color_id']>0) {
+                    $this->db->where('item_color_id', $row['item_color_id']);
+                    $this->db->update('sb_item_colors');
+                } else {
+                    $this->db->set('item_color_itemid', $item_id);
+                    $this->db->insert('sb_item_colors');
+                }
+            }
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
+    }
 }

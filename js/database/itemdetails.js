@@ -467,6 +467,22 @@ function init_itemdetails_edit() {
             }
         },'json');
     });
+    // Item Options
+    $(".itemdetaildatainput").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'entity', value: $(this).data('entity')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'fld', value: $(this).data('fldname')});
+        params.push({name: 'idx', value: $(this).data('fldid')});
+        var url="/itemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_specialcheck_manage() {
