@@ -164,5 +164,40 @@ Class Vendors_model extends My_Model
         return $vendprice;
     }
 
+    public function search_vendor_items($vend_it_num, $vendor_id) {
+        $this->db->select('vendor_item_number as label,vendor_item_id as id');
+        $this->db->from('sb_vendor_items');
+        $this->db->like('upper(vendor_item_number)',  strtoupper($vend_it_num));
+        if (intval($vendor_id)!=0) {
+            $this->db->where('vendor_item_vendor', $vendor_id);
+        }
+        $this->db->order_by('vendor_item_number');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
+    public function chk_vendor_item($vendor_it_num) {
+        $this->db->select('vi.*,v.vendor_name');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join("vendors v",'v.vendor_id=vi.vendor_item_vendor','left');
+        $this->db->where('upper(vendor_item_number)',  strtoupper($vendor_it_num));
+        $result = $this->db->get()->row_array();
+        return $result;
+    }
+
+    public function newitem_vendorprices() {
+        $vendprice=array();
+        for ($j=0; $j< $this->vend_maxprice ; $j++) {
+            $vendprice[]=array(
+                'vendorprice_id'=>(-1)*$j,
+                'vendorprice_qty'=>'',
+                'vendorprice_val'=>'',
+                'vendorprice_color'=>'',
+            );
+        }
+        return $vendprice;
+
+    }
+
 
 }

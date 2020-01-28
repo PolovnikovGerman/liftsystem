@@ -74,6 +74,8 @@ class Database extends MY_Controller
         $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
         $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery-ui.min.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery-ui.css');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];

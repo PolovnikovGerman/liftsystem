@@ -392,7 +392,6 @@ function init_itemdetails_edit() {
                     show_error(response);
                 }
             },'json');
-
         }
     });
     $(".pictures").each(function(){
@@ -482,6 +481,76 @@ function init_itemdetails_edit() {
                 show_error(response);
             }
         },'json');
+    });
+    $("#vendor_item_number").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "/itemdetails/search_vendor_item",
+                dataType: "json",
+                data: {
+                    term: request.term,
+                    vendor_id : $("#vendor_item_vendor").val()
+                },
+                success: function(data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            $("#vendor_item_id").val(ui.item.id);
+        },
+    });
+    $("#vendor_item_number").blur(function(){
+        /* Check Item Number */
+        var vendor_it_number=$("#vendor_item_number").val();
+        var params = new Array();
+        params.push({name: 'number', value :vendor_it_number});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        $.post('/itemdetails/vendoritem_check',params,function(response){
+            if (response.errors=='') {
+                $("#vendor_item_vendor").val(response.data.vendor_item_vendor);
+                $("#vendor_name").val(response.data.vendor_name);
+                $("#vendor_item_number").val(response.data.vendor_item_number);
+                $("#vendor_item_number").attr('readonly',false);
+                $("input.vendorinputvalues[data-fld='vendor_item_zipcode']").val(response.data.vendor_item_zipcode);
+                $("textarea.vendorinputvalues[data-fld='vendor_item_notes']").val(response.data.vendor_item_notes);
+                $(".vendorprices").empty().html(response.data.vendorprices);
+                // $("#vendor_item_name").val(response.data.vendor_item_name);
+                // $("#vendor_item_name").attr('readonly',false)
+                // $("#vendor_item_cost").val(response.data.vendor_item_cost);
+                // $("#vendor_item_cost").attr('readonly',false);
+                // $("#vendor_item_exprint").val(response.data.vendor_item_exprint);
+                // $("#vendor_item_exprint").attr('readonly',false);
+                // $("#vendor_item_setup").val(response.data.vendor_item_setup);
+                // $("#vendor_item_setup").attr('readonly',false);
+                // $("#vendor_item_notes").val(response.data.vendor_item_notes);
+                // $("#vendor_item_notes").attr('readonly',false);
+
+                // $("#vendor_name").val(response.data.vendor_name);
+                // if (response.data.vendor_item_vendor=='') {
+                /* New Vendor - open for edit */
+                // $("#vendor_name").attr('readonly',false);
+                // }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendorinputvalues").unbind('change').change(function() {
+        var params = new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'entity', value: $(this).data('entity')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = "/itemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+            } else {
+                show_error(response);
+            }
+        }, 'json');
     });
 }
 

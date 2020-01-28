@@ -148,6 +148,15 @@ Class Itemdetails_model extends My_Model
                 }
                 $idx++;
             }
+        } elseif ($entity=='vendor') {
+            $vendor = $session_data['vendor'];
+            if (array_key_exists($fld, $vendor)) {
+                $vendor[$fld]=$newval;
+                $session_data['vendor']=$vendor;
+                usersession($session_id, $session_data);
+                $out['msg']='';
+                $out['result']=$this->success_result;
+            }
         }
         return $out;
     }
@@ -459,6 +468,68 @@ Class Itemdetails_model extends My_Model
         return $newimg;
     }
 
+    public function check_vendor_item($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $vendor_item_number = ifset($postdata,'number','');
+        if (empty($vendor_item_number)) {
+            $data=[
+                'vendor_item_id'=>'',
+                'vendor_item_vendor'=>'',
+                'vendor_item_number'=>'',
+                'vendor_item_name'=>'',
+                'vendor_item_cost'=>'',
+                'vendor_item_exprint'=>'',
+                'vendor_item_setup'=>'',
+                'vendor_item_notes'=>'',
+                'vendor_name'=>'',
+                'vendor_item_zipcode'=> '',
+                'vendor_item_blankcost' => '',
+            ];
+            $vendor_prices=$this->vendors_model->newitem_vendorprices();
+        } else {
+            $this->load->model('vendors_model');
+            $res = $this->vendors_model->chk_vendor_item($vendor_item_number);
+            if (ifset($res,'vendor_item_id',0)==0) {
+                $data=[
+                    'vendor_item_id'=>-1,
+                    'vendor_item_vendor'=>'',
+                    'vendor_item_number'=>$vendor_item_number,
+                    'vendor_item_name'=>$vendor_item_number,
+                    'vendor_item_cost'=>'',
+                    'vendor_item_exprint'=>'',
+                    'vendor_item_setup'=>'',
+                    'vendor_item_notes'=>'',
+                    'vendor_name'=>'',
+                    'vendor_item_zipcode'=>'',
+                    'vendor_item_blankcost' => '',
+                ];
+                $vendor_prices=$this->vendors_model->newitem_vendorprices();
+            } else {
+                $data=[
+                    'vendor_item_id'=>$res['vendor_item_id'],
+                    'vendor_item_vendor'=>$res['vendor_item_vendor'],
+                    'vendor_item_number'=>$res['vendor_item_number'],
+                    'vendor_item_name'=>$res['vendor_item_name'],
+                    'vendor_item_cost'=>$res['vendor_item_cost'],
+                    'vendor_item_exprint'=>$res['vendor_item_exprint'],
+                    'vendor_item_setup'=>$res['vendor_item_setup'],
+                    'vendor_item_notes'=>$res['vendor_item_notes'],
+                    'vendor_name'=>$res['vendor_name'],
+                    'vendor_item_zipcode'=>$res['vendor_item_zipcode'],
+                    'vendor_item_blankcost'=>$res['vendor_item_blankcost'],
+                ];
+                $vendor_prices=$this->vendors_model->get_vedorprice_item($res['vendor_item_id'],0);
+            }
+        }
+        $out['result']=$this->success_result;
+        $out['data']=$data;
+        $session_data['vendor']=$data;
+        $session_data['vendor_prices']=$vendor_prices;
+        $out['vendor_prices']=$vendor_prices;
+        usersession($session_id, $session_data);
+        return $out;
+    }
+
     // Save item data
     public function save_itemdata($session_data, $session_id, $user_id, $user_role) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
@@ -473,44 +544,51 @@ Class Itemdetails_model extends My_Model
                 $itemres = $this->db->get()->row_array();
                 $old_seq = $itemres['item_sequence'];
             }
-            // Save item value
-            $res = $this->_save_iteminfo($item, $user_id);
-            $out['msg']=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $item_id = $res['item_id'];
-                $terms = $session_data['commons'];
-                // Save commons
-                $termres = $this->_save_itemterms($terms, $item_id);
-                $out['msg']=$termres['msg'];
-                if ($termres['result']==$this->success_result) {
-                    $imprints = $this->_prepare_imprintlocation($session_data);
-                    $imprres = $this->save_imprintlocations($imprints, $item_id);
-                    $out['msg']=$imprres['msg'];
-                    if ($imprres['result']==$this->success_result) {
-                        $item_images = $this->_prepare_itemimages($session_data, $item_id);
-                        $imgres = $this->save_item_images($item_images, $item_id);
-                        $out['msg']=$imgres['msg'];
-                        if ($imgres['result']==$this->success_result) {
-                            if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
-                                $prices = $session_data['item_prices'];
-                                $itmres = $this->save_prices($prices,$item_id);
-                            } else {
+            // Save Vendor Item
+            $vendor = $session_data['vendor'];
+            $vendres = $this->_save_vendor($vendor);
+            $out['msg']=$vendres['msg'];
+            if ($vendres['result']==$this->success_result) {
+                $item['vendor_item_id']=$vendres['vendor_item_id'];
+                // Save item value
+                $res = $this->_save_iteminfo($item, $user_id);
+                $out['msg']=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $item_id = $res['item_id'];
+                    $terms = $session_data['commons'];
+                    // Save commons
+                    $termres = $this->_save_itemterms($terms, $item_id);
+                    $out['msg']=$termres['msg'];
+                    if ($termres['result']==$this->success_result) {
+                        $imprints = $this->_prepare_imprintlocation($session_data);
+                        $imprres = $this->save_imprintlocations($imprints, $item_id);
+                        $out['msg']=$imprres['msg'];
+                        if ($imprres['result']==$this->success_result) {
+                            $item_images = $this->_prepare_itemimages($session_data, $item_id);
+                            $imgres = $this->save_item_images($item_images, $item_id);
+                            $out['msg']=$imgres['msg'];
+                            if ($imgres['result']==$this->success_result) {
+                                if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
+                                    $prices = $session_data['item_prices'];
+                                    $itmres = $this->save_prices($prices,$item_id);
+                                } else {
 
-                            }
-                            $out['msg']=$itmres['msg'];
-                            if ($itmres['result']==$this->success_result) {
-                                // Simular
-                                $simular = $session_data['simular'];
-                                $simres = $this->save_simular($simular, $item_id);
-                                $out['msg']=$simres['msg'];
-                                if ($simres['result']==$this->success_result) {
-                                    $colors = $session_data['item_colors'];
-                                    $colres = $this->save_colors($colors, $item_id);
-                                    $out['msg']=$colres['msg'];
-                                    if ($colres['result']==$this->success_result) {
-                                        $deleted = $session_data['deleted'];
-                                        $this->_remove_old_data($deleted);
-                                        $out['result']=$this->success_result;
+                                }
+                                $out['msg']=$itmres['msg'];
+                                if ($itmres['result']==$this->success_result) {
+                                    // Simular
+                                    $simular = $session_data['simular'];
+                                    $simres = $this->save_simular($simular, $item_id);
+                                    $out['msg']=$simres['msg'];
+                                    if ($simres['result']==$this->success_result) {
+                                        $colors = $session_data['item_colors'];
+                                        $colres = $this->save_colors($colors, $item_id);
+                                        $out['msg']=$colres['msg'];
+                                        if ($colres['result']==$this->success_result) {
+                                            $deleted = $session_data['deleted'];
+                                            $this->_remove_old_data($deleted);
+                                            $out['result']=$this->success_result;
+                                        }
                                     }
                                 }
                             }
@@ -845,7 +923,6 @@ Class Itemdetails_model extends My_Model
     }
 
     private function save_colors($colors, $item_id) {
-        firephplog($colors,'Colors');
         foreach ($colors as $row) {
             if (empty($row['item_color'])) {
                 if ($row['item_color_id']>0) {
@@ -864,6 +941,35 @@ Class Itemdetails_model extends My_Model
             }
         }
         $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
+    }
+
+    private function _save_vendor($vendor) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Empty Vendor Item'];
+        if (!empty($vendor['vendor_item_id'])) {
+            $this->db->set('vendor_item_vendor', $vendor['vendor_item_vendor']);
+            $this->db->set('vendor_item_number', $vendor['vendor_item_number']);
+            $this->db->set('vendor_item_name', $vendor['vendor_item_name']);
+            $this->db->set('vendor_item_blankcost', $vendor['vendor_item_blankcost']);
+            $this->db->set('vendor_item_cost', $vendor['vendor_item_cost']);
+            $this->db->set('vendor_item_exprint', $vendor['vendor_item_exprint']);
+            $this->db->set('vendor_item_setup', $vendor['vendor_item_setup']);
+            $this->db->set('vendor_item_notes', $vendor['vendor_item_notes']);
+            $this->db->set('vendor_item_zipcode', $vendor['vendor_item_zipcode']);
+            if ($vendor['vendor_item_id']>0) {
+                $this->db->where('vendor_item_id', $vendor['vendor_item_id']);
+                $this->db->update('sb_vendor_items');
+                $out['result']=$this->success_result;
+                $out['vendor_item_id']=$vendor['vendor_item_id'];
+            } else {
+                $this->db->insert('sb_vendor_items');
+                $newitem=$this->db->insert_id();
+                if ($newitem>0) {
+                    $out['result']=$this->success_result;
+                    $out['vendor_item_id']=$newitem;
+                }
+            }
+        }
         return $out;
     }
 }

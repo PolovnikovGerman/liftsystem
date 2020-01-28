@@ -465,6 +465,55 @@ class Itemdetails extends MY_Controller
         }
     }
 
+    public function search_vendor_item() {
+        $vend_it_num=$this->input->get('term');
+        $vendor_id=$this->input->get('vendor_id');
+        // $vendor_id='1';
+        // $vend_it_num = $this->input->get('query');
+        $this->load->model('vendors_model');
+        $get_dat=$this->vendors_model->search_vendor_items($vend_it_num, $vendor_id);
+        echo json_encode($get_dat);
+    }
+
+    public function vendoritem_check() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata=[];
+             $error = $this->session_error;
+             $session_id = ifset($postdata,'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->check_vendor_item($postdata, $session_data, $session_id);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                     $dat=$res['data'];
+                     $mdata=array(
+                         'vendor_item_id'=>$dat['vendor_item_id'],
+                         'vendor_item_vendor'=>$dat['vendor_item_vendor'],
+                         'vendor_item_number'=>$dat['vendor_item_number'],
+                         'vendor_item_name'=>$dat['vendor_item_name'],
+                         'vendor_item_cost'=>$dat['vendor_item_cost'],
+                         'vendor_item_exprint'=>$dat['vendor_item_exprint'],
+                         'vendor_item_setup'=>$dat['vendor_item_setup'],
+                         'vendor_item_notes'=>$dat['vendor_item_notes'],
+                         'vendor_name'=>$dat['vendor_name'],
+                     );
+                     $vend_options=[
+                         'vendor'=>$res['data'],
+                         'vendprice'=>$res['vendor_prices'],
+                         'mode' => 'edit',
+                     ];
+                     $mdata['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
+                 }
+             }
+             $this->ajaxResponse($mdata,$error);
+
+         }
+         show_404();
+    }
+
     // Save item data
     public function save_itemdetails() {
          if ($this->isAjax()) {

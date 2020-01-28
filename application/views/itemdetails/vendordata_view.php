@@ -2,7 +2,8 @@
     <div class="vendor_title">Vendor:</div>
     <div class="vendor_value">
         <?php if ($mode=='edit') { ?>
-            <input type="text" id="vendor_name" class="vendor_valueinp vendorinputvalues" data-entity="vendor" data-fld="vendor_name" value="<?=$vendor['vendor_name']?>"/>
+            <input type="hidden" id="vendor_item_vendor" value="<?=$vendor['vendor_item_vendor']?>"/>
+            <input type="text" id="vendor_name" class="vendor_valueinp" data-entity="vendor" data-fld="vendor_name" value="<?=$vendor['vendor_name']?>"/>
         <?php } else { ?>
             <?=$vendor['vendor_name']?>
         <?php } ?>
@@ -12,7 +13,7 @@
     <div class="vendor_item">Vend Item #:</div>
     <div class="vendor_itemval">
         <?php if ($mode=='edit') { ?>
-            <input type="text" id="vendor_item_number" class="vendor_itemvalinp vendorinputvalues" data-entity="vendor" data-fld="vendor_item_number" value="<?=$vendor['vendor_item_number']?>"/>
+            <input type="text" id="vendor_item_number" class="vendor_itemvalinp" data-entity="vendor" data-fld="vendor_item_number" value="<?=$vendor['vendor_item_number']?>"/>
         <?php } else { ?>
             <?=$vendor['vendor_item_number']?>
         <?php } ?>
@@ -22,7 +23,7 @@
     <div class="vendor_item">Item Zip:</div>
     <div class="vendor_itemval">
         <?php if ($mode=='edit') { ?>
-            <input type="text" class="vendor_itemvalinp vendorinputvalues" style="width: 62px;" data-entity="vendor" data-fld="vendor_item_zipcode" value="<?=$vendor['vendor_item_zipcode']?>"/>
+            <input type="text" class="vendor_itemvalinp vendorinputvalues" style="width: 62px;" data-idx="0" data-entity="vendor" data-fld="vendor_item_zipcode" value="<?=$vendor['vendor_item_zipcode']?>"/>
         <?php } else { ?>
             <?=$vendor['vendor_item_zipcode']?>
         <?php } ?>
@@ -34,7 +35,7 @@
 <div class="vendor_txtdat">
     <div class="vendor_notes">
         <?php if ($mode=='edit') { ?>
-            <textarea class="vendor_notestxt vendorinputvalues" data-entity="vendor" data-fld="vendor_item_notes"><?=$vendor['vendor_item_notes']?></textarea>
+            <textarea class="vendor_notestxt vendorinputvalues"  data-idx="0" data-entity="vendor" data-fld="vendor_item_notes"><?=$vendor['vendor_item_notes']?></textarea>
         <?php } else { ?>
             <?=$vendor['vendor_item_notes']?>
         <?php } ?>
