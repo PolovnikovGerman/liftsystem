@@ -113,7 +113,10 @@ class Itemdetails extends MY_Controller
                              'faces'=> '', // $faces,
                          );
                          $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
-
+                     } elseif ($res['entity']=='item_prices') {
+                         $profit = $res['profit'];
+                         $mdata['profitdat'] = $this->load->view('itemdetails/stressball_profit_view', array('prices' => $profit, 'price_types' => $this->config->item('price_types')), TRUE);
+                         $mdata['research']=$res['research'];
                      }
                  }
              }
@@ -144,7 +147,6 @@ class Itemdetails extends MY_Controller
                     'prices'=>$priceview,
                 );
                 $mdata['content']=$this->load->view('itemdetails/specialcheckedit_view',$options,TRUE);
-                $vendor_prices=$session_data['vendor_prices'];
                 usersession($session_id, $session_data);
                 $vend_prices = $session_data['vendor_prices'];
                 $vendor = $session_data['vendor'];

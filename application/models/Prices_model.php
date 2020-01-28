@@ -200,11 +200,12 @@ Class Prices_model extends My_Model
         $this->db->from('sb_item_prices');
         $this->db->where('item_price_itemid',$item_id);
         $result = $this->db->get()->row_array();
+        $price_types = $this->config->item('price_types');
         if (!isset($result['item_price_id'])) {
             $result=array('item_price_id'=>'',
                 'item_price_itemid'=>$item_id,
             );
-            foreach ($this->price_types as $row) {
+            foreach ($price_types as $row) {
                 $result['item_price_'.$row['type']]='';
                 $result['item_sale_'.$row['type']]='';
                 $result['profit_'.$row['type']]='';
@@ -222,7 +223,6 @@ Class Prices_model extends My_Model
             $result['profit_setup_perc']='';
             $result['profit_setup_class']='empty';
         } else {
-            $price_types = $this->config->item('price_types');
             foreach ($price_types as $row) {
                 $result['profit_'.$row['type'].'_perc']='';
                 $result['profit_'.$row['type'].'_class']='empty';
@@ -279,7 +279,7 @@ Class Prices_model extends My_Model
         return $result;
     }
 
-    function recalc_special_profit($vendor_price, $spec_qty, $spec_price ) {
+    public function recalc_special_profit($vendor_price, $spec_qty, $spec_price ) {
         $base_prof=$vendor_price[0]['vendorprice_color'];
         /* Init Profits array */
         foreach ($vendor_price as $row) {
@@ -289,6 +289,112 @@ Class Prices_model extends My_Model
         }
         $profitval=($spec_price-$base_prof)*$spec_qty;
         return $profitval;
+    }
+
+    /* Recalc Stress Profit */
+    public function recalc_stress_profit($prices, $vendprice, $price_types) {
+        /* IDX of Vendor Prices */
+        /* Init Profits array */
+        $profits=array();
+        foreach ($price_types as $row) {
+            $base_cost=0;
+            if (floatval($prices['item_sale_'.$row['type']])!=0) {
+                $base_cost=floatval($prices['item_sale_'.$row['type']]);
+            } elseif (floatval($prices['item_price_'.$row['type']])!=0) {
+                $base_cost=floatval($prices['item_price_'.$row['type']]);
+            }
+            $profits[]=array(
+                'type'=>'qty',
+                'base'=>$row['type'],
+                'vendprice'=>$prices['base_cost'],
+                'base_cost'=>$base_cost,
+                'profit'=>'',
+                'profit_perc'=>'',
+                'profit_class'=>'empty',
+            );
+        }
+        /* Add 2 special prices */
+        $base_cost=0;
+        if (floatval($prices['item_sale_print'])!=0) {
+            $base_cost=floatval($prices['item_sale_print']);
+        } elseif(floatval($prices['item_price_print'])) {
+            $base_cost=floatval($prices['item_price_print']);
+        }
+        $profits[]=array(
+            'type'=>'print',
+            'base'=>1,
+            'base_cost'=>$base_cost,
+            'vendprice'=>(floatval($prices['vendor_item_exprint'])==0 ? 0 : floatval($prices['vendor_item_exprint'])),
+            'profit'=>'',
+            'profit_perc'=>'',
+            'profit_class'=>'empty',
+        );
+        $base_cost=0;
+        if (floatval($prices['item_sale_setup'])!=0) {
+            $base_cost=floatval($prices['item_sale_setup']);
+        } elseif(floatval($prices['item_price_setup'])) {
+            $base_cost=floatval($prices['item_price_setup']);
+        }
+        $profits[]=array(
+            'type'=>'setup',
+            'base'=>1,
+            'base_cost'=>$base_cost,
+            'vendprice'=>(floatval($prices['vendor_item_setup'])==0 ? 0 : floatval($prices['vendor_item_setup'])),
+            'profit'=>'',
+            'profit_perc'=>'',
+            'profit_class'=>'empty',
+        );
+        $new_profit=$this->recalc_profit($vendprice, $profits);
+        $profit=array();
+        foreach ($new_profit as $profrow) {
+            if ($profrow['type']=='qty') {
+                $profit['profit_'.$profrow['base']]=$profrow['profit'];
+                $profit['profit_'.$profrow['base'].'_perc']=$profrow['profit_perc'];
+                $profit['profit_'.$profrow['base'].'_class']=$profrow['profit_class'];
+            } elseif ($profrow['type']=='print') {
+                $profit['profit_print']=$profrow['profit'];
+                $profit['profit_print_perc']=$profrow['profit_perc'];
+                $profit['profit_print_class']=$profrow['profit_class'];
+            } elseif ($profrow['type']=='setup') {
+                $profit['profit_setup']=$profrow['profit'];
+                $profit['profit_setup_perc']=$profrow['profit_perc'];
+                $profit['profit_setup_class']=$profrow['profit_class'];
+            }
+        }
+        return $profit;
+    }
+
+    private function recalc_profit($vendprice, $profits) {
+        $out = array();
+        foreach ($profits as $row) {
+            if ($row['base_cost'] != 0) {
+                if ($row['type'] == 'qty') {
+                    /* Our Base less then 1-st entered value */
+                    if ($row['base'] == 5000) {
+                        $proof = 0;
+                    }
+                    foreach ($vendprice as $qrow) {
+                        if ($qrow['qty'] <= $row['base']) {
+                            $row['vendprice'] = $qrow['price'];
+                        }
+                    }
+                    if (floatval($row['vendprice']) != 0) {
+                        $profit = ($row['base_cost'] - $row['vendprice']) * $row['base'];
+                        $row['profit'] = round($profit, 0);
+                        $row['profit_perc'] = round($profit / ($row['base_cost'] * $row['base']) * 100, 0);
+                        $row['profit_class'] = profit_bgclass($row['profit_perc']);
+                    }
+                } else {
+                    if (floatval($row['vendprice']) != 0) {
+                        $row['profit'] = round($row['base_cost'] - $row['vendprice'], 2);
+                        $row['profit_perc'] = round($row['profit'] / ($row['base_cost']) * 100, 0);
+                        $row['profit_class'] = profit_bgclass($row['profit_perc']);
+                    }
+                }
+            }
+            $out[] = $row;
+        }
+        return $out;
     }
 
 

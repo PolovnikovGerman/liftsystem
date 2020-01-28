@@ -1163,6 +1163,7 @@ class Database extends MY_Controller
                         );
                         $data['pricesdat']=$this->load->view('itemdetails/stressball_pricesview_view',$price_options,TRUE);
                         $session_data['item_prices']=$prices;
+                        $session_data['research_prices']=$research_price;
                     }
                 }
                 $data['pricearea']='active';

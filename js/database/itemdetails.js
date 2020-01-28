@@ -427,6 +427,30 @@ function init_itemdetails_edit() {
             }
         });
     });
+    $(".itempriceval").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        params.push({name: 'entity', value: 'item_prices'});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url="/itemdetails/change_parameter";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#profitdataview").empty().html(response.data.profitdat);
+                var rowdat;
+                for (var key in response.data.research) {
+                    rowdat=response.data.research[key];
+                    var cellid = rowdat.id;
+                    var price=rowdat.price
+                    var priceclass=rowdat.priceclass;
+                    $("table.researchprices td#priceval"+cellid).empty().html(price).removeClass('empty_price').removeClass('white').removeClass('blue').removeClass('orange').removeClass('red').addClass(priceclass);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function init_specialcheck_manage() {

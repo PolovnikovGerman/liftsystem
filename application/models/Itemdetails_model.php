@@ -60,6 +60,64 @@ Class Itemdetails_model extends My_Model
                 }
                 $idx++;
             }
+        } elseif ($entity=='item_prices') {
+            $out['msg']='Price Not Found';
+            $prices=$session_data['item_prices'];
+            if (array_key_exists($fld, $prices)) {
+                $prices[$fld] = $newval;
+                $out['msg'] = '';
+                $out['result'] = $this->success_result;
+                $session_data['item_prices'] = $prices;
+                usersession($session_id, $session_data);
+                $pricetype = str_replace(['item_price_','item_sale_'],'', $fld);
+
+                $vend_prices = $session_data['vendor_prices'];
+                $vendor = $session_data['vendor'];
+                $vendor_prices = [];
+                foreach ($vend_prices as $vrow) {
+                    if (!empty($vrow['qty'])) {
+                        $vendor_prices[] = $vrow;
+                    }
+                }
+                // Add base price
+                $prices['base_cost']=$prices['vendor_item_exprint']=$prices['vendor_item_setup']=0;
+                if (!empty($vendor['vendor_item_cost'])) {
+                    $prices['base_cost']=$vendor['vendor_item_cost'];
+                }
+                if (!empty($vendor['vendor_item_exprint'])) {
+                    $prices['vendor_item_exprint']=$vendor['vendor_item_exprint'];
+                }
+                if (!empty($vendor['vendor_item_setup'])) {
+                    $prices['vendor_item_setup']=$vendor['vendor_item_setup'];
+                }
+                $this->load->model('prices_model');
+                $out['profit'] = $this->prices_model->recalc_stress_profit($prices, $vendor_prices, $this->config->item('price_types'));
+                // Other vendor prices
+                $other_prices = $session_data['research_prices'];
+                $base=0;
+                if (floatval($prices['item_sale_'.$pricetype])!=0) {
+                    $base=floatval($prices['item_sale_'.$pricetype]);
+                } elseif (floatval($prices['item_price_'.$pricetype])!=0) {
+                    $base=floatval($prices['item_price_'.$pricetype]);
+                }
+                $research=[];
+                $this->load->model('otherprices_model');
+                for ($i=1; $i<5; $i++) {
+                    // if ($other_prices[$i])
+                    if ($base>0) {
+                        $ridx=$i-1;
+                        if (floatval($other_prices[$ridx]['other_vendorprice_price_'.$pricetype])>0) {
+                            $research_dat=$this->otherprices_model->price_otherview($other_prices[$ridx]['other_vendorprice_price_'.$pricetype],$pricetype,$base);
+                            $research[]=['id'=>$pricetype.$i,'price'=>$research_dat['price'],'priceclass'=>$research_dat['class']];
+                        } else {
+                            $research[]=array('id'=>$pricetype.$i,'price'=>'n/a','priceclass'=>'empty_price');
+                        }
+                    } else {
+                        $research[]=array('id'=>$pricetype.$i,'price'=>'n/a','priceclass'=>'empty_price');
+                    }
+                }
+                $out['research']=$research;
+            }
         }
         return $out;
     }
@@ -403,9 +461,18 @@ Class Itemdetails_model extends My_Model
                         $imgres = $this->save_item_images($item_images, $item_id);
                         $out['msg']=$imgres['msg'];
                         if ($imgres['result']==$this->success_result) {
-                            $deleted = $session_data['deleted'];
-                            $this->_remove_old_data($deleted);
-                            $out['result']=$this->success_result;
+                            if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
+                                $prices = $session_data['item_prices'];
+                                $itmres = $this->save_prices($prices,$item_id);
+                            } else {
+
+                            }
+                            $out['msg']=$itmres['msg'];
+                            if ($itmres['result']==$this->success_result) {
+                                $deleted = $session_data['deleted'];
+                                $this->_remove_old_data($deleted);
+                                $out['result']=$this->success_result;
+                            }
                         }
 
                     }
@@ -691,6 +758,30 @@ Class Itemdetails_model extends My_Model
                 $this->db->delete('sb_item_images');
             }
         }
+    }
+
+    private function save_prices($prices,$item_id) {
+        $price_types = $this->config->item('price_types');
+        foreach ($price_types as $item) {
+            $type=$item['type'];
+            $this->db->set('item_price_'.$type,(empty($prices['item_price_'.$type]) ? NULL : floatval($prices['item_price_'.$type])));
+            $this->db->set('item_sale_'.$type,(empty($prices['item_sale_'.$type]) ? NULL : floatval($prices['item_sale_'.$type])));
+        }
+        // item_price_print: "0.35"
+        // item_price_setup: "50.00"
+        $this->db->set('item_price_print',(empty($prices['item_price_print']) ? NULL : floatval($prices['item_price_print'])));
+        $this->db->set('item_sale_print',(empty($prices['item_sale_print']) ? NULL : floatval($prices['item_sale_print'])));
+        $this->db->set('item_price_setup',(empty($prices['item_price_setup']) ? NULL : floatval($prices['item_price_setup'])));
+        $this->db->set('item_sale_setup',(empty($prices['item_sale_setup']) ? NULL : floatval($prices['item_sale_setup'])));
+        if ($prices['item_price_id']<0) {
+            $this->db->set('item_price_itemid', $item_id);
+            $this->db->insert('sb_item_prices');
+        } else {
+            $this->db->where('item_price_id', $prices['item_price_id']);
+            $this->db->update('sb_item_prices');
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
+        return $out;
     }
 
 }

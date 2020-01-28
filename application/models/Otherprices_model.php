@@ -483,4 +483,52 @@ Class Otherprices_model extends My_Model
         return $res;
     }
 
+    public function get_pricedat_type($other_price_id,$pricetype,$base) {
+        $mindiff=($this->config->item('price_diff')/100);
+        $this->db->select('other_vendorprice_price_'.$pricetype.' as other_price');
+        $this->db->from('sb_other_vendor_price');
+        $this->db->where('other_vendorprice_id',$other_price_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['other_price'])) {
+            $out=array('price'=>'n/a','class'=>'empty_price');
+        } else {
+            if (floatval($res['other_price'])==0) {
+                $out=array('price'=>'n/a','class'=>'empty_price');
+            } else {
+                $other_price=floatval($res['other_price']);
+                $diff=($other_price-$base);
+                $other_price='$'.number_format($other_price,2,'.','');
+                $class='';
+                if ($diff>0 && $diff<=$mindiff) {
+                    $class='white';
+                } elseif ($diff>0 && $diff>$mindiff) {
+                    $class='blue';
+                } elseif ($diff==0) {
+                    $class='orange';
+                } else {
+                    $class='red';
+                }
+                $out=array('price'=>$other_price,'class'=>$class);
+            }
+        }
+        return $out;
+    }
+
+    public function price_otherview($other_price,$pricetype,$base) {
+        $mindiff=($this->config->item('price_diff')/100);
+        $diff=($other_price-$base);
+        $other_price='$'.number_format($other_price,2,'.','');
+        $class='';
+        if ($diff>0 && $diff<=$mindiff) {
+            $class='white';
+        } elseif ($diff>0 && $diff>$mindiff) {
+            $class='blue';
+        } elseif ($diff==0) {
+            $class='orange';
+        } else {
+            $class='red';
+        }
+        return array('price'=>$other_price,'class'=>$class);
+    }
+
 }
