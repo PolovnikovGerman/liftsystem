@@ -25,7 +25,8 @@ if (!defined('BASEPATH'))
  * @property Staticpages_model staticpages_model
  * @property Creditapp_model creditapp_model
  * @property Artlead_model artlead_model
- */
+ * @property Shipping_model shipping_model
+  */
 
 
 class Base_Controller extends CI_Controller
