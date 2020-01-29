@@ -366,4 +366,55 @@ if (!function_exists('orderProfitClass')) {
     }
 }
 
+if (!function_exists('leadProfdocOut')) {
+    function leadProfdocOut($profdocs, $edit=0) {
+        $ci=&get_instance();
+        
+        $proofview='<div class="proofs_content">';
+        $numpor=0;
+        $numdocs=count($profdocs);
+        $numpp=0;
+        $opendiv=1;        
+        foreach ($profdocs as $row) {               
+            $row['edit']=$edit;
+            if ($row['approved']==0) {
+                $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocsrc_view', $row,TRUE);
+            } else {
+                $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocapprov_view', $row,TRUE);
+            }                        
+            $numpor+=1;
+            $numpp++;
+            if ($numpor==5) {
+                $numpor=0;
+                $proofview.='</div>';
+                $opendiv=0;
+                if ($numpp<$numdocs) {
+                    $proofview.='<div class="proofs_content">';
+                    $opendiv=1;
+                }
+            }
+        }
+        if ($opendiv==1) {
+            $proofview.='</div>';
+        }
+        return $proofview;
+    }
+}
+
+if (!function_exists('creditcard_format')) {
+    function creditcard_format($ccnum) {        
+        $cardnum=str_replace('-', '', str_replace(' ','',$ccnum));
+        $out='';
+        for ($i=0; $i<1000; $i++) {
+            $part=  substr($cardnum, 0, 4);
+            if (strlen($part)==0) {
+                $out=substr($out,0,-1);
+                break;
+            }
+            $out.=$part.'-';
+            $cardnum=substr($cardnum, 4);
+        }
+        return $out;
+    }
+}
 ?>
