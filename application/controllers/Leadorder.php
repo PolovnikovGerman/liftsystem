@@ -16,6 +16,8 @@ class Leadorder extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('leadorder_model');
+        $this->load->model('engaded_model');
     }
 
     public function index()
@@ -27,8 +29,6 @@ class Leadorder extends MY_Controller
             $mdata=array();
             $error='';
             $postdata=$this->input->post();
-            $this->load->model('leadorder_model');
-            $this->load->model('engaded_model');
             $order=(isset($postdata['order']) ? $postdata['order'] : 0);
             $ordersession=$this->input->post('ordersession');
             // Remove from session
@@ -181,7 +181,6 @@ class Leadorder extends MY_Controller
             usersession($ordersession,NULL);
             // Generate new session
             $leadsession='leadorder'.uniq_link(15);
-            $this->load->model('leadorder_model');
             $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID);
             if ($res['result']==$this->error_result) {
                 $error=$res['msg'];
@@ -246,7 +245,6 @@ class Leadorder extends MY_Controller
                     if ($order['is_canceled']) {
                         $editbtn=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                     } else {
-                        $this->load->model('engaded_model');
                         $options=array(
                             'entity'=>'ts_orders',
                             'entity_id'=>$order_id,
@@ -286,7 +284,6 @@ class Leadorder extends MY_Controller
     // View Item Image
     public function viewitemimage() {
         $item_id=$this->input->get('id');
-        $this->load->model('leadorder_model');
         $res=$this->leadorder_model->get_leadorder_itemimage($item_id);
         if ($res['result']==$this->error_result) {
             die($res['msg']);
@@ -306,7 +303,6 @@ class Leadorder extends MY_Controller
             if (empty($leadorder)) {
                 $error=$this->restore_orderdata_error;
             } else {
-                $this->load->model('leadorder_model');
                 $res=$this->leadorder_model->get_templates($leadorder);
 
                 $error=$res['msg'];
@@ -422,6 +418,5 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
-
 
 }
