@@ -6931,57 +6931,55 @@ Class Leadorder_model extends My_Model {
 //
 //    }
 //
-//    // Show Item Picture
-//    public function get_leadorder_itemimage($item_id) {
-//        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-//        $this->_DB_GREY = $this->load->database('grey', TRUE);
-//        $this->_DB_GREY->db_select();
-//        $this->_DB_GREY->select('i.item_img_thumb, i.item_img_id');
-//        $this->_DB_GREY->from('sb_item_images i');
-//        $this->_DB_GREY->where('i.item_img_item_id', $item_id);
-//        $this->_DB_GREY->order_by('i.item_img_order');
-//        $res=$this->_DB_GREY->get()->row_array();
-//        if (!isset($res['item_img_id'])) {
-//            $out['msg']='Image Not Found';
-//            return $out;
-//        }
-//        $path_sh=$this->config->item('itemimages_relative');
-//        $path_fl=$this->config->item('itemimages');
-//        $source=$res['item_img_thumb'];
-//        $filesource=  str_replace($path_sh, $path_fl, $source);
-//        if (!file_exists($filesource)) {
-//            $out['msg']='Source File '.$filesource.' Not Found ';
-//            return $out;
-//        }
-//        $viewopt=array(
-//            'source'=>$source,
-//        );
-//        list($width, $height, $type, $attr) = getimagesize($filesource);
-//        // Rate
-//        if ($width >= $height) {
-//            if ($width<=200) {
-//                $viewopt['width']=$width;
-//                $viewopt['height']=$height;
-//            } else {
-//                $rate=200/$width;
-//                $viewopt['width']=ceil($width*$rate);
-//                $viewopt['height']=ceil($height*$rate);
-//            }
-//        } else {
-//            if ($height<=200) {
-//                $viewopt['width']=$width;
-//                $viewopt['height']=$height;
-//            } else {
-//                $rate=200/$height;
-//                $viewopt['width']=ceil($width*$rate);
-//                $viewopt['height']=ceil($height*$rate);
-//            }
-//        }
-//        $out['result']=$this->success_result;
-//        $out['viewoptions']=$viewopt;
-//        return $out;
-//    }
-//
+    // Show Item Picture
+    public function get_leadorder_itemimage($item_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('i.item_img_thumb, i.item_img_id');
+        $this->db->from('sb_item_images i');
+        $this->db->where('i.item_img_item_id', $item_id);
+        $this->db->order_by('i.item_img_order');
+        $res=$this->db->get()->row_array();
+        if (!isset($res['item_img_id'])) {
+            $out['msg']='Image Not Found';
+            return $out;
+        }
+        $path_sh=$this->config->item('itemimages_relative');
+        $path_fl=$this->config->item('itemimages');
+        $source=$res['item_img_thumb'];
+        $filesource=  str_replace($path_sh, $path_fl, $source);
+        if (!file_exists($filesource)) {
+            $out['msg']='Source File '.$filesource.' Not Found ';
+            return $out;
+        }
+        $viewopt=array(
+            'source'=>$source,
+        );
+        list($width, $height, $type, $attr) = getimagesize($filesource);
+        // Rate
+        if ($width >= $height) {
+            if ($width<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$width;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        } else {
+            if ($height<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$height;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        }
+        $out['result']=$this->success_result;
+        $out['viewoptions']=$viewopt;
+        return $out;
+    }
+
 //    public function payment_edit($payment, $postdata) {
 //        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
 //        if (!array_key_exists('fldname',$postdata) || !array_key_exists('newval',$postdata)) {

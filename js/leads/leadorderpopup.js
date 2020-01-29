@@ -129,30 +129,13 @@ function navigation_init() {
         show_chargeattempts(order);
     })
     // Show Order Discount 
-    $("div.discountdescript.icon_file").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 280,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-    });       
+    $("div.discountdescript.icon_file").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'right'
+    });
 }
 
-//function init_blinkedtext(hide) {
-//    if (hide === 1) {
-//        $('.blinked').css("visibility","visible");
-//        hide = 0;
-//        setTimeout("init_blinkedtext("+hide+")", 1000);
-//    } else {
-//        $('.blinked').css("visibility","hidden");
-//        hide = 1;
-//        setTimeout("init_blinkedtext("+hide+")", 500);
-//    }
-//}
 
 // Check locked status
 function chklockedorder() {
@@ -1103,42 +1086,43 @@ function save_leadorderrdnote(artloc) {
 
 function init_showartlocs() {
     // View Item Images
-    $("div.icon_glass.newactive").bt({
-        ajaxCache: false,        
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',        
-        ajaxPath: ["$(this).data('viewsrc')"]        
-    });       
-    
-    $("div.uploadproofdoc").bt({              
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 280,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-    });        
-    $("div.sendedproofdoc").bt({              
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 120,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-    });
+    $("div.icon_glass.newactive").hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('viewsrc'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'right',
+                    html: true
+                }).popover('show');
+            });
+        },
+        function(){
+            $(this).popover('hide');
+        }
+    );
+    // $("div.uploadproofdoc").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 280,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    // });
+    // $("div.sendedproofdoc").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 120,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    // });
     $("div.uploadproofdoc").unbind('click').click(function () {
         var profdoc = $(this).data('proofdoc');
         var params=new Array();
@@ -3200,26 +3184,16 @@ function init_orderbottom_content(edit_mode) {
         },'json');
     });
     // Profit
-    /* 
-    $("div#"+$(this).prop('id')).bt({
-        trigger: 'click',
-        ajaxCache: false,
-        width: '200px',
-        positions: 'most',
-        ajaxPath: ["$(this).attr('href')"]
-    });
-    
-     */
-    $("div.profitdetailsviewarea").bt({
-        trigger: 'click',
-        fill : 'transparent',
-        windowMargin : 0,
-        padding : 0,
-        ajaxCache: false,
-        width: '400px',
-        positions: 'top',
-        ajaxPath: ["$(this).attr('href')"]
-    });    
+    // $("div.profitdetailsviewarea").bt({
+    //     trigger: 'click',
+    //     fill : 'transparent',
+    //     windowMargin : 0,
+    //     padding : 0,
+    //     ajaxCache: false,
+    //     width: '400px',
+    //     positions: 'top',
+    //     ajaxPath: ["$(this).attr('href')"]
+    // });
 }
 
 function save_orderticket() {

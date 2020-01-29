@@ -4,6 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Leadorder extends MY_Controller
 {
 
+    private $restore_orderdata_error='Edit Connection Lost. Please, recall form';
+    private $locktimeout='You have been timed out from this page due to inactivity';
+    private $profitproject='proj';
+    protected $TRACK_TEMPLATE='track_message';
+
+    protected $NO_ART_REMINDER='Need Art Reminder';
+    protected $ART_PROOF='Art Proof';
+    protected $NEED_APPROVE_REMINDER='Need Approval Reminder';
 
     public function __construct()
     {
@@ -44,7 +52,7 @@ class Leadorder extends MY_Controller
                 if ($order==0) {
                     $options['order_id']=0;
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                    $data=$this->func->_prepare_leadorder_view($res, $this->USR_ID, 1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, 1);
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data']=$order_data;
                     $options['leadsession']=$leadsession;
@@ -61,6 +69,11 @@ class Leadorder extends MY_Controller
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order));
                         $res['unlocked']=$engade_res['result'];
                         // Build Head
+                        $head_options = [
+                            'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+                            'prvorder' => $res['prvorder'],
+                            'nxtorder' => $res['nxtorder'],
+                        ];
                         $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                         $options['prvorder']=$res['prvorder'];
                         $options['nxtorder']=$res['nxtorder'];
@@ -68,18 +81,24 @@ class Leadorder extends MY_Controller
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
-                        $options['unlocked']=$engade_res['result'];
+                        // $options['unlocked']=$engade_res['result'];
+                        $head_options['unlocked']=$engade_res['result'];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(
                                 'user'=>$engade_res['lockusr'],
                             );
-                            $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            // $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            $head_options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
                         } elseif ($orddata['is_canceled']==1) {
-                            $options['unlocked']=$this->error_result;
-                            $options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+                            // $options['unlocked']=$this->error_result;
+                            // $options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+                            $head_options['unlocked']=$this->error_result;
+                            $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
                         $options['order_data']=$order_data;
-                        $options['order_dublcnum']=$orddata['order_num'];
+                        // $options['order_dublcnum']=$orddata['order_num'];
+                        $head_options['order_dublcnum']=$orddata['order_num'];
+                        $header = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
                         $options['order_system']=$res['order_system_type'];
                         $content=$this->load->view('leadorderdetails/top_menu_view',$options, TRUE);
                         $locking='';
@@ -145,9 +164,136 @@ class Leadorder extends MY_Controller
                 }
                 usersession($leadsession, $leadorder);
                 $mdata['content']=$content;
+                $mdata['header']=$header;
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
+
+    public function leadordernavigate() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order');
+            $ordersession=$this->input->post('ordersession');
+            // Remove from session
+            usersession($ordersession,NULL);
+            // Generate new session
+            $leadsession='leadorder'.uniq_link(15);
+            $this->load->model('leadorder_model');
+            $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $mdata['ordersession']=$leadsession;
+                $orddata=$res['order'];
+                // Get Data about Engaded records
+                $this->load->model('engaded_model');
+                $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
+                $res['unlocked']=$engade_res['result'];
+                // Build Head
+                $mdata['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
+                $mdata['prvorder']=$res['prvorder'];
+                $mdata['nxtorder']=$res['nxtorder'];
+                $mdata['order_system']=$res['order_system_type'];
+                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 0);
+                /* Save to session */
+                $leadorder=array(
+                    'order'=>$orddata,
+                    'payments'=>$res['payments'],
+                    'artwork'=>$res['artwork'],
+                    'artlocations'=>$res['artlocations'],
+                    'artproofs'=>$res['proofdocs'],
+                    'message'=>$res['message'],
+                    'contacts'=>$res['contacts'],
+                    'order_items'=>$res['order_items'],
+                    'order_system'=>$res['order_system_type'],
+                    'shipping'=>$res['shipping'],
+                    'shipping_address'=>$res['shipping_address'],
+                    'billing'=>$res['order_billing'],
+                    'charges'=>$res['charges'],
+                );
+                usersession($leadsession, $leadorder);
+
+                $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+                // Build Content
+                $mdata['content']=$order_data;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Check lock status of order
+    public function checklockedorder() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $curlock=$this->input->post('curlock');
+                $order=$leadorder['order'];
+                $order_id=$order['order_id'];
+                $editbtn=$switchtempl='&nbsp;';
+                if ($order_id<=0) {
+                    $mdata['lockstatus']=$curlock;
+                } else {
+                    if ($order['is_canceled']) {
+                        $editbtn=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+                    } else {
+                        $this->load->model('engaded_model');
+                        $options=array(
+                            'entity'=>'ts_orders',
+                            'entity_id'=>$order_id,
+                        );
+                        $engadres=$this->engaded_model->check_engade($options);
+                        $mdata['lockstatus']=$engadres['result'];
+                        if ($engadres['result']!=$curlock) {
+                            if ($engadres['result']==$this->success_result) {
+                                $editbtn=$this->load->view('leadorderdetails/orderedit_btn_view', array(), TRUE);
+                                $switchtempl=$this->load->view('leadorderdetails/order_systemselect_view', array(), TRUE);
+                            } else {
+                                // Lock view
+                                $voptions=array(
+                                    'user'=>$engadres['lockusr'],
+                                );
+                                $editbtn=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            }
+                        } else {
+                            if ($engadres['result']==$this->error_result) {
+                                // Lock view
+                                $voptions=array(
+                                    'user'=>$engadres['lockusr'],
+                                );
+                                $editbtn=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            }
+                        }
+                    }
+                }
+                $mdata['editbutton']=$editbtn;
+                $mdata['switchtemplate']=$switchtempl;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // View Item Image
+    public function viewitemimage() {
+        $item_id=$this->input->get('id');
+        $this->load->model('leadorder_model');
+        $res=$this->leadorder_model->get_leadorder_itemimage($item_id);
+        if ($res['result']==$this->error_result) {
+            die($res['msg']);
+        }
+        $viewopt=$res['viewoptions'];
+        $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
+        echo $content;
+    }
+
 }

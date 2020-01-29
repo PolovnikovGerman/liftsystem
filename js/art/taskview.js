@@ -69,7 +69,7 @@ function init_tasks_page() {
             $("div.taskview_order").popover({
                 html: true,
                 trigger: 'hover',
-                placement: 'left'
+                placement: 'right'
             });
             // $("div.taskview_order").bt({
             //     fill : '#EDEDED',

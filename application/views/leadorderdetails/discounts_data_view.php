@@ -9,7 +9,7 @@
     <input type="text" class="items_input2 input_border_gray" readonly="readonly" placeholder="Courtesy Discount" value="<?= $discount_label ?>"/>
 </div>
 <div class="items_content2_bl3">
-    <div class="discountdescript <?=(empty($discount_descript) ? 'empty_icon_file' : 'icon_file')?>" title="<?=$discount_descript?>" style="margin: 41px 2px 0 5px;">
+    <div class="discountdescript <?=(empty($discount_descript) ? 'empty_icon_file' : 'icon_file')?>" data-content="<?=$discount_descript?>" style="margin: 41px 2px 0 5px;">
         &nbsp;
     </div>
     <input type="text" class="items_input3 input_border_gray input_text_right" readonly="readonly" value="<?=MoneyOutput($mischrg_val1) ?>"/>

@@ -66,7 +66,7 @@ class Art extends MY_Controller {
         $head['scripts'][]=array('src'=>'/js/art/page.js');
         $head['styles'][] = array('style'=> '/css/art/artpage.css');
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
-
+        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
         // Utils
         // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');

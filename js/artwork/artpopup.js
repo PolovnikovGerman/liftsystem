@@ -6,10 +6,15 @@ function order_artstage(order_id, callpage) {
         if (response.errors=='') {
             // show_popup('popup_area');
             $(".popover").popover('hide');
-            $("#artModalLabel").empty().html('Artwork Edit');
+            $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").modal('show');
+            if (parseInt(order_id)==0) {
+                init_onlineleadorder_edit();
+            } else {
+                navigation_init();
+            }
         } else {
             show_error(response);
         }
