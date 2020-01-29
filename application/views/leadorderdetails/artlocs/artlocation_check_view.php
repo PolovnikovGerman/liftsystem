@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 29.01.20
- * Time: 12:23
- */
+<input type="checkbox" title="<?=$title?>" class="artlocationinpt <?=$type?>" data-artloc="<?=$artwork_art_id?>" <?=$chk?> />

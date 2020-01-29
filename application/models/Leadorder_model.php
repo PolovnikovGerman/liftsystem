@@ -5026,140 +5026,135 @@ Class Leadorder_model extends My_Model {
         }
         return $order;
     }
-//    // Get GREY Item Data
-//    public function _get_itemdata($item_id) {
-//        $item_table=$this->config->item('greydb').'.sb_items';
-//        $venditem_table=$this->config->item('greydb').'.sb_vendor_items';
-//
-//        $this->_DB_GREY = $this->load->database('grey', TRUE);
-//        $this->_DB_GREY->db_select();
-//
-//        $this->db->select('i.item_id, i.item_name, i.item_number, i.item_template, i.item_weigth, i.cartoon_qty, i.cartoon_width');
-//        $this->db->select('i.cartoon_heigh, i.cartoon_depth, i.boxqty, i.charge_pereach, i.charge_perorder, i.printshop_inventory_id as printshop_item_id');
-//        $this->db->select('v.vendor_zipcode, vi.vendor_item_zipcode');
-//        $this->db->from("{$item_table} i");
-//        $this->db->join("{$venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
-//        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
-//        $this->db->where('i.item_id', $item_id);
-//        $itmres=$this->db->get()->row_array();
-//        if ($item_id>0 && count($itmres)>0) {
-//            if (empty($itmres['printshop_item_id'])) {
-//                // Get Item Price, Item Colors
-//                // Get Colors
-//                $this->_DB_GREY->select('item_color as colors');
-//                $this->_DB_GREY->from('sb_item_colors');
-//                $this->_DB_GREY->where('item_color_itemid', $item_id);
-//                $colors=$this->_DB_GREY->get()->result_array();
-//            } else {
-//                $this->db->select('color as colors');
-//                $this->db->from('ts_printshop_colors');
-//                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
-//                $colors=$this->db->get()->result_array();
-//            }
-//            $itmres['num_colors']=count($colors);
-//            if (count($colors)>0) {
-//                $newcolor=array();
-//                foreach ($colors as $row) {
-//                    array_push($newcolor, $row['colors']);
-//                }
-//            } else {
-//                $newcolor=array();
-//            }
-//            $itmres['colors']=$newcolor;
-//            if (!empty($itmres['vendor_item_zipcode'])) {
-//                $itmres['vendor_zipcode']=$itmres['vendor_item_zipcode'];
-//            }
-//            // Get Imprints
-//            $this->_DB_GREY->select('item_inprint_id, item_inprint_location, item_inprint_size, item_inprint_view');
-//            $this->_DB_GREY->from('sb_item_inprints');
-//            $this->_DB_GREY->where('item_inprint_item', $item_id);
-//            $itmres['imprints']=$this->_DB_GREY->get()->result_array();
-//        } else {
-//            $itmres['colors']=array();
-//            $itmres['num_colors']=0;
-//            $itmres['imprints']=array();
-//            $itmres['item_template']=$this->normal_template;
-//        }
-//        return $itmres;
-//    }
-//
-//    // New price for changed QTY
-//    public function _get_item_priceqty($item_id, $itemtype, $qty) {
-//        $item_table=$this->config->item('greydb').'.sb_items';
-//        $this->db->select('item_template');
-//        $this->db->from("{$item_table}");
-//        $this->db->where('item_id', $item_id);
-//        $itmres=$this->db->get()->row_array();
-//
-//        $this->_DB_GREY = $this->load->database('grey', TRUE);
-//        $this->_DB_GREY->db_select();
-//        if ($itemtype==$this->normal_template) {
-//            $price_bases=$this->config->item('normal_price_base');
-//            $base=$price_bases[0];
-//            foreach ($price_bases as $row) {
-//                if ($row>$qty) {
-//                    break;
-//                } else {
-//                    $base=$row;
-//                }
-//            }
-//            $pricefld='item_price_'.$base;
-//            $salefld='item_sale_'.$base;
-//            $this->_DB_GREY->select("{$pricefld} as price, {$salefld} as sale, item_price_itemid");
-//            $this->_DB_GREY->from('sb_item_prices');
-//            $this->_DB_GREY->where('item_price_itemid', $item_id);
-//            $priceres=$this->_DB_GREY->get()->row_array();
-//            if (!isset($priceres['item_price_itemid'])) {
-//                $price=0;
-//            } else {
-//                if ($priceres['sale']=='') {
-//                    $price=$priceres['price'];
-//                } else {
-//                    $price=$priceres['sale'];
-//                }
-//            }
-//        } else {
-//            $this->_DB_GREY->select('item_qty, price, sale_price');
-//            $this->_DB_GREY->from('sb_promo_price');
-//            $this->_DB_GREY->where('item_id', $item_id);
-//            $this->_DB_GREY->order_by('item_qty');
-//            $priceres=  $this->_DB_GREY->get()->result_array();
-//
-//            $price=(intval($priceres[0]['sale_price'])==0 ? $priceres[0]['price'] : $priceres[0]['sale_price']);
-//            foreach ($priceres as $row) {
-//                if ($qty<$row['item_qty']) {
-//                    break;
-//                } else {
-//                    $price=(floatval($row['sale_price'])==0 ? $row['price'] : $row['sale_price']);
-//                }
-//            }
-//        }
-//        return $price;
-//    }
-//
-//    public function _get_item_priceimprint($item_id, $pricetype) {
-//        $this->_DB_GREY = $this->load->database('grey', TRUE);
-//        $this->_DB_GREY->db_select();
-//        $this->_DB_GREY->select('item_price_itemid');
-//        if ($pricetype=='setup') {
-//            $this->_DB_GREY->select('item_price_setup as price, item_sale_setup as sale');
-//        } else {
-//            $this->_DB_GREY->select('item_price_print as price, item_sale_print as sale');
-//        }
-//        $this->_DB_GREY->from('sb_item_prices');
-//        $this->_DB_GREY->where('item_price_itemid', $item_id);
-//        $priceres=$this->_DB_GREY->get()->row_array();
-//        if (!isset($priceres['item_price_itemid'])) {
-//            return 0;
-//        } else {
-//            if (!empty($priceres['sale'])) {
-//                $price=floatval($priceres['sale']);
-//            } else {
-//                $price=floatval($priceres['price']);
-//            }
-//            return $price;
-//        }
-//    }
+    // Get GREY Item Data
+    public function _get_itemdata($item_id) {
+        $item_table='sb_items';
+        $venditem_table='sb_vendor_items';
+
+        $this->db->select('i.item_id, i.item_name, i.item_number, i.item_template, i.item_weigth, i.cartoon_qty, i.cartoon_width');
+        $this->db->select('i.cartoon_heigh, i.cartoon_depth, i.boxqty, i.charge_pereach, i.charge_perorder, i.printshop_inventory_id as printshop_item_id');
+        $this->db->select('v.vendor_zipcode, vi.vendor_item_zipcode');
+        $this->db->from("{$item_table} i");
+        $this->db->join("{$venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->where('i.item_id', $item_id);
+        $itmres=$this->db->get()->row_array();
+        if ($item_id>0 && count($itmres)>0) {
+            if (empty($itmres['printshop_item_id'])) {
+                // Get Item Price, Item Colors
+                // Get Colors
+                $this->db->select('item_color as colors');
+                $this->db->from('sb_item_colors');
+                $this->db->where('item_color_itemid', $item_id);
+                $colors=$this->db->get()->result_array();
+            } else {
+                $this->db->select('color as colors');
+                $this->db->from('ts_printshop_colors');
+                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
+                $colors=$this->db->get()->result_array();
+            }
+            $itmres['num_colors']=count($colors);
+            if (count($colors)>0) {
+                $newcolor=array();
+                foreach ($colors as $row) {
+                    array_push($newcolor, $row['colors']);
+                }
+            } else {
+                $newcolor=array();
+            }
+            $itmres['colors']=$newcolor;
+            if (!empty($itmres['vendor_item_zipcode'])) {
+                $itmres['vendor_zipcode']=$itmres['vendor_item_zipcode'];
+            }
+            // Get Imprints
+            $this->db->select('item_inprint_id, item_inprint_location, item_inprint_size, item_inprint_view');
+            $this->db->from('sb_item_inprints');
+            $this->db->where('item_inprint_item', $item_id);
+            $itmres['imprints']=$this->db->get()->result_array();
+        } else {
+            $itmres['colors']=array();
+            $itmres['num_colors']=0;
+            $itmres['imprints']=array();
+            $itmres['item_template']=$this->normal_template;
+        }
+        return $itmres;
+    }
+
+    // New price for changed QTY
+    public function _get_item_priceqty($item_id, $itemtype, $qty) {
+        $item_table='sb_items';
+        $this->db->select('item_template');
+        $this->db->from("{$item_table}");
+        $this->db->where('item_id', $item_id);
+        $itmres=$this->db->get()->row_array();
+
+        if ($itemtype==$this->normal_template) {
+            $price_bases=$this->config->item('normal_price_base');
+            $base=$price_bases[0];
+            foreach ($price_bases as $row) {
+                if ($row>$qty) {
+                    break;
+                } else {
+                    $base=$row;
+                }
+            }
+            $pricefld='item_price_'.$base;
+            $salefld='item_sale_'.$base;
+            $this->_DB_GREY->select("{$pricefld} as price, {$salefld} as sale, item_price_itemid");
+            $this->_DB_GREY->from('sb_item_prices');
+            $this->_DB_GREY->where('item_price_itemid', $item_id);
+            $priceres=$this->_DB_GREY->get()->row_array();
+            if (!isset($priceres['item_price_itemid'])) {
+                $price=0;
+            } else {
+                if ($priceres['sale']=='') {
+                    $price=$priceres['price'];
+                } else {
+                    $price=$priceres['sale'];
+                }
+            }
+        } else {
+            $this->_DB_GREY->select('item_qty, price, sale_price');
+            $this->_DB_GREY->from('sb_promo_price');
+            $this->_DB_GREY->where('item_id', $item_id);
+            $this->_DB_GREY->order_by('item_qty');
+            $priceres=  $this->_DB_GREY->get()->result_array();
+
+            $price=(intval($priceres[0]['sale_price'])==0 ? $priceres[0]['price'] : $priceres[0]['sale_price']);
+            foreach ($priceres as $row) {
+                if ($qty<$row['item_qty']) {
+                    break;
+                } else {
+                    $price=(floatval($row['sale_price'])==0 ? $row['price'] : $row['sale_price']);
+                }
+            }
+        }
+        return $price;
+    }
+
+    public function _get_item_priceimprint($item_id, $pricetype) {
+        $this->_DB_GREY = $this->load->database('grey', TRUE);
+        $this->_DB_GREY->db_select();
+        $this->_DB_GREY->select('item_price_itemid');
+        if ($pricetype=='setup') {
+            $this->_DB_GREY->select('item_price_setup as price, item_sale_setup as sale');
+        } else {
+            $this->_DB_GREY->select('item_price_print as price, item_sale_print as sale');
+        }
+        $this->_DB_GREY->from('sb_item_prices');
+        $this->_DB_GREY->where('item_price_itemid', $item_id);
+        $priceres=$this->_DB_GREY->get()->row_array();
+        if (!isset($priceres['item_price_itemid'])) {
+            return 0;
+        } else {
+            if (!empty($priceres['sale'])) {
+                $price=floatval($priceres['sale']);
+            } else {
+                $price=floatval($priceres['price']);
+            }
+            return $price;
+        }
+    }
 
     public function get_order_contacts($order_id) {
         $this->db->select('*');
@@ -5170,166 +5165,166 @@ Class Leadorder_model extends My_Model {
         return $res;
     }
 
-//    public function get_order_items($order_id, $full=1) {
-//        $this->load->model('order_model');
-//        $this->db->select('*');
-//        $this->db->from('ts_order_items');
-//        $this->db->where('order_id', $order_id);
-//        $this->db->order_by('order_item_id');
-//        $res=$this->db->get()->result_array();
-//        if ($full==0) {
-//            return $res;
-//        }
-//        // Begin Build full object
-//        $out=array();
-//        foreach ($res as $row) {
-//            $item_id=$row['item_id'];
-//            $newitem=array(
-//                'order_item_id'=>$row['order_item_id'],
-//                'item_id'=>$item_id,
-//                'item_number'=>'',
-//                'item_name'=>'',
-//                'item_qty'=>$row['item_qty'],
-//                'colors'=>'',
-//                'num_colors'=>0,
-//                'item_template'=>$this->normal_template,
-//                'item_weigth'=>0,
-//                'cartoon_qty'=>0,
-//                'cartoon_width'=>0,
-//                'cartoon_heigh'=>0,
-//                'cartoon_depth'=>0,
-//                'boxqty'=>0,
-//                'setup_price'=>$row['setup_price'],
-//                'print_price'=>$row['imprint_price'],
-//                'item_subtotal'=>0,
-//                'imprint_subtotal'=>0,
-//                'vendor_zipcode'=>$this->default_zip,
-//                'charge_perorder'=>0,
-//                'charge_peritem'=>0,
-//                'charge_pereach'=>0,
-//                'imprint_locations'=>array(),
-//            );
-//            if ($item_id<0) {
-//                $itemdata=$this->order_model->get_newitemdat($item_id);
-//                $newitem['item_number']=$itemdata['item_number'];
-//                $newitem['item_name']=$itemdata['item_name'];
-//            } else {
-//                $itemdata=$this->_get_itemdata($item_id);
-//                $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
-//                $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
-//                $newitem['item_number']=$itemdata['item_number'];
-//                $newitem['item_name']=$itemdata['item_name'];
-//                $newitem['item_template']=$itemdata['item_template'];
-//                $newitem['item_weigth']=$itemdata['item_weigth'];
-//                $newitem['cartoon_qty']=$itemdata['cartoon_qty'];
-//                $newitem['cartoon_width']=$itemdata['cartoon_width'];
-//                $newitem['cartoon_heigh']=$itemdata['cartoon_heigh'];
-//                $newitem['cartoon_depth']=$itemdata['cartoon_depth'];
-//                $newitem['boxqty']=$itemdata['boxqty'];
-//                $newitem['setup_price']=$setupprice;
-//                $newitem['print_price']=$printprice;
-//                $newitem['imprint_locations']=$itemdata['imprints'];
-//                $newitem['vendor_zipcode']=$itemdata['vendor_zipcode'];
-//                $newitem['charge_perorder']=$itemdata['charge_perorder'];
-//                $newitem['charge_pereach']=$itemdata['charge_pereach'];
-//            }
-//            $colors=$itemdata['colors'];
-//            // Colors
-//            $newitem['colors']=$colors;
-//            $newitem['num_colors']=count($colors);
-//            // Get a list of Color Items
-//            $itemcolors=$this->_get_item_colorrows($row['order_item_id']);
-//
-//            $items=array();
-//            $numpp=1;
-//            $countitems=count($itemcolors);
-//            foreach ($itemcolors as $irow) {
-//                $subtotal=$irow['item_qty']*$irow['item_price'];
-//                $newitem['item_subtotal']+=$subtotal;
-//                $coloradd=0;
-//                if ($newitem['num_colors']>1 && $numpp==$countitems) {
-//                    $coloradd=1;
-//                }
-//                $options=array(
-//                    'order_item_id'=>$irow['order_item_id'],
-//                    'item_id'=>$irow['item_id'],
-//                    'colors'=>$newitem['colors'],
-//                    'item_color'=>$irow['item_color'],
-//                );
-//                if ($newitem['num_colors']==0) {
-//                    // $out_colors=$this->empty_htmlcontent;
-//                    $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
-//                } else {
-//                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
-//                }
-//                $items[]=array(
-//                    'order_item_id' =>$irow['order_item_id'],
-//                    'item_id' =>$irow['item_id'],
-//                    'item_row' =>$numpp,
-//                    'item_number' =>$newitem['item_number'],
-//                    'item_color' =>$irow['item_color'],
-//                    'colors'=>$colors,
-//                    'out_colors'=>$out_colors,
-//                    'num_colors' =>$newitem['num_colors'],
-//                    'item_description' =>$irow['item_description'],
-//                    'item_color_add' =>$coloradd,
-//                    'item_qty' =>$irow['item_qty'],
-//                    'item_price'=>$irow['item_price'],
-//                    'item_subtotal'=>MoneyOutput($subtotal),
-//                    'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
-//                );
-//                $numpp++;
-//            }
-//            $newitem['items']=$items;
-//            // Get Imprints
-//            $item_imprints=$this->_get_itemorder_imprints($row['order_item_id']);
-//            $imprints=array();
-//            foreach ($item_imprints as $irow) {
-//                $subtotal=$irow['imprint_price']*$irow['imprint_qty'];
-//                $newitem['imprint_subtotal']+=$subtotal;
-//                $imprints[]=array(
-//                    'order_imprint_id'=>$irow['order_imprint_id'],
-//                    'imprint_description' =>$irow['imprint_description'],
-//                    'imprint_qty'=>$irow['imprint_qty'],
-//                    'imprint_price' =>$irow['imprint_price'],
-//                    'imprint_item' =>$irow['imprint_item'],
-//                    'imprint_subtotal' =>MoneyOutput($subtotal),
-//                    'delflag'=>0,
-//                );
-//            }
-//            $newitem['imprints']=$imprints;
-//            // Get Imprint Details
-//            $details=$this->_get_itemorder_impintdetails($row['order_item_id']);
-//            $impr_details=array();
-//            $numdet=1;
-//            foreach ($details as $drow) {
-//                $impr_details[]=array(
-//                    'title' =>'Loc '.$numdet,
-//                    'active' =>$drow['imprint_active'],
-//                    'order_imprindetail_id' =>$drow['order_imprindetail_id'],
-//                    'order_item_id' =>$drow['order_item_id'],
-//                    'imprint_type' =>$drow['imprint_type'],
-//                    'repeat_note' =>$drow['repeat_note'],
-//                    'location_id' =>$drow['location_id'],
-//                    'num_colors' =>$drow['num_colors'],
-//                    'print_1' =>$drow['print_1'],
-//                    'print_2' =>$drow['print_2'],
-//                    'print_3' =>$drow['print_3'],
-//                    'print_4' =>$drow['print_4'],
-//                    'setup_1' =>$drow['setup_1'],
-//                    'setup_2' =>$drow['setup_2'],
-//                    'setup_3' =>$drow['setup_3'],
-//                    'setup_4' =>$drow['setup_4'],
-//                    'extra_cost' =>$drow['extra_cost'],
-//                    'artwork_art_id'=>$drow['artwork_art_id'],
-//                );
-//                $numdet++;
-//            }
-//            $newitem['imprint_details']=$impr_details;
-//            $out[]=$newitem;
-//        }
-//        return $out;
-//    }
+    public function get_order_items($order_id, $full=1) {
+        $this->load->model('orders_model');
+        $this->db->select('*');
+        $this->db->from('ts_order_items');
+        $this->db->where('order_id', $order_id);
+        $this->db->order_by('order_item_id');
+        $res=$this->db->get()->result_array();
+        if ($full==0) {
+            return $res;
+        }
+        // Begin Build full object
+        $out=array();
+        foreach ($res as $row) {
+            $item_id=$row['item_id'];
+            $newitem=array(
+                'order_item_id'=>$row['order_item_id'],
+                'item_id'=>$item_id,
+                'item_number'=>'',
+                'item_name'=>'',
+                'item_qty'=>$row['item_qty'],
+                'colors'=>'',
+                'num_colors'=>0,
+                'item_template'=>$this->normal_template,
+                'item_weigth'=>0,
+                'cartoon_qty'=>0,
+                'cartoon_width'=>0,
+                'cartoon_heigh'=>0,
+                'cartoon_depth'=>0,
+                'boxqty'=>0,
+                'setup_price'=>$row['setup_price'],
+                'print_price'=>$row['imprint_price'],
+                'item_subtotal'=>0,
+                'imprint_subtotal'=>0,
+                'vendor_zipcode'=>$this->default_zip,
+                'charge_perorder'=>0,
+                'charge_peritem'=>0,
+                'charge_pereach'=>0,
+                'imprint_locations'=>array(),
+            );
+            if ($item_id<0) {
+                $itemdata=$this->orders_model->get_newitemdat($item_id);
+                $newitem['item_number']=$itemdata['item_number'];
+                $newitem['item_name']=$itemdata['item_name'];
+            } else {
+                $itemdata=$this->_get_itemdata($item_id);
+                $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
+                $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
+                $newitem['item_number']=$itemdata['item_number'];
+                $newitem['item_name']=$itemdata['item_name'];
+                $newitem['item_template']=$itemdata['item_template'];
+                $newitem['item_weigth']=$itemdata['item_weigth'];
+                $newitem['cartoon_qty']=$itemdata['cartoon_qty'];
+                $newitem['cartoon_width']=$itemdata['cartoon_width'];
+                $newitem['cartoon_heigh']=$itemdata['cartoon_heigh'];
+                $newitem['cartoon_depth']=$itemdata['cartoon_depth'];
+                $newitem['boxqty']=$itemdata['boxqty'];
+                $newitem['setup_price']=$setupprice;
+                $newitem['print_price']=$printprice;
+                $newitem['imprint_locations']=$itemdata['imprints'];
+                $newitem['vendor_zipcode']=$itemdata['vendor_zipcode'];
+                $newitem['charge_perorder']=$itemdata['charge_perorder'];
+                $newitem['charge_pereach']=$itemdata['charge_pereach'];
+            }
+            $colors=$itemdata['colors'];
+            // Colors
+            $newitem['colors']=$colors;
+            $newitem['num_colors']=count($colors);
+            // Get a list of Color Items
+            $itemcolors=$this->_get_item_colorrows($row['order_item_id']);
+
+            $items=array();
+            $numpp=1;
+            $countitems=count($itemcolors);
+            foreach ($itemcolors as $irow) {
+                $subtotal=$irow['item_qty']*$irow['item_price'];
+                $newitem['item_subtotal']+=$subtotal;
+                $coloradd=0;
+                if ($newitem['num_colors']>1 && $numpp==$countitems) {
+                    $coloradd=1;
+                }
+                $options=array(
+                    'order_item_id'=>$irow['order_item_id'],
+                    'item_id'=>$irow['item_id'],
+                    'colors'=>$newitem['colors'],
+                    'item_color'=>$irow['item_color'],
+                );
+                if ($newitem['num_colors']==0) {
+                    // $out_colors=$this->empty_htmlcontent;
+                    $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
+                } else {
+                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
+                $items[]=array(
+                    'order_item_id' =>$irow['order_item_id'],
+                    'item_id' =>$irow['item_id'],
+                    'item_row' =>$numpp,
+                    'item_number' =>$newitem['item_number'],
+                    'item_color' =>$irow['item_color'],
+                    'colors'=>$colors,
+                    'out_colors'=>$out_colors,
+                    'num_colors' =>$newitem['num_colors'],
+                    'item_description' =>$irow['item_description'],
+                    'item_color_add' =>$coloradd,
+                    'item_qty' =>$irow['item_qty'],
+                    'item_price'=>$irow['item_price'],
+                    'item_subtotal'=>MoneyOutput($subtotal),
+                    'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
+                );
+                $numpp++;
+            }
+            $newitem['items']=$items;
+            // Get Imprints
+            $item_imprints=$this->_get_itemorder_imprints($row['order_item_id']);
+            $imprints=array();
+            foreach ($item_imprints as $irow) {
+                $subtotal=$irow['imprint_price']*$irow['imprint_qty'];
+                $newitem['imprint_subtotal']+=$subtotal;
+                $imprints[]=array(
+                    'order_imprint_id'=>$irow['order_imprint_id'],
+                    'imprint_description' =>$irow['imprint_description'],
+                    'imprint_qty'=>$irow['imprint_qty'],
+                    'imprint_price' =>$irow['imprint_price'],
+                    'imprint_item' =>$irow['imprint_item'],
+                    'imprint_subtotal' =>MoneyOutput($subtotal),
+                    'delflag'=>0,
+                );
+            }
+            $newitem['imprints']=$imprints;
+            // Get Imprint Details
+            $details=$this->_get_itemorder_impintdetails($row['order_item_id']);
+            $impr_details=array();
+            $numdet=1;
+            foreach ($details as $drow) {
+                $impr_details[]=array(
+                    'title' =>'Loc '.$numdet,
+                    'active' =>$drow['imprint_active'],
+                    'order_imprindetail_id' =>$drow['order_imprindetail_id'],
+                    'order_item_id' =>$drow['order_item_id'],
+                    'imprint_type' =>$drow['imprint_type'],
+                    'repeat_note' =>$drow['repeat_note'],
+                    'location_id' =>$drow['location_id'],
+                    'num_colors' =>$drow['num_colors'],
+                    'print_1' =>$drow['print_1'],
+                    'print_2' =>$drow['print_2'],
+                    'print_3' =>$drow['print_3'],
+                    'print_4' =>$drow['print_4'],
+                    'setup_1' =>$drow['setup_1'],
+                    'setup_2' =>$drow['setup_2'],
+                    'setup_3' =>$drow['setup_3'],
+                    'setup_4' =>$drow['setup_4'],
+                    'extra_cost' =>$drow['extra_cost'],
+                    'artwork_art_id'=>$drow['artwork_art_id'],
+                );
+                $numdet++;
+            }
+            $newitem['imprint_details']=$impr_details;
+            $out[]=$newitem;
+        }
+        return $out;
+    }
 //
 //
 //    public function _get_item_colorrows($order_item_id) {

@@ -523,5 +523,35 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function get_newitemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        if ($item_id>0 && count($res)>0) {
+            // Get Colors
+            $this->db->select('item_color as colors');
+            $this->db->from('sb_item_colors');
+            $this->db->where('item_color_itemid', $item_id);
+            $colors=$this->db->get()->result_array();
+
+            $res['num_colors']=count($colors);
+            if (count($colors)>0) {
+                $newcolor=array();
+                foreach ($colors as $row) {
+                    array_push($newcolor, $row['colors']);
+                }
+            } else {
+                $newcolor=array();
+            }
+            $res['colors']=$newcolor;
+
+        } else {
+            $res['colors']=array();
+            $res['num_colors']=0;
+        }
+        return $res;
+    }
+
 
 }
