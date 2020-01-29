@@ -21,6 +21,7 @@
  * @property Questions_model questions_model
  * @property Quotes_model quotes_model
  * @property Staticpages_model staticpages_model
+ * @property Creditapp_model creditapp_model
  */
 
 class MY_Model extends CI_Model
