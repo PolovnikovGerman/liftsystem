@@ -553,5 +553,30 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
+    /* List of Items */
+    public function get_item_list($options=array()) {
+        $this->db->select('*');
+        $this->db->from('v_itemsearch');
+        if (isset($options['exclude'])) {
+            $this->db->where_not_in('item_id', $options['exclude']);
+        }
+        $this->db->order_by('item_number');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            if ($row['item_id']>1) {
+                $row['item_list']=$row['item_name'].' / '.$row['item_number'];
+            } else {
+                $row['item_list']=$row['item_name'];
+            }
+            $out[]=array(
+                'item_id'=>$row['item_id'],
+                'item_name'=>$row['item_list'],
+                'itemnumber'=>$row['item_number'],
+                'itemname'=>$row['item_name'],
+            );
+        }
+        return $out;
+    }
 
 }

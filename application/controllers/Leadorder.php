@@ -65,7 +65,7 @@ class Leadorder extends MY_Controller
                         $options['prvorder']=$res['prvorder'];
                         $options['nxtorder']=$res['nxtorder'];
                         // Build View
-                        $data=$this->func->_prepare_leadorder_view($res,$this->USR_ID, 0);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $options['unlocked']=$engade_res['result'];

@@ -2718,16 +2718,16 @@ Class Leadorder_model extends My_Model {
 //        $this->func->session($ordersession, $leadorder);
 //    }
 //
-//    public function oldorder_item_subtotal($order) {
-//        $base_cost=intval($order['is_shipping'])*floatval($order['shipping']);
-//        $base_cost+=floatval($order['cc_fee']);
-//        $base_cost+=floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
-//        $base_cost+=floatval($order['tax']);
-//        // Revenue
-//        $subtotal=$order['revenue']-$base_cost;
-//        return $subtotal;
-//    }
-//
+    public function oldorder_item_subtotal($order) {
+        $base_cost=intval($order['is_shipping'])*floatval($order['shipping']);
+        $base_cost+=floatval($order['cc_fee']);
+        $base_cost+=floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+        $base_cost+=floatval($order['tax']);
+        // Revenue
+        $subtotal=$order['revenue']-$base_cost;
+        return $subtotal;
+    }
+
 //    // Check open ticket for order
 //    public function get_opentickets($leadorder, $ordersession) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -7867,65 +7867,65 @@ Class Leadorder_model extends My_Model {
 //        );
 //    }
 //
-//    // Status for shipping area
-//    public function _leadorderview_shipping_status($leadorder) {
-//        $order_status='FF - To Ship ';
-//        $order_status_class='open';
-//        $order=$leadorder['order'];
-//        $shipping=$leadorder['shipping'];
-//        if (!empty($shipping) && !empty($shipping['shipdate'])) {
-//            $shipdate=$shipping['shipdate'];
-//        } else {
-//            $shipdate=$order['shipdate'];
-//        }
-//        if (intval($shipdate)==0) {
-//            $order_status='Not Shipped Yet';
-//        } else {
-//            $order_status='To Ship '.date('m/d/y', $shipdate);
-//            if (isset($leadorder['shipping_address'])) {
-//                $shipping_address=$leadorder['shipping_address'];
-//                $delivflag=0;
-//                $delivdate=0;
-//                $numpack=0;
-//                $allpack=0;
-//                foreach ($shipping_address as $arow) {
-//                    $packs=$arow['packages'];
-//                    foreach ($packs as $prow) {
-//                        if ($prow['delflag']==0) {
-//                            $allpack++;
-//                            if (!empty($prow['track_code'])) {
-//                                $numpack++;
-//                                if ($prow['delivered']==1) {
-//                                    $delivflag++;
-//                                } else {
-//                                    $delivdate=($arow['arrive_date']>$delivdate ? $arow['arrive_date'] : $delivdate );
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                if ($allpack>0) {
-//                    if ($numpack>0) {
-//                        if ($allpack==$numpack) {
-//                            $order_status='Shipped '.date('m/d/y', $shipdate);
-//                            $order_status_class='shipped';
-//                        } else {
-//                            $order_status='Partially Shipped';
-//                            if ($delivflag>0 && $delivflag==$numpack) {
-//                                $order_status='Delivered';
-//                                $order_status_class='ready';
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return array(
-//            'order_status'=>$order_status,
-//            'order_status_class'=>$order_status_class,
-//        );
-//    }
-//
+    // Status for shipping area
+    public function _leadorderview_shipping_status($leadorder) {
+        $order_status='FF - To Ship ';
+        $order_status_class='open';
+        $order=$leadorder['order'];
+        $shipping=$leadorder['shipping'];
+        if (!empty($shipping) && !empty($shipping['shipdate'])) {
+            $shipdate=$shipping['shipdate'];
+        } else {
+            $shipdate=$order['shipdate'];
+        }
+        if (intval($shipdate)==0) {
+            $order_status='Not Shipped Yet';
+        } else {
+            $order_status='To Ship '.date('m/d/y', $shipdate);
+            if (isset($leadorder['shipping_address'])) {
+                $shipping_address=$leadorder['shipping_address'];
+                $delivflag=0;
+                $delivdate=0;
+                $numpack=0;
+                $allpack=0;
+                foreach ($shipping_address as $arow) {
+                    $packs=$arow['packages'];
+                    foreach ($packs as $prow) {
+                        if ($prow['delflag']==0) {
+                            $allpack++;
+                            if (!empty($prow['track_code'])) {
+                                $numpack++;
+                                if ($prow['delivered']==1) {
+                                    $delivflag++;
+                                } else {
+                                    $delivdate=($arow['arrive_date']>$delivdate ? $arow['arrive_date'] : $delivdate );
+                                }
+                            }
+                        }
+                    }
+                }
+                if ($allpack>0) {
+                    if ($numpack>0) {
+                        if ($allpack==$numpack) {
+                            $order_status='Shipped '.date('m/d/y', $shipdate);
+                            $order_status_class='shipped';
+                        } else {
+                            $order_status='Partially Shipped';
+                            if ($delivflag>0 && $delivflag==$numpack) {
+                                $order_status='Delivered';
+                                $order_status_class='ready';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return array(
+            'order_status'=>$order_status,
+            'order_status_class'=>$order_status_class,
+        );
+    }
+
 //    private function _log_orderchanges($oldorder, $neworder, $order_type, $artwork_id, $user_id) {
 //        $msg='';
 //        $changes=array();
@@ -8120,50 +8120,50 @@ Class Leadorder_model extends My_Model {
 //        return TRUE;
 //    }
 //
-//    // Count # of Order charges attempts
-//    public function count_charges_attempts($order_id) {
-//        $this->db->select('count(*) as cnt');
-//        $this->db->from('ts_order_paymentlog');
-//        $this->db->where('order_id', $order_id);
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//    // Get Charges Attempts
-//    public function get_charges_attempts($order_id) {
-//        $out=array('result'=> $this->error_result, 'msg'=> 'Attempts Not Found');
-//        $this->db->select('l.paylog_date, u.user_name, l.paysum, l.card_num, l.card_system, l.cvv, l.paysucces, l.api_response');
-//        $this->db->from('ts_order_paymentlog l');
-//        $this->db->join('users u','u.user_id=l.user_id');
-//        $this->db->where('l.order_id', $order_id);
-//        $this->db->order_by('l.paylog_date');
-//        $res=$this->db->get()->result_array();
-//        if (count($res)>0) {
-//            $out['result']=  $this->success_result;
-//            $data=array();
-//            foreach ($res as $row) {
-//                $paylog_date=date('m/d/y g:i a', strtotime($row['paylog_date']));
-//                $paysum=  MoneyOutput($row['paysum'],2);
-//                $card_num='N/A';
-//                if (!empty($row['card_num'])) {
-//                    $card_num=$this->func->creditcard_format($row['card_num']);
-//                }
-//                $payclass=($row['paysucces']==1 ? 'success' : 'error');
-//                $data[]=array(
-//                    'paylog_date'=>$paylog_date,
-//                    'user_name'=>$row['user_name'],
-//                    'paysum'=>$paysum,
-//                    'card_num'=>$card_num,
-//                    'card_system'=>$row['card_system'],
-//                    'cvv'=>$row['cvv'],
-//                    'payclass'=>$payclass,
-//                    'api_response'=>$row['api_response'],
-//                );
-//            }
-//            $out['data']=$data;
-//        }
-//        return $out;
-//    }
-//
+    // Count # of Order charges attempts
+    public function count_charges_attempts($order_id) {
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_order_paymentlog');
+        $this->db->where('order_id', $order_id);
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+    // Get Charges Attempts
+    public function get_charges_attempts($order_id) {
+        $out=array('result'=> $this->error_result, 'msg'=> 'Attempts Not Found');
+        $this->db->select('l.paylog_date, u.user_name, l.paysum, l.card_num, l.card_system, l.cvv, l.paysucces, l.api_response');
+        $this->db->from('ts_order_paymentlog l');
+        $this->db->join('users u','u.user_id=l.user_id');
+        $this->db->where('l.order_id', $order_id);
+        $this->db->order_by('l.paylog_date');
+        $res=$this->db->get()->result_array();
+        if (count($res)>0) {
+            $out['result']=  $this->success_result;
+            $data=array();
+            foreach ($res as $row) {
+                $paylog_date=date('m/d/y g:i a', strtotime($row['paylog_date']));
+                $paysum=  MoneyOutput($row['paysum'],2);
+                $card_num='N/A';
+                if (!empty($row['card_num'])) {
+                    $card_num=creditcard_format($row['card_num']);
+                }
+                $payclass=($row['paysucces']==1 ? 'success' : 'error');
+                $data[]=array(
+                    'paylog_date'=>$paylog_date,
+                    'user_name'=>$row['user_name'],
+                    'paysum'=>$paysum,
+                    'card_num'=>$card_num,
+                    'card_system'=>$row['card_system'],
+                    'cvv'=>$row['cvv'],
+                    'payclass'=>$payclass,
+                    'api_response'=>$row['api_response'],
+                );
+            }
+            $out['data']=$data;
+        }
+        return $out;
+    }
+
 //    public function get_leadorder_amounts($order_id) {
 //        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
 //        $this->db->from('ts_order_amounts oa');
