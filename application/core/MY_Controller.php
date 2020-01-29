@@ -24,6 +24,7 @@ if (!defined('BASEPATH'))
  * @property Quotes_model quotes_model
  * @property Staticpages_model staticpages_model
  * @property Creditapp_model creditapp_model
+ * @property Artlead_model artlead_model
  */
 
 
