@@ -33,12 +33,12 @@ class Leadorder extends MY_Controller
                 $edit=(isset($postdata['edit']) ? $postdata['edit'] : 0);
             }
             $error=$res['msg'];
-            if ($res['result']==Art::SUCCESS_RESULT) {
+            if ($res['result']==$this->success_result) {
                 $error='';
-                $leadsession='leadorder'.$this->func->uniq_link(15);
+                $leadsession='leadorder'.uniq_link(15);
                 // Generate new session
                 $options=array();
-                $options['current_page']=(isset($postdata['page']) ? $postdata['page'] : 'art_tasks');
+                $options['current_page']=ifset($postdata,'page', 'art_tasks');
                 $options['leadsession']=$leadsession;
                 $orddata=$res['order'];
                 if ($order==0) {
