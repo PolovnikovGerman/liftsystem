@@ -157,6 +157,20 @@ Class Itemdetails_model extends My_Model
                 $out['msg']='';
                 $out['result']=$this->success_result;
             }
+        } elseif ($entity=='vendor_prices') {
+            $out['msg']='Vendor price Not Found';
+            $vendor_prices = $session_data['vendor_prices'];
+            $idx = 0;
+            foreach ($vendor_prices as $row) {
+                if ($row['vendorprice_id']==$key) {
+                    $out['result']=$this->success_result;
+                    $vendor_prices[$idx][$fld]=$newval;
+                    $session_data['vendor_prices']=$vendor_prices;
+                    usersession($session_id, $session_data);
+                    break;
+                }
+                $idx++;
+            }
         }
         return $out;
     }
@@ -585,9 +599,14 @@ Class Itemdetails_model extends My_Model
                                         $colres = $this->save_colors($colors, $item_id);
                                         $out['msg']=$colres['msg'];
                                         if ($colres['result']==$this->success_result) {
-                                            $deleted = $session_data['deleted'];
-                                            $this->_remove_old_data($deleted);
-                                            $out['result']=$this->success_result;
+                                            $vendor_prices = $session_data['vendor_prices'];
+                                            $vpres = $this->_save_vendor_prices($vendor_prices, $item['vendor_item_id']);
+                                            $out['msg']=$vpres['msg'];
+                                            if ($vpres['result']==$this->success_result) {
+                                                $deleted = $session_data['deleted'];
+                                                $this->_remove_old_data($deleted);
+                                                $out['result']=$this->success_result;
+                                            }
                                         }
                                     }
                                 }
@@ -970,6 +989,30 @@ Class Itemdetails_model extends My_Model
                 }
             }
         }
+        return $out;
+    }
+
+    private function _save_vendor_prices($vendor_prices, $item_id) {
+        foreach ($vendor_prices as $vrow) {
+            if (empty($vrow['vendorprice_qty'])) {
+                if ($vrow['vendorprice_id']>0) {
+                    $this->db->where('vendorprice_id', $vrow['vendorprice_id']);
+                    $this->db->delete('sb_vendor_prices');
+                }
+            } else {
+                $this->db->set('vendorprice_qty', $vrow['vendorprice_qty']);
+                $this->db->set('vendorprice_val', $vrow['vendorprice_val']);
+                $this->db->set('vendorprice_color', $vrow['vendorprice_color']);
+                if ($vrow['vendorprice_id']>0) {
+                    $this->db->where('vendorprice_id', $vrow['vendorprice_id']);
+                    $this->db->update('sb_vendor_prices');
+                } else {
+                    $this->db->set('vendor_item_id', $item_id);
+                    $this->db->insert('sb_vendor_prices');
+                }
+            }
+        }
+        $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
     }
 }
