@@ -296,4 +296,132 @@ class Leadorder extends MY_Controller
         echo $content;
     }
 
+    public function art_showtemplates() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->get_templates($leadorder);
+
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $templates=$res['templates'];
+                    $mdata['custom']=$res['custom'];
+                    if ($res['custom']==1) {
+                        $templates=$res['templates'];
+                        $templ_options=array();
+                        if (count($templates)==0) {
+                            $error='Empty list of Templates';
+                        } else {
+                            $templ_options['templates_list']=$this->load->view('artpage/templates_list_view',array('templates'=>$templates),TRUE);
+                            $mdata['content']=$this->load->view('artpage/item_templates_view',$templ_options,TRUE);
+                        }
+                    } else {
+                        if (count($templates)==0) {
+                            $error='Empty list of Templates';
+                        } else {
+                            $mdata['templates']=$templates;
+                        }
+
+                    }
+                }
+                $this->ajaxResponse($mdata, $error);
+
+            }
+        }
+    }
+
+    public function artlocation_view() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=$this->func->session($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->func->ajaxResponse($mdata, $error);
+                }
+
+                $artwork_art_id=$this->input->post('artloc');
+                $doctype=$this->input->post('doctype');
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->show_artlocation($leadorder, $artwork_art_id, $ordersession);
+                if ($res['result'] == $this->error_result) {
+                    $error = $res['msg'];
+                } else {
+                    $location=$res['location'];
+                    if ($location['art_type']=='Repeat') {
+                        $mdata['arttype']='repeat';
+                        $locs=$this->artlead_model->show_artdata($location,$doctype);
+                        if ($locs['result']==$this->error_result) {
+                            $error=$locs['msg'];
+                        } else {
+                            $mdata['viewurls']=$locs['urls'];
+                        }
+                    } else {
+                        $mdata['arttype']='logo';
+                        if ($doctype=='source') {
+                            $mdata['artlocurl']=$location['logo_src'];
+                        } else {
+                            $mdata['artlocurl']=$location['logo_vectorized'];
+                        }
+                    }
+                }
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Show Customer Text
+    public function artlocation_customtextview() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=$this->func->session($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->func->ajaxResponse($mdata, $error);
+                }
+
+                $artwork_art_id=$this->input->post('artloc');
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->show_artlocation($leadorder, $artwork_art_id, $ordersession);
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                } else {
+                    $location=$res['location'];
+                    $mdata['content']=$this->load->view('artpage/newarttext_view',array('artwork_id'=>$artwork_art_id,'usrtxt'=>$location['customer_text'],'title'=>'Enter Customer Text'),TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $this->func->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
 }

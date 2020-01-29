@@ -1101,28 +1101,16 @@ function init_showartlocs() {
             $(this).popover('hide');
         }
     );
-    // $("div.uploadproofdoc").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 280,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    // });
-    // $("div.sendedproofdoc").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 120,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    // });
+    $("div.uploadproofdoc").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'right'
+    });
+    $("div.sendedproofdoc").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'right'
+    });
     $("div.uploadproofdoc").unbind('click').click(function () {
         var profdoc = $(this).data('proofdoc');
         var params=new Array();

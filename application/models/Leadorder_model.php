@@ -8047,44 +8047,44 @@ Class Leadorder_model extends My_Model {
 //        return $out;
 //    }
 //
-//    public function get_templates($leadorder) {
-//        $out=array('result'=> $this->error_result, 'msg'=> 'Item Not Select');
-//        $items=$leadorder['order_items'];
-//        $outfiles=array();
-//        $custom=0;
-//        $dbtablename=$this->config->item('greydb').'.sb_items';
-//        foreach ($items as $row) {
-//            if ($row['item_id']==$this->config->item('custom_id')) {
-//                $custom=1;
-//            } else {
-//                $this->db->select("item_id, item_number, item_name, item_vector_img");
-//                $this->db->from($dbtablename);
-//                $this->db->where('item_id', $row['item_id']);
-//                $this->db->where('item_vector_img is not null');
-//                $res=$this->db->get()->row_array();
-//                if (!empty($res['item_vector_img'])) {
-//                    $outfiles[]=array(
-//                        'filename'=>$res['item_name'],
-//                        'fileurl'=>$res['item_vector_img'],
-//                    );
-//                }
-//
-//            }
-//        }
-//        if (count($outfiles)==0 && $custom==1) {
-//            $this->db->select("item_id, item_number, item_name, item_vector_img");
-//            $this->db->from($dbtablename);
-//            $this->db->where('item_vector_img is not null');
-//            $res=$this->db->get()->result_array();
-//            $out['templates']=$res;
-//        } else {
-//            $out['templates']=$outfiles;
-//        }
-//        $out['custom']=$custom;
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
+    public function get_templates($leadorder) {
+        $out=array('result'=> $this->error_result, 'msg'=> 'Item Not Select');
+        $items=$leadorder['order_items'];
+        $outfiles=array();
+        $custom=0;
+        $dbtablename='sb_items';
+        foreach ($items as $row) {
+            if ($row['item_id']==$this->config->item('custom_id')) {
+                $custom=1;
+            } else {
+                $this->db->select("item_id, item_number, item_name, item_vector_img");
+                $this->db->from($dbtablename);
+                $this->db->where('item_id', $row['item_id']);
+                $this->db->where('item_vector_img is not null');
+                $res=$this->db->get()->row_array();
+                if (!empty($res['item_vector_img'])) {
+                    $outfiles[]=array(
+                        'filename'=>$res['item_name'],
+                        'fileurl'=>$res['item_vector_img'],
+                    );
+                }
+
+            }
+        }
+        if (count($outfiles)==0 && $custom==1) {
+            $this->db->select("item_id, item_number, item_name, item_vector_img");
+            $this->db->from($dbtablename);
+            $this->db->where('item_vector_img is not null');
+            $res=$this->db->get()->result_array();
+            $out['templates']=$res;
+        } else {
+            $out['templates']=$outfiles;
+        }
+        $out['custom']=$custom;
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
 //    private function _prepare_netexport($artsync, $artsyncdoc) {
 //        // Main Data
 //
