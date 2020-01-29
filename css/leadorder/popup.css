@@ -1,0 +1,3690 @@
+/* 
+    Created on : Oct 14, 2015, 4:18:26 PM
+    Author     : polovnikov-go
+    Popup Window for Order Details
+*/
+.leadorderdetailspopup {    
+    background: url(/img/leadorder/backgr_content.png) no-repeat transparent;
+    clear: both;
+    float: left;
+    width: 1002px;
+    height: 810px;
+    margin-top: 5px;
+    font-size: 13px;
+}
+.leadorderdetailspopup input, select {
+    float: left;
+    font-size: 11px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+}
+.leadorderdetailspopup input::-moz-placeholder     {color:#bfbfbf; text-align: right;} 
+.leadorderdetailspopup input:-moz-placeholder      {color:#bfbfbf; text-align: right;} 
+.leadorderdetailspopup input:-ms-input-placeholder {color:#bfbfbf; text-align: right;}  
+.leadorderdetailspopup input::-webkit-input-placeholder {color:#bfbfbf; text-align: right;}
+.leadorderdetailspopup textarea {
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    overflow-y: auto;
+    resize: none;
+}
+.leadorderdetailspopup input.leftalign::-moz-placeholder     {text-align: left;} 
+.leadorderdetailspopup input.leftalign:-moz-placeholder      {text-align: left;} 
+.leadorderdetailspopup input.leftalign:-ms-input-placeholder {text-align: left;} 
+.leadorderdetailspopup input.leftalign::-webkit-input-placeholder {text-align: left;} 
+
+.leadorderdetailspopup input[readonly="readonly"] {
+    font-size: 11px;    
+    font-weight: normal;
+    color: #000000;
+    background-color: #dadada;
+    border: 1px solid #acacac !important;
+}
+.leadorderdetailspopup textarea[readonly="readonly"] {
+    font-size: 11px;    
+    font-weight: normal;
+    color: #000000;
+    background-color: #dadada;
+    border: 1px solid #acacac !important;
+}
+.leadorderdetailspopup select:disabled {
+    font-size: 11px;    
+    font-weight: normal;
+    color: #000000;
+    background-color: #dadada;
+    border: 1px solid #acacac !important;    
+}
+.blinked {
+  -webkit-animation: blink2 1s linear infinite;
+  animation: blink2 1s linear infinite;
+}
+@-webkit-keyframes blink2 {
+  100% { color: rgba(34, 34, 34, 0); }
+}
+@keyframes blink2 {
+  100% { color: rgba(34, 34, 34, 0); }
+}
+.input_border_black {
+    border: 1px solid #000000 !important;
+}
+.input_border_gray {
+    border: 1px solid #858585 !important;
+}
+.input_border_hidden {
+    border: 1px solid transparent !important;
+}
+.input_text_right {
+    padding-left: 0 !important;
+    padding-right: 3px;
+    text-align: right;
+}
+input.input_checkbox {
+    float: left;
+    border: 1px solid #858585;
+    padding-left: 0px;
+    margin-top: 2px;
+}
+
+.line_1 {
+    float: left;
+    margin: 6px 0px 0px 8px;
+    width: 99%;
+}
+.line_2 {
+    float: left;
+    margin: 0px 0px 0px 8px;
+}
+.line_3 {
+    float: left;
+    width: 572px;
+}
+.line_4 {
+    float: left;
+    width: 163px;
+    /* width: 230px; */
+}
+.leadorderlockdetails {
+    float: left; 
+    height: 28px; 
+    line-height: 28px; 
+    font-size: 13px;
+}
+.leadorderlockdetails i {
+    float: left;
+    font-size: 17px;
+    margin-top: 6px;
+    width: 15px;
+}
+.text_style_1 {font-size: 15px;}
+.text_style_2 {font-size: 12px;}
+.text_style_3 {font-size: 17px;}
+.text_style_4 {font-size: 13px;}
+.text_style_5 {font-size: 14px;}
+.text_white {color: #fff;}
+
+.text_bold {font-weight: bold;}
+
+.text_gray {color: #acacac;}
+.text_blue {color: #0000d2;}
+.text_green {color: #026f11;}
+.text_red {color: #ff0000;}
+.text_lightred {color: #ff0000;}
+.opast {opacity: 0.5;}
+.block_1 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_1.png);
+    background-repeat: no-repeat;
+    width: 112px;
+    height: 34px;
+    margin: 0px;
+}
+.block_1_text {
+    width: 106px;
+    line-height: 28px;
+    text-align: center;
+    font-size: 11px;
+}
+input.calendarinpt[readonly="readonly"] {
+    background: #ffffff none repeat scroll 0 0;
+    border: medium none !important;
+    color: #000;
+    font-size: 11px;
+    font-weight: normal;
+    height: 22px;
+    margin-left: 2px;
+    margin-top: 3px;
+    padding: 0 !important;
+    text-align: center;
+    width: 102px;
+}
+.block_2 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_2.png);
+    background-repeat: no-repeat;
+    width: 184px;
+    height: 33px;
+    margin-left: -2px;
+}
+.block_2_text {
+    width: 178px;
+    line-height: 28px;
+}
+.block_2_text1 {
+    float: left;
+    padding-left: 5px;
+}
+.block_2_text2 {
+    float: left;
+    padding: 0px 5px;
+}
+.block_2_text3 {
+    float: right;
+    padding-right: 6px;
+}
+.block_3 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_3.png);
+    background-repeat: no-repeat;
+    width: 334px;
+    height: 33px;
+    margin-left: -2px;
+}
+.block_3_text {
+    width: 328px;
+    line-height: 28px;
+}
+.block_3_input {
+    width: 250px;
+    line-height: 16px;
+    margin: 3px 0px 0px 3px;
+}
+.block_4 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_4.png);
+    background-repeat: no-repeat;
+    width: 252px;
+    height: 34px;
+    margin-left: -2px;
+}
+.block_4_text {
+    width: 246px;
+    line-height: 26px;
+}
+.block_4_text1 {
+    float: left;
+    padding-left: 5px;
+}
+.block_4_text1.hidden {
+    opacity: 0.33;
+}
+.block_4_text1.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.block_4_text2 {
+    float: left;
+}
+.block_4_text2.hidden {
+    opacity: 0.33;
+}
+.block_4_text2.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.block_5 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_8.png);
+    background-repeat: no-repeat;
+    width: 572px;
+    height: 735px;
+    margin-left: -2px;
+}
+.bl_contact {
+    float: left;
+    margin-top: 5px;
+}
+.billingcopyaddresslabel {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    margin-top: -4px;
+    width: 556px;    
+}
+.bl_tx{
+    float: left;
+    width: 15px;
+    margin-left: 5px;
+}
+.bl_contact_tx {
+    margin-top: 14px;
+}
+.bl_contact_content{
+    float: left;
+    width: 508px;
+    height: 78px;
+    background: #dadada;
+    border: 2px solid #000;
+}
+.contact_content_line{
+    float: left;
+    width: 504px;
+    line-height: 15px;
+}
+.contact_content_name {
+    float: left;
+    width: 112px;
+}
+.contact_content_phone {
+    float: left;
+    width: 125px;
+}
+.contact_content_email {
+    float: left;
+    width: 205px;
+}
+.contact_content_art,
+.contact_content_inv,
+.contact_content_trk {
+    float: left;
+    width: 20px;
+}
+.contact_content_title {
+    text-align: center;
+    font-size: 12px;
+}
+.contact_input {
+    float:left;
+    height: 12px;
+    font-size: 12px !important;
+    margin: 2px 2px;
+}
+.contact_name_input {
+    width: 102px;
+}
+.contact_phone_input {
+    width: 115px;
+}
+.contact_email_input {
+    width: 195px;
+}
+.contact_art_input,
+.contact_inv_input,
+.contact_trk_input {
+    margin-top: 2px;
+}
+.bl_items {
+    float: left;
+    margin-top: 5px;
+}
+.bl_items_tx {
+    margin-top: 82px;
+}
+.bl_items_content{
+    float: left;
+    width: 536px;
+    height: 183px;
+    border: 2px solid #000;
+}
+.items_content_line{
+    float: left;
+    width: 532px;
+    line-height: 18px;
+}
+.items_content_item {
+    float: left;
+    width: 70px;
+}
+input.order_itemnumber_input {    
+    height: 12px;
+    margin: 1px;
+    width: 48px;
+}
+select.order_itemnumber_select {
+    height: 18px;
+    padding-left: 0px;
+    width: 67px;        
+}
+input.order_itemdescript_input {
+    height: 12px;
+    margin: 1px;
+    width: 353px;
+}
+input.order_itemdescript_editinput {
+    height: 12px;
+    margin: 1px;
+    width: 334px;
+}
+input.order_itemqty_input {
+    height: 12px;
+    margin: 1px;
+    width: 70px;    
+}
+.items_content_item2 {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 73px;
+}
+.items_content_item2.short {
+    width: 52px;
+}
+.items_content_item2.text_green {
+    cursor: pointer;
+}
+.items_content_itemed2 {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 96px;
+}
+.searchitembynumber {
+    float: left; 
+    width: 78px;
+}
+.items_content_description {
+    float: left;
+    width: 222px;
+}
+.items_content_description2 {
+    float: left;
+    padding-left: 2px;
+    width: 217px;
+}
+.items_content_color {
+    float: left;
+    width: 51px;
+}
+.items_content_color2 {
+    float: left;
+    padding-left: 2px;
+    width: 57px;
+}
+.items_content_qty {
+    float: left;
+    width: 40px;
+}
+.items_content_qty2 {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 41px;
+}
+.items_content_each {
+    float: left;
+    width: 45px;
+}
+.items_content_each2 {
+    float: left;
+    width: 41px;
+    text-align: right;
+    padding-right: 2px;
+}
+.items_content_sub_total {
+    float: left;
+    width: 76px;
+}
+.items_content_sub_total2 {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    /* width: 63px; */
+    width: 58px;
+}
+.items_content_trash {
+    float: left;
+    width: 32px;
+}
+.items_content_trash2 {
+    float: left;
+    text-align: center;
+    font-size: 14px;
+    width: 14px;    
+}
+.items_content_trash2 i {
+    cursor: pointer;
+    margin-top: 2px;
+}
+.items_content_title {
+    text-align: center;
+    font-size: 11px;
+    color: #fff;
+}
+.items_line {
+    line-height: 19px;
+}
+.items_line_title {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_13.png);
+    height: 21px;
+}
+.bl_items_content_table{
+    float: left;
+    width: 536px;
+    height: 162px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.bord_l {border-left: 1px solid #b5b5b5;}
+.bord_b {border-bottom: 1px solid #b5b5b5;}
+.bord_b_bold {border-bottom: 2px solid #b5b5b5;}
+.items_line_gray{background: #ededed;}
+.items_line_white{background: #fff;}
+.items_table_line{
+    float: left;
+    line-height: 20px;
+    width: 520px;
+}
+.items_table_text {
+    font-size: 11px;
+    color: #535050;
+}
+.bl_items_content2{
+    border-bottom: 1px solid black;
+    float: left;
+    height: 63px;
+    margin-left: 20px;
+    width: 540px;
+}
+.items_content2_bl1 {
+    float: left;
+    width: 215px;
+}
+.items_content2_bl2 {
+    float: left;
+    width: 225px;
+    margin-top: 2px;
+}
+.items_content2_bl3 {
+    float: left;
+    width: 100px;
+    margin-top: 2px;
+}
+/* Merge For Edit view */
+.itemsdiscountmiscarea {    
+    float: left;
+    margin-top: 2px;
+    width: 325px;
+}
+.itemsdiscountmiscrow {
+    float: left;
+    height: 19px;
+    line-height: 19px;
+    width: 325px;
+}
+.itemsdiscountmisclabel {
+    float: left;
+    width: 225px;
+}
+.itemsdiscountmiscvalue {
+    float: left;
+    margin-left: 13px;
+    width: 86px;
+}
+.itemdiscountlabel {
+    float: left; 
+    margin-right: 6px;
+    width: 164px;
+}
+.itemdiscounticon {
+    float: left;
+    margin-top: 3px;
+    width: 13px;
+}
+.itemdiscountvalue {
+    float: left;
+    width: 83px;
+}
+.items_content2_txt {
+    font-size: 11px;
+}
+.items_textarea {
+    resize: none;
+    overflow-y: auto;
+    width: 200px;
+    height: 37px;
+    margin-left: 5px;
+}
+.items_content2_bl1_tx {
+    float: left;
+    margin: 2px 0 2px 6px;
+}
+.items_content2_bl2_tx {
+    float: left;
+    margin: 2px 0 2px 12px;
+}
+.items_input1 {
+    float: right;
+    width: 214px;
+    height: 12px;
+    margin: 3px 0px 0px 3px;
+}
+.items_input2 {
+    float: right;
+    width: 156px;    
+    height: 12px;
+    margin: 3px 0px 0px 3px;
+}
+.items_input3 {
+    float: right !important;
+    height: 12px;
+    margin: 3px 0 0 3px;
+    width: 70px;
+}
+input.items_discount {
+    float: right !important;
+    height: 12px;
+    margin: 3px 0 0 3px;
+    color: #ff0000 !important;
+    width: 70px;
+}
+.bl_items_sub-total {
+    clear: both;
+    float: right;
+    line-height: 23px;
+    margin-bottom: 4px;
+/*    margin-right: 25px;*/
+    margin-right: 11px;
+}
+.bl_items_sub-total1 {
+    float: left;
+    padding-right: 5px;	
+}
+.bl_items_sub-total2 {
+    float: left;
+}
+.bl_ship_tax {
+    float: left;
+    margin-top: -4px;
+}
+.bl_ship_tax_tx {
+    margin-top: 10px;
+}
+.bl_ship_tax_content{
+    float: left;
+    height: 125px;
+    width: 545px;
+}
+.ship_tax_content_line1{
+    float: left;
+    line-height: 18px;
+    width: 542px;
+}
+.viewmultishipdetails {    
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    margin-left: 15px;
+    padding-top: 5px;
+    width: 120px;
+}
+.multishipadresslist {
+    float: left;
+    height: 100px;
+    overflow-y: auto;
+    width: 485px;
+}
+.shipdatarowarea {
+    clear: both;
+    float: left;
+    width: 469px;
+    margin-bottom: 7px;
+    height: 26px;
+    line-height: 26px;
+}
+.shipdatarowarea div {
+    float: left;   
+    font-size: 12px;
+}
+.shipdatarowarea > .numpp {
+    width: 12px;
+    text-align: center;
+    color: #010101;
+    font-size: 11px;
+}
+.shipdatarowarea > .addressarea {
+    width: 446px;    
+    border: 2px solid #000000;
+}
+.shipdatarowarea > .addressarea.lightgrey {
+    background-color: #f4f4f4;
+}
+.shipdatarowarea > .addressarea.darkgrey {
+    background-color: #dadada;
+}
+.shipdatarowarea > .addressarea > .shipqty {
+    width: 45px;
+    text-align: right;
+    color: #3a3a3a;    
+}
+.devider {
+    width: 11px;
+    text-align: center;    
+}
+.shipaddres {
+    width: 238px;    
+    color: #3a3a3a;
+}
+span.text_bold {
+    color: #000000;
+}
+.shipcost {
+    width: 50px;
+    color: #3a3a3a;
+}
+.arrivedate {
+    font-size: 11px;
+}
+.ship_tax_tabs {
+    float: left;
+}
+.ship_tax_tabs1 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_16.png);
+    background-repeat: no-repeat;
+    width: 120px;
+    height: 22px;
+}
+.ship_tax_tabs2 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_15.png);
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 16px;
+    margin-top: 6px;
+}
+.ship_tax_tabs2.active {
+    cursor: pointer;
+}
+.shipotherparamsarea {
+    float: left;
+    margin-left: 16px;
+    height: 18px;
+    width: 391px;
+}
+.eventdate {
+    float: left;
+    font-size: 12px;
+    width: 129px;
+}
+.eventdate > .label {
+    float: left;
+    width: 70px;
+}
+input.eventdatevalue {
+    height: 16px;
+    font-size: 11px;
+    width: 53px;
+}
+.rushselectarea {
+    float: left;
+    width: 208px;
+    margin-left: 130px;    
+}
+.rushselectarea > .label {
+    float: left;
+    font-size: 12px;
+    width: 54px;
+}
+.rushselectarea > .rushdataselect {
+    float: left;
+    width: 148px;
+}
+select.shiprashselect {
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin: 0 2px;
+    width: 145px;
+}
+input.shiprushcost, input.shippingcost, input.salestaxcost {
+    height: 16px;
+    width: 45px;    
+}
+.ship_tax_container {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_14.png);
+    background-repeat: no-repeat;
+    width: 485px;
+    height: 104px;
+}
+.ship_tax_container2 {
+    /*
+    float: left;
+    background: #f5f5f5;
+    border: 2px solid black;
+    width: 234px;
+    height: 70px;
+    overflow-y: scroll;
+    margin: -104px 1px 1px 246px;
+    */
+    background: #f5f5f5 none repeat scroll 0 0;
+    border: 2px solid black;
+    float: left;
+    height: 70px;
+    left: 272px;    
+    margin-top: 3px;
+    overflow-y: scroll;
+    position: absolute;
+    width: 234px;    
+}
+.shipdetailsarea {    
+    float: left;
+    margin-left: 5px;
+    width: 52px;
+}
+.shipdetailsarea > .label {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.shipdetailsarea > .labeltax {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 25px;
+    width: 100%;
+}
+.shipdetailsarea > .dataarea {
+    float: left;
+    width: 100%;
+}
+.ship_tax_select {
+    float: left;
+    width: 104px;
+    height: 18px;
+    font-size: 11px;
+    margin: 4px 0px 0px 6px;
+}
+.shiprateshowarea {
+    float: left;
+    width: 195px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+.shiprateshowarea.long {
+    width: 217px;
+}
+.shiprateshowarea.active {
+    /* border: 1px solid #666666;
+    background: none #FFFFFF; */
+    font-weight: bold;
+}
+.ship_tax_cont2_txt {
+    float: left;
+    padding-left: 4px;
+    color: #3a3a3a;
+}
+.ship_tax_cont2_txt2 {
+    float: left;
+    padding: 0 4px;
+    color: #3a3a3a;
+    background: #fff;
+    border: 1px solid #666666;
+}
+.ship_tax_radio, .balancemanage_radio {float: left;}
+.ship_tax_cont2_txt1 {
+    float: left;
+    font-size: 10px;
+}
+.ship_tax_cont2_line {
+    clear: both;
+    line-height: 20px;
+    width: 100%;
+}
+.ship_tax_textarea {
+    resize: none;
+    overflow-y: auto;
+    width: 174px;
+    height: 65px;
+    margin-left: 6px;
+}
+input.ship_tax_textareainpt {
+    height: 14px;
+    font-size: 11px;
+    margin-left: 6px;
+    width: 171px;
+}
+.ship_tax_cont_bl1 {
+    float: left;
+    width: 184px;
+    margin-top: 5px;
+}
+.ship_tax_cont_bl2 {
+    float: left;
+    margin-top: 5px;
+    width: 55px;
+}
+.ship_tax_cont_bl2 > .line {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.ship_tax_cont_bl2 > .line > .label {
+    float: left;
+    font-size: 11px;
+    text-align: left;
+    width: 34px;
+}
+.ship_tax_cont_bl2 > .line > .label.shipblind {
+    line-height: 13px;
+    height: 28px;
+    opacity: 0.5;
+}
+.ship_tax_cont_bl3 {    
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    margin-top: 82px;
+    width: 244px;
+}
+.taxlabel {
+    color: #000d6e;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    width: 75px;
+}
+.taxexcept {
+    float: left;
+    font-size: 9px;
+    width: 60px;
+}
+input.excepttax {    
+    margin-top: 2px;
+    width: 10px;
+}
+select.taxexcept_select {
+    float: left;
+    margin-right: 3px;
+    width: 60px;
+}
+.exceptbutton {
+    background: transparent url("/img/leadorder/exempt_button.png") no-repeat scroll 0 0;
+    float: left;
+    margin-left: 2px;
+    width: 30px;
+}
+span.taxlabelveiw {
+    font-size: 12px;
+    font-weight: bold;
+}
+span.taxemptyview {
+    font-size: 12px;
+    font-style: italic;
+}
+.ship_tax_input1 {
+    float: left;
+    font-size: 11px;
+    height: 15px;
+    margin: 3px 0 0 3px;
+    width: 77px;
+}
+.ship_tax_input2 {
+    float: left;
+    font-size: 11px;
+    height: 15px;
+    margin: 3px 0 0 6px;
+    width: 39px;
+}
+.ship_tax_select2 {
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin: 3px 2px 0 3px;
+    width: 42px;
+}
+/* Input area for shipping date dates */
+.shippingdatesarea {
+    background-color: #0000ff;
+    float: left;
+    height: 28px;
+    margin-left: 44px;
+    margin-top: 4px;
+    width: 484px;    
+}
+.shippingdatesarea > div {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;    
+}
+.shippingdatesarea > .label {
+    margin-right: 7px;
+    text-align: right;
+    height: 28px;
+    line-height: 28px;
+    color: #FFFFFF;    
+}
+.shippingdatesarea > .label.shipdate {
+    width: 72px;
+}
+.shippingdatesarea > .label.arrivedate {
+    width: 93px;
+}
+.shippingdatesarea > .label.eventdate {
+    width: 88px;
+}
+.shippingdatesarea > .datevalue {
+    background-color: #FFFFFF;
+    color: #000000;
+    height: 22px;
+    line-height: 22px;
+    margin-top: 3px;
+    text-align: center;
+    width: 59px;
+}
+.shippingdatesarea > .datevalue.arrivelate {
+    color: #FFFFFF;
+    background-color: #FF0000;
+}
+.bl_billing {
+    float: left;
+    /* margin-top: 5px; */
+}
+.bl_billing_tx {
+    /* margin-top: 20px; */
+    margin-top: 27px;
+}
+.bl_billing_content{
+    float: left;
+    width: 536px;
+}
+.billing_content1{
+    background: #dadada none repeat scroll 0 0;
+    border: 2px solid #000;
+    clear: both;
+    float: left;
+    height: 70px;
+    /* margin-top: 9px; */
+    margin-top: 3px;
+    width: 318px;
+}
+.billing_content2{
+    float: right;
+    height: 6px;
+    width: 180px;
+    margin-top: 18px;
+}
+.billing_content2_bl1 {
+    background: url(/img/leadorder/bacgr_17.png) no-repeat transparent;    
+    float: left;
+    width: 31px;
+    height: 21px;
+    margin-top: 2px;
+}
+.billing_content2_bl1.active {
+    background: url(/img/leadorder/bacgr_17_active.png) no-repeat transparent;        
+}
+.billing_content2_bl2 {
+    float: left;
+    margin-left: 2px;
+}
+.billing_content2_bl3 {
+    float: left;
+    margin-left: 2px;
+    font-size: 10px;
+    line-height: 12px;
+}
+.billing_content2_bl3.newpaymentadd {
+    cursor: pointer;
+}
+.b_content2_bl2_tx {
+    float: left;
+    font-size: 12px;
+}
+.b_content2_bl1_txt {
+    float: left;
+    width: 28px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 12px;
+}
+.billing_content2_line{
+    float: left;
+    line-height: 17px;
+    padding-top: 3px;
+}
+.billing_content2_line2{
+    float: right;
+    line-height: 17px;
+}
+.billing_content1_line{
+    float: left;
+    width: 316px;
+    line-height: 20px;
+    padding-top: 3px;
+}
+.billing_input1 {
+    float: left;
+    width: 113px;
+    height: 15px;
+    margin: 0 0 0 3px;
+}
+.billing_input2 {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 111px;
+}
+.billing_input3 {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 38px;
+}
+.billing_customerpotitle {
+    float: left; 
+    width: 24px; 
+    text-align: center; 
+    font-size: 9px;
+}
+.billing_input4 {
+    float: left;
+    width: 148px;
+    height: 15px;
+    margin: 0 0 0 3px;
+}
+.billing_input5 {
+    float: left;
+    width: 108px;
+    height: 15px;
+    margin: 0 0 0 3px;
+}
+.billingstateselectarea {
+    float: left;
+    /* width: 38px; */
+}
+.billing_input6 {
+    float: left;
+    width: 41px;
+    height: 15px;
+    margin: 0 0 0 3px;
+}
+.billing_input7 {
+    float: left;
+    height: 15px;
+    margin: -2px 0 0 3px;
+    width: 70px;
+}
+.billing_select1 {
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin: 0 0 0 3px;
+    width: 42px;
+}
+.billing_select2 {
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin: 0 0 0 3px;
+    width: 99px;
+}
+.bl_pay_method {
+    float: left;
+    margin-top: 5px;
+}
+.bl_pay_method_tx {
+    margin-top: 10px;
+}
+.bl_pay_method_content{
+    float: left;
+    height: 113px;
+    width: 360px;
+}
+.pay_method_content1{
+    line-height: 18px;
+}
+.pay_method_content3{
+    margin-left: -13px;
+    line-height: 18px;
+    margin-top: 3px;
+}
+.pay_method_content2{
+    float: left;
+    width: 341px;
+    height: 63px;
+    border: 2px solid #000;    
+    margin: 2px 0;
+}
+.pay_methods_area {
+    clear: both;
+    float: left;
+    height: 44px;
+    overflow-y: auto;
+    width: 100%;
+    
+}
+.pay_method_content1_line{
+    float: left;
+    line-height: 14px;
+    padding-top: 2px;
+    width: 334px;
+}
+.pay_method_inputs {
+    float: left;
+}
+.pay_method_input1 {
+    text-align: right;
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 44px;
+}
+.pay_method_input2 {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 112px;
+}
+.pay_method_input3 {
+    height: 15px;
+    margin: 0 0 0 3px;
+    text-align: center;
+    width: 30px;
+}
+.pay_method_inputcvc {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 22px;
+}
+.pay_method_input3_small {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 14px;
+}
+.pay_method_input3_smallyear {
+    height: 15px;
+    margin: 0 0 0 3px;
+    width: 13px;
+}
+.pay_method_input4 {
+    float: left;
+    width: 243px;
+    height: 15px;
+    margin: 0 0 0 3px;
+}
+.pay_method_add {
+    float: left;
+    font-size: 11px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+.pay_method_button {
+    float: right;
+}
+.pay_method_buttonsend {
+    float: right;
+    background: url('/img/leadorder/button_charge.png') no-repeat transparent;
+    width: 43px;
+    height: 17px;
+    line-height: 17px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+.pay_method_button > .label {
+    float: right;
+    font-size: 10px;
+    height: 17px;
+    line-height: 17px;    
+}
+.pm_content1_tx {
+    float: left;
+    font-size: 14px;
+}
+.pm_content3_tx {
+    float: left;
+    font-size: 12px;
+}
+.pay_method_select1 {
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin: 0 0 0 3px;
+    width: 53px;
+}
+.pm_content3_tx1 {
+    float: left;
+    font-size: 9px;
+    padding-left: 3px;
+    margin-top: -3px;
+    line-height: 13px;
+}
+.pay_method_input5 {
+    width: 28px;
+    height: 10px;
+    margin: 0 0 0 -3px;
+}
+.bl_payments {
+    float: left;
+    margin-top: 5px;
+    margin-left: -9px;
+}
+.bl_payments_tx {
+    margin-top: 18px;
+}
+.bl_payments_content{
+    border: 2px solid #000;
+    float: left;
+    /* height: 97px; */
+    margin: 2px 0;
+    width: 163px;
+}
+.payments_title {
+    text-align: center;
+    font-size: 11px;
+    color: #fff;
+}
+.payments_line {
+    float: left;
+    background: #6c6c6c;
+    height: 16px;
+}
+.payments_table_line {
+    float: left;
+    height: 16px;
+    line-height: 16px;
+}
+.payments_table{
+    float: left;
+    height: 65px;
+    overflow-y: auto;
+    width: 163px;
+}
+.payments_date {
+    float: left;
+    width: 35px;
+}
+.payments_payment{
+    float: left;
+    width: 68px;
+}
+.payments_amnt {
+    float: left;
+    width: 60px;
+}
+.payments_date2 {
+    float: left;
+    width: 30px;
+    text-align: center;
+}
+.payments_payment2{
+    float: left;
+    width: 57px;
+    padding-left: 2px;
+}
+.payments_amnt2 {
+    float: left;
+    width: 53px;
+    text-align: right;
+    padding-right: 2px;
+}
+.payments_table_text {
+    font-size: 11px;
+    color: #252525;
+}
+.block_6 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_5.png);
+    background-repeat: no-repeat;
+    width: 163px;
+    height: 736px;
+    margin-left: -2px;
+}
+.block_6_generalnotes, .block_6_update, .block_6_history {
+    float: left;
+}
+.block_6_text {
+    font-size: 12px;
+    padding: 3px 0 2px 5px;
+}
+.block_6_textarea1 {
+    resize: none;
+    overflow-y: auto;
+    width: 143px;
+    height: 144px;
+    margin-left: 5px;
+}
+.block_6_textarea2 {
+    resize: none;
+    overflow-y: auto;
+    width: 143px;
+    /* height: 69px; */
+    height: 129px;
+    margin-left: 5px;
+}
+.block_6_historytext {
+    /* height: 417px; */
+    height: 357px;
+    margin-left: 5px;
+    overflow-y: auto;
+    width: 143px;
+}
+.history_day {
+    height: 18px;
+    background-color: rgb(111, 111, 111);
+    border: 1px solid rgb(0, 0, 0);
+    line-height: 16px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+.history_time {
+    height: 18px;
+    background-color: rgb(209, 209, 209);
+    border: 1px solid rgb(255, 255, 255);
+    line-height: 16px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+.history_text {
+    line-height: 16px;
+    font-size: 11px;
+    text-align: left;
+    padding: 2px;
+}
+.block_7 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_7.png);
+    background-repeat: no-repeat;
+    width: 260px;
+    height: 772px;
+    margin-left: -2px;
+}
+.block_7_artwork {
+    float: left;
+    width: 254px;
+    padding: 5px 0px 0px 5px;
+}
+.block_7_artwork_line {
+    float: left;
+    width: 254px;
+    line-height: 18px;
+}
+.block_7_artwork_line > .artcolorlabel {
+    float: left;
+    width: 43px;
+}
+.block_7_artwork_line > .artcolorvalues {
+    float: left;
+    width: 201px;    
+}
+.block_7_artwork_line > .artfontlabel {
+    float: left;
+    width: 30px;
+}
+.block_7_artwork_line > .artfontvalues {
+    float: left;
+    width: 213px;    
+}
+.block_7_header {
+    float: left;
+    font-weight: bold;
+    padding: 2px 0;
+}
+.block_7_artwork1 {
+    float: right;
+    padding: 0px 12px 0px 0px;
+}
+.block_7_artwork2 {
+    float: left;
+}
+.block_7_artwork3 {
+    float: left;
+    padding-left: 3px;
+}
+.block_7_artwork4 {
+    float: left;
+    line-height: 16px;
+}
+.block_7_artwork5 {
+    float: right;
+    padding-right: 12px;
+}
+.block_7_textarea {
+    resize: none;
+    overflow-y: auto;
+    width: 237px;
+    height: 108px;
+    margin-left: 2px;
+}
+.block_7_art {
+    float: left;
+    width: 254px;
+    padding: 5px 0px 0px 5px;
+}
+.block_7_art1 {
+    float: left;
+    overflow-y: auto;
+    width: 239px;
+    height: 120px;
+    margin-left: 2px;
+}
+.blankorderlogos {
+    color: #0000ff;
+    font-size: 52.89px;
+    font-weight: bold;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+    width: 237px;
+}
+.art_line1 {
+    float: left;
+    margin: 1px 0px;
+}
+.art_line1.vectorised {
+    background: url('/img/leadorder/bacgr_11_1.png') no-repeat transparent;    
+}
+.art_line1_text {
+    width: 210px;
+    line-height: 23px;
+    font-size: 12px;
+}
+.art_line1_backgr1 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_12_1.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 25px;
+}
+.art_line1_backgr2 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_12_2.png);
+    height: 25px;
+}
+.art_line1_backgr3 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_12_3.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 25px;
+}
+.art_line1_backgr4 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_11_1.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 25px;
+}
+.art_line1_backgr5 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_11_2.png);
+    height: 25px;
+}
+.art_line1_backgr6 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_11_3.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 25px;
+}
+.artlocationarea {
+    background: url('/img/leadorder/artloc_source_bg.png') no-repeat transparent;
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    width: 221px;
+}
+.artlocationarea.locatready {
+    background: url('/img/leadorder/artloc_ready_bg.png') no-repeat transparent;
+}
+.art_block1 {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;    
+    width: 59px;
+}
+.art_block1 > .label {
+    float: left;
+    width: 28px;    
+}
+.openlocation {
+    cursor: pointer;
+}
+.art_block1_text {
+    float: left;
+}
+.art_block2 {
+    float: left;
+    padding-top: 4px;
+    width: 22px;
+}
+.art_block3 {
+    float: left;
+    font-size: 12px;
+    width: 53px;
+}
+.art_block3.viewreadyloc {
+    cursor: pointer;
+}
+.art_block3_text {
+    float: left;
+    font-size: 12px;
+}
+.art_block4 {
+    float: left;
+    width: 60px;
+    padding-top: 4px;
+}
+.art_block5 {
+    float: left;
+    width: 97px;
+    padding-top: 1px;
+}
+input.artrepeat {    
+    width: 32px;    
+}
+.redrawmsgarea, .customertext {
+    background: url('/img/leadorder/grey_square.png') no-repeat transparent;
+    float: left;    
+    width: 16px;    
+}
+.redrawmsgarea.active, .customertext.active {
+    background: url('/img/leadorder/green_square.png') no-repeat transparent;
+}
+.art_input {
+    float: left;
+    height: 11px;
+    margin: 4px 0 0 3px;
+    width: 15px;
+}
+.art_select {
+    float: left;
+    width: 54px;
+    height: 18px;
+    font-size: 11px;
+    margin: 0 0 0 3px;
+}
+.block_7_proofs {
+    float: left;
+    width: 254px;
+    padding: 5px 0px 0px 5px;
+}
+.block_7_proofs_text {
+    float: right;
+    padding: 2px 10px 0px 0px;
+    font-size: 11px;
+}
+.block_7_proofs1 {
+    float: left;
+    width: 239px;
+    height: 170px;
+    margin-left: 2px;
+}
+.block_7_proofs1_scrool {
+    border-bottom: 1px solid rgb(62, 62, 62);
+    height: 149px;
+    overflow-x: auto;
+}
+.proofs_line1 {
+    float: left;
+    background: #00ac20;
+    border-bottom: 1px solid #474747;
+    color: #1a1a1a;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 25px;
+}
+.proofs_line1_text1 {
+    float: left;
+    padding-left: 10px;
+    width: 130px;
+}
+.proofs_line1_text2 {
+    float: right;
+    text-align: right;
+    padding-right: 10px;
+    width: 74px;
+}
+.proofs_content_area {
+    clear: both;
+    float: left;
+    height: 106px;
+    overflow-x: auto;
+    /* width: 2000px; */
+}
+.proofs_content {
+    float: left;
+    height: 104px;
+    width: 142px;
+    border-right: 1px solid rgb(62, 62, 62);
+}
+.proofs_line2 {
+    float: left;
+    font-size: 10px;
+    line-height: 20px;
+}
+.proofs_line2_text1 {
+    float: left;
+    width: 145px;
+}
+.proofs_star, .proofs_starapproved {
+    float: left;
+    margin: 1px;    
+}
+.proofs_star.active , .proofs_starapproved.active {
+    cursor: pointer;
+}
+.proofs_line2_bl1 {
+    float: left;
+    width: 125px;
+}
+.proofs_line2_bl2 {
+    float: left;
+    text-align: center;
+    width: 57px;
+}
+.proofs_line2_bl2.text_blue {
+    cursor: pointer;
+}
+.proofs_line2_bl3 {
+    float: left;
+    width: 59px;
+}
+.proofs_line2_bl2_txt {
+    float: left;
+}
+.activ_yellow {
+    background: rgb(255, 255, 0);
+    border: 1px solid rgb(139, 138, 138);
+    width: 116px;
+    height: 18px;
+}
+.block_8 {
+    float: left;
+    height: 24px;
+    line-height: 23px;
+}
+.block_8_backgr1 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_9_1.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 24px;
+}
+.block_8_backgr2 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_9_2.png);
+    width: 1px;
+    height: 24px;
+}
+.block_8_backgr3 {
+    float: left;
+    background-image: url(/img/leadorder/bacgr_9_3.png);
+    background-repeat: no-repeat;
+    width: 6px;
+    height: 24px;
+}
+.block_8_text {
+    text-align: center;
+    width: 135px;
+}
+.block_8_text1 {
+    float: left;
+    padding-left: 1px;
+}
+.block_8bottom_text1 {
+    float: left;
+    padding-left: 5px;    
+}
+.block_8_text2 {
+    float: left;
+    text-align: right;
+    width: 70px;
+}
+.block_8_text3 {
+    float: right;
+    font-size: 17px;
+    text-align: right;
+    width: 85px;
+}
+.block_9 {
+    background-image: url("/img/leadorder/bacgr_10.png");
+    background-repeat: no-repeat;
+    float: left;
+    height: 34px;
+    margin-top: -5px;
+    padding-left: 7px;
+    width: 159px;
+}
+.block_9_text {
+    float: left;
+    line-height: 33px;
+    text-align: center;
+    width: 145px;
+}
+.block_10 {
+    float: left;
+    height: 23px;
+    line-height: 22px;
+    margin: 0 15px;
+    width: 126px;
+}
+.block_10.profitdetailsviewarea {
+    cursor: pointer;
+}
+.block_10.project {
+    background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent;
+    color: #FFFFEE;
+}
+.block_10.black {
+    background: url('/img/leadorder/bacgr_6_black.png') no-repeat transparent;
+    color: #FFFFEE;
+}
+.block_10.moroon {
+    background: url('/img/leadorder/bacgr_6_maroon.png') no-repeat transparent;
+    color: #FFFFEE;    
+}
+.block_10.red {
+    background: url('/img/leadorder/bacgr_6_red.png') no-repeat transparent;        
+    color: #FFFFEE;    
+}
+.block_10.orange {
+    background: url('/img/leadorder/bacgr_6_orange.png') no-repeat transparent;        
+}
+.block_10.white {
+    background: url('/img/leadorder/bacgr_6_white.png') no-repeat transparent;        
+}
+.block_10.green {
+    background: url('/img/leadorder/bacgr_6_green.png') no-repeat transparent;    
+}
+.block_10_text1 {
+    float: left;
+    text-align: right;
+    padding-right: 5px;
+    width: 83px;
+}
+.block_10_text_project {
+    float: left;    
+    text-align: center;
+    width: 126px;    
+}
+.block_10_text2 {
+    border-left: 1px solid;
+    float: left;
+    text-align: center;
+    width: 35px;
+}
+.button_save {
+    float: left;
+    background-image: url(/img/leadorder/button_save.png);
+    background-repeat: no-repeat;
+    width: 52px;
+    height: 34px;
+}
+.button_save_text {
+    width: 46px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+}
+.button_edit {
+    background: transparent url("/img/leadorder/button_edit.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 32px;    
+    width: 53px;
+}
+.button_edit_text {
+    cursor: pointer;
+    line-height: 28px;
+    text-align: center;
+    width: 47px;
+}
+.button_revert {
+    float: left;
+    background-image: url(/img/leadorder/button_revert.png);
+    background-repeat: no-repeat;
+    width: 61px;
+    height: 34px;
+}
+.button_revert_text {
+    width: 55px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+}
+.timeroutarea {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+    margin-left: 6px;
+}
+.button_update {
+    background: url("/img/leadorder/button_update.png") no-repeat transparent;    
+    cursor: pointer;
+    float: left;
+    height: 17px;
+    margin: 3px 0 0 100px;
+    width: 48px;
+}
+.button_update_text {
+    line-height: 15px;
+    text-align: center;
+    font-size: 11px;
+    color: #3a3939;
+}
+.button_newart {
+    float: left;
+    background-image: url(/img/leadorder/button_newart.png);
+    background-repeat: no-repeat;
+    width: 125px;
+    height: 29px;
+    margin: 2px 0px 0px;
+    padding-top: 2px;
+}
+.button_newart_text {
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    line-height: 19px;
+    padding-left: 5px;
+}
+.button_addproof {
+    float: left;
+    background: url(/img/leadorder/button_email.png) no-repeat transparent;    
+    width: 64px;
+    height: 27px;
+    margin: 2px 0px 0px;
+    padding-top: 1px;    
+    cursor: pointer;
+}
+.button_addproof_text {
+    color: #010101;
+    font-size: 10px;
+    height: 18px;
+    line-height: 17px;
+    text-align: center;
+    width: 58px;
+}
+.button_proofemail {
+    float: right;
+    background-image: url(/img/leadorder/button_email.png);
+    background-repeat: no-repeat;
+    width: 64px;
+    height: 27px;
+    margin: 2px 0px 0px;
+    padding-top: 1px;
+    cursor: pointer;
+}
+.button_email_text {
+    color: #010101;
+    font-size: 10px;
+    height: 18px;
+    line-height: 17px;
+    text-align: center;
+    width: 58px;
+}
+.button_charge {
+    float: left;
+    background-image: url(/img/leadorder/button_charge.png);
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 17px;
+    margin-top: 2px;
+}
+.button_charge_text {
+    line-height: 15px;
+    text-align: center;
+    font-size: 11px;
+    color: #3a3939;
+}
+.creditappview {
+    cursor: pointer;
+    margin: 3px 0 0 2px;    
+}
+.button_no {
+    float: left;
+    background-image: url(/img/leadorder/button_no.png);
+    background-repeat: no-repeat;
+    width: 31px;
+    height: 20px;
+    margin-top: 2px;
+}
+.button_no_text {
+    line-height: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: #fff;
+    width: 32px;
+}
+.icon_file {
+    background: url(/img/leadorder/icon_file.png) no-repeat transparent;
+    height: 15px;
+    float: left;
+    margin-top: 1px;
+    width: 13px;
+}
+.icon_file.active {
+    cursor: pointer;    
+}
+.icon_file.nonactive {
+    opacity: 0.5;
+}
+.empty_icon_file {
+    background: transparent url("/img/leadorder/icon_fileempty.png") no-repeat scroll 0 0;
+    height: 15px;
+    float: left;
+    margin-top: 1px;
+    width: 13px;
+}
+.empty_icon_file.active {
+    cursor: pointer;
+}
+.icon_1 {
+    background: url("/img/leadorder/icon_1.png") no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 15px;
+    margin-top: 1px;
+    width: 16px;
+}
+.icon_glass {
+    background-image: url(/img/leadorder/icon_glass.png);
+    background-repeat: no-repeat;
+    width: 13px;
+    height: 13px;
+    float: left;
+    margin-top: 2px;
+    margin-left: 4px;
+}
+.icon_glass.active {
+    cursor: pointer;
+}
+.marglef {
+    margin-left: 7px;
+}
+.ticketdataviewarea {
+    cursor: pointer;
+    float: left;    
+    width: 148px;    
+}
+.shippingdataviewarea {
+    cursor: pointer;
+    float: left;
+    margin-left: 56px;
+    width: 166px;
+}
+.totalduedataviewarea {
+    float: left;
+    width: 155px;
+}
+/* System Switcher */
+.orderssystemswitch {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.orderssystemswitch > .label {
+    float: left;    
+    font-weight: bolder;
+}
+.orderssystemswitch > .value {
+    float: left;
+    margin-left: 3px;
+    margin-top: 2px;
+}
+.info_text {
+    float: left;
+    font-size: 17px;
+    font-weight: bold;
+    height: 147px;
+    padding-top: 110px;
+    text-align: center;
+    width: 568px;
+}
+.bl_tx2{
+    float: left;
+    margin: 3px 0 3px 5px;
+}
+.bl_contact_tx2 {
+    margin-left: 20px;
+}
+.bl_contact_content2{
+    float: left;
+    width: 508px;
+    height: 38px;
+    background: #dadada;
+    border: 2px solid #000;
+    margin-left: 20px;
+}
+.bl_inputs{
+    float: left;
+    width: 568px;
+    /* margin-top: 10px; */
+}
+.bl_inputs1{
+    float: left;
+    width: 568px;
+    margin-top: 5px;
+}
+.bl_inputs1_line {
+    float: right;
+    padding-right: 10px;
+    line-height: 18px;
+}
+.bl_inputs1_tx {
+    float: left;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 6px;
+}
+.bl_subtotal_txt {
+    border: 1px solid #000;
+    float: left;
+    font-size: 12px;
+    margin-top: -2px;
+    text-align: right;
+    width: 72px;
+}
+.bl_inputs1_input {
+    height: 16px;
+    margin: 0 2px 0 7px;
+    width: 69px;
+}
+.leadorderwebreplica {
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 19px;
+    line-height: 19px;
+    margin-left: 1px;
+    padding-left: 3px;
+    width: 71px;
+}
+.bl_items_content3{
+    border: 2px solid #000;
+    float: left;
+    height: 39px;
+    margin-left: 20px;
+    width: 525px;
+}
+.items_table_line2{
+    float: left;
+    width: 536px;
+    line-height: 18px;
+}
+.items_content_quantity {
+    float: left;
+    width: 81px;
+}
+.items_content_quantity2 {
+    float: left;
+    width: 78px;
+    text-align: right;
+    padding-left: 2px;
+}
+.items_content_it_description {
+    float: left;
+    width: 374px;
+}
+.items_content_it_description2 {
+    float: left;
+    padding-left: 2px;
+    width: 366px;
+}
+.items_content_it_descriptioned2 {
+    float: left;
+    padding-left: 2px;
+    width: 343px;
+}
+/* Items Edit Area */
+.itemnumber_head {
+    float: left;
+    width: 76px;    
+}
+.itemdescription_head {
+    float: left;
+    width: 184px;    
+}
+.itemdescription_data {
+    float: left;
+    padding-left: 2px;
+    width: 180px;    
+}
+.itemdescription_data.long {
+    width: 201px;
+}
+.itemcolor_head {
+    float: left;
+    width: 96px;    
+}
+.itemcolor_data {
+    float: left;
+    padding-left: 2px;
+    width: 93px;    
+}
+.items_content_description3 {
+    float: left;
+    padding-left: 2px;
+    width: 276px;
+}
+select.orderitemcolors {
+    font-size: 11px;
+    height: 19px;
+    width: 90px;
+}
+input.orderitem_input {
+    height: 12px;
+    margin: 2px 2px;
+}
+input.orderitem_description {
+   width: 168px; 
+}
+input.orderitem_description_long {
+   width: 190px; 
+}
+input.orderitem_description_short {
+   width: 161px; 
+}
+input.orderitem_colorinpt {
+    width: 83px;
+}
+input.orderitem_qty {
+   width: 35px;
+}
+input.orderitem_price {
+    width: 34px;
+}
+.items_table_lineaddcolor {
+    float: left;    
+    width: 100%;
+}
+.itemcoloradd {
+/*    clear: both;*/
+    cursor: pointer;
+    float: left;
+/*  padding-top: 4px;
+   margin-left: 335px;
+    margin-top: -5px;*/
+}
+/*  */
+.imprintdataarea {
+    float: left;
+    border-bottom: 1px solid #b5b5b5;
+}
+/* Inprint POPUP */
+.imprintdetailsarea {
+    background: url('/img/leadorder/inprint_location_bg.png') no-repeat transparent;
+    clear: both;
+    height: 451px;
+    width: 1052px;
+}
+.imprintdetailsdata {
+    float: left;
+    height: 409px;
+    margin-left: 13px;
+    width: 745px;
+}
+.imprintdetailstitle {
+    float: left;
+    margin-left: 184px;
+    height: 31px;
+    line-height: 31px;
+    width: 240px;
+}
+.imprintdetailstitle > .orderblank {
+    float: left;
+    width: 100%;    
+}
+.imprintdetailstitle > .orderblank input {
+    float: left;
+    margin-top: 13px;
+}
+
+.imprintdetailstitle > .orderblank > .label {
+    float: left;
+    font-size: 12px;
+    margin-left: 7px;
+    margin-top: 4px;
+}
+.imprintdetailsdata_left {
+    clear: both;
+    float: left;
+    margin-top: 27px;
+    margin-left: -5px;
+    width: 362px;
+}
+.imprintdetailsdata_right {
+    float: left;
+    margin-left: 11px;
+    margin-top: 27px;
+    width: 362px;    
+}
+.imprintlocdata {
+    border-bottom: 1px solid #000000;
+    clear: both;
+    float: left;
+    opacity: 0.5;
+    width: 367px;   
+}
+.imprintlocdata.active {
+    opacity: 1;
+}
+.imprintlocrow {
+    clear: both; 
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    width: 100%;
+}
+.imprintlocrow input, .imprintlocrow select {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    height: 20px;
+}
+.imprintlocrow input:disabled, .imprintlocrow select:disabled {
+    background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #e2e2e2;
+    color: #e2e2e2;
+    float: left;
+    height: 20px;    
+}
+input.locationactive {
+    height: 16px;
+    margin-top: 5px;
+}
+.imprintlocrow > .title {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 3px;
+    text-align: left;
+    width: 51px;
+}
+select.locationtype {    
+    margin-right: 3px;
+    margin-top: 2px;
+    width: 54px;
+}
+.repeatdetail {
+    background: transparent url("/img/leadorder/icon_fileempty.png") no-repeat scroll 0 0;
+    float: left;
+    margin-left: 2px;
+    margin-top: 4px;
+    opacity: 0.5;
+    width: 17px;    
+}
+.repeatdetail.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.repeatdetail.full {
+    background: transparent url("/img/leadorder/icon_file.png") no-repeat scroll 0 0;    
+}
+select.imprintcolorschoice {
+    margin-top: 2px;
+    width: 32px;
+}
+.imprintlocrow > .label {
+    float: left;
+    font-size: 12px;
+    width: 41px;
+}
+.imprintlocprices {
+    float: left;
+    width: 141px;
+}
+input.imprintprice {    
+    font-size: 11px;        
+    margin-left: 3px;
+    text-align: right;
+    width: 27px;
+}
+select.imprintlocationchoice {
+    margin-left: 25px;
+    width: 94px;
+}
+.extracostlabel {
+    float: left;
+    text-align: right;
+    line-height: 10px;
+    height: 22px;
+    font-size: 10px;
+    margin-right: 3px;
+    width: 27px;
+}
+.imprintdetailssample {
+    float: left;
+    margin-left: 9px;
+    margin-top: 14px;
+    width: 268px;
+}
+.imprintdetailssample > .title {
+    clear: both;
+    float: left;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 5px;
+    color: #1f1f1f;
+}
+.imprinttable_title {
+    clear: both;
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    margin-left: 29px;
+    width: 228px;
+}
+.imprinttable_title > .label {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    width: 98px;
+}
+.imprinttable_title > .labelprice {
+    width: 87px;
+    float: left;
+    text-align: right;
+    margin-right: 5px;
+    font-size: 11px;
+}
+.imprinttable_title > select.imprintpricepiece {
+    height: 17px;
+    width: 34px;
+}
+.imprinttablelocations {
+    clear: both;
+    background: url('/img/leadorder/imprintsample_bg.png') no-repeat transparent;
+    float: left;
+    margin-left: 30px;
+    margin-top: 3px;
+    width: 226px;
+}
+.imprinttablelocations > .imprinttablehead {    
+    color: #ffffee;
+    float: left;
+    font-size: 11px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    width: 100%;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationname {    
+    float: left;
+    width: 143px;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationsize {
+    float: left;
+    width: 54px;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationtemplate {
+    float: left;
+    width: 28px;
+}
+.imprinttabledata {    
+    float: left;
+    height: 265px;
+    width: 224px;
+}
+.imprinttabledata > .locationsamplerow {
+    clear: both;
+    color: #ffffee;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 100%;
+}
+.imprinttabledata > .locationsamplerow > .numpp {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 19px;
+}
+.imprinttabledata > .locationsamplerow > .locatname {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 117px;    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+.imprinttabledata > .locationsamplerow > .locatname.addnew {
+    color: #8a8a8a;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.imprinttabledata > .locationsamplerow > .locatsize {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 62px;    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.imprinttabledata > .locationsamplerow > .locattempl {
+    float: left;
+    margin-left: 3px;
+    width: 18px;
+}
+.imprinttabledata > .locationsamplerow > .locattempl.active {
+    background: url('/img/leadorder/icon_glass.png') no-repeat transparent;
+}
+.saveimprintdetailsarea {
+    clear: both;
+    float: left;
+    margin-left: 626px;
+    width: 120px;
+}
+.saveimprintdetailsarea > .saveimprintdetailsdata {
+    background: transparent url("/img/leadorder/button_save.png") no-repeat scroll 0 0;
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font-size: 13px;
+    height: 31px;
+    line-height: 28px;
+    text-align: center;
+    width: 47px;
+}
+.saveimprintdetailsarea > .revertimprintdetailsdata {
+    background: transparent url("/img/leadorder/button_revert.png") no-repeat scroll 0 0;
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    height: 31px;
+    line-height: 28px;
+    margin-left: 7px;
+    text-align: center;
+    width: 58px;
+}
+.placeorderbtn {
+    background: transparent url("/img/leadorder/placeorder_btn.png") no-repeat scroll 0 0;
+    color: #ffffff;
+    cursor: pointer;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    height: 35px;
+    line-height: 29px;
+    text-align: center;
+    width: 87px;
+}
+/* POPUP CONFIRM MSG */
+.popupmsgarea {
+    clear: both;
+    float: left;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    width: 980px;
+}
+span.confirmsg {
+    color: #FFFFFF;
+}
+span.orderconfirm {
+    color: #9b9bed;
+}
+.popupsubmsgarea {
+    clear: both;
+    float: left;
+    font-size: 13px;
+    color: #FFFFFF;
+    text-align: center;
+    width: 980px; 
+}
+/* Shipping popup */
+.shiptrackpopuparea {
+    background: transparent url("/img/leadorder/ship_popup_bg.png") no-repeat scroll 0 0;
+    float: left;
+    text-align: left;
+    height: 608px;
+    margin-top: 8px;
+    padding: 5px;
+    width: 887px;
+}
+.shiptrackpopuparea input {
+    border: 1px solid;
+    font-size: 12px;
+    padding-left: 3px;    
+    color: #222222;
+}
+.shiptrackpopuparea textarea {
+    border: 1px solid;
+    font-size: 12px;
+    padding-left: 3px;    
+    resize: none;
+    color: #222222;
+}
+.shiptrackpopuparea > div {
+    float: left;
+}
+.shiptrackpopuparea > .title {
+    clear: both;
+    background-color: #392fff;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: bold;
+    height: 27px;
+    line-height: 27px;    
+    width: 878px;
+}
+.shiptrackpopuparea > .title > div {
+    float: left;
+    text-align: left;
+    margin-right: 7px;
+}
+.shiptrackpopuparea > .title > div:first-child {
+    margin-left: 10px;
+}
+.shiptrackpopuparea > .title > .label {
+    color: #9f9aff;
+    font-size: 14px;
+}
+.shiptrackpopuparea > .title > .statusarea {
+    float: right;
+    padding-right: 14px;
+}
+.shiptrackpopuparea > .title > .statusarea > div {
+    float: left;
+    padding-right: 7px;
+    font-size: 14px;
+}
+.shiptrackpopuparea > .title > .statusarea > .label {
+    color: #9f9aff;    
+}
+.shiptrackdata {    
+    width: 569px;
+}
+.shiptrackdata > div {
+    float: left;
+}
+.shiptrackdata > .shiptrackdate {
+    clear: both;
+    height: 28px;
+    line-height: 28px;    
+}
+.shiptrackdata > .shiptrackdate > div {
+    float: left;
+    text-align: left;
+}
+.shiptrackdata > .shiptrackdate > .eventdate {    
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 46px;
+    width: 78px;
+}
+.shiptrackdata > .shiptrackdate > .datevalue {
+    width: 119px;
+    color: #0000FF;
+    font-size: 13px;    
+}
+.shiptrackdata > .shiptrackdate > .shipsondate {
+    font-size: 13px;
+    font-weight: bold;    
+    width: 68px;
+}
+.shiptrackdata > .shiptrackdate > .shipsondatevalue {
+    color: #0000FF;
+    font-size: 13px;        
+    width: 184px;
+}
+.shiptrackdata > .shiptrackdate > .shipsoncalendar {
+    background-color: #acacac;
+    border: 1px solid #000000;
+    cursor: pointer;
+    height: 15px;
+    margin-top: 5px;
+    width: 15px;
+}
+.shiptrackdata > .shiptrackdate > .trackallbtn {
+    cursor: pointer;
+    background: url('/img/leadorder/trackall_btn.png') no-repeat transparent;
+    height: 26px;
+    margin-left: 234px;
+    width: 88px;
+}
+.shiptrackdata > .shiptrackaddresarea {
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+    border-top: 2px solid #000000;
+    clear: both;
+    float: left;
+    height: 477px;
+    overflow-y: auto;
+    padding-top: 7px;
+    width: 566px;
+}
+.shiptrackdata > .shiptrackaddresarea > div {
+    float: left;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr {
+    width: 539px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrlabel {
+    float: left;
+    width: 80px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    height: 24px;
+    line-height: 24px;    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea {    
+    background-color: #f4f4f4;
+    border: 3px solid #000000;
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    width: 450px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > div {
+    float: left;
+    font-size: 12px;
+    color: #3A3A3A;
+    text-align: left;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > .shipadrqty {
+    width: 44px;
+    text-align: right;    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > .shipmethod {
+    width: 98px;
+    color: #000000;
+    font-weight: bold;    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > .shipaddres {
+    margin-right: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 128px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > .delivdate {
+    width: 91px;
+    color: #0000d2;
+    font-size: 11px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadr > .addrdataarea > .shipadrcost {
+    width: 57px;
+    text-align: right;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks {
+    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow {
+    clear: both;
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    margin-left: 83px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > div {
+    float: left;
+    height: 27px;
+    line-height: 26px;
+    padding-top: 4px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .newshippack {    
+    cursor: pointer;
+    font-size: 11px;
+    color: #0000FF;    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .delivservicearea {
+    width: 58px;    
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow select.deliveryservicelist {
+    background-color: #ffffee;
+    border: 1px solid;
+    font-size: 11px;
+    height: 20px;
+    width: 55px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeinptarea {
+    width: 169px;
+}
+input.trackcodeinpt {
+    width: 160px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .edit {
+    width: 15px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .edit img {
+    width: 100%;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodemanage {
+    background: transparent url("/img/leadorder/track_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    height: 26px;
+    margin-top: 3px;
+    padding-top: 0;
+    width: 60px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeupdate {
+    background: transparent url("/img/leadorder/track__upd_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    height: 26px;
+    margin-top: 3px;
+    padding-top: 0;
+    width: 60px;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeupdate.active {
+    background: transparent url("/img/leadorder/track__updactive_btn.png") no-repeat scroll 0 0;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodesendarea {
+    width: 79px;
+}
+span.sendedtrackcode {
+    float: left;
+    color: #00009d;
+    font-size: 11px;
+    font-style: italic;
+}
+.shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcoderemove {
+    background: transparent url("/img/leadorder/remove.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 16px;
+}
+.shiptrackpopuparea > .orderstatussave {
+    background-image: url("/img/leadorder/button_save.png");
+    background-repeat: no-repeat;
+    clear: both;
+    float: right;
+    height: 34px;
+    width: 52px;
+}
+.shiptrackpopuparea > .shiptracksendarea {
+    margin-top: 24px;
+    padding-left: 7px;
+    width: 307px;
+}
+.shiptrackpopuparea > .shiptracksendarea > div {
+    float: left;    
+}
+.trackemail_title {
+    text-align: center;
+    color: #000000;
+    font-size: 17px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px;
+    width: 100%;
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_row {
+    line-height: 25px;
+    min-height: 25px;
+    width: 100%;
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_row > .label {
+    float: left;
+    width: 35px;
+    color: #5d5d5d;
+    font-size: 12px;    
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_row > .value {
+    float: left;    
+}
+input.trackemailinpt {
+    width: 260px;
+}
+textarea.trackemailto {
+    width: 260px;
+    overflow: hidden;
+    height: 39px;
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_row > .showtrackmailbcc {
+    cursor: pointer;
+    color: #2c2cff;
+    font-size: 11px;
+    font-style: italic;
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_row > .labelsubj {
+    float: left;
+    width: 48px;
+    color: #5d5d5d;
+    font-size: 12px;    
+}
+input.trackemailsubj {
+    width: 247px;
+}
+.shiptrackpopuparea > .shiptracksendarea > .trackemail_message {
+    clear: both;
+    float: left;
+    width: 100%;    
+}
+textarea.trackemailmessage {
+    width: 299px;
+    overflow-y: auto;
+    height: 285px;
+}
+.shiptrackpopuparea > .shiptracksendarea > .sendtraccodemessage {
+    background: transparent url("/img/leadorder/sentrackcode_btn.png") no-repeat scroll 0 0;
+    clear: both;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    margin-left: 201px;
+    margin-top: 4px;
+    width: 102px;
+}
+/* Track Code results */
+.trackcoderesults {
+    background: none #FFFFEE;
+    clear: both;
+    float: left;
+    padding: 10px;
+    height: 320px;    
+    width: 640px;
+    color: #000000;
+    font-size: 12px;
+    text-align: left;
+}
+.trackcoderesults > div {
+    float: left;    
+}
+.trackcoderesults > .title {
+    color: #FFFFEE;
+    background-color: #0000FF;
+    font-size: 13px;
+    font-weight: bold;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    width: 100%;
+}
+.trackcoderesults > .results {    
+    height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 639px;
+}
+.trackcoderesults > .results > div {
+    clear: both;
+    float: left;
+}
+.trackcoderesults > .results > .title {    
+    background-color: #ededed;    
+    font-weight: bold;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    width: 100%;    
+}
+.trackcoderesults > .results > .row {
+    height: 14px;
+    line-height: 14px;
+    width: 100%;
+}
+.trackcoderesults > .results > .row > .label {
+    float: left;
+    width: 120px;
+}
+.trackcoderesults > .results > .row > .value {
+    float: left;
+}
+/* Proof Request section */
+.proofrequest_area {
+    background: transparent url("/img/leadorder/proof_request_bg.png") no-repeat scroll 0 0;
+    float: left;
+    height: 297px;
+    padding-top: 6px;
+    width: 228px;
+}
+.proofrequest_area > .datarow {
+    clear: both;
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #000000;
+    width: 100%;
+}
+.proofrequest_area > .datarow.otheritem {
+    visibility: hidden;
+}
+.proofrequest_area > .datarow > .label {
+    float: left;
+    margin-right: 5px;
+    text-align: right;
+    width: 65px;
+}
+.proofrequest_area > .datarow > .value {
+    float: left;
+    text-align: left;
+}
+.proofrequest_area > .datarow > .value.title {
+    font-size: 15px;
+    font-style: italic;
+    font-weight: bold;
+    color: #007010;
+}
+input.proofrequest_input {
+    height: 18px;
+    width: 137px;
+}
+.proofrequest_area > .datarownotes {
+    float: left;
+    margin-left: 8px;
+}
+textarea.proofrequestnotes {
+    float: left;
+    height: 66px;    
+    resize: none;
+    width: 201px;
+}
+/* Multiaddress shipping popup */
+.multishippopuparea {
+    float: left;
+    background: url('/img/leadorder/multiship_popup_bg.png') no-repeat transparent;
+    height: 617px;
+    padding: 0 13px 0 12px;
+    width: 598px;
+}
+.multishippopuparea input {
+    padding-left: 3px;
+}
+.multishippopuparea input[readonly="readonly"] {    
+    font-weight: bold;
+    background-color: #aeaeae;
+    border: 1px solid #949494 !important;
+}
+.multishippopuparea div {
+    text-align: left;
+    float: left;        
+}
+.multishiptitle {
+    height: 32px;
+    line-height: 32px;
+    width: 573px;    
+}
+.multishiptitle > .numaddress {    
+    font-size: 13px;
+    font-weight: bold;
+    width: 100px;
+}
+.multishiptitle > .pagetitle {    
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    width: 402px;
+}
+.multishiptitle > .manageship {
+    cursor: pointer;    
+    margin-top: 5px;
+    width: 63px;        
+}
+.multishiptitle > .manageship.edit {
+    background: url('/img/leadorder/multiship_edit_button.png') no-repeat transparent;
+}
+.multishiptitle > .manageship.save {
+    background: url('/img/leadorder/multiship_save_btn.png') no-repeat transparent;
+}
+.multishipsubtitle {
+    border-bottom: 2px solid #000000;
+    color: #010101;
+    height: 27px;
+    line-height: 27px;    
+    font-size: 12px;
+    width: 573px;    
+}
+.multishipsubtitle > .eventdate {
+    width: 130px;
+    margin-right: 7px;
+    text-align: right;    
+}
+.multishipsubtitle > .eventdatevalue {
+    padding-top: 4px;
+    width: 59px;
+}
+.multishipsubtitle > .rushselectarea {
+    margin-left: 6px;
+    width: 152px;
+}
+.multishipsubtitle > .rushdataselect {
+    padding-top: 4px;
+    width: 152px;
+}
+.multishipsubtitle > .rushpricevalue {
+    padding-top: 4px;
+    width: 67px;
+}
+.multishipadressarea {
+    border-bottom: 2px solid #000000;
+    color: #010101;
+    height: 513px;
+    overflow-y: auto;
+    width: 573px;        
+}
+/* Multiship Address rows */
+.multishipadressdatarow {
+    margin-top: 8px;
+    width: 558px;    
+}
+.multishipadressdata {
+    color: #000000;
+    font-size: 12px;
+    height: 23px;
+    line-height: 23px;
+    width: 173px;
+}
+.multishipadressdata > .numpp {
+    width: 18px;
+    font-weight: bold;
+}
+.multishipadressdata > .qtylabel {
+    width: 28px;
+}
+.multishipadressdata > .qtyvalue {
+    width: 45px;
+}
+input.shipaddrqty {
+    width: 37px;
+}
+.multishipadressdata > .orderitemqty {
+    color: #535050;
+    font-size: 11px;
+    /* width: 46px; */
+}
+.multishipadressdata > .shipadrtrash {
+    font-size: 14px;
+    padding-top: 4px;
+    text-align: center;
+    width: 22px;
+}
+.multishipadressdata > .shipadrtrash i {
+    cursor: pointer;
+}
+/* Price Container */
+.multishipadressdatarow .ship_tax_container2 {
+    left: 256px;
+}
+.multishipadressdatarow .bl_ship_tax_content {
+    height: 154px;
+    width: 549px;    
+}
+.multishipadressdatarow > .multishipadressadd {
+    background: url('/img/leadorder/add_shipaddress_btn.png') no-repeat transparent;
+    cursor: pointer;
+    margin-left: 18px;
+    height: 24px;
+    width: 83px;
+}
+/* add_shipaddress_btn.png */
+/* Multiship Totals */
+.multishiptotalsrow {
+    height: 24px;
+    line-height: 24px;
+    color: #222222;
+    margin-top: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    width: 571px;
+}
+.multishiptotalsrow > .multishiptotalqtylabel {
+    width: 37px;
+    text-align: right;
+    margin-right: 5px;
+}
+.multishiptotalsrow > .multishiptotalqtylabel.error {
+    color: #ff0101;
+}
+.multishiptotalsrow > .multishiptotalqtyvalue {
+    background-color: #FFFFFF;    
+    padding-right: 3px;
+    text-align: right;
+    width: 43px;
+}
+.multishiptotalsrow > .multishiptotalqtyvalue.error {
+    color: #ff0101;
+}
+.multishiptotalsrow > .multishiptotalqtyorder {
+    margin-left: 4px;
+    width: 58px;
+}
+.multishiptotalsrow > .multishiptotallabel {
+    margin-left: 117px;
+    width: 91px;
+}
+.multishiptotalsrow > .multishiptotalvalue {
+    background-color: #FFFFFF;
+    padding-right: 3px;
+    text-align: right;
+    width: 50px;
+}
+.multishiptotalsrow > .multishiptotaltaxlabel {
+    margin-left: 4px;
+    width: 95px;
+}
+.multishiptotalsrow > .multishiptotaltaxvalue {
+    background-color: #FFFFFF;    
+    padding-right: 3px;
+    text-align: right;
+    width: 41px;
+}
+/* Manual Payment */
+/* newpayment_bg.png */
+
+.manualpayment {
+    background: url('/img/leadorder/newpayment_bg.png') no-repeat transparent;
+    height: 130px;
+    width: 331px;    
+}
+.manualpayment div {
+    font-size: 11px;
+    color: #000000;
+    float: left;
+}
+.manualpayment > .paymentdata {        
+    height: 85px;
+    margin: 30px 16px 0 15px;
+    width: 293px;
+}
+.manualpayment > .paymentdata > .paytype {
+    background-color: #f3f3f3;
+    font-weight: bold;
+    height: 23px;
+    line-height: 23px;
+    margin-left: 73px;
+    width: 150px;
+}
+.manualpayment > .paymentdata > .paytype > .paytypevalue {
+    margin-top: -2px;
+    width: 24px;
+}
+.manualpayment > .paymentdata > .paytype > .paytypelabel {
+    width: 48px;
+}
+.manualpayment > .paymentdata > .paymentdetails {
+    height: 21px;
+    line-height: 21px;    
+}
+.manualpayment > .paymentdata > .paymentdetails.head {
+    text-align: center;
+}
+.manualpayment > .paymentdata > .paymentdetails > .replica {
+    width: 45px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .date {
+    width: 50px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .paytipe {
+    width: 61px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .paynum {
+    width: 78px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .payamnt {
+    width: 59px;
+}
+.manualpayment > .paymentdata > .paymentdatasave {
+    background: transparent url("/img/leadorder/save_payment_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    height: 27px;
+    margin-left: 243px;
+    width: 60px;
+}
+input.paydatadetails {
+    height: 14px;
+    font-size: 11px;
+    color: #000000;
+}
+input.paydatadetails.payrepl {
+    text-align: center;
+    width: 42px;
+}
+input.paydatadetails.paydate {
+    text-align: center;
+    width: 42px;
+}
+select.paydatadetails.paymenttype {
+    color: #000000;
+    font-size: 11px;
+    height: 18px;
+    width: 54px
+}
+input.paydatadetails.paynum {
+    width: 72px;
+}
+input.paydatadetails.payamount {
+    width: 52px;
+}
+/* Timereout */
+.extendtime_dataarea {
+    background: none repeat scroll 0 0 #fff;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    min-height: 90px;
+    padding: 15px;
+    width: 241px;    
+}
+.extendtime_title {
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 80%;    
+}
+.extendtime_button {
+    background: transparent url("/img/leadorder/button_extendtime.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    width: 106px;
+}
+/* Proof Request POPUP */
+.requestpopuparea {
+    background: url('/img/onlineprofrequest/popup_bg.png') no-repeat transparent;
+    height: 787px;
+    width: 506px;
+}
+.requestpopuparea div {
+    float: left;
+}
+.requestpopuparea input, .requestpopuparea select {
+    float: left;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    height: 19px;
+    font-size: 11px;
+    padding-left: 3px;
+}
+.requestpopuparea > .requestdetails  {
+    background: url('/img/onlineprofrequest/requestdata_bg.png') no-repeat transparent;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-top: 5px;
+    width: 228px;
+    height: 299px;
+}
+.requestpopuparea > .requestdetails > .datarow {
+    clear: both;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 5px;    
+    width: 100%;
+}
+.requestpopuparea > .requestdetails > .datarow > .label {
+    width: 64px;
+    text-align: right;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.requestpopuparea > .requestdetails > .datarow > .value {
+    width: 150px;
+}
+.requestpopuparea > .requestdetails > .datarow > .value.title {
+    color: #007010;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+}
+.requestpopuparea > .requestdetails > .datanotes {
+    margin-left: 7px;
+    margin-top: -3px;
+    width: 210px;
+}
+.requestpopuparea > .requestdetails input.proofreqdatainpt {
+    width: 141px;
+}
+textarea.proofnotes {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    width: 208px;
+    height: 78px;
+    resize: none;
+}
+
+/* Billing Data */
+.billing_content_linetop {
+    clear: both;
+    float: left;
+    /* margin-top: -5px; */
+    width: 320px;
+}
+.billing_samedata_area {
+    float: left;
+    height: 15px;
+    line-height: 15px;
+}
+.billing_samedata_area > .label {
+    float: left;
+    color: #525252;
+    font-size: 11px;
+    font-style: italic;
+}
+.billing_content_linecenter {
+    float: left;
+    margin-top: 37px;
+    width: 320px;
+    height: 46px;
+}
+a.historydetailsview {
+    text-decoration: none;
+}
+/* Update Details */
+.updatehistorydetailsarea {
+    background-color: #FFFFFF;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px dotted #000;
+    height: 376px; 
+    width: 690px;
+}
+.updatehistorydetailsarea div {
+    font-size: 12px;
+    float: left;    
+}
+.updatehistorydetailsarea > .title {
+    width: 100%;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.updatehistorydetailsarea > .detailstablehead {    
+    width: 686px;
+}
+.updatehistorydetailsarea > .detailstablehead div {
+    height: 24px;
+    line-height: 24px;
+    background-color: #aeaeae;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+}
+.updatehistorydetailsarea > .detailstablehead > .parameterlabel {
+    width: 320px;
+}
+.updatehistorydetailsarea > .detailstablehead > .parametervalue {
+    width: 183px;
+}
+.updatehistorydetailsarea > .detailstablebody {
+    border: 1px solid #000000;
+    height: 339px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 684px;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow div {
+    min-height: 18px;
+    float: left;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow .border_r {
+    border-right: 1px solid #000000;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow > .parameterlabel {
+    width: 319px;    
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow > .parametervalue {
+    width: 181px;
+    text-align: center;    
+}
+
+/* Charge attempts view*/
+.chargeattemptlogcall {
+    clear: both;
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 20px;
+    text-align: center;
+    width: 163px;
+}
+/* Popup */
+.chargeattemptlogarea {
+    clear: both;
+    float: left;
+    margin-top: 2px;
+    min-height: 50px;
+    width: 830px;
+}
+.chargeattemptlogarea div {
+    float: left;
+}
+.chargeattemptlogarea > .tablehead {
+    width: 100%;
+}
+.chargeattemptlogarea > .tablehead > div {
+    background-color: #e7e7e7;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+}
+.chargeattemptlogarea > .tablehead > .date {
+    width: 102px;
+}
+.chargeattemptlogarea > .tablehead > .user {
+    width: 97px;
+}
+.chargeattemptlogarea > .tablehead > .paysum {
+    width: 65px;
+}
+.chargeattemptlogarea > .tablehead > .cardnum {
+    width: 136px;
+}
+.chargeattemptlogarea > .tablehead > .cardsys {
+    width: 68px;
+}
+.chargeattemptlogarea > .tablehead > .cvv {
+    width: 27px;
+}
+.chargeattemptlogarea > .tablehead > .response {
+    width: 327px;
+}
+.chargeattemptlogarea > .tablebody {
+    width: 100%;    
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow {
+    width: 100%;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > div {
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .date {
+    width: 102px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .user {
+    width: 97px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .paysum {
+    width: 65px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .cardnum {
+    width: 136px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .cardsys {
+    width: 68px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .cvv {
+    font-size: 15px;
+    text-align: center;
+    width: 27px;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .response {
+    /* width: 122px; */
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .response.error {
+    color: #FF0000;
+}
+.chargeattemptlogarea > .tablebody > .tabledatarow > .response.success {
+    color: #008000;
+}
+/* COG Details Popup */
+.ordercogdetailsviewarea {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px; /* for old Konqueror browsers */    
+    border-radius: 10px; /* future proofing */
+    border: 1px solid;
+    float: left;    
+    padding: 10px;
+    width: 380px;    
+}
+.ordercogdetailsviewarea.black {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+.ordercogdetailsviewarea.moroon {
+    background-color: #6d0303;
+    color: #FFFFFF;    
+}
+.ordercogdetailsviewarea.red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.ordercogdetailsviewarea.orange {
+    background-color: #ea8a0e;
+    color: #ffffff;
+}
+.ordercogdetailsviewarea.white {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+.ordercogdetailsviewarea.green {
+    background-color: #00e947;
+    color: #000000;    
+}
+.ordercogdetailsviewarea > .title {
+    clear: both;
+    float: left;
+    margin: 0 5px;
+}
+.ordercogdetailsviewarea > .title > div {
+    float: left;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 16px;
+}
+.ordercogdetailsviewarea > .title > .date {
+    width: 49px;
+}
+.ordercogdetailsviewarea > .title > .amnttype {
+    width: 61px;
+}
+.ordercogdetailsviewarea > .title > .vendor {
+    width: 190px;
+}
+.ordercogdetailsviewarea > .title > .amountsum {
+    width: 70px;
+}
+.ordercogdetailsviewarea > .dataarea {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    clear: both;
+    color: #000;
+    float: left;
+    margin: 4px;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow {
+    clear: both;
+    float: left;    
+}
+.ordercogdetailsviewarea > .dataarea > .datarow.grey {
+    background-color: #c1c1c1;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > div {
+    float: left;    
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    font-size: 12px;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .date {
+    width: 48px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .amnttype {
+    width: 60px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .vendor {
+    border-right: 1px solid #000000;
+    width: 189px;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .amountsum {
+    text-align: right;
+    padding-right: 3px;
+    width: 67px;
+}
+/* Confirm new shipcost */
+.confirmshipcost_container {
+    background-color: #FFFFFF;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding: 15px;
+    min-height: 97px;
+    padding: 15px;
+    width: 410px;    
+}
+.confirmshipcost_container div {
+    float: left;
+}
+.confirmshipcost_container > .title {
+    text-align: center;
+    font-size: 14px;
+    width: 100%;
+}
+.confirmshipcost_container > .confirmshipcost_manage {
+    clear: both;
+    margin-top: 20px;
+}
+.confirmshipcost_container > .confirmshipcost_manage > .leavenewshipcost {
+    background: url('/img/leadorder/changeshipcost_btn.png') no-repeat transparent;
+    cursor: pointer;
+    margin-left: 73px;
+    height: 27px;
+    width: 147px;    
+}
+.confirmshipcost_container > .confirmshipcost_manage > .restoreoldshipcost {
+    background: url('/img/leadorder/leaveshipcost_btn.png') no-repeat transparent;
+    cursor: pointer;
+    margin-left: 15px;
+    height: 27px;
+    width: 107px;
+}
+.confirmshipcost_container > .confirmshipcost_manage > .applynewpayment {
+    background: url('/img/leadorder/applynewpayment_btn.png') no-repeat transparent;
+    cursor: pointer;
+    margin-left: 73px;
+    height: 27px;
+    width: 147px;    
+}
+.confirmshipcost_container > .confirmshipcost_manage > .leavesamepayment {
+    background: url('/img/leadorder/leavesamepayment_btn.png') no-repeat transparent;
+    cursor: pointer;
+    margin-left: 15px;
+    height: 27px;
+    width: 107px;
+}
