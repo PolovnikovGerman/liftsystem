@@ -97,15 +97,15 @@ function pageProofsCallback(page_index) {
     params.push({name:'show_deleted',value:deleted})
 
     var url=main_proofurl+'/proof_listdata';
-    $("#loader").css('display','block');
+    $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
+            $("#loader").hide();
             $("div.proof_tabledat").empty().html(response.data.content);
             $("#curpageproof").val(page_index);
             init_prooflistmanage();
-            $("#loader").css('display','none');
         } else {
-            $("#loader").css('display','none');
+            $("#loader").hide();
             show_error(response);
         }
     },'json');

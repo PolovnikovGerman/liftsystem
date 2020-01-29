@@ -69,13 +69,13 @@ function pageGeneralCallback(page_index){
     params.push({name:'maxval', value:$('#totalrec').val()});
 
     var url='/art/order_data';
-    $("#loader").css('display','block');
+    $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
+            $("#loader").hide();
             $('div.tabledata').empty().html(response.data.content);
             $("#curpage").val(page_index);
             general_view_init();
-            $("#loader").css('display','none');
         } else {
             show_error(response);
         }
