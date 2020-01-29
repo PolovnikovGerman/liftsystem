@@ -304,7 +304,6 @@ Class Artwork_model extends MY_Model
                         $this->artlocation_update($row);
                         $num_arts++;
                     }
-
                 }
                 /* If we add ARTS && order is not blank */
                 if ($num_arts>0 && $blank_order==0) {
@@ -2984,6 +2983,65 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
+    public function get_orderdetails($order_num) {
+        $dbtablename='sb_orders';
+        $this->db->select('order_id, contact_first_name, contact_last_name, contact_phone, contact_email, order_customer_comment, order_item_id as item_id, item_qty');
+        $this->db->from($dbtablename);
+        $this->db->where('order_num', $order_num);
+        $result=$this->db->get()->result_array();
+        if (count($result)==1) {
+            $return_arr=$result[0];
+            if (isset($return_arr['item_id'])) {
+                $this->db->select('item_number, item_name');
+                $this->db->from('v_itemsearch');
+                $this->db->where('item_id',$return_arr['item_id']);
+                $resitm=$this->db->get()->row_array();
+                if (isset($resitm['item_number'])) {
+                    $return_arr['item_number']=$resitm['item_number'];
+                    $return_arr['item_name']=$resitm['item_name'];
+                } else {
+                    $return_arr['item_number']='';
+                    $return_arr['item_name']='';
+                }
+            } else {
+                $return_arr['item_number']='';
+                $return_arr['item_name']='';
+            }
+        } else {
+            $return_arr=array();
+        }
+        return $return_arr;
+    }
 
-
+    /* Read DATA about order ART from GREY  */
+    public function get_orderarts($order_id)
+    {
+        $dbtablename = 'sb_order_artworks';
+        $this->db->select('order_artwork_id, order_artwork_printloc, order_artwork_colors, order_artwork_font, order_artwork_text, order_artwork_note');
+        $this->db->from($dbtablename);
+        $this->db->where('order_artwork_orderid', $order_id);
+        $results = $this->db->get()->result_array();
+        $out = array();
+        $numpp = 1;
+        foreach ($results as $row) {
+            /* Get data about Order Logos */
+            $dbtablename = 'sb_order_userlogos';
+            $this->db->select('order_userlogo_file, order_userlogo_filename');
+            $this->db->from($dbtablename);
+            $this->db->where('order_userlogo_artworkid', $row['order_artwork_id']);
+            $logos = $this->db->get()->result_array();
+            $numlogos = 0;
+            foreach ($logos as $lrow) {
+                $out[] = array('artwork_art_id' => 0, 'art_type' => 'Logo', 'art_ordnum' => $numpp, 'logo_src' => $lrow['order_userlogo_filename'], 'customer_text' => '', 'font' => '', 'art_location' => $row['order_artwork_printloc'], 'user_note' => $row['order_artwork_note'],);
+                $numpp++;
+                $numlogos++;
+            }
+            if ($row['order_artwork_text']) {
+                $out[] = array('artwork_art_id' => 0, 'art_type' => 'Text', 'art_ordnum' => $numpp, 'logo_src' => '', 'customer_text' => $row['order_artwork_text'], 'font' => $row['order_artwork_font'], 'art_location' => $row['order_artwork_printloc'], 'user_note' => ($numlogos == 0 ? $row['order_artwork_note'] : ''),);
+                $numpp++;
+            }
+            // $out[]=$row;
+        }
+        return $out;
+    }
 }

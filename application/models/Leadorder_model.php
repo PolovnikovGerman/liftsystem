@@ -768,56 +768,56 @@ Class Leadorder_model extends My_Model {
 //        return $out;
 //    }
 //
-//    // Get List of payments
-//    public function get_leadorder_payments($order_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_batches');
-//        $this->db->where('order_id', $order_id);
-//        // $this->db->where('batch_received', 1);
-//        $this->db->where('batch_term',  0);
-//        $this->db->order_by('batch_date');
-//        $res = $this->db->get()->result_array();
-//        $out = array();
-//        foreach ($res as $row) {
-//            $row['out_date'] = date('m/d', $row['batch_date']);
-//            if ($row['batch_type']=='American Express') {
-//                $row['batch_type']='AmEx';
-//            }
-//            if (abs($row['batch_vmd']) > 0) {
-//                if (!empty($row['batch_type'])) {
-//                    $row['out_name'] = $row['batch_type'] . ' ' . substr($row['batch_num'], -4);
-//                } else {
-//                    $row['out_name'] = 'VMD';
-//                }
-//            } elseif (abs($row['batch_amex']) > 0) {
-//                if (!empty($row['batch_type'])) {
-//                    $row['out_name'] = $row['batch_type'] . ' ' . substr($row['batch_num'], -4);
-//                } else {
-//                    $row['out_name'] = 'AmEx';
-//                }
-//            } elseif (abs($row['batch_term']) > 0) {
-//                $row['out_name'] = 'Term';
-//            } elseif (abs($row['batch_other'])) {
-//                if (!empty($row['batch_type'])) {
-//                    $row['out_name']=$row['batch_type'].' '.$row['batch_num'];
-//                } else {
-//                    $row['out_name'] = 'Other';
-//                }
-//            } elseif (abs($row['batch_writeoff']) >0 ) {
-//                $row['out_name'] = 'WriteOFF';
-//            }
-//            if ($row['batch_amount'] < 0) {
-//                $row['payclass'] = 'text_red';
-//                $row['paysum'] = '(' . MoneyOutput(abs($row['batch_amount'])) . ')';
-//            } else {
-//                $row['payclass'] = 'text_grey';
-//                $row['paysum'] = MoneyOutput(abs($row['batch_amount']));
-//            }
-//            $out[] = $row;
-//        }
-//        return $out;
-//    }
-//
+    // Get List of payments
+    public function get_leadorder_payments($order_id) {
+        $this->db->select('*');
+        $this->db->from('ts_order_batches');
+        $this->db->where('order_id', $order_id);
+        // $this->db->where('batch_received', 1);
+        $this->db->where('batch_term',  0);
+        $this->db->order_by('batch_date');
+        $res = $this->db->get()->result_array();
+        $out = array();
+        foreach ($res as $row) {
+            $row['out_date'] = date('m/d', $row['batch_date']);
+            if ($row['batch_type']=='American Express') {
+                $row['batch_type']='AmEx';
+            }
+            if (abs($row['batch_vmd']) > 0) {
+                if (!empty($row['batch_type'])) {
+                    $row['out_name'] = $row['batch_type'] . ' ' . substr($row['batch_num'], -4);
+                } else {
+                    $row['out_name'] = 'VMD';
+                }
+            } elseif (abs($row['batch_amex']) > 0) {
+                if (!empty($row['batch_type'])) {
+                    $row['out_name'] = $row['batch_type'] . ' ' . substr($row['batch_num'], -4);
+                } else {
+                    $row['out_name'] = 'AmEx';
+                }
+            } elseif (abs($row['batch_term']) > 0) {
+                $row['out_name'] = 'Term';
+            } elseif (abs($row['batch_other'])) {
+                if (!empty($row['batch_type'])) {
+                    $row['out_name']=$row['batch_type'].' '.$row['batch_num'];
+                } else {
+                    $row['out_name'] = 'Other';
+                }
+            } elseif (abs($row['batch_writeoff']) >0 ) {
+                $row['out_name'] = 'WriteOFF';
+            }
+            if ($row['batch_amount'] < 0) {
+                $row['payclass'] = 'text_red';
+                $row['paysum'] = '(' . MoneyOutput(abs($row['batch_amount'])) . ')';
+            } else {
+                $row['payclass'] = 'text_grey';
+                $row['paysum'] = MoneyOutput(abs($row['batch_amount']));
+            }
+            $out[] = $row;
+        }
+        return $out;
+    }
+
 //    // Change Order data
 //    public function change_order_input($leadorder, $entity, $fldname, $newval, $ordersession) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -4997,35 +4997,35 @@ Class Leadorder_model extends My_Model {
 //        return TRUE;
 //    }
 //
-//    // Get Previous Order
-//    private function _get_previous_order($order_id) {
-//        $order=0;
-//        $this->db->select('order_id, order_num');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_id < ', $order_id);
-//        // $this->db->where('is_canceled',0);
-//        $this->db->order_by('order_id', 'desc');
-//        $prvres=$this->db->get()->row_array();
-//        if (isset($prvres['order_id'])) {
-//            $order=$prvres['order_id'];
-//        }
-//        return $order;
-//    }
-//
-//    // Get Next Order
-//    private function _get_next_order($order_id) {
-//        $order=0;
-//        $this->db->select('order_id, order_num');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_id > ', $order_id);
-//        // $this->db->where('is_canceled',0);
-//        $this->db->order_by('order_id', 'asc');
-//        $nxtres=$this->db->get()->row_array();
-//        if (isset($nxtres['order_id'])) {
-//            $order=$nxtres['order_id'];
-//        }
-//        return $order;
-//    }
+    // Get Previous Order
+    private function _get_previous_order($order_id) {
+        $order=0;
+        $this->db->select('order_id, order_num');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id < ', $order_id);
+        // $this->db->where('is_canceled',0);
+        $this->db->order_by('order_id', 'desc');
+        $prvres=$this->db->get()->row_array();
+        if (isset($prvres['order_id'])) {
+            $order=$prvres['order_id'];
+        }
+        return $order;
+    }
+
+    // Get Next Order
+    private function _get_next_order($order_id) {
+        $order=0;
+        $this->db->select('order_id, order_num');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id > ', $order_id);
+        // $this->db->where('is_canceled',0);
+        $this->db->order_by('order_id', 'asc');
+        $nxtres=$this->db->get()->row_array();
+        if (isset($nxtres['order_id'])) {
+            $order=$nxtres['order_id'];
+        }
+        return $order;
+    }
 //    // Get GREY Item Data
 //    public function _get_itemdata($item_id) {
 //        $item_table=$this->config->item('greydb').'.sb_items';
