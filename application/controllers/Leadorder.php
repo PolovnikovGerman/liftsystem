@@ -69,7 +69,7 @@ class Leadorder extends MY_Controller
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $options['unlocked']=$engade_res['result'];
-                        if ($engade_res['result']==Art::ERROR_RESULT) {
+                        if ($engade_res['result']==$this->error_result) {
                             $voptions=array(
                                 'user'=>$engade_res['lockusr'],
                             );
@@ -92,7 +92,7 @@ class Leadorder extends MY_Controller
                         );
                         // Check lock of record
                         $chklock=$this->engaded_model->check_engade($lockoptions);
-                        if ($chklock==Art::ERROR_RESULT) {
+                        if ($chklock==$this->error_result) {
                             $error='Order was locked for edit by other user. Try later';
                             $this->func->ajaxResponse($mdata, $error);
                         }
@@ -143,7 +143,7 @@ class Leadorder extends MY_Controller
                         'locrecid'=>$locking,
                     );
                 }
-                $this->func->session($leadsession, $leadorder);
+                usersession($leadsession, $leadorder);
                 $mdata['content']=$content;
             }
             $this->ajaxResponse($mdata, $error);

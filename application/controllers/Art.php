@@ -65,6 +65,8 @@ class Art extends MY_Controller {
         // Add main page management
         $head['scripts'][]=array('src'=>'/js/art/page.js');
         $head['styles'][] = array('style'=> '/css/art/artpage.css');
+        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+
         // Utils
         // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');

@@ -1,7 +1,9 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-Class Artproof_model extends MY_Model
+Class Artlead_model extends MY_Model
 {
+    private $empty_out_content='&nbsp;';
+
     function __construct()
     {
         parent::__construct();

@@ -116,16 +116,16 @@ class Template
     }
 
     public function _prepare_leadorder_view($res,$user_id, $edit=0) {
-        $this->ci->load->model('shipping_model');
-        $this->ci->load->model('orders_model');
-        $this->ci->load->model('leadorder_model');
-        $this->ci->load->model('user_model');
-        $usrdat=$this->ci->user_model->get_user_data($user_id);
+        $this->CI->load->model('shipping_model');
+        $this->CI->load->model('orders_model');
+        $this->CI->load->model('leadorder_model');
+        $this->CI->load->model('user_model');
+        $usrdat=$this->CI->user_model->get_user_data($user_id);
         $ord_data=$res['order'];
         $ord_data['out_shipping']=($edit==1 ? $ord_data['shipping'] : ($ord_data['shipping']==0 ? '&mdash;' : MoneyOutput($ord_data['shipping'])));
         $ord_data['out_revenue']=($edit==1 ? $ord_data['revenue'] : ($ord_data['revenue']==0 ? '&mdash;' : MoneyOutput($ord_data['revenue'])));
         $ord_data['out_tax']=($edit==1 ? $ord_data['tax'] : ($ord_data['tax']==0 ? '&mdash;' : MoneyOutput($ord_data['tax'])));
-        $ord_data['subtotal']=$this->ci->leadorder_model->oldorder_item_subtotal($ord_data);
+        $ord_data['subtotal']=$this->CI->leadorder_model->oldorder_item_subtotal($ord_data);
 
         $art_data=$res['artwork'];
         $art_data['item_id']=$ord_data['item_id'];
@@ -136,33 +136,33 @@ class Template
         $weborder=0;
         $payments=$res['payments'];
         if ($ord_data['order_usr_repic']!='' && $ord_data['order_usr_repic']<0) {
-            $orddata['replica_view']=$this->ci->load->view('leadorderdetails/website_replica_view', array('edit'=>$edit), TRUE);
+            $orddata['replica_view']=$this->CI->load->view('leadorderdetails/website_replica_view', array('edit'=>$edit), TRUE);
             $weborder=1;
         } else {
             $repl_options=array(
                 'data'=>$ord_data,
                 'edit'=>$edit
             );
-            $repl_options['users']=$this->ci->user_model->get_user_leadreplicas();
-            $orddata['replica_view']=$this->ci->load->view('leadorder/edit_replica_view', $repl_options, TRUE);
+            $repl_options['users']=$this->CI->user_model->get_user_leadreplicas();
+            $orddata['replica_view']=$this->CI->load->view('leadorder/edit_replica_view', $repl_options, TRUE);
         }
         $orddata['edit']=$edit;
-        $orddata['payment_history']=$this->ci->load->view('leadorderdetails/payment_history_view', array('payments'=>$payments), TRUE);
+        $orddata['payment_history']=$this->CI->load->view('leadorderdetails/payment_history_view', array('payments'=>$payments), TRUE);
         // Bottom View
         $ticketcnt=$res['numtickets'];
         if ($ticketcnt==0) {
-            $ticketview=$this->ci->load->view('leadorderdetails/ticket_dataempty_view', array(),TRUE);
+            $ticketview=$this->CI->load->view('leadorderdetails/ticket_dataempty_view', array(),TRUE);
         } else {
             $tickdata=$res['ticket'];
-            $ticketview=$this->ci->load->view('leadorderdetails/ticket_data_view', $tickdata, TRUE);
+            $ticketview=$this->CI->load->view('leadorderdetails/ticket_data_view', $tickdata, TRUE);
         }
         // Shipping Date
-        $shipstatus=$this->ci->leadorder_model->_leadorderview_shipping_status($res);
+        $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $shipoption=array(
             'label'=>$shipstatus['order_status'],
             'class'=>$shipstatus['order_status_class'],
         );
-        $shipview=$this->ci->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
+        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
         // Total Due
         $total_due=$res['total_due'];
         $dueoptions=array(
@@ -177,7 +177,7 @@ class Template
             }
         }
 
-        $dueview=$this->ci->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+        $dueview=$this->CI->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
         $bottom_options=array(
             'ticketview'=>$ticketview,
             'shippview'=>$shipview,
@@ -191,7 +191,7 @@ class Template
                 $orddata['taxalign']='style="text-align: right;"';
             }
         }
-        $orddata['order_bottom']=$this->ci->load->view('leadorderdetails/order_bottom_view', $bottom_options, TRUE);
+        $orddata['order_bottom']=$this->CI->load->view('leadorderdetails/order_bottom_view', $bottom_options, TRUE);
         if ($res['order_system_type']=='old') {
             $rushallow=$edit;
             $ord_data['customer_contact']=$art_data['customer_contact'];
@@ -199,23 +199,23 @@ class Template
             $orddata['template_switch']='&nbsp;';
             if ($edit==0) {
                 if ($res['unlocked']==1) {
-                    $orddata['template_switch']=$this->ci->load->view('leadorderdetails/order_systemselect_view', array(), TRUE);
+                    $orddata['template_switch']=$this->CI->load->view('leadorderdetails/order_systemselect_view', array(), TRUE);
                 }
-                $orddata['item_view']=$this->ci->load->view('leadorderdetails/oldorder_item_view', $orddata, TRUE);
+                $orddata['item_view']=$this->CI->load->view('leadorderdetails/oldorder_item_view', $orddata, TRUE);
             } else {
                 $dboptions=array(
                     'exclude'=>array(-4, -5, -2),
                 );
-                $orddata['itemslist']=$this->ci->orders_model->get_item_list($dboptions);
-                $orddata['item_view']=$this->ci->load->view('leadorderdetails/oldorder_item_edit', $orddata, TRUE);
+                $orddata['itemslist']=$this->CI->orders_model->get_item_list($dboptions);
+                $orddata['item_view']=$this->CI->load->view('leadorderdetails/oldorder_item_edit', $orddata, TRUE);
             }
-            $data['order']=$this->ci->load->view('leadorderdetails/order_olddata_view', $orddata, TRUE);
+            $data['order']=$this->CI->load->view('leadorderdetails/order_olddata_view', $orddata, TRUE);
         } else {
             $contacts=$res['contacts'];
             if ($edit==0) {
-                $orddata['contacts']=$this->ci->load->view('leadorderdetails/contact_detail_view', array('data'=>$contacts), TRUE);
+                $orddata['contacts']=$this->CI->load->view('leadorderdetails/contact_detail_view', array('data'=>$contacts), TRUE);
             } else {
-                $orddata['contacts']=$this->ci->load->view('leadorderdetails/contact_detail_edit', array('data'=>$contacts), TRUE);
+                $orddata['contacts']=$this->CI->load->view('leadorderdetails/contact_detail_edit', array('data'=>$contacts), TRUE);
             }
             $order_items=$res['order_items'];
 
@@ -227,13 +227,13 @@ class Template
                     $imprints[0]['imprint_description']='blank, no imprinting';
                 }
                 if ($edit==0) {
-                    $imprintview=$this->ci->load->view('leadorderdetails/imprint_data_view', array('imprints'=>$imprints), TRUE);
+                    $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_view', array('imprints'=>$imprints), TRUE);
                 } else {
                     $ioptions=array(
                         'imprints'=>$imprints,
                         'order_item_id'=>$irow['order_item_id'],
                     );
-                    $imprintview=$this->ci->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
+                    $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
                 }
                 $item_options=array(
                     'order_item_id'=>$irow['order_item_id'],
@@ -244,9 +244,9 @@ class Template
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
-                    $content.=$this->ci->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                 } else {
-                    $content.=$this->ci->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
+                    $content.=$this->CI->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
                 }
             }
             $orddata['items']=$content;
@@ -282,30 +282,30 @@ class Template
                 $rushoptions['current']='';
             }
 
-            $rushview=$this->ci->load->view('leadorderdetails/rushlist_view', $rushoptions, TRUE);
+            $rushview=$this->CI->load->view('leadorderdetails/rushlist_view', $rushoptions, TRUE);
 
             if (count($shipping_address)==1) {
                 $shipcost=$shipping_address[0]['shipping_costs'];
                 if ($edit==0) {
-                    $cost_view=$this->ci->load->view('leadorderdetails/ship_cost_view', array('shipcost'=>$shipcost),TRUE);
+                    $cost_view=$this->CI->load->view('leadorderdetails/ship_cost_view', array('shipcost'=>$shipcost),TRUE);
                 } else {
                     $costoptions=array(
                         'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
                         'shipcost'=>$shipcost,
                     );
-                    $cost_view=$this->ci->load->view('leadorderdetails/ship_cost_edit', $costoptions,TRUE);
+                    $cost_view=$this->CI->load->view('leadorderdetails/ship_cost_edit', $costoptions,TRUE);
                 }
                 $country_id=$shipping_address[0]['country_id'];
                 if ($shipping_address[0]['taxview']==1) {
                     if ($edit==1) {
-                        $taxview=$this->ci->load->view('leadorderdetails/tax_data_edit', $shipping_address[0], TRUE);
+                        $taxview=$this->CI->load->view('leadorderdetails/tax_data_edit', $shipping_address[0], TRUE);
                     } else {
-                        $taxview=$this->ci->load->view('leadorderdetails/tax_data_view', $shipping_address[0], TRUE);
+                        $taxview=$this->CI->load->view('leadorderdetails/tax_data_view', $shipping_address[0], TRUE);
                     }
                 } else {
-                    $taxview=$this->ci->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                    $taxview=$this->CI->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
                 }
-                $states=$this->ci->shipping_model->get_country_states($country_id);
+                $states=$this->CI->shipping_model->get_country_states($country_id);
                 $shipoptions=array(
                     'shipping'=>$shipping,
                     'countries'=>$res['countries'],
@@ -317,16 +317,16 @@ class Template
                     'taxview'=>$taxview,
                 );
                 if ($edit==1) {
-                    $orddata['shippingview']=$this->ci->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
+                    $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                 } else {
-                    $orddata['shippingview']=$this->ci->load->view('leadorderdetails/single_ship_view', $shipoptions, TRUE);
+                    $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_view', $shipoptions, TRUE);
                 }
             } else {
                 $cost_view='';
                 $numpp=1;
                 foreach ($shipping_address as $srow) {
                     $srow['numpp']=$numpp;
-                    $cost_view.=$this->ci->load->view('leadorderdetails/shipping_datarow_view', $srow, TRUE);
+                    $cost_view.=$this->CI->load->view('leadorderdetails/shipping_datarow_view', $srow, TRUE);
                     $numpp++;
                 }
                 $shipoptions=array(
@@ -336,22 +336,22 @@ class Template
                     'rushview'=>$rushview,
                 );
                 if ($edit==1) {
-                    $orddata['shippingview']=$this->ci->load->view('leadorderdetails/multi_ship_edit', $shipoptions, TRUE);
+                    $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_edit', $shipoptions, TRUE);
                 } else {
-                    $orddata['shippingview']=$this->ci->load->view('leadorderdetails/multi_ship_view', $shipoptions, TRUE);
+                    $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_view', $shipoptions, TRUE);
                 }
             }
             $dateoptions=array(
                 'edit'=>$edit,
                 'shipping'=>$shipping,
             );
-            $orddata['shipdatesview']=$this->ci->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+            $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
             // Shipping data
             $orddata['shiptax']='&nbsp;';
             $billing=$res['order_billing'];
 
             $country_id=$billing['country_id'];
-            $states=$this->ci->shipping_model->get_country_states($country_id);
+            $states=$this->CI->shipping_model->get_country_states($country_id);
             $billoptions=array(
                 'billing'=>$billing,
                 'countries'=>$res['countries'],
@@ -362,17 +362,17 @@ class Template
             if ($edit==1) {
                 if ($ord_data['order_id']==0) {
                     if ($ord_data['showbilladdress']==1) {
-                        $leftcont=$this->ci->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
+                        $leftcont=$this->CI->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
                     } else {
-                        $leftcont=$this->ci->load->view('leadorderdetails/billadress_edit', $billoptions, TRUE);
+                        $leftcont=$this->CI->load->view('leadorderdetails/billadress_edit', $billoptions, TRUE);
                     }
                     $billoptions['leftbilling']=$leftcont;
-                    $orddata['billingview']=$this->ci->load->view('leadorderdetails/billing_data_new', $billoptions, TRUE);
+                    $orddata['billingview']=$this->CI->load->view('leadorderdetails/billing_data_new', $billoptions, TRUE);
                 } else {
-                    $orddata['billingview']=$this->ci->load->view('leadorderdetails/billing_data_edit', $billoptions, TRUE);
+                    $orddata['billingview']=$this->CI->load->view('leadorderdetails/billing_data_edit', $billoptions, TRUE);
                 }
             } else {
-                $orddata['billingview']=$this->ci->load->view('leadorderdetails/billing_data_view', $billoptions, TRUE);
+                $orddata['billingview']=$this->CI->load->view('leadorderdetails/billing_data_view', $billoptions, TRUE);
             }
             $charges=$res['charges'];
             $editalov=1;
@@ -387,9 +387,9 @@ class Template
                     'editalov'=>$editalov,
                 );
                 if ($edit==1) {
-                    $appview=$this->ci->load->view('leadorderdetails/creditapp_edit', $appoptions, TRUE);
+                    $appview=$this->CI->load->view('leadorderdetails/creditapp_edit', $appoptions, TRUE);
                 } else {
-                    $appview=$this->ci->load->view('leadorderdetails/creditapp_view', $appoptions, TRUE);
+                    $appview=$this->CI->load->view('leadorderdetails/creditapp_view', $appoptions, TRUE);
                 }
             } else {
                 $appview='&nbsp;';
@@ -401,9 +401,9 @@ class Template
                 'editalov'=>$editalov,
             );
             if ($edit==1) {
-                $balanceview=$this->ci->load->view('leadorderdetails/balance_manage_edit', $balancoptions, TRUE);
+                $balanceview=$this->CI->load->view('leadorderdetails/balance_manage_edit', $balancoptions, TRUE);
             } else {
-                $balanceview=$this->ci->load->view('leadorderdetails/balance_manage_view', $balancoptions, TRUE);
+                $balanceview=$this->CI->load->view('leadorderdetails/balance_manage_view', $balancoptions, TRUE);
             }
             $chargeoptions=array(
                 'charges'=>$charges,
@@ -414,32 +414,32 @@ class Template
 
             if ($edit==1) {
                 if ($ord_data['order_id']>0) {
-                    $orddata['chargeview']=$this->ci->load->view('leadorderdetails/charge_data_edit', $chargeoptions, TRUE);
+                    $orddata['chargeview']=$this->CI->load->view('leadorderdetails/charge_data_edit', $chargeoptions, TRUE);
                 } else {
-                    $orddata['chargeview']=$this->ci->load->view('leadorderdetails/charge_datafirst_edit', $chargeoptions, TRUE);
+                    $orddata['chargeview']=$this->CI->load->view('leadorderdetails/charge_datafirst_edit', $chargeoptions, TRUE);
                 }
             } else {
-                $orddata['chargeview']=$this->ci->load->view('leadorderdetails/charge_data_view', $chargeoptions, TRUE);
+                $orddata['chargeview']=$this->CI->load->view('leadorderdetails/charge_data_view', $chargeoptions, TRUE);
             }
 
             // Miscs value
             if ($edit==1) {
-                $orddata['discounts_view']=$this->ci->load->view('leadorderdetails/discounts_data_edit', $ord_data, TRUE);
+                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_edit', $ord_data, TRUE);
             } else {
-                $orddata['discounts_view']=$this->ci->load->view('leadorderdetails/discounts_data_view', $ord_data, TRUE);
+                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_view', $ord_data, TRUE);
             }
             $orddata['chargeattemptview']='&nbsp;';
             if ($usrdat['finuser']) {
-                $numatempt=$this->ci->leadorder_model->count_charges_attempts($ord_data['order_id']);
+                $numatempt=$this->CI->leadorder_model->count_charges_attempts($ord_data['order_id']);
                 if ($numatempt>0) {
-                    $orddata['chargeattemptview']=$this->ci->load->view('leadorderdetails/charge_attempt_view', $ord_data, TRUE);
+                    $orddata['chargeattemptview']=$this->CI->load->view('leadorderdetails/charge_attempt_view', $ord_data, TRUE);
                 }
             }
-            $data['order']=$this->ci->load->view('leadorderdetails/order_newdata_view', $orddata, TRUE);
+            $data['order']=$this->CI->load->view('leadorderdetails/order_newdata_view', $orddata, TRUE);
         }
         $message=$res['message'];
         $message['edit']=$edit;
-        $data['messages_view']=$this->ci->load->view('leadorderdetails/message_view', $message, TRUE);
+        $data['messages_view']=$this->CI->load->view('leadorderdetails/message_view', $message, TRUE);
 
 
         $profoptions=array(
@@ -449,13 +449,13 @@ class Template
             'order_id'=>$ord_data['order_id'],
         );
         if ($usrdat['profit_view']=='Points') {
-            $profoptions['profit']=round($orddata['profit']*$this->ci->config->item('profitpts'),0).' pts';
+            $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';
             $profoptions['profit_view']='points';
         }
         if (empty($orddata['profit_perc'])) {
-            $data['profit_view']=$this->ci->load->view('leadorderdetails/profitproject_view', $profoptions, TRUE);
+            $data['profit_view']=$this->CI->load->view('leadorderdetails/profitproject_view', $profoptions, TRUE);
         } else {
-            $data['profit_view']=$this->ci->load->view('leadorderdetails/profit_view', $profoptions, TRUE);
+            $data['profit_view']=$this->CI->load->view('leadorderdetails/profit_view', $profoptions, TRUE);
         }
 
         $artdata=$art_data;
@@ -471,36 +471,36 @@ class Template
                 'view'=>'none',
             );
         }
-        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/blank_view', $blankopt, TRUE);
+        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/blank_view', $blankopt, TRUE);
         $artcolors=$artfonts='';
         foreach ($locat as $row) {
             switch ($row['art_type']) {
                 case 'Logo':
                     if ($edit==0) {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_logo_view', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_logo_view', $row, TRUE);
                     } else {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_logo_edit', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_logo_edit', $row, TRUE);
                     }
                     break;
                 case 'Text':
                     if ($edit==0) {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_text_view', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_text_view', $row, TRUE);
                     } else {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_text_edit', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_text_edit', $row, TRUE);
                     }
                     break;
                 case 'Repeat':
                     if ($edit==0) {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_repeat_view', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_repeat_view', $row, TRUE);
                     } else {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_repeat_edit', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_repeat_edit', $row, TRUE);
                     }
                     break;
                 case 'Reference':
                     if ($edit==0) {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_reference_view', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_reference_view', $row, TRUE);
                     } else {
-                        $locat_view.=$this->ci->load->view('leadorderdetails/artlocs/artlocation_reference_edit', $row, TRUE);
+                        $locat_view.=$this->CI->load->view('leadorderdetails/artlocs/artlocation_reference_edit', $row, TRUE);
                     }
                     break;
             }
@@ -525,7 +525,7 @@ class Template
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
         // Artwork View
-        $data['artview']=$this->ci->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
+        $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;
     }
 

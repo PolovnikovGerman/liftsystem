@@ -8,7 +8,7 @@ function order_artstage(order_id, callpage) {
             $(".popover").popover('hide');
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','928px');
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").modal('show');
         } else {
             show_error(response);

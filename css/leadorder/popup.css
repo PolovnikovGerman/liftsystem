@@ -9,7 +9,8 @@
     float: left;
     width: 1002px;
     height: 810px;
-    margin-top: 5px;
+    margin-top: -15px;
+    margin-left: -15px;
     font-size: 13px;
 }
 .leadorderdetailspopup input, select {

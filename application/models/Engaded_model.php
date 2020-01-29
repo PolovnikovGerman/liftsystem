@@ -3,6 +3,8 @@
 class Engaded_model extends My_Model
 {
 
+    private $error_message='Unknown error. Try later';
+
     function __construct()
     {
         parent::__construct();

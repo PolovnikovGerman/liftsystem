@@ -5295,35 +5295,34 @@ Class Leadorder_model extends My_Model {
         }
         return $out;
     }
-//
-//
-//    public function _get_item_colorrows($order_item_id) {
-//        $this->db->select('order_itemcolor_id as item_id, order_item_id, item_description, item_color, item_qty, item_price, printshop_item_id');
-//        $this->db->from('ts_order_itemcolors');
-//        $this->db->where('order_item_id', $order_item_id);
-//        $this->db->order_by('order_itemcolor_id');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
-//    public function _get_itemorder_imprints($order_item_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_imprints');
-//        $this->db->where('order_item_id', $order_item_id);
-//        $this->db->order_by('order_imprint_id');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
-//    public function _get_itemorder_impintdetails($order_item_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_imprindetails');
-//        $this->db->where('order_item_id', $order_item_id);
-//        $this->db->order_by('order_imprindetail_id');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
+
+    public function _get_item_colorrows($order_item_id) {
+        $this->db->select('order_itemcolor_id as item_id, order_item_id, item_description, item_color, item_qty, item_price, printshop_item_id');
+        $this->db->from('ts_order_itemcolors');
+        $this->db->where('order_item_id', $order_item_id);
+        $this->db->order_by('order_itemcolor_id');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function _get_itemorder_imprints($order_item_id) {
+        $this->db->select('*');
+        $this->db->from('ts_order_imprints');
+        $this->db->where('order_item_id', $order_item_id);
+        $this->db->order_by('order_imprint_id');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function _get_itemorder_impintdetails($order_item_id) {
+        $this->db->select('*');
+        $this->db->from('ts_order_imprindetails');
+        $this->db->where('order_item_id', $order_item_id);
+        $this->db->order_by('order_imprindetail_id');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
     public function get_order_shipping($order_id) {
         $this->db->select('*');
         $this->db->from('ts_order_shippings');
