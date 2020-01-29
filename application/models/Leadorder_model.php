@@ -298,207 +298,207 @@ Class Leadorder_model extends My_Model {
 //    }
 //
 //
-//    // Get Data about Lead Order
-//    public function get_leadorder($order_id, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->load->model('order_model');
-//        $this->load->model('creditapp_model');
-//        $this->db->select('o.*, br.brand_name, itm.item_name as item_name, u.user_leadname, u.user_name, finance_order_amountsum(o.order_id) as amnt');
-//        $this->db->from('ts_orders o');
-//        $this->db->join('brands br','br.brand_id=o.brand_id','left');
-//        $this->db->join('v_itemsearch itm','itm.item_id=o.item_id','left');
-//        $this->db->join('users u','u.user_id=o.order_usr_repic','left');
-//        $this->db->where('o.order_id',$order_id);
-//        $res=$this->db->get()->row_array();
-//
-//        if (!isset($res['order_id'])) {
-//            $out['msg']='Order Not Found';
-//            return $out;
-//        }
-//
-//        if ($res['order_cog']=='') {
-//            $res['profit_class']=$this->project_class;
-//        } else {
-//            $res['profit_class']=orderProfitClass($res['profit_perc']);
-//        }
-//        $res['showbilladdress']=0;
-//        $res['user_replic']='&nbsp;';
-//        $res['usrreplclass']='user';
-//        if ($res['order_usr_repic']>0) {
-//            $res['user_replic']=($res['user_leadname']=='' ? $res['user_name'] : $res['user_leadname']);
-//        } else {
-//            if ($res['weborder']==1) {
-//                $res['user_replic']='Website';
-//                $res['usrreplclass']='website';
-//            }
-//        }
-//        $res['invoice_class']='';
-//        if ($res['is_invoiced']!=0) {
-//            $res['invoice_class']='active';
-//        }
-//        // Check approved Credit App
-//        $crdapp=$this->creditapp_model->order_creditapp($order_id);
-//        if (!isset($crdapp['creditapp_line_id'])) {
-//            $res['appaproved']=0;
-//            $res['credit_app_id']=0;
-//        } else {
-//            $res['credit_app_id']=$crdapp['creditapp_line_id'];
-//            if ($crdapp['status']=='approved') {
-//                $res['appaproved']=1;
-//            } else {
-//                $res['appaproved']=0;
-//            }
-//        }
-//        $res['newappcreditlink']=0;
-//        $out['result']=$this->success_result;
-//        $out['prvorder']=$this->_get_previous_order($order_id);
-//        $out['nxtorder']=$this->_get_next_order($order_id);
-//        $out['order_system_type']=($res['order_system']=='new' ? 'new' : 'old');
-//
-//        $payments=$this->get_leadorder_payments($order_id);
-//        $paytotal=0;
-//        foreach ($payments as $row) {
-//            $paytotal+=$row['batch_amount'];
-//        }
-//        $res['payment_total']=$paytotal;
-//        $out['total_due']=round($res['revenue']-$paytotal,2);
-//        $out['payments']=$payments;
-//        // Get Ticket
-//        $ticket=array(
-//            'class'=>'closed',
-//            'label'=>'No Ticket',
-//        );
-//        $this->db->select('count(ticket_id) as cnt');
-//        $this->db->from('ts_tickets');
-//        $this->db->where('order_num', $res['order_num']);
-//        $this->db->where('ticket_closed',0);
-//        $tickres=$this->db->get()->row_array();
-//        $out['numtickets']=$tickres['cnt'];
-//        if ($tickres['cnt']>0) {
-//            $this->db->select('TIMESTAMPDIFF(HOUR, created, now()) as hdiff');
-//            $this->db->select('ticket_closed');
-//            $this->db->from('ts_tickets');
-//            $this->db->where('order_num', $res['order_num']);
-//            $this->db->where('ticket_closed',0);
-//            $this->db->order_by('ticket_id', 'desc');
-//            $tickdet=$this->db->get()->row_array();
-//            $label='Open Ticket - ';
-//            $days=floor($tickdet['hdiff']/24);
-//            if ($days>0) {
-//                $hdiff=$tickdet['hdiff']-$days*24;
-//                $label.=$days.'d '.$hdiff.'h';
-//            } else {
-//                $label.=$tickdet['hdiff'].'h';
-//            }
-//            $ticket['class']='open';
-//            $ticket['label']=$label;
-//        } else {
-//            $this->db->select('count(ticket_id) as cnt');
-//            $this->db->from('ts_tickets');
-//            $this->db->where('order_num', $res['order_num']);
-//            $this->db->where('ticket_closed',1);
-//            $tickres=$this->db->get()->row_array();
-//            if ($tickres['cnt']>0) {
-//                $ticket['label']='Closed Ticket';
-//            }
-//        }
-//        $out['ticket']=$ticket;
-//        // Get Artwork
-//        $this->load->model('artwork_model');
-//        $this->load->model('artlead_model');
-//        $artwork=$this->artwork_model->get_artwork_order($order_id, $user_id);
-//        /* Fetch data into Common Part */
-//        $artstage=$curstage='';
-//        if ($res['order_art']==0) {
-//            $curstage=$this->NO_ART;
-//            $artstage=$this->NO_ART_TXT;
-//            $diff=time()-$res['create_date'];
-//        } elseif ($res['order_redrawn']==0) {
-//            $curstage=$this->REDRAWN;
-//            $artstage=$this->REDRAWN_TXT;
-//            $diff=time()-$res['order_art_update'];
-//        } elseif ($res['order_vectorized']==0) {
-//            $curstage=$this->NO_VECTOR;
-//            $artstage=$this->REDRAWN_TXT;
-//            $diff=time()-$res['order_redrawn_update'];
-//        } elseif ($res['order_proofed']==0) {
-//            $curstage=$this->TO_PROOF;
-//            $artstage=$this->TO_PROOF_TXT;
-//            $diff=time()-$res['order_vectorized_update'];
-//        } elseif ($res['order_approved']==0) {
-//            $curstage=$this->NEED_APPROVAL;
-//            $artstage=$this->NEED_APPROVAL_TXT;
-//            $diff=time()-$res['order_proofed_update'];
-//        } else {
-//            $curstage=$this->JUST_APPROVED;
-//            $artstage=$this->JUST_APPROVED_TXT;
-//            $diff=time()-$res['order_proofed_update'];
-//        }
-//        $artwork['artstage']=$curstage;
-//        $artwork['artstage_txt']=$artstage;
-//        $artlabel='';
-//        $days=floor($diff/(24*60*60));
-//        if ($days>0) {
-//            $diff=$diff-$days*(24*60*60);
-//            $artlabel.=$days.'d ';
-//        } else {
-//            $hours=floor($diff/(60*60));
-//            if ($hours>0) {
-//                $artlabel.=$hours.'h ';
-//                $diff=$diff-$hours*(60*60);
-//            }
-//            $min=floor($diff/60);
-//            $artlabel.=$min.'m';
-//        }
-//        $artwork['artstage_time']=$artlabel;
-//        $out['artwork']=$artwork;
-//
-//        $artwork_id=$artwork['artwork_id'];
-//        $out['message']=array(
-//            'general_notes'=>$artwork['general_notes'],
-//            'history'=>$artwork['art_history'],
-//            'update'=>'',
-//        );
-//        // Get Artwork Locations
-//        $locations=$this->artlead_model->get_art_locations($artwork_id);
-//        $proofdocs=$this->artwork_model->get_artproofs($artwork_id);
-//        $out['artlocations']=$locations;
-//        $out['proofdocs']=$proofdocs;
-//        if ($out['order_system_type']=='new') {
-//            // Get Contacts
-//            $out['contacts']=$this->get_order_contacts($order_id);
-//            // Get Order Items
-//            $out['order_items']=$this->get_order_items($order_id);
-//            $item_cost=$item_imprint=0;
-//            foreach ($out['order_items'] as $item) {
-//                $item_cost+=$item['item_subtotal'];
-//                $item_imprint+=$item['imprint_subtotal'];
-//            }
-//            $res['item_cost']=$item_cost;
-//            $res['item_imprint']=$item_imprint;
-//            // Get Shippings
-//            $out['shipping']=$this->get_order_shipping($order_id);
-//
-//            // Get Shipping Address
-//            $out['shipping_address']=$this->get_order_shippaddress($order_id);
-//            // Get Billing Infor
-//            $out['order_billing']=$this->get_order_billing($order_id);
-//            // Get Charge Info
-//            $out['charges']=$this->get_order_charges($order_id);
-//        } else {
-//            $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
-//            $out['shipping_address']=$this->get_orderold_shippaddress($res);
-//        }
-//        // Get a Order Shipping status
-//        $res['shipstatus']=$this->_get_order_shipstatus($out['shipping_address']);
-//        $out['order']=$res;
-//        $this->load->model('shipping_model');
-//        $cnt_options=array(
-//            'orderby'=>'sort, country_name',
-//        );
-//        $out['countries']=$this->shipping_model->get_countries_list($cnt_options);
-//        return $out;
-//    }
+    // Get Data about Lead Order
+    public function get_leadorder($order_id, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('orders_model');
+        $this->load->model('creditapp_model');
+        $this->db->select('o.*, br.brand_name, itm.item_name as item_name, u.user_leadname, u.user_name, finance_order_amountsum(o.order_id) as amnt');
+        $this->db->from('ts_orders o');
+        $this->db->join('brands br','br.brand_id=o.brand_id','left');
+        $this->db->join('v_itemsearch itm','itm.item_id=o.item_id','left');
+        $this->db->join('users u','u.user_id=o.order_usr_repic','left');
+        $this->db->where('o.order_id',$order_id);
+        $res=$this->db->get()->row_array();
+
+        if (!isset($res['order_id'])) {
+            $out['msg']='Order Not Found';
+            return $out;
+        }
+
+        if ($res['order_cog']=='') {
+            $res['profit_class']=$this->project_class;
+        } else {
+            $res['profit_class']=orderProfitClass($res['profit_perc']);
+        }
+        $res['showbilladdress']=0;
+        $res['user_replic']='&nbsp;';
+        $res['usrreplclass']='user';
+        if ($res['order_usr_repic']>0) {
+            $res['user_replic']=($res['user_leadname']=='' ? $res['user_name'] : $res['user_leadname']);
+        } else {
+            if ($res['weborder']==1) {
+                $res['user_replic']='Website';
+                $res['usrreplclass']='website';
+            }
+        }
+        $res['invoice_class']='';
+        if ($res['is_invoiced']!=0) {
+            $res['invoice_class']='active';
+        }
+        // Check approved Credit App
+        $crdapp=$this->creditapp_model->order_creditapp($order_id);
+        if (!isset($crdapp['creditapp_line_id'])) {
+            $res['appaproved']=0;
+            $res['credit_app_id']=0;
+        } else {
+            $res['credit_app_id']=$crdapp['creditapp_line_id'];
+            if ($crdapp['status']=='approved') {
+                $res['appaproved']=1;
+            } else {
+                $res['appaproved']=0;
+            }
+        }
+        $res['newappcreditlink']=0;
+        $out['result']=$this->success_result;
+        $out['prvorder']=$this->_get_previous_order($order_id);
+        $out['nxtorder']=$this->_get_next_order($order_id);
+        $out['order_system_type']=($res['order_system']=='new' ? 'new' : 'old');
+
+        $payments=$this->get_leadorder_payments($order_id);
+        $paytotal=0;
+        foreach ($payments as $row) {
+            $paytotal+=$row['batch_amount'];
+        }
+        $res['payment_total']=$paytotal;
+        $out['total_due']=round($res['revenue']-$paytotal,2);
+        $out['payments']=$payments;
+        // Get Ticket
+        $ticket=array(
+            'class'=>'closed',
+            'label'=>'No Ticket',
+        );
+        $this->db->select('count(ticket_id) as cnt');
+        $this->db->from('ts_tickets');
+        $this->db->where('order_num', $res['order_num']);
+        $this->db->where('ticket_closed',0);
+        $tickres=$this->db->get()->row_array();
+        $out['numtickets']=$tickres['cnt'];
+        if ($tickres['cnt']>0) {
+            $this->db->select('TIMESTAMPDIFF(HOUR, created, now()) as hdiff');
+            $this->db->select('ticket_closed');
+            $this->db->from('ts_tickets');
+            $this->db->where('order_num', $res['order_num']);
+            $this->db->where('ticket_closed',0);
+            $this->db->order_by('ticket_id', 'desc');
+            $tickdet=$this->db->get()->row_array();
+            $label='Open Ticket - ';
+            $days=floor($tickdet['hdiff']/24);
+            if ($days>0) {
+                $hdiff=$tickdet['hdiff']-$days*24;
+                $label.=$days.'d '.$hdiff.'h';
+            } else {
+                $label.=$tickdet['hdiff'].'h';
+            }
+            $ticket['class']='open';
+            $ticket['label']=$label;
+        } else {
+            $this->db->select('count(ticket_id) as cnt');
+            $this->db->from('ts_tickets');
+            $this->db->where('order_num', $res['order_num']);
+            $this->db->where('ticket_closed',1);
+            $tickres=$this->db->get()->row_array();
+            if ($tickres['cnt']>0) {
+                $ticket['label']='Closed Ticket';
+            }
+        }
+        $out['ticket']=$ticket;
+        // Get Artwork
+        $this->load->model('artwork_model');
+        $this->load->model('artlead_model');
+        $artwork=$this->artwork_model->get_artwork_order($order_id, $user_id);
+        /* Fetch data into Common Part */
+        $artstage=$curstage='';
+        if ($res['order_art']==0) {
+            $curstage=$this->NO_ART;
+            $artstage=$this->NO_ART_TXT;
+            $diff=time()-$res['create_date'];
+        } elseif ($res['order_redrawn']==0) {
+            $curstage=$this->REDRAWN;
+            $artstage=$this->REDRAWN_TXT;
+            $diff=time()-$res['order_art_update'];
+        } elseif ($res['order_vectorized']==0) {
+            $curstage=$this->NO_VECTOR;
+            $artstage=$this->REDRAWN_TXT;
+            $diff=time()-$res['order_redrawn_update'];
+        } elseif ($res['order_proofed']==0) {
+            $curstage=$this->TO_PROOF;
+            $artstage=$this->TO_PROOF_TXT;
+            $diff=time()-$res['order_vectorized_update'];
+        } elseif ($res['order_approved']==0) {
+            $curstage=$this->NEED_APPROVAL;
+            $artstage=$this->NEED_APPROVAL_TXT;
+            $diff=time()-$res['order_proofed_update'];
+        } else {
+            $curstage=$this->JUST_APPROVED;
+            $artstage=$this->JUST_APPROVED_TXT;
+            $diff=time()-$res['order_proofed_update'];
+        }
+        $artwork['artstage']=$curstage;
+        $artwork['artstage_txt']=$artstage;
+        $artlabel='';
+        $days=floor($diff/(24*60*60));
+        if ($days>0) {
+            $diff=$diff-$days*(24*60*60);
+            $artlabel.=$days.'d ';
+        } else {
+            $hours=floor($diff/(60*60));
+            if ($hours>0) {
+                $artlabel.=$hours.'h ';
+                $diff=$diff-$hours*(60*60);
+            }
+            $min=floor($diff/60);
+            $artlabel.=$min.'m';
+        }
+        $artwork['artstage_time']=$artlabel;
+        $out['artwork']=$artwork;
+
+        $artwork_id=$artwork['artwork_id'];
+        $out['message']=array(
+            'general_notes'=>$artwork['general_notes'],
+            'history'=>$artwork['art_history'],
+            'update'=>'',
+        );
+        // Get Artwork Locations
+        $locations=$this->artlead_model->get_art_locations($artwork_id);
+        $proofdocs=$this->artwork_model->get_artproofs($artwork_id);
+        $out['artlocations']=$locations;
+        $out['proofdocs']=$proofdocs;
+        if ($out['order_system_type']=='new') {
+            // Get Contacts
+            $out['contacts']=$this->get_order_contacts($order_id);
+            // Get Order Items
+            $out['order_items']=$this->get_order_items($order_id);
+            $item_cost=$item_imprint=0;
+            foreach ($out['order_items'] as $item) {
+                $item_cost+=$item['item_subtotal'];
+                $item_imprint+=$item['imprint_subtotal'];
+            }
+            $res['item_cost']=$item_cost;
+            $res['item_imprint']=$item_imprint;
+            // Get Shippings
+            $out['shipping']=$this->get_order_shipping($order_id);
+
+            // Get Shipping Address
+            $out['shipping_address']=$this->get_order_shippaddress($order_id);
+            // Get Billing Infor
+            $out['order_billing']=$this->get_order_billing($order_id);
+            // Get Charge Info
+            $out['charges']=$this->get_order_charges($order_id);
+        } else {
+            $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
+            $out['shipping_address']=$this->get_orderold_shippaddress($res);
+        }
+        // Get a Order Shipping status
+        $res['shipstatus']=$this->_get_order_shipstatus($out['shipping_address']);
+        $out['order']=$res;
+        $this->load->model('shipping_model');
+        $cnt_options=array(
+            'orderby'=>'sort, country_name',
+        );
+        $out['countries']=$this->shipping_model->get_countries_list($cnt_options);
+        return $out;
+    }
 //
 //    public function get_leadorder_system($order_id, $user_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);

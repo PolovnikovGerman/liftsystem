@@ -97,6 +97,7 @@ function general_view_init() {
     });
     $('div.artlastmessageview').hover(
         function(){
+            $(".art_tooltip").hide();
             var e=$(this);
             $.get(e.data('messageview'),function(d) {
                 e.popover({
@@ -113,7 +114,7 @@ function general_view_init() {
     );
     $("div.ordernum").unbind('click').click(function(){
         var order_id=$(this).data('orderid');
-        order_artstage(order_id);
+        order_artstage(order_id,'artorderlist');
     })
     var rowid='';
     $("div.rowdata").hover(

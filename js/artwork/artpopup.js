@@ -1,48 +1,15 @@
 /* Order Popup */
-function order_artstage(order_id) {
-    // var url="/art/order_artdata";
-    var curtab;
-    var pagename='art_tasks';
-    if ($("ul.tabNavigation a.selected").length!=0) {
-        curtab=$("ul.tabNavigation a.selected").prop('id');
-    } else {
-        curtab=$("ul.tabNavigation a.selectedleft").prop('id');
-    }
-
-    if (curtab=='genorderslnk') {
-        pagename='art_order';
-    } else if (curtab=='requestlistlnk') {
-        pagename='art_proof';
-    }
-    
-    var url="/art/order_change";
-    var params = {order: order_id, 'page': pagename, 'edit': 0};
+function order_artstage(order_id, callpage) {
+    var url="/leadorder/order_change";
+    var params = {order: order_id, 'page': callpage, 'edit': 0};
     $.post(url, params, function(response){
         if (response.errors=='') {
             // show_popup('popup_area');
-            show_popup('leadorderdetailspopup');
-            $("div#pop_content").empty().html(response.data.content);
-            $("#popupContactClose").unbind('click').click(function(){                
-                clearTimeout(timerId);
-                // Check - may be we close edit content
-                if ($("input#locrecid").length>0) {
-                    // Clean locked record
-                    var locrecid=$("input#locrecid").val();
-                    var url="/leadorder/cleanlockedorder";
-                    var params=new Array();
-                    params.push({name: 'locrecid', value: locrecid});
-                    $.post(url, params, function(response){
-                    },'json');                    
-                }
-                $("#pop_content").empty();
-                disablePopup();
-            });            
-            
-            if (parseInt(order_id)==0) {
-                init_onlineleadorder_edit();
-            } else {
-                navigation_init();
-            }            
+            $(".popover").popover('hide');
+            $("#artModalLabel").empty().html('Artwork Edit');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','928px');
+            $("#artModal").modal('show');
         } else {
             show_error(response);
         }

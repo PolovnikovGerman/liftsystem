@@ -1,7 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 29.01.20
- * Time: 11:45
- */
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+Class Creditapp_model extends My_Model
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+}
