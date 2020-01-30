@@ -1,0 +1,1 @@
+<input type="text" readonly="readonly" class="calendarinpt" id="order_date" value="<?=date('D - M j, Y',$order_date)?>" data-order="<?=date('Y,m,d',$order_date)?>"/>
