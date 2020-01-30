@@ -2839,7 +2839,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    // Ticket related with order ????????????????????????????
+    // Ticket related with order
     public function order_ticket() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2881,7 +2881,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    // Save ticket ??????????????
+    // Save ticket
     public function save_orderticket() {
         if ($this->isAjax()) {
             $mdata=array();

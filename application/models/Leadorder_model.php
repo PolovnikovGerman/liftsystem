@@ -37,39 +37,35 @@ Class Leadorder_model extends My_Model {
     private $NO_ART_REMINDER='Need Art Reminder';
     private $ART_PROOF='Art Proof';
     private $NEED_APPROVE_REMINDER='Need Approval Reminder';
+    // Credit Card Type
+    private $creditcardTypes = array(
+        array('Name'=>'American Express','cardLength'=>array(15),'cardPrefix'=>array('34', '37'))
+    ,array('Name'=>'Maestro','cardLength'=>array(12, 13, 14, 15, 16, 17, 18, 19),'cardPrefix'=>array('5018', '5020', '5038', '6304', '6759', '6761', '6763'))
+    ,array('Name'=>'Mastercard','cardLength'=>array(16),'cardPrefix'=>array('51', '52', '53', '54', '55'))
+    ,array('Name'=>'Visa','cardLength'=>array(13,16),'cardPrefix'=>array('4'))
+    ,array('Name'=>'JCB','cardLength'=>array(16),'cardPrefix'=>array('3528', '3529', '353', '354', '355', '356', '357', '358'))
+    ,array('Name'=>'Discover','cardLength'=>array(16),'cardPrefix'=>array('6011', '622126', '622127', '622128', '622129', '62213',
+            '62214', '62215', '62216', '62217', '62218', '62219',
+            '6222', '6223', '6224', '6225', '6226', '6227', '6228',
+            '62290', '62291', '622920', '622921', '622922', '622923',
+            '622924', '622925', '644', '645', '646', '647', '648',
+            '649', '65'))
+    ,array('Name'=>'Solo','cardLength'=>array(16, 18, 19),'cardPrefix'=>array('6334', '6767'))
+    ,array('Name'=>'Unionpay','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('622126', '622127', '622128', '622129', '62213', '62214',
+            '62215', '62216', '62217', '62218', '62219', '6222', '6223',
+            '6224', '6225', '6226', '6227', '6228', '62290', '62291',
+            '622920', '622921', '622922', '622923', '622924', '622925'))
+    ,array('Name'=>'Diners Club','cardLength'=>array(14),'cardPrefix'=>array('300', '301', '302', '303', '304', '305', '36'))
+    ,array('Name'=>'Diners Club US','cardLength'=>array(16),'cardPrefix'=>array('54', '55'))
+    ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
+    ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
+    );
+
 
     function __construct() {
         parent::__construct();
     }
 
-    // Credit Card Type
-//    private $creditcardTypes = array(
-//        array('Name'=>'American Express','cardLength'=>array(15),'cardPrefix'=>array('34', '37'))
-//    ,array('Name'=>'Maestro','cardLength'=>array(12, 13, 14, 15, 16, 17, 18, 19),'cardPrefix'=>array('5018', '5020', '5038', '6304', '6759', '6761', '6763'))
-//    ,array('Name'=>'Mastercard','cardLength'=>array(16),'cardPrefix'=>array('51', '52', '53', '54', '55'))
-//    ,array('Name'=>'Visa','cardLength'=>array(13,16),'cardPrefix'=>array('4'))
-//    ,array('Name'=>'JCB','cardLength'=>array(16),'cardPrefix'=>array('3528', '3529', '353', '354', '355', '356', '357', '358'))
-//    ,array('Name'=>'Discover','cardLength'=>array(16),'cardPrefix'=>array('6011', '622126', '622127', '622128', '622129', '62213',
-//            '62214', '62215', '62216', '62217', '62218', '62219',
-//            '6222', '6223', '6224', '6225', '6226', '6227', '6228',
-//            '62290', '62291', '622920', '622921', '622922', '622923',
-//            '622924', '622925', '644', '645', '646', '647', '648',
-//            '649', '65'))
-//    ,array('Name'=>'Solo','cardLength'=>array(16, 18, 19),'cardPrefix'=>array('6334', '6767'))
-//    ,array('Name'=>'Unionpay','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('622126', '622127', '622128', '622129', '62213', '62214',
-//            '62215', '62216', '62217', '62218', '62219', '6222', '6223',
-//            '6224', '6225', '6226', '6227', '6228', '62290', '62291',
-//            '622920', '622921', '622922', '622923', '622924', '622925'))
-//    ,array('Name'=>'Diners Club','cardLength'=>array(14),'cardPrefix'=>array('300', '301', '302', '303', '304', '305', '36'))
-//    ,array('Name'=>'Diners Club US','cardLength'=>array(16),'cardPrefix'=>array('54', '55'))
-//    ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
-//    ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
-//    );
-//
-//    function __construct() {
-//        parent::__construct();
-//    }
-//
 //    public function get_leadorders($options) {
 //        $item_dbtable=$this->config->item('greydb').'.sb_items';
 //        $amountcnt="select order_id, sum(amount_sum) as cnt_amnt from ts_order_amounts where amount_sum>0 group by order_id";
@@ -995,7 +991,7 @@ Class Leadorder_model extends My_Model {
             $profit=$this->_leadorder_profit($order);
             if (floatval($order['revenue'])!=0) {
                 $profit_perc=round($profit/$order['revenue']*100,1);
-                $this->load->model('order_model');
+                // $this->load->model('order_model');
                 $profit_class=orderProfitClass($profit_perc);
             } else {
                 $profit_perc=NULL;
@@ -1141,7 +1137,8 @@ Class Leadorder_model extends My_Model {
             $order['item_id']=$orditem['item_id'];
         } else {
             $orditem_id=$this->config->item('multy_id');
-            $orditm=$this->order_model->get_itemdat($orditem_id);
+            $this->load->model('orders_model');
+            $orditm=$this->orders_model->get_itemdat($orditem_id);
             $order['item_id']=$orditem_id;
             $order['order_items']=$orditm['item_name'];
             $order['order_itemnumber']=$orditm['item_number'];
@@ -2507,7 +2504,7 @@ Class Leadorder_model extends My_Model {
         }
         // Lets go
         $this->load->model('batches_model');
-        $this->load->model('order_model');
+        $this->load->model('orders_model');
         // Try to pay
         $pay_options=array(
             'email'=>$payemail,
@@ -4062,7 +4059,7 @@ Class Leadorder_model extends My_Model {
                 return $res;
             } else {
                 $res['result']=$order_id=$this->db->insert_id();
-                $this->load->model('order_model');
+                $this->load->model('orders_model');
                 $neworder_num=$this->orders_model->get_last_ordernum();
                 $this->db->set('order_num',$neworder_num);
                 $this->db->where('order_id', $order_id);
@@ -7868,48 +7865,6 @@ Class Leadorder_model extends My_Model {
         );
     }
 
-//    private function _log_orderchanges($oldorder, $neworder, $order_type, $artwork_id, $user_id) {
-//        $msg='';
-//        $changes=array();
-//        if ($oldorder['customer_name']!=$neworder['customer_name']) {
-//            array_push($changes, 'customer name on '.$neworder['customer_name']);
-//        }
-//        if ($oldorder['customer_email']!=$neworder['customer_email']) {
-//            array_push($changes, 'customer email on '.$neworder['customer_email']);
-//        }
-//        if ($oldorder['item_id']!=$neworder['item_id']) {
-//            array_push($changes, 'order item on '.$neworder['order_items']);
-//        }
-//        if ($oldorder['order_qty']!=$neworder['order_qty']) {
-//            array_push($changes, 'order item qty on '.$neworder['order_qty']);
-//        }
-//        if ($oldorder['revenue']!=$neworder['revenue']) {
-//            array_push($changes, 'order revenue on '.$neworder['revenue']);
-//        }
-//        if ($oldorder['shipping']!=$neworder['shipping']) {
-//            array_push($changes,'shipping cost on '.$neworder['shipping']);
-//        }
-//        if ($oldorder['tax']!=$neworder['tax']) {
-//            array_push($changes, 'tax cost on '.$neworder['tax']);
-//        }
-//        if ($oldorder['cc_fee']!=$neworder['cc_fee']) {
-//            array_push($changes,'CC fee on '.$neworder['cc_fee']);
-//        }
-//
-//        // Stop
-//        if (count($changes)>0) {
-//            $msg='Changed';
-//            foreach ($changes as $crow) {
-//                $msg.=' '.$crow.',';
-//            }
-//            $msg=substr($msg,0,-1);
-//            $this->db->set('artwork_id',$artwork_id);
-//            $this->db->set('user_id',$user_id);
-//            $this->db->set('created_time', time());
-//            $this->db->set('message',$msg);
-//            $this->db->insert('ts_artwork_history');
-//        }
-//    }
 
     private function _save_shipdtelog($order_id,  $user_id, $order_num, $oldshipdate, $newshipdate) {
         $this->db->set('order_id', $order_id);
@@ -7936,62 +7891,6 @@ Class Leadorder_model extends My_Model {
         return TRUE;
     }
 
-//    public function save_trackcode($order_num, $trackcode) {
-//        $out=array('result'=>$this->error_result, 'msg'=>'Order Not Found');
-//        $this->db->select('order_id, order_num, is_canceled, order_system');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_num', $order_num);
-//        $res=$this->db->get()->row_array();
-//        if (isset($res['order_id'])) {
-//            $out['msg']='Order was Canceled';
-//            if ($res['is_canceled']==0) {
-//                $order_id=$res['order_id'];
-//                $out['msg']='Empty Shipping Address';
-//                // Get Shipping Address and Track Packages
-//                $this->db->select('p.*');
-//                $this->db->from('ts_order_shipaddres s');
-//                $this->db->join('ts_order_shippacks p','p.order_shipaddr_id=s.order_shipaddr_id');
-//                $this->db->where('s.order_id',$order_id);
-//                $packres=$this->db->get()->result_array();
-//                if (count($packres)>0) {
-//                    $out['msg']='Track Code Entered';
-//                    $found=0;
-//                    foreach ($packres as $prow) {
-//                        if ($prow['track_code']==$trackcode) {
-//                            $found=1;
-//                            break;
-//                        }
-//                    }
-//                    if ($found==0) {
-//                        $shpadr=0;
-//                        foreach ($packres as $prow) {
-//                            if (empty($prow['track_code'])) {
-//                                // We find Empty Track Code
-//                                $this->db->set('track_code', $trackcode);
-//                                $this->db->where('order_shippack_id', $prow['order_shippack_id']);
-//                                $this->db->update('ts_order_shippacks');
-//                                $out['msg']='';
-//                                $out['result']=$this->success_result;
-//                                $found=1;
-//                                break;
-//                            } else {
-//                                $shpadr=$prow['order_shipaddr_id'];
-//                            }
-//                        }
-//                        if ($found==0) {
-//                            $this->db->set('order_shipaddr_id', $shpadr);
-//                            $this->db->set('track_code', $trackcode);
-//                            $this->db->insert('ts_order_shippacks');
-//                            $out['msg']='';
-//                            $out['result']=$this->success_result;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return $out;
-//    }
-//
     public function get_templates($leadorder) {
         $out=array('result'=> $this->error_result, 'msg'=> 'Item Not Select');
         $items=$leadorder['order_items'];
@@ -8032,7 +7931,6 @@ Class Leadorder_model extends My_Model {
 
     private function _prepare_netexport($artsync, $artsyncdoc) {
         // Main Data
-
         $this->db->set('user_id', $artsync['user_id']);
         $this->db->set('order_id', $artsync['order_id']);
         $this->db->set('customer', $artsync['customer']);
@@ -8167,62 +8065,62 @@ Class Leadorder_model extends My_Model {
         $this->email->clear();
     }
 
-//    public function check_neworder_payment($leadorder) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
-//        $charges=$leadorder['charges'];
-//        $order_data=$leadorder['order'];
-//        $order_revenue=$order_data['revenue'];
-//        // Calc amount of charges
-//        $chargesum=0;
-//        $chargenum=0;
-//        foreach ($charges as $chrow) {
-//            if ($chrow['delflag']==0 && $chrow['autopay']==1) {
-//                $chargesum+=$chrow['amount'];
-//                $chargenum+=1;
-//            }
-//        }
-//        if ($chargesum==0) {
-//            $out['result']=$this->success_result;
-//        } else {
-//            if ($chargesum==$order_revenue) {
-//                $out['result']=$this->success_result;
-//            } else {
-//                if ($chargenum==1) {
-//                    $out['msg']='Payment amount does not match the order revenue. Change to <b>'.MoneyOutput($order_revenue).'</b>?';
-//                    $out['fin']=1;
-//                } else {
-//                    $out['result']=$this->success_result;
-//                }
-//            }
-//        }
-//        return $out;
-//    }
-//
-//    public function change_neworder_payment($leadorder, $session_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $charges=$leadorder['charges'];
-//        $order_data=$leadorder['order'];
-//        $order_revenue=$order_data['revenue'];
-//        // Calc amount of charges
-//        $chargidx=0;
-//        $found=0;
-//        foreach ($charges as $chrow) {
-//            if ($chrow['delflag']==0 && $chrow['autopay']==1) {
-//                $charges[$chargidx]['amount']=$order_revenue;
-//                $found=1;
-//            }
-//            $chargidx++;
-//            if ($found==1) {
-//                break;
-//            }
-//        }
-//        if ($found==1) {
-//            $leadorder['charges']=$charges;
-//            usersession($session_id, $leadorder);
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
+    public function check_neworder_payment($leadorder) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
+        $charges=$leadorder['charges'];
+        $order_data=$leadorder['order'];
+        $order_revenue=$order_data['revenue'];
+        // Calc amount of charges
+        $chargesum=0;
+        $chargenum=0;
+        foreach ($charges as $chrow) {
+            if ($chrow['delflag']==0 && $chrow['autopay']==1) {
+                $chargesum+=$chrow['amount'];
+                $chargenum+=1;
+            }
+        }
+        if ($chargesum==0) {
+            $out['result']=$this->success_result;
+        } else {
+            if ($chargesum==$order_revenue) {
+                $out['result']=$this->success_result;
+            } else {
+                if ($chargenum==1) {
+                    $out['msg']='Payment amount does not match the order revenue. Change to <b>'.MoneyOutput($order_revenue).'</b>?';
+                    $out['fin']=1;
+                } else {
+                    $out['result']=$this->success_result;
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function change_neworder_payment($leadorder, $session_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $charges=$leadorder['charges'];
+        $order_data=$leadorder['order'];
+        $order_revenue=$order_data['revenue'];
+        // Calc amount of charges
+        $chargidx=0;
+        $found=0;
+        foreach ($charges as $chrow) {
+            if ($chrow['delflag']==0 && $chrow['autopay']==1) {
+                $charges[$chargidx]['amount']=$order_revenue;
+                $found=1;
+            }
+            $chargidx++;
+            if ($found==1) {
+                break;
+            }
+        }
+        if ($found==1) {
+            $leadorder['charges']=$charges;
+            usersession($session_id, $leadorder);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
 
     private function _dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations) {
         $total_item=0;
