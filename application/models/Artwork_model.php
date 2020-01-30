@@ -3044,4 +3044,13 @@ Class Artwork_model extends MY_Model
         }
         return $out;
     }
+
+    public function _artlocation_log($artwork_id, $location_id, $event) {
+        $this->db->set('artwork_id', $artwork_id);
+        $this->db->set('art_id', $location_id);
+        $this->db->set('event_text', $event);
+        $this->db->insert('ts_artwork_logs');
+        return true;
+    }
+
 }

@@ -579,4 +579,12 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function get_itemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
 }

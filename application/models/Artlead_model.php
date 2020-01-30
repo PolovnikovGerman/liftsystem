@@ -97,206 +97,206 @@ Class Artlead_model extends MY_Model
         }
         return $return_array;
     }
-//
-//    public function add_location($leadorder, $data, $loctype, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $order=$leadorder['order'];
-//        if ($loctype=='Repeat' && empty($data['order_num'])) {
-//            $out['msg']='Empty Repeat Order';
-//            return $out;
-//        }
-//        $locations=$leadorder['artlocations'];
-//        $numrec=count($locations)+1;
-//        $artwork=$leadorder['artwork'];
-//        $fields = $this->db->list_fields('ts_artwork_arts');
-//        $newlocation=array();
-//        foreach ($fields as $field) {
-//            $newlocation[$field]='';
-//        }
-//        $newlocation['artwork_id']=$artwork['artwork_id'];
-//        $newlocation['artwork_art_id']=$numrec*(-1);
-//        $newlocation['art_type']=$loctype;
-//        $newlocation['locat_ready']=0;
-//        $newlocation['art_ordnum']=$numrec;
-//        $newlocation['artlabel']=$this->empty_out_content;
-//        $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
-//        if ($loctype=='Logo' || $loctype=='Reference') {
-//            $newlocation['artlabel']='Open Jpg';
-//            // Change Logo path
-//            $preload_path_fl=$this->config->item('upload_path_preload');
-//            $preload_path_sh=$this->config->item('pathpreload');
-//            $logopath=$data['logo'];
-//            /* Make Filename */
-//            $file_name=str_replace($preload_path_fl, '', $logopath);
-//            $logosrc_path=$preload_path_sh.$file_name;
-//            $newlocation['logo_src']=$logosrc_path;
-//            // Checks
-//            $inptopt=array(
-//                'artwork_art_id'=>$newlocation['artwork_art_id'],
-//                'chk'=>'checked="checked"',
-//                'type'=>'artredraw',
-//                'title'=>'Redraw',
-//            );
-//            $newlocation['redrawvect']=1;
-//            $newlocation['redrawchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $inptopt, TRUE);
-//            $chkrush='';
-//            if ($order['order_rush']) {
-//                $chkrush='checked="checked"';
-//            }
-//            $rushopt=array(
-//                'artwork_art_id'=>$newlocation['artwork_art_id'],
-//                'chk'=>$chkrush,
-//                'type'=>'artrush',
-//                'title'=>'Rush',
-//            );
-//            $newlocation['rushchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $rushopt, TRUE);
-//        } elseif ($loctype=='Text') {
-//            $newlocation['artlabel']='Text';
-//        } else {
-//            $newlocation['artlabel']='Repeat';
-//            $newlocation['order_num']=$data['order_num'];
-//            $newlocation['repeat_text']=$data['order_num'];
-//            $newlocation['locat_ready']=1;
-//        }
-//        $newlocation['deleted']='';
-//        $locations[]=$newlocation;
-//        $leadorder['artlocations']=$locations;
-//        $leadorder['order']=$order;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $this->load->model('artwork_model');
-//        $this->artwork_model->_artlocation_log($newlocation['artwork_id'], $newlocation['artwork_art_id'], 'Add New Location');
-//        $outloc=array();
-//        foreach ($locations as $row) {
-//            if ($row['deleted']=='') {
-//                $outloc[]=$row;
-//            }
-//        }
-//        $out['artlocations']=$outloc;
-//        return $out;
-//    }
-//
-//    public function remove_location($leadorder, $artwork_art_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $locations=$leadorder['artlocations'];
-//        // Find locat
-//        $found=0;
-//        $locid=0;
-//        foreach ($locations as $row) {
-//            if ($row['artwork_art_id']==$artwork_art_id) {
-//                $found=1;
-//                $locations[$locid]['deleted']='del';
-//                $this->load->model('artwork_model');
-//                $this->artwork_model->_artlocation_log($row['artwork_id'], $row['artwork_art_id'], 'Delete Location');
-//                break;
-//            }
-//            $locid++;
-//        }
-//        if ($found==0) {
-//            $out['msg']='Art Location Not Found';
-//            return $out;
-//        }
-//        $leadorder['artlocations']=$locations;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $outloc=array();
-//        foreach ($locations as $row) {
-//            if ($row['deleted']=='') {
-//                $outloc[]=$row;
-//            }
-//        }
-//        $out['artlocations']=$outloc;
-//        return $out;
-//    }
-//
-//    // Change Art Location Parameter
-//    public function change_location($leadorder, $artwork_art_id, $field, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
-//        $locations=$leadorder['artlocations'];
-//        $found=0;
-//        $locidx=0;
-//        foreach ($locations as $row) {
-//            if ($row['artwork_art_id']==$artwork_art_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $locidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Art Location Not Found';
-//            return $out;
-//        }
-//        if (!array_key_exists($field, $locations[$locidx])) {
-//            $out['msg']='Location Parameter '.strtoupper($field).' Undefined';
-//        }
-//        // Change Parameter
-//        $locations[$locidx][$field]=$newval;
-//        $leadorder['artlocations']=$locations;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Show Art Location Docs
-//    public function show_artlocation($leadorder, $artwork_art_id, $ordersession) {
-//        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
-//        $locations=$leadorder['artlocations'];
-//        $found=0;
-//        $locidx=0;
-//        foreach ($locations as $row) {
-//            if ($row['artwork_art_id']==$artwork_art_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $locidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Art Location Not Found';
-//            return $out;
-//        }
-//        // Change Parameter
-//        $out['location']=$locations[$locidx];
-//        $leadorder['artlocations']=$locations;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    public function show_artdata($location,$doctype) {
-//        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
-//        $order_num=$location['repeat_text'];
-//        if (empty($order_num)) {
-//            $out['msg']='Empty Repeat Data';
-//            return $out;
-//        }
-//        // Select logo
-//        if ($doctype=='source') {
-//            $this->db->select('a.logo_src as logourl');
-//        } else {
-//            $this->db->select('a.logo_vectorized as logourl');
-//        }
-//        $this->db->from('ts_artwork_arts a');
-//        $this->db->join('ts_artworks art','art.artwork_id=a.artwork_id');
-//        $this->db->join('ts_orders o','o.order_id=art.order_id');
-//        $this->db->where('o.order_num', $order_num);
-//        $srcres=$this->db->get()->result_array();
-//        $urls=array();
-//        foreach ($srcres as $row) {
-//            if (!empty($row['logourl'])) {
-//                array_push($urls, $row['logourl']);
-//            }
-//        }
-//        if (count($urls)==0) {
-//            $out['msg']='Empty Arts Content for Order # '.$order_num;
-//        } else {
-//            $out['result']=$this->success_result;
-//            $out['urls']=$urls;
-//        }
-//        return $out;
-//    }
-//
+
+    public function add_location($leadorder, $data, $loctype, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $order=$leadorder['order'];
+        if ($loctype=='Repeat' && empty($data['order_num'])) {
+            $out['msg']='Empty Repeat Order';
+            return $out;
+        }
+        $locations=$leadorder['artlocations'];
+        $numrec=count($locations)+1;
+        $artwork=$leadorder['artwork'];
+        $fields = $this->db->list_fields('ts_artwork_arts');
+        $newlocation=array();
+        foreach ($fields as $field) {
+            $newlocation[$field]='';
+        }
+        $newlocation['artwork_id']=$artwork['artwork_id'];
+        $newlocation['artwork_art_id']=$numrec*(-1);
+        $newlocation['art_type']=$loctype;
+        $newlocation['locat_ready']=0;
+        $newlocation['art_ordnum']=$numrec;
+        $newlocation['artlabel']=$this->empty_out_content;
+        $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
+        if ($loctype=='Logo' || $loctype=='Reference') {
+            $newlocation['artlabel']='Open Jpg';
+            // Change Logo path
+            $preload_path_fl=$this->config->item('upload_path_preload');
+            $preload_path_sh=$this->config->item('pathpreload');
+            $logopath=$data['logo'];
+            /* Make Filename */
+            $file_name=str_replace($preload_path_fl, '', $logopath);
+            $logosrc_path=$preload_path_sh.$file_name;
+            $newlocation['logo_src']=$logosrc_path;
+            // Checks
+            $inptopt=array(
+                'artwork_art_id'=>$newlocation['artwork_art_id'],
+                'chk'=>'checked="checked"',
+                'type'=>'artredraw',
+                'title'=>'Redraw',
+            );
+            $newlocation['redrawvect']=1;
+            $newlocation['redrawchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $inptopt, TRUE);
+            $chkrush='';
+            if ($order['order_rush']) {
+                $chkrush='checked="checked"';
+            }
+            $rushopt=array(
+                'artwork_art_id'=>$newlocation['artwork_art_id'],
+                'chk'=>$chkrush,
+                'type'=>'artrush',
+                'title'=>'Rush',
+            );
+            $newlocation['rushchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $rushopt, TRUE);
+        } elseif ($loctype=='Text') {
+            $newlocation['artlabel']='Text';
+        } else {
+            $newlocation['artlabel']='Repeat';
+            $newlocation['order_num']=$data['order_num'];
+            $newlocation['repeat_text']=$data['order_num'];
+            $newlocation['locat_ready']=1;
+        }
+        $newlocation['deleted']='';
+        $locations[]=$newlocation;
+        $leadorder['artlocations']=$locations;
+        $leadorder['order']=$order;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $this->load->model('artwork_model');
+        $this->artwork_model->_artlocation_log($newlocation['artwork_id'], $newlocation['artwork_art_id'], 'Add New Location');
+        $outloc=array();
+        foreach ($locations as $row) {
+            if ($row['deleted']=='') {
+                $outloc[]=$row;
+            }
+        }
+        $out['artlocations']=$outloc;
+        return $out;
+    }
+
+    public function remove_location($leadorder, $artwork_art_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $locations=$leadorder['artlocations'];
+        // Find locat
+        $found=0;
+        $locid=0;
+        foreach ($locations as $row) {
+            if ($row['artwork_art_id']==$artwork_art_id) {
+                $found=1;
+                $locations[$locid]['deleted']='del';
+                $this->load->model('artwork_model');
+                $this->artwork_model->_artlocation_log($row['artwork_id'], $row['artwork_art_id'], 'Delete Location');
+                break;
+            }
+            $locid++;
+        }
+        if ($found==0) {
+            $out['msg']='Art Location Not Found';
+            return $out;
+        }
+        $leadorder['artlocations']=$locations;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $outloc=array();
+        foreach ($locations as $row) {
+            if ($row['deleted']=='') {
+                $outloc[]=$row;
+            }
+        }
+        $out['artlocations']=$outloc;
+        return $out;
+    }
+
+    // Change Art Location Parameter
+    public function change_location($leadorder, $artwork_art_id, $field, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
+        $locations=$leadorder['artlocations'];
+        $found=0;
+        $locidx=0;
+        foreach ($locations as $row) {
+            if ($row['artwork_art_id']==$artwork_art_id) {
+                $found=1;
+                break;
+            } else {
+                $locidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Art Location Not Found';
+            return $out;
+        }
+        if (!array_key_exists($field, $locations[$locidx])) {
+            $out['msg']='Location Parameter '.strtoupper($field).' Undefined';
+        }
+        // Change Parameter
+        $locations[$locidx][$field]=$newval;
+        $leadorder['artlocations']=$locations;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Show Art Location Docs
+    public function show_artlocation($leadorder, $artwork_art_id, $ordersession) {
+        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
+        $locations=$leadorder['artlocations'];
+        $found=0;
+        $locidx=0;
+        foreach ($locations as $row) {
+            if ($row['artwork_art_id']==$artwork_art_id) {
+                $found=1;
+                break;
+            } else {
+                $locidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Art Location Not Found';
+            return $out;
+        }
+        // Change Parameter
+        $out['location']=$locations[$locidx];
+        $leadorder['artlocations']=$locations;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function show_artdata($location,$doctype) {
+        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
+        $order_num=$location['repeat_text'];
+        if (empty($order_num)) {
+            $out['msg']='Empty Repeat Data';
+            return $out;
+        }
+        // Select logo
+        if ($doctype=='source') {
+            $this->db->select('a.logo_src as logourl');
+        } else {
+            $this->db->select('a.logo_vectorized as logourl');
+        }
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks art','art.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders o','o.order_id=art.order_id');
+        $this->db->where('o.order_num', $order_num);
+        $srcres=$this->db->get()->result_array();
+        $urls=array();
+        foreach ($srcres as $row) {
+            if (!empty($row['logourl'])) {
+                array_push($urls, $row['logourl']);
+            }
+        }
+        if (count($urls)==0) {
+            $out['msg']='Empty Arts Content for Order # '.$order_num;
+        } else {
+            $out['result']=$this->success_result;
+            $out['urls']=$urls;
+        }
+        return $out;
+    }
+
 //    // Save uploaded
 //    public function save_artproofdocs($leadorder, $proofupload, $ordersession, $uplsession) {
 //        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
