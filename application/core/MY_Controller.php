@@ -22,7 +22,16 @@ if (!defined('BASEPATH'))
  * @property Leads_model leads_model
  * @property Questions_model questions_model
  * @property Quotes_model quotes_model
+ * @property Otherprices_model otherprices_model
+ * @property Vendors_model vendors_model
+ * @property Itemcategory_model itemcategory_model
+ * @property Itemimages_model itemimages_model
+ * @property Prices_model prices_model
  * @property Staticpages_model staticpages_model
+ * @property Imprints_model imprints_model
+ * @property Itemcolors_model itemcolors_model
+ * @property Similars_model similars_model
+ * @property Itemdetails_model itemdetails_model
  * @property Creditapp_model creditapp_model
  * @property Artlead_model artlead_model
  * @property Shipping_model shipping_model
