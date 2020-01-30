@@ -187,3 +187,37 @@ $config['meta_description']='BLUETRACK is an industry leading manufacturer and s
 $config['bottom_text']="BLUETRACK is America’s source for stress balls with an ever expanding line of over 1200 in-stock customizable stress relievers and the ability to manufacture just about any custom shaped stress ball you can think of. With a focus on delivering high value to our customers, that which we define as top quality for a reasonable price, and a commitment to excellent customer service there is no wonder why we have grown to become an industry leader in the field. Whether you need your stress balls delivered in two weeks or two days we are your source with our standard 5-7 business day and available next business day rush production options. Delight in our larger imprint sizes and in our commitment to quality through our three guarantees of timeliness, price and satisfaction. So whether you are just browsing or know that you are ready to place an order, feel free to contact us today and we would be more than happy to assist you";
 $config['max_slider_galleryitems'] = 12;
 $config['max_slider_casestudy'] = 4;
+$config['cardflds'] = array(
+        array('idx' => 'Art Upload', 'name' => 'Art Upload'),
+        array('idx' => 'order_qty', 'name' => 'Item Qty'),
+        array('idx' => 'ship_firstname', 'name' => 'Shipping:First name'),
+        array('idx' => 'ship_lastname', 'name' => 'Shipping:Last Name'),
+        array('idx' => 'ship_company', 'name' => 'Shipping:Company'),
+        array('idx' => 'ship_street1', 'name' => 'Shipping:Address 1'),
+        array('idx' => 'ship_street2', 'name' => 'Shipping:Address 2'),
+        array('idx' => 'ship_cityname', 'name' => 'Shipping:City'),
+        array('idx' => 'ship_state', 'name' => 'Shipping:State'),
+        array('idx' => 'ship_zipcode', 'name' => 'Shipping:Zip'),
+        array('idx' => 'ship_country', 'name' => 'Shipping:Country'),
+        array('idx' => 'phonenum', 'name' => 'Contact:Phone'),
+        array('idx' => 'emailaddr', 'name' => 'Contact:Email'),
+        array('idx' => 'firstname', 'name' => 'Billing:First Name'),
+        array('idx' => 'lastname', 'name' => 'Billing:Last Name'),
+        array('idx' => 'company', 'name' => 'Billing:Company'),
+        array('idx' => 'address1', 'name' => 'Billing:Address 1'),
+        array('idx' => 'address2', 'name' => 'Billing:Address 2'),
+        array('idx' => 'cityname', 'name' => 'Billing:City'),
+        array('idx' => 'state', 'name' => 'Billing:State'),
+        array('idx' => 'zipcode', 'name' => 'Billing:Zip'),
+        array('idx' => 'country', 'name' => 'Billing:Country'),
+        array('idx' => 'ship_method', 'name' => 'Shipping Method'),
+        array('idx' => 'cctype', 'name' => 'CC:Type'),
+        array('idx' => 'ccnumber', 'name' => 'CC:Number'),
+        array('idx' => 'ccexpmonth', 'name' => 'CC:Exp. month'),
+        array('idx' => 'ccexpyear', 'name' => 'CC:Exp. year'),
+        array('idx' => 'ccverification', 'name' => 'CC:CVS2'),
+);
+    
+$config['normal_price_base']=array(
+    25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
+);

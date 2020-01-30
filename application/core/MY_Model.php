@@ -30,6 +30,10 @@
  * @property Itemcolors_model itemcolors_model
  * @property Similars_model similars_model
  * @property Itemdetails_model itemdetails_model
+ * @property Creditapp_model creditapp_model
+ * @property Artlead_model artlead_model
+ * @property Shipping_model shipping_model
+ * @property Engaded_model engaded_model
  */
 
 class MY_Model extends CI_Model

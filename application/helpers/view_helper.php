@@ -346,4 +346,75 @@ if (!function_exists('openfile')) {
     }
 }
 
+if (!function_exists('orderProfitClass')) {
+    function orderProfitClass($profit_perc) {
+        $profit_class='';
+        if (round($profit_perc,0)<=0) {
+            $profit_class='black';
+        } elseif ($profit_perc>0 && $profit_perc<10) {
+            $profit_class='moroon';
+        } elseif ($profit_perc>=10 && $profit_perc<20) {
+            $profit_class='red';
+        } elseif ($profit_perc>=20 && $profit_perc<30) {
+            $profit_class='orange';
+        } elseif ($profit_perc>=30 && $profit_perc<40) {
+            $profit_class='white';
+        } elseif ($profit_perc>=40) {
+            $profit_class='green';
+        }
+        return $profit_class;
+    }
+}
+
+if (!function_exists('leadProfdocOut')) {
+    function leadProfdocOut($profdocs, $edit=0) {
+        $ci=&get_instance();
+        
+        $proofview='<div class="proofs_content">';
+        $numpor=0;
+        $numdocs=count($profdocs);
+        $numpp=0;
+        $opendiv=1;        
+        foreach ($profdocs as $row) {               
+            $row['edit']=$edit;
+            if ($row['approved']==0) {
+                $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocsrc_view', $row,TRUE);
+            } else {
+                $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocapprov_view', $row,TRUE);
+            }                        
+            $numpor+=1;
+            $numpp++;
+            if ($numpor==5) {
+                $numpor=0;
+                $proofview.='</div>';
+                $opendiv=0;
+                if ($numpp<$numdocs) {
+                    $proofview.='<div class="proofs_content">';
+                    $opendiv=1;
+                }
+            }
+        }
+        if ($opendiv==1) {
+            $proofview.='</div>';
+        }
+        return $proofview;
+    }
+}
+
+if (!function_exists('creditcard_format')) {
+    function creditcard_format($ccnum) {        
+        $cardnum=str_replace('-', '', str_replace(' ','',$ccnum));
+        $out='';
+        for ($i=0; $i<1000; $i++) {
+            $part=  substr($cardnum, 0, 4);
+            if (strlen($part)==0) {
+                $out=substr($out,0,-1);
+                break;
+            }
+            $out.=$part.'-';
+            $cardnum=substr($cardnum, 4);
+        }
+        return $out;
+    }
+}
 ?>
