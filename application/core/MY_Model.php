@@ -36,6 +36,7 @@
  * @property Engaded_model engaded_model
  * @property Balances_model balances_model
  * @property Tickets_model tickets_model
+ * @property Batches_model batches_model
  */
 
 class MY_Model extends CI_Model
