@@ -3,6 +3,16 @@
 Class Artlead_model extends MY_Model
 {
     private $empty_out_content='&nbsp;';
+    private $init_msg='Unknown error. Try later';
+    private $nonredrawn=array('ai','pdf','eps');
+    private $logo_imageext=array('jpg', 'jpeg', 'png', 'gif');
+
+    private $NO_ART = '06_noart';
+    private $REDRAWN = '05_notredr';
+    private $TO_PROOF = '03_notprof';
+    private $NEED_APPROVAL = '02_notapprov';
+    private $JUST_APPROVED = '01_notplaced';
+    private $NO_VECTOR = '04_notvector';
 
     function __construct()
     {
@@ -615,248 +625,239 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
-//    public function save_artwork($artw, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $this->db->set('order_id',$artw['order_id']);
-//        $this->db->set('mail_id',$artw['mail_id']);
-//        if (isset($artw['customer_instruct'])) {
-//            $this->db->set('customer_instruct',$artw['customer_instruct']);
-//        }
-//        if (isset($artw['customer'])) {
-//            $this->db->set('customer',$artw['customer']);
-//        }
-//        if (isset($artw['customer_contact'])) {
-//            $this->db->set('customer_contact',$artw['customer_contact']);
-//        }
-//        if (isset($artw['customer_phone'])) {
-//            $this->db->set('customer_phone', $artw['customer_phone']);
-//        }
-//        if (isset($artw['customer_email'])) {
-//            $this->db->set('customer_email',$artw['customer_email']);
-//        }
-//        if (isset($artw['item_name']) && !empty($artw['item_name'])) {
-//            $this->db->set('item_name',$artw['item_name']);
-//        }
-//        if (isset($artw['other_item']) && !empty($artw['other_item'])) {
-//            $this->db->set('other_item',$artw['other_item']);
-//        }
-//        if (isset($artw['item_id']) && !empty($artw['item_id'])) {
-//            $this->db->set('item_id',$artw['item_id']);
-//        }
-//        if (isset($artw['item_number']) && !empty($artw['item_number'])) {
-//            $this->db->set('item_number',$artw['item_number']);
-//        }
-//        if (isset($artw['item_color']) && !empty($artw['item_color'])) {
-//            $this->db->set('item_color',$artw['item_color']);
-//        }
-//        if (isset($artw['item_qty']) && !empty($artw['item_qty'])) {
-//            $this->db->set('item_qty',$artw['item_qty']);
-//        }
-//        if (isset($artw['artwork_rush'])) {
-//            $this->db->set('artwork_rush',$artw['artwork_rush']);
-//        }
-//        if (isset($artw['artwork_note'])) {
-//            $this->db->set('artwork_note',$artw['artwork_note']);
-//        }
-//        if (isset($artw['other_item']) && !empty($artw['other_item'])) {
-//            $this->db->set('other_item', $artw['other_item']);
-//        }
-//        if (isset($artw['customer_art'])) {
-//            $this->db->set('customer_art', $artw['customer_art']);
-//        }
-//        if (isset($artw['customer_inv'])) {
-//            $this->db->set('customer_inv', $artw['customer_inv']);
-//        }
-//        if (isset($artw['customer_track'])) {
-//            $this->db->set('customer_track', $artw['customer_track']);
-//        }
-//        $this->db->set('user_updated',$user_id);
-//        if ($artw['artwork_id']>0) {
-//            $this->db->where('artwork_id',$artw['artwork_id']);
-//            $this->db->update('ts_artworks');
-//        } else {
-//            $this->db->set('user_created',$user_id);
-//            $this->db->set('time_create',date('Y-m-d H:i:s'));
-//            $this->db->insert('ts_artworks');
-//            $res=$this->db->insert_id();
-//            if ($res==0) {
-//                return FALSE;
-//            } else {
-//                /* If exist update MSG */
-//                $artw['artwork_id']=$res;
-//            }
-//        }
-//        return $artw['artwork_id'];
-//    }
-//
-//    public function save_artproof($proofs, $artwork_id, $user_id) {
-//        $out=array('result'=>$this->error_result);
-//        // Get OLD proofs
-//        $this->db->select('artwork_proof_id, approved, source_name');
-//        $this->db->from('ts_artwork_proofs');
-//        $this->db->where('artwork_id', $artwork_id);
-//        $oldproofs=$this->db->get()->result_array();
-//        $artsyncdoc=array();
-//        // Order
-//        $this->db->select('order_id');
-//        $this->db->from('ts_artworks');
-//        $this->db->where('artwork_id', $artwork_id);
-//        $orddat=$this->db->get()->row_array();
-//        $order_id=$orddat['order_id'];
-//        // Full and Short proofs
-//        $fullpath=$this->config->item('artwork_proofs');
-//        $shrtpath=$this->config->item('artwork_proofs_relative');
-//        $fullpreload=$this->config->item('upload_path_preload');
-//        $numpp=1;
-//        foreach ($proofs as $row) {
-//            if ($row['deleted']!='') {
-//                if ($row['artwork_proof_id']>0) {
-//                    // add data for delete
-//                    $this->db->select('p.source_name, o.order_id');
-//                    $this->db->from('ts_artwork_proofs p');
-//                    $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
-//                    $this->db->join('ts_orders o','o.order_id=a.order_id');
-//                    $this->db->where('p.artwork_proof_id', $row['artwork_proof_id']);
-//                    $delres=$this->db->get()->row_array();
-//                    if (isset($delres['order_id'])) {
-//                        $artsyncdoc[]=array(
-//                            'user_id'=>$user_id,
-//                            'order_id'=>$delres['order_id'],
-//                            'operation'=>'delete',
-//                            'proofdoc_link'=>$delres['source_name'],
-//                        );
-//                    }
-//                    $this->db->where('artwork_proof_id', $row['artwork_proof_id']);
-//                    $this->db->delete('ts_artwork_proofs');
-//                }
-//            } else {
-//                $saverow=0;
-//                if ($row['artwork_proof_id']<0) {
-//                    // Artwork Folder
-//                    if (file_exists($row['src'])) {
-//                        $this->_artworkfolder($fullpath, $artwork_id);
-//                        // New Proof Doc
-//                        $purename=  str_replace($fullpreload, '', $row['src']);
-//                        $target_file=$fullpath.$artwork_id.'/'.$purename;
-//                        $cpres=@copy($row['src'],$target_file);
-//                        if ($cpres) {
-//                            $saverow=1;
-//                            $row['src']=$shrtpath.$artwork_id.'/'.$purename;
-//                        }
-//                    }
-//                } else {
-//                    $saverow=1;
-//                }
-//                if ($saverow==1) {
-//                    $this->db->set('updated_user',$user_id);
-//                    $this->db->set('proof_ordnum',$numpp);
-//                    if (isset($row['src'])) {
-//                        $this->db->set('proof_name',$row['src']);
-//                    }
-//                    if (isset($row['sended'])) {
-//                        $this->db->set('sended',$row['sended']);
-//                    }
-//                    if (isset($row['sended_time'])) {
-//                        $this->db->set('sended_time',$row['sended_time']);
-//                    }
-//                    if (isset($row['approved'])) {
-//                        $this->db->set('approved',$row['approved']);
-//                    }
-//                    if (isset($row['approved_time'])) {
-//                        $this->db->set('approved_time',$row['approved_time']);
-//                    }
-//                    if (isset($row['source_name'])) {
-//                        $this->db->set('source_name', $row['source_name']);
-//                    }
-//                    if (isset($row['proofdoc_link']) && !empty($row['proofdoc_link'])) {
-//                        $this->db->set('proofdoc_link', $row['proofdoc_link']);
-//                    }
-//                    if ($row['artwork_proof_id']<=0) {
-//                        $this->db->set('artwork_id',$artwork_id);
-//                        $this->db->set('created_user',$user_id);
-//                        $this->db->set('created_time',date('Y-m-d H:i:s'));
-//                        $this->db->insert('ts_artwork_proofs');
-//                        $retval=$this->db->insert_id();
-//                        $this->db->select('order_id');
-//                        $this->db->from('ts_artworks');
-//                        $this->db->where('artwork_id', $artwork_id);
-//                        $insres=$this->db->get()->row_array();
-////                        if (!empty($insres['order_id'])) {
-////                            // Add export doc
-////                            $artsyncdoc[]=array(
-////                                'user_id'=>$user_id,
-////                                'order_id'=>$insres['order_id'],
-////                                'artwork_proof_id'=>$retval,
-////                                'operation'=>'add',
-////                            );
-////                        }
-//                    } else {
-//                        $this->db->where('artwork_proof_id',$row['artwork_proof_id']);
-//                        $this->db->update('ts_artwork_proofs');
-//                        $retval=$row['artwork_proof_id'];
-//                    }
-//                }
-//            }
-//        }
-//        $out['result']=$this->success_result;
-//        // Build ART Sync doc
-//        if (!empty($order_id)) {
-//            // Get New Proofs
-//            $this->db->select('artwork_proof_id, approved, source_name');
-//            $this->db->from('ts_artwork_proofs');
-//            $this->db->where('artwork_id', $artwork_id);
-//            $newproofs=$this->db->get()->result_array();
-//            // $profkeys=array();
-//            foreach ($oldproofs as $row) {
-//                if ($row['approved']==1) {
-//                    foreach ($newproofs as $prow) {
-//                        if ($prow['artwork_proof_id']==$row['artwork_proof_id'] && $prow['approved']==0) {
-//                            // Remove Approve Link
-//                            $artsyncdoc[]=array(
-//                                'user_id'=>$user_id,
-//                                'order_id'=>$order_id,
-//                                'operation'=>'delete',
-//                                'proofdoc_link'=>$row['source_name'],
-//                            );
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//            // Check New Res
-//            foreach ($newproofs as $row) {
-//                if ($row['approved']==1) {
-//                    $found=0;
-//                    foreach ($oldproofs as $prow) {
-//                        if ($prow['artwork_proof_id']==$row['artwork_proof_id']) {
-//                            $found=1;
-//                            if ($prow['approved']==0) {
-//                                // Add Approve Link
-//                                $artsyncdoc[]=array(
-//                                    'user_id'=>$user_id,
-//                                    'order_id'=>$order_id,
-//                                    'operation'=>'add',
-//                                    'artwork_proof_id'=>$row['artwork_proof_id'],
-//                                );
-//                            }
-//                            break;
-//                        }
-//                    }
-//                    if ($found==0) {
-//                        $artsyncdoc[]=array(
-//                            'user_id'=>$user_id,
-//                            'order_id'=>$order_id,
-//                            'operation'=>'add',
-//                            'artwork_proof_id'=>$row['artwork_proof_id'],
-//                        );
-//                    }
-//                }
-//            }
-//        }
-//        $out['artsyncdoc']=$artsyncdoc;
-//        return $out;
-//    }
-//
+    public function save_artwork($artw, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $this->db->set('order_id',$artw['order_id']);
+        $this->db->set('mail_id',$artw['mail_id']);
+        if (isset($artw['customer_instruct'])) {
+            $this->db->set('customer_instruct',$artw['customer_instruct']);
+        }
+        if (isset($artw['customer'])) {
+            $this->db->set('customer',$artw['customer']);
+        }
+        if (isset($artw['customer_contact'])) {
+            $this->db->set('customer_contact',$artw['customer_contact']);
+        }
+        if (isset($artw['customer_phone'])) {
+            $this->db->set('customer_phone', $artw['customer_phone']);
+        }
+        if (isset($artw['customer_email'])) {
+            $this->db->set('customer_email',$artw['customer_email']);
+        }
+        if (isset($artw['item_name']) && !empty($artw['item_name'])) {
+            $this->db->set('item_name',$artw['item_name']);
+        }
+        if (isset($artw['other_item']) && !empty($artw['other_item'])) {
+            $this->db->set('other_item',$artw['other_item']);
+        }
+        if (isset($artw['item_id']) && !empty($artw['item_id'])) {
+            $this->db->set('item_id',$artw['item_id']);
+        }
+        if (isset($artw['item_number']) && !empty($artw['item_number'])) {
+            $this->db->set('item_number',$artw['item_number']);
+        }
+        if (isset($artw['item_color']) && !empty($artw['item_color'])) {
+            $this->db->set('item_color',$artw['item_color']);
+        }
+        if (isset($artw['item_qty']) && !empty($artw['item_qty'])) {
+            $this->db->set('item_qty',$artw['item_qty']);
+        }
+        if (isset($artw['artwork_rush'])) {
+            $this->db->set('artwork_rush',$artw['artwork_rush']);
+        }
+        if (isset($artw['artwork_note'])) {
+            $this->db->set('artwork_note',$artw['artwork_note']);
+        }
+        if (isset($artw['other_item']) && !empty($artw['other_item'])) {
+            $this->db->set('other_item', $artw['other_item']);
+        }
+        if (isset($artw['customer_art'])) {
+            $this->db->set('customer_art', $artw['customer_art']);
+        }
+        if (isset($artw['customer_inv'])) {
+            $this->db->set('customer_inv', $artw['customer_inv']);
+        }
+        if (isset($artw['customer_track'])) {
+            $this->db->set('customer_track', $artw['customer_track']);
+        }
+        $this->db->set('user_updated',$user_id);
+        if ($artw['artwork_id']>0) {
+            $this->db->where('artwork_id',$artw['artwork_id']);
+            $this->db->update('ts_artworks');
+        } else {
+            $this->db->set('user_created',$user_id);
+            $this->db->set('time_create',date('Y-m-d H:i:s'));
+            $this->db->insert('ts_artworks');
+            $res=$this->db->insert_id();
+            if ($res==0) {
+                return FALSE;
+            } else {
+                /* If exist update MSG */
+                $artw['artwork_id']=$res;
+            }
+        }
+        return $artw['artwork_id'];
+    }
+
+    public function save_artproof($proofs, $artwork_id, $user_id) {
+        $out=array('result'=>$this->error_result);
+        // Get OLD proofs
+        $this->db->select('artwork_proof_id, approved, source_name');
+        $this->db->from('ts_artwork_proofs');
+        $this->db->where('artwork_id', $artwork_id);
+        $oldproofs=$this->db->get()->result_array();
+        $artsyncdoc=array();
+        // Order
+        $this->db->select('order_id');
+        $this->db->from('ts_artworks');
+        $this->db->where('artwork_id', $artwork_id);
+        $orddat=$this->db->get()->row_array();
+        $order_id=$orddat['order_id'];
+        // Full and Short proofs
+        $fullpath=$this->config->item('artwork_proofs');
+        $shrtpath=$this->config->item('artwork_proofs_relative');
+        $fullpreload=$this->config->item('upload_path_preload');
+        $numpp=1;
+        foreach ($proofs as $row) {
+            if ($row['deleted']!='') {
+                if ($row['artwork_proof_id']>0) {
+                    // add data for delete
+                    $this->db->select('p.source_name, o.order_id');
+                    $this->db->from('ts_artwork_proofs p');
+                    $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+                    $this->db->join('ts_orders o','o.order_id=a.order_id');
+                    $this->db->where('p.artwork_proof_id', $row['artwork_proof_id']);
+                    $delres=$this->db->get()->row_array();
+                    if (isset($delres['order_id'])) {
+                        $artsyncdoc[]=array(
+                            'user_id'=>$user_id,
+                            'order_id'=>$delres['order_id'],
+                            'operation'=>'delete',
+                            'proofdoc_link'=>$delres['source_name'],
+                        );
+                    }
+                    $this->db->where('artwork_proof_id', $row['artwork_proof_id']);
+                    $this->db->delete('ts_artwork_proofs');
+                }
+            } else {
+                $saverow=0;
+                if ($row['artwork_proof_id']<0) {
+                    // Artwork Folder
+                    if (file_exists($row['src'])) {
+                        $this->_artworkfolder($fullpath, $artwork_id);
+                        // New Proof Doc
+                        $purename=  str_replace($fullpreload, '', $row['src']);
+                        $target_file=$fullpath.$artwork_id.'/'.$purename;
+                        $cpres=@copy($row['src'],$target_file);
+                        if ($cpres) {
+                            $saverow=1;
+                            $row['src']=$shrtpath.$artwork_id.'/'.$purename;
+                        }
+                    }
+                } else {
+                    $saverow=1;
+                }
+                if ($saverow==1) {
+                    $this->db->set('updated_user',$user_id);
+                    $this->db->set('proof_ordnum',$numpp);
+                    if (isset($row['src'])) {
+                        $this->db->set('proof_name',$row['src']);
+                    }
+                    if (isset($row['sended'])) {
+                        $this->db->set('sended',$row['sended']);
+                    }
+                    if (isset($row['sended_time'])) {
+                        $this->db->set('sended_time',$row['sended_time']);
+                    }
+                    if (isset($row['approved'])) {
+                        $this->db->set('approved',$row['approved']);
+                    }
+                    if (isset($row['approved_time'])) {
+                        $this->db->set('approved_time',$row['approved_time']);
+                    }
+                    if (isset($row['source_name'])) {
+                        $this->db->set('source_name', $row['source_name']);
+                    }
+                    if (isset($row['proofdoc_link']) && !empty($row['proofdoc_link'])) {
+                        $this->db->set('proofdoc_link', $row['proofdoc_link']);
+                    }
+                    if ($row['artwork_proof_id']<=0) {
+                        $this->db->set('artwork_id',$artwork_id);
+                        $this->db->set('created_user',$user_id);
+                        $this->db->set('created_time',date('Y-m-d H:i:s'));
+                        $this->db->insert('ts_artwork_proofs');
+                        $retval=$this->db->insert_id();
+                        $this->db->select('order_id');
+                        $this->db->from('ts_artworks');
+                        $this->db->where('artwork_id', $artwork_id);
+                        $insres=$this->db->get()->row_array();
+                    } else {
+                        $this->db->where('artwork_proof_id',$row['artwork_proof_id']);
+                        $this->db->update('ts_artwork_proofs');
+                        $retval=$row['artwork_proof_id'];
+                    }
+                }
+            }
+        }
+        $out['result']=$this->success_result;
+        // Build ART Sync doc
+        if (!empty($order_id)) {
+            // Get New Proofs
+            $this->db->select('artwork_proof_id, approved, source_name');
+            $this->db->from('ts_artwork_proofs');
+            $this->db->where('artwork_id', $artwork_id);
+            $newproofs=$this->db->get()->result_array();
+            // $profkeys=array();
+            foreach ($oldproofs as $row) {
+                if ($row['approved']==1) {
+                    foreach ($newproofs as $prow) {
+                        if ($prow['artwork_proof_id']==$row['artwork_proof_id'] && $prow['approved']==0) {
+                            // Remove Approve Link
+                            $artsyncdoc[]=array(
+                                'user_id'=>$user_id,
+                                'order_id'=>$order_id,
+                                'operation'=>'delete',
+                                'proofdoc_link'=>$row['source_name'],
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
+            // Check New Res
+            foreach ($newproofs as $row) {
+                if ($row['approved']==1) {
+                    $found=0;
+                    foreach ($oldproofs as $prow) {
+                        if ($prow['artwork_proof_id']==$row['artwork_proof_id']) {
+                            $found=1;
+                            if ($prow['approved']==0) {
+                                // Add Approve Link
+                                $artsyncdoc[]=array(
+                                    'user_id'=>$user_id,
+                                    'order_id'=>$order_id,
+                                    'operation'=>'add',
+                                    'artwork_proof_id'=>$row['artwork_proof_id'],
+                                );
+                            }
+                            break;
+                        }
+                    }
+                    if ($found==0) {
+                        $artsyncdoc[]=array(
+                            'user_id'=>$user_id,
+                            'order_id'=>$order_id,
+                            'operation'=>'add',
+                            'artwork_proof_id'=>$row['artwork_proof_id'],
+                        );
+                    }
+                }
+            }
+        }
+        $out['artsyncdoc']=$artsyncdoc;
+        return $out;
+    }
+
 //    private function _save_proofdoc($proofdoc, $artwork_id, $user_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
 //
@@ -928,394 +929,394 @@ Class Artlead_model extends MY_Model
 //        }
 //        return $out;
 //    }
-//
-//    private function _artworkfolder($path, $artwork_id) {
-//        $pathdir=$path.$artwork_id;
-//        @mkdir($pathdir, 0777, true);
-//    }
-//
-//    public function save_artlocations($locations, $artwork_id, $order_items) {
-//        $path_fl=$this->config->item('artwork_logo');
-//        $path_sh=$this->config->item('artwork_logo_relative');
-//        $preload_path_fl=$this->config->item('upload_path_preload');
-//        $preload_path_sh=$this->config->item('pathpreload');
-//        $this->load->model('artwork_model');
-//        foreach ($locations as $loc) {
-//            $location=array();
-//            if ($loc['deleted']!='') {
-//                // Mark logos as deleted
-//                if ($loc['artwork_art_id']>0) {
-//                    // We delete previously saved location
-//                    $this->artwork_model->delete_artlocation($loc['artwork_art_id'], $loc['artwork_id']);
-//                }
-//            } else {
-//                $location_id = $loc['artwork_art_id'];
-//                $location['artwork_id']=$artwork_id;
-//                if ($loc['artwork_art_id']<=0) {
-//                    $location['artwork_art_id']=0;
-//                } else {
-//                    $location['artwork_art_id']=$loc['artwork_art_id'];
-//                }
-//                $location['art_type']=$loc['art_type'];
-//                $location['art_ordnum']=$loc['art_ordnum'];
-//                $location['art_numcolors']=intval($loc['art_numcolors']);
-//                $location['art_color1']=($loc['art_color1']=='' ? NULL : $loc['art_color1']);
-//                $location['art_color2']=($loc['art_color2']=='' ? NULL : $loc['art_color2']);
-//                $location['art_color3']=($loc['art_color3']=='' ? NULL : $loc['art_color3']);
-//                $location['art_color4']=($loc['art_color4']=='' ? NULL : $loc['art_color4']);
-//                $location['customer_text']=($loc['customer_text']=='' ? NULL : $loc['customer_text']);
-//                $location['font']=($loc['font']=='' ? NULL : $loc['font']);
-//                $location['redraw_message']=$loc['redraw_message'];
-//                $location['art_location']=($loc['art_location']=='' ? NULL : $loc['art_location']);
-//                $location['rush']=intval($loc['rush']);
-//                $location['redrawvect']=intval($loc['redrawvect']);
-//                $location['redo']=intval($loc['redo']);
-//                $location['repeat_text']=($loc['repeat_text']=='' ? NULL : $loc['repeat_text']);
-//                if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
-//                    /* Prepare art logos */
-//                    if ($loc['artwork_art_id']<=0) {
-//                        // New location - a) move file to new location
-//                        if ($loc['logo_src']!='' && $loc['logo_src']!='&nbsp;') {
-//                            $purefile=str_replace($preload_path_sh, '',$loc['logo_src']);
-//                            /* copy */
-//                            $srcname=str_replace($preload_path_sh, $preload_path_fl,$loc['logo_src']);
-//                            // $srcname=str_replace($preload_path_fl, $preload_path_fl,$loc['logo_src']);
-//                            // Make Folder
-//                            $this->_artworkfolder($path_fl, $artwork_id);
-//
-//                            $destname=$path_fl.$artwork_id.'/'.$purefile;
-//                            @copy($srcname,$destname);
-//                            $location['logo_src']=$path_sh.$artwork_id.'/'.$purefile;
-//                            $location['redraw_time']=time();
-//                            if ($loc['redrawvect']==0) {
-//                                // Make source vectorized
-//                                $location['logo_vectorized']=$path_sh.$artwork_id.'/'.$purefile;
-//                                $location['vectorized_time']=time();
-//                            } else {
-//                                $redraw_logos[]=array(
-//                                    'logo_src'=>$loc['logo_src'],
-//                                    'deed'=>'Add',
-//                                );
-//                            }
-//                        }
-//                    } else {
-//                        if ($location['redo']==1) {
-//                            $location['logo_vectorized']='';
-//                            $location['vectorized_time']=0;
-//                            $redraw_logos[]=array(
-//                                'logo_src'=>$loc['logo_src'],
-//                                'deed'=>'Redo',
-//                            );
-//                        } else {
-//                            if ($loc['redrawvect']==0) {
-//                                // Make source vectorized
-//                                $location['logo_vectorized']=$loc['logo_src'];
-//                                $location['vectorized_time']=time();
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    if ($location['redo']==1) {
-//                        $location['logo_vectorized']='';
-//                        $location['vectorized_time']=0;
-//                    }
-//                    if ($location['redrawvect']==1 && empty($loc['redraw_time'])) {
-//                        $location['redraw_time']=time();
-//                    }
-//                }
-//                $res=$this->artwork_model->artlocation_update($location, $location_id);
-//
-//                // New Locations
-//                if ($res!==FALSE && $loc['artwork_art_id']<0) {
-//                    foreach ($order_items as $itemrow) {
-//                        foreach ($itemrow['imprint_details'] as $irow) {
-//                            if ($irow['artwork_art_id']==$loc['artwork_art_id']) {
-//                                $this->db->set('artwork_art_id', $res);
-//                                $this->db->where('order_imprindetail_id', $irow['order_imprindetail_id']);
-//                                $this->db->update('ts_order_imprindetails');
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } // End locations list
-//        return TRUE;
-//    }
-//
-//    function artwork_history_update($artw) {
-//        $this->db->set('artwork_id',$artw['artwork_id']);
-//        $this->db->set('user_id',$artw['user_id']);
-//        $this->db->set('created_time', $artw['created_time']);
-//        $this->db->set('message',$artw['update_msg']);
-//        $this->db->insert('ts_artwork_history');
-//        return TRUE;
-//    }
-//
-//    public function art_blank_changestage($data, $artdata, $artwork_id, $artsync, $user_id) {
-//        $this->load->model('artwork_model');
-//        /* Change Stage - BLANK type */
-//        $cntproofall=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_ALL');
-//        // $cntproofsend=$this->artwork_chklogo($artwork_id, 'PROOF_SEND');
-//        $cntproofappr=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_APPROVED');
-//
-//        $newstage='';
-//        /* Lets GO */
-//
-//        $newstage=Artlead_model::JUST_APPROVED;
-//        $artsync['art_stage']=1;
-//        $artsync['redraw_stage']=1;
-//        $artsync['vector_stage']=1;
-//        $artsync['proof_stage']=1;
-//        $artsync['approv_stage']=1;
-//        if ($artdata['artstage']!=$newstage) {
-//            switch ($artdata['artstage']) {
-//                case Artlead_model::NO_ART :
-//                    $newstage=Artlead_model::REDRAWN;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::NO_VECTOR;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::TO_PROOF;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::NEED_APPROVAL;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::JUST_APPROVED;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    break;
-//                case Artlead_model::REDRAWN :
-//                    $newstage=  Artlead_model::NO_VECTOR;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::TO_PROOF;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::NEED_APPROVAL;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::JUST_APPROVED;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    break;
-//                case Artlead_model::NO_VECTOR :
-//                    $newstage=Artlead_model::TO_PROOF;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::NEED_APPROVAL;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::JUST_APPROVED;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    break;
-//                case Artlead_model::TO_PROOF:
-//                    $newstage=Artlead_model::NEED_APPROVAL;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::JUST_APPROVED;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    break;
-//                case Artlead_model::NEED_APPROVAL:
-//                    $newstage=Artlead_model::JUST_APPROVED;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                    $newstage=Artlead_model::TO_PROOF;
-//                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
-//                case Artlead_model::JUST_APPROVED:
-//                    break;
-//            }
-//        }
-//        return $artsync;
-//    }
-//
-//    /* Change Stage - COMMON type (with logos) */
-//    public function art_common_changestage($data,$artdata,$artwork_id, $artsync, $user_id) {
-//        $this->load->model('artwork_model');
-//        /* count Logos, Proofs , etc */
-//        $current_stage=$artdata['artstage'];
-//        if ($current_stage==Artlead_model::JUST_APPROVED) {
-//            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=1;
-//        } elseif ($current_stage==Artlead_model::NEED_APPROVAL) {
-//            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=1;
-//        } elseif ($current_stage==Artlead_model::TO_PROOF) {
-//            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=1;
-//        } elseif($current_stage==Artlead_model::NO_VECTOR) {
-//            $artsync['art_stage']=$artsync['redraw_stage']=1;
-//        } elseif ($current_stage==Artlead_model::REDRAWN) {
-//            $artsync['art_stage']=1;
-//        }
-//        $cntlogoall=$this->artwork_model->artwork_chklogo($artwork_id, 'ALL');
-//        $cnttextall=$this->artwork_model->artwork_chktext($artwork_id, 'ALL');
-//        $cntrepeat=$this->artwork_model->artwork_check_repeat($artwork_id, 'ALL');
-//
-//        $cntall=(intval($cntlogoall)+intval($cnttextall)+intval($cntrepeat));
-//
-//        $cntlogovector=$this->artwork_model->artwork_chklogo($artwork_id, 'TOPROOF');
-//        $cnttextvector=$this->artwork_model->artwork_chktext($artwork_id, 'TOPROOF');
-//
-//        $cntvector=(intval($cntlogovector)+intval($cnttextvector)+intval($cntrepeat));
-//
-//        $cntproofall=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_ALL');
-//        $cntproofappr=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_APPROVED');
-//        $artchk=array(
-//            'stage'=>$current_stage,
-//            'cntlogoall'=>$cntlogoall,
-//            'cnttextall'=>$cnttextall,
-//            'cntall'=>$cntall,
-//            'cntlogovector'=>$cntlogovector,
-//            'cnttextvector'=>$cnttextvector,
-//            'cntvector'=>$cntvector,
-//            'cntproofall'=>$cntproofall,
-//            'cntproofappr'=>$cntproofappr,
-//        );
-//        $newstage='';
-//        $notification=0;
-//        /* Lets GO */
-//        if ($cntproofappr>0 /*&& $cntproofappr==$cntproofall*/) {
-//            $newstage= Artlead_model::JUST_APPROVED;
-//        } elseif ($cntproofall>0) {
-//            $newstage=  Artlead_model::NEED_APPROVAL;
-//        } elseif ($cntall>0) {
-//            if ($cntvector==$cntall) {
-//                $newstage=Artlead_model::TO_PROOF;
-//            } else /*($cntvector!=$cntall)*/ {
-//                $newstage=Artlead_model::NO_VECTOR;
-//            }
-//        } else {
-//            $newstage=Artlead_model::NO_ART;
-//        }
-//        /* Make correct change of stage */
-//        if ($newstage!=$current_stage) {
-//            // Need to change
-//            switch ($newstage) {
-//                case Artlead_model::JUST_APPROVED:
-//                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=1;
-//                    if ($current_stage==Artlead_model::NO_ART) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::REDRAWN, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NEED_APPROVAL, $user_id);
-//                    } elseif ($current_stage==Artlead_model::REDRAWN) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NEED_APPROVAL, $user_id);
-//                    } elseif ($current_stage==Artlead_model::NO_VECTOR) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NEED_APPROVAL, $user_id);
-//                    } elseif ($current_stage==Artlead_model::TO_PROOF) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NEED_APPROVAL, $user_id);
-//                    }
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                case Artlead_model::NEED_APPROVAL:
-//                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=1;
-//                    $artsync['approv_stage']=0;
-//                    if ($current_stage==Artlead_model::NO_ART) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::REDRAWN, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                    } elseif ($current_stage==Artlead_model::REDRAWN) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                    } elseif ($current_stage==Artlead_model::NO_VECTOR) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::TO_PROOF, $user_id);
-//                    } elseif ($current_stage==Artlead_model::TO_PROOF) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NEED_APPROVAL, $user_id);
-//                    }
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                case Artlead_model::TO_PROOF:
-//                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=1;
-//                    $artsync['proof_stage']=$artsync['approv_stage']=0;
-//                    if ($current_stage==Artlead_model::NO_ART) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::REDRAWN, $user_id);
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                    } elseif ($current_stage==Artlead_model::REDRAWN) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::NO_VECTOR, $user_id);
-//                    }
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                case Artlead_model::NO_VECTOR:
-//                    $artsync['art_stage']=$artsync['redraw_stage']=1;
-//                    $artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
-//                    if ($current_stage==Artlead_model::NO_ART) {
-//                        $this->artwork_model->change_artstage($data, Artlead_model::REDRAWN, $user_id);
-//                    }
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                case Artlead_model::REDRAWN:
-//                    $artsync['art_stage']=1;
-//                    $artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                case Artlead_model::NO_ART:
-//                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
-//                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
-//                    break;
-//                default:
-//                    break;
-//            }
-//            if ($current_stage== Artlead_model::JUST_APPROVED) {
-//                $notification=1;
-//            }
-//        }
-//        if ($notification==1) {
-//            $this->artstage_change_notification($artwork_id, $newstage, $user_id);
-//        }
-//        return $artsync;
-//    }
-//
-//    public function artstage_change_notification($artwork_id, $newstage, $user_id) {
-//        $this->db->select('order_id, mail_id');
-//        $this->db->from('ts_artworks');
-//        $this->db->where('artwork_id', $artwork_id);
-//        $artres=$this->db->get()->row_array();
-//        if (isset($artres['order_id']) && !empty($artres['order_id'])) {
-//            // Get Order Date
-//            $order_id=$artres['order_id'];
-//            $this->db->select('order_num, order_date, update_date');
-//            $this->db->from('ts_orders');
-//            $this->db->where('order_id', $order_id);
-//            $ordres=$this->db->get()->row_array();
-//            // Get User Data
-//            $this->db->select('user_name');
-//            $this->db->from('users');
-//            $this->db->where('user_id', $user_id);
-//            $usrres=$this->db->get()->row_array();
-//            // Send Email
-//            $this->load->library('email');
-//            $config['charset'] = 'utf-8';
-//            $config['mailtype']='html';
-//            $config['wordwrap'] = TRUE;
-//            $this->email->initialize($config);
-//
-//            $email_from=$this->config->item('email_notification_sender');
-//
-//            $email_to=array(
-//                $this->config->item('sean_email'),
-//                $this->config->item('sage_email'),
-//            );
-//
-//            $email_body='At '.date('hA:i', $ordres['update_date']).' on '.date('m/d/y', $ordres['update_date']).' '.$usrres['user_name'];
-//            $email_body.=' changed order #'.$ordres['order_num'].' ('.date('m/d/y', $ordres['order_date']).'). <br/>';
-//            $newstage_name='Need Art';
-//            switch ($newstage) {
-//                case Artlead_model::NEED_APPROVAL:
-//                    $newstage_name='Need Approval';
-//                    break;
-//                case Artlead_model::TO_PROOF:
-//                    $newstage_name='To Proof';
-//                    break;
-//                case Artlead_model::NO_VECTOR:
-//                case Artlead_model::REDRAWN:
-//                    $newstage_name='Redrawing';
-//                    break;
-//                case Artlead_model::NO_ART:
-//                    $newstage_name='Need Art';
-//                    break;
-//            }
-//            $email_body.=' New Stage '.$newstage_name;
-//
-//            $this->email->from($email_from);
-//            $this->email->to($email_to);
-//            $subj=$usrres['user_name']." update Order #".$ordres['order_num'];
-//            $this->email->subject($subj);
-//            $this->email->message($email_body);
-//            $this->email->send();
-//            $this->email->clear(TRUE);
-//        }
-//        return TRUE;
-//    }
-//
+
+    private function _artworkfolder($path, $artwork_id) {
+        $pathdir=$path.$artwork_id;
+        @mkdir($pathdir, 0777, true);
+    }
+
+    public function save_artlocations($locations, $artwork_id, $order_items) {
+        $path_sh=$this->config->item('artwork_logo');
+        $path_fl=$this->config->item('artwork_logo_relative');
+        $preload_path_fl=$this->config->item('upload_path_preload');
+        $preload_path_sh=$this->config->item('pathpreload');
+        $this->load->model('artwork_model');
+        foreach ($locations as $loc) {
+            $location=array();
+            if ($loc['deleted']!='') {
+                // Mark logos as deleted
+                if ($loc['artwork_art_id']>0) {
+                    // We delete previously saved location
+                    $this->artwork_model->delete_artlocation($loc['artwork_art_id'], $loc['artwork_id']);
+                }
+            } else {
+                $location_id = $loc['artwork_art_id'];
+                $location['artwork_id']=$artwork_id;
+                if ($loc['artwork_art_id']<=0) {
+                    $location['artwork_art_id']=0;
+                } else {
+                    $location['artwork_art_id']=$loc['artwork_art_id'];
+                }
+                $location['art_type']=$loc['art_type'];
+                $location['art_ordnum']=$loc['art_ordnum'];
+                $location['art_numcolors']=intval($loc['art_numcolors']);
+                $location['art_color1']=($loc['art_color1']=='' ? NULL : $loc['art_color1']);
+                $location['art_color2']=($loc['art_color2']=='' ? NULL : $loc['art_color2']);
+                $location['art_color3']=($loc['art_color3']=='' ? NULL : $loc['art_color3']);
+                $location['art_color4']=($loc['art_color4']=='' ? NULL : $loc['art_color4']);
+                $location['customer_text']=($loc['customer_text']=='' ? NULL : $loc['customer_text']);
+                $location['font']=($loc['font']=='' ? NULL : $loc['font']);
+                $location['redraw_message']=$loc['redraw_message'];
+                $location['art_location']=($loc['art_location']=='' ? NULL : $loc['art_location']);
+                $location['rush']=intval($loc['rush']);
+                $location['redrawvect']=intval($loc['redrawvect']);
+                $location['redo']=intval($loc['redo']);
+                $location['repeat_text']=($loc['repeat_text']=='' ? NULL : $loc['repeat_text']);
+                if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
+                    /* Prepare art logos */
+                    if ($loc['artwork_art_id']<=0) {
+                        // New location - a) move file to new location
+                        if ($loc['logo_src']!='' && $loc['logo_src']!='&nbsp;') {
+                            $purefile=str_replace($preload_path_sh, '',$loc['logo_src']);
+                            /* copy */
+                            $srcname=str_replace($preload_path_sh, $preload_path_fl,$loc['logo_src']);
+                            // $srcname=str_replace($preload_path_fl, $preload_path_fl,$loc['logo_src']);
+                            // Make Folder
+                            $this->_artworkfolder($path_fl, $artwork_id);
+
+                            $destname=$path_fl.$artwork_id.'/'.$purefile;
+                            @copy($srcname,$destname);
+                            $location['logo_src']=$path_sh.$artwork_id.'/'.$purefile;
+                            $location['redraw_time']=time();
+                            if ($loc['redrawvect']==0) {
+                                // Make source vectorized
+                                $location['logo_vectorized']=$path_sh.$artwork_id.'/'.$purefile;
+                                $location['vectorized_time']=time();
+                            } else {
+                                $redraw_logos[]=array(
+                                    'logo_src'=>$loc['logo_src'],
+                                    'deed'=>'Add',
+                                );
+                            }
+                        }
+                    } else {
+                        if ($location['redo']==1) {
+                            $location['logo_vectorized']='';
+                            $location['vectorized_time']=0;
+                            $redraw_logos[]=array(
+                                'logo_src'=>$loc['logo_src'],
+                                'deed'=>'Redo',
+                            );
+                        } else {
+                            if ($loc['redrawvect']==0) {
+                                // Make source vectorized
+                                $location['logo_vectorized']=$loc['logo_src'];
+                                $location['vectorized_time']=time();
+                            }
+                        }
+                    }
+                } else {
+                    if ($location['redo']==1) {
+                        $location['logo_vectorized']='';
+                        $location['vectorized_time']=0;
+                    }
+                    if ($location['redrawvect']==1 && empty($loc['redraw_time'])) {
+                        $location['redraw_time']=time();
+                    }
+                }
+                $res=$this->artwork_model->artlocation_update($location, $location_id);
+
+                // New Locations
+                if ($res!==FALSE && $loc['artwork_art_id']<0) {
+                    foreach ($order_items as $itemrow) {
+                        foreach ($itemrow['imprint_details'] as $irow) {
+                            if ($irow['artwork_art_id']==$loc['artwork_art_id']) {
+                                $this->db->set('artwork_art_id', $res);
+                                $this->db->where('order_imprindetail_id', $irow['order_imprindetail_id']);
+                                $this->db->update('ts_order_imprindetails');
+                            }
+                        }
+                    }
+                }
+            }
+        } // End locations list
+        return TRUE;
+    }
+
+    public function artwork_history_update($artw) {
+        $this->db->set('artwork_id',$artw['artwork_id']);
+        $this->db->set('user_id',$artw['user_id']);
+        $this->db->set('created_time', $artw['created_time']);
+        $this->db->set('message',$artw['update_msg']);
+        $this->db->insert('ts_artwork_history');
+        return TRUE;
+    }
+
+    public function art_blank_changestage($data, $artdata, $artwork_id, $artsync, $user_id) {
+        $this->load->model('artwork_model');
+
+        $cntproofall=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_ALL');
+
+        $cntproofappr=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_APPROVED');
+
+        $newstage='';
+        /* Lets GO */
+
+        $newstage=$this->JUST_APPROVED;
+        $artsync['art_stage']=1;
+        $artsync['redraw_stage']=1;
+        $artsync['vector_stage']=1;
+        $artsync['proof_stage']=1;
+        $artsync['approv_stage']=1;
+        if ($artdata['artstage']!=$newstage) {
+            switch ($artdata['artstage']) {
+                case $this->NO_ART :
+                    $newstage=$this->REDRAWN;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->NO_VECTOR;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->TO_PROOF;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->NEED_APPROVAL;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->JUST_APPROVED;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    break;
+                case $this->REDRAWN :
+                    $newstage=  $this->NO_VECTOR;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->TO_PROOF;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->NEED_APPROVAL;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->JUST_APPROVED;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    break;
+                case $this->NO_VECTOR :
+                    $newstage=$this->TO_PROOF;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->NEED_APPROVAL;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->JUST_APPROVED;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    break;
+                case $this->TO_PROOF:
+                    $newstage=$this->NEED_APPROVAL;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->JUST_APPROVED;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    break;
+                case $this->NEED_APPROVAL:
+                    $newstage=$this->JUST_APPROVED;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                    $newstage=$this->TO_PROOF;
+                    $this->artwork_model->change_artstage($data, $newstage,$user_id);
+                case $this->JUST_APPROVED:
+                    break;
+            }
+        }
+        return $artsync;
+    }
+
+    /* Change Stage - COMMON type (with logos) */
+    public function art_common_changestage($data,$artdata,$artwork_id, $artsync, $user_id) {
+        $this->load->model('artwork_model');
+        /* count Logos, Proofs , etc */
+        $current_stage=$artdata['artstage'];
+        if ($current_stage==$this->JUST_APPROVED) {
+            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=1;
+        } elseif ($current_stage==$this->NEED_APPROVAL) {
+            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=1;
+        } elseif ($current_stage==$this->TO_PROOF) {
+            $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=1;
+        } elseif($current_stage==$this->NO_VECTOR) {
+            $artsync['art_stage']=$artsync['redraw_stage']=1;
+        } elseif ($current_stage==$this->REDRAWN) {
+            $artsync['art_stage']=1;
+        }
+        $cntlogoall=$this->artwork_model->artwork_chklogo($artwork_id, 'ALL');
+        $cnttextall=$this->artwork_model->artwork_chktext($artwork_id, 'ALL');
+        $cntrepeat=$this->artwork_model->artwork_check_repeat($artwork_id, 'ALL');
+
+        $cntall=(intval($cntlogoall)+intval($cnttextall)+intval($cntrepeat));
+
+        $cntlogovector=$this->artwork_model->artwork_chklogo($artwork_id, 'TOPROOF');
+        $cnttextvector=$this->artwork_model->artwork_chktext($artwork_id, 'TOPROOF');
+
+        $cntvector=(intval($cntlogovector)+intval($cnttextvector)+intval($cntrepeat));
+
+        $cntproofall=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_ALL');
+        $cntproofappr=$this->artwork_model->artwork_chklogo($artwork_id, 'PROOF_APPROVED');
+        $artchk=array(
+            'stage'=>$current_stage,
+            'cntlogoall'=>$cntlogoall,
+            'cnttextall'=>$cnttextall,
+            'cntall'=>$cntall,
+            'cntlogovector'=>$cntlogovector,
+            'cnttextvector'=>$cnttextvector,
+            'cntvector'=>$cntvector,
+            'cntproofall'=>$cntproofall,
+            'cntproofappr'=>$cntproofappr,
+        );
+        $newstage='';
+        $notification=0;
+        /* Lets GO */
+        if ($cntproofappr>0 /*&& $cntproofappr==$cntproofall*/) {
+            $newstage= $this->JUST_APPROVED;
+        } elseif ($cntproofall>0) {
+            $newstage=  $this->NEED_APPROVAL;
+        } elseif ($cntall>0) {
+            if ($cntvector==$cntall) {
+                $newstage=$this->TO_PROOF;
+            } else /*($cntvector!=$cntall)*/ {
+                $newstage=$this->NO_VECTOR;
+            }
+        } else {
+            $newstage=$this->NO_ART;
+        }
+        /* Make correct change of stage */
+        if ($newstage!=$current_stage) {
+            // Need to change
+            switch ($newstage) {
+                case $this->JUST_APPROVED:
+                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=1;
+                    if ($current_stage==$this->NO_ART) {
+                        $this->artwork_model->change_artstage($data, $this->REDRAWN, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NEED_APPROVAL, $user_id);
+                    } elseif ($current_stage==$this->REDRAWN) {
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NEED_APPROVAL, $user_id);
+                    } elseif ($current_stage==$this->NO_VECTOR) {
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NEED_APPROVAL, $user_id);
+                    } elseif ($current_stage==$this->TO_PROOF) {
+                        $this->artwork_model->change_artstage($data, $this->NEED_APPROVAL, $user_id);
+                    }
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                case $this->NEED_APPROVAL:
+                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=1;
+                    $artsync['approv_stage']=0;
+                    if ($current_stage==$this->NO_ART) {
+                        $this->artwork_model->change_artstage($data, $this->REDRAWN, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                    } elseif ($current_stage==$this->REDRAWN) {
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                    } elseif ($current_stage==$this->NO_VECTOR) {
+                        $this->artwork_model->change_artstage($data, $this->TO_PROOF, $user_id);
+                    } elseif ($current_stage==$this->TO_PROOF) {
+                        $this->artwork_model->change_artstage($data, $this->NEED_APPROVAL, $user_id);
+                    }
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                case $this->TO_PROOF:
+                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=1;
+                    $artsync['proof_stage']=$artsync['approv_stage']=0;
+                    if ($current_stage==$this->NO_ART) {
+                        $this->artwork_model->change_artstage($data, $this->REDRAWN, $user_id);
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                    } elseif ($current_stage==$this->REDRAWN) {
+                        $this->artwork_model->change_artstage($data, $this->NO_VECTOR, $user_id);
+                    }
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                case $this->NO_VECTOR:
+                    $artsync['art_stage']=$artsync['redraw_stage']=1;
+                    $artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
+                    if ($current_stage==$this->NO_ART) {
+                        $this->artwork_model->change_artstage($data, $this->REDRAWN, $user_id);
+                    }
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                case $this->REDRAWN:
+                    $artsync['art_stage']=1;
+                    $artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                case $this->NO_ART:
+                    $artsync['art_stage']=$artsync['redraw_stage']=$artsync['vector_stage']=$artsync['proof_stage']=$artsync['approv_stage']=0;
+                    $this->artwork_model->change_artstage($data, $newstage, $user_id);
+                    break;
+                default:
+                    break;
+            }
+            if ($current_stage== $this->JUST_APPROVED) {
+                $notification=1;
+            }
+        }
+        if ($notification==1) {
+            $this->artstage_change_notification($artwork_id, $newstage, $user_id);
+        }
+        return $artsync;
+    }
+
+    public function artstage_change_notification($artwork_id, $newstage, $user_id) {
+        $this->db->select('order_id, mail_id');
+        $this->db->from('ts_artworks');
+        $this->db->where('artwork_id', $artwork_id);
+        $artres=$this->db->get()->row_array();
+        if (isset($artres['order_id']) && !empty($artres['order_id'])) {
+            // Get Order Date
+            $order_id=$artres['order_id'];
+            $this->db->select('order_num, order_date, update_date');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id', $order_id);
+            $ordres=$this->db->get()->row_array();
+            // Get User Data
+            $this->db->select('user_name');
+            $this->db->from('users');
+            $this->db->where('user_id', $user_id);
+            $usrres=$this->db->get()->row_array();
+            // Send Email
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype']='html';
+            $config['wordwrap'] = TRUE;
+            $this->email->initialize($config);
+
+            $email_from=$this->config->item('email_notification_sender');
+
+            $email_to=array(
+                $this->config->item('sean_email'),
+                $this->config->item('sage_email'),
+            );
+
+            $email_body='At '.date('hA:i', $ordres['update_date']).' on '.date('m/d/y', $ordres['update_date']).' '.$usrres['user_name'];
+            $email_body.=' changed order #'.$ordres['order_num'].' ('.date('m/d/y', $ordres['order_date']).'). <br/>';
+            $newstage_name='Need Art';
+            switch ($newstage) {
+                case $this->NEED_APPROVAL:
+                    $newstage_name='Need Approval';
+                    break;
+                case $this->TO_PROOF:
+                    $newstage_name='To Proof';
+                    break;
+                case $this->NO_VECTOR:
+                case $this->REDRAWN:
+                    $newstage_name='Redrawing';
+                    break;
+                case $this->NO_ART:
+                    $newstage_name='Need Art';
+                    break;
+            }
+            $email_body.=' New Stage '.$newstage_name;
+
+            $this->email->from($email_from);
+            $this->email->to($email_to);
+            $subj=$usrres['user_name']." update Order #".$ordres['order_num'];
+            $this->email->subject($subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        return TRUE;
+    }
+
 //    function order_arttype($order_id) {
 //        $arttype = 'new';
 //        $this->db->select('count(id.order_imprindetail_id) as cnt');

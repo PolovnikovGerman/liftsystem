@@ -433,4 +433,66 @@ if (!function_exists('formatPhoneNumber')) {
         return $phoneNumber;
     }
 }
+
+if (!function_exists('getVMDDueDate')) {
+    function getVMDDueDate($batch_date, $paymethod) {
+        if ($paymethod=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +1 day");
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('getAmexDueDate')) {
+    function getAmexDueDate($batch_date,$paymeth) {
+        if ($paymeth=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $weekday=date('N',$batch_date);
+            $weeknum=date('W',$batch_date);
+            $year=date('Y',$batch_date);
+            if ($weekday==1) {
+                /* Monday */
+                $duedate=strtotime($year . 'W' . $weeknum . '5 00:00:00');
+            } elseif ($weekday>1 && $weekday<5) {
+                /* Tuesday, Wednesday, Thuesday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '1 00:00:00');
+            } else {
+                /* Friday, Saturday, Sunday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '2 00:00:00');
+            }
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('businessdate')) {
+    function businessdate($date) {
+        $ci=&get_instance();
+        $ci->load->model('calendars_model');
+        $calendar=$ci->config->item('bank_calendar');
+        $holidays=$ci->calendars_model->get_calendar_holidays($calendar);
+        for ($i=1; $i<=15;$i++) {
+            if (in_array($date, $holidays)) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==6) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==7) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } else {
+                break;
+            }
+        }
+        return $date;
+    }
+}
+
 ?>

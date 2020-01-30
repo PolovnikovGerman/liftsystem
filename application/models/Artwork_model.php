@@ -3077,4 +3077,366 @@ Class Artwork_model extends MY_Model
         return true;
     }
 
+    // Save changes in order
+    public function leadorder_changeslog($compare_array, $neworddata, $user_id) {
+        $this->load->model('shipping_model');
+        $msg='';
+        $changes=array();
+        $historylist=array();
+        // Compare Order parameters
+        $orderold=$compare_array['order'];
+        $ordernew=$neworddata['order'];
+        if ($orderold['customer_name']!=$ordernew['customer_name']) {
+            array_push($changes, 'customer name to '.$ordernew['customer_name']);
+            $historylist[]=array(
+                'parameter_name'=>'Customer name',
+                'parameter_oldvalue'=>substr($orderold['customer_name']),
+                'parameter_newvalue'=>$ordernew['customer_name'],
+            );
+        }
+        if ($orderold['customer_email']!=$ordernew['customer_email']) {
+            array_push($changes, 'customer email to '.$ordernew['customer_email']);
+            $historylist[]=array(
+                'parameter_name'=>'Customer email',
+                'parameter_oldvalue'=>$orderold['customer_email'],
+                'parameter_newvalue'=>$ordernew['customer_email'],
+            );
+        }
+        if ($orderold['item_id']!=$ordernew['item_id']) {
+            array_push($changes, 'order item to '.$ordernew['order_items']);
+            $historylist[]=array(
+                'parameter_name'=>'Order Item',
+                'parameter_oldvalue'=>$orderold['order_items'].' ('.$orderold['order_itemnumber'].')',
+                'parameter_newvalue'=>$ordernew['order_items'].' ('.$ordernew['order_itemnumber'].')',
+            );
+        }
+        if (intval($orderold['order_qty'])!=intval($ordernew['order_qty'])) {
+            array_push($changes, 'item qty to '.$ordernew['order_qty']);
+            $historylist[]=array(
+                'parameter_name'=>'Order Item QTY',
+                'parameter_oldvalue'=>intval($orderold['order_qty']),
+                'parameter_newvalue'=>intval($ordernew['order_qty']),
+            );
+        }
+        if (round(floatval($orderold['revenue']),2)!=round(floatval($ordernew['revenue']),2)) {
+            array_push($changes, 'revenue to '.MoneyOutput($ordernew['revenue'],2));
+            $historylist[]=array(
+                'parameter_name'=>'Order Revenue',
+                'parameter_oldvalue'=>MoneyOutput($orderold['revenue'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['revenue'],2),
+            );
+        }
+        if (round(floatval($orderold['shipping']),2)!=round(floatval($ordernew['shipping']),2)) {
+            $historylist[]=array(
+                'parameter_name'=>'Shipping Cost',
+                'parameter_oldvalue'=>MoneyOutput($orderold['shipping'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['shipping'],2),
+            );
+        }
+        if (round(floatval($orderold['tax']),2)!=round(floatval($ordernew['tax']),2)) {
+            $historylist[]=array(
+                'parameter_name'=>'Sales Tax',
+                'parameter_oldvalue'=>MoneyOutput($orderold['tax'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['tax'],2),
+            );
+        }
+        if ($orderold['mischrg_label1']!=$ordernew['mischrg_label1']) {
+            $historylist[]=array(
+                'parameter_name'=>'Misc Charge Label',
+                'parameter_oldvalue'=>$orderold['mischrg_label1'],
+                'parameter_newvalue'=>$ordernew['mischrg_label1'],
+            );
+        }
+        if (round(floatval($orderold['mischrg_val1']),2)!=round(floatval($ordernew['mischrg_val1']),2)) {
+            $historylist[]=array(
+                'parameter_name'=>'Misc Charge',
+                'parameter_oldvalue'=>MoneyOutput($orderold['mischrg_val1'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['mischrg_val1'],2),
+            );
+        }
+        if ($orderold['mischrg_label2']!=$ordernew['mischrg_label2']) {
+            $historylist[]=array(
+                'parameter_name'=>'Misc Charge Label',
+                'parameter_oldvalue'=>$orderold['mischrg_label2'],
+                'parameter_newvalue'=>$ordernew['mischrg_label2'],
+            );
+        }
+        if (round(floatval($orderold['mischrg_val2']),2)!=round(floatval($ordernew['mischrg_val2']),2)) {
+            $historylist[]=array(
+                'parameter_name'=>'Misc Charge',
+                'parameter_oldvalue'=>MoneyOutput($orderold['mischrg_val2'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['mischrg_val2'],2),
+            );
+        }
+        if ($orderold['discount_label']!=$ordernew['discount_label']) {
+            $historylist[]=array(
+                'parameter_name'=>'Discount Label',
+                'parameter_oldvalue'=>$orderold['discount_label'],
+                'parameter_newvalue'=>$ordernew['discount_label'],
+            );
+        }
+        if (round(floatval($orderold['discount_val']),2)!=round(floatval($ordernew['discount_val']),2)) {
+            $historylist[]=array(
+                'parameter_name'=>'Discount Value',
+                'parameter_oldvalue'=>MoneyOutput($orderold['discount_val'],2),
+                'parameter_newvalue'=>MoneyOutput($ordernew['discount_val'],2),
+            );
+        }
+        // Shipping
+        $shippingold=$compare_array['shipping'];
+        $shippingnew=$neworddata['shipping'];
+        // Lets Go
+        if ($shippingold['shipdate']!=$shippingnew['shipdate']) {
+            array_push($changes, 'Shipping Date to '.date('m/d/Y', $shippingnew['shipdate']));
+            $historylist[]=array(
+                'parameter_name'=>'Shipping Date',
+                'parameter_oldvalue'=>(intval($shippingold['shipdate'])==0 ? '' : date('m/d/Y', $shippingold['shipdate'])),
+                'parameter_newvalue'=>(intval($shippingnew['shipdate'])==0 ? '' : date('m/d/Y', $shippingnew['shipdate'])),
+            );
+        }
+        if ($shippingold['arrive_date']!=$shippingnew['arrive_date']) {
+            if (intval($shippingnew['arrive_date'])==0) {
+                array_push($changes, 'Arrive Date  removed');
+            } else {
+                array_push($changes, 'Arrive Date to '.date('m/d/Y', $shippingnew['arrive_date']));
+            }
+            $historylist[]=array(
+                'parameter_name'=>'Arrive Date',
+                'parameter_oldvalue'=>(intval($shippingold['arrive_date'])==0 ? '' : date('m/d/Y', $shippingold['arrive_date'])),
+                'parameter_newvalue'=>(intval($shippingnew['arrive_date'])==0 ? '' : date('m/d/Y', $shippingnew['arrive_date'])),
+            );
+        }
+        if ($shippingold['event_date']!=$shippingnew['event_date']) {
+            if (!empty($shippingnew['event_date'])) {
+                array_push($changes, 'Event Date to '.date('m/d/Y', $shippingnew['shipdate']));
+            } else {
+                array_push($changes,'Event Date removed');
+            }
+            $historylist[]=array(
+                'parameter_name'=>'Event Date',
+                'parameter_oldvalue'=>(intval($shippingold['event_date'])==0 ? '' : date('m/d/Y', $shippingold['event_date'])),
+                'parameter_newvalue'=>(intval($shippingnew['event_date'])==0 ? '' : date('m/d/Y', $shippingnew['event_date'])),
+            );
+        }
+        if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
+            array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
+            $historylist[]=array(
+                'parameter_name'=>'Rush Price',
+                'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
+                'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
+            );
+        }
+        // Shipping Address
+        $shipoldaddress=$compare_array['shipping_address'];
+        $shipnewaddress=$neworddata['shipping_address'];
+        $oldzip='';
+        foreach ($shipoldaddress as $adrrow) {
+            if (!empty($adrrow['zip'])) {
+                $oldzip.=$adrrow['zip'].' ';
+            }
+        }
+        $newzip='';
+        foreach ($shipnewaddress as $adrrow) {
+            if (!empty($adrrow['zip'])) {
+                $newzip.=$adrrow['zip'].' ';
+            }
+        }
+        $oldzip=trim($oldzip);
+        $newzip=trim($newzip);
+        if ($oldzip!=$newzip) {
+            array_push($changes, 'Zip to '.$newzip);
+            $historylist[]=array(
+                'parameter_name'=>'Zip',
+                'parameter_oldvalue'=>$oldzip,
+                'parameter_newvalue'=>$newzip,
+            );
+        }
+        // Contacts
+        $contactsold=$compare_array['contacts'];
+        $contactsnew=$neworddata['contacts'];
+        for ($i=0; $i<count($contactsold); $i++) {
+            if ($contactsold[$i]['contact_name']!=$contactsnew[$i]['contact_name']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Name (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_name'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_name'],
+                );
+            }
+            if ($contactsold[$i]['contact_phone']!=$contactsnew[$i]['contact_phone']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Phone (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_phone'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_phone'],
+                );
+            }
+            if ($contactsold[$i]['contact_emal']!=$contactsnew[$i]['contact_emal']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Email (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_emal'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_emal'],
+                );
+            }
+            if ($contactsold[$i]['contact_art']!=$contactsnew[$i]['contact_art']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Track ART (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_art'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_art'],
+                );
+            }
+            if ($contactsold[$i]['contact_inv']!=$contactsnew[$i]['contact_inv']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Track INV (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_inv'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_inv'],
+                );
+            }
+            if ($contactsold[$i]['contact_trk']!=$contactsnew[$i]['contact_trk']) {
+                $historylist[]=array(
+                    'parameter_name'=>'Contact Track TRK (line '.($i+1).')',
+                    'parameter_oldvalue'=>$contactsold[$i]['contact_trk'],
+                    'parameter_newvalue'=>$contactsnew[$i]['contact_trk'],
+                );
+            }
+        }
+        // Billing
+        $billingold=$compare_array['order_billing'];
+        $billingnew=$neworddata['order_billing'];
+        if ($billingold['customer_name']!=$billingnew['customer_name']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing Name',
+                'parameter_oldvalue'=>$billingold['customer_name'],
+                'parameter_newvalue'=>$billingnew['customer_name'],
+            );
+        }
+        if ($billingold['company']!=$billingnew['company']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing Company',
+                'parameter_oldvalue'=>$billingold['company'],
+                'parameter_newvalue'=>$billingnew['company'],
+            );
+        }
+        if ($billingold['customer_ponum']!=$billingnew['customer_ponum']) {
+            $historylist[]=array(
+                'parameter_name'=>'Customer PO#',
+                'parameter_oldvalue'=>$billingold['customer_ponum'],
+                'parameter_newvalue'=>$billingnew['customer_ponum'],
+            );
+        }
+        if ($billingold['address_1']!=$billingnew['address_1']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing Address (Line 1)',
+                'parameter_oldvalue'=>$billingold['address_1'],
+                'parameter_newvalue'=>$billingnew['address_1'],
+            );
+        }
+        if ($billingold['address_2']!=$billingnew['address_2']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing Address (Line 2)',
+                'parameter_oldvalue'=>$billingold['address_2'],
+                'parameter_newvalue'=>$billingnew['address_2'],
+            );
+        }
+        if ($billingold['city']!=$billingnew['city']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing City',
+                'parameter_oldvalue'=>$billingold['city'],
+                'parameter_newvalue'=>$billingnew['city'],
+            );
+        }
+        if ($billingold['state_id']!=$billingnew['state_id']) {
+            $oldstate=$newstate='';
+            if (!empty($billingold['state_id'])) {
+                $statedat=$this->shipping_model->get_state($billingold['state_id']);
+                $oldstate=$statedat['state_name'].' ('.$statedat['state_code'].')';
+            }
+            if (!empty($billingnew['state_id'])) {
+                $statedat=$this->shipping_model->get_state($billingnew['state_id']);
+                $newstate=$statedat['state_name'].' ('.$statedat['state_code'].')';
+            }
+            $historylist[]=array(
+                'parameter_name'=>'Billing State',
+                'parameter_oldvalue'=>$oldstate,
+                'parameter_newvalue'=>$newstate,
+            );
+        }
+        if ($billingold['zip']!=$billingnew['zip']) {
+            $historylist[]=array(
+                'parameter_name'=>'Billing ZIP/Postal Code',
+                'parameter_oldvalue'=>$billingold['zip'],
+                'parameter_newvalue'=>$billingnew['zip'],
+            );
+        }
+        if ($billingold['country_id']!=$billingnew['country_id']) {
+            $oldcntr=$newcntr='';
+            if (!empty($billingold['country_id'])) {
+                $cntrdat=$this->shipping_model->get_country($billingold['country_id']);
+                $oldcntr=$cntrdat['country_name'];
+            }
+            if (!empty($billingnew['country_id'])) {
+                $cntrdat=$this->shipping_model->get_country($billingnew['country_id']);
+                $newcntr=$cntrdat['country_name'];
+            }
+            $historylist[]=array(
+                'parameter_name'=>'Billing Country',
+                'parameter_oldvalue'=>$oldcntr,
+                'parameter_newvalue'=>$newcntr,
+            );
+        }
+        // Artwork
+        $artworkold=$compare_array['artwork'];
+        $artworknew=$neworddata['artwork'];
+        if ($artworkold['artwork_rush']!=$artworknew['artwork_rush']) {
+            array_push($changes, 'order '.($artworknew['artwork_rush']==1 ? ' RUSH' : 'NOT RUSH'));
+            $historylist[]=array(
+                'parameter_name'=>'Order Rush',
+                'parameter_oldvalue'=>$artworkold['artwork_rush'],
+                'parameter_newvalue'=>$artworknew['artwork_rush'],
+            );
+        }
+        if ($artworkold['artwork_blank']!=$artworknew['artwork_blank']) {
+            array_push($changes, 'order '.($artworknew['artwork_blank']==1 ? ' BLANK' : 'NOT BLANK'));
+            $historylist[]=array(
+                'parameter_name'=>'Order Blank',
+                'parameter_oldvalue'=>$artworkold['artwork_blank'],
+                'parameter_newvalue'=>$artworknew['artwork_blank'],
+            );
+        }
+        if ($artworkold['artstage']!=$artworknew['artstage']) {
+            array_push($changes, 'ART Stage '.$artworknew['artstage_txt']);
+            $historylist[]=array(
+                'parameter_name'=>'ART Stage',
+                'parameter_oldvalue'=>$artworkold['artstage_txt'],
+                'parameter_newvalue'=>$artworknew['artstage_txt'],
+            );
+        }
+        // Build Main message
+        if (count($historylist)>0) {
+            $artwork_id=$artworknew['artwork_id'];
+            if (count($changes)>0) {
+                $msg='Changed';
+                foreach ($changes as $crow) {
+                    $msg.=' '.$crow.',';
+                }
+                $msg=substr($msg,0,-1);
+            }
+            $this->db->set('artwork_id',$artwork_id);
+            $this->db->set('user_id',$user_id);
+            $this->db->set('created_time', time());
+            $this->db->set('message',$msg);
+            $this->db->insert('ts_artwork_history');
+            $newid=$this->db->insert_id();
+            // Add Details
+            foreach ($historylist as $row) {
+                $this->db->set('artwork_history_id', $newid);
+                $this->db->set('parameter_name', $row['parameter_name']);
+                $this->db->set('parameter_oldvalue', $row['parameter_oldvalue']);
+                $this->db->set('parameter_newvalue', $row['parameter_newvalue']);
+                $this->db->insert('ts_artwork_historydetails');
+            }
+            // Insert
+        }
+        return TRUE;
+    }
+
+
 }

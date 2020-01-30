@@ -37,6 +37,7 @@
  * @property Balances_model balances_model
  * @property Tickets_model tickets_model
  * @property Batches_model batches_model
+ * @property Calendars_model calendars_model
  */
 
 class MY_Model extends CI_Model

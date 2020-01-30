@@ -3858,7 +3858,7 @@ Class Leadorder_model extends My_Model {
                 }
             }
             $out['order_id']=$order_id;
-            $newdata=$this->order_model->get_order_detail($order_id);
+            $newdata=$this->orders_model->get_order_detail($order_id);
             $newprofit=$newdata['profit'];
         } else {
             $res=$this->_save_oldorder($order, $user_id);
@@ -4010,85 +4010,83 @@ Class Leadorder_model extends My_Model {
         return $res;
     }
 
-//    private function _save_oldorder($data, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        // Calc New Profit
-//        $order_id=$data['order_id'];
-//        if ($data['order_cog']=='') {
-//            $profit=floatval($data['revenue'])*$this->config->item('default_profit')/100;
-//            $profit_perc=NULL;
-//        } else {
-//            $profit=$this->_leadorder_profit($data);
-//            if (floatval($data['revenue'])==0) {
-//                $profit_perc=NULL;
-//            } else {
-//                $profit_perc=round(($profit/floatval($data['revenue']))*100,1);
-//            }
-//        }
-//        $res['profit']=$profit;
-//        $order_cog=($data['order_cog']=='' ? NULL : floatval($data['order_cog']));
-//        /* Update Order */
-//        $this->db->set('order_date',$data['order_date']);
-//        $this->db->set('brand_id',$data['brand_id']);
-//        $this->db->set('customer_name',$data['customer_name']);
-//        $this->db->set('customer_email',$data['customer_email']);
-//        $this->db->set('revenue', floatval($data['revenue']));
-//        $this->db->set('shipping', floatval($data['shipping']));
-//        $this->db->set('is_shipping',$data['is_shipping']);
-//        $this->db->set('tax',floatval($data['tax']));
-//        // $this->db->set('cc_fee',$cc_fee*$ccfee_sum);
-//        $this->db->set('cc_fee', $data['cc_fee']);
-//        $this->db->set('order_cog',$order_cog);
-//        $this->db->set('update_date',time());
-//        $this->db->set('update_usr',$user_id);
-//        $this->db->set('item_id',$data['item_id']);
-//        $this->db->set('order_itemnumber',$data['order_itemnumber']);
-//        $this->db->set('order_items',$data['order_items']);
-//        $this->db->set('order_qty', $data['order_qty']);
-//        $this->db->set('shipdate', $data['shipdate']);
-//        $this->db->set('order_blank', $data['order_blank']);
-//        $this->db->set('order_rush', $data['order_rush']);
-//        /* Profit, Profit Perc */
-//        $this->db->set('profit',$profit);
-//        $this->db->set('profit_perc',$profit_perc);
-//        $this->db->set('order_usr_repic',$data['order_usr_repic']);
-//        $this->db->set('order_system','old');
-//        if ($order_id==0) {
-//            $this->db->set('create_usr',$user_id);
-//            $this->db->set('create_date',time());
-//            $this->db->insert('ts_orders');
-//            if ($this->db->insert_id()==0) {
-//                $res['msg']='Error during save order data';
-//                return $res;
-//            } else {
-//                $res['result']=$order_id=$this->db->insert_id();
-//                $this->load->model('order_model');
-//                $neworder_num=$this->order_model->get_last_ordernum();
-//                // $this->db->set('order_num',$neworder_num+1);
-//                $this->db->set('order_num',$neworder_num);
-//                $this->db->where('order_id', $order_id);
-//                $this->db->update('ts_orders');
-//                // $res['neworder']=$neworder_num+1;
-//                $res['neworder']=$neworder_num;
-//                /* Get New total */
-//            }
-//        } else {
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_orders');
-//            $res['result']=$this->success_result;
-//            /* Try to Update ARTWORK */
-//            $this->db->set('customer',$data['customer_name']);
-//            $this->db->set('customer_email',$data['customer_email']);
-//            $this->db->set('item_id',$data['item_id']);
-//            $this->db->set('item_number',$data['order_itemnumber']);
-//            $this->db->set('other_item',$data['order_items']);
-//            $this->db->set('item_name',$data['order_items']);
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_artworks');
-//        }
-//        return $res;
-//    }
-//
+    private function _save_oldorder($data, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        // Calc New Profit
+        $order_id=$data['order_id'];
+        if ($data['order_cog']=='') {
+            $profit=floatval($data['revenue'])*$this->config->item('default_profit')/100;
+            $profit_perc=NULL;
+        } else {
+            $profit=$this->_leadorder_profit($data);
+            if (floatval($data['revenue'])==0) {
+                $profit_perc=NULL;
+            } else {
+                $profit_perc=round(($profit/floatval($data['revenue']))*100,1);
+            }
+        }
+        $res['profit']=$profit;
+        $order_cog=($data['order_cog']=='' ? NULL : floatval($data['order_cog']));
+        // Update Order
+        $this->db->set('order_date',$data['order_date']);
+        $this->db->set('brand_id',$data['brand_id']);
+        $this->db->set('customer_name',$data['customer_name']);
+        $this->db->set('customer_email',$data['customer_email']);
+        $this->db->set('revenue', floatval($data['revenue']));
+        $this->db->set('shipping', floatval($data['shipping']));
+        $this->db->set('is_shipping',$data['is_shipping']);
+        $this->db->set('tax',floatval($data['tax']));
+        // $this->db->set('cc_fee',$cc_fee*$ccfee_sum);
+        $this->db->set('cc_fee', $data['cc_fee']);
+        $this->db->set('order_cog',$order_cog);
+        $this->db->set('update_date',time());
+        $this->db->set('update_usr',$user_id);
+        $this->db->set('item_id',$data['item_id']);
+        $this->db->set('order_itemnumber',$data['order_itemnumber']);
+        $this->db->set('order_items',$data['order_items']);
+        $this->db->set('order_qty', $data['order_qty']);
+        $this->db->set('shipdate', $data['shipdate']);
+        $this->db->set('order_blank', $data['order_blank']);
+        $this->db->set('order_rush', $data['order_rush']);
+        /* Profit, Profit Perc */
+        $this->db->set('profit',$profit);
+        $this->db->set('profit_perc',$profit_perc);
+        $this->db->set('order_usr_repic',$data['order_usr_repic']);
+        $this->db->set('order_system','old');
+        if ($order_id==0) {
+            $this->db->set('create_usr',$user_id);
+            $this->db->set('create_date',time());
+            $this->db->insert('ts_orders');
+            if ($this->db->insert_id()==0) {
+                $res['msg']='Error during save order data';
+                return $res;
+            } else {
+                $res['result']=$order_id=$this->db->insert_id();
+                $this->load->model('order_model');
+                $neworder_num=$this->orders_model->get_last_ordernum();
+                $this->db->set('order_num',$neworder_num);
+                $this->db->where('order_id', $order_id);
+                $this->db->update('ts_orders');
+                $res['neworder']=$neworder_num;
+                /* Get New total */
+            }
+        } else {
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            $res['result']=$this->success_result;
+            /* Try to Update ARTWORK */
+            $this->db->set('customer',$data['customer_name']);
+            $this->db->set('customer_email',$data['customer_email']);
+            $this->db->set('item_id',$data['item_id']);
+            $this->db->set('item_number',$data['order_itemnumber']);
+            $this->db->set('other_item',$data['order_items']);
+            $this->db->set('item_name',$data['order_items']);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_artworks');
+        }
+        return $res;
+    }
+
     // Check New Order
     private function _check_new_order($leadorder) {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -4878,75 +4876,75 @@ Class Leadorder_model extends My_Model {
         return $shipcost;
     }
 
-//    private function _changeprofit_notification($netdat, $orderdata, $oldorder, $user_id) {
-//        $this->load->model('balances_model');
-//        $this->load->model('order_model');
-//        $total_options=array(
-//            'type'=>'week',
-//            'start'=>$this->config->item('netprofit_start'),
-//        );
-//        $rundat=$this->balances_model->get_netprofit_runs($total_options);
-//        $newtotalrun=$rundat['out_debtval'];
-//        // Prepare to notification Email
-//        $start_month=date('M',$netdat['datebgn']);
-//        $start_year=date('Y',$netdat['datebgn']);
-//        $end_month=date('M',$netdat['dateend']);
-//        $end_year=date('Y',$netdat['dateend']);
-//        if ($start_month!=$end_month) {
-//            $weekname=$start_month.'/'.$end_month;
-//        } else {
-//            $weekname=$start_month;
-//        }
-//        $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
-//        if ($start_year!=$end_year) {
-//            $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
-//        } else {
-//            $weekname.=', '.$start_year;
-//        }
-//        if ($netdat['oldtotalrun']<0) {
-//            $outoldrundebt='($'.number_format(abs($netdat['oldtotalrun']),0,'.',',').')';
-//        } else {
-//            $outoldrundebt='$'.number_format($netdat['oldtotalrun'],0,'.',',');
-//        }
-//        if ($newtotalrun<0) {
-//            $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
-//        } else {
-//            $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
-//        }
-//        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
-//        $this->db->from('netprofit np');
-//        $this->db->where('np.profit_id',$netdat['netdat_id']);
-//        $netdata=$this->db->get()->row_array();
-//        $totalcost=floatval($netdata['profit_operating'])+floatval($netdata['profit_payroll'])+floatval($netdata['profit_advertising'])+floatval($netdata['profit_projects'])+floatval($netdata['profit_purchases']);
-//        $netprofit=floatval($netdata['gross_profit'])-$totalcost;
-//        $newdebt=floatval($netprofit)-floatval($netdata['profit_owners'])-floatval($netdata['profit_saved'])-floatval($netdata['od2']);
-//        if ($newdebt<0) {
-//            $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
-//        } else {
-//            $outnewdebt='$'.number_format($newdebt,0,'.',',');
-//        }
-//        if ($netdat['olddebt']<0) {
-//            $outolddebt='($'.number_format(abs($netdat['olddebt']),0,'.',',').')';
-//        } else {
-//            $outolddebt='$'.number_format(abs($netdat['olddebt']),0,'.',',');
-//        }
-//
-//        $orderdata['oldprofit']=$oldorder['profit'];
-//        $orderdata['oldrevenue']=$oldorder['revenue'];
-//        $notifoptions=array(
-//            'orderchange'=>1,
-//            'orderdata'=>$orderdata,
-//            'weeknum'=>$weekname,
-//            'user_id'=>$user_id,
-//            'oldtotalrun'=>$outoldrundebt,
-//            'newtotalrun'=>$outnewrundebt,
-//            'olddebt'=>$outolddebt,
-//            'newdebt'=>$outnewdebt,
-//        );
-//        $this->order_model->notify_netdebtchanged($notifoptions);
-//        return TRUE;
-//    }
-//
+    private function _changeprofit_notification($netdat, $orderdata, $oldorder, $user_id) {
+        $this->load->model('balances_model');
+        $this->load->model('orders_model');
+        $total_options=array(
+            'type'=>'week',
+            'start'=>$this->config->item('netprofit_start'),
+        );
+        $rundat=$this->balances_model->get_netprofit_runs($total_options);
+        $newtotalrun=$rundat['out_debtval'];
+        // Prepare to notification Email
+        $start_month=date('M',$netdat['datebgn']);
+        $start_year=date('Y',$netdat['datebgn']);
+        $end_month=date('M',$netdat['dateend']);
+        $end_year=date('Y',$netdat['dateend']);
+        if ($start_month!=$end_month) {
+            $weekname=$start_month.'/'.$end_month;
+        } else {
+            $weekname=$start_month;
+        }
+        $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
+        if ($start_year!=$end_year) {
+            $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
+        } else {
+            $weekname.=', '.$start_year;
+        }
+        if ($netdat['oldtotalrun']<0) {
+            $outoldrundebt='($'.number_format(abs($netdat['oldtotalrun']),0,'.',',').')';
+        } else {
+            $outoldrundebt='$'.number_format($netdat['oldtotalrun'],0,'.',',');
+        }
+        if ($newtotalrun<0) {
+            $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
+        } else {
+            $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
+        }
+        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+        $this->db->from('netprofit np');
+        $this->db->where('np.profit_id',$netdat['netdat_id']);
+        $netdata=$this->db->get()->row_array();
+        $totalcost=floatval($netdata['profit_operating'])+floatval($netdata['profit_payroll'])+floatval($netdata['profit_advertising'])+floatval($netdata['profit_projects'])+floatval($netdata['profit_purchases']);
+        $netprofit=floatval($netdata['gross_profit'])-$totalcost;
+        $newdebt=floatval($netprofit)-floatval($netdata['profit_owners'])-floatval($netdata['profit_saved'])-floatval($netdata['od2']);
+        if ($newdebt<0) {
+            $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
+        } else {
+            $outnewdebt='$'.number_format($newdebt,0,'.',',');
+        }
+        if ($netdat['olddebt']<0) {
+            $outolddebt='($'.number_format(abs($netdat['olddebt']),0,'.',',').')';
+        } else {
+            $outolddebt='$'.number_format(abs($netdat['olddebt']),0,'.',',');
+        }
+
+        $orderdata['oldprofit']=$oldorder['profit'];
+        $orderdata['oldrevenue']=$oldorder['revenue'];
+        $notifoptions=array(
+            'orderchange'=>1,
+            'orderdata'=>$orderdata,
+            'weeknum'=>$weekname,
+            'user_id'=>$user_id,
+            'oldtotalrun'=>$outoldrundebt,
+            'newtotalrun'=>$outnewrundebt,
+            'olddebt'=>$outolddebt,
+            'newdebt'=>$outnewdebt,
+        );
+        $this->orders_model->notify_netdebtchanged($notifoptions);
+        return TRUE;
+    }
+
     // Get Previous Order
     private function _get_previous_order($order_id) {
         $order=0;
@@ -8032,38 +8030,38 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    private function _prepare_netexport($artsync, $artsyncdoc) {
-//        // Main Data
-//
-//        $this->db->set('user_id', $artsync['user_id']);
-//        $this->db->set('order_id', $artsync['order_id']);
-//        $this->db->set('customer', $artsync['customer']);
-//        $this->db->set('item_descript', $artsync['item_descript']);
-//        $this->db->set('rush', $artsync['rush']);
-//        $this->db->set('blank', $artsync['blank']);
-//        $this->db->set('art_stage', $artsync['art_stage']);
-//        $this->db->set('redraw_stage', $artsync['redraw_stage']);
-//        $this->db->set('vector_stage', $artsync['vector_stage']);
-//        $this->db->set('proof_stage', $artsync['proof_stage']);
-//        $this->db->set('approv_stage', $artsync['approv_stage']);
-//        $this->db->insert('ts_artdata_sync');
-//
-//        // Add documents
-//        foreach ($artsyncdoc as $row) {
-//            $this->db->set('user_id', $row['user_id']);
-//            $this->db->set('order_id', $row['order_id']);
-//            if (!empty($row['artwork_proof_id'])) {
-//                $this->db->set('artwork_proof_id', $row['artwork_proof_id']);
-//            }
-//            $this->db->set('operation', $row['operation']);
-//            if (!empty($row['proofdoc_link'])) {
-//                $this->db->set('proofdoc_link', $row['proofdoc_link']);
-//            }
-//            $this->db->insert('ts_artdoc_sync');
-//        }
-//        return TRUE;
-//    }
-//
+    private function _prepare_netexport($artsync, $artsyncdoc) {
+        // Main Data
+
+        $this->db->set('user_id', $artsync['user_id']);
+        $this->db->set('order_id', $artsync['order_id']);
+        $this->db->set('customer', $artsync['customer']);
+        $this->db->set('item_descript', $artsync['item_descript']);
+        $this->db->set('rush', $artsync['rush']);
+        $this->db->set('blank', $artsync['blank']);
+        $this->db->set('art_stage', $artsync['art_stage']);
+        $this->db->set('redraw_stage', $artsync['redraw_stage']);
+        $this->db->set('vector_stage', $artsync['vector_stage']);
+        $this->db->set('proof_stage', $artsync['proof_stage']);
+        $this->db->set('approv_stage', $artsync['approv_stage']);
+        $this->db->insert('ts_artdata_sync');
+
+        // Add documents
+        foreach ($artsyncdoc as $row) {
+            $this->db->set('user_id', $row['user_id']);
+            $this->db->set('order_id', $row['order_id']);
+            if (!empty($row['artwork_proof_id'])) {
+                $this->db->set('artwork_proof_id', $row['artwork_proof_id']);
+            }
+            $this->db->set('operation', $row['operation']);
+            if (!empty($row['proofdoc_link'])) {
+                $this->db->set('proofdoc_link', $row['proofdoc_link']);
+            }
+            $this->db->insert('ts_artdoc_sync');
+        }
+        return TRUE;
+    }
+
     // Count # of Order charges attempts
     public function count_charges_attempts($order_id) {
         $this->db->select('count(*) as cnt');
@@ -8118,57 +8116,57 @@ Class Leadorder_model extends My_Model {
         return $res;
     }
 
-//    private function _emptyzip_notification($leadorder, $user_id) {
-//        $this->load->library('email');
-//        $this->db->select('user_name');
-//        $this->db->from('users');
-//        $this->db->where('user_id', $user_id);
-//        $usrres=$this->db->get()->row_array();
-//        $user_name=$usrres['user_name'];
-//        $config['protocol'] = 'sendmail';
-//        $config['charset'] = 'utf8';
-//        $config['wordwrap'] = TRUE;
-//        $config['mailtype'] = 'text';
-//        $this->email->initialize($config);
-//        $this->email->from($this->config->item('email_notification_sender'));
-//        $this->email->to($this->config->item('sean_email'));
-//        $subject='Empty Zip code - Order #'.$leadorder['order']['order_num'];
-//        $this->email->subject($subject);
-//        $message='Hi Sean,'.PHP_EOL;
-//        $message.=PHP_EOL;
-//        $message.='Order #'.$leadorder['order']['order_num'].', shipping cost '.  MoneyOutput($leadorder['order']['shipping']).' was placed with empty Zip code by '.$user_name.PHP_EOL;
-//        $message.='Shipping Address:'.PHP_EOL;
-//        $shipaddress=$leadorder['shipping_address'];
-//        foreach ($shipaddress as $adrrow) {
-//            if (!empty($adrrow['ship_contact'])) {
-//                $message.='Contact Name : '.$adrrow['ship_contact'].PHP_EOL;
-//            }
-//            if (!empty($adrrow['ship_company'])) {
-//                $message.='Shipping Company : '.$adrrow['ship_company'].PHP_EOL;
-//            }
-//            $message.='Address : '.PHP_EOL;
-//            if (!empty($adrrow['ship_address1'])) {
-//                $message.=$adrrow['ship_address1'].' ';
-//            }
-//            if (!empty($adrrow['ship_address2'])) {
-//                $message.=$adrrow['ship_address2'];
-//            }
-//            $message.=PHP_EOL;
-//            if (!empty($adrrow['city'])) {
-//                $message.='City :'.$adrrow['city'].PHP_EOL;
-//            }
-//            if (!empty($adrrow['out_country'])) {
-//                $message.='Country : '.$adrrow['out_country'].PHP_EOL;
-//            }
-//            if (!empty($adrrow['out_zip'])) {
-//                $message.='State : '.$adrrow['out_zip'].PHP_EOL;
-//            }
-//        }
-//        $this->email->message($message);
-//        $this->email->send();
-//        $this->email->clear();
-//    }
-//
+    private function _emptyzip_notification($leadorder, $user_id) {
+        $this->load->library('email');
+        $this->db->select('user_name');
+        $this->db->from('users');
+        $this->db->where('user_id', $user_id);
+        $usrres=$this->db->get()->row_array();
+        $user_name=$usrres['user_name'];
+        $config['protocol'] = 'sendmail';
+        $config['charset'] = 'utf8';
+        $config['wordwrap'] = TRUE;
+        $config['mailtype'] = 'text';
+        $this->email->initialize($config);
+        $this->email->from($this->config->item('email_notification_sender'));
+        $this->email->to($this->config->item('sean_email'));
+        $subject='Empty Zip code - Order #'.$leadorder['order']['order_num'];
+        $this->email->subject($subject);
+        $message='Hi Sean,'.PHP_EOL;
+        $message.=PHP_EOL;
+        $message.='Order #'.$leadorder['order']['order_num'].', shipping cost '.  MoneyOutput($leadorder['order']['shipping']).' was placed with empty Zip code by '.$user_name.PHP_EOL;
+        $message.='Shipping Address:'.PHP_EOL;
+        $shipaddress=$leadorder['shipping_address'];
+        foreach ($shipaddress as $adrrow) {
+            if (!empty($adrrow['ship_contact'])) {
+                $message.='Contact Name : '.$adrrow['ship_contact'].PHP_EOL;
+            }
+            if (!empty($adrrow['ship_company'])) {
+                $message.='Shipping Company : '.$adrrow['ship_company'].PHP_EOL;
+            }
+            $message.='Address : '.PHP_EOL;
+            if (!empty($adrrow['ship_address1'])) {
+                $message.=$adrrow['ship_address1'].' ';
+            }
+            if (!empty($adrrow['ship_address2'])) {
+                $message.=$adrrow['ship_address2'];
+            }
+            $message.=PHP_EOL;
+            if (!empty($adrrow['city'])) {
+                $message.='City :'.$adrrow['city'].PHP_EOL;
+            }
+            if (!empty($adrrow['out_country'])) {
+                $message.='Country : '.$adrrow['out_country'].PHP_EOL;
+            }
+            if (!empty($adrrow['out_zip'])) {
+                $message.='State : '.$adrrow['out_zip'].PHP_EOL;
+            }
+        }
+        $this->email->message($message);
+        $this->email->send();
+        $this->email->clear();
+    }
+
 //    public function check_neworder_payment($leadorder) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
 //        $charges=$leadorder['charges'];
