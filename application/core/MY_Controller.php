@@ -36,7 +36,9 @@ if (!defined('BASEPATH'))
  * @property Artlead_model artlead_model
  * @property Shipping_model shipping_model
  * @property Engaded_model engaded_model
-   */
+ * @property Balances_model balances_model
+ * @property Tickets_model tickets_model
+*/
 
 
 class Base_Controller extends CI_Controller
