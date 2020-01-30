@@ -3835,12 +3835,14 @@ Class Leadorder_model extends My_Model {
             $chrgres=$this->_save_order_chargedata($charges, $order_id, $user_id);
             if ($chrgres['result']==$this->error_result) {
                 $out['msg']=$chrgres['msg'];
+                return $out;
             }
             // Payments
             $payments=$leadorder['payments'];
             $paymres=$this->_save_order_payments($payments, $order_id, $user_id);
             if ($paymres['result']==$this->error_result) {
                 $out['msg']=$paymres['msg'];
+                return $out;
             }
             $delrecords=$leadorder['delrecords'];
             $this->_delete_leadorder_components($delrecords);
@@ -4167,645 +4169,632 @@ Class Leadorder_model extends My_Model {
         return $res;
     }
 
-//    // Save New Order
-//    private function _save_neworder($data, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        // Calc New Profit
-//        $order_id=$data['order_id'];
-//        if ($data['order_cog']=='') {
-//            $profit=floatval($data['revenue'])*$this->config->item('default_profit')/100;
-//            $profit_perc=NULL;
-//        } else {
-//            $profit=$this->_leadorder_profit($data);
-//            if (floatval($data['revenue'])==0) {
-//                $profit_perc=NULL;
-//            } else {
-//                $profit_perc=round(($profit/floatval($data['revenue']))*100,1);
-//            }
-//        }
-//        $res['profit']=$profit;
-//        $order_cog=($data['order_cog']=='' ? NULL : floatval($data['order_cog']));
-//        // Move upload file
-//        if ($data['balance_manage']==3) {
-//            if ($data['newappcreditlink']<0) {
-//                // New Upload Link
-//                $docsrc=$data['credit_applink'];
-//                $docparams=$this->func->extract_filename($docsrc);
-//                $newdocname=$this->func->uniq_link(15).'.'.$docparams['ext'];
-//                $doctarget=$this->config->item('creditappdoc').$newdocname;
-//                if (!is_dir($this->config->item('creditappdoc'))) {
-//                    mkdir($this->config->item('creditappdoc'),0777);
-//                }
-//                $rescp=@copy($docsrc, $doctarget);
-//                if ($rescp) {
-//                    $data['credit_applink']=$this->config->item('creditappdoc_relative').$newdocname;
-//                }
-//            }
-//        } else {
-//            $data['credit_applink']=NULL;
-//        }
-//        /* Update Order */
-//        $this->db->set('order_date',$data['order_date']);
-//        $this->db->set('brand_id',(empty($data['brand_id']) ? $this->config->item('default_brand') : $data['brand_id']));
-//        $this->db->set('customer_name',$data['customer_name']);
-//
-//        $this->db->set('revenue', floatval($data['revenue']));
-//        $this->db->set('shipping', floatval($data['shipping']));
-//        $this->db->set('is_shipping',intval($data['is_shipping']));
-//
-//        $this->db->set('tax',floatval($data['tax']));
-//        $this->db->set('cc_fee', intval($data['cc_fee']));
-//        $this->db->set('order_cog',$order_cog);
-//        $this->db->set('update_date',time());
-//        $this->db->set('update_usr',$user_id);
-//        $this->db->set('item_id',(empty($data['item_id']) ? NULL : $data['item_id']));
-//        $this->db->set('order_itemnumber',$data['order_itemnumber']);
-//        $this->db->set('order_items',$data['order_items']);
-//        $this->db->set('order_qty', intval($data['order_qty']));
-//        $this->db->set('shipdate', $data['shipdate']);
-//        $this->db->set('order_blank', intval($data['order_blank']));
-//        $this->db->set('order_rush', intval($data['order_rush']));
-//        /* Profit, Profit Perc */
-//        $this->db->set('profit',$profit);
-//        $this->db->set('profit_perc',$profit_perc);
-//        $this->db->set('order_usr_repic',$data['order_usr_repic']);
-//        $this->db->set('balance_manage', $data['balance_manage']);
-//        $this->db->set('balance_term', $data['balance_term']);
-//        $this->db->set('credit_appdue', $data['credit_appdue']);
-//        $this->db->set('credit_applink',$data['credit_applink']);
-//        $this->db->set('order_system', 'new');
-//        /*Miscs, Discount */
-//        $this->db->set('invoice_message', $data['invoice_message']);
-//        $this->db->set('mischrg_label1', $data['mischrg_label1']);
-//        $this->db->set('mischrg_val1', floatval($data['mischrg_val1']));
-//        $this->db->set('mischrg_label2', $data['mischrg_label2']);
-//        $this->db->set('mischrg_val2', floatval($data['mischrg_val2']));
-//        $this->db->set('discount_label', $data['discount_label']);
-//        $this->db->set('discount_val', floatval($data['discount_val']));
-//        $this->db->set('discount_descript', $data['discount_descript']);
-//        if ($order_id==0) {
-//            $confirm=strtoupper($this->func->uniq_link(2,'chars')).'-'.$this->func->uniq_link(5,'digits');
-//            $this->db->set('order_confirmation', $confirm);
-//            $this->db->set('create_usr',$user_id);
-//            $this->db->set('create_date',time());
-//            $this->db->insert('ts_orders');
-//            if ($this->db->insert_id()==0) {
-//                $res['msg']='Error during save order data';
-//                return $res;
-//            } else {
-//                $res['result']=$order_id=$this->db->insert_id();
-//                $this->load->model('order_model');
-//                $neworder_num=$this->order_model->get_last_ordernum();
-//                // $this->db->set('order_num',$neworder_num+1);
-//                $this->db->set('order_num',$neworder_num);
-//                $this->db->where('order_id', $order_id);
-//                $this->db->update('ts_orders');
-//                // $res['neworder']=$neworder_num+1;
-//                $res['neworder']=$neworder_num;
-//                /* Get New total */
-//            }
-//        } else {
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_orders');
-//            $res['result']=$this->success_result;
-//            // Update ART View parameters
-//            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
-//            $this->db->from('ts_orders');
-//            $this->db->where('order_id',$order_id);
-//            $statres=$this->db->get()->row_array();
-//            $this->db->where('order_id',$order_id);
-//            $this->db->set('order_artview', $statres['aprrovview']);
-//            $this->db->set('order_placed', $statres['placeord']);
-//            $this->db->update('ts_orders');
-//            /* Try to Update ARTWORK */
-//            $this->db->set('customer',$data['customer_name']);
-//            $this->db->set('customer_email',$data['customer_email']);
-//            $this->db->set('item_id',$data['item_id']);
-//            $this->db->set('item_number',$data['order_itemnumber']);
-//            $this->db->set('other_item',$data['order_items']);
-//            $this->db->set('item_name',$data['order_items']);
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_artworks');
-//        }
-//        // Add / edit Credit App Doc
-//        $this->load->model('creditapp_model');
-//        if ($data['balance_manage']==3) {
-//            $datapp=array(
-//                'credit_app_id'=>$data['credit_app_id'],
-//                'user'=>$user_id,
-//                'customer'=>$data['customer_name'],
-//                'document_link'=>$data['credit_applink'],
-//                'order_id'=>$order_id,
-//            );
-//            $this->creditapp_model->update_order_creditapp($datapp);
-//        } else {
-//            $this->creditapp_model->remove_order_creditapp($order_id);
-//        }
-//        return $res;
-//    }
-//
-//    // Save Order Contacts
-//    private function _save_order_contacts($contacts, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $first_email=$art_contact=$art_email='';
-//        $default_email=$default_contact='';
-//        foreach ($contacts as $row) {
-//            $phone=  str_replace('-', '', $row['contact_phone']);
-//            if (!empty($phone)) {
-//                $phone=$this->func->formatPhoneNumber($phone);
-//            }
-//            if (!empty($row['contact_emal']) && empty($default_email)) {
-//                $default_email=$row['contact_emal'];
-//                $default_contact=$row['contact_name'];
-//            }
-//            $this->db->set('contact_name', $row['contact_name']);
-//            // $this->db->set('contact_phone', $row['contact_phone']);
-//            $this->db->set('contact_phone', $phone);
-//            $this->db->set('contact_emal', $row['contact_emal']);
-//            $this->db->set('contact_art', $row['contact_art']);
-//            $this->db->set('contact_inv', $row['contact_inv']);
-//            $this->db->set('contact_trk', $row['contact_trk']);
-//            if ($row['order_contact_id']<0) {
-//                $this->db->set('order_id', $order_id);
-//                $this->db->insert('ts_order_contacts');
-//                if (!$this->db->insert_id()) {
-//                    $res['msg']='Insert in Contact Fired with error';
-//                    return $res;
-//                }
-//            } else {
-//                $this->db->where('order_contact_id', $row['order_contact_id']);
-//                $this->db->update('ts_order_contacts');
-//            }
-//            if ($first_email=='' && $row['contact_inv']==1 && !empty($row['contact_emal'])) {
-//                $first_email=$row['contact_emal'];
-//            }
-//            if ($art_email=='' && $row['contact_art']==1 && !empty($row['contact_emal'])) {
-//                $art_email=$row['contact_emal'];
-//                $art_contact=$row['contact_name'];
-//            }
-//        }
-//        if (empty($first_email)) {
-//            $first_email=$default_email;
-//        }
-//        if (empty($art_email)) {
-//            $art_email=$default_email;
-//            $art_contact=$default_contact;
-//        }
-//        if (!empty($first_email)) {
-//            $this->db->set('customer_email', $first_email);
-//            $this->db->where('order_id', $order_id);
-//            $this->db->update('ts_orders');
-//        }
-//        if (!empty($art_email)) {
-//            $this->db->set('customer',$art_contact);
-//            $this->db->set('customer_email',$art_email);
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_artworks');
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
-//    // Save Order Items Data
-//    private function _save_order_items($order_items, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//
-//        if (count($order_items)==1) {
-//            if ($order_items[0]['item_id']<0) {
-//                $itemcolors=$order_items[0]['items'];
-//                $this->db->set('order_items', $itemcolors[0]['item_description']);
-//            } else {
-//                $this->db->set('order_items', $order_items[0]['item_name']);
-//            }
-//            $this->db->set('order_itemnumber', $order_items[0]['item_number']);
-//            $this->db->set('item_id', $order_items[0]['item_id']);
-//        } else {
-//            // Check Multi Item
-//            $item_id=$order_items[0]['item_id'];
-//            $itemcolors=$order_items[0]['items'];
-//            $itemdescr=$itemcolors[0]['item_description'];
-//            foreach ($order_items as $irow) {
-//                if ($item_id!=$irow['item_id']) {
-//                    $item_id=$this->config->item('multy_id');
-//                    break;
-//                }
-//                foreach ($irow['items'] as $colorrow) {
-//                    if ($colorrow['item_description']!=$itemdescr) {
-//                        $itemdescr='';
-//                    }
-//                }
-//            }
-//            $orditm=$this->order_model->get_itemdat($item_id);
-//            if ($item_id<0 && $item_id!=$this->config->item('multy_id') && !empty($itemdescr)) {
-//                $this->db->set('order_items', $itemdescr);
-//            } else {
-//                $this->db->set('order_items', $orditm['item_name']);
-//            }
-//            $this->db->set('order_itemnumber', $orditm['item_number']);
-//            $this->db->set('item_id', $item_id);
-//            /*
-//            $orditem_id=$this->config->item('multy_id');
-//            $orditm=$this->order_model->get_itemdat($orditem_id);
-//            $this->db->set('order_items', $orditm['item_name']);
-//            $this->db->set('order_itemnumber', $orditm['item_number']);
-//            $this->db->set('item_id', $orditem_id);
-//             *
-//             */
-//        }
-//        $this->db->where('order_id', $order_id);
-//        $this->db->update('ts_orders');
-//        $totalqty=0;
-//        $itmidx=0;
-//        foreach ($order_items as $row) {
-//            $rowprice=($row['item_qty']==0 ? 0 : $row['item_subtotal']/$row['item_qty']);
-//            $this->db->set('item_id', $row['item_id']);
-//            $this->db->set('item_qty', $row['item_qty']);
-//            $this->db->set('item_price', $rowprice);
-//            $this->db->set('imprint_price', $row['print_price']);
-//            $this->db->set('setup_price', $row['setup_price']);
-//
-//            if ($row['order_item_id']<0) {
-//                $this->db->set('order_id', $order_id);
-//                $this->db->insert('ts_order_items');
-//                if (!$this->db->insert_id()) {
-//                    $res['msg']='Error During Insert data into Order Items';
-//                    return $res;
-//                } else {
-//                    $row['order_item_id']=$this->db->insert_id();
-//                }
-//            } else {
-//                $this->db->where('order_item_id', $row['order_item_id']);
-//                $this->db->update('ts_order_items');
-//            }
-//            $order_item_id=$row['order_item_id'];
-//            // Insert data about Item Colors
-//            $itemcolors=$row['items'];
-//            foreach ($itemcolors as $irow) {
-//                $this->db->set('item_color', $irow['item_color']);
-//                $this->db->set('item_description', $irow['item_description']);
-//                $this->db->set('item_qty', $irow['item_qty']);
-//                $this->db->set('item_price', $irow['item_price']);
-//                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
-//                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
-//                } else {
-//                    $this->db->set('printshop_item_id', NULL);
-//                }
-//                if ($irow['item_id']<0) {
-//                    $this->db->set('order_item_id', $order_item_id);
-//                    $this->db->insert('ts_order_itemcolors');
-//                } else {
-//                    $this->db->where('order_itemcolor_id', $irow['item_id']);
-//                    $this->db->update('ts_order_itemcolors');
-//                }
-//                $totalqty+=$irow['item_qty'];
-//            }
-//
-//            $imprints=$row['imprints'];
-//            foreach ($imprints as $prow) {
-//                if ($prow['delflag']==1) {
-//                    if ($prow['order_imprint_id']>0) {
-//                        $this->db->where('order_imprint_id', $prow['order_imprint_id']);
-//                        $this->db->delete('ts_order_imprints');
-//                    }
-//                } else {
-//                    $this->db->set('imprint_description', $prow['imprint_description']);
-//                    $this->db->set('imprint_item', $prow['imprint_item']);
-//                    $this->db->set('imprint_qty', $prow['imprint_qty']);
-//                    $this->db->set('imprint_price', $prow['imprint_price']);
-//                    if ($prow['order_imprint_id']<0) {
-//                        $this->db->set('order_item_id', $order_item_id);
-//                        $this->db->insert('ts_order_imprints');
-//                    } else {
-//                        $this->db->where('order_imprint_id', $prow['order_imprint_id']);
-//                        $this->db->update('ts_order_imprints');
-//                    }
-//                }
-//            }
-//            $imprint_details=$row['imprint_details'];
-//            $detidx=0;
-//            $numpp=1;
-//            foreach ($imprint_details as $drow) {
-//                $this->db->set('imprint_active',intval($drow['active']));
-//                if (intval($drow['active'])==0) {
-//                    $this->db->set('imprint_type','NEW');
-//                    $this->db->set('repeat_note', NULL);
-//                    $this->db->set('location_id',NULL);
-//                    $this->db->set('num_colors',1);
-//                    $this->db->set('print_1',$numpp==1 ? 0 : $row['print_price']);
-//                    $this->db->set('print_2',$row['print_price']);
-//                    $this->db->set('print_3',$row['print_price']);
-//                    $this->db->set('print_4',$row['print_price']);
-//                    $this->db->set('setup_1',$row['setup_price']);
-//                    $this->db->set('setup_2',$row['setup_price']);
-//                    $this->db->set('setup_3',$row['setup_price']);
-//                    $this->db->set('setup_4',$row['setup_price']);
-//                    $this->db->set('extra_cost', 0);
-//                    $this->db->set('artwork_art_id', NULL);
-//                } else {
-//                    $note=($drow['imprint_type']=='NEW' ? NULL : $drow['repeat_note']);
-//                    if (isset($drow['artwork_art_id'])) {
-//                        $artid=(intval($drow['artwork_art_id'])>0 ? $drow['artwork_art_id'] : NULL);
-//                    } else {
-//                        $artid=NULL;
-//                    }
-//                    $this->db->set('imprint_type',$drow['imprint_type']);
-//                    $this->db->set('repeat_note', $note);
-//                    $this->db->set('location_id', (empty($drow['location_id']) ? NULL : $drow['location_id']));
-//                    $this->db->set('num_colors',$drow['num_colors']);
-//                    $this->db->set('print_1',$drow['print_1']);
-//                    $this->db->set('print_2',$drow['print_2']);
-//                    $this->db->set('print_3',$drow['print_3']);
-//                    $this->db->set('print_4',$drow['print_4']);
-//                    $this->db->set('setup_1',$drow['setup_1']);
-//                    $this->db->set('setup_2',$drow['setup_2']);
-//                    $this->db->set('setup_3',$drow['setup_3']);
-//                    $this->db->set('setup_4',$drow['setup_4']);
-//                    $this->db->set('extra_cost', floatval($drow['extra_cost']));
-//                    $this->db->set('artwork_art_id', $artid);
-//                }
-//                if ($drow['order_imprindetail_id']<0) {
-//                    $this->db->set('order_item_id', $order_item_id);
-//                    $this->db->insert('ts_order_imprindetails');
-//                    $order_items[$itmidx]['imprint_details'][$detidx]['order_imprindetail_id']=$this->db->insert_id();
-//                } else {
-//                    $this->db->where('order_imprindetail_id', $drow['order_imprindetail_id']);
-//                    $this->db->update('ts_order_imprindetails');
-//                }
-//                $detidx++;
-//                $numpp++;
-//            }
-//            $itmidx++;
-//        }
-//        $this->db->set('order_qty', $totalqty);
-//        $this->db->where('order_id', $order_id);
-//        $this->db->update('ts_orders');
-//        $res['result']=$this->success_result;
-//        $res['order_items']=$order_items;
-//        return $res;
-//    }
-//
-//    // Save Shipping Info for Order
-//    private function _save_order_shipping($shipping, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
-//        $this->db->set('rush_idx', $shipping['rush_idx']);
-//        $this->db->set('rush_price', floatval($shipping['rush_price']));
-//        $this->db->set('shipdate', intval($shipping['shipdate']));
-//        $this->db->set('arrive_date', intval($shipping['arrive_date']));
-//        $this->db->set('rush_list', $shipping['rush_list']);
-//        if ($shipping['order_shipping_id']<0) {
-//            $this->db->set('order_id', $order_id);
-//            $this->db->insert('ts_order_shippings');
-//        } else {
-//            $this->db->where('order_shipping_id', $shipping['order_shipping_id']);
-//            $this->db->update('ts_order_shippings');
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//    // Save Shipping Address
-//    private function _save_order_shipaddress($shipping_address, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        foreach ($shipping_address as $row) {
-//            // Check Tax
-//            $taxexempt=intval($row['tax_exempt']);
-//            if ($taxexempt==1) {
-//                $this->db->set('tax_reason', ($row['tax_reason']=='' ? NULL : $row['tax_reason']));
-//                if ($row['tax_exemptdocid']<0) {
-//                    // New Document
-//                    $filesrc=$row['tax_exemptdoc'];
-//                    $purefile=str_replace($this->config->item('upload_path_preload'), '', $filesrc);
-//                    $sourcefile=$this->config->item('upload_path_preload').$purefile;
-//                    $targetfile=$this->config->item('documattach').$purefile;
-//                    $copyres=@copy($sourcefile, $targetfile);
-//                    if ($copyres) {
-//                        // Copy finished successfully
-//                        $docfile=$this->config->item('documattach_path').$purefile;
-//                        $this->db->set('tax_exemptdoc', $docfile);
-//                        $this->db->set('tax_exemptdocsrc', $row['tax_exemptdocsrc']);
-//                    } else {
-//                        $this->db->set('tax_exemptdoc', NULL);
-//                        $this->db->set('tax_exemptdocsrc', NULL);
-//                    }
-//                }
-//            } else {
-//                $this->db->set('tax_reason', NULL);
-//                $this->db->set('tax_exemptdoc', NULL);
-//                $this->db->set('tax_exemptdocsrc', NULL);
-//            }
-//            $this->db->set('country_id', $row['country_id']);
-//            $this->db->set('address', $row['address']);
-//            $this->db->set('ship_contact', $row['ship_contact']);
-//            $this->db->set('ship_company', $row['ship_company']);
-//            $this->db->set('ship_address1', $row['ship_address1']);
-//            $this->db->set('ship_address2', $row['ship_address2']);
-//            $this->db->set('city', $row['city']);
-//            $this->db->set('state_id', ($row['state_id']=='' ? NULL : $row['state_id']));
-//            $this->db->set('zip', $row['zip']);
-//            $this->db->set('item_qty',intval($row['item_qty']));
-//            $this->db->set('ship_date', empty($row['ship_date']) ? 0 : $row['ship_date']);
-//            $this->db->set('arrive_date', empty($row['arrive_date']) ? 0 : $row['arrive_date']);
-//            $this->db->set('shipping', floatval($row['shipping']));
-//            $this->db->set('sales_tax', floatval($row['sales_tax']));
-//            $this->db->set('resident', intval($row['resident']));
-//            $this->db->set('ship_blind', intval($row['ship_blind']));
-//            $this->db->set('tax', floatval($row['tax']));
-//            $this->db->set('tax_exempt', $taxexempt);
-//
-//            if ($row['order_shipaddr_id']<0) {
-//                $this->db->set('order_id', $order_id);
-//                $this->db->insert('ts_order_shipaddres');
-//                $row['order_shipaddr_id']=$this->db->insert_id();
-//            } else {
-//                $this->db->where('order_shipaddr_id', $row['order_shipaddr_id']);
-//                $this->db->update('ts_order_shipaddres');
-//            }
-//            $costs=$row['shipping_costs'];
-//
-//            foreach ($costs as $crow) {
-//                if ($crow['delflag']==1) {
-//                    if ($crow['order_shipcost_id']>0) {
-//                        $this->db->where('order_shipcost_id', $crow['order_shipcost_id']);
-//                        $this->db->delete('ts_order_shipcosts');
-//                    }
-//                } else {
-//                    $this->db->set('shipping_method', $crow['shipping_method']);
-//                    $this->db->set('shipping_cost', $crow['shipping_cost']);
-//                    $this->db->set('arrive_date', $crow['arrive_date']);
-//                    $this->db->set('current', $crow['current']);
-//                    if ($crow['order_shipcost_id']<0) {
-//                        $this->db->set('order_shipaddr_id', $row['order_shipaddr_id']);
-//                        $this->db->insert('ts_order_shipcosts');
-//                    } else {
-//                        $this->db->where('order_shipcost_id', $crow['order_shipcost_id']);
-//                        $this->db->update('ts_order_shipcosts');
-//                    }
-//                }
-//            }
-//            $delivered=1;
-//            $cntpack=$cntdeliv=0;
-//            $packages=$row['packages'];
-//            foreach ($packages as $prow) {
-//                if ($prow['delflag']==1) {
-//                    if ($prow['order_shippack_id']>0) {
-//                        $this->db->where('order_shippack_id', $prow['order_shippack_id']);
-//                        $this->db->delete('ts_order_shippacks');
-//                    }
-//                } else {
-//                    $this->db->set('deliver_service', $prow['deliver_service']);
-//                    $this->db->set('track_code', $prow['track_code']);
-//                    $this->db->set('track_date', $prow['track_date']);
-//                    $this->db->set('send_date', $prow['send_date']);
-//                    $this->db->set('delivered', $prow['delivered']);
-//                    $this->db->set('delivery_address', $prow['delivery_address']);
-//                    if ($prow['order_shippack_id']<0) {
-//                        $this->db->set('order_shipaddr_id', $row['order_shipaddr_id']);
-//                        $this->db->insert('ts_order_shippacks');
-//                        $packid_id=$this->db->insert_id();
-//                    } else {
-//                        $this->db->where('order_shippack_id',$prow['order_shippack_id']);
-//                        $this->db->update('ts_order_shippacks');
-//                        $packid_id=$prow['order_shippack_id'];
-//                    }
-//                    $cntpack++;
-//                    if ($prow['delivered']>0) {
-//                        $cntdeliv++;
-//                        $delivered=($delivered<$prow['delivered'] ? $prow['delivered'] : $delivered);
-//                    }
-//                    if (isset($prow['logs'])) {
-//                        // Insert data into log
-//                        foreach ($prow['logs'] as $lrow) {
-//                            $this->db->set('package_num', $lrow['package_num']);
-//                            $this->db->set('status', $lrow['status']);
-//                            $this->db->set('date', $lrow['date']);
-//                            $this->db->set('address', $lrow['address']);
-//                            if ($lrow['log_id']<0) {
-//                                $this->db->set('order_shippack_id', $packid_id);
-//                                $this->db->insert('ts_shippack_tracklogs');
-//                            } else {
-//                                $this->db->where('shippack_tracklog_id', $lrow['log_id']);
-//                                $this->db->update('ts_shippack_tracklogs');
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        if ($cntpack>0 && $cntdeliv==$cntpack) {
-//            $this->db->set('deliverydate', $delivered);
-//            $this->db->where('order_id', $order_id);
-//            $this->db->update('ts_orders');
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//    // Copy first shipping address to billing
-//    private function _billingaddres_copy($shipping_address, $biladr) {
-//        $shipadr=$shipping_address[0];
-//        if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
-//            $biladr['customer_name']=$shipadr['ship_contact'];
-//            $biladr['company']=$shipadr['ship_company'];
-//            $biladr['address_1']=$shipadr['ship_address1'];
-//            $biladr['address_2']=$shipadr['ship_address2'];
-//            $biladr['country_id']=$shipadr['country_id'];
-//            $biladr['state_id']=$shipadr['state_id'];
-//            $biladr['city']=$shipadr['city'];
-//            $biladr['zip']=$shipadr['zip'];
-//        }
-//        return $biladr;
-//    }
-//    // Save billing Info
-//    private function _save_order_billings($billing, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->set('customer_name', (empty($billing['customer_name']) ? NULL : $billing['customer_name']));
-//        $this->db->set('company', (empty($billing['company']) ? NULL : $billing['company']));
-//        $this->db->set('customer_ponum', (empty($billing['customer_ponum']) ? NULL : $billing['customer_ponum']));
-//        $this->db->set('address_1', (empty($billing['address_1']) ? NULL : $billing['address_1']));
-//        $this->db->set('address_2', (empty($billing['address_2']) ? NULL : $billing['address_2'] ));
-//        $this->db->set('city', (empty($billing['city']) ? NULL : $billing['city']));
-//        $this->db->set('state_id', (empty($billing['state_id']) ? NULL : $billing['state_id']));
-//        $this->db->set('zip', (empty($billing['zip']) ? NULL : $billing['zip']));
-//        $this->db->set('country_id', $billing['country_id']);
-//        if ($billing['order_billing_id']<0) {
-//            $this->db->set('order_id', $order_id);
-//            $this->db->insert('ts_order_billings');
-//        } else {
-//            $this->db->where('order_billing_id', $billing['order_billing_id']);
-//            $this->db->update('ts_order_billings');
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
-//    // Save Charge Data
-//    private function _save_order_chargedata($charges, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        foreach ($charges as $row) {
-////            if ($row['delflag']==1) {
-////                if ($row['order_payment_id']>0) {
-////                    $this->db->where('order_payment_id', $row['order_payment_id']);
-////                    $this->db->delete('ts_order_payments');
-////                }
-////            } else {
-//            $this->db->set('amount', floatval($row['amount']));
-//            $this->db->set('cardnum', $row['cardnum']);
-//            $this->db->set('exp_month', intval($row['exp_month']));
-//            $this->db->set('exp_year', intval($row['exp_year']));
-//            $this->db->set('cardcode', $row['cardcode']);
-//            $this->db->set('autopay', intval($row['autopay']));
-//            if ($row['order_payment_id']<0) {
-//                $this->db->set('order_id', $order_id);
-//                $this->db->insert('ts_order_payments');
-//            } else {
-//                $this->db->where('order_payment_id', $row['order_payment_id']);
-//                $this->db->update('ts_order_payments');
-//            }
-////            }
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
-//    // Save new manual payments
-//    private function _save_order_payments($payments, $order_id, $user_id) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        foreach ($payments as $row) {
-//            if ($row['batch_id']<0) {
-//                $this->db->set('create_usr', $user_id);
-//                $this->db->set('create_date', date('Y-m-d H:i:s'));
-//                $this->db->set('update_usr', $user_id);
-//                $this->db->set('batch_date', $row['batch_date']);
-//                $this->db->set('order_id', $order_id);
-//                $this->db->set('batch_amount', $row['batch_amount']);
-//                $this->db->set('batch_other', $row['batch_other']);
-//                $this->db->set('batch_writeoff', $row['batch_writeoff']);
-//                $this->db->set('batch_type', $row['batch_type']);
-//                $this->db->set('batch_num', $row['batch_num']);
-//                $this->db->set('batch_received', 1);
-//                $this->db->insert('ts_order_batches');
-//            }
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
-//
-//    // Delete old order components
-//    private function _delete_leadorder_components($delrecords) {
-//        foreach ($delrecords as $row) {
-//            switch ($row['entity']) {
-//                case 'order_items':
-//                    $this->db->where('order_item_id', $row['id']);
-//                    $this->db->delete('ts_order_items');
-//                    break;
-//                case 'shipping_address':
-//                    $this->db->where('order_shipaddr_id', $row['id']);
-//                    $this->db->delete('ts_order_shipaddres');
-//                    break;
-//            }
-//        }
-//        return TRUE;
-//    }
+    // Save New Order
+    private function _save_neworder($data, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        // Calc New Profit
+        $order_id=$data['order_id'];
+        if ($data['order_cog']=='') {
+            $profit=floatval($data['revenue'])*$this->config->item('default_profit')/100;
+            $profit_perc=NULL;
+        } else {
+            $profit=$this->_leadorder_profit($data);
+            if (floatval($data['revenue'])==0) {
+                $profit_perc=NULL;
+            } else {
+                $profit_perc=round(($profit/floatval($data['revenue']))*100,1);
+            }
+        }
+        $res['profit']=$profit;
+        $order_cog=($data['order_cog']=='' ? NULL : floatval($data['order_cog']));
+        // Move upload file
+        if ($data['balance_manage']==3) {
+            if ($data['newappcreditlink']<0) {
+                // New Upload Link
+                $docsrc=$data['credit_applink'];
+                $docparams=$this->func->extract_filename($docsrc);
+                $newdocname=$this->func->uniq_link(15).'.'.$docparams['ext'];
+                $doctarget=$this->config->item('creditappdoc').$newdocname;
+                if (!is_dir($this->config->item('creditappdoc'))) {
+                    mkdir($this->config->item('creditappdoc'),0777);
+                }
+                $rescp=@copy($docsrc, $doctarget);
+                if ($rescp) {
+                    $data['credit_applink']=$this->config->item('creditappdoc_relative').$newdocname;
+                }
+            }
+        } else {
+            $data['credit_applink']=NULL;
+        }
+        // Update Order
+        $this->db->set('order_date',$data['order_date']);
+        $this->db->set('brand_id',(empty($data['brand_id']) ? $this->config->item('default_brand') : $data['brand_id']));
+        $this->db->set('customer_name',$data['customer_name']);
+
+        $this->db->set('revenue', floatval($data['revenue']));
+        $this->db->set('shipping', floatval($data['shipping']));
+        $this->db->set('is_shipping',intval($data['is_shipping']));
+
+        $this->db->set('tax',floatval($data['tax']));
+        $this->db->set('cc_fee', intval($data['cc_fee']));
+        $this->db->set('order_cog',$order_cog);
+        $this->db->set('update_date',time());
+        $this->db->set('update_usr',$user_id);
+        $this->db->set('item_id',(empty($data['item_id']) ? NULL : $data['item_id']));
+        $this->db->set('order_itemnumber',$data['order_itemnumber']);
+        $this->db->set('order_items',$data['order_items']);
+        $this->db->set('order_qty', intval($data['order_qty']));
+        $this->db->set('shipdate', $data['shipdate']);
+        $this->db->set('order_blank', intval($data['order_blank']));
+        $this->db->set('order_rush', intval($data['order_rush']));
+        // Profit, Profit Perc
+        $this->db->set('profit',$profit);
+        $this->db->set('profit_perc',$profit_perc);
+        $this->db->set('order_usr_repic',$data['order_usr_repic']);
+        $this->db->set('balance_manage', $data['balance_manage']);
+        $this->db->set('balance_term', $data['balance_term']);
+        $this->db->set('credit_appdue', $data['credit_appdue']);
+        $this->db->set('credit_applink',$data['credit_applink']);
+        $this->db->set('order_system', 'new');
+        // Miscs, Discount
+        $this->db->set('invoice_message', $data['invoice_message']);
+        $this->db->set('mischrg_label1', $data['mischrg_label1']);
+        $this->db->set('mischrg_val1', floatval($data['mischrg_val1']));
+        $this->db->set('mischrg_label2', $data['mischrg_label2']);
+        $this->db->set('mischrg_val2', floatval($data['mischrg_val2']));
+        $this->db->set('discount_label', $data['discount_label']);
+        $this->db->set('discount_val', floatval($data['discount_val']));
+        $this->db->set('discount_descript', $data['discount_descript']);
+        if ($order_id==0) {
+            $confirm=strtoupper($this->func->uniq_link(2,'chars')).'-'.$this->func->uniq_link(5,'digits');
+            $this->db->set('order_confirmation', $confirm);
+            $this->db->set('create_usr',$user_id);
+            $this->db->set('create_date',time());
+            $this->db->insert('ts_orders');
+            if ($this->db->insert_id()==0) {
+                $res['msg']='Error during save order data';
+                return $res;
+            } else {
+                $res['result']=$order_id=$this->db->insert_id();
+                $this->load->model('orders_model');
+                $neworder_num=$this->orders_model->get_last_ordernum();
+                // $this->db->set('order_num',$neworder_num+1);
+                $this->db->set('order_num',$neworder_num);
+                $this->db->where('order_id', $order_id);
+                $this->db->update('ts_orders');
+                // $res['neworder']=$neworder_num+1;
+                $res['neworder']=$neworder_num;
+                /* Get New total */
+            }
+        } else {
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            $res['result']=$this->success_result;
+            // Update ART View parameters
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id',$order_id);
+            $statres=$this->db->get()->row_array();
+            $this->db->where('order_id',$order_id);
+            $this->db->set('order_artview', $statres['aprrovview']);
+            $this->db->set('order_placed', $statres['placeord']);
+            $this->db->update('ts_orders');
+            // Try to Update ARTWORK
+            $this->db->set('customer',$data['customer_name']);
+            $this->db->set('customer_email',$data['customer_email']);
+            $this->db->set('item_id',$data['item_id']);
+            $this->db->set('item_number',$data['order_itemnumber']);
+            $this->db->set('other_item',$data['order_items']);
+            $this->db->set('item_name',$data['order_items']);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_artworks');
+        }
+        // Add / edit Credit App Doc
+        $this->load->model('creditapp_model');
+        if ($data['balance_manage']==3) {
+            $datapp=array(
+                'credit_app_id'=>$data['credit_app_id'],
+                'user'=>$user_id,
+                'customer'=>$data['customer_name'],
+                'document_link'=>$data['credit_applink'],
+                'order_id'=>$order_id,
+            );
+            $this->creditapp_model->update_order_creditapp($datapp);
+        } else {
+            $this->creditapp_model->remove_order_creditapp($order_id);
+        }
+        return $res;
+    }
+
+    // Save Order Contacts
+    private function _save_order_contacts($contacts, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $first_email=$art_contact=$art_email='';
+        $default_email=$default_contact='';
+        foreach ($contacts as $row) {
+            $phone=  str_replace('-', '', $row['contact_phone']);
+            if (!empty($phone)) {
+                $phone=formatPhoneNumber($phone);
+            }
+            if (!empty($row['contact_emal']) && empty($default_email)) {
+                $default_email=$row['contact_emal'];
+                $default_contact=$row['contact_name'];
+            }
+            $this->db->set('contact_name', $row['contact_name']);
+            $this->db->set('contact_phone', $phone);
+            $this->db->set('contact_emal', $row['contact_emal']);
+            $this->db->set('contact_art', $row['contact_art']);
+            $this->db->set('contact_inv', $row['contact_inv']);
+            $this->db->set('contact_trk', $row['contact_trk']);
+            if ($row['order_contact_id']<0) {
+                $this->db->set('order_id', $order_id);
+                $this->db->insert('ts_order_contacts');
+                if (!$this->db->insert_id()) {
+                    $res['msg']='Insert in Contact Fired with error';
+                    return $res;
+                }
+            } else {
+                $this->db->where('order_contact_id', $row['order_contact_id']);
+                $this->db->update('ts_order_contacts');
+            }
+            if ($first_email=='' && $row['contact_inv']==1 && !empty($row['contact_emal'])) {
+                $first_email=$row['contact_emal'];
+            }
+            if ($art_email=='' && $row['contact_art']==1 && !empty($row['contact_emal'])) {
+                $art_email=$row['contact_emal'];
+                $art_contact=$row['contact_name'];
+            }
+        }
+        if (empty($first_email)) {
+            $first_email=$default_email;
+        }
+        if (empty($art_email)) {
+            $art_email=$default_email;
+            $art_contact=$default_contact;
+        }
+        if (!empty($first_email)) {
+            $this->db->set('customer_email', $first_email);
+            $this->db->where('order_id', $order_id);
+            $this->db->update('ts_orders');
+        }
+        if (!empty($art_email)) {
+            $this->db->set('customer',$art_contact);
+            $this->db->set('customer_email',$art_email);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_artworks');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    // Save Order Items Data
+    private function _save_order_items($order_items, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('orders_model');
+        if (count($order_items)==1) {
+            if ($order_items[0]['item_id']<0) {
+                $itemcolors=$order_items[0]['items'];
+                $this->db->set('order_items', $itemcolors[0]['item_description']);
+            } else {
+                $this->db->set('order_items', $order_items[0]['item_name']);
+            }
+            $this->db->set('order_itemnumber', $order_items[0]['item_number']);
+            $this->db->set('item_id', $order_items[0]['item_id']);
+        } else {
+            // Check Multi Item
+            $item_id=$order_items[0]['item_id'];
+            $itemcolors=$order_items[0]['items'];
+            $itemdescr=$itemcolors[0]['item_description'];
+            foreach ($order_items as $irow) {
+                if ($item_id!=$irow['item_id']) {
+                    $item_id=$this->config->item('multy_id');
+                    break;
+                }
+                foreach ($irow['items'] as $colorrow) {
+                    if ($colorrow['item_description']!=$itemdescr) {
+                        $itemdescr='';
+                    }
+                }
+            }
+            $orditm=$this->orders_model->get_itemdat($item_id);
+            if ($item_id<0 && $item_id!=$this->config->item('multy_id') && !empty($itemdescr)) {
+                $this->db->set('order_items', $itemdescr);
+            } else {
+                $this->db->set('order_items', $orditm['item_name']);
+            }
+            $this->db->set('order_itemnumber', $orditm['item_number']);
+            $this->db->set('item_id', $item_id);
+        }
+        $this->db->where('order_id', $order_id);
+        $this->db->update('ts_orders');
+        $totalqty=0;
+        $itmidx=0;
+        foreach ($order_items as $row) {
+            $rowprice=($row['item_qty']==0 ? 0 : $row['item_subtotal']/$row['item_qty']);
+            $this->db->set('item_id', $row['item_id']);
+            $this->db->set('item_qty', $row['item_qty']);
+            $this->db->set('item_price', $rowprice);
+            $this->db->set('imprint_price', $row['print_price']);
+            $this->db->set('setup_price', $row['setup_price']);
+
+            if ($row['order_item_id']<0) {
+                $this->db->set('order_id', $order_id);
+                $this->db->insert('ts_order_items');
+                if (!$this->db->insert_id()) {
+                    $res['msg']='Error During Insert data into Order Items';
+                    return $res;
+                } else {
+                    $row['order_item_id']=$this->db->insert_id();
+                }
+            } else {
+                $this->db->where('order_item_id', $row['order_item_id']);
+                $this->db->update('ts_order_items');
+            }
+            $order_item_id=$row['order_item_id'];
+            // Insert data about Item Colors
+            $itemcolors=$row['items'];
+            foreach ($itemcolors as $irow) {
+                $this->db->set('item_color', $irow['item_color']);
+                $this->db->set('item_description', $irow['item_description']);
+                $this->db->set('item_qty', $irow['item_qty']);
+                $this->db->set('item_price', $irow['item_price']);
+                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
+                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
+                } else {
+                    $this->db->set('printshop_item_id', NULL);
+                }
+                if ($irow['item_id']<0) {
+                    $this->db->set('order_item_id', $order_item_id);
+                    $this->db->insert('ts_order_itemcolors');
+                } else {
+                    $this->db->where('order_itemcolor_id', $irow['item_id']);
+                    $this->db->update('ts_order_itemcolors');
+                }
+                $totalqty+=$irow['item_qty'];
+            }
+
+            $imprints=$row['imprints'];
+            foreach ($imprints as $prow) {
+                if ($prow['delflag']==1) {
+                    if ($prow['order_imprint_id']>0) {
+                        $this->db->where('order_imprint_id', $prow['order_imprint_id']);
+                        $this->db->delete('ts_order_imprints');
+                    }
+                } else {
+                    $this->db->set('imprint_description', $prow['imprint_description']);
+                    $this->db->set('imprint_item', $prow['imprint_item']);
+                    $this->db->set('imprint_qty', $prow['imprint_qty']);
+                    $this->db->set('imprint_price', $prow['imprint_price']);
+                    if ($prow['order_imprint_id']<0) {
+                        $this->db->set('order_item_id', $order_item_id);
+                        $this->db->insert('ts_order_imprints');
+                    } else {
+                        $this->db->where('order_imprint_id', $prow['order_imprint_id']);
+                        $this->db->update('ts_order_imprints');
+                    }
+                }
+            }
+            $imprint_details=$row['imprint_details'];
+            $detidx=0;
+            $numpp=1;
+            foreach ($imprint_details as $drow) {
+                $this->db->set('imprint_active',intval($drow['active']));
+                if (intval($drow['active'])==0) {
+                    $this->db->set('imprint_type','NEW');
+                    $this->db->set('repeat_note', NULL);
+                    $this->db->set('location_id',NULL);
+                    $this->db->set('num_colors',1);
+                    $this->db->set('print_1',$numpp==1 ? 0 : $row['print_price']);
+                    $this->db->set('print_2',$row['print_price']);
+                    $this->db->set('print_3',$row['print_price']);
+                    $this->db->set('print_4',$row['print_price']);
+                    $this->db->set('setup_1',$row['setup_price']);
+                    $this->db->set('setup_2',$row['setup_price']);
+                    $this->db->set('setup_3',$row['setup_price']);
+                    $this->db->set('setup_4',$row['setup_price']);
+                    $this->db->set('extra_cost', 0);
+                    $this->db->set('artwork_art_id', NULL);
+                } else {
+                    $note=($drow['imprint_type']=='NEW' ? NULL : $drow['repeat_note']);
+                    if (isset($drow['artwork_art_id'])) {
+                        $artid=(intval($drow['artwork_art_id'])>0 ? $drow['artwork_art_id'] : NULL);
+                    } else {
+                        $artid=NULL;
+                    }
+                    $this->db->set('imprint_type',$drow['imprint_type']);
+                    $this->db->set('repeat_note', $note);
+                    $this->db->set('location_id', (empty($drow['location_id']) ? NULL : $drow['location_id']));
+                    $this->db->set('num_colors',$drow['num_colors']);
+                    $this->db->set('print_1',$drow['print_1']);
+                    $this->db->set('print_2',$drow['print_2']);
+                    $this->db->set('print_3',$drow['print_3']);
+                    $this->db->set('print_4',$drow['print_4']);
+                    $this->db->set('setup_1',$drow['setup_1']);
+                    $this->db->set('setup_2',$drow['setup_2']);
+                    $this->db->set('setup_3',$drow['setup_3']);
+                    $this->db->set('setup_4',$drow['setup_4']);
+                    $this->db->set('extra_cost', floatval($drow['extra_cost']));
+                    $this->db->set('artwork_art_id', $artid);
+                }
+                if ($drow['order_imprindetail_id']<0) {
+                    $this->db->set('order_item_id', $order_item_id);
+                    $this->db->insert('ts_order_imprindetails');
+                    $order_items[$itmidx]['imprint_details'][$detidx]['order_imprindetail_id']=$this->db->insert_id();
+                } else {
+                    $this->db->where('order_imprindetail_id', $drow['order_imprindetail_id']);
+                    $this->db->update('ts_order_imprindetails');
+                }
+                $detidx++;
+                $numpp++;
+            }
+            $itmidx++;
+        }
+        $this->db->set('order_qty', $totalqty);
+        $this->db->where('order_id', $order_id);
+        $this->db->update('ts_orders');
+        $res['result']=$this->success_result;
+        $res['order_items']=$order_items;
+        return $res;
+    }
+
+    // Save Shipping Info for Order
+    private function _save_order_shipping($shipping, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
+        $this->db->set('rush_idx', $shipping['rush_idx']);
+        $this->db->set('rush_price', floatval($shipping['rush_price']));
+        $this->db->set('shipdate', intval($shipping['shipdate']));
+        $this->db->set('arrive_date', intval($shipping['arrive_date']));
+        $this->db->set('rush_list', $shipping['rush_list']);
+        if ($shipping['order_shipping_id']<0) {
+            $this->db->set('order_id', $order_id);
+            $this->db->insert('ts_order_shippings');
+        } else {
+            $this->db->where('order_shipping_id', $shipping['order_shipping_id']);
+            $this->db->update('ts_order_shippings');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    // Save Shipping Address
+    private function _save_order_shipaddress($shipping_address, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        foreach ($shipping_address as $row) {
+            // Check Tax
+            $taxexempt=intval($row['tax_exempt']);
+            if ($taxexempt==1) {
+                $this->db->set('tax_reason', ($row['tax_reason']=='' ? NULL : $row['tax_reason']));
+                if ($row['tax_exemptdocid']<0) {
+                    // New Document
+                    $filesrc=$row['tax_exemptdoc'];
+                    $purefile=str_replace($this->config->item('upload_path_preload'), '', $filesrc);
+                    $sourcefile=$this->config->item('upload_path_preload').$purefile;
+                    $targetfile=$this->config->item('documattach').$purefile;
+                    $copyres=@copy($sourcefile, $targetfile);
+                    if ($copyres) {
+                        // Copy finished successfully
+                        $docfile=$this->config->item('documattach_path').$purefile;
+                        $this->db->set('tax_exemptdoc', $docfile);
+                        $this->db->set('tax_exemptdocsrc', $row['tax_exemptdocsrc']);
+                    } else {
+                        $this->db->set('tax_exemptdoc', NULL);
+                        $this->db->set('tax_exemptdocsrc', NULL);
+                    }
+                }
+            } else {
+                $this->db->set('tax_reason', NULL);
+                $this->db->set('tax_exemptdoc', NULL);
+                $this->db->set('tax_exemptdocsrc', NULL);
+            }
+            $this->db->set('country_id', $row['country_id']);
+            $this->db->set('address', $row['address']);
+            $this->db->set('ship_contact', $row['ship_contact']);
+            $this->db->set('ship_company', $row['ship_company']);
+            $this->db->set('ship_address1', $row['ship_address1']);
+            $this->db->set('ship_address2', $row['ship_address2']);
+            $this->db->set('city', $row['city']);
+            $this->db->set('state_id', ($row['state_id']=='' ? NULL : $row['state_id']));
+            $this->db->set('zip', $row['zip']);
+            $this->db->set('item_qty',intval($row['item_qty']));
+            $this->db->set('ship_date', empty($row['ship_date']) ? 0 : $row['ship_date']);
+            $this->db->set('arrive_date', empty($row['arrive_date']) ? 0 : $row['arrive_date']);
+            $this->db->set('shipping', floatval($row['shipping']));
+            $this->db->set('sales_tax', floatval($row['sales_tax']));
+            $this->db->set('resident', intval($row['resident']));
+            $this->db->set('ship_blind', intval($row['ship_blind']));
+            $this->db->set('tax', floatval($row['tax']));
+            $this->db->set('tax_exempt', $taxexempt);
+
+            if ($row['order_shipaddr_id']<0) {
+                $this->db->set('order_id', $order_id);
+                $this->db->insert('ts_order_shipaddres');
+                $row['order_shipaddr_id']=$this->db->insert_id();
+            } else {
+                $this->db->where('order_shipaddr_id', $row['order_shipaddr_id']);
+                $this->db->update('ts_order_shipaddres');
+            }
+            $costs=$row['shipping_costs'];
+
+            foreach ($costs as $crow) {
+                if ($crow['delflag']==1) {
+                    if ($crow['order_shipcost_id']>0) {
+                        $this->db->where('order_shipcost_id', $crow['order_shipcost_id']);
+                        $this->db->delete('ts_order_shipcosts');
+                    }
+                } else {
+                    $this->db->set('shipping_method', $crow['shipping_method']);
+                    $this->db->set('shipping_cost', $crow['shipping_cost']);
+                    $this->db->set('arrive_date', $crow['arrive_date']);
+                    $this->db->set('current', $crow['current']);
+                    if ($crow['order_shipcost_id']<0) {
+                        $this->db->set('order_shipaddr_id', $row['order_shipaddr_id']);
+                        $this->db->insert('ts_order_shipcosts');
+                    } else {
+                        $this->db->where('order_shipcost_id', $crow['order_shipcost_id']);
+                        $this->db->update('ts_order_shipcosts');
+                    }
+                }
+            }
+            $delivered=1;
+            $cntpack=$cntdeliv=0;
+            $packages=$row['packages'];
+            foreach ($packages as $prow) {
+                if ($prow['delflag']==1) {
+                    if ($prow['order_shippack_id']>0) {
+                        $this->db->where('order_shippack_id', $prow['order_shippack_id']);
+                        $this->db->delete('ts_order_shippacks');
+                    }
+                } else {
+                    $this->db->set('deliver_service', $prow['deliver_service']);
+                    $this->db->set('track_code', $prow['track_code']);
+                    $this->db->set('track_date', $prow['track_date']);
+                    $this->db->set('send_date', $prow['send_date']);
+                    $this->db->set('delivered', $prow['delivered']);
+                    $this->db->set('delivery_address', $prow['delivery_address']);
+                    if ($prow['order_shippack_id']<0) {
+                        $this->db->set('order_shipaddr_id', $row['order_shipaddr_id']);
+                        $this->db->insert('ts_order_shippacks');
+                        $packid_id=$this->db->insert_id();
+                    } else {
+                        $this->db->where('order_shippack_id',$prow['order_shippack_id']);
+                        $this->db->update('ts_order_shippacks');
+                        $packid_id=$prow['order_shippack_id'];
+                    }
+                    $cntpack++;
+                    if ($prow['delivered']>0) {
+                        $cntdeliv++;
+                        $delivered=($delivered<$prow['delivered'] ? $prow['delivered'] : $delivered);
+                    }
+                    if (isset($prow['logs'])) {
+                        // Insert data into log
+                        foreach ($prow['logs'] as $lrow) {
+                            $this->db->set('package_num', $lrow['package_num']);
+                            $this->db->set('status', $lrow['status']);
+                            $this->db->set('date', $lrow['date']);
+                            $this->db->set('address', $lrow['address']);
+                            if ($lrow['log_id']<0) {
+                                $this->db->set('order_shippack_id', $packid_id);
+                                $this->db->insert('ts_shippack_tracklogs');
+                            } else {
+                                $this->db->where('shippack_tracklog_id', $lrow['log_id']);
+                                $this->db->update('ts_shippack_tracklogs');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if ($cntpack>0 && $cntdeliv==$cntpack) {
+            $this->db->set('deliverydate', $delivered);
+            $this->db->where('order_id', $order_id);
+            $this->db->update('ts_orders');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    // Copy first shipping address to billing
+    private function _billingaddres_copy($shipping_address, $biladr) {
+        $shipadr=$shipping_address[0];
+        if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
+            $biladr['customer_name']=$shipadr['ship_contact'];
+            $biladr['company']=$shipadr['ship_company'];
+            $biladr['address_1']=$shipadr['ship_address1'];
+            $biladr['address_2']=$shipadr['ship_address2'];
+            $biladr['country_id']=$shipadr['country_id'];
+            $biladr['state_id']=$shipadr['state_id'];
+            $biladr['city']=$shipadr['city'];
+            $biladr['zip']=$shipadr['zip'];
+        }
+        return $biladr;
+    }
+
+    // Save billing Info
+    private function _save_order_billings($billing, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->set('customer_name', (empty($billing['customer_name']) ? NULL : $billing['customer_name']));
+        $this->db->set('company', (empty($billing['company']) ? NULL : $billing['company']));
+        $this->db->set('customer_ponum', (empty($billing['customer_ponum']) ? NULL : $billing['customer_ponum']));
+        $this->db->set('address_1', (empty($billing['address_1']) ? NULL : $billing['address_1']));
+        $this->db->set('address_2', (empty($billing['address_2']) ? NULL : $billing['address_2'] ));
+        $this->db->set('city', (empty($billing['city']) ? NULL : $billing['city']));
+        $this->db->set('state_id', (empty($billing['state_id']) ? NULL : $billing['state_id']));
+        $this->db->set('zip', (empty($billing['zip']) ? NULL : $billing['zip']));
+        $this->db->set('country_id', $billing['country_id']);
+        if ($billing['order_billing_id']<0) {
+            $this->db->set('order_id', $order_id);
+            $this->db->insert('ts_order_billings');
+        } else {
+            $this->db->where('order_billing_id', $billing['order_billing_id']);
+            $this->db->update('ts_order_billings');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    // Save Charge Data
+    private function _save_order_chargedata($charges, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        foreach ($charges as $row) {
+            $this->db->set('amount', floatval($row['amount']));
+            $this->db->set('cardnum', $row['cardnum']);
+            $this->db->set('exp_month', intval($row['exp_month']));
+            $this->db->set('exp_year', intval($row['exp_year']));
+            $this->db->set('cardcode', $row['cardcode']);
+            $this->db->set('autopay', intval($row['autopay']));
+            if ($row['order_payment_id']<0) {
+                $this->db->set('order_id', $order_id);
+                $this->db->insert('ts_order_payments');
+            } else {
+                $this->db->where('order_payment_id', $row['order_payment_id']);
+                $this->db->update('ts_order_payments');
+            }
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    // Save new manual payments
+    private function _save_order_payments($payments, $order_id, $user_id) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        foreach ($payments as $row) {
+            if ($row['batch_id']<0) {
+                $this->db->set('create_usr', $user_id);
+                $this->db->set('create_date', date('Y-m-d H:i:s'));
+                $this->db->set('update_usr', $user_id);
+                $this->db->set('batch_date', $row['batch_date']);
+                $this->db->set('order_id', $order_id);
+                $this->db->set('batch_amount', $row['batch_amount']);
+                $this->db->set('batch_other', $row['batch_other']);
+                $this->db->set('batch_writeoff', $row['batch_writeoff']);
+                $this->db->set('batch_type', $row['batch_type']);
+                $this->db->set('batch_num', $row['batch_num']);
+                $this->db->set('batch_received', 1);
+                $this->db->insert('ts_order_batches');
+            }
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+
+    // Delete old order components
+    private function _delete_leadorder_components($delrecords) {
+        foreach ($delrecords as $row) {
+            switch ($row['entity']) {
+                case 'order_items':
+                    $this->db->where('order_item_id', $row['id']);
+                    $this->db->delete('ts_order_items');
+                    break;
+                case 'shipping_address':
+                    $this->db->where('order_shipaddr_id', $row['id']);
+                    $this->db->delete('ts_order_shipaddres');
+                    break;
+            }
+        }
+        return TRUE;
+    }
 
 
     // Net Profit per week
@@ -4834,6 +4823,7 @@ Class Leadorder_model extends My_Model {
                 'type'=>'week',
                 'start'=>$this->config->item('netprofit_start'),
             );
+            $this->load->model('balances_model');
             $rundat=$this->balances_model->get_netprofit_runs($total_options);
             $oldtotalrun=$rundat['out_debtval'];
             $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
@@ -5646,168 +5636,168 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    // Prepare Payment Info
-//    private function _prepare_order_payment($order_id, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->load->model('batches_model');
-//        $this->load->model('order_model');
-//        $order_data=$this->order_model->get_order_detail($order_id);
-//        if (!isset($order_data['order_id'])) {
-//            $out['msg']='Order Not Found';
-//            return $out;
-//        }
-//
-//        // Get Info about Payments
-//        $this->db->select('*');
-//        $this->db->from('ts_order_payments');
-//        $this->db->where('order_id', $order_id);
-//        $this->db->where('amount > 0');
-//        $res=$this->db->get()->result_array();
-//        if (count($res)==0) {
-//            $out['result']=$this->success_result;
-//            return $out;
-//        }
-//        $this->db->select('b.customer_name, b.company, b.address_1, b.address_2, b.city, b.state_id');
-//        $this->db->select('b.zip, b.country_id, c.country_name, c.country_iso_code_2');
-//        $this->db->from('ts_order_billings b');
-//        $this->db->join('ts_countries c','c.country_id=b.country_id');
-//        $this->db->where('b.order_id', $order_id);
-//        $bilres=$this->db->get()->row_array();
-//        $bilchk=0;
-//        if (empty($bilres['customer_name'])) {
-//            $out['msg']='Enter Customer Name';
-//        } elseif (empty($bilres['address_1'])) {
-//            $out['msg']='Enter Billing Address';
-//        } elseif (empty($bilres['city'])) {
-//            $out['msg']='Enter Billing City';
-//        } elseif (empty($bilres['zip'])) {
-//            $out['msg']='Enter Billing Zip / Postal Code';
-//        } else {
-//            $bilchk=1;
-//        }
-//        if ($bilchk==0) {
-//            $this->_save_order_paymentlog($order_id, $user_id, $out['msg']);
-//            return $out;
-//        }
-//        $custdat=explode(' ', $bilres['customer_name']);
-//        $customer_first_name=(isset($custdat[0]) ? $custdat[0] : 'Unknown');
-//        $customer_last_name=(isset($custdat[1]) ? $custdat[1] : 'Unknown');
-//        // Get contact data
-//        $this->db->select('contact_phone, contact_emal');
-//        $this->db->from('ts_order_contacts');
-//        $this->db->where('order_id', $order_id);
-//        $this->db->where('contact_inv',1);
-//        $contres=$this->db->get()->result_array();
-//        $payemail=$payphone='';
-//        foreach ($contres as $crow) {
-//            if (!empty($crow['contact_phone'])) {
-//                $payphone=$crow['contact_phone'];
-//            }
-//            if (!empty($crow['contact_emal'])) {
-//                $payemail=$crow['contact_emal'];
-//            }
-//        }
-//        $state='UNK';
-//        if (!empty($bilres['state_id'])) {
-//            $this->db->select('state_code');
-//            $this->db->from('ts_states');
-//            $this->db->where('state_id', $bilres['state_id']);
-//            $stat=$this->db->get()->row_array();
-//            $state=$stat['state_code'];
-//        }
-//
-//        // Try to pay
-//        $pay_options=array(
-//            'email'=>$payemail,
-//            'company'=>$bilres['company'],
-//            'firstname'=>$customer_first_name,
-//            'lastname'=>$customer_last_name,
-//            'address1'=>$bilres['address_1'],
-//            'address2'=>$bilres['address_2'],
-//            'city'=>$bilres['city'],
-//            'state'=>$state,
-//            'country'=>$bilres['country_iso_code_2'],
-//            'zip'=>$bilres['zip'],
-//            'phone'=>$payphone,
-//            'amount'=>0,
-//            'cardnum'=>'',
-//            'cardcode'=>'',
-//            'exp_month'=>'',
-//            'exp_year'=>'',
-//        );
-//
-//        foreach ($res as $row) {
-//            $chkpay=0;
-//            if (empty($row['cardnum'])) {
-//                $out['msg']='Enter Card #';
-//            } elseif (empty($row['cardcode'])) {
-//                $out['msg']='Enter Card CVV2 code';
-//            } elseif (intval($row['exp_month'])==0) {
-//                $out['msg']='Expire Month Incorrect';
-//            } elseif (intval($row['exp_year'])==0) {
-//                $out['msg']='Expire Year Incorrect';
-//            } else {
-//                $cardtype=$this->getCCardType(str_replace('-','',$row['cardnum']));
-//                if (empty($cardtype)) {
-//                    $out['msg']='Unknown Credit Card Type';
-//                } else {
-//                    $chkpay=1;
-//                }
-//            }
-//            if ($chkpay==1) {
-//                switch ($cardtype) {
-//                    case 'American Express':
-//                        $pay_options['cardtype']='Amex';
-//                        break;
-//                    default :
-//                        $pay_options['cardtype']=$cardtype;
-//                        break;
-//                }
-//
-//                $pay_options['amount']=$row['amount'];
-//                $pay_options['cardnum']=  str_replace('-', '',$row['cardnum']);
-//                $pay_options['cardcode']=$row['cardcode'];
-//                $pay_options['exp_month']=$row['exp_month'];
-//                $pay_options['exp_year']=$row['exp_year'];
-//                $transres=$this->order_payment($pay_options);
-//                if ($transres['result']==$this->error_result) {
-//                    $out['msg']=$transres['error_msg'];
-//                    $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
-//                    return $out;
-//                } else {
-//                    // Make Current row Amount=0, Add Charge
-//                    $this->db->set('amount',0);
-//                    $this->db->where('order_payment_id', $row['order_payment_id']);
-//                    $this->db->update('ts_order_payments');
-//                    // Batch data
-//                    $paymethod='';
-//                    if ($pay_options['cardtype']=='amex') {
-//                        $paymethod='a';
-//                    } else {
-//                        $paymethod='v';
-//                    }
-//                    $batch_data=array(
-//                        'batch_id'=>0,
-//                        'batch_date'=>time(),
-//                        'paymethod'=>$paymethod,
-//                        'amount'=>$row['amount'],
-//                        'batch_note'=>NULL,
-//                        'order_id'=>$order_id,
-//                        'batch_received'=>0,
-//                        'batch_type'=>$pay_options['cardtype'],
-//                        'batch_num'=>$pay_options['cardnum'],
-//                        'batch_transaction'=>$transres['transaction_id'],
-//                    );
-//                    $batch_id=$this->batches_model->save_batch($batch_data, $order_data, $user_id);
-//                    $this->_save_order_paymentlog($order_id, $user_id, $transres['transaction_id'], $pay_options, 1);
-//                }
-//            } else {
-//                $this->_save_order_paymentlog($order_id, $user_id, $out['msg']);
-//                return $out;
-//            }
-//        }
-//        $out['result']=$this->success_result;
-//    }
+    // Prepare Payment Info
+    private function _prepare_order_payment($order_id, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('batches_model');
+        $this->load->model('orders_model');
+        $order_data=$this->orders_model->get_order_detail($order_id);
+        if (!isset($order_data['order_id'])) {
+            $out['msg']='Order Not Found';
+            return $out;
+        }
+
+        // Get Info about Payments
+        $this->db->select('*');
+        $this->db->from('ts_order_payments');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('amount > 0');
+        $res=$this->db->get()->result_array();
+        if (count($res)==0) {
+            $out['result']=$this->success_result;
+            return $out;
+        }
+        $this->db->select('b.customer_name, b.company, b.address_1, b.address_2, b.city, b.state_id');
+        $this->db->select('b.zip, b.country_id, c.country_name, c.country_iso_code_2');
+        $this->db->from('ts_order_billings b');
+        $this->db->join('ts_countries c','c.country_id=b.country_id');
+        $this->db->where('b.order_id', $order_id);
+        $bilres=$this->db->get()->row_array();
+        $bilchk=0;
+        if (empty($bilres['customer_name'])) {
+            $out['msg']='Enter Customer Name';
+        } elseif (empty($bilres['address_1'])) {
+            $out['msg']='Enter Billing Address';
+        } elseif (empty($bilres['city'])) {
+            $out['msg']='Enter Billing City';
+        } elseif (empty($bilres['zip'])) {
+            $out['msg']='Enter Billing Zip / Postal Code';
+        } else {
+            $bilchk=1;
+        }
+        if ($bilchk==0) {
+            $this->_save_order_paymentlog($order_id, $user_id, $out['msg']);
+            return $out;
+        }
+        $custdat=explode(' ', $bilres['customer_name']);
+        $customer_first_name=(isset($custdat[0]) ? $custdat[0] : 'Unknown');
+        $customer_last_name=(isset($custdat[1]) ? $custdat[1] : 'Unknown');
+        // Get contact data
+        $this->db->select('contact_phone, contact_emal');
+        $this->db->from('ts_order_contacts');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('contact_inv',1);
+        $contres=$this->db->get()->result_array();
+        $payemail=$payphone='';
+        foreach ($contres as $crow) {
+            if (!empty($crow['contact_phone'])) {
+                $payphone=$crow['contact_phone'];
+            }
+            if (!empty($crow['contact_emal'])) {
+                $payemail=$crow['contact_emal'];
+            }
+        }
+        $state='UNK';
+        if (!empty($bilres['state_id'])) {
+            $this->db->select('state_code');
+            $this->db->from('ts_states');
+            $this->db->where('state_id', $bilres['state_id']);
+            $stat=$this->db->get()->row_array();
+            $state=$stat['state_code'];
+        }
+
+        // Try to pay
+        $pay_options=array(
+            'email'=>$payemail,
+            'company'=>$bilres['company'],
+            'firstname'=>$customer_first_name,
+            'lastname'=>$customer_last_name,
+            'address1'=>$bilres['address_1'],
+            'address2'=>$bilres['address_2'],
+            'city'=>$bilres['city'],
+            'state'=>$state,
+            'country'=>$bilres['country_iso_code_2'],
+            'zip'=>$bilres['zip'],
+            'phone'=>$payphone,
+            'amount'=>0,
+            'cardnum'=>'',
+            'cardcode'=>'',
+            'exp_month'=>'',
+            'exp_year'=>'',
+        );
+
+        foreach ($res as $row) {
+            $chkpay=0;
+            if (empty($row['cardnum'])) {
+                $out['msg']='Enter Card #';
+            } elseif (empty($row['cardcode'])) {
+                $out['msg']='Enter Card CVV2 code';
+            } elseif (intval($row['exp_month'])==0) {
+                $out['msg']='Expire Month Incorrect';
+            } elseif (intval($row['exp_year'])==0) {
+                $out['msg']='Expire Year Incorrect';
+            } else {
+                $cardtype=$this->getCCardType(str_replace('-','',$row['cardnum']));
+                if (empty($cardtype)) {
+                    $out['msg']='Unknown Credit Card Type';
+                } else {
+                    $chkpay=1;
+                }
+            }
+            if ($chkpay==1) {
+                switch ($cardtype) {
+                    case 'American Express':
+                        $pay_options['cardtype']='Amex';
+                        break;
+                    default :
+                        $pay_options['cardtype']=$cardtype;
+                        break;
+                }
+
+                $pay_options['amount']=$row['amount'];
+                $pay_options['cardnum']=  str_replace('-', '',$row['cardnum']);
+                $pay_options['cardcode']=$row['cardcode'];
+                $pay_options['exp_month']=$row['exp_month'];
+                $pay_options['exp_year']=$row['exp_year'];
+                $transres=$this->order_payment($pay_options);
+                if ($transres['result']==$this->error_result) {
+                    $out['msg']=$transres['error_msg'];
+                    $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
+                    return $out;
+                } else {
+                    // Make Current row Amount=0, Add Charge
+                    $this->db->set('amount',0);
+                    $this->db->where('order_payment_id', $row['order_payment_id']);
+                    $this->db->update('ts_order_payments');
+                    // Batch data
+                    $paymethod='';
+                    if ($pay_options['cardtype']=='amex') {
+                        $paymethod='a';
+                    } else {
+                        $paymethod='v';
+                    }
+                    $batch_data=array(
+                        'batch_id'=>0,
+                        'batch_date'=>time(),
+                        'paymethod'=>$paymethod,
+                        'amount'=>$row['amount'],
+                        'batch_note'=>NULL,
+                        'order_id'=>$order_id,
+                        'batch_received'=>0,
+                        'batch_type'=>$pay_options['cardtype'],
+                        'batch_num'=>$pay_options['cardnum'],
+                        'batch_transaction'=>$transres['transaction_id'],
+                    );
+                    $batch_id=$this->batches_model->save_batch($batch_data, $order_data, $user_id);
+                    $this->_save_order_paymentlog($order_id, $user_id, $transres['transaction_id'], $pay_options, 1);
+                }
+            } else {
+                $this->_save_order_paymentlog($order_id, $user_id, $out['msg']);
+                return $out;
+            }
+        }
+        $out['result']=$this->success_result;
+    }
 
     // Update History Msg
     public function histore_msgupdate($leadorder, $newmsg, $usr_id, $usr_name, $dbupdate, $ordersession) {
@@ -7922,32 +7912,32 @@ Class Leadorder_model extends My_Model {
 //            $this->db->insert('ts_artwork_history');
 //        }
 //    }
-//
-//    private function _save_shipdtelog($order_id,  $user_id, $order_num, $oldshipdate, $newshipdate) {
-//        $this->db->set('order_id', $order_id);
-//        $this->db->set('user_id', $user_id);
-//        $this->db->set('order_num', $order_num);
-//        $this->db->set('old_shipdate', $oldshipdate);
-//        $this->db->set('new_shipdate', $newshipdate);
-//        $this->db->insert('ts_order_shipdatelog');
-//        return TRUE;
-//    }
-//
-//    private function _save_order_paymentlog($order_id, $user_id, $msg, $ccdetails=array(), $succes=0) {
-//        if (!empty($ccdetails)) {
-//            $this->db->set('paysum', floatval($ccdetails['amount']));
-//            $this->db->set('card_num', $ccdetails['cardnum']);
-//            $this->db->set('card_system', $ccdetails['cardtype']);
-//            $this->db->set('cvv', (empty($ccdetails['cardcode']) ? 0 : 1));
-//        }
-//        $this->db->set('order_id', $order_id);
-//        $this->db->set('user_id', $user_id);
-//        $this->db->set('paysucces', $succes);
-//        $this->db->set('api_response', $msg);
-//        $this->db->insert('ts_order_paymentlog');
-//        return TRUE;
-//    }
-//
+
+    private function _save_shipdtelog($order_id,  $user_id, $order_num, $oldshipdate, $newshipdate) {
+        $this->db->set('order_id', $order_id);
+        $this->db->set('user_id', $user_id);
+        $this->db->set('order_num', $order_num);
+        $this->db->set('old_shipdate', $oldshipdate);
+        $this->db->set('new_shipdate', $newshipdate);
+        $this->db->insert('ts_order_shipdatelog');
+        return TRUE;
+    }
+
+    private function _save_order_paymentlog($order_id, $user_id, $msg, $ccdetails=array(), $succes=0) {
+        if (!empty($ccdetails)) {
+            $this->db->set('paysum', floatval($ccdetails['amount']));
+            $this->db->set('card_num', $ccdetails['cardnum']);
+            $this->db->set('card_system', $ccdetails['cardtype']);
+            $this->db->set('cvv', (empty($ccdetails['cardcode']) ? 0 : 1));
+        }
+        $this->db->set('order_id', $order_id);
+        $this->db->set('user_id', $user_id);
+        $this->db->set('paysucces', $succes);
+        $this->db->set('api_response', $msg);
+        $this->db->insert('ts_order_paymentlog');
+        return TRUE;
+    }
+
 //    public function save_trackcode($order_num, $trackcode) {
 //        $out=array('result'=>$this->error_result, 'msg'=>'Order Not Found');
 //        $this->db->select('order_id, order_num, is_canceled, order_system');

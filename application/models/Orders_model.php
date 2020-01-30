@@ -587,4 +587,19 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
+    function get_last_ordernum() {
+//        $this->db->select('max(order_num) as max_ordnum');
+//        $this->db->from('ts_orders');
+//        $res=$this->db->get()->row_array();
+//        if (!isset($res['max_ordnum']) || $res['max_ordnum']==0) {
+//            $retval=Order_model::START_ORDNUM;
+//        } else {
+//            $retval=$res['max_ordnum'];
+//        }
+//        return $retval;
+        $this->db->set('order_date', time());
+        $this->db->insert('ts_ordernum');
+        return $this->db->insert_id();
+    }
+
 }

@@ -203,29 +203,29 @@ Class Creditapp_model extends My_Model
         return $res;
     }
 
-//    public function update_order_creditapp($datapp) {
-//        $this->db->set('update_user', $datapp['user']);
-//        $this->db->set('document_link', $datapp['document_link']);
-//        if ($datapp['credit_app_id']==0) {
-//            $this->db->set('created_user', $datapp['user']);
-//            $this->db->set('update_user', $datapp['user']);
-//            $this->db->set('create_time', date('Y-m-d H:i:s'));
-//            $this->db->set('customer', $datapp['customer']);
-//            $this->db->set('order_id', $datapp['order_id']);
-//            $this->db->insert('ts_creditapp_lines');
-//        } else {
-//            $this->db->set('update_user', $datapp['user']);
-//            $this->db->where('creditapp_line_id', $datapp['credit_app_id']);
-//            $this->db->update('ts_creditapp_lines');
-//        }
-//        return TRUE;
-//    }
-//
-//    // Remove not used APP
-//    public function remove_order_creditapp($order_id) {
-//        $this->db->where('order_id', $order_id);
-//        $this->db->delete('ts_creditapp_lines');
-//        return TRUE;
-//    }
+    public function update_order_creditapp($datapp) {
+        $this->db->set('update_user', $datapp['user']);
+        $this->db->set('document_link', $datapp['document_link']);
+        if ($datapp['credit_app_id']==0) {
+            $this->db->set('created_user', $datapp['user']);
+            $this->db->set('update_user', $datapp['user']);
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
+            $this->db->set('customer', $datapp['customer']);
+            $this->db->set('order_id', $datapp['order_id']);
+            $this->db->insert('ts_creditapp_lines');
+        } else {
+            $this->db->set('update_user', $datapp['user']);
+            $this->db->where('creditapp_line_id', $datapp['credit_app_id']);
+            $this->db->update('ts_creditapp_lines');
+        }
+        return TRUE;
+    }
+
+    // Remove not used APP
+    public function remove_order_creditapp($order_id) {
+        $this->db->where('order_id', $order_id);
+        $this->db->delete('ts_creditapp_lines');
+        return TRUE;
+    }
 
 }
