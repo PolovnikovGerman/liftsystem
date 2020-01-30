@@ -44,7 +44,7 @@ class MY_Controller extends Base_Controller
     public $USER_NAME='';
     public $URER_LOGO='';
     public $USER_EMAIL='';
-
+    public $USER_REPLICA='';
 
     public function __construct()
     {
@@ -72,6 +72,7 @@ class MY_Controller extends Base_Controller
         $this->URER_LOGO = $userdat['user_logo'];
         $this->USER_EMAIL = $userdat['user_email'];
         $this->URER_LOGO = $userdat['user_logo'];
+        $this->USER_REPLICA=$userdat['user_replica'];
 
     }
 
