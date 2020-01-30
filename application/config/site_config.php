@@ -44,6 +44,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='http://bluetrack.sys/proofview/?doc=';
         break;
     default :
         $config['sean_email']='sean@bluetrack.com';
@@ -55,6 +56,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }
 switch($_SERVER['SERVER_NAME']){

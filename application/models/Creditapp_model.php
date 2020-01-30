@@ -12,19 +12,19 @@ Class Creditapp_model extends My_Model
         parent::__construct();
     }
 
-//    public function get_creditapp_total($options=array()) {
-//        $this->db->select('count(creditapp_line_id) as cnt');
-//        $this->db->from('ts_creditapp_lines');
-//        if (isset($options['stattus']) && !empty($options['status'])) {
-//            $this->db->where('status', $options['status']);
-//        }
-//        if (isset($options['search']) && !empty($options['search'])) {
-//            $this->db->like("concat(upper(customer),upper(coalesce(phone,'')),upper(coalesce(email,''))) ", $options['search']);
-//        }
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//
+    public function get_creditapp_total($options=array()) {
+        $this->db->select('count(creditapp_line_id) as cnt');
+        $this->db->from('ts_creditapp_lines');
+        if (isset($options['stattus']) && !empty($options['status'])) {
+            $this->db->where('status', $options['status']);
+        }
+        if (isset($options['search']) && !empty($options['search'])) {
+            $this->db->like("concat(upper(customer),upper(coalesce(phone,'')),upper(coalesce(email,''))) ", $options['search']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
 //    public function get_creditapp_data($options) {
 //        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
 //        $this->db->select('a.creditapp_line_id, a.status, a.customer, a.abbrev, a.phone, a.email, a.notes');

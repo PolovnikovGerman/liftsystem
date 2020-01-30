@@ -297,325 +297,324 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
-//    // Save uploaded
-//    public function save_artproofdocs($leadorder, $proofupload, $ordersession, $uplsession) {
-//        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
-//        $proofdocs=$leadorder['artproofs'];
-//        $newidx=count($proofdocs)+1;
-//        foreach ($proofupload as $row) {
-//            $newdoc=array(
-//                'artwork_proof_id'=>$newidx*(-1),
-//                'created_time'=>date('Y-m-d H:i:s'),
-//                'proof_ordnum'=>$newidx,
-//                'sended'=>0,
-//                'sended_time'=>0,
-//                'approved'=>0,
-//                'approved_time'=>0,
-//                'source_name'=>$row['filename'],
-//                'proofdoc_link'=>'',
-//                'src'=>$row['filesource'],
-//                'out_proofname'=>'proof_'.str_pad($newidx,2,'0',STR_PAD_LEFT),
-//                'senddoc'=>0,
-//                'deleted'=>'',
-//            );
-//            $proofdocs[]=$newdoc;
-//            $newidx++;
-//        }
-//        $leadorder['artproofs']=$proofdocs;
-//        $this->func->session($ordersession, $leadorder);
-//        $this->func->session($uplsession, NULL);
-//        $out['result']=$this->success_result;
-//        $out_proof=array();
-//        foreach ($proofdocs as $row) {
-//            if ($row['deleted']=='') {
-//                $out_proof[]=$row;
-//            }
-//        }
-//        $out['outproof']=$out_proof;
-//        return $out;
-//    }
-//
-//    // Change Art Proof docs
-//    public function change_artproofdocs($leadorder, $artwork_proof_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $proofdocs=$leadorder['artproofs'];
-//        $found=0;
-//        $pidx=0;
-//        foreach ($proofdocs as $row) {
-//            if ($row['artwork_proof_id']==$artwork_proof_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $pidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Proof Document Not Found';
-//            return $out;
-//        }
-//        $proofdocs[$pidx][$fldname]=$newval;
-//        if ($fldname=='approved') {
-//            if ($newval==1) {
-//                $proofdocs[$pidx]['approved_time']=time();
-//            } else {
-//                $proofdocs[$pidx]['approved_time']=0;
-//            }
-//        }
-//        $leadorder['artproofs']=$proofdocs;
-//        $this->func->session($ordersession, $leadorder);
-//        // $this->func->session('proofupload', NULL);
-//        $out['result']=$this->success_result;
-//        $out_proof=array();
-//        foreach ($proofdocs as $row) {
-//            if ($row['deleted']=='') {
-//                $out_proof[]=$row;
-//            }
-//        }
-//        $out['outproof']=$out_proof;
-//        return $out;
-//    }
-//
-//    // Prepare template for send ART Proof Email
-//    public function prepare_proofdocapproveemail($leadorder, $template, $user_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $proofdocs=$leadorder['artproofs'];
-//        $order_system=$leadorder['order_system'];
-//        if ($order_system=='new') {
-//            $contacts=$leadorder['contacts'];
-//        } else {
-//            $order=$leadorder['order'];
-//            $contacts=array(
-//                array(
-//                    'contact_name'=>$order['customer_name'],
-//                    'contact_emal'=>$order['customer_email'],
-//                    'contact_art'=>1,
-//                )
-//            );
-//        }
-//
-//        $order=$leadorder['order'];
-//        $artwork=$leadorder['artwork'];
-//        $found=0;
-//        foreach ($proofdocs as $row) {
-//            if ($row['deleted']=='' && $row['senddoc']==1) {
-//                $found++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Check Proofs for Sending';
-//            return $out;
-//        }
-//        // Analise contacts
-//        $emails=array();
-//        foreach ($contacts as $row) {
-//            if ($row['contact_art']==1 && $this->func->valid_email_address($row['contact_emal'])) {
-//                $emails[]=array(
-//                    'contact_name'=>$row['contact_name'],
-//                    'contact_emal'=>$row['contact_emal'],
-//                );
-//            }
-//        }
-//        if (count($emails)==0) {
-//            $out['msg']='Mark Contact email for Proof Docs Notification';
-//            return $out;
-//        }
-//        $tomail='';
-//        foreach ($emails as $row) {
-//            $tomail.=$row['contact_emal'].',';
-//        }
-//        $out['customer_email']=substr($tomail,0,-1);
-//        $this->load->model('user_model');
-//        $this->load->model('email_model');
-//        $userdat = $this->user_model->get_user_data($user_id);
-//        $user_name = $userdat['user_name'];
-//        $this->load->model('email_model');
-//        $mail_template = $this->email_model->get_emailtemplate_byname($template);
-//        $msgdat = "BT" . $order['order_num'];
-//        $doc_type = 'Order';
-//        $itemname = $order['order_items'];
-//        $message = $mail_template['email_template_body'];
-//        $message = str_replace('<<customer_name>>', $order['customer_name'], $message);
-//        $message = str_replace('<<item_name>>', $itemname, $message);
-//        $message = str_replace('<<user_name>>', $user_name, $message);
-//        $message = str_replace('<<document_type>>', $doc_type, $message);
-//        $subj = str_replace('<<order_number>>', $msgdat, $mail_template['email_template_subject']);
-//        $subj = str_replace('<<document_type>>', $doc_type, $subj);
-//        $subj = str_replace('<<item_name>>', $itemname, $subj);
-//        $out['result']=$this->success_result;
-//        $out['artwork_id']=$artwork['artwork_id'];
-//        $out['subject']=$subj;
-//        $out['message']=$message;
-//        $this->func->session($ordersession, $leadorder);
-//        return $out;
-//    }
-//
-//    public function send_artproofmail($data, $leadorder, $user_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $proofdocs=$leadorder['artproofs'];
-//        // $contacts=$leadorder['contacts'];
-//        // $order=$leadorder['order'];
-//        $artwork=$leadorder['artwork'];
-//        $artwork_id=$artwork['artwork_id'];
-//        $this->load->model('user_model');
-//        $this->load->model('artwork_model');
-//        /* Check Data */
-//        if (empty($data['from'])) {
-//            $out['msg']='Enter Sender Email';
-//            return $out;
-//        }
-//        if (empty($data['customer'])) {
-//            $out['msg']='Enter Customer Email';
-//            return $out;
-//        }
-//        if (empty($data['subject'])) {
-//            $out['msg']='Enter Message Subject';
-//            return $out;
-//        }
-//        if (empty($data['message'])) {
-//            $out['msg']='Enter Message Body';
-//            return $out;
-//        }
-//        $toarray = explode(',', $data['customer']);
-//        foreach ($toarray as $row) {
-//            if (!$this->func->valid_email_address(trim($row))) {
-//                $out['msg'] = $row . ' Is not Valid';
-//                return $out;
-//            }
-//        }
-//        if (!empty($data['cc'])) {
-//            $ccarray = explode(',', $data['cc']);
-//            foreach ($ccarray as $row) {
-//                if (!$this->func->valid_email_address(trim($row))) {
-//                    $out['msg'] = 'BCC Email Address ' . $row . ' Is not Valid';
-//                    return $out;
-//                }
-//            }
-//        }
-//        // Get list of proofs, which marked FOR SEND
-//        $numpp=1;
-//        $pridx=0;
-//        foreach ($proofdocs as $row) {
-//            if ($row['deleted']=='') {
-//                $proofdocs[$pridx]['proof_ordnum']=$numpp;
-//                $numpp++;
-//            }
-//            $pridx++;
-//        }
-//        $attachments = array();
-//        $attachlink = array();
-//        $proofurl = $this->config->item('newprooflnk');
-//        foreach ($proofdocs as $row) {
-//            $row['artwork_id']=$artwork_id;
-//            if ($row['deleted']=='' && $row['senddoc']==1) {
-//                $row['sended']=1;
-//                $row['sended_time']=time();
-//                $row['proofdoc_link']=(empty($row['proofdoc_link']) ? $this->func->uniq_link(20) : $row['proofdoc_link']);
-//            }
-//            $res=$this->_save_proofdoc($row, $artwork_id, $user_id);
-//            if ($res['result']==$this->error_result) {
-//                $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Lost Upload');
-//            } else {
-//                if ($row['deleted']=='' && $row['senddoc']==1) {
-//                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Send Proof');
-//                    array_push($attachlink, $row['proofdoc_link']);
-//                    $attachsrc = $row['proofdoc_link'];
-//                    $attachments[] = $proofurl . $attachsrc;
-//                } else {
-//                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
-//                }
-//            }
-//        }
-//        // Send message
-//        $this->load->library('email');
-//        $config = $this->config->item('email_setup');
-//        $config['mailtype'] = 'text';
-//        $this->email->initialize($config);
-//        if ($config['protocol']=='smtp') {
-//            $this->email->from($config['smtp_user']);
-//        } else {
-//            $this->email->from($data['from']);
-//        }
-//
-//        $this->email->to($data['customer']);
-//        if ($data['cc'] != '') {
-//            $cc = $data['cc'];
-//            $this->email->cc($cc);
-//        }
-//        $this->email->subject($data['subject']);
-//
-//        if (count($attachments) == 1) {
-//            $message = 'Below you will find a link to your art proof.  Please click on the link to view it:' . PHP_EOL;
-//            $message.='' . PHP_EOL;
-//            $message.=$attachments[0];
-//        } else {
-//            $message = 'Below you will find links to your art proofs.  Please click on each link to view the different pages:' . PHP_EOL;
-//            $message.='' . PHP_EOL;
-//            foreach ($attachments as $row) {
-//                $message.=$row . PHP_EOL;
-//            }
-//        }
-//
-//        $smessage = str_replace('<<links>>', $message, $data['message']);
-//
-//        $this->email->message($smessage);
-//
-//        $histmsg = 'Art proof sent - ';
-//        $histmsg.='' . count($attachments) . ' attachments';
-//        $details = '';
-//        foreach ($attachments as $row) {
-//            $details.=$row . '<br/>' . PHP_EOL;
-//        }
-//        $mailres=$this->email->send();
-//
-//        $this->email->clear(TRUE);
-//        $logoptions = array(
-//            'from' => $data['from'],
-//            'to' => $data['customer'],
-//            'subject' => $data['subject'],
-//            'message' => $data['message'],
-//            'user_id' => $user_id,
-//        );
-//        if (!empty($data['cc'])) {
-//            $logoptions['cc'] = $data['cc'];
-//        }
-//        if (count($attachments) > 0) {
-//            $logoptions['attachments'] = $attachments;
-//        }
-//        $this->func->logsendmail($logoptions);
-//
-//        $proofdat=$this->artwork_model->get_artproofs($artwork_id);
-//        $leadorder['artproofs']=$proofdat;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['outproof'] = $proofdat;
-//        $out['result'] = $this->success_result;
-//        return $out;
-//    }
-//
-//    // Show uploaded Proof document
-//    public function show_atproofdoc($leadorder, $artwork_proof_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//        $proofdat=$leadorder['artproofs'];
-//        $found=0;
-//        $pidx=0;
-//        foreach ($proofdat as $row) {
-//            if ($row['artwork_proof_id']==$artwork_proof_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $pidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Proof Doc Not Found';
-//            return $out;
-//        }
-//        $out['outproof'] = $proofdat[$pidx];
-//        $leadorder['artproofs']=$proofdat;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result'] = $this->success_result;
-//        return $out;
-//    }
-//
+    // Save uploaded
+    public function save_artproofdocs($leadorder, $proofupload, $ordersession, $uplsession) {
+        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
+        $proofdocs=$leadorder['artproofs'];
+        $newidx=count($proofdocs)+1;
+        foreach ($proofupload as $row) {
+            $newdoc=array(
+                'artwork_proof_id'=>$newidx*(-1),
+                'created_time'=>date('Y-m-d H:i:s'),
+                'proof_ordnum'=>$newidx,
+                'sended'=>0,
+                'sended_time'=>0,
+                'approved'=>0,
+                'approved_time'=>0,
+                'source_name'=>$row['filename'],
+                'proofdoc_link'=>'',
+                'src'=>$row['filesource'],
+                'out_proofname'=>'proof_'.str_pad($newidx,2,'0',STR_PAD_LEFT),
+                'senddoc'=>0,
+                'deleted'=>'',
+            );
+            $proofdocs[]=$newdoc;
+            $newidx++;
+        }
+        $leadorder['artproofs']=$proofdocs;
+        usersession($ordersession, $leadorder);
+        usersession($uplsession, NULL);
+        $out['result']=$this->success_result;
+        $out_proof=array();
+        foreach ($proofdocs as $row) {
+            if ($row['deleted']=='') {
+                $out_proof[]=$row;
+            }
+        }
+        $out['outproof']=$out_proof;
+        return $out;
+    }
+
+    // Change Art Proof docs
+    public function change_artproofdocs($leadorder, $artwork_proof_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $proofdocs=$leadorder['artproofs'];
+        $found=0;
+        $pidx=0;
+        foreach ($proofdocs as $row) {
+            if ($row['artwork_proof_id']==$artwork_proof_id) {
+                $found=1;
+                break;
+            } else {
+                $pidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Proof Document Not Found';
+            return $out;
+        }
+        $proofdocs[$pidx][$fldname]=$newval;
+        if ($fldname=='approved') {
+            if ($newval==1) {
+                $proofdocs[$pidx]['approved_time']=time();
+            } else {
+                $proofdocs[$pidx]['approved_time']=0;
+            }
+        }
+        $leadorder['artproofs']=$proofdocs;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $out_proof=array();
+        foreach ($proofdocs as $row) {
+            if ($row['deleted']=='') {
+                $out_proof[]=$row;
+            }
+        }
+        $out['outproof']=$out_proof;
+        return $out;
+    }
+
+    // Prepare template for send ART Proof Email
+    public function prepare_proofdocapproveemail($leadorder, $template, $user_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $proofdocs=$leadorder['artproofs'];
+        $order_system=$leadorder['order_system'];
+        if ($order_system=='new') {
+            $contacts=$leadorder['contacts'];
+        } else {
+            $order=$leadorder['order'];
+            $contacts=array(
+                array(
+                    'contact_name'=>$order['customer_name'],
+                    'contact_emal'=>$order['customer_email'],
+                    'contact_art'=>1,
+                )
+            );
+        }
+
+        $order=$leadorder['order'];
+        $artwork=$leadorder['artwork'];
+        $found=0;
+        foreach ($proofdocs as $row) {
+            if ($row['deleted']=='' && $row['senddoc']==1) {
+                $found++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Check Proofs for Sending';
+            return $out;
+        }
+        // Analise contacts
+        $emails=array();
+        foreach ($contacts as $row) {
+            if ($row['contact_art']==1 && $this->func->valid_email_address($row['contact_emal'])) {
+                $emails[]=array(
+                    'contact_name'=>$row['contact_name'],
+                    'contact_emal'=>$row['contact_emal'],
+                );
+            }
+        }
+        if (count($emails)==0) {
+            $out['msg']='Mark Contact email for Proof Docs Notification';
+            return $out;
+        }
+        $tomail='';
+        foreach ($emails as $row) {
+            $tomail.=$row['contact_emal'].',';
+        }
+        $out['customer_email']=substr($tomail,0,-1);
+        $this->load->model('user_model');
+        $this->load->model('email_model');
+        $userdat = $this->user_model->get_user_data($user_id);
+        $user_name = $userdat['user_name'];
+        $this->load->model('email_model');
+        $mail_template = $this->email_model->get_emailtemplate_byname($template);
+        $msgdat = "BT" . $order['order_num'];
+        $doc_type = 'Order';
+        $itemname = $order['order_items'];
+        $message = $mail_template['email_template_body'];
+        $message = str_replace('<<customer_name>>', $order['customer_name'], $message);
+        $message = str_replace('<<item_name>>', $itemname, $message);
+        $message = str_replace('<<user_name>>', $user_name, $message);
+        $message = str_replace('<<document_type>>', $doc_type, $message);
+        $subj = str_replace('<<order_number>>', $msgdat, $mail_template['email_template_subject']);
+        $subj = str_replace('<<document_type>>', $doc_type, $subj);
+        $subj = str_replace('<<item_name>>', $itemname, $subj);
+        $out['result']=$this->success_result;
+        $out['artwork_id']=$artwork['artwork_id'];
+        $out['subject']=$subj;
+        $out['message']=$message;
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+    public function send_artproofmail($data, $leadorder, $user_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $proofdocs=$leadorder['artproofs'];
+        // $contacts=$leadorder['contacts'];
+        // $order=$leadorder['order'];
+        $artwork=$leadorder['artwork'];
+        $artwork_id=$artwork['artwork_id'];
+        $this->load->model('user_model');
+        $this->load->model('artwork_model');
+        /* Check Data */
+        if (empty($data['from'])) {
+            $out['msg']='Enter Sender Email';
+            return $out;
+        }
+        if (empty($data['customer'])) {
+            $out['msg']='Enter Customer Email';
+            return $out;
+        }
+        if (empty($data['subject'])) {
+            $out['msg']='Enter Message Subject';
+            return $out;
+        }
+        if (empty($data['message'])) {
+            $out['msg']='Enter Message Body';
+            return $out;
+        }
+        $toarray = explode(',', $data['customer']);
+        foreach ($toarray as $row) {
+            if (!valid_email_address(trim($row))) {
+                $out['msg'] = $row . ' Is not Valid';
+                return $out;
+            }
+        }
+        if (!empty($data['cc'])) {
+            $ccarray = explode(',', $data['cc']);
+            foreach ($ccarray as $row) {
+                if (!valid_email_address(trim($row))) {
+                    $out['msg'] = 'BCC Email Address ' . $row . ' Is not Valid';
+                    return $out;
+                }
+            }
+        }
+        // Get list of proofs, which marked FOR SEND
+        $numpp=1;
+        $pridx=0;
+        foreach ($proofdocs as $row) {
+            if ($row['deleted']=='') {
+                $proofdocs[$pridx]['proof_ordnum']=$numpp;
+                $numpp++;
+            }
+            $pridx++;
+        }
+        $attachments = array();
+        $attachlink = array();
+        $proofurl = $this->config->item('newprooflnk');
+        foreach ($proofdocs as $row) {
+            $row['artwork_id']=$artwork_id;
+            if ($row['deleted']=='' && $row['senddoc']==1) {
+                $row['sended']=1;
+                $row['sended_time']=time();
+                $row['proofdoc_link']=(empty($row['proofdoc_link']) ? $this->func->uniq_link(20) : $row['proofdoc_link']);
+            }
+            $res=$this->_save_proofdoc($row, $artwork_id, $user_id);
+            if ($res['result']==$this->error_result) {
+                $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Lost Upload');
+            } else {
+                if ($row['deleted']=='' && $row['senddoc']==1) {
+                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Send Proof');
+                    array_push($attachlink, $row['proofdoc_link']);
+                    $attachsrc = $row['proofdoc_link'];
+                    $attachments[] = $proofurl . $attachsrc;
+                } else {
+                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
+                }
+            }
+        }
+        // Send message
+        $this->load->library('email');
+        $config = $this->config->item('email_setup');
+        $config['mailtype'] = 'text';
+        $this->email->initialize($config);
+        if ($config['protocol']=='smtp') {
+            $this->email->from($config['smtp_user']);
+        } else {
+            $this->email->from($data['from']);
+        }
+
+        $this->email->to($data['customer']);
+        if ($data['cc'] != '') {
+            $cc = $data['cc'];
+            $this->email->cc($cc);
+        }
+        $this->email->subject($data['subject']);
+
+        if (count($attachments) == 1) {
+            $message = 'Below you will find a link to your art proof.  Please click on the link to view it:' . PHP_EOL;
+            $message.='' . PHP_EOL;
+            $message.=$attachments[0];
+        } else {
+            $message = 'Below you will find links to your art proofs.  Please click on each link to view the different pages:' . PHP_EOL;
+            $message.='' . PHP_EOL;
+            foreach ($attachments as $row) {
+                $message.=$row . PHP_EOL;
+            }
+        }
+
+        $smessage = str_replace('<<links>>', $message, $data['message']);
+
+        $this->email->message($smessage);
+
+        $histmsg = 'Art proof sent - ';
+        $histmsg.='' . count($attachments) . ' attachments';
+        $details = '';
+        foreach ($attachments as $row) {
+            $details.=$row . '<br/>' . PHP_EOL;
+        }
+        $mailres=$this->email->send();
+
+        $this->email->clear(TRUE);
+        $logoptions = array(
+            'from' => $data['from'],
+            'to' => $data['customer'],
+            'subject' => $data['subject'],
+            'message' => $data['message'],
+            'user_id' => $user_id,
+        );
+        if (!empty($data['cc'])) {
+            $logoptions['cc'] = $data['cc'];
+        }
+        if (count($attachments) > 0) {
+            $logoptions['attachments'] = $attachments;
+        }
+        $this->func->logsendmail($logoptions);
+
+        $proofdat=$this->artwork_model->get_artproofs($artwork_id);
+        $leadorder['artproofs']=$proofdat;
+        usersession($ordersession, $leadorder);
+        $out['outproof'] = $proofdat;
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    // Show uploaded Proof document
+    public function show_atproofdoc($leadorder, $artwork_proof_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+        $proofdat=$leadorder['artproofs'];
+        $found=0;
+        $pidx=0;
+        foreach ($proofdat as $row) {
+            if ($row['artwork_proof_id']==$artwork_proof_id) {
+                $found=1;
+                break;
+            } else {
+                $pidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Proof Doc Not Found';
+            return $out;
+        }
+        $out['outproof'] = $proofdat[$pidx];
+        $leadorder['artproofs']=$proofdat;
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
 //    public function save_artwork($artw, $user_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
 //        $this->db->set('order_id',$artw['order_id']);

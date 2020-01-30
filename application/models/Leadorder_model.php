@@ -1005,7 +1005,7 @@ Class Leadorder_model extends My_Model {
             $order['profit_perc']=$profit_perc;
         }
         $leadorder['order']=$order;
-        $this->func->session($ordersession, $leadorder);
+        usersession($ordersession, $leadorder);
         // Prepare order profit response
         $out['profit']=$order['profit'];
         $out['profit_perc']=$order['profit_perc'];
@@ -1015,51 +1015,51 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    public function edit_contact($leadorder, $contact_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if ($fldname=='contact_emal' && !empty($newval)) {
-//            if (!$this->func->valid_email_address($newval)) {
-//                $out['msg']='Contact Email Incorrect';
-//                return $out;
-//            }
-//        }
-//        $contacts=$leadorder['contacts'];
-//        $found=0;
-//        $idx=0;
-//        foreach ($contacts as $row) {
-//            if ($row['order_contact_id']==$contact_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Contact Data Not Exist';
-//            return $out;
-//        }
-//        $contacts[$idx][$fldname]=$newval;
-//        if ($fldname=='contact_emal') {
-//            if (!$this->func->valid_email_address($newval)) {
-//                $contacts[$idx]['contact_art']=0;
-//                $contacts[$idx]['contact_inv']=0;
-//                $contacts[$idx]['contact_trk']=0;
-//            }
-//            $out['currec']=$contacts;
-//        }
-//        if ($fldname=='contact_phone') {
-//            if (!empty($newval)) {
-//                $phone=str_replace('-', '', $newval);
-//                $phonenum=$this->func->formatPhoneNumber($phone);
-//                $contacts[$idx]['contact_phone']=$phonenum;
-//            }
-//        }
-//        $leadorder['contacts']=$contacts;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
+    public function edit_contact($leadorder, $contact_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if ($fldname=='contact_emal' && !empty($newval)) {
+            if (!$this->func->valid_email_address($newval)) {
+                $out['msg']='Contact Email Incorrect';
+                return $out;
+            }
+        }
+        $contacts=$leadorder['contacts'];
+        $found=0;
+        $idx=0;
+        foreach ($contacts as $row) {
+            if ($row['order_contact_id']==$contact_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Contact Data Not Exist';
+            return $out;
+        }
+        $contacts[$idx][$fldname]=$newval;
+        if ($fldname=='contact_emal') {
+            if (!$this->func->valid_email_address($newval)) {
+                $contacts[$idx]['contact_art']=0;
+                $contacts[$idx]['contact_inv']=0;
+                $contacts[$idx]['contact_trk']=0;
+            }
+            $out['currec']=$contacts;
+        }
+        if ($fldname=='contact_phone') {
+            if (!empty($newval)) {
+                $phone=str_replace('-', '', $newval);
+                $phonenum=formatPhoneNumber($phone);
+                $contacts[$idx]['contact_phone']=$phonenum;
+            }
+        }
+        $leadorder['contacts']=$contacts;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
     // Save item for new type of Order
     public function save_order_items($leadorder, $item_id, $custom_item, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -1285,7 +1285,7 @@ Class Leadorder_model extends My_Model {
                 $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
-                    $this->func->session($ordersession, $leadorder);
+                    usersession($ordersession, $leadorder);
                     return $out;
                 } else {
                     $rates=$cntres['ships'];
@@ -1331,7 +1331,6 @@ Class Leadorder_model extends My_Model {
         $leadorder['shipping_address']=$shipaddr;
         usersession($ordersession, $leadorder);
 
-        // $this->func->session($ordersession, $leadorder);
         $out['result']=$this->success_result;
         $out['order_items']=$order_items;
         $this->_leadorder_totals($leadorder, $ordersession);
@@ -1437,7 +1436,7 @@ Class Leadorder_model extends My_Model {
         $leadorder['shipping_address']=$shipping_address;
         $leadorder['order_items']=$neworder;
 
-        $this->func->session($ordersession, $leadorder);
+        usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         $out['order_items']=$neworder;
         $this->_leadorder_totals($leadorder, $ordersession);
@@ -1445,1177 +1444,1169 @@ Class Leadorder_model extends My_Model {
     }
 
 
-//    // Add Item color
-//    public function add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order_items=$leadorder['order_items'];
-//        $idx=0;
-//        $found=0;
-//        foreach ($order_items as $row) {
-//            if ($row['order_item_id']==$order_item_id) {
-//                $found=1;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Order Item Record Not Found';
-//            return $out;
-//        }
-//        $items=$order_items[$idx]['items'];
-//        // Remove Add color flag
-//        $itmidx=0;
-//        foreach ($items as $row) {
-//            $items[$itmidx]['item_color_add']=0;
-//            $itmidx++;
-//        }
-//        $newid=count($items)+1;
-//        $colors=$order_items[$idx]['colors'];
-//        $itemcolor=$colors[0];
-//        $newitem=array(
-//            'order_item_id'=>$order_items[$idx]['order_item_id'],
-//            'item_id'=>$newid*(-1),
-//            'item_row'=>$newid,
-//            'item_number'=>$order_items[$idx]['item_number'],
-//            'item_color'=>$itemcolor,
-//            'colors'=>$colors,
-//            'num_colors'=>$order_items[$idx]['num_colors'],
-//            'item_description'=>$order_items[$idx]['item_name'],
-//        );
-//        if ($order_items[$idx]['num_colors']==0) {
-//            $newitem['out_colors']=$this->empty_htmlcontent;
-//        } else {
-//            $options=array(
-//                'order_item_id'=>$newitem['order_item_id'],
-//                'item_id'=>$newitem['item_id'],
-//                'colors'=>$newitem['colors'],
-//                'item_color'=>$newitem['item_color'],
-//            );
-//            $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
-//        }
-//        if ($newitem['num_colors']>1) {
-//            $newitem['item_color_add']=1;
-//        } else {
-//            $newitem['item_color_add']=0;
-//        }
-//        $newitem['item_qty']=0;
-//        if ($order_items[$idx]['item_id']>0) {
-//            $itemdata=$this->_get_itemdata($order_items[$idx]['item_id']);
-//            $newitem['printshop_item_id']=$itemdata['printshop_item_id'];
-//        } else {
-//            $newitem['printshop_item_id']='';
-//        }
-//        $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
-//        $newitem['item_price']=$newprice;
-//        $newitem['item_subtotal']=MoneyOutput(0);
-//        $items[]=$newitem;
-//        // Save
-//        $order_items[$idx]['items']=$items;
-//        $leadorder['order_items']=$order_items;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $out['items']=$order_items[$idx];
-//        return $out;
-//    }
-//
-//
-//    // Change Items List parameter
-//    public function change_items($leadorder, $order_item_id, $item_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        $order_items=$leadorder['order_items'];
-//        $idx=0;
-//        $found=0;
-//
-//        foreach ($order_items as $row) {
-//            if ($row['order_item_id']==$order_item_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Order Item Record Not Found';
-//            return $out;
-//        }
-//        $items=$order_items[$idx]['items'];
-//
-//        $founditm=0;
-//        $itmidx=0;
-//
-//        foreach ($items as $row) {
-//            if ($row['item_id']==$item_id) {
-//                $founditm=1;
-//                break;
-//            } else {
-//                $itmidx++;
-//            }
-//        }
-//        if ($founditm==0) {
-//            $out['msg']='Item Record Not Found';
-//            return $out;
-//        }
-//
-//        // if (!isset($items[$itmidx][$fldname])) {
-//        if (!array_key_exists($fldname, $items[$itmidx])) {
-//            $out['msg']='Unknown parameter '.$fldname;
-//            return $out;
-//        }
-//        $imprints=$order_items[$idx]['imprints'];
-//
-//        $out['result']=$this->success_result;
-//        $items[$itmidx][$fldname]=$newval;
-//        $out['items']=$order_items[$idx];
-//        $out['shipcalc']=0;
-//        // Get new price for QTY
-//        if ($fldname=='item_qty') {
-//            $itemsqty=0;
-//            foreach ($items as $irow) {
-//                $itemsqty+=$irow['item_qty'];
-//            }
-//            $order_items[$idx]['item_qty']=$itemsqty;
-//            // Get New price
-//            $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
-//            $ridx=0;
-//            foreach ($items as $row) {
-//                $items[$ridx]['item_price']=$newprice;
-//                $ridx++;
-//            }
-//            // Recalc Shipping Rates
-//            $out['shipcalc']=1;
-//        } elseif ($fldname=='item_color') {
-//            $options=array(
-//                'order_item_id'=>$items[$itmidx]['order_item_id'],
-//                'item_id'=>$items[$itmidx]['item_id'],
-//                'colors'=>$items[$itmidx]['colors'],
-//                'item_color'=>$items[$itmidx]['item_color'],
-//            );
-//            $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
-//        }
-//        $ridx=0;
-//        $subtotal=0;
-//        $prices=array();
-//        $item_subtotals=array();
-//        $itemsqty=0;
-//        foreach ($items as $row) {
-//            $subtotal+=$items[$ridx]['item_price']*$items[$ridx]['item_qty'];
-//            array_push($prices, $items[$ridx]['item_id'].'|'.$items[$ridx]['item_price']);
-//            $items[$ridx]['item_subtotal']=  MoneyOutput($items[$ridx]['item_price']*$items[$ridx]['item_qty']);
-//            array_push($item_subtotals,$items[$ridx]['item_id'].'|'.$items[$ridx]['item_subtotal']);
-//            $itemsqty+=$items[$ridx]['item_qty'];
-//            $ridx++;
-//        }
-//        $order_items[$idx]['item_subtotal']=$subtotal;
-//        $out['subtotals']=$item_subtotals;
-//        $iidx=0;
-//        $imprsubtotal=0;
-//        foreach ($imprints as $row) {
-//            if ($imprints[$iidx]['delflag']==0) {
-//                if ($row['imprint_item']==1) {
-//                    $imprints[$iidx]['imprint_qty']=$itemsqty;
-//                    $imprints[$iidx]['outqty']=$itemsqty;
-//                    $imprints[$iidx]['imprint_subtotal']=MoneyOutput($itemsqty*$imprints[$iidx]['imprint_price']);
-//                    $imprsubtotal+=$itemsqty*$imprints[$iidx]['imprint_price'];
-//                } else {
-//                    $imprsubtotal+=$imprints[$iidx]['imprint_price']*$imprints[$iidx]['imprint_qty'];
-//                }
-//            }
-//            $iidx++;
-//        }
-//        $order_items[$idx]['imprint_subtotal']=$imprsubtotal;
-//        $out['prices']=$prices;
-//        $out['item_subtotals']=$item_subtotals;
-//        // Save to session
-//        $order_items[$idx]['items']=$items;
-//        $order_items[$idx]['imprints']=$imprints;
-//        // Calc # of items
-//        $order_itemqty=0;
-//        foreach ($order_items as $row) {
-//            $order_itemqty+=$row['item_qty'];
-//        }
-//        $order['order_qty']=$order_itemqty;
-//        // Add new val to leadorder array
-//        $leadorder['order']=$order;
-//        $leadorder['order_items']=$order_items;
-//        // If shipping
-//        if ($out['shipcalc']==1) {
-//            // Calculate shipping
-//            $this->load->model('shipping_model');
-//            $shiprate=0;
-//            $items=$leadorder['order_items'];
-//            $shipaddr=$leadorder['shipping_address'];
-//            if (count($shipaddr)==1) {
-//                $shipaddr[0]['item_qty']=$order['order_qty'];
-//            }
-//            $shipping=$leadorder['shipping'];
-//            $shipidx=0;
-//            $cnt=0;
-//            foreach ($shipaddr as $shprow) {
-//                if (!empty($shprow['zip'])) {
-//                    // Get Old Shipping Method
-//                    $default_ship_method='';
-//                    if (isset($shprow['shipping_cost'])) {
-//                        $oldcosts=$shprow['shipping_costs'];
-//                        foreach ($oldcosts as $costrow) {
-//                            if ($costrow['delflag']==0 && $costrow['current']==1) {
-//                                $default_ship_method=$costrow['shipping_method'];
-//                            }
-//                        }
-//                    }
-//                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
-//                    if ($cntres['result']==$this->error_result) {
-//                        $out['msg']=$cntres['msg'];
-//                        $this->func->session($ordersession, $leadorder);
-//                        return $out;
-//                    } else {
-//                        // Old Costs
-//                        $rates=$cntres['ships'];
-//                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
-//                        $cidx=0;
-//                        foreach ($shipcost as $row) {
-//                            $shipcost[$cidx]['delflag']=1;
-//                            $cidx++;
-//                        }
-//                        $newidx=count($shipcost)+1;
-//                        foreach ($rates as $row) {
-//                            $shipcost[]=array(
-//                                'order_shipcost_id'=>$newidx*(-1),
-//                                'shipping_method'=>$row['ServiceName'],
-//                                'shipping_cost'=>$row['Rate'],
-//                                'arrive_date'=>$row['DeliveryDate'],
-//                                'current'=>$row['current'],
-//                                'delflag'=>0,
-//                            );
-//                            if ($row['current']==1) {
-//                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
-//                                $shiprate+=$row['Rate'];
-//                            }
-//                            $newidx++;
-//                        }
-//                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
-//                    }
-//                }
-//                $shipidx++;
-//                $cnt++;
-//            }
-//            $out['shipping']=$shiprate;
-//            $order['shipping']=$shiprate;
-//            $out['cntshipadrr']=$cnt;
-//            if ($cnt==1) {
-//                $out['shipaddr']=$shipaddr[0];
-//            } else {
-//                $out['shipaddress']=$shipaddr;
-//            }
-//            // Save data into Session
-//            $leadorder['order']=$order;
-//            $leadorder['shipping']=$shipping;
-//            $leadorder['shipping_address']=$shipaddr;
-//            $this->func->session($ordersession, $leadorder);
-//        }
-//        $leadorder['order']=$order;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['items']=$order_items[$idx];
-//        $out['shipping']=$leadorder['shipping'];
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Prepare Items Imprint Popup
-//    public function prepare_imprint_details($leadorder, $order_item_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order_items=$leadorder['order_items'];
-//        $artwork=$leadorder['artwork'];
-//        $found=0;
-//        $idx=0;
-//        foreach ($order_items as $row) {
-//            if ($row['order_item_id']==$order_item_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found=0) {
-//            $out['msg']='Order Item not Found';
-//            return $out;
-//        }
-//        $out['result']=$this->success_result;
-//        $out['imprint_details']=$order_items[$idx]['imprint_details'];
-//        $out['item_id']=$order_items[$idx]['item_id'];
-//        $out['item_number']=$order_items[$idx]['item_number'];
-//        $out['order_blank']=$artwork['artwork_blank'];
-//        $out['imprints']=$order_items[$idx]['imprint_locations'];
-//        $out['item_name']=$order_items[$idx]['item_name'];
-//        $this->func->session($ordersession, $leadorder);
-//        return $out;
-//    }
-//
-//
-//    // Change Item Imprint Details Popup
-//    public function change_imprint_details($imprintdetails, $order_imprindetail_id, $fldname, $newval, $imprintsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>'Imprint Location Not Found');
-//        $details=$imprintdetails['imprint_details'];
-//        $found=0;
-//        $detidx=0;
-//        foreach ($details as $row) {
-//            if ($row['order_imprindetail_id']==$order_imprindetail_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $detidx++;
-//            }
-//        }
-//        if ($found==1) {
-//            $details[$detidx][$fldname]=$newval;
-//            if ($fldname=='active' && $newval==1) {
-//                $imprintdetails['order_blank']=0;
-//            }
-//            if ($fldname=='imprint_type') {
-//                if ($newval=='REPEAT') {
-//                    $details[$detidx]['setup_1']=0;
-//                    $details[$detidx]['setup_2']=0;
-//                    $details[$detidx]['setup_3']=0;
-//                    $details[$detidx]['setup_4']=0;
-//                    $out['class']='';
-//                    if (!empty($details[$detidx]['repeat_note'])) {
-//                        $out['class']='full';
-//                    }
-//                } else {
-//                    $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
-//                    $out['setup']=$setupprice;
-//                    $details[$detidx]['setup_1']=$setupprice;
-//                    $details[$detidx]['setup_2']=$setupprice;
-//                    $details[$detidx]['setup_3']=$setupprice;
-//                    $details[$detidx]['setup_4']=$setupprice;
-//                }
-//            }
-//            $imprintdetails['imprint_details']=$details;
-//            $this->func->session($imprintsession, $imprintdetails);
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
-//    // Get Repeat Note
-//    public function get_repeat_note($imprintdetails, $detail_id, $imprintsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $details=$imprintdetails['imprint_details'];
-//        $found=0;
-//        $detidx=0;
-//        foreach ($details as $row) {
-//            if ($row['order_imprindetail_id']==$detail_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $detidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Imprint Location Not Found';
-//            return $out;
-//        }
-//        $out['repeat_note']=$details[$detidx]['repeat_note'];
-//        $this->func->session($imprintsession, $imprintdetails);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Save Repeat Note
-//    public function save_repeat_note($imprintdetails, $repeat_note, $detail_id, $imprintsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $details=$imprintdetails['imprint_details'];
-//        $found=0;
-//        $detidx=0;
-//        foreach ($details as $row) {
-//            if ($row['order_imprindetail_id']==$detail_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $detidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Imprint Location Not Found';
-//            return $out;
-//        }
-//        $details[$detidx]['repeat_note']=$repeat_note;
-//        $imprintdetails['imprint_details']=$details;
-//        $this->func->session($imprintsession, $imprintdetails);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Make Blank order
-//    public function imprintdetails_blankorder($imprintdetails, $newval, $imprintsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $details=$imprintdetails['imprint_details'];
-//        $imprintdetails['order_blank']=$newval;
-//        if ($newval==1) {
-//            $detidx=0;
-//            foreach ($details as $row) {
-//                $details[$detidx]['active']=0;
-//                $detidx++;
-//            }
-//            $imprintdetails['imprint_details']=$details;
-//        }
-//        $this->func->session($imprintsession, $imprintdetails);
-//        $out['result']=$this->success_result;
-//        return $out;
-//
-//    }
-//
-//    // Save imprints
-//    public function save_imprintdetails($leadorder, $details, $ordersession, $imprintsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        $order_items=$leadorder['order_items'];
-//        $order_item_id=$details['order_item_id'];
-//        $imprint_details=$details['imprint_details'];
-//        $order_blank=intval($details['order_blank']);
-//        $artwork=$leadorder['artwork'];
-//        $locations=$leadorder['artlocations'];
-//        // Lets go - Find Order Items
-//        $found=0;
-//        $idx=0;
-//        foreach ($order_items as $row) {
-//            if ($row['order_item_id']==$order_item_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Order Item Not Found';
-//            return $out;
-//        }
-//        // Check Details
-//        foreach ($imprint_details as $row) {
-//            if ($row['active']==1 && $row['imprint_type']=='REPEAT' && empty($row['repeat_note'])) {
-//                $out['msg']=$row['title'].' Empty Repeat Note';
-//                return $out;
-//            }
-//        }
-//        // Delete Old Imprints
-//        $impridx=0;
-//        $imprints=$order_items[$idx]['imprints'];
-//
-//        foreach ($imprints as $irow) {
-//            $imprints[$impridx]['delflag']=1;
-//            $impridx++;
-//        }
-//        // Create Imprint
-//        $newidx=count($imprints)+1;
-//        $out['shiprebuild']=0;
-//        if ($order_blank!=$order['order_blank']) {
-//            $out['shiprebuild']=1;
-//            // Rebuild shipping
-//            $this->load->model('shipping_model');
-//            $shipping=$leadorder['shipping'];
-//            if ($order_blank==1) {
-//                $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
-//            } else {
-//                $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
-//            }
-//
-//            $shipping['rush_list']=serialize($rush);
-//            $shipping['out_rushlist']=$rush;
-//            foreach ($rush['rush'] as $row) {
-//                if ($row['current']==1) {
-//                    $shipping['shipdate']=$row['date'];
-//                    $shipping['rush_price']=$row['price'];
-//                    $shipping['rush_idx']=$row['id'];
-//                }
-//            }
-//            $leadorder['shipping']=$shipping;
-//        }
-//        if ($order_blank==1) {
-//            // Order Blank
-//            $imprints[]=array(
-//                'order_imprint_id'=>$newidx*(-1),
-//                'imprint_description'=>'blank, no imprinting',
-//                'imprint_item'=>0,
-//                'imprint_qty'=>0,
-//                'imprint_price'=>0,
-//                'outqty'=>$this->empty_htmlcontent,
-//                'outprice'=>$this->empty_htmlcontent,
-//                'imprint_subtotal'=>$this->empty_htmlcontent,
-//                'delflag'=>0,
-//            );
-//            $imprint_total=0;
-//        } else {
-//            $setup_qty=0;
-//            $setup_total=0;
-//            $imprint_total=0;
-//            $extra=array();
-//            foreach ($imprint_details as $row) {
-//                if ($row['active']==1) {
-//                    // Prepare New Imprints
-//                    $title=$row['title'];
-//                    for ($i=1; $i<=$row['num_colors']; $i++) {
-//                        $imprtitle=$title.': '.date('jS',strtotime('2015-01-'.$i)).' Color Imprinting';
-//                        $priceindx='print_'.$i;
-//                        $setupindx='setup_'.$i;
-//                        $subtotal=$order_items[$idx]['item_qty']*floatval($row[$priceindx]);
-//                        $imprint_total+=$subtotal;
-//                        if ($row['imprint_type']!='REPEAT') {
-//                            //if (floatval($row[$setupindx])>0) {
-//                            $setup_qty+=1;
-//                            $setup_total+=floatval($row[$setupindx]);
-//                            $imprint_total+=floatval($row[$setupindx]);
-//                            //}
-//                        }
-//                        $imprints[]=array(
-//                            'order_imprint_id'=>(-1)*$newidx,
-//                            'imprint_description'=>$imprtitle,
-//                            'imprint_item'=>1,
-//                            'imprint_qty'=>$order_items[$idx]['item_qty'],
-//                            'imprint_price'=>floatval($row[$priceindx]),
-//                            'outqty'=>($order_items[$idx]['item_qty']==0 ? '---' : $order_items[$idx]['item_qty']),
-//                            'outprice'=>  MoneyOutput(floatval($row[$priceindx])),
-//                            'imprint_subtotal'=>  MoneyOutput($subtotal),
-//                            'delflag'=>0,
-//                        );
-//                        $newidx++;
-//                    }
-//                    if ($row['imprint_type']=='REPEAT') {
-//                        $extracost=floatval($row['extra_cost']);
-//                        $imprint_total+=$extracost;
-//                        // Add Imprint
-//                        $title='Repeat Setup Charge '.$row['repeat_note'];
-//                        $extra[]=array(
-//                            'order_imprint_id'=>(-1)*$newidx,
-//                            'imprint_description'=>$title,
-//                            'imprint_item'=>0,
-//                            'imprint_qty'=>1,
-//                            'imprint_price'=>floatval($row['extra_cost']),
-//                            'outqty'=>1,
-//                            'outprice'=>MoneyOutput($extracost),
-//                            'imprint_subtotal'=>MoneyOutput($extracost),
-//                            'delflag'=>0,
-//                        );
-//                        $newidx++;
-//                    }
-//                }
-//            }
-//            if (count($extra)>0) {
-//                foreach ($extra as $erow) {
-//                    $imprints[]=$erow;
-//                }
-//            }
-//            if ($setup_total>=0 && $setup_qty>0) {
-//                $setup_price=0;
-//                if ($setup_qty>0) {
-//                    $setup_price=round($setup_total/$setup_qty,2);
-//                }
-//                $imprints[]=array(
-//                    'order_imprint_id'=>(-1)*$impridx,
-//                    'imprint_description'=>'One Time Art Setup Charge',
-//                    'imprint_item'=>0,
-//                    'imprint_qty'=>$setup_qty,
-//                    'imprint_price'=>floatval($setup_price),
-//                    'outqty'=>$setup_qty,
-//                    'outprice'=>MoneyOutput($setup_price),
-//                    'imprint_subtotal'=>  MoneyOutput($setup_total),
-//                    'delflag'=>0,
-//                );
-//            }
-//        }
-//        // Add / Remove Repeat Locations
-//        $artlocchange=0;
-//        $sdx=0;
-//        foreach ($imprint_details as $row) {
-//            if ($row['imprint_type']=='REPEAT') {
-//                if ($row['active']==1) {
-//                    if (empty($row['artwork_art_id'])) {
-//                        // Add Location
-//                        $numrec=count($locations)+1;
-//                        $fields = $this->db->list_fields('ts_artwork_arts');
-//                        $newlocation=array();
-//                        foreach ($fields as $field) {
-//                            $newlocation[$field]='';
-//                        }
-//                        $imprint_details[$sdx]['artwork_art_id']=$numrec*(-1);
-//                        $newlocation['artwork_id']=$artwork['artwork_id'];
-//                        $newlocation['artwork_art_id']=$numrec*(-1);
-//                        $newlocation['art_type']='Repeat';
-//                        $newlocation['locat_ready']=0;
-//                        $newlocation['art_ordnum']=$numrec;
-//                        $newlocation['artlabel']=$this->empty_htmlcontent;
-//                        $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
-//                        $newlocation['artlabel']='Repeat';
-//                        $newlocation['order_num']=$row['repeat_note'];
-//                        $newlocation['repeat_text']=$row['repeat_note'];
-//                        $newlocation['locat_ready']=1;
-//                        $newlocation['deleted']='';
-//                        $locations[]=$newlocation;
-//                        $artlocchange=1;
-//                    }
-//                } else {
-//                    if (!empty($row['artwork_art_id'])) {
-//                        // Remove Location
-//                        $locid=0;
-//                        foreach ($locations as $row) {
-//                            if ($row['artwork_art_id']==$row['artwork_art_id']) {
-//                                $found=1;
-//                                $locations[$locid]['deleted']='del';
-//                                $imprint_details[$sdx]['artwork_art_id']=NULL;
-//                                $artlocchange=1;
-//                                break;
-//                            }
-//                            $locid++;
-//                        }
-//                    }
-//                }
-//            } else {
-//                if (!empty($row['artwork_art_id'])) {
-//                    // Remove Location
-//                    $locid=0;
-//                    foreach ($locations as $row) {
-//                        if ($row['artwork_art_id']==$row['artwork_art_id']) {
-//                            $found=1;
-//                            $locations[$locid]['deleted']='del';
-//                            $imprint_details[$sdx]['artwork_art_id']=NULL;
-//                            $artlocchange=1;
-//                            break;
-//                        }
-//                        $locid++;
-//                    }
-//                }
-//            }
-//            $sdx++;
-//        }
-//        // Save Imprint Details
-//        $order_items[$idx]['imprint_details']=$imprint_details;
-//        $order_items[$idx]['imprint_subtotal']=$imprint_total;
-//        $artwork['artwork_blank']=$order_blank;
-//        $leadorder['artwork']=$artwork;
-//        $leadorder['artlocations']=$locations;
-//        $order['order_blank']=$order_blank;
-//        $out['order_blank']=$order_blank;
-//        $order_items[$idx]['imprints']=$imprints;
-//        $leadorder['order_items']=$order_items;
-//        $leadorder['order']=$order;
-//        $this->func->session($ordersession, $leadorder);
-//        $this->func->session($imprintsession, NULL);
-//        $out['result']=$this->success_result;
-//        $out['item']=$order_items[$idx];
-//        $out['artlocchange']=$artlocchange;
-//        if ($artlocchange==1) {
-//            $out['artlocat']=$locations;
-//        }
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Save changes in Ship Address
-//    public function change_shipaddres($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->load->model('shipping_model');
-//        $shipaddr=$leadorder['shipping_address'];
-//        $shipping=$leadorder['shipping'];
-//        $shipidx=0;
-//        $found=0;
-//        foreach ($shipaddr as $row) {
-//            if ($row['order_shipaddr_id']==$shipaddr_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $shipidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Addres Not Found';
-//            return $out;
-//        }
-//
-//        $shipaddr[$shipidx][$fldname]=$newval;
-//        if ($fldname=='country_id') {
-//            // Get a list of states
-//            $states=$this->shipping_model->get_country_states($newval);
-//            $cntdat=$this->shipping_model->get_country($newval);
-//            $shipaddr[$shipidx]['out_country']=$cntdat['country_iso_code_2'];
-//            $out['states']=$states;
-//            // Change country - state empty
-//            $shipaddr[$shipidx]['state_id']=NULL;
-//            $shipaddr[$shipidx]['taxcalc']=0;
-//            $shipaddr[$shipidx]['taxview']=0;
-//
-////            if (count($states)==0) {
-////                $shipaddr[$shipidx]['state_id']=NULL;
-////                $shipaddr[$shipidx]['taxcalc']=0;
-////                $shipaddr[$shipidx]['taxview']=0;
-////            } else {
-////                $shipaddr[$shipidx]['state_id']=$states[0]['state_id'];
-////            }
-//        } elseif ($fldname=='state_id') {
-//            if ($newval==$this->tax_state) {
-//                $shipaddr[$shipidx]['taxcalc']=0;
-//                $shipaddr[$shipidx]['taxview']=1;
-//                if ($shipaddr[$shipidx]['tax_exempt']==0) {
-//                    $shipaddr[$shipidx]['taxcalc']=1;
-//                }
-//            } else {
-//                $shipaddr[$shipidx]['taxcalc']=0;
-//                $shipaddr[$shipidx]['taxview']=0;
-//            }
-//            $statedat=$this->shipping_model->get_state($newval);
-//            $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
-//        } elseif ($fldname=='zip') {
-//            // Try to validate Address
-//            $this->load->library('United_parcel_service');
-//            $upsserv=new United_parcel_service();
-//            $items=$leadorder['order_items'];
-//            $qty=0;
-//            foreach ($items as $row) {
-//                $qty+=$row['item_qty'];
-//            }
-//            if ($qty>0) {
-//                if (count($shipaddr)==1) {
-//                    $shipaddr[$shipidx]['item_qty']=$qty;
-//                }
-//                // Old Shipping Method
-//                $default_ship_method='';
-//                if (isset($shipaddr[$shipidx]['shipping_costs'])) {
-//                    $oldcosts=$shipaddr[$shipidx]['shipping_costs'];
-//                    foreach ($oldcosts as $costrow) {
-//                        if ($costrow['delflag']==0 && $costrow['current']==1) {
-//                            $default_ship_method=$costrow['shipping_method'];
-//                        }
-//                    }
-//                }
-//                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
-//                if ($cntres['result']==$this->error_result) {
-//                    $out['msg']=$cntres['msg'];
-//                    return $out;
-//                } else {
-//                    $order=$leadorder['order'];
-//                    $leadorder['order']=$order;
-//                    $rates=$cntres['ships'];
-//                    $shipcost=$shipaddr[$shipidx]['shipping_costs'];
-//                    $cidx=0;
-//                    foreach ($shipcost as $row) {
-//                        $shipcost[$cidx]['delflag']=1;
-//                        $cidx++;
-//                    }
-//                    $newidx=count($shipcost)+1;
-//                    foreach ($rates as $key=>$row) {
-//                        $shipcost[]=array(
-//                            'order_shipcost_id'=>$newidx*(-1),
-//                            'shipping_method'=>$row['ServiceName'],
-//                            'shipping_cost'=>$row['Rate'],
-//                            'arrive_date'=>$row['DeliveryDate'],
-//                            'current'=>$row['current'],
-//                            'delflag'=>0,
-//                        );
-//                        if ($row['current']==1) {
-//                            $shipaddr[$shipidx]['shipping']=$row['Rate'];
-//                        }
-//                        $newidx++;
-//                    }
-//                    $shipaddr[$shipidx]['shipping_costs']=$shipcost;
-//                    $shiptotal=$this->_leadorder_shipcost($shipaddr);
-//                    $out['shipping']=$shiptotal;
-//                    $order['shipping']=$shiptotal;
-//                }
-//
-//            }
-//            // Validate Address
-//            if ($shipaddr[$shipidx]['out_country']=='US') {
-//                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
-//                if ($tracking['result']==$this->success_result) {
-//                    if (!empty($tracking['city'])) {
-//                        $shipaddr[$shipidx]['city']=$tracking['city'];
-//                    }
-//                    if (!empty($tracking['state'])) {
-//                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
-//                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
-//                        if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=1;
-//                            if ($shipaddr[$shipidx]['tax_exempt']==0) {
-//                                $shipaddr[$shipidx]['taxcalc']=1;
-//                            }
-//                        } else {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=0;
-//                        }
-//                    }
-//                }
-//            }
-//        } elseif ($fldname=='tax_exempt') {
-//            if ($newval==0) {
-//                $shipaddr[$shipidx]['taxcalc']=1;
-//            } else {
-//                $shipaddr[$shipidx]['taxcalc']=0;
-//            }
-//        }
-//
-//        $leadorder['shipping_address']=$shipaddr;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $out['shipadr']=$shipaddr[$shipidx];
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Change Ship Cost Default Method
-//    public function change_shipaddrescost($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipaddr=$leadorder['shipping_address'];
-//        $found=0;
-//        $shipidx=0;
-//        foreach ($shipaddr as $row) {
-//            if ($row['order_shipaddr_id']==$shipaddr_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $shipidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Ship Address Not Found';
-//            return $out;
-//        }
-//        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
-//        $found=0;
-//        $costidx=0;
-//        foreach ($shipcost as $crow) {
-//            if ($crow['delflag']==0 && $crow['shipping_method']==$newval) {
-//                $found=1;
-//                break;
-//            } else {
-//                $costidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Method Not Found';
-//            return $out;
-//        }
-//        $out['order_shipcost_id']=$shipcost[$costidx]['order_shipcost_id'];
-//        $idx=0;
-//        foreach ($shipcost as $crow) {
-//            if ($idx==$costidx) {
-//                $shipcost[$idx]['current']=1;
-//                $shipaddr[$shipidx]['shipping']=$crow['shipping_cost'];
-//                $shipaddr[$shipidx]['arrive_date']=$crow['arrive_date'];
-//            } else {
-//                $shipcost[$idx]['current']=0;
-//            }
-//            $idx++;
-//        }
-//        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
-//        // Change Order params
-//        $order=$leadorder['order'];
-//        $shiptotal=$this->_leadorder_shipcost($shipaddr);
-//        $out['shipping']=$shiptotal;
-//        $order['shipping']=$shiptotal;
-//        // $profit=$this->_leadorder_profit($order);
-//        $leadorder['order']=$order;
-//        $leadorder['shipping_address']=$shipaddr;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Get Tax data from Shipping Address
-//    public function get_taxdetails($leadorder, $shipadr, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipadress=$leadorder['shipping_address'];
-//        $found=0;
-//        $shpidx=0;
-//        foreach ($shipadress as $row) {
-//            if ($row['order_shipaddr_id']==$shipadr) {
-//                $found=1;
-//                break;
-//            } else {
-//                $shpidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Addres Not Found';
-//            return $out;
-//        }
-//        $taxdata=array(
-//            'tax_exemptdoc'=>$shipadress[$shpidx]['tax_exemptdoc'],
-//            'tax_exemptdocid'=>$shipadress[$shpidx]['tax_exemptdocid'],
-//        );
-//        $out['taxdata']=$taxdata;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Save Tax Extem Document
-//    public function save_newtaxdoc($leadorder, $shipadr, $newdoc, $srcname, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipadress=$leadorder['shipping_address'];
-//        $found=0;
-//        $shpidx=0;
-//        foreach ($shipadress as $row) {
-//            if ($row['order_shipaddr_id']==$shipadr) {
-//                $found=1;
-//                break;
-//            } else {
-//                $shpidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Addres Not Found';
-//            return $out;
-//        }
-//        // Save Data - 1 - Flag New File
-//        $shipadress[$shpidx]['tax_exemptdocid']=-1;
-//        // Save Tax doc details
-//        $shipadress[$shpidx]['tax_exemptdoc']=$newdoc;
-//        $shipadress[$shpidx]['tax_exemptdocsrc']=$srcname;
-//        $leadorder['shipping_address']=$shipadress;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Save new Credit App document
-//    public function save_newcreditappdoc($leadorder, $newdoc, $srcname, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        // Save Tax doc details
-//        $order['newappcreditlink']=-1;
-//        $order['credit_applink']=$newdoc;
-//        $leadorder['order']=$order;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    public function change_chargedata($leadorder, $order_payment_id, $fldname, $newval, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $charges=$leadorder['charges'];
-//        $found=0;
-//        $chrgidx=0;
-//        foreach ($charges as $row) {
-//            if ($row['order_payment_id']==$order_payment_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $chrgidx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Credit Card Data Not Found';
-//            return $out;
-//        }
-//        if ($fldname=='exp_month' && intval($newval)>12) {
-//            $out['oldval']=$charges[$chrgidx]['exp_month'];
-//            $out['msg']='Incorrect Expire Date';
-//            return $out;
-//        }
-//        if (!array_key_exists($fldname, $charges[$chrgidx])) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//        if ($fldname=='cardnum' && !empty($newval)) {
-//            $newval=$this->func->creditcard_format($newval);
-//        }
-//        $charges[$chrgidx][$fldname]=$newval;
-//        $out['charge']=$charges[$chrgidx];
-//        $leadorder['charges']=$charges;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Pay
-//    public function leadorder_paycharge($leadorder, $order_payment_id, $usr_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        $order_id=$order['order_id'];
-//        $charges=$leadorder['charges'];
-//        $found=0;
-//        $chridx=0;
-//        foreach ($charges as $row) {
-//            if ($row['order_payment_id']==$order_payment_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $chridx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Charge Data Not Found';
-//            return $out;
-//        }
-//        $charge=$charges[$chridx];
-//        $billing=$leadorder['billing'];
-//        $cardnum=  str_replace('-', '', $charge['cardnum']);
-//        $bilchk=0;
-//        if (empty($billing['customer_name'])) {
-//            $out['msg']='Enter Customer Name';
-//        } elseif (empty($billing['address_1'])) {
-//            $out['msg']='Enter Billing Address';
-//        } elseif (empty($billing['city'])) {
-//            $out['msg']='Enter Billing City';
-//        } elseif (empty($billing['zip'])) {
-//            $out['msg']='Enter Billing Zip / Postal Code';
-//        } elseif (floatval($charge['amount'])==0) {
-//            $out['msg']='Empty Amount Value';
-//        } elseif(empty($cardnum)) {
-//            $out['msg']='Enter Card #';
-//        } elseif(empty ($charge['cardcode'])) {
-//            $out['msg']='Enter Card CVV2 code';
-//        } elseif (intval($charge['exp_month'])==0) {
-//            $out['msg']='Expire Month Incorrect';
-//        } elseif (intval($charge['exp_year'])==0) {
-//            $out['msg']='Expire Year Incorrect';
-//        } else {
-//            $cardtype=$this->getCCardType($cardnum);
-//            if (empty($cardtype)) {
-//                $out['msg']='Unknown Credit Card Type';
-//            } else {
-//                $bilchk=1;
-//            }
-//        }
-//        if ($bilchk==0) {
-//            return $out;
-//        }
-//
-//        $custdat=explode(' ', $billing['customer_name']);
-//        $customer_first_name=(isset($custdat[0]) ? $custdat[0] : 'Unknown');
-//        $customer_last_name=(isset($custdat[1]) ? $custdat[1] : 'Unknown');
-//        // Get contact name
-//        $contacts=$leadorder['contacts'];
-//        $payemail=$payphone='';
-//        foreach ($contacts as $crow) {
-//            if (!empty($crow['contact_phone'])) {
-//                $payphone=$crow['contact_phone'];
-//            }
-//            if (!empty($crow['contact_emal'])) {
-//                $payemail=$crow['contact_emal'];
-//            }
-//        }
-//        $state='UNK';
-//        if (!empty($billing['state_id'])) {
-//            $this->db->select('state_code');
-//            $this->db->from('ts_states');
-//            $this->db->where('state_id', $billing['state_id']);
-//            $stat=$this->db->get()->row_array();
-//            $state=$stat['state_code'];
-//        }
-//        $country='UNK';
-//        if (!empty($billing['country_id'])) {
-//            $this->db->select('country_iso_code_2');
-//            $this->db->from('ts_countries');
-//            $this->db->where('country_id', $billing['country_id']);
-//            $cntres=$this->db->get()->row_array();
-//            if (isset($cntres['country_iso_code_2'])) {
-//                $country=$cntres['country_iso_code_2'];
-//            }
-//        }
-//        // Lets go
-//        $this->load->model('batches_model');
-//        $this->load->model('order_model');
-//        // Try to pay
-//        $pay_options=array(
-//            'email'=>$payemail,
-//            'company'=>$billing['company'],
-//            'firstname'=>$customer_first_name,
-//            'lastname'=>$customer_last_name,
-//            'address1'=>$billing['address_1'],
-//            'address2'=>$billing['address_2'],
-//            'city'=>$billing['city'],
-//            'state'=>$state,
-//            'country'=>$country,
-//            'zip'=>$billing['zip'],
-//            'phone'=>$payphone,
-//            'amount'=>$charge['amount'],
-//            'cardnum'=>$cardnum,
-//            'cardcode'=>$charge['cardcode'],
-//            'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
-//            'exp_month'=>str_pad($charge['exp_month'],2,'0', STR_PAD_LEFT),
-//            'exp_year'=>str_pad($charge['exp_year'],2,'0', STR_PAD_LEFT),
-//        );
-//        $transres=$this->order_payment($pay_options);
-//        if ($transres['result']==$this->error_result) {
-//            $out['msg']=$transres['error_msg'];
-//        } else {
-//            // Make Current row Amount=0, Add Charge
-//            $this->db->set('amount',0);
-//            $this->db->where('order_payment_id', $row['order_payment_id']);
-//            $this->db->update('ts_order_payments');
-//            // Batch data
-//            $paymethod='';
-//            if ($pay_options['cardtype']=='amex') {
-//                $paymethod='a';
-//            } else {
-//                $paymethod='v';
-//            }
-//            $batch_data=array(
-//                'batch_id'=>0,
-//                'batch_date'=>time(),
-//                'paymethod'=>$paymethod,
-//                'amount'=>$row['amount'],
-//                'batch_note'=>NULL,
-//                'order_id'=>$order_id,
-//                'batch_received'=>1,
-//                'batch_type'=>$pay_options['cardtype'],
-//                'batch_num'=>$pay_options['cardnum'],
-//                'batch_transaction'=>$transres['transaction_id'],
-//            );
-//            $batch_id=$this->batches_model->save_batch($batch_data, $order, $usr_id);
-//            // Get New list of Payments
-//            $payments=$this->get_leadorder_payments($order_id);
-//            $total=0;
-//            $fee=0;
-//            foreach ($payments as $row) {
-//                $total+=$row['batch_amount'];
-//                $fee+=(($row['batch_amex']+$row['batch_vmd']==0) ? 0 : $row['batch_amount']-($row['batch_amex']+$row['batch_vmd']));
-//            }
-//            $order['payment_total']=$total;
-//            $order['cc_fee']=$fee;
-//            $leadorder['order']=$order;
-//            $leadorder['payments']=$payments;
-//            $this->func->session($ordersession, $leadorder);
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
-//    public function add_chargedata($leadorder, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        $total_due=$order['revenue']-$order['payment_total'];
-//
-//        $charges=$leadorder['charges'];
-//        $newidx=count($charges)+1;
-//        $payfld=$this->db->list_fields('ts_order_payments');
-//        $newpay=array();
-//        foreach ($payfld as $fld) {
-//            switch ($fld) {
-//                case 'order_payment_id':
-//                    $newpay[$fld]=(-1)*$newidx;
-//                    break;
-//                case 'autopay':
-//                    $newpay[$fld]=($newidx==1 ? 1 : 0);
-//                    break;
-//                case 'amount':
-//                    $newpay[$fld]=($total_due>0 ? $total_due : 0);
-//                    break;
-//                default :
-//                    $newpay[$fld]='';
-//                    break;
-//            }
-//        }
-//        $newpay['delflag']=0;
-//        $charges[]=$newpay;
-//        $out['charges']=$charges;
-//        $leadorder['charges']=$charges;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
+    // Add Item color
+    public function add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order_items=$leadorder['order_items'];
+        $idx=0;
+        $found=0;
+        foreach ($order_items as $row) {
+            if ($row['order_item_id']==$order_item_id) {
+                $found=1;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Order Item Record Not Found';
+            return $out;
+        }
+        $items=$order_items[$idx]['items'];
+        // Remove Add color flag
+        $itmidx=0;
+        foreach ($items as $row) {
+            $items[$itmidx]['item_color_add']=0;
+            $itmidx++;
+        }
+        $newid=count($items)+1;
+        $colors=$order_items[$idx]['colors'];
+        $itemcolor=$colors[0];
+        $newitem=array(
+            'order_item_id'=>$order_items[$idx]['order_item_id'],
+            'item_id'=>$newid*(-1),
+            'item_row'=>$newid,
+            'item_number'=>$order_items[$idx]['item_number'],
+            'item_color'=>$itemcolor,
+            'colors'=>$colors,
+            'num_colors'=>$order_items[$idx]['num_colors'],
+            'item_description'=>$order_items[$idx]['item_name'],
+        );
+        if ($order_items[$idx]['num_colors']==0) {
+            $newitem['out_colors']=$this->empty_htmlcontent;
+        } else {
+            $options=array(
+                'order_item_id'=>$newitem['order_item_id'],
+                'item_id'=>$newitem['item_id'],
+                'colors'=>$newitem['colors'],
+                'item_color'=>$newitem['item_color'],
+            );
+            $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+        }
+        if ($newitem['num_colors']>1) {
+            $newitem['item_color_add']=1;
+        } else {
+            $newitem['item_color_add']=0;
+        }
+        $newitem['item_qty']=0;
+        if ($order_items[$idx]['item_id']>0) {
+            $itemdata=$this->_get_itemdata($order_items[$idx]['item_id']);
+            $newitem['printshop_item_id']=$itemdata['printshop_item_id'];
+        } else {
+            $newitem['printshop_item_id']='';
+        }
+        $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
+        $newitem['item_price']=$newprice;
+        $newitem['item_subtotal']=MoneyOutput(0);
+        $items[]=$newitem;
+        // Save
+        $order_items[$idx]['items']=$items;
+        $leadorder['order_items']=$order_items;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $out['items']=$order_items[$idx];
+        return $out;
+    }
+
+
+    // Change Items List parameter
+    public function change_items($leadorder, $order_item_id, $item_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        $order_items=$leadorder['order_items'];
+        $idx=0;
+        $found=0;
+
+        foreach ($order_items as $row) {
+            if ($row['order_item_id']==$order_item_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Order Item Record Not Found';
+            return $out;
+        }
+        $items=$order_items[$idx]['items'];
+
+        $founditm=0;
+        $itmidx=0;
+
+        foreach ($items as $row) {
+            if ($row['item_id']==$item_id) {
+                $founditm=1;
+                break;
+            } else {
+                $itmidx++;
+            }
+        }
+        if ($founditm==0) {
+            $out['msg']='Item Record Not Found';
+            return $out;
+        }
+
+        if (!array_key_exists($fldname, $items[$itmidx])) {
+            $out['msg']='Unknown parameter '.$fldname;
+            return $out;
+        }
+        $imprints=$order_items[$idx]['imprints'];
+
+        $out['result']=$this->success_result;
+        $items[$itmidx][$fldname]=$newval;
+        $out['items']=$order_items[$idx];
+        $out['shipcalc']=0;
+        // Get new price for QTY
+        if ($fldname=='item_qty') {
+            $itemsqty=0;
+            foreach ($items as $irow) {
+                $itemsqty+=$irow['item_qty'];
+            }
+            $order_items[$idx]['item_qty']=$itemsqty;
+            // Get New price
+            $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
+            $ridx=0;
+            foreach ($items as $row) {
+                $items[$ridx]['item_price']=$newprice;
+                $ridx++;
+            }
+            // Recalc Shipping Rates
+            $out['shipcalc']=1;
+        } elseif ($fldname=='item_color') {
+            $options=array(
+                'order_item_id'=>$items[$itmidx]['order_item_id'],
+                'item_id'=>$items[$itmidx]['item_id'],
+                'colors'=>$items[$itmidx]['colors'],
+                'item_color'=>$items[$itmidx]['item_color'],
+            );
+            $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+        }
+        $ridx=0;
+        $subtotal=0;
+        $prices=array();
+        $item_subtotals=array();
+        $itemsqty=0;
+        foreach ($items as $row) {
+            $subtotal+=$items[$ridx]['item_price']*$items[$ridx]['item_qty'];
+            array_push($prices, $items[$ridx]['item_id'].'|'.$items[$ridx]['item_price']);
+            $items[$ridx]['item_subtotal']=  MoneyOutput($items[$ridx]['item_price']*$items[$ridx]['item_qty']);
+            array_push($item_subtotals,$items[$ridx]['item_id'].'|'.$items[$ridx]['item_subtotal']);
+            $itemsqty+=$items[$ridx]['item_qty'];
+            $ridx++;
+        }
+        $order_items[$idx]['item_subtotal']=$subtotal;
+        $out['subtotals']=$item_subtotals;
+        $iidx=0;
+        $imprsubtotal=0;
+        foreach ($imprints as $row) {
+            if ($imprints[$iidx]['delflag']==0) {
+                if ($row['imprint_item']==1) {
+                    $imprints[$iidx]['imprint_qty']=$itemsqty;
+                    $imprints[$iidx]['outqty']=$itemsqty;
+                    $imprints[$iidx]['imprint_subtotal']=MoneyOutput($itemsqty*$imprints[$iidx]['imprint_price']);
+                    $imprsubtotal+=$itemsqty*$imprints[$iidx]['imprint_price'];
+                } else {
+                    $imprsubtotal+=$imprints[$iidx]['imprint_price']*$imprints[$iidx]['imprint_qty'];
+                }
+            }
+            $iidx++;
+        }
+        $order_items[$idx]['imprint_subtotal']=$imprsubtotal;
+        $out['prices']=$prices;
+        $out['item_subtotals']=$item_subtotals;
+        // Save to session
+        $order_items[$idx]['items']=$items;
+        $order_items[$idx]['imprints']=$imprints;
+        // Calc # of items
+        $order_itemqty=0;
+        foreach ($order_items as $row) {
+            $order_itemqty+=$row['item_qty'];
+        }
+        $order['order_qty']=$order_itemqty;
+        // Add new val to leadorder array
+        $leadorder['order']=$order;
+        $leadorder['order_items']=$order_items;
+        // If shipping
+        if ($out['shipcalc']==1) {
+            // Calculate shipping
+            $this->load->model('shipping_model');
+            $shiprate=0;
+            $items=$leadorder['order_items'];
+            $shipaddr=$leadorder['shipping_address'];
+            if (count($shipaddr)==1) {
+                $shipaddr[0]['item_qty']=$order['order_qty'];
+            }
+            $shipping=$leadorder['shipping'];
+            $shipidx=0;
+            $cnt=0;
+            foreach ($shipaddr as $shprow) {
+                if (!empty($shprow['zip'])) {
+                    // Get Old Shipping Method
+                    $default_ship_method='';
+                    if (isset($shprow['shipping_cost'])) {
+                        $oldcosts=$shprow['shipping_costs'];
+                        foreach ($oldcosts as $costrow) {
+                            if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                $default_ship_method=$costrow['shipping_method'];
+                            }
+                        }
+                    }
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                    if ($cntres['result']==$this->error_result) {
+                        $out['msg']=$cntres['msg'];
+                        usersession($ordersession, $leadorder);
+                        return $out;
+                    } else {
+                        // Old Costs
+                        $rates=$cntres['ships'];
+                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                        $cidx=0;
+                        foreach ($shipcost as $row) {
+                            $shipcost[$cidx]['delflag']=1;
+                            $cidx++;
+                        }
+                        $newidx=count($shipcost)+1;
+                        foreach ($rates as $row) {
+                            $shipcost[]=array(
+                                'order_shipcost_id'=>$newidx*(-1),
+                                'shipping_method'=>$row['ServiceName'],
+                                'shipping_cost'=>$row['Rate'],
+                                'arrive_date'=>$row['DeliveryDate'],
+                                'current'=>$row['current'],
+                                'delflag'=>0,
+                            );
+                            if ($row['current']==1) {
+                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shiprate+=$row['Rate'];
+                            }
+                            $newidx++;
+                        }
+                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    }
+                }
+                $shipidx++;
+                $cnt++;
+            }
+            $out['shipping']=$shiprate;
+            $order['shipping']=$shiprate;
+            $out['cntshipadrr']=$cnt;
+            if ($cnt==1) {
+                $out['shipaddr']=$shipaddr[0];
+            } else {
+                $out['shipaddress']=$shipaddr;
+            }
+            // Save data into Session
+            $leadorder['order']=$order;
+            $leadorder['shipping']=$shipping;
+            $leadorder['shipping_address']=$shipaddr;
+            usersession($ordersession, $leadorder);
+        }
+        $leadorder['order']=$order;
+        usersession($ordersession, $leadorder);
+        $out['items']=$order_items[$idx];
+        $out['shipping']=$leadorder['shipping'];
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Prepare Items Imprint Popup
+    public function prepare_imprint_details($leadorder, $order_item_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order_items=$leadorder['order_items'];
+        $artwork=$leadorder['artwork'];
+        $found=0;
+        $idx=0;
+        foreach ($order_items as $row) {
+            if ($row['order_item_id']==$order_item_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found=0) {
+            $out['msg']='Order Item not Found';
+            return $out;
+        }
+        $out['result']=$this->success_result;
+        $out['imprint_details']=$order_items[$idx]['imprint_details'];
+        $out['item_id']=$order_items[$idx]['item_id'];
+        $out['item_number']=$order_items[$idx]['item_number'];
+        $out['order_blank']=$artwork['artwork_blank'];
+        $out['imprints']=$order_items[$idx]['imprint_locations'];
+        $out['item_name']=$order_items[$idx]['item_name'];
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+
+    // Change Item Imprint Details Popup
+    public function change_imprint_details($imprintdetails, $order_imprindetail_id, $fldname, $newval, $imprintsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Imprint Location Not Found');
+        $details=$imprintdetails['imprint_details'];
+        $found=0;
+        $detidx=0;
+        foreach ($details as $row) {
+            if ($row['order_imprindetail_id']==$order_imprindetail_id) {
+                $found=1;
+                break;
+            } else {
+                $detidx++;
+            }
+        }
+        if ($found==1) {
+            $details[$detidx][$fldname]=$newval;
+            if ($fldname=='active' && $newval==1) {
+                $imprintdetails['order_blank']=0;
+            }
+            if ($fldname=='imprint_type') {
+                if ($newval=='REPEAT') {
+                    $details[$detidx]['setup_1']=0;
+                    $details[$detidx]['setup_2']=0;
+                    $details[$detidx]['setup_3']=0;
+                    $details[$detidx]['setup_4']=0;
+                    $out['class']='';
+                    if (!empty($details[$detidx]['repeat_note'])) {
+                        $out['class']='full';
+                    }
+                } else {
+                    $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    $out['setup']=$setupprice;
+                    $details[$detidx]['setup_1']=$setupprice;
+                    $details[$detidx]['setup_2']=$setupprice;
+                    $details[$detidx]['setup_3']=$setupprice;
+                    $details[$detidx]['setup_4']=$setupprice;
+                }
+            }
+            $imprintdetails['imprint_details']=$details;
+            usersession($imprintsession, $imprintdetails);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    // Get Repeat Note
+    public function get_repeat_note($imprintdetails, $detail_id, $imprintsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $details=$imprintdetails['imprint_details'];
+        $found=0;
+        $detidx=0;
+        foreach ($details as $row) {
+            if ($row['order_imprindetail_id']==$detail_id) {
+                $found=1;
+                break;
+            } else {
+                $detidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Imprint Location Not Found';
+            return $out;
+        }
+        $out['repeat_note']=$details[$detidx]['repeat_note'];
+        usersession($imprintsession, $imprintdetails);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Save Repeat Note
+    public function save_repeat_note($imprintdetails, $repeat_note, $detail_id, $imprintsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $details=$imprintdetails['imprint_details'];
+        $found=0;
+        $detidx=0;
+        foreach ($details as $row) {
+            if ($row['order_imprindetail_id']==$detail_id) {
+                $found=1;
+                break;
+            } else {
+                $detidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Imprint Location Not Found';
+            return $out;
+        }
+        $details[$detidx]['repeat_note']=$repeat_note;
+        $imprintdetails['imprint_details']=$details;
+        usersession($imprintsession, $imprintdetails);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Make Blank order
+    public function imprintdetails_blankorder($imprintdetails, $newval, $imprintsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $details=$imprintdetails['imprint_details'];
+        $imprintdetails['order_blank']=$newval;
+        if ($newval==1) {
+            $detidx=0;
+            foreach ($details as $row) {
+                $details[$detidx]['active']=0;
+                $detidx++;
+            }
+            $imprintdetails['imprint_details']=$details;
+        }
+        usersession($imprintsession, $imprintdetails);
+        $out['result']=$this->success_result;
+        return $out;
+
+    }
+
+    // Save imprints
+    public function save_imprintdetails($leadorder, $details, $ordersession, $imprintsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        $order_items=$leadorder['order_items'];
+        $order_item_id=$details['order_item_id'];
+        $imprint_details=$details['imprint_details'];
+        $order_blank=intval($details['order_blank']);
+        $artwork=$leadorder['artwork'];
+        $locations=$leadorder['artlocations'];
+        // Lets go - Find Order Items
+        $found=0;
+        $idx=0;
+        foreach ($order_items as $row) {
+            if ($row['order_item_id']==$order_item_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Order Item Not Found';
+            return $out;
+        }
+        // Check Details
+        foreach ($imprint_details as $row) {
+            if ($row['active']==1 && $row['imprint_type']=='REPEAT' && empty($row['repeat_note'])) {
+                $out['msg']=$row['title'].' Empty Repeat Note';
+                return $out;
+            }
+        }
+        // Delete Old Imprints
+        $impridx=0;
+        $imprints=$order_items[$idx]['imprints'];
+
+        foreach ($imprints as $irow) {
+            $imprints[$impridx]['delflag']=1;
+            $impridx++;
+        }
+        // Create Imprint
+        $newidx=count($imprints)+1;
+        $out['shiprebuild']=0;
+        if ($order_blank!=$order['order_blank']) {
+            $out['shiprebuild']=1;
+            // Rebuild shipping
+            $this->load->model('shipping_model');
+            $shipping=$leadorder['shipping'];
+            if ($order_blank==1) {
+                $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
+            }
+
+            $shipping['rush_list']=serialize($rush);
+            $shipping['out_rushlist']=$rush;
+            foreach ($rush['rush'] as $row) {
+                if ($row['current']==1) {
+                    $shipping['shipdate']=$row['date'];
+                    $shipping['rush_price']=$row['price'];
+                    $shipping['rush_idx']=$row['id'];
+                }
+            }
+            $leadorder['shipping']=$shipping;
+        }
+        if ($order_blank==1) {
+            // Order Blank
+            $imprints[]=array(
+                'order_imprint_id'=>$newidx*(-1),
+                'imprint_description'=>'blank, no imprinting',
+                'imprint_item'=>0,
+                'imprint_qty'=>0,
+                'imprint_price'=>0,
+                'outqty'=>$this->empty_htmlcontent,
+                'outprice'=>$this->empty_htmlcontent,
+                'imprint_subtotal'=>$this->empty_htmlcontent,
+                'delflag'=>0,
+            );
+            $imprint_total=0;
+        } else {
+            $setup_qty=0;
+            $setup_total=0;
+            $imprint_total=0;
+            $extra=array();
+            foreach ($imprint_details as $row) {
+                if ($row['active']==1) {
+                    // Prepare New Imprints
+                    $title=$row['title'];
+                    for ($i=1; $i<=$row['num_colors']; $i++) {
+                        $imprtitle=$title.': '.date('jS',strtotime('2015-01-'.$i)).' Color Imprinting';
+                        $priceindx='print_'.$i;
+                        $setupindx='setup_'.$i;
+                        $subtotal=$order_items[$idx]['item_qty']*floatval($row[$priceindx]);
+                        $imprint_total+=$subtotal;
+                        if ($row['imprint_type']!='REPEAT') {
+                            //if (floatval($row[$setupindx])>0) {
+                            $setup_qty+=1;
+                            $setup_total+=floatval($row[$setupindx]);
+                            $imprint_total+=floatval($row[$setupindx]);
+                            //}
+                        }
+                        $imprints[]=array(
+                            'order_imprint_id'=>(-1)*$newidx,
+                            'imprint_description'=>$imprtitle,
+                            'imprint_item'=>1,
+                            'imprint_qty'=>$order_items[$idx]['item_qty'],
+                            'imprint_price'=>floatval($row[$priceindx]),
+                            'outqty'=>($order_items[$idx]['item_qty']==0 ? '---' : $order_items[$idx]['item_qty']),
+                            'outprice'=>  MoneyOutput(floatval($row[$priceindx])),
+                            'imprint_subtotal'=>  MoneyOutput($subtotal),
+                            'delflag'=>0,
+                        );
+                        $newidx++;
+                    }
+                    if ($row['imprint_type']=='REPEAT') {
+                        $extracost=floatval($row['extra_cost']);
+                        $imprint_total+=$extracost;
+                        // Add Imprint
+                        $title='Repeat Setup Charge '.$row['repeat_note'];
+                        $extra[]=array(
+                            'order_imprint_id'=>(-1)*$newidx,
+                            'imprint_description'=>$title,
+                            'imprint_item'=>0,
+                            'imprint_qty'=>1,
+                            'imprint_price'=>floatval($row['extra_cost']),
+                            'outqty'=>1,
+                            'outprice'=>MoneyOutput($extracost),
+                            'imprint_subtotal'=>MoneyOutput($extracost),
+                            'delflag'=>0,
+                        );
+                        $newidx++;
+                    }
+                }
+            }
+            if (count($extra)>0) {
+                foreach ($extra as $erow) {
+                    $imprints[]=$erow;
+                }
+            }
+            if ($setup_total>=0 && $setup_qty>0) {
+                $setup_price=0;
+                if ($setup_qty>0) {
+                    $setup_price=round($setup_total/$setup_qty,2);
+                }
+                $imprints[]=array(
+                    'order_imprint_id'=>(-1)*$impridx,
+                    'imprint_description'=>'One Time Art Setup Charge',
+                    'imprint_item'=>0,
+                    'imprint_qty'=>$setup_qty,
+                    'imprint_price'=>floatval($setup_price),
+                    'outqty'=>$setup_qty,
+                    'outprice'=>MoneyOutput($setup_price),
+                    'imprint_subtotal'=>  MoneyOutput($setup_total),
+                    'delflag'=>0,
+                );
+            }
+        }
+        // Add / Remove Repeat Locations
+        $artlocchange=0;
+        $sdx=0;
+        foreach ($imprint_details as $row) {
+            if ($row['imprint_type']=='REPEAT') {
+                if ($row['active']==1) {
+                    if (empty($row['artwork_art_id'])) {
+                        // Add Location
+                        $numrec=count($locations)+1;
+                        $fields = $this->db->list_fields('ts_artwork_arts');
+                        $newlocation=array();
+                        foreach ($fields as $field) {
+                            $newlocation[$field]='';
+                        }
+                        $imprint_details[$sdx]['artwork_art_id']=$numrec*(-1);
+                        $newlocation['artwork_id']=$artwork['artwork_id'];
+                        $newlocation['artwork_art_id']=$numrec*(-1);
+                        $newlocation['art_type']='Repeat';
+                        $newlocation['locat_ready']=0;
+                        $newlocation['art_ordnum']=$numrec;
+                        $newlocation['artlabel']=$this->empty_htmlcontent;
+                        $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
+                        $newlocation['artlabel']='Repeat';
+                        $newlocation['order_num']=$row['repeat_note'];
+                        $newlocation['repeat_text']=$row['repeat_note'];
+                        $newlocation['locat_ready']=1;
+                        $newlocation['deleted']='';
+                        $locations[]=$newlocation;
+                        $artlocchange=1;
+                    }
+                } else {
+                    if (!empty($row['artwork_art_id'])) {
+                        // Remove Location
+                        $locid=0;
+                        foreach ($locations as $row) {
+                            if ($row['artwork_art_id']==$row['artwork_art_id']) {
+                                $found=1;
+                                $locations[$locid]['deleted']='del';
+                                $imprint_details[$sdx]['artwork_art_id']=NULL;
+                                $artlocchange=1;
+                                break;
+                            }
+                            $locid++;
+                        }
+                    }
+                }
+            } else {
+                if (!empty($row['artwork_art_id'])) {
+                    // Remove Location
+                    $locid=0;
+                    foreach ($locations as $row) {
+                        if ($row['artwork_art_id']==$row['artwork_art_id']) {
+                            $found=1;
+                            $locations[$locid]['deleted']='del';
+                            $imprint_details[$sdx]['artwork_art_id']=NULL;
+                            $artlocchange=1;
+                            break;
+                        }
+                        $locid++;
+                    }
+                }
+            }
+            $sdx++;
+        }
+        // Save Imprint Details
+        $order_items[$idx]['imprint_details']=$imprint_details;
+        $order_items[$idx]['imprint_subtotal']=$imprint_total;
+        $artwork['artwork_blank']=$order_blank;
+        $leadorder['artwork']=$artwork;
+        $leadorder['artlocations']=$locations;
+        $order['order_blank']=$order_blank;
+        $out['order_blank']=$order_blank;
+        $order_items[$idx]['imprints']=$imprints;
+        $leadorder['order_items']=$order_items;
+        $leadorder['order']=$order;
+        usersession($ordersession, $leadorder);
+        usersession($imprintsession, NULL);
+        $out['result']=$this->success_result;
+        $out['item']=$order_items[$idx];
+        $out['artlocchange']=$artlocchange;
+        if ($artlocchange==1) {
+            $out['artlocat']=$locations;
+        }
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Save changes in Ship Address
+    public function change_shipaddres($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('shipping_model');
+        $shipaddr=$leadorder['shipping_address'];
+        $shipping=$leadorder['shipping'];
+        $shipidx=0;
+        $found=0;
+        foreach ($shipaddr as $row) {
+            if ($row['order_shipaddr_id']==$shipaddr_id) {
+                $found=1;
+                break;
+            } else {
+                $shipidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Addres Not Found';
+            return $out;
+        }
+
+        $shipaddr[$shipidx][$fldname]=$newval;
+        if ($fldname=='country_id') {
+            // Get a list of states
+            $states=$this->shipping_model->get_country_states($newval);
+            $cntdat=$this->shipping_model->get_country($newval);
+            $shipaddr[$shipidx]['out_country']=$cntdat['country_iso_code_2'];
+            $out['states']=$states;
+            // Change country - state empty
+            $shipaddr[$shipidx]['state_id']=NULL;
+            $shipaddr[$shipidx]['taxcalc']=0;
+            $shipaddr[$shipidx]['taxview']=0;
+
+        } elseif ($fldname=='state_id') {
+            if ($newval==$this->tax_state) {
+                $shipaddr[$shipidx]['taxcalc']=0;
+                $shipaddr[$shipidx]['taxview']=1;
+                if ($shipaddr[$shipidx]['tax_exempt']==0) {
+                    $shipaddr[$shipidx]['taxcalc']=1;
+                }
+            } else {
+                $shipaddr[$shipidx]['taxcalc']=0;
+                $shipaddr[$shipidx]['taxview']=0;
+            }
+            $statedat=$this->shipping_model->get_state($newval);
+            $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
+        } elseif ($fldname=='zip') {
+            // Try to validate Address
+            $this->load->library('United_parcel_service');
+            $upsserv=new United_parcel_service();
+            $items=$leadorder['order_items'];
+            $qty=0;
+            foreach ($items as $row) {
+                $qty+=$row['item_qty'];
+            }
+            if ($qty>0) {
+                if (count($shipaddr)==1) {
+                    $shipaddr[$shipidx]['item_qty']=$qty;
+                }
+                // Old Shipping Method
+                $default_ship_method='';
+                if (isset($shipaddr[$shipidx]['shipping_costs'])) {
+                    $oldcosts=$shipaddr[$shipidx]['shipping_costs'];
+                    foreach ($oldcosts as $costrow) {
+                        if ($costrow['delflag']==0 && $costrow['current']==1) {
+                            $default_ship_method=$costrow['shipping_method'];
+                        }
+                    }
+                }
+                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                if ($cntres['result']==$this->error_result) {
+                    $out['msg']=$cntres['msg'];
+                    return $out;
+                } else {
+                    $order=$leadorder['order'];
+                    $leadorder['order']=$order;
+                    $rates=$cntres['ships'];
+                    $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                    $cidx=0;
+                    foreach ($shipcost as $row) {
+                        $shipcost[$cidx]['delflag']=1;
+                        $cidx++;
+                    }
+                    $newidx=count($shipcost)+1;
+                    foreach ($rates as $key=>$row) {
+                        $shipcost[]=array(
+                            'order_shipcost_id'=>$newidx*(-1),
+                            'shipping_method'=>$row['ServiceName'],
+                            'shipping_cost'=>$row['Rate'],
+                            'arrive_date'=>$row['DeliveryDate'],
+                            'current'=>$row['current'],
+                            'delflag'=>0,
+                        );
+                        if ($row['current']==1) {
+                            $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                        }
+                        $newidx++;
+                    }
+                    $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    $shiptotal=$this->_leadorder_shipcost($shipaddr);
+                    $out['shipping']=$shiptotal;
+                    $order['shipping']=$shiptotal;
+                }
+
+            }
+            // Validate Address
+            if ($shipaddr[$shipidx]['out_country']=='US') {
+                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
+                if ($tracking['result']==$this->success_result) {
+                    if (!empty($tracking['city'])) {
+                        $shipaddr[$shipidx]['city']=$tracking['city'];
+                    }
+                    if (!empty($tracking['state'])) {
+                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
+                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
+                        if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
+                            $shipaddr[$shipidx]['taxcalc']=0;
+                            $shipaddr[$shipidx]['taxview']=1;
+                            if ($shipaddr[$shipidx]['tax_exempt']==0) {
+                                $shipaddr[$shipidx]['taxcalc']=1;
+                            }
+                        } else {
+                            $shipaddr[$shipidx]['taxcalc']=0;
+                            $shipaddr[$shipidx]['taxview']=0;
+                        }
+                    }
+                }
+            }
+        } elseif ($fldname=='tax_exempt') {
+            if ($newval==0) {
+                $shipaddr[$shipidx]['taxcalc']=1;
+            } else {
+                $shipaddr[$shipidx]['taxcalc']=0;
+            }
+        }
+
+        $leadorder['shipping_address']=$shipaddr;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $out['shipadr']=$shipaddr[$shipidx];
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Change Ship Cost Default Method
+    public function change_shipaddrescost($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipaddr=$leadorder['shipping_address'];
+        $found=0;
+        $shipidx=0;
+        foreach ($shipaddr as $row) {
+            if ($row['order_shipaddr_id']==$shipaddr_id) {
+                $found=1;
+                break;
+            } else {
+                $shipidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Ship Address Not Found';
+            return $out;
+        }
+        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+        $found=0;
+        $costidx=0;
+        foreach ($shipcost as $crow) {
+            if ($crow['delflag']==0 && $crow['shipping_method']==$newval) {
+                $found=1;
+                break;
+            } else {
+                $costidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Method Not Found';
+            return $out;
+        }
+        $out['order_shipcost_id']=$shipcost[$costidx]['order_shipcost_id'];
+        $idx=0;
+        foreach ($shipcost as $crow) {
+            if ($idx==$costidx) {
+                $shipcost[$idx]['current']=1;
+                $shipaddr[$shipidx]['shipping']=$crow['shipping_cost'];
+                $shipaddr[$shipidx]['arrive_date']=$crow['arrive_date'];
+            } else {
+                $shipcost[$idx]['current']=0;
+            }
+            $idx++;
+        }
+        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+        // Change Order params
+        $order=$leadorder['order'];
+        $shiptotal=$this->_leadorder_shipcost($shipaddr);
+        $out['shipping']=$shiptotal;
+        $order['shipping']=$shiptotal;
+        // $profit=$this->_leadorder_profit($order);
+        $leadorder['order']=$order;
+        $leadorder['shipping_address']=$shipaddr;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Get Tax data from Shipping Address
+    public function get_taxdetails($leadorder, $shipadr, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipadress=$leadorder['shipping_address'];
+        $found=0;
+        $shpidx=0;
+        foreach ($shipadress as $row) {
+            if ($row['order_shipaddr_id']==$shipadr) {
+                $found=1;
+                break;
+            } else {
+                $shpidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Addres Not Found';
+            return $out;
+        }
+        $taxdata=array(
+            'tax_exemptdoc'=>$shipadress[$shpidx]['tax_exemptdoc'],
+            'tax_exemptdocid'=>$shipadress[$shpidx]['tax_exemptdocid'],
+        );
+        $out['taxdata']=$taxdata;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Save Tax Extem Document
+    public function save_newtaxdoc($leadorder, $shipadr, $newdoc, $srcname, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipadress=$leadorder['shipping_address'];
+        $found=0;
+        $shpidx=0;
+        foreach ($shipadress as $row) {
+            if ($row['order_shipaddr_id']==$shipadr) {
+                $found=1;
+                break;
+            } else {
+                $shpidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Addres Not Found';
+            return $out;
+        }
+        // Save Data - 1 - Flag New File
+        $shipadress[$shpidx]['tax_exemptdocid']=-1;
+        // Save Tax doc details
+        $shipadress[$shpidx]['tax_exemptdoc']=$newdoc;
+        $shipadress[$shpidx]['tax_exemptdocsrc']=$srcname;
+        $leadorder['shipping_address']=$shipadress;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Save new Credit App document
+    public function save_newcreditappdoc($leadorder, $newdoc, $srcname, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        // Save Tax doc details
+        $order['newappcreditlink']=-1;
+        $order['credit_applink']=$newdoc;
+        $leadorder['order']=$order;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function change_chargedata($leadorder, $order_payment_id, $fldname, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $charges=$leadorder['charges'];
+        $found=0;
+        $chrgidx=0;
+        foreach ($charges as $row) {
+            if ($row['order_payment_id']==$order_payment_id) {
+                $found=1;
+                break;
+            } else {
+                $chrgidx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Credit Card Data Not Found';
+            return $out;
+        }
+        if ($fldname=='exp_month' && intval($newval)>12) {
+            $out['oldval']=$charges[$chrgidx]['exp_month'];
+            $out['msg']='Incorrect Expire Date';
+            return $out;
+        }
+        if (!array_key_exists($fldname, $charges[$chrgidx])) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        if ($fldname=='cardnum' && !empty($newval)) {
+            $newval=creditcard_format($newval);
+        }
+        $charges[$chrgidx][$fldname]=$newval;
+        $out['charge']=$charges[$chrgidx];
+        $leadorder['charges']=$charges;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Pay
+    public function leadorder_paycharge($leadorder, $order_payment_id, $usr_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        $order_id=$order['order_id'];
+        $charges=$leadorder['charges'];
+        $found=0;
+        $chridx=0;
+        foreach ($charges as $row) {
+            if ($row['order_payment_id']==$order_payment_id) {
+                $found=1;
+                break;
+            } else {
+                $chridx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Charge Data Not Found';
+            return $out;
+        }
+        $charge=$charges[$chridx];
+        $billing=$leadorder['billing'];
+        $cardnum=  str_replace('-', '', $charge['cardnum']);
+        $bilchk=0;
+        if (empty($billing['customer_name'])) {
+            $out['msg']='Enter Customer Name';
+        } elseif (empty($billing['address_1'])) {
+            $out['msg']='Enter Billing Address';
+        } elseif (empty($billing['city'])) {
+            $out['msg']='Enter Billing City';
+        } elseif (empty($billing['zip'])) {
+            $out['msg']='Enter Billing Zip / Postal Code';
+        } elseif (floatval($charge['amount'])==0) {
+            $out['msg']='Empty Amount Value';
+        } elseif(empty($cardnum)) {
+            $out['msg']='Enter Card #';
+        } elseif(empty ($charge['cardcode'])) {
+            $out['msg']='Enter Card CVV2 code';
+        } elseif (intval($charge['exp_month'])==0) {
+            $out['msg']='Expire Month Incorrect';
+        } elseif (intval($charge['exp_year'])==0) {
+            $out['msg']='Expire Year Incorrect';
+        } else {
+            $cardtype=$this->getCCardType($cardnum);
+            if (empty($cardtype)) {
+                $out['msg']='Unknown Credit Card Type';
+            } else {
+                $bilchk=1;
+            }
+        }
+        if ($bilchk==0) {
+            return $out;
+        }
+
+        $custdat=explode(' ', $billing['customer_name']);
+        $customer_first_name=(isset($custdat[0]) ? $custdat[0] : 'Unknown');
+        $customer_last_name=(isset($custdat[1]) ? $custdat[1] : 'Unknown');
+        // Get contact name
+        $contacts=$leadorder['contacts'];
+        $payemail=$payphone='';
+        foreach ($contacts as $crow) {
+            if (!empty($crow['contact_phone'])) {
+                $payphone=$crow['contact_phone'];
+            }
+            if (!empty($crow['contact_emal'])) {
+                $payemail=$crow['contact_emal'];
+            }
+        }
+        $state='UNK';
+        if (!empty($billing['state_id'])) {
+            $this->db->select('state_code');
+            $this->db->from('ts_states');
+            $this->db->where('state_id', $billing['state_id']);
+            $stat=$this->db->get()->row_array();
+            $state=$stat['state_code'];
+        }
+        $country='UNK';
+        if (!empty($billing['country_id'])) {
+            $this->db->select('country_iso_code_2');
+            $this->db->from('ts_countries');
+            $this->db->where('country_id', $billing['country_id']);
+            $cntres=$this->db->get()->row_array();
+            if (isset($cntres['country_iso_code_2'])) {
+                $country=$cntres['country_iso_code_2'];
+            }
+        }
+        // Lets go
+        $this->load->model('batches_model');
+        $this->load->model('order_model');
+        // Try to pay
+        $pay_options=array(
+            'email'=>$payemail,
+            'company'=>$billing['company'],
+            'firstname'=>$customer_first_name,
+            'lastname'=>$customer_last_name,
+            'address1'=>$billing['address_1'],
+            'address2'=>$billing['address_2'],
+            'city'=>$billing['city'],
+            'state'=>$state,
+            'country'=>$country,
+            'zip'=>$billing['zip'],
+            'phone'=>$payphone,
+            'amount'=>$charge['amount'],
+            'cardnum'=>$cardnum,
+            'cardcode'=>$charge['cardcode'],
+            'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
+            'exp_month'=>str_pad($charge['exp_month'],2,'0', STR_PAD_LEFT),
+            'exp_year'=>str_pad($charge['exp_year'],2,'0', STR_PAD_LEFT),
+        );
+        $transres=$this->order_payment($pay_options);
+        if ($transres['result']==$this->error_result) {
+            $out['msg']=$transres['error_msg'];
+        } else {
+            // Make Current row Amount=0, Add Charge
+            $this->db->set('amount',0);
+            $this->db->where('order_payment_id', $row['order_payment_id']);
+            $this->db->update('ts_order_payments');
+            // Batch data
+            $paymethod='';
+            if ($pay_options['cardtype']=='amex') {
+                $paymethod='a';
+            } else {
+                $paymethod='v';
+            }
+            $batch_data=array(
+                'batch_id'=>0,
+                'batch_date'=>time(),
+                'paymethod'=>$paymethod,
+                'amount'=>$row['amount'],
+                'batch_note'=>NULL,
+                'order_id'=>$order_id,
+                'batch_received'=>1,
+                'batch_type'=>$pay_options['cardtype'],
+                'batch_num'=>$pay_options['cardnum'],
+                'batch_transaction'=>$transres['transaction_id'],
+            );
+            $batch_id=$this->batches_model->save_batch($batch_data, $order, $usr_id);
+            // Get New list of Payments
+            $payments=$this->get_leadorder_payments($order_id);
+            $total=0;
+            $fee=0;
+            foreach ($payments as $row) {
+                $total+=$row['batch_amount'];
+                $fee+=(($row['batch_amex']+$row['batch_vmd']==0) ? 0 : $row['batch_amount']-($row['batch_amex']+$row['batch_vmd']));
+            }
+            $order['payment_total']=$total;
+            $order['cc_fee']=$fee;
+            $leadorder['order']=$order;
+            $leadorder['payments']=$payments;
+            usersession($ordersession, $leadorder);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function add_chargedata($leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        $total_due=$order['revenue']-$order['payment_total'];
+
+        $charges=$leadorder['charges'];
+        $newidx=count($charges)+1;
+        $payfld=$this->db->list_fields('ts_order_payments');
+        $newpay=array();
+        foreach ($payfld as $fld) {
+            switch ($fld) {
+                case 'order_payment_id':
+                    $newpay[$fld]=(-1)*$newidx;
+                    break;
+                case 'autopay':
+                    $newpay[$fld]=($newidx==1 ? 1 : 0);
+                    break;
+                case 'amount':
+                    $newpay[$fld]=($total_due>0 ? $total_due : 0);
+                    break;
+                default :
+                    $newpay[$fld]='';
+                    break;
+            }
+        }
+        $newpay['delflag']=0;
+        $charges[]=$newpay;
+        $out['charges']=$charges;
+        $leadorder['charges']=$charges;
+        usersession($ordersession, $leadorder);
+        $out['result']=$this->success_result;
+        return $out;
+    }
 
     private function _leadorder_totals($leadorder, $ordersession) {
         // Restore Order and parts
@@ -2725,1298 +2716,1298 @@ Class Leadorder_model extends My_Model {
         return $subtotal;
     }
 
-//    // Check open ticket for order
-//    public function get_opentickets($leadorder, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        $this->load->model('tickets_model');
-//        $this->load->model('vendors_model');
-//        $custom_class=$vendor_class="";
-//        $custom_issues=$this->tickets_model->get_issues('C');
-//        $vendor_issues=$this->tickets_model->get_issues('V');
-//        $vendors=$this->vendors_model->get_vendors_list('v.vendor_name','asc');
-//        $options=array(
-//            'order_num'=>$order['order_num'],
-//        );
-//        $this->db->select('count(ticket_id) as cnt');
-//        $this->db->from('ts_tickets');
-//        $this->db->where('order_num', $order['order_num']);
-//        $this->db->where('ticket_closed',0);
-//        $chkres=$this->db->get()->row_array();
-//
-//        if ($chkres['cnt']==0) {
-//            $ticket=$this->tickets_model->add_newticket($options);
-//            $ticket['custom_class']=$custom_class;
-//            $ticket['vendor_class']=$vendor_class;
-//            $attachment_list=array();
-//        } else {
-//            // Get Last Opened ticket
-//            $this->db->select('ticket_id');
-//            $this->db->from('ts_tickets');
-//            $this->db->where('order_num', $order['order_num']);
-//            $this->db->where('ticket_closed',0);
-//            $res=$this->db->get()->row_array();
-//            if (!isset($res['ticket_id'])) {
-//                $ticket=$this->tickets_model->add_newticket($options);
-//                $ticket['custom_class']=$custom_class;
-//                $ticket['vendor_class']=$vendor_class;
-//                $attachment_list=array();
-//            } else {
-//                $ticket_id=$res['ticket_id'];
-//                $ticket=$this->tickets_model->get_ticket_data($ticket_id);
-//                /* Get attachment */
-//                $sess_id=$this->session->userdata('session_id');
-//                /* Change is_delete */
-//                $this->tickets_model->attach_init($ticket_id);
-//                if ($ticket['other_vendor']) {
-//                    $ticket['vendor_id']='-1';
-//                }
-//                $ticket['custom_class']=$custom_class;
-//                $ticket['vendor_class']=$vendor_class;
-//                $attachment_list=$this->tickets_model->get_attachments($ticket_id,$sess_id);
-//                if (!empty($ticket['custom_issue_id'])) {
-//                    $ticket['custom_class']='colored';
-//                }
-//                if (!empty($ticket['vendor_issue_id'])) {
-//                    $ticket['vendor_class']='colored';
-//                }
-//                if ($ticket['ticket_date']=='') {
-//                    $ticket['ticket_date']=date('m/d/Y');
-//                } else {
-//                    $ticket['ticket_date']=date('m/d/Y',$ticket['ticket_date']);
-//                }
-//            }
-//        }
-//        $ticket['custom_issues']=$custom_issues;
-//        $ticket['vendor_issues']=$vendor_issues;
-//        $ticket['vendors']=$vendors;
-//
-//        $leadorder['order']=$order;
-//        $this->func->session($ordersession, $leadorder);
-//        $out['ticket']=$ticket;
-//        $out['ticket_attach']=$attachment_list;
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    //Tickets, related with order
-//    public function get_opentickets_data($leadorder, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $order=$leadorder['order'];
-//        // Get Ticket
-//        $ticket=array(
-//            'class'=>'closed',
-//            'label'=>'No Ticket',
-//        );
-//        $this->db->select('count(ticket_id) as cnt');
-//        $this->db->from('ts_tickets');
-//        $this->db->where('order_num', $order['order_num']);
-//        $this->db->where('ticket_closed',0);
-//        $tickres=$this->db->get()->row_array();
-//        $out['numtickets']=$tickres['cnt'];
-//        if ($tickres['cnt']>0) {
-//            $this->db->select('TIMESTAMPDIFF(HOUR, created, now()) as hdiff');
-//            $this->db->select('ticket_closed');
-//            $this->db->from('ts_tickets');
-//            $this->db->where('order_num', $order['order_num']);
-//            $this->db->where('ticket_closed',0);
-//            $this->db->order_by('ticket_id', 'desc');
-//            $tickdet=$this->db->get()->row_array();
-//            $label='Open Ticket - ';
-//            $days=floor($tickdet['hdiff']/24);
-//            if ($days>0) {
-//                $hdiff=$tickdet['hdiff']-$days*24;
-//                $label.=$days.'d '.$hdiff.'h';
-//            } else {
-//                $label.=$tickdet['hdiff'].'h';
-//            }
-//            $ticket['class']='open';
-//            $ticket['label']=$label;
-//        }
-//        $out['ticket']=$ticket;
-//        $out['result']=$this->success_result;
-//        $this->func->session($ordersession, $leadorder);
-//        return $out;
-//    }
-//
-//    // Add Track Packages
-//    public function shiptrack_addpackage($shiptracks, $shipaddr, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $found=0;
-//        $idx=0;
-//        foreach ($shipaddres as $row) {
-//            if ($row['order_shipaddr_id']==$shipaddr) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Address Not Found';
-//            return $out;
-//        }
-//        $packages=$shipaddres[$idx]['packages'];
-//        $newpackidx=count($packages)+1;
-//        $packages[]=array(
-//            'order_shippack_id'=>$newpackidx*(-1),
-//            'deliver_service'=>'UPS',
-//            'track_code'=>'',
-//            'track_date'=>0,
-//            'send_date'=>0,
-//            'senddata'=>0,
-//            'delivered'=>0,
-//            'delivery_address' => '',
-//            'delflag'=>0,
-//        );
-//        $shipaddres[$idx]['packages']=$packages;
-//        $shiptracks['shipping_address']=$shipaddres;
-//        $this->func->session($shiptraccodes, $shiptracks);
-//        $out['result']=$this->success_result;
-//        $outpack=array();
-//        foreach ($packages as $row) {
-//            if ($row['delflag']==0) {
-//                $outpack[]=$row;
-//            }
-//        }
-//        $out['packages']=$outpack;
-//        return $out;
-//    }
-//
-//    // Remove package
-//    public function shiptrack_package_remove($shiptracks, $data, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipaddr=$data['shipaddres'];
-//        $package_id=$data['package_id'];
-//
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $found=0;
-//        $idx=0;
-//        foreach ($shipaddres as $row) {
-//            if ($row['order_shipaddr_id']==$shipaddr) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Address Not Found';
-//            return $out;
-//        }
-//
-//        $packages=$shipaddres[$idx]['packages'];
-//        $pidx=0;
-//        $pfound=0;
-//        foreach ($packages as $prow) {
-//            if ($prow['order_shippack_id']==$package_id) {
-//                $pfound=1;
-//                break;
-//            } else {
-//                $pidx++;
-//            }
-//        }
-//        if ($pfound==0) {
-//            $out['msg']='Package Not Found';
-//            return $out;
-//        }
-//        // Mark as deleted
-//        $packages[$pidx]['delflag']=1;
-//        $shipaddres[$idx]['packages']=$packages;
-//        $shiptracks['shipping_address']=$shipaddres;
-//        $this->func->session($shiptraccodes, $shiptracks);
-//        $out['result']=$this->success_result;
-//        $out['shipping_address']=$shipaddres;
-//        $outpack=array();
-//        foreach ($packages as $row) {
-//            if ($row['delflag']==0) {
-//                $outpack[]=$row;
-//            }
-//        }
-//        $out['packages']=$outpack;
-//        return $out;
-//    }
-//
-//    // Track code
-//    public function shiptrack_trackcode($shiptracks, $data, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shownewrow=0;
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $shipadr_id=$data['shipaddres'];
-//        $package_id=$data['package_id'];
-//        $idx=0;
-//        $found=0;
-//        foreach ($shipaddres as $srow) {
-//            if ($srow['order_shipaddr_id']==$shipadr_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Addres Not Found';
-//            return $out;
-//        }
-//        $packages=$shipaddres[$idx]['packages'];
-//        $pidx=0;
-//        $pfound=0;
-//        foreach ($packages as $prow) {
-//            if ($prow['order_shippack_id']==$package_id) {
-//                $pfound=1;
-//                break;
-//            } else {
-//                $pidx++;
-//            }
-//        }
-//        if ($pfound==0) {
-//            $out['msg']='Shipping Package Not Found';
-//            return $out;
-//        }
-//        $package=$packages[$pidx];
-//        if ($package['delivered']==0) {
-//            $trackcode=$package['track_code'];
-//            $check_system=$package['deliver_service'];
-//            if ($check_system=='UPS') {
-//                $this->load->library('United_parcel_service');
-//                $upsserv=new United_parcel_service();
-//                $tracking=$upsserv->trackpackage($trackcode);
-//                if ($tracking['result']==FALSE) {
-//                    $out['msg']=$tracking['msg'];
-//                    return $out;
-//                } else {
-//                    // Check that packages delivered
-//                    $tracklog=$tracking['tracklog'];
-//                    $deliver=1;
-//                    $delivtime=0;
-//                    foreach ($tracklog as $trrow) {
-//                        if ($trrow['status']!='DELIVERED') {
-//                            $deliver=0;
-//                            break;
-//                        } else {
-//                            if ($trrow['date']>$delivtime) {
-//                                $delivtime=$trrow['date'];
-//                            }
-//                        }
-//                    }
-//                    if ($deliver==1) {
-//                        // All packages delivered
-//                        $package['delivered']=$delivtime;
-//                        $package['delivery_address']=$tracklog[0]['address'];
-//                        // Create logs
-//                        $package['logs']=$tracklog;
-//                    }
-//                    // Package
-//                    $packages[$pidx]=$package;
-//                    $shipaddres[$idx]['packages']=$packages;
-//                    $shiptracks['shipping_address']=$shipaddres;
-//                }
-//            }
-//        } else {
-//            $tracking=array(
-//                'result' =>  $this->success_result,
-//                'tracklog' =>$package['logs'],
-//                'trackcode' =>$package['track_code'],
-//                'system' =>$package['deliver_service'],
-//            );
-//        }
-//        // Save changed parameter to Session
-//        $this->func->session($shiptraccodes, $shiptracks);
-//        $out['result']=$this->success_result;
-//        $out['tracking']=$tracking;
-//        $out['package']=$package;
-//        return $out;
-//    }
-//
-//
-//    // Change package parameters
-//    public function shiptrack_changepackage($shiptracks, $data, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shownewrow=0;
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $shipadr_id=$data['shipaddres'];
-//        $package_id=$data['package_id'];
-//        $fldname=$data['field'];
-//        $newval=$data['newval'];
-//        $idx=0;
-//        $found=0;
-//        foreach ($shipaddres as $srow) {
-//            if ($srow['order_shipaddr_id']==$shipadr_id) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Addres Not Found';
-//            return $out;
-//        }
-//        $packages=$shipaddres[$idx]['packages'];
-//        $pidx=0;
-//        $pfound=0;
-//        foreach ($packages as $prow) {
-//            if ($prow['order_shippack_id']==$package_id) {
-//                $pfound=1;
-//                break;
-//            } else {
-//                $pidx++;
-//            }
-//        }
-//        if ($pfound==0) {
-//            $out['msg']='Shipping Package Not Found';
-//            return $out;
-//        }
-//        $package=$packages[$pidx];
-//        if (!array_key_exists($fldname, $package)) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//        // Change Value
-//        if ($fldname=='track_code') {
-//            $oldval=$package['track_code'];
-//            if (empty($oldval) && !empty($newval)) {
-//                $shownewrow=1;
-//            } elseif (!empty($oldval) && empty($newval)) {
-//                $shownewrow=1;
-//            }
-//        }
-//        $package[$fldname]=$newval;
-//        $viewtrack=0;
-//        if (in_array($package['deliver_service'], $this->config->item('tracking_service'))) {
-//            $viewtrack=1;
-//        }
-//        if ($shownewrow==1) {
-//            $out['package']=$package;
-//        }
-//        // Save changed parameter to Session
-//        $packages[$pidx]=$package;
-//        $shipaddres[$idx]['packages']=$packages;
-//        $shiptracks['shipping_address']=$shipaddres;
-//        $this->func->session($shiptraccodes, $shiptracks);
-//        $out['result']=$this->success_result;
-//        $out['shipping_address']=$shipaddres;
-//        $out['viewtrack']=$viewtrack;
-//        $out['shownewrow']=$shownewrow;
-//        return $out;
-//    }
-//
-//    // Change Track Message Parameters
-//    public function shiptrack_changemessage($shiptracks, $data, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $email=$shiptracks['email'];
-//        $fldname=$data['field'];
-//        $newval=$data['newval'];
-//        if (!array_key_exists($fldname, $email)) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//        if (!empty($newval)) {
-//            if ($fldname=='sender' || $fldname=='customer' || $fldname=='bcc') {
-//                // Devide value by coma
-//                $valdata=  explode(',', $newval);
-//                foreach ($newval as $row) {
-//                    if (!empty($row) && !$this->func->valid_email_address($row)) {
-//                        $out['msg']='Email Address '.$row.' is not Valid';
-//                        return $out;
-//                    }
-//                }
-//            }
-//        }
-//        $email[$fldname]=$newval;
-//        $shiptracks['email']=$email;
-//        $this->func->session($shiptraccodes, $shiptracks);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    public function shiptrack_sendcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $codes=array();
-//        $shipidx=0;
-//        foreach ($shipaddres as $srow) {
-//            $packages=$srow['packages'];
-//            $pidx=0;
-//            foreach ($packages as $prow) {
-//                if ($prow['delflag']==0 && !empty($prow['track_code']) && $prow['senddata']==1) {
-//                    array_push($codes, $prow['track_code']);
-//                    $shipaddres[$shipidx]['packages'][$pidx]['send_date']=time();
-//                }
-//                $pidx++;
-//            }
-//            $shipidx++;
-//        }
-//        if (!empty($codes)) {
-//            $codesrow='';
-//            foreach ($codes as $row) {
-//                $codesrow.=$row.' ';
-//            }
-//
-//            $emailconf=$shiptracks['email'];
-//
-//            $email_body=  str_replace('<<codes>>', $codesrow, $emailconf['message']);
-//            $this->load->library('email');
-//            $config = $this->config->item('email_setup');
-//            $config['mailtype'] = 'text';
-//            $this->email->initialize($config);
-//            $this->email->set_newline("\r\n");
-//            $this->email->to($emailconf['customer']);
-//            if (!empty($emailconf['bcc'])) {
-//                $this->email->bcc($emailconf['bcc']);
-//            }
-//            if ($config['protocol']=='smtp') {
-//                $this->email->from($config['smtp_user']);
-//            } else {
-//                $this->email->from($emailconf['sender']);
-//            }
-//            $this->email->subject($emailconf['subject']);
-//            $this->email->message($email_body);
-//            $this->email->send();
-//            $this->email->clear(TRUE);
-//        } else {
-//            $out['msg']='No Codes was checked';
-//            return $out;
-//        }
-//        $shiptracks['shipping_address']=$shipaddres;
-//        $saveres=$this->shiptrack_savetrackcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes);
-//        if ($saveres['result']==$this->error_result) {
-//            $out['msg']=$saveres['msg'];
-//        } else {
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
-//    // Save Shipping Tracks
-//    public function shiptrack_savetrackcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipaddres=$shiptracks['shipping_address'];
-//        $numaddr=1;
-//        foreach ($shipaddres as $srow) {
-//            $packages=$srow['packages'];
-//            foreach ($packages as $row) {
-//                if ($row['delflag']==0 && empty($row['track_code'])) {
-//                    $out['msg']='Address '.$numaddr.' content empty Track Code';
-//                    return $out;
-//                }
-//                $numaddr++;
-//            }
-//        }
-//        $order_id=$leadorder['order']['order_id'];
-//        $order=$leadorder['order'];
-//        $shipping=$leadorder['shipping'];
-//        // Save address
-//        if ($edit_mode==0) {
-//            if (empty($shipping)) {
-//                $this->db->set('order_id', $order_id);
-//                $this->db->set('rush_price',0);
-//                $this->db->set('shipdate', $order['shipdate']);
-//                $this->db->insert('ts_order_shippings');
-//                $leadorder['shipping']=array(
-//                    'order_shipping_id'=>$this->db->insert_id(),
-//                    'order_id'=>$order_id,
-//                    'shipdate'=>$order['shipdate'],
-//                );
-//            }
-//            foreach ($shipaddres as $srow) {
-//                $this->db->set('country_id',(empty($srow['country_id']) ? NULL : $srow['country_id']));
-//                $this->db->set('address', $srow['address']);
-//                $this->db->set('city', $srow['city']);
-//                $this->db->set('state_id', (empty($srow['state_id']) ? NULL : $srow['state_id']));
-//                $this->db->set('zip', $srow['zip']);
-//                $this->db->set('item_qty', $srow['item_qty']);
-//                $this->db->set('ship_date', $srow['ship_date']);
-//                $this->db->set('arrive_date', $srow['arrive_date']);
-//                $this->db->set('shipping', $srow['shipping']);
-//                $this->db->set('sales_tax', $srow['sales_tax']);
-//                $this->db->set('resident', $srow['resident']);
-//                $this->db->set('ship_blind', $srow['ship_blind']);
-//                $this->db->set('tax', $srow['tax']);
-//                $this->db->set('tax_exempt', $srow['tax_exempt']);
-//                $this->db->set('tax_reason', $srow['tax_reason']);
-//                $this->db->set('tax_exemptdoc', $srow['tax_exemptdoc']);
-//                $this->db->set('tax_exemptdocsrc', $srow['tax_exemptdocsrc']);
-//                if ($srow['order_shipaddr_id']<0) {
-//                    $this->db->set('order_id', $order_id);
-//                    $this->db->insert('ts_order_shipaddres');
-//                    $shipaddr_id=$this->db->insert_id();
-//                } else {
-//                    $this->db->where('order_shipaddr_id', $srow['order_shipaddr_id']);
-//                    $this->db->update('ts_order_shipaddres');
-//                    $shipaddr_id=$srow['order_shipaddr_id'];
-//                }
-//                // Save packages
-//                $packages=$srow['packages'];
-//                foreach ($packages as $prow) {
-//                    if ($prow['delflag']==1) {
-//                        if ($prow['order_shippack_id']>0) {
-//                            $this->db->where('order_shippack_id', $prow['order_shippack_id']);
-//                            $this->db->delete('ts_order_shippacks');
-//                        }
-//                    } else {
-//                        $this->db->set('order_shipaddr_id', $shipaddr_id);
-//                        $this->db->set('deliver_service', $prow['deliver_service']);
-//                        $this->db->set('track_code', $prow['track_code']);
-//                        $this->db->set('track_date', $prow['track_date']);
-//                        $this->db->set('send_date', $prow['send_date']);
-//                        $this->db->set('delivered', $prow['delivered']);
-//                        $this->db->set('delivery_address', $prow['delivery_address']);
-//                        if ($prow['order_shippack_id']<0) {
-//                            $this->db->insert('ts_order_shippacks');
-//                            $packid_id=$this->db->insert_id();
-//                        } else {
-//                            $this->db->where('order_shippack_id',$prow['order_shippack_id']);
-//                            $this->db->update('ts_order_shippacks');
-//                            $packid_id=$prow['order_shippack_id'];
-//                        }
-//                        if (isset($prow['logs'])) {
-//                            // Insert data into log
-//                            foreach ($prow['logs'] as $lrow) {
-//                                $this->db->set('package_num', $lrow['package_num']);
-//                                $this->db->set('status', $lrow['status']);
-//                                $this->db->set('date', $lrow['date']);
-//                                $this->db->set('address', $lrow['address']);
-//                                if ($lrow['log_id']<0) {
-//                                    $this->db->set('order_shippack_id', $packid_id);
-//                                    $this->db->insert('ts_shippack_tracklogs');
-//                                } else {
-//                                    $this->db->where('shippack_tracklog_id', $lrow['log_id']);
-//                                    $this->db->update('ts_shippack_tracklogs');
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            $leadorder['shipping_address']=$shipaddres;
-//            $this->func->session($ordersession, $leadorder);
-//        } else {
-//            $leadorder['shipping_address']=$shipaddres;
-//            $this->func->session($ordersession, $leadorder);
-//        }
-//        $out['result']=$this->success_result;
-//        // Remove track codes
-//        $this->func->session($shiptraccodes, NULL);
-//        return $out;
-//    }
-//
-//    // Change Order or shipping value from Multi Ship
-//    public function change_multishiporder_input($shipdata, $entity, $fldname, $newval, $shipsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $data=$shipdata[$entity];
-//        if (array_key_exists($fldname,$data)) {
-//            $data[$fldname]=$newval;
-//            $shipdata[$entity]=$data;
-//            if ($fldname=='rush_idx') {
-//                $params=explode("-", $newval);
-//                $shipping=$shipdata['shipping'];
-//                if (isset($params[0])) {
-//                    $shipping['shipdate']=$params[0];
-//                }
-//                if (isset($params[1])) {
-//                    $shipping['rush_price']=$params[1];
-//                }
-//                $shipdata['shipping']=$shipping;
-//                $order=$shipdata['order'];
-//                $order['shipdate']=$shipping['shipdate'];
-//                $out['shipdate']=$shipping['shipdate'];
-//
-//                // Calculate shipping
-//                $this->load->model('shipping_model');
-//                $shiprate=0;
-//                $items=$shipdata['order_items'];
-//                $shipaddr=$shipdata['shipping_address'];
-//                $shipidx=0;
-//                $cnt=0;
-//                foreach ($shipaddr as $shprow) {
-//                    // Get Old Shipping Method
-//                    $default_ship_method='';
-//                    if (isset($shprow['shipping_cost'])) {
-//                        $oldcosts=$shprow['shipping_costs'];
-//                        foreach ($oldcosts as $costrow) {
-//                            if ($costrow['delflag']==0 && $costrow['current']==1) {
-//                                $default_ship_method=$costrow['shipping_method'];
-//                            }
-//                        }
-//                    }
-//                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
-//                    if ($cntres['result']==$this->error_result) {
-//                        $out['msg']=$cntres['msg'];
-//                        return $out;
-//                    } else {
-//                        $rates=$cntres['ships'];
-//                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
-//                        $cidx=0;
-//                        foreach ($shipcost as $row) {
-//                            $shipcost[$cidx]['delflag']=1;
-//                            $cidx++;
-//                        }
-//                        $newidx=count($shipcost)+1;
-//                        foreach ($rates as $row) {
-//                            $shipcost[]=array(
-//                                'order_shipcost_id'=>$newidx*(-1),
-//                                'shipping_method'=>$row['ServiceName'],
-//                                'shipping_cost'=>$row['Rate'],
-//                                'arrive_date'=>$row['DeliveryDate'],
-//                                'current'=>$row['current'],
-//                                'delflag'=>0,
-//                            );
-//                            if ($row['current']==1) {
-//                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
-//                                $shiprate+=$row['Rate'];
-//                            }
-//                            $newidx++;
-//                        }
-//                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
-//                    }
-//                    $shipidx++;
-//                    $cnt++;
-//                }
-//                $order['shipping']=$shiprate;
-//                // Save data into Session
-//                $shipdata['order']=$order;
-//            }
-//            $out['result']=$this->success_result;
-//            $this->func->session($shipsession, $shipdata);
-//            // Rebuild Totals of shipping
-//            $this->_recalc_shippingaddress($shipdata, $shipsession);
-//        } else {
-//            $out['msg']='Field not found';
-//        }
-//        return $out;
-//    }
-//
-//    public function multiship_addadres($shipping, $shipsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipping_address=$shipping['shipping_address'];
-//        // Get Last element
-//        $newidx=(count($shipping_address)+1)*(-1);
-//
-//        $newshadr=$this->_create_empty_shipaddress();
-//        $newshadr['order_shipaddr_id']=($newidx);
-//        $shipping_address[]=$newshadr;
-//        // Add empty shipping Address
-//        $shipping['shipping_address']=$shipping_address;
-//        $out['result']=$this->success_result;
-//        $this->func->session($shipsession, $shipping);
-//        $out['shipping_address']=$shipping_address;
-//        return $out;
-//    }
-//
-//    public function multiship_removeadres($multishipping, $shipadr_id, $shipsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipping_address=$multishipping['shipping_address'];
-//        $delrecords=$multishipping['delrecords'];
-//
-//        $found=0;
-//        $newaddr=array();
-//        foreach ($shipping_address as $srow) {
-//            if ($srow['order_shipaddr_id']==$shipadr_id) {
-//                $found=1;
-//                if ($shipadr_id>0) {
-//                    $delrecords[]=array(
-//                        'entity'=>'shipping_address',
-//                        'id'=>$shipadr_id,
-//                    );
-//                }
-//            } else {
-//                $newaddr[]=$srow;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Record Not Found';
-//            return $out;
-//        }
-//        if (count($newaddr)==0) {
-//            $newshadr=$this->_create_empty_shipaddress();
-//            $newshadr['order_shipaddr_id']=-1;
-//            $newaddr[]=$newshadr;
-//        } else {
-//            // Rebuild index
-//            $shidx=0;
-//            $idx=1;
-//            foreach ($newaddr as $nrow) {
-//                if ($nrow['order_shipaddr_id']<0) {
-//                    $newaddr[$shidx]['order_shipaddr_id']=(-1)*$idx;
-//                }
-//                $shidx++;
-//                $idx++;
-//            }
-//        }
-//        $multishipping['shipping_address']=$newaddr;
-//        $multishipping['delrecords']=$delrecords;
-//        $out['result']=$this->success_result;
-//        $this->func->session($shipsession, $multishipping);
-//        $out['shipping_address']=$newaddr;
-//        return $out;
-//    }
-//
-//    // Change shipping Address
-//    public function change_multishiporder_address($shipdata, $shipadr, $fldname, $newval, $shipsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipping_address=$shipdata['shipping_address'];
-//
-//        $found=0;
-//        $idx=0;
-//        foreach ($shipping_address as $srow) {
-//            if ($srow['order_shipaddr_id']==$shipadr) {
-//                $found=1;
-//                break;
-//            } else {
-//                $idx++;
-//            }
-//        }
-//        if ($found==0) {
-//            $out['msg']='Shipping Address Not Found';
-//            return $out;
-//        }
-//        $this->load->model('shipping_model');
-//        //
-//        if ($fldname=='shipping_method') {
-//            $shipcost=$shipping_address[$idx]['shipping_costs'];
-//            $costfound=0;
-//            $costidx=0;
-//            foreach ($shipcost as $scrow) {
-//                if ($scrow['shipping_method']==$newval && $scrow['delflag']==0) {
-//                    $costfound=1;
-//                    break;
-//                } else {
-//                    $costidx++;
-//                }
-//            }
-//            if ($costfound==0) {
-//                $out['msg']='Shipping Method Not Found';
-//                return $out;
-//            }
-//            // Update prev costs with 0 in Current
-//            $tidx=0;
-//            foreach ($shipcost as $scrow) {
-//                $shipcost[$tidx]['current']=0;
-//                $tidx++;
-//            }
-//            $shipcost[$costidx]['current']=1;
-//            $shipping_address[$idx]['arrive_date']=$shipcost[$costidx]['arrive_date'];
-//            $shipping_address[$idx]['shipping']=$shipcost[$costidx]['shipping_cost'];
-//            // $shipping_address[$idx][''] - Tax
-//            $out['shipcost_id']=$shipcost[$costidx]['order_shipcost_id'];
-//            $out['shiprate']=$shipcost[$costidx]['shipping_cost'];
-//            $shipping_address[$idx]['out_shipping_method']=$newval;
-//            $shipping_address[$idx]['shipping_costs']=$shipcost;
-//        }else {
-//            $shipping_address[$idx][$fldname]=$newval;
-//            switch ($fldname) {
-//                case 'zip':
-//                case 'state_id':
-//                    // Get new value of state code
-//                    if (!empty($shipping_address[$idx]['state_id'])) {
-//                        $statedat=$this->shipping_model->get_state($shipping_address[$idx]['state_id']);
-//                        if (isset($statedat['state_id'])) {
-//                            $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'].' '.$statedat['state_code'];
-//                        } else {
-//                            $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
-//                        }
-//                    } else {
-//                        $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
-//                    }
-//                    break;
-//                case 'country_id':
-//                    $cntdate=$this->shipping_model->get_country($newval);
-//                    $shipping_address[$idx]['out_country']=$cntdate['country_iso_code_2'];
-//                    // Get list of states
-//                    $states_list=$this->shipping_model->get_country_states($newval);
-//                    $shipping_address[$idx]['state_id']=NULL;
-//                    $shipping_address[$idx]['out_zip']=NULL;
-//
-//                    if (count($states_list)==0) {
-//                        // $shipping_address[$idx]['state_id']=NULL;
-//                        // $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
-//                        $out['state_list']=array();
-//                    } else {
-//                        // $shipping_address[$idx]['state_id']=$states_list[0]['state_id'];
-//                        // $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'].' '.$states_list[0]['state_code'];
-//                        $out['state_list']=$states_list;
-//                    }
-//                    break;
-//            }
-//        }
-//
-//        if ($fldname=='state_id') {
-//            if ($newval==$this->tax_state) {
-//                $shipping_address[$idx]['taxcalc']=0;
-//                $shipping_address[$idx]['taxview']=1;
-//                if ($shipping_address[$idx]['tax_exempt']==0) {
-//                    $shipping_address[$idx]['taxcalc']=1;
-//                }
-//            } else {
-//                $shipping_address[$idx]['taxcalc']=0;
-//                $shipping_address[$idx]['taxview']=0;
-//            }
-//        }
-//
-//        if ($fldname=='tax_exempt') {
-//            if ($newval==0) {
-//                $shipping_address[$idx]['taxcalc']=1;
-//            } else {
-//                $shipping_address[$idx]['taxcalc']=0;
-//            }
-//        }
-//
-//        if ($fldname=='item_qty' || $fldname=='zip') {
-//            if ($fldname=='zip') {
-//                // Validate ZIP
-//                $this->load->library('United_parcel_service');
-//                $upsserv=new United_parcel_service();
-//                $tracking=$upsserv->validaddress($newval, $shipping_address[$idx]['out_country']);
-//
-//                if ($tracking['result']==$this->success_result) {
-//                    if (!empty($tracking['city'])) {
-//                        $shipping_address[$idx]['city']=$tracking['city'];
-//                    }
-//                    if (!empty($tracking['state'])) {
-//                        $shipping_address[$idx]['state_id']=$tracking['state_id'];
-//                        $shipping_address[$idx]['out_zip']=$tracking['state'].' '.$newval;
-//                    }
-//                }
-//            }
-//            $shiprate=0;
-//            // Calc calculation
-//            $shipping=$shipdata['shipping'];
-//            $items=$shipdata['order_items'];
-//            if (!empty($shipping_address[$idx]['zip']) && !empty($shipping_address[$idx]['item_qty'])) {
-//                // Get Old Shipping Method
-//                $default_ship_method='';
-//                if (isset($shipping_address[$idx]['shipping_cost'])) {
-//                    $oldcosts=$shipping_address[$idx]['shipping_costs'];
-//                    foreach ($oldcosts as $costrow) {
-//                        if ($costrow['delflag']==0 && $costrow['current']==1) {
-//                            $default_ship_method=$costrow['shipping_method'];
-//                        }
-//                    }
-//                }
-//                $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$idx], $shipping['shipdate'], $default_ship_method);
-//                if ($cntres['result']==$this->error_result) {
-//                    $out['msg']=$cntres['msg'];
-//                    return $out;
-//                }
-//                $rates=$cntres['ships'];
-//                $shipcost=$shipping_address[$idx]['shipping_costs'];
-//                $cidx=0;
-//                foreach ($shipcost as $row) {
-//                    $shipcost[$cidx]['delflag']=1;
-//                    $cidx++;
-//                }
-//                $outshipcost=array();
-//                $newidx=count($shipcost)+1;
-//                foreach ($rates as $row) {
-//                    $shipcost[]=array(
-//                        'order_shipcost_id'=>$newidx*(-1),
-//                        'shipping_method'=>$row['ServiceName'],
-//                        'shipping_cost'=>$row['Rate'],
-//                        'arrive_date'=>$row['DeliveryDate'],
-//                        'current'=>$row['current'],
-//                        'delflag'=>0,
-//                    );
-//                    if ($row['current']==1) {
-//                        $shipping_address[$idx]['shipping']=$row['Rate'];
-//                        $shiprate+=$row['Rate'];
-//                    }
-//                    $outshipcost[]=array(
-//                        'order_shipcost_id'=>$newidx*(-1),
-//                        'shipping_method'=>$row['ServiceName'],
-//                        'shipping_cost'=>$row['Rate'],
-//                        'arrive_date'=>$row['DeliveryDate'],
-//                        'current'=>$row['current'],
-//                        'delflag'=>0,
-//                    );
-//                    $newidx++;
-//                }
-//                $out['shipcost']=$outshipcost;
-//                $out['shiprate']=$shiprate;
-//                $out['shipcalc']=1;
-//                $shipping_address[$idx]['shipping_costs']=$shipcost;
-//            } else {
-//                $out['shipcalc']=0;
-//            }
-//        }
-//        if ($shipping_address[$idx]['state_id']==$this->tax_state) {
-//            $shipping_address[$idx]['taxcalc']=0;
-//            $shipping_address[$idx]['taxview']=1;
-//            if ($shipping_address[$idx]['tax_exempt']==0) {
-//                $shipping_address[$idx]['taxcalc']=1;
-//            }
-//        } else {
-//            $shipping_address[$idx]['taxcalc']=0;
-//            $shipping_address[$idx]['taxview']=0;
-//        }
-//
-//
-//        $out['result']=$this->success_result;
-//        $shipdata['shipping_address']=$shipping_address;
-//
-//        $out['shipadr']=$shipping_address[$idx];
-//        $this->func->session($shipsession, $shipdata);
-//        $this->_recalc_shippingaddress($shipdata, $shipsession);
-//        return $out;
-//    }
-//
-//    // Save Multi Shipping
-//    public function multiship_save($shipdata, $leadorder, $ordersession, $shipsession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $shipping_address=$shipdata['shipping_address'];
-//        $delrecords=$shipdata['delrecords'];
-//        $this->load->model('shipping_model');
-//        // Check that all qty equal order qty
-//        $order=$leadorder['order'];
-//        $order_qty=$order['order_qty'];
-//        $shipcost=$tax=$shipqty=0;
-//        foreach ($shipping_address as $row) {
-//            $shipqty+=$row['item_qty'];
-//            $shipcost+=$row['shipping'];
-//            $tax+=$row['tax'];
-//            if ($row['item_qty']>0 && count($row['shipping_costs'])==0) {
-//                $out['msg']='Shipping Address was not calculated';
-//                return $out;
-//            }
-//        }
-//        if ($shipqty!=$order_qty) {
-//            $out['msg']='Shipping QTY not equal to Order QTY';
-//            return $out;
-//        }
-//        // Lets go
-//        // Update Shipping Address
-//        $sidx=0;
-//        foreach ($shipping_address as $srow) {
-//            $costs=$srow['shipping_costs'];
-//            $method_name='';
-//            foreach ($costs as $crow) {
-//                if ($crow['current']==1 && $crow['delflag']==0) {
-//                    $method_name=$crow['shipping_method'];
-//                    $shipping_address[$sidx]['arrive_date']=$crow['arrive_date'];
-//                }
-//            }
-//            $shipping_address[$sidx]['out_shipping_method']=$method_name;
-//            $cntdat=$this->shipping_model->get_country($srow['country_id']);
-//            $shipping_address[$sidx]['out_country']=$cntdat['country_iso_code_2'];
-//            // Ship && Zip
-//            $outzip=$srow['zip'];
-//            if (!empty($srow['state_id'])) {
-//                $statdat=$this->shipping_model->get_state($srow['state_id']);
-//                if (isset($statdat['state_code'])) {
-//                    $outzip.=' '.$statdat['state_code'];
-//                }
-//            }
-//            $shipping_address[$sidx]['out_zip']=$outzip;
-//            $sidx++;
-//        }
-//        $order['shipping']=$shipcost;
-//        $order['tax']=$tax;
-//        $leadorder['order']=$order;
-//        $leadorder['shipping']=$shipdata['shipping'];
-//        $leadorder['shipping_address']=$shipping_address;
-//        $leadorder['delrecords']=$delrecords;
-//        $this->func->session($ordersession, $leadorder);
-//        $this->func->session($shipsession, NULL);
-//        $out['result']=$this->success_result;
-//        $this->_leadorder_totals($leadorder, $ordersession);
-//        return $out;
-//    }
-//
-//    // Save Order
-//    public function save_order($leadorder, $user_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->load->model('artlead_model');
-//        $this->load->model('artwork_model');
-//        $order=$leadorder['order'];
-//        $savedorder_id=$order['order_id'];
-//        $artwork=$leadorder['artwork'];
-//        $order['order_blank']=$artwork['artwork_blank'];
-//        $order['order_rush']=$artwork['artwork_rush'];
-//        // if ($order['order_id']==0 || $order['order_id']>=$this->old_orders) {
-//        $artsync=array(
-//            'user_id'=>$user_id,
-//            'blank'=>$order['order_blank'],
-//            'rush'=>$order['order_rush'],
-//            'customer'=>$order['customer_name'],
-//            'item_descript'=>$order['order_items'],
-//            'art_stage'=>0,
-//            'redraw_stage'=>0,
-//            'vector_stage'=>0,
-//            'proof_stage'=>0,
-//            'approv_stage'=>0,
-//        );
-//        if ($leadorder['order_system']=='new') {
-//            $order_type='new';
-//            $chkres=$this->_check_new_order($leadorder);
-//        } else {
-//            $order_type='old';
-//            $chkres=$this->_check_old_order($order);
-//        }
-//        if ($chkres['result']==$this->error_result) {
-//            $out['msg']=$chkres['msg'];
-//            return $out;
-//        }
-//        $this->load->model('order_model');
-//        $this->load->model('artlead_model');
-//        if ($order['order_id']==0) {
-//            $oldorderddata=array(
-//                'profit'=>0,
-//                'revenue'=>0,
-//                'shipdate'=>0,
-//            );
-//        } else {
-//            $oldorderddata=$this->order_model->get_order_detail($order['order_id']);
-//            $compare_array=$this->get_leadorder($order['order_id'], $user_id);
-//        }
-//        $netdata=$this->_get_netpofitweek($order['order_date']);
-//        $savepayment=0;
-//        if ($order_type=='new') {
-//            // Get Item ID, Order QTY
-//            $order_items=$leadorder['order_items'];
-//            $artwork['item_qty']=$order['order_qty'];
-//            $artwork['item_id']=$order['item_id'];
-//            $res=$this->_save_neworder($order, $user_id);
-//
-//            if ($res['result']==$this->error_result) {
-//                $out['msg']=$res['msg'];
-//                return $out;
-//            }
-//            if ($order['order_id']==0) {
-//                $popopt=array(
-//                    'order'=>$res['neworder'],
-//                    'confirm'=>$order['order_confirmation'],
-//                );
-//                $savepayment=1;
-//                $order['order_num']=$res['neworder'];
-//                $leadorder['order']=$order;
-//                $out['popupmsg']=$this->load->view('leadorderdetails/order_placed_view',$popopt, TRUE);
-//                // Confirmation # WY-3028 Placed - Internal Order # 39457
-//                $order['order_id']=$res['result'];
-//                $artwork['order_id']=$order['order_id'];
-//                $artwork['mail_id']=NULL;
-//            }
-//            $order_id=$order['order_id'];
-//            $artsync['order_id']=$order_id;
-//            // Notify changes in Shipping date
-//            $this->_save_shipdtelog($order_id, $user_id, $order['order_num'], $oldorderddata['shipdate'], $order['shipdate']);
-//            // Save Order Contacts
-//            $contacts=$leadorder['contacts'];
-//            $cntcres=$this->_save_order_contacts($contacts, $order_id, $user_id);
-//            if ($cntcres['result']==$this->error_result) {
-//                $out['msg']=$cntcres['msg'];
-//                return $out;
-//            }
-//            // Save Order Items, Imprint, Imprint Details, Item color
-//            $itemres=$this->_save_order_items($order_items, $order_id, $user_id);
-//            if ($itemres['result']==$this->error_result) {
-//                $out['msg']=$itemres['msg'];
-//                return $out;
-//            }
-//
-//            $order_items=$itemres['order_items'];
-//
-//            $shipping=$leadorder['shipping'];
-//            $shipres=$this->_save_order_shipping($shipping, $order_id, $user_id);
-//            if ($shipres['result']==$this->error_result) {
-//                $out['msg']=$shipres['msg'];
-//                return $out;
-//            }
-//            $shipping_address=$leadorder['shipping_address'];
-//            $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
-//            if ($adrres['result']==$this->error_result) {
-//                $out['msg']=$adrres['msg'];
-//                return $out;
-//            }
-//
-//            if ($order['showbilladdress']==1) {
-//                $biladr=$leadorder['billing'];
-//                $billing=$this->_billingaddres_copy($shipping_address, $biladr);
-//            } else {
-//                $billing=$leadorder['billing'];
-//            }
-//            $billres=$this->_save_order_billings($billing, $order_id, $user_id);
-//            if ($billres['result']==$this->error_result) {
-//                $out['msg']=$billres['msg'];
-//                return $out;
-//            }
-//            $charges=$leadorder['charges'];
-//            $chrgres=$this->_save_order_chargedata($charges, $order_id, $user_id);
-//            if ($chrgres['result']==$this->error_result) {
-//                $out['msg']=$chrgres['msg'];
-//            }
-//            // Payments
-//            $payments=$leadorder['payments'];
-//            $paymres=$this->_save_order_payments($payments, $order_id, $user_id);
-//            if ($paymres['result']==$this->error_result) {
-//                $out['msg']=$paymres['msg'];
-//            }
-//            $delrecords=$leadorder['delrecords'];
-//            $this->_delete_leadorder_components($delrecords);
-//            $out['result']=$this->success_result;
-//            // Tty to Pay
-//            if ($savepayment==1) {
-//                $finres=$this->_prepare_order_payment($order_id, $user_id);
-//                if ($finres['result']==$this->error_result) {
-//                    $out['finres']=$this->error_result;
-//                    $out['finerror']=$finres['msg'];
-//                } else {
-//                    $out['finres']=$this->success_result;
-//                }
-//            }
-//            $out['order_id']=$order_id;
-//            $newdata=$this->order_model->get_order_detail($order_id);
-//            $newprofit=$newdata['profit'];
-//        } else {
-//            $res=$this->_save_oldorder($order, $user_id);
-//            if ($res['result']==$this->error_result) {
-//                $out['msg']=$res['msg'];
-//                return $out;
-//            }
-//            if ($order['order_id']==0) {
-//                $order['order_id']=$res['result'];
-//            }
-//            $newprofit=$res['profit'];
-//            $order_id=$order['order_id'];
-//            $out['order_id']=$order_id;
-//            $out['result']=$this->success_result;
-//            $out['finres']=$this->success_result;
-//            $artwork['order_id']=$order_id;
-//            $artwork['mail_id']=NULL;
-//        }
-//        // Note about Net Profit Changes
-//        if ($netdata['flag_note']==1 && round(floatval($oldorderddata['profit']),2)!=round(floatval($newprofit),2)) {
-//            // Send notification
-//            $this->_changeprofit_notification($netdata, $order, $oldorderddata, $user_id);
-//        }
-//        // Save Artwork
-//        $artres=$this->artlead_model->save_artwork($artwork, $user_id);
-//        $artwork_id=$artres;
-//        // Save order Locations
-//        $locations=$leadorder['artlocations'];
-//        if ($order_type=='new') {
-//            $this->artlead_model->save_artlocations($locations, $artwork_id, $order_items);
-//        } else {
-//            $this->artlead_model->save_artlocations($locations, $artwork_id, array());
-//        }
-//
-//        $proofs=$leadorder['artproofs'];
-//        $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
-//        $artsyncdoc=$res['artsyncdoc'];
-//        // Save history and message
-//        $history=$leadorder['message']['history'];
-//
-//        foreach ($history as $row) {
-//            if ($row['artwork_history_id']<=0) {
-//                // New Record
-//                $artw=array(
-//                    'artwork_id'=>$artwork_id,
-//                    'user_id'=>$user_id,
-//                    'created_time'=>$row['created_time'],
-//                    'update_msg'=>$row['message'],
-//                );
-//                $this->artlead_model->artwork_history_update($artw);
-//            }
-//        }
-//        if (!empty($leadorder['message']['update'])) {
-//            $artw=array(
-//                'artwork_id'=>$artwork_id,
-//                'user_id'=>$user_id,
-//                'created_time'=>time(),
-//                'update_msg'=>$leadorder['message']['update'],
-//            );
-//            $this->artlead_model->artwork_history_update($artw);
-//        }
-//        if (!empty($leadorder['message']['general_notes'])) {
-//            $this->db->set('general_notes', $leadorder['message']['general_notes']);
-//            $this->db->where('artwork_id', $artwork_id);
-//            $this->db->update('ts_artworks');
-//        }
-//        $this->db->select('o.order_blank');
-//        $this->db->from('ts_orders o');
-//        $this->db->where('o.order_id',$order_id);
-//        $blankres=$this->db->get()->row_array();
-//        $blank=0;
-//        if ($blankres['order_blank']=='1') {
-//            $blank=1;
-//        }
-//        if ($blank==1) {
-//            $artsync=$this->artlead_model->art_blank_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
-//        } else {
-//            $artsync=$this->artlead_model->art_common_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
-//        }
-//        // artwork_model
-//        if ($savedorder_id>0) {
-//            // Save changes
-//            $neworddata=$this->get_leadorder($savedorder_id, $user_id);
-//            // $this->firephp->log($compare_array['order'],'Order');
-//            // Lets go
-//            $this->artwork_model->leadorder_changeslog($compare_array, $neworddata, $user_id);
-//        } else {
-//            $newzip='';
-//            foreach ($shipping_address as $adrrow) {
-//                if (!empty($adrrow['zip'])) {
-//                    $newzip.=$adrrow['zip'].' ';
-//                }
-//            }
-//            $newzip=trim($newzip);
-//            if (abs($order['shipping'])>1.00 && empty($newzip)) {
-//                $this->_emptyzip_notification($leadorder, $user_id);
-//            }
-//        }
-//        // Clean Session
-//        $this->func->session($ordersession, NULL);
-//        if ($order_type=='new') {
-//            $this->_prepare_netexport($artsync, $artsyncdoc);
-//        }
-//        return $out;
-//    }
-//
-//    // Check Old Order
-//    private function _check_old_order($data) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (intval($data['order_date'])==0) {
-//            $res['msg']=lang_str('errmsg_order_date',TRUE);
-//            return $res;
-//        }
-//        if ($data['customer_name']=='') {
-//            $res['msg']=lang_str('errmsg_empty_customer',TRUE);
-//            return $res;
-//        }
-//        if ($data['customer_email']=='') {
-//            $res['msg']=lang_str('errmsg_empty_customeremail',TRUE);
-//            return $res;
-//        }
-//        if (!$this->func->valid_email_address($data['customer_email'])) {
-//            $res['msg']=lang_str('errmsg_nonvalidemail',TRUE);
-//            return $res;
-//        }
-//        if (floatval($data['revenue'])==0) {
-//            $res['msg']=lang_str('errmsg_nonvalidrevenue',TRUE);
-//            return $res;
-//        }
-//        if (floatval($data['shipping'])==0) {
-//            $res['msg']=lang_str('errmsg_nonvalidship',TRUE);
-//            return $res;
-//        }
-//        if ($data['order_cog']!='' && !is_numeric($data['order_cog'])) {
-//            $res['msg']=lang_str('errmsg_nonvalidcogvalue',TRUE);
-//            return $res;
-//        }
-//
-//        if (intval($data['order_qty'])<=0) {
-//            $res['msg']=lang_str('errmsg_emptyorderqty',TRUE);
-//            return $res;
-//        }
-//
-//        if (empty($data['shipdate']) || intval($data['shipdate'])<=0) {
-//            $res['msg']=lang_str('errmsg_emptyshipdate',TRUE);
-//            return $res;
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
+    // Check open ticket for order
+    public function get_opentickets($leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        $this->load->model('tickets_model');
+        $this->load->model('vendors_model');
+        $custom_class=$vendor_class="";
+        $custom_issues=$this->tickets_model->get_issues('C');
+        $vendor_issues=$this->tickets_model->get_issues('V');
+        $vendors=$this->vendors_model->get_vendors_list('v.vendor_name','asc');
+        $options=array(
+            'order_num'=>$order['order_num'],
+        );
+        $this->db->select('count(ticket_id) as cnt');
+        $this->db->from('ts_tickets');
+        $this->db->where('order_num', $order['order_num']);
+        $this->db->where('ticket_closed',0);
+        $chkres=$this->db->get()->row_array();
+
+        if ($chkres['cnt']==0) {
+            $ticket=$this->tickets_model->add_newticket($options);
+            $ticket['custom_class']=$custom_class;
+            $ticket['vendor_class']=$vendor_class;
+            $attachment_list=array();
+        } else {
+            // Get Last Opened ticket
+            $this->db->select('ticket_id');
+            $this->db->from('ts_tickets');
+            $this->db->where('order_num', $order['order_num']);
+            $this->db->where('ticket_closed',0);
+            $res=$this->db->get()->row_array();
+            if (!isset($res['ticket_id'])) {
+                $ticket=$this->tickets_model->add_newticket($options);
+                $ticket['custom_class']=$custom_class;
+                $ticket['vendor_class']=$vendor_class;
+                $attachment_list=array();
+            } else {
+                $ticket_id=$res['ticket_id'];
+                $ticket=$this->tickets_model->get_ticket_data($ticket_id);
+                /* Get attachment */
+                $sess_id=$this->session->userdata('session_id');
+                /* Change is_delete */
+                $this->tickets_model->attach_init($ticket_id);
+                if ($ticket['other_vendor']) {
+                    $ticket['vendor_id']='-1';
+                }
+                $ticket['custom_class']=$custom_class;
+                $ticket['vendor_class']=$vendor_class;
+                $attachment_list=$this->tickets_model->get_attachments($ticket_id,$sess_id);
+                if (!empty($ticket['custom_issue_id'])) {
+                    $ticket['custom_class']='colored';
+                }
+                if (!empty($ticket['vendor_issue_id'])) {
+                    $ticket['vendor_class']='colored';
+                }
+                if ($ticket['ticket_date']=='') {
+                    $ticket['ticket_date']=date('m/d/Y');
+                } else {
+                    $ticket['ticket_date']=date('m/d/Y',$ticket['ticket_date']);
+                }
+            }
+        }
+        $ticket['custom_issues']=$custom_issues;
+        $ticket['vendor_issues']=$vendor_issues;
+        $ticket['vendors']=$vendors;
+
+        $leadorder['order']=$order;
+        usersession($ordersession, $leadorder);
+        $out['ticket']=$ticket;
+        $out['ticket_attach']=$attachment_list;
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    //Tickets, related with order
+    public function get_opentickets_data($leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $order=$leadorder['order'];
+        // Get Ticket
+        $ticket=array(
+            'class'=>'closed',
+            'label'=>'No Ticket',
+        );
+        $this->db->select('count(ticket_id) as cnt');
+        $this->db->from('ts_tickets');
+        $this->db->where('order_num', $order['order_num']);
+        $this->db->where('ticket_closed',0);
+        $tickres=$this->db->get()->row_array();
+        $out['numtickets']=$tickres['cnt'];
+        if ($tickres['cnt']>0) {
+            $this->db->select('TIMESTAMPDIFF(HOUR, created, now()) as hdiff');
+            $this->db->select('ticket_closed');
+            $this->db->from('ts_tickets');
+            $this->db->where('order_num', $order['order_num']);
+            $this->db->where('ticket_closed',0);
+            $this->db->order_by('ticket_id', 'desc');
+            $tickdet=$this->db->get()->row_array();
+            $label='Open Ticket - ';
+            $days=floor($tickdet['hdiff']/24);
+            if ($days>0) {
+                $hdiff=$tickdet['hdiff']-$days*24;
+                $label.=$days.'d '.$hdiff.'h';
+            } else {
+                $label.=$tickdet['hdiff'].'h';
+            }
+            $ticket['class']='open';
+            $ticket['label']=$label;
+        }
+        $out['ticket']=$ticket;
+        $out['result']=$this->success_result;
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+    // Add Track Packages
+    public function shiptrack_addpackage($shiptracks, $shipaddr, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipaddres=$shiptracks['shipping_address'];
+        $found=0;
+        $idx=0;
+        foreach ($shipaddres as $row) {
+            if ($row['order_shipaddr_id']==$shipaddr) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Address Not Found';
+            return $out;
+        }
+        $packages=$shipaddres[$idx]['packages'];
+        $newpackidx=count($packages)+1;
+        $packages[]=array(
+            'order_shippack_id'=>$newpackidx*(-1),
+            'deliver_service'=>'UPS',
+            'track_code'=>'',
+            'track_date'=>0,
+            'send_date'=>0,
+            'senddata'=>0,
+            'delivered'=>0,
+            'delivery_address' => '',
+            'delflag'=>0,
+        );
+        $shipaddres[$idx]['packages']=$packages;
+        $shiptracks['shipping_address']=$shipaddres;
+        usersession($shiptraccodes, $shiptracks);
+        $out['result']=$this->success_result;
+        $outpack=array();
+        foreach ($packages as $row) {
+            if ($row['delflag']==0) {
+                $outpack[]=$row;
+            }
+        }
+        $out['packages']=$outpack;
+        return $out;
+    }
+
+    // Remove package
+    public function shiptrack_package_remove($shiptracks, $data, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipaddr=$data['shipaddres'];
+        $package_id=$data['package_id'];
+
+        $shipaddres=$shiptracks['shipping_address'];
+        $found=0;
+        $idx=0;
+        foreach ($shipaddres as $row) {
+            if ($row['order_shipaddr_id']==$shipaddr) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Address Not Found';
+            return $out;
+        }
+
+        $packages=$shipaddres[$idx]['packages'];
+        $pidx=0;
+        $pfound=0;
+        foreach ($packages as $prow) {
+            if ($prow['order_shippack_id']==$package_id) {
+                $pfound=1;
+                break;
+            } else {
+                $pidx++;
+            }
+        }
+        if ($pfound==0) {
+            $out['msg']='Package Not Found';
+            return $out;
+        }
+        // Mark as deleted
+        $packages[$pidx]['delflag']=1;
+        $shipaddres[$idx]['packages']=$packages;
+        $shiptracks['shipping_address']=$shipaddres;
+        usersession($shiptraccodes, $shiptracks);
+        $out['result']=$this->success_result;
+        $out['shipping_address']=$shipaddres;
+        $outpack=array();
+        foreach ($packages as $row) {
+            if ($row['delflag']==0) {
+                $outpack[]=$row;
+            }
+        }
+        $out['packages']=$outpack;
+        return $out;
+    }
+
+    // Track code
+    public function shiptrack_trackcode($shiptracks, $data, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shownewrow=0;
+        $shipaddres=$shiptracks['shipping_address'];
+        $shipadr_id=$data['shipaddres'];
+        $package_id=$data['package_id'];
+        $idx=0;
+        $found=0;
+        foreach ($shipaddres as $srow) {
+            if ($srow['order_shipaddr_id']==$shipadr_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Addres Not Found';
+            return $out;
+        }
+        $packages=$shipaddres[$idx]['packages'];
+        $pidx=0;
+        $pfound=0;
+        foreach ($packages as $prow) {
+            if ($prow['order_shippack_id']==$package_id) {
+                $pfound=1;
+                break;
+            } else {
+                $pidx++;
+            }
+        }
+        if ($pfound==0) {
+            $out['msg']='Shipping Package Not Found';
+            return $out;
+        }
+        $package=$packages[$pidx];
+        if ($package['delivered']==0) {
+            $trackcode=$package['track_code'];
+            $check_system=$package['deliver_service'];
+            if ($check_system=='UPS') {
+                $this->load->library('United_parcel_service');
+                $upsserv=new United_parcel_service();
+                $tracking=$upsserv->trackpackage($trackcode);
+                if ($tracking['result']==FALSE) {
+                    $out['msg']=$tracking['msg'];
+                    return $out;
+                } else {
+                    // Check that packages delivered
+                    $tracklog=$tracking['tracklog'];
+                    $deliver=1;
+                    $delivtime=0;
+                    foreach ($tracklog as $trrow) {
+                        if ($trrow['status']!='DELIVERED') {
+                            $deliver=0;
+                            break;
+                        } else {
+                            if ($trrow['date']>$delivtime) {
+                                $delivtime=$trrow['date'];
+                            }
+                        }
+                    }
+                    if ($deliver==1) {
+                        // All packages delivered
+                        $package['delivered']=$delivtime;
+                        $package['delivery_address']=$tracklog[0]['address'];
+                        // Create logs
+                        $package['logs']=$tracklog;
+                    }
+                    // Package
+                    $packages[$pidx]=$package;
+                    $shipaddres[$idx]['packages']=$packages;
+                    $shiptracks['shipping_address']=$shipaddres;
+                }
+            }
+        } else {
+            $tracking=array(
+                'result' =>  $this->success_result,
+                'tracklog' =>$package['logs'],
+                'trackcode' =>$package['track_code'],
+                'system' =>$package['deliver_service'],
+            );
+        }
+        // Save changed parameter to Session
+        usersession($shiptraccodes, $shiptracks);
+        $out['result']=$this->success_result;
+        $out['tracking']=$tracking;
+        $out['package']=$package;
+        return $out;
+    }
+
+
+    // Change package parameters
+    public function shiptrack_changepackage($shiptracks, $data, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shownewrow=0;
+        $shipaddres=$shiptracks['shipping_address'];
+        $shipadr_id=$data['shipaddres'];
+        $package_id=$data['package_id'];
+        $fldname=$data['field'];
+        $newval=$data['newval'];
+        $idx=0;
+        $found=0;
+        foreach ($shipaddres as $srow) {
+            if ($srow['order_shipaddr_id']==$shipadr_id) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Addres Not Found';
+            return $out;
+        }
+        $packages=$shipaddres[$idx]['packages'];
+        $pidx=0;
+        $pfound=0;
+        foreach ($packages as $prow) {
+            if ($prow['order_shippack_id']==$package_id) {
+                $pfound=1;
+                break;
+            } else {
+                $pidx++;
+            }
+        }
+        if ($pfound==0) {
+            $out['msg']='Shipping Package Not Found';
+            return $out;
+        }
+        $package=$packages[$pidx];
+        if (!array_key_exists($fldname, $package)) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        // Change Value
+        if ($fldname=='track_code') {
+            $oldval=$package['track_code'];
+            if (empty($oldval) && !empty($newval)) {
+                $shownewrow=1;
+            } elseif (!empty($oldval) && empty($newval)) {
+                $shownewrow=1;
+            }
+        }
+        $package[$fldname]=$newval;
+        $viewtrack=0;
+        if (in_array($package['deliver_service'], $this->config->item('tracking_service'))) {
+            $viewtrack=1;
+        }
+        if ($shownewrow==1) {
+            $out['package']=$package;
+        }
+        // Save changed parameter to Session
+        $packages[$pidx]=$package;
+        $shipaddres[$idx]['packages']=$packages;
+        $shiptracks['shipping_address']=$shipaddres;
+        usersession($shiptraccodes, $shiptracks);
+        $out['result']=$this->success_result;
+        $out['shipping_address']=$shipaddres;
+        $out['viewtrack']=$viewtrack;
+        $out['shownewrow']=$shownewrow;
+        return $out;
+    }
+
+    // Change Track Message Parameters
+    public function shiptrack_changemessage($shiptracks, $data, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $email=$shiptracks['email'];
+        $fldname=$data['field'];
+        $newval=$data['newval'];
+        if (!array_key_exists($fldname, $email)) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        if (!empty($newval)) {
+            if ($fldname=='sender' || $fldname=='customer' || $fldname=='bcc') {
+                // Devide value by coma
+                $valdata=  explode(',', $newval);
+                foreach ($newval as $row) {
+                    if (!empty($row) && !$this->func->valid_email_address($row)) {
+                        $out['msg']='Email Address '.$row.' is not Valid';
+                        return $out;
+                    }
+                }
+            }
+        }
+        $email[$fldname]=$newval;
+        $shiptracks['email']=$email;
+        usersession($shiptraccodes, $shiptracks);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function shiptrack_sendcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipaddres=$shiptracks['shipping_address'];
+        $codes=array();
+        $shipidx=0;
+        foreach ($shipaddres as $srow) {
+            $packages=$srow['packages'];
+            $pidx=0;
+            foreach ($packages as $prow) {
+                if ($prow['delflag']==0 && !empty($prow['track_code']) && $prow['senddata']==1) {
+                    array_push($codes, $prow['track_code']);
+                    $shipaddres[$shipidx]['packages'][$pidx]['send_date']=time();
+                }
+                $pidx++;
+            }
+            $shipidx++;
+        }
+        if (!empty($codes)) {
+            $codesrow='';
+            foreach ($codes as $row) {
+                $codesrow.=$row.' ';
+            }
+
+            $emailconf=$shiptracks['email'];
+
+            $email_body=  str_replace('<<codes>>', $codesrow, $emailconf['message']);
+            $this->load->library('email');
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+            $this->email->initialize($config);
+            $this->email->set_newline("\r\n");
+            $this->email->to($emailconf['customer']);
+            if (!empty($emailconf['bcc'])) {
+                $this->email->bcc($emailconf['bcc']);
+            }
+            if ($config['protocol']=='smtp') {
+                $this->email->from($config['smtp_user']);
+            } else {
+                $this->email->from($emailconf['sender']);
+            }
+            $this->email->subject($emailconf['subject']);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        } else {
+            $out['msg']='No Codes was checked';
+            return $out;
+        }
+        $shiptracks['shipping_address']=$shipaddres;
+        $saveres=$this->shiptrack_savetrackcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes);
+        if ($saveres['result']==$this->error_result) {
+            $out['msg']=$saveres['msg'];
+        } else {
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    // Save Shipping Tracks
+    public function shiptrack_savetrackcodes($shiptracks, $leadorder, $edit_mode, $ordersession, $shiptraccodes) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipaddres=$shiptracks['shipping_address'];
+        $numaddr=1;
+        foreach ($shipaddres as $srow) {
+            $packages=$srow['packages'];
+            foreach ($packages as $row) {
+                if ($row['delflag']==0 && empty($row['track_code'])) {
+                    $out['msg']='Address '.$numaddr.' content empty Track Code';
+                    return $out;
+                }
+                $numaddr++;
+            }
+        }
+        $order_id=$leadorder['order']['order_id'];
+        $order=$leadorder['order'];
+        $shipping=$leadorder['shipping'];
+        // Save address
+        if ($edit_mode==0) {
+            if (empty($shipping)) {
+                $this->db->set('order_id', $order_id);
+                $this->db->set('rush_price',0);
+                $this->db->set('shipdate', $order['shipdate']);
+                $this->db->insert('ts_order_shippings');
+                $leadorder['shipping']=array(
+                    'order_shipping_id'=>$this->db->insert_id(),
+                    'order_id'=>$order_id,
+                    'shipdate'=>$order['shipdate'],
+                );
+            }
+            foreach ($shipaddres as $srow) {
+                $this->db->set('country_id',(empty($srow['country_id']) ? NULL : $srow['country_id']));
+                $this->db->set('address', $srow['address']);
+                $this->db->set('city', $srow['city']);
+                $this->db->set('state_id', (empty($srow['state_id']) ? NULL : $srow['state_id']));
+                $this->db->set('zip', $srow['zip']);
+                $this->db->set('item_qty', $srow['item_qty']);
+                $this->db->set('ship_date', $srow['ship_date']);
+                $this->db->set('arrive_date', $srow['arrive_date']);
+                $this->db->set('shipping', $srow['shipping']);
+                $this->db->set('sales_tax', $srow['sales_tax']);
+                $this->db->set('resident', $srow['resident']);
+                $this->db->set('ship_blind', $srow['ship_blind']);
+                $this->db->set('tax', $srow['tax']);
+                $this->db->set('tax_exempt', $srow['tax_exempt']);
+                $this->db->set('tax_reason', $srow['tax_reason']);
+                $this->db->set('tax_exemptdoc', $srow['tax_exemptdoc']);
+                $this->db->set('tax_exemptdocsrc', $srow['tax_exemptdocsrc']);
+                if ($srow['order_shipaddr_id']<0) {
+                    $this->db->set('order_id', $order_id);
+                    $this->db->insert('ts_order_shipaddres');
+                    $shipaddr_id=$this->db->insert_id();
+                } else {
+                    $this->db->where('order_shipaddr_id', $srow['order_shipaddr_id']);
+                    $this->db->update('ts_order_shipaddres');
+                    $shipaddr_id=$srow['order_shipaddr_id'];
+                }
+                // Save packages
+                $packages=$srow['packages'];
+                foreach ($packages as $prow) {
+                    if ($prow['delflag']==1) {
+                        if ($prow['order_shippack_id']>0) {
+                            $this->db->where('order_shippack_id', $prow['order_shippack_id']);
+                            $this->db->delete('ts_order_shippacks');
+                        }
+                    } else {
+                        $this->db->set('order_shipaddr_id', $shipaddr_id);
+                        $this->db->set('deliver_service', $prow['deliver_service']);
+                        $this->db->set('track_code', $prow['track_code']);
+                        $this->db->set('track_date', $prow['track_date']);
+                        $this->db->set('send_date', $prow['send_date']);
+                        $this->db->set('delivered', $prow['delivered']);
+                        $this->db->set('delivery_address', $prow['delivery_address']);
+                        if ($prow['order_shippack_id']<0) {
+                            $this->db->insert('ts_order_shippacks');
+                            $packid_id=$this->db->insert_id();
+                        } else {
+                            $this->db->where('order_shippack_id',$prow['order_shippack_id']);
+                            $this->db->update('ts_order_shippacks');
+                            $packid_id=$prow['order_shippack_id'];
+                        }
+                        if (isset($prow['logs'])) {
+                            // Insert data into log
+                            foreach ($prow['logs'] as $lrow) {
+                                $this->db->set('package_num', $lrow['package_num']);
+                                $this->db->set('status', $lrow['status']);
+                                $this->db->set('date', $lrow['date']);
+                                $this->db->set('address', $lrow['address']);
+                                if ($lrow['log_id']<0) {
+                                    $this->db->set('order_shippack_id', $packid_id);
+                                    $this->db->insert('ts_shippack_tracklogs');
+                                } else {
+                                    $this->db->where('shippack_tracklog_id', $lrow['log_id']);
+                                    $this->db->update('ts_shippack_tracklogs');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $leadorder['shipping_address']=$shipaddres;
+            usersession($ordersession, $leadorder);
+        } else {
+            $leadorder['shipping_address']=$shipaddres;
+            usersession($ordersession, $leadorder);
+        }
+        $out['result']=$this->success_result;
+        // Remove track codes
+        usersession($shiptraccodes, NULL);
+        return $out;
+    }
+
+    // Change Order or shipping value from Multi Ship
+    public function change_multishiporder_input($shipdata, $entity, $fldname, $newval, $shipsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $data=$shipdata[$entity];
+        if (array_key_exists($fldname,$data)) {
+            $data[$fldname]=$newval;
+            $shipdata[$entity]=$data;
+            if ($fldname=='rush_idx') {
+                $params=explode("-", $newval);
+                $shipping=$shipdata['shipping'];
+                if (isset($params[0])) {
+                    $shipping['shipdate']=$params[0];
+                }
+                if (isset($params[1])) {
+                    $shipping['rush_price']=$params[1];
+                }
+                $shipdata['shipping']=$shipping;
+                $order=$shipdata['order'];
+                $order['shipdate']=$shipping['shipdate'];
+                $out['shipdate']=$shipping['shipdate'];
+
+                // Calculate shipping
+                $this->load->model('shipping_model');
+                $shiprate=0;
+                $items=$shipdata['order_items'];
+                $shipaddr=$shipdata['shipping_address'];
+                $shipidx=0;
+                $cnt=0;
+                foreach ($shipaddr as $shprow) {
+                    // Get Old Shipping Method
+                    $default_ship_method='';
+                    if (isset($shprow['shipping_cost'])) {
+                        $oldcosts=$shprow['shipping_costs'];
+                        foreach ($oldcosts as $costrow) {
+                            if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                $default_ship_method=$costrow['shipping_method'];
+                            }
+                        }
+                    }
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                    if ($cntres['result']==$this->error_result) {
+                        $out['msg']=$cntres['msg'];
+                        return $out;
+                    } else {
+                        $rates=$cntres['ships'];
+                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                        $cidx=0;
+                        foreach ($shipcost as $row) {
+                            $shipcost[$cidx]['delflag']=1;
+                            $cidx++;
+                        }
+                        $newidx=count($shipcost)+1;
+                        foreach ($rates as $row) {
+                            $shipcost[]=array(
+                                'order_shipcost_id'=>$newidx*(-1),
+                                'shipping_method'=>$row['ServiceName'],
+                                'shipping_cost'=>$row['Rate'],
+                                'arrive_date'=>$row['DeliveryDate'],
+                                'current'=>$row['current'],
+                                'delflag'=>0,
+                            );
+                            if ($row['current']==1) {
+                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shiprate+=$row['Rate'];
+                            }
+                            $newidx++;
+                        }
+                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    }
+                    $shipidx++;
+                    $cnt++;
+                }
+                $order['shipping']=$shiprate;
+                // Save data into Session
+                $shipdata['order']=$order;
+            }
+            $out['result']=$this->success_result;
+            usersession($shipsession, $shipdata);
+            // Rebuild Totals of shipping
+            $this->_recalc_shippingaddress($shipdata, $shipsession);
+        } else {
+            $out['msg']='Field not found';
+        }
+        return $out;
+    }
+
+    public function multiship_addadres($shipping, $shipsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipping_address=$shipping['shipping_address'];
+        // Get Last element
+        $newidx=(count($shipping_address)+1)*(-1);
+
+        $newshadr=$this->_create_empty_shipaddress();
+        $newshadr['order_shipaddr_id']=($newidx);
+        $shipping_address[]=$newshadr;
+        // Add empty shipping Address
+        $shipping['shipping_address']=$shipping_address;
+        $out['result']=$this->success_result;
+        usersession($shipsession, $shipping);
+        $out['shipping_address']=$shipping_address;
+        return $out;
+    }
+
+    public function multiship_removeadres($multishipping, $shipadr_id, $shipsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipping_address=$multishipping['shipping_address'];
+        $delrecords=$multishipping['delrecords'];
+
+        $found=0;
+        $newaddr=array();
+        foreach ($shipping_address as $srow) {
+            if ($srow['order_shipaddr_id']==$shipadr_id) {
+                $found=1;
+                if ($shipadr_id>0) {
+                    $delrecords[]=array(
+                        'entity'=>'shipping_address',
+                        'id'=>$shipadr_id,
+                    );
+                }
+            } else {
+                $newaddr[]=$srow;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Record Not Found';
+            return $out;
+        }
+        if (count($newaddr)==0) {
+            $newshadr=$this->_create_empty_shipaddress();
+            $newshadr['order_shipaddr_id']=-1;
+            $newaddr[]=$newshadr;
+        } else {
+            // Rebuild index
+            $shidx=0;
+            $idx=1;
+            foreach ($newaddr as $nrow) {
+                if ($nrow['order_shipaddr_id']<0) {
+                    $newaddr[$shidx]['order_shipaddr_id']=(-1)*$idx;
+                }
+                $shidx++;
+                $idx++;
+            }
+        }
+        $multishipping['shipping_address']=$newaddr;
+        $multishipping['delrecords']=$delrecords;
+        $out['result']=$this->success_result;
+        usersession($shipsession, $multishipping);
+        $out['shipping_address']=$newaddr;
+        return $out;
+    }
+
+    // Change shipping Address
+    public function change_multishiporder_address($shipdata, $shipadr, $fldname, $newval, $shipsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipping_address=$shipdata['shipping_address'];
+
+        $found=0;
+        $idx=0;
+        foreach ($shipping_address as $srow) {
+            if ($srow['order_shipaddr_id']==$shipadr) {
+                $found=1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Shipping Address Not Found';
+            return $out;
+        }
+        $this->load->model('shipping_model');
+        //
+        if ($fldname=='shipping_method') {
+            $shipcost=$shipping_address[$idx]['shipping_costs'];
+            $costfound=0;
+            $costidx=0;
+            foreach ($shipcost as $scrow) {
+                if ($scrow['shipping_method']==$newval && $scrow['delflag']==0) {
+                    $costfound=1;
+                    break;
+                } else {
+                    $costidx++;
+                }
+            }
+            if ($costfound==0) {
+                $out['msg']='Shipping Method Not Found';
+                return $out;
+            }
+            // Update prev costs with 0 in Current
+            $tidx=0;
+            foreach ($shipcost as $scrow) {
+                $shipcost[$tidx]['current']=0;
+                $tidx++;
+            }
+            $shipcost[$costidx]['current']=1;
+            $shipping_address[$idx]['arrive_date']=$shipcost[$costidx]['arrive_date'];
+            $shipping_address[$idx]['shipping']=$shipcost[$costidx]['shipping_cost'];
+            // $shipping_address[$idx][''] - Tax
+            $out['shipcost_id']=$shipcost[$costidx]['order_shipcost_id'];
+            $out['shiprate']=$shipcost[$costidx]['shipping_cost'];
+            $shipping_address[$idx]['out_shipping_method']=$newval;
+            $shipping_address[$idx]['shipping_costs']=$shipcost;
+        }else {
+            $shipping_address[$idx][$fldname]=$newval;
+            switch ($fldname) {
+                case 'zip':
+                case 'state_id':
+                    // Get new value of state code
+                    if (!empty($shipping_address[$idx]['state_id'])) {
+                        $statedat=$this->shipping_model->get_state($shipping_address[$idx]['state_id']);
+                        if (isset($statedat['state_id'])) {
+                            $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'].' '.$statedat['state_code'];
+                        } else {
+                            $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
+                        }
+                    } else {
+                        $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
+                    }
+                    break;
+                case 'country_id':
+                    $cntdate=$this->shipping_model->get_country($newval);
+                    $shipping_address[$idx]['out_country']=$cntdate['country_iso_code_2'];
+                    // Get list of states
+                    $states_list=$this->shipping_model->get_country_states($newval);
+                    $shipping_address[$idx]['state_id']=NULL;
+                    $shipping_address[$idx]['out_zip']=NULL;
+
+                    if (count($states_list)==0) {
+                        // $shipping_address[$idx]['state_id']=NULL;
+                        // $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'];
+                        $out['state_list']=array();
+                    } else {
+                        // $shipping_address[$idx]['state_id']=$states_list[0]['state_id'];
+                        // $shipping_address[$idx]['out_zip']=$shipping_address[$idx]['zip'].' '.$states_list[0]['state_code'];
+                        $out['state_list']=$states_list;
+                    }
+                    break;
+            }
+        }
+
+        if ($fldname=='state_id') {
+            if ($newval==$this->tax_state) {
+                $shipping_address[$idx]['taxcalc']=0;
+                $shipping_address[$idx]['taxview']=1;
+                if ($shipping_address[$idx]['tax_exempt']==0) {
+                    $shipping_address[$idx]['taxcalc']=1;
+                }
+            } else {
+                $shipping_address[$idx]['taxcalc']=0;
+                $shipping_address[$idx]['taxview']=0;
+            }
+        }
+
+        if ($fldname=='tax_exempt') {
+            if ($newval==0) {
+                $shipping_address[$idx]['taxcalc']=1;
+            } else {
+                $shipping_address[$idx]['taxcalc']=0;
+            }
+        }
+
+        if ($fldname=='item_qty' || $fldname=='zip') {
+            if ($fldname=='zip') {
+                // Validate ZIP
+                $this->load->library('United_parcel_service');
+                $upsserv=new United_parcel_service();
+                $tracking=$upsserv->validaddress($newval, $shipping_address[$idx]['out_country']);
+
+                if ($tracking['result']==$this->success_result) {
+                    if (!empty($tracking['city'])) {
+                        $shipping_address[$idx]['city']=$tracking['city'];
+                    }
+                    if (!empty($tracking['state'])) {
+                        $shipping_address[$idx]['state_id']=$tracking['state_id'];
+                        $shipping_address[$idx]['out_zip']=$tracking['state'].' '.$newval;
+                    }
+                }
+            }
+            $shiprate=0;
+            // Calc calculation
+            $shipping=$shipdata['shipping'];
+            $items=$shipdata['order_items'];
+            if (!empty($shipping_address[$idx]['zip']) && !empty($shipping_address[$idx]['item_qty'])) {
+                // Get Old Shipping Method
+                $default_ship_method='';
+                if (isset($shipping_address[$idx]['shipping_cost'])) {
+                    $oldcosts=$shipping_address[$idx]['shipping_costs'];
+                    foreach ($oldcosts as $costrow) {
+                        if ($costrow['delflag']==0 && $costrow['current']==1) {
+                            $default_ship_method=$costrow['shipping_method'];
+                        }
+                    }
+                }
+                $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$idx], $shipping['shipdate'], $default_ship_method);
+                if ($cntres['result']==$this->error_result) {
+                    $out['msg']=$cntres['msg'];
+                    return $out;
+                }
+                $rates=$cntres['ships'];
+                $shipcost=$shipping_address[$idx]['shipping_costs'];
+                $cidx=0;
+                foreach ($shipcost as $row) {
+                    $shipcost[$cidx]['delflag']=1;
+                    $cidx++;
+                }
+                $outshipcost=array();
+                $newidx=count($shipcost)+1;
+                foreach ($rates as $row) {
+                    $shipcost[]=array(
+                        'order_shipcost_id'=>$newidx*(-1),
+                        'shipping_method'=>$row['ServiceName'],
+                        'shipping_cost'=>$row['Rate'],
+                        'arrive_date'=>$row['DeliveryDate'],
+                        'current'=>$row['current'],
+                        'delflag'=>0,
+                    );
+                    if ($row['current']==1) {
+                        $shipping_address[$idx]['shipping']=$row['Rate'];
+                        $shiprate+=$row['Rate'];
+                    }
+                    $outshipcost[]=array(
+                        'order_shipcost_id'=>$newidx*(-1),
+                        'shipping_method'=>$row['ServiceName'],
+                        'shipping_cost'=>$row['Rate'],
+                        'arrive_date'=>$row['DeliveryDate'],
+                        'current'=>$row['current'],
+                        'delflag'=>0,
+                    );
+                    $newidx++;
+                }
+                $out['shipcost']=$outshipcost;
+                $out['shiprate']=$shiprate;
+                $out['shipcalc']=1;
+                $shipping_address[$idx]['shipping_costs']=$shipcost;
+            } else {
+                $out['shipcalc']=0;
+            }
+        }
+        if ($shipping_address[$idx]['state_id']==$this->tax_state) {
+            $shipping_address[$idx]['taxcalc']=0;
+            $shipping_address[$idx]['taxview']=1;
+            if ($shipping_address[$idx]['tax_exempt']==0) {
+                $shipping_address[$idx]['taxcalc']=1;
+            }
+        } else {
+            $shipping_address[$idx]['taxcalc']=0;
+            $shipping_address[$idx]['taxview']=0;
+        }
+
+
+        $out['result']=$this->success_result;
+        $shipdata['shipping_address']=$shipping_address;
+
+        $out['shipadr']=$shipping_address[$idx];
+        usersession($shipsession, $shipdata);
+        $this->_recalc_shippingaddress($shipdata, $shipsession);
+        return $out;
+    }
+
+    // Save Multi Shipping
+    public function multiship_save($shipdata, $leadorder, $ordersession, $shipsession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $shipping_address=$shipdata['shipping_address'];
+        $delrecords=$shipdata['delrecords'];
+        $this->load->model('shipping_model');
+        // Check that all qty equal order qty
+        $order=$leadorder['order'];
+        $order_qty=$order['order_qty'];
+        $shipcost=$tax=$shipqty=0;
+        foreach ($shipping_address as $row) {
+            $shipqty+=$row['item_qty'];
+            $shipcost+=$row['shipping'];
+            $tax+=$row['tax'];
+            if ($row['item_qty']>0 && count($row['shipping_costs'])==0) {
+                $out['msg']='Shipping Address was not calculated';
+                return $out;
+            }
+        }
+        if ($shipqty!=$order_qty) {
+            $out['msg']='Shipping QTY not equal to Order QTY';
+            return $out;
+        }
+        // Lets go
+        // Update Shipping Address
+        $sidx=0;
+        foreach ($shipping_address as $srow) {
+            $costs=$srow['shipping_costs'];
+            $method_name='';
+            foreach ($costs as $crow) {
+                if ($crow['current']==1 && $crow['delflag']==0) {
+                    $method_name=$crow['shipping_method'];
+                    $shipping_address[$sidx]['arrive_date']=$crow['arrive_date'];
+                }
+            }
+            $shipping_address[$sidx]['out_shipping_method']=$method_name;
+            $cntdat=$this->shipping_model->get_country($srow['country_id']);
+            $shipping_address[$sidx]['out_country']=$cntdat['country_iso_code_2'];
+            // Ship && Zip
+            $outzip=$srow['zip'];
+            if (!empty($srow['state_id'])) {
+                $statdat=$this->shipping_model->get_state($srow['state_id']);
+                if (isset($statdat['state_code'])) {
+                    $outzip.=' '.$statdat['state_code'];
+                }
+            }
+            $shipping_address[$sidx]['out_zip']=$outzip;
+            $sidx++;
+        }
+        $order['shipping']=$shipcost;
+        $order['tax']=$tax;
+        $leadorder['order']=$order;
+        $leadorder['shipping']=$shipdata['shipping'];
+        $leadorder['shipping_address']=$shipping_address;
+        $leadorder['delrecords']=$delrecords;
+        usersession($ordersession, $leadorder);
+        usersession($shipsession, NULL);
+        $out['result']=$this->success_result;
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
+    // Save Order
+    public function save_order($leadorder, $user_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('artlead_model');
+        $this->load->model('artwork_model');
+        $order=$leadorder['order'];
+        $savedorder_id=$order['order_id'];
+        $artwork=$leadorder['artwork'];
+        $order['order_blank']=$artwork['artwork_blank'];
+        $order['order_rush']=$artwork['artwork_rush'];
+        // if ($order['order_id']==0 || $order['order_id']>=$this->old_orders) {
+        $artsync=array(
+            'user_id'=>$user_id,
+            'blank'=>$order['order_blank'],
+            'rush'=>$order['order_rush'],
+            'customer'=>$order['customer_name'],
+            'item_descript'=>$order['order_items'],
+            'art_stage'=>0,
+            'redraw_stage'=>0,
+            'vector_stage'=>0,
+            'proof_stage'=>0,
+            'approv_stage'=>0,
+        );
+        if ($leadorder['order_system']=='new') {
+            $order_type='new';
+            $chkres=$this->_check_new_order($leadorder);
+        } else {
+            $order_type='old';
+            $chkres=$this->_check_old_order($order);
+        }
+        if ($chkres['result']==$this->error_result) {
+            $out['msg']=$chkres['msg'];
+            return $out;
+        }
+        $this->load->model('orders_model');
+        $this->load->model('artlead_model');
+        if ($order['order_id']==0) {
+            $oldorderddata=array(
+                'profit'=>0,
+                'revenue'=>0,
+                'shipdate'=>0,
+            );
+        } else {
+            $oldorderddata=$this->orders_model->get_order_detail($order['order_id']);
+            $compare_array=$this->get_leadorder($order['order_id'], $user_id);
+        }
+        $netdata=$this->_get_netpofitweek($order['order_date']);
+        $savepayment=0;
+        if ($order_type=='new') {
+            // Get Item ID, Order QTY
+            $order_items=$leadorder['order_items'];
+            $artwork['item_qty']=$order['order_qty'];
+            $artwork['item_id']=$order['item_id'];
+            $res=$this->_save_neworder($order, $user_id);
+
+            if ($res['result']==$this->error_result) {
+                $out['msg']=$res['msg'];
+                return $out;
+            }
+            if ($order['order_id']==0) {
+                $popopt=array(
+                    'order'=>$res['neworder'],
+                    'confirm'=>$order['order_confirmation'],
+                );
+                $savepayment=1;
+                $order['order_num']=$res['neworder'];
+                $leadorder['order']=$order;
+                $out['popupmsg']=$this->load->view('leadorderdetails/order_placed_view',$popopt, TRUE);
+                // Confirmation # WY-3028 Placed - Internal Order # 39457
+                $order['order_id']=$res['result'];
+                $artwork['order_id']=$order['order_id'];
+                $artwork['mail_id']=NULL;
+            }
+            $order_id=$order['order_id'];
+            $artsync['order_id']=$order_id;
+            // Notify changes in Shipping date
+            $this->_save_shipdtelog($order_id, $user_id, $order['order_num'], $oldorderddata['shipdate'], $order['shipdate']);
+            // Save Order Contacts
+            $contacts=$leadorder['contacts'];
+            $cntcres=$this->_save_order_contacts($contacts, $order_id, $user_id);
+            if ($cntcres['result']==$this->error_result) {
+                $out['msg']=$cntcres['msg'];
+                return $out;
+            }
+            // Save Order Items, Imprint, Imprint Details, Item color
+            $itemres=$this->_save_order_items($order_items, $order_id, $user_id);
+            if ($itemres['result']==$this->error_result) {
+                $out['msg']=$itemres['msg'];
+                return $out;
+            }
+
+            $order_items=$itemres['order_items'];
+
+            $shipping=$leadorder['shipping'];
+            $shipres=$this->_save_order_shipping($shipping, $order_id, $user_id);
+            if ($shipres['result']==$this->error_result) {
+                $out['msg']=$shipres['msg'];
+                return $out;
+            }
+            $shipping_address=$leadorder['shipping_address'];
+            $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
+            if ($adrres['result']==$this->error_result) {
+                $out['msg']=$adrres['msg'];
+                return $out;
+            }
+
+            if ($order['showbilladdress']==1) {
+                $biladr=$leadorder['billing'];
+                $billing=$this->_billingaddres_copy($shipping_address, $biladr);
+            } else {
+                $billing=$leadorder['billing'];
+            }
+            $billres=$this->_save_order_billings($billing, $order_id, $user_id);
+            if ($billres['result']==$this->error_result) {
+                $out['msg']=$billres['msg'];
+                return $out;
+            }
+            $charges=$leadorder['charges'];
+            $chrgres=$this->_save_order_chargedata($charges, $order_id, $user_id);
+            if ($chrgres['result']==$this->error_result) {
+                $out['msg']=$chrgres['msg'];
+            }
+            // Payments
+            $payments=$leadorder['payments'];
+            $paymres=$this->_save_order_payments($payments, $order_id, $user_id);
+            if ($paymres['result']==$this->error_result) {
+                $out['msg']=$paymres['msg'];
+            }
+            $delrecords=$leadorder['delrecords'];
+            $this->_delete_leadorder_components($delrecords);
+            $out['result']=$this->success_result;
+            // Tty to Pay
+            if ($savepayment==1) {
+                $finres=$this->_prepare_order_payment($order_id, $user_id);
+                if ($finres['result']==$this->error_result) {
+                    $out['finres']=$this->error_result;
+                    $out['finerror']=$finres['msg'];
+                } else {
+                    $out['finres']=$this->success_result;
+                }
+            }
+            $out['order_id']=$order_id;
+            $newdata=$this->order_model->get_order_detail($order_id);
+            $newprofit=$newdata['profit'];
+        } else {
+            $res=$this->_save_oldorder($order, $user_id);
+            if ($res['result']==$this->error_result) {
+                $out['msg']=$res['msg'];
+                return $out;
+            }
+            if ($order['order_id']==0) {
+                $order['order_id']=$res['result'];
+            }
+            $newprofit=$res['profit'];
+            $order_id=$order['order_id'];
+            $out['order_id']=$order_id;
+            $out['result']=$this->success_result;
+            $out['finres']=$this->success_result;
+            $artwork['order_id']=$order_id;
+            $artwork['mail_id']=NULL;
+        }
+        // Note about Net Profit Changes
+        if ($netdata['flag_note']==1 && round(floatval($oldorderddata['profit']),2)!=round(floatval($newprofit),2)) {
+            // Send notification
+            $this->_changeprofit_notification($netdata, $order, $oldorderddata, $user_id);
+        }
+        // Save Artwork
+        $artres=$this->artlead_model->save_artwork($artwork, $user_id);
+        $artwork_id=$artres;
+        // Save order Locations
+        $locations=$leadorder['artlocations'];
+        if ($order_type=='new') {
+            $this->artlead_model->save_artlocations($locations, $artwork_id, $order_items);
+        } else {
+            $this->artlead_model->save_artlocations($locations, $artwork_id, array());
+        }
+
+        $proofs=$leadorder['artproofs'];
+        $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
+        $artsyncdoc=$res['artsyncdoc'];
+        // Save history and message
+        $history=$leadorder['message']['history'];
+
+        foreach ($history as $row) {
+            if ($row['artwork_history_id']<=0) {
+                // New Record
+                $artw=array(
+                    'artwork_id'=>$artwork_id,
+                    'user_id'=>$user_id,
+                    'created_time'=>$row['created_time'],
+                    'update_msg'=>$row['message'],
+                );
+                $this->artlead_model->artwork_history_update($artw);
+            }
+        }
+        if (!empty($leadorder['message']['update'])) {
+            $artw=array(
+                'artwork_id'=>$artwork_id,
+                'user_id'=>$user_id,
+                'created_time'=>time(),
+                'update_msg'=>$leadorder['message']['update'],
+            );
+            $this->artlead_model->artwork_history_update($artw);
+        }
+        if (!empty($leadorder['message']['general_notes'])) {
+            $this->db->set('general_notes', $leadorder['message']['general_notes']);
+            $this->db->where('artwork_id', $artwork_id);
+            $this->db->update('ts_artworks');
+        }
+        $this->db->select('o.order_blank');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_id',$order_id);
+        $blankres=$this->db->get()->row_array();
+        $blank=0;
+        if ($blankres['order_blank']=='1') {
+            $blank=1;
+        }
+        if ($blank==1) {
+            $artsync=$this->artlead_model->art_blank_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
+        } else {
+            $artsync=$this->artlead_model->art_common_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
+        }
+        // artwork_model
+        if ($savedorder_id>0) {
+            // Save changes
+            $neworddata=$this->get_leadorder($savedorder_id, $user_id);
+            // $this->firephp->log($compare_array['order'],'Order');
+            // Lets go
+            $this->artwork_model->leadorder_changeslog($compare_array, $neworddata, $user_id);
+        } else {
+            $newzip='';
+            foreach ($shipping_address as $adrrow) {
+                if (!empty($adrrow['zip'])) {
+                    $newzip.=$adrrow['zip'].' ';
+                }
+            }
+            $newzip=trim($newzip);
+            if (abs($order['shipping'])>1.00 && empty($newzip)) {
+                $this->_emptyzip_notification($leadorder, $user_id);
+            }
+        }
+        // Clean Session
+        usersession($ordersession, NULL);
+        if ($order_type=='new') {
+            $this->_prepare_netexport($artsync, $artsyncdoc);
+        }
+        return $out;
+    }
+
+    // Check Old Order
+    private function _check_old_order($data) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (intval($data['order_date'])==0) {
+            $res['msg']='Enter Order Date';
+            return $res;
+        }
+        if ($data['customer_name']=='') {
+            $res['msg']='Enter Customer Name';
+            return $res;
+        }
+        if ($data['customer_email']=='') {
+            $res['msg']='Enter Customer Email';
+            return $res;
+        }
+        if (!valid_email_address($data['customer_email'])) {
+            $res['msg']='Enter Valid Email';
+            return $res;
+        }
+        if (floatval($data['revenue'])==0) {
+            $res['msg']='Enter Valid Order Revenue';
+            return $res;
+        }
+        if (floatval($data['shipping'])==0) {
+            $res['msg']='Enter Valid Shipping Cost';
+            return $res;
+        }
+        if ($data['order_cog']!='' && !is_numeric($data['order_cog'])) {
+            $res['msg']='COG value is not numeric';
+            return $res;
+        }
+
+        if (intval($data['order_qty'])<=0) {
+            $res['msg']='Order QTY required';
+            return $res;
+        }
+
+        if (empty($data['shipdate']) || intval($data['shipdate'])<=0) {
+            $res['msg']='Shipping Date is required';
+            return $res;
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
 //    private function _save_oldorder($data, $user_id) {
 //        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
 //        // Calc New Profit
@@ -4096,86 +4087,86 @@ Class Leadorder_model extends My_Model {
 //        return $res;
 //    }
 //
-//    // Check New Order
-//    private function _check_new_order($leadorder) {
-//        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $data=$leadorder['order'];
-//        $order_id=$data['order_id'];
-//
-//        if (intval($data['order_date'])==0) {
-//            $res['msg']=lang_str('errmsg_order_date',TRUE);
-//            return $res;
-//        }
-//        if ($data['customer_name']=='') {
-//            $res['msg']=lang_str('errmsg_empty_customer',TRUE);
-//            return $res;
-//        }
-//        if (floatval($data['revenue'])==0) {
-//            $res['msg']=lang_str('errmsg_nonvalidrevenue',TRUE);
-//            return $res;
-//        }
-//        if (floatval($data['shipping'])==0) {
-//            $res['msg']=lang_str('errmsg_nonvalidship',TRUE);
-//            return $res;
-//        }
-//        if ($data['order_cog']!='' && !is_numeric($data['order_cog'])) {
-//            $res['msg']=lang_str('errmsg_nonvalidcogvalue',TRUE);
-//            return $res;
-//        }
-//
-//        if (intval($data['order_qty'])<=0) {
-//            $res['msg']=lang_str('errmsg_emptyorderqty',TRUE);
-//            return $res;
-//        }
-//
-//        if (empty($data['shipdate']) || intval($data['shipdate'])<=0) {
-//            $res['msg']=lang_str('errmsg_emptyshipdate',TRUE);
-//            return $res;
-//        }
-//        $contchk=$this->_check_contact_info($leadorder['contacts']);
-//        if ($contchk==$this->error_result) {
-//            $res['msg']=lang_str('errmsg_empty_customeremail',TRUE);
-//            return $res;
-//        }
-//        if ($order_id==0 && $data['showbilladdress']==0) {
-//            $billing=$leadorder['billing'];
-//            if (empty($billing['customer_name'])) {
-//                $res['msg']=lang_str('errmsg_emptybillcustomer',TRUE);
-//                return $res;
-//            }
-//            if (empty($billing['address_1'])) {
-//                $res['msg']=lang_str('errmsg_emptybilladdress',TRUE);
-//                return $res;
-//            }
-//            if (empty($billing['city'])) {
-//                $res['msg']=lang_str('errmsg_emptybillcity',TRUE);
-//                return $res;
-//            }
-//            if (empty($billing['zip'])) {
-//                $res['msg']=lang_str('errmsg_emptybillzip',TRUE);
-//                return $res;
-//            }
-//            if (empty($billing['country_id'])) {
-//                $res['msg']=lang_str('errmsg_emptybillcountry',TRUE);
-//                return $res;
-//            }
-//        }
-//        $shipadr=$leadorder['shipping_address'];
-//        if (count($shipadr)>1) {
-//            // Check # of Shipping Items
-//            $numship=0;
-//            foreach ($shipadr as $srow) {
-//                $numship+=intval($srow['item_qty']);
-//            }
-//            if ($numship!=$data['order_qty']) {
-//                $res['msg']='Shipping QTY not equal Total QTY';
-//                return $res;
-//            }
-//        }
-//        $res['result']=$this->success_result;
-//        return $res;
-//    }
-//
+    // Check New Order
+    private function _check_new_order($leadorder) {
+        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $data=$leadorder['order'];
+        $order_id=$data['order_id'];
+
+        if (intval($data['order_date'])==0) {
+            $res['msg']='Enter Order Date';
+            return $res;
+        }
+        if ($data['customer_name']=='') {
+            $res['msg']='Enter Customer Name';
+            return $res;
+        }
+        if (floatval($data['revenue'])==0) {
+            $res['msg']='Enter Valid Order Revenue';
+            return $res;
+        }
+        if (floatval($data['shipping'])==0) {
+            $res['msg']='Enter Valid Shipping Cost';
+            return $res;
+        }
+        if ($data['order_cog']!='' && !is_numeric($data['order_cog'])) {
+            $res['msg']='COG value is not numeric';
+            return $res;
+        }
+
+        if (intval($data['order_qty'])<=0) {
+            $res['msg']='Order QTY required';
+            return $res;
+        }
+
+        if (empty($data['shipdate']) || intval($data['shipdate'])<=0) {
+            $res['msg']='Shipping Date is required';
+            return $res;
+        }
+        $contchk=$this->_check_contact_info($leadorder['contacts']);
+        if ($contchk==$this->error_result) {
+            $res['msg']='Enter Customer Email';
+            return $res;
+        }
+        if ($order_id==0 && $data['showbilladdress']==0) {
+            $billing=$leadorder['billing'];
+            if (empty($billing['customer_name'])) {
+                $res['msg']='Enter Billing Customer Name';
+                return $res;
+            }
+            if (empty($billing['address_1'])) {
+                $res['msg']='Enter Billing Address';
+                return $res;
+            }
+            if (empty($billing['city'])) {
+                $res['msg']='Enter Billing City';
+                return $res;
+            }
+            if (empty($billing['zip'])) {
+                $res['msg']='Enter Billing Zip/Postal Code';
+                return $res;
+            }
+            if (empty($billing['country_id'])) {
+                $res['msg']='Enter Billing Country';
+                return $res;
+            }
+        }
+        $shipadr=$leadorder['shipping_address'];
+        if (count($shipadr)>1) {
+            // Check # of Shipping Items
+            $numship=0;
+            foreach ($shipadr as $srow) {
+                $numship+=intval($srow['item_qty']);
+            }
+            if ($numship!=$data['order_qty']) {
+                $res['msg']='Shipping QTY not equal Total QTY';
+                return $res;
+            }
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
 //    // Save New Order
 //    private function _save_neworder($data, $user_id) {
 //        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -4815,49 +4806,49 @@ Class Leadorder_model extends My_Model {
 //        }
 //        return TRUE;
 //    }
-//
-//
-//    // Net Profit per week
-//    private function _get_netpofitweek($order_date) {
-//        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
-//        $this->db->from('netprofit np');
-//        $this->db->where('np.profit_month',NULL);
-//        $this->db->where('np.datebgn <= ',$order_date);
-//        $this->db->where('np.dateend > ',$order_date);
-//        $netdat=$this->db->get()->row_array();
-//
-//        $retval=array(
-//            'netdat_id'=>0,
-//            'flag_note'=>0,
-//            'rundat'=>0,
-//            'oldtotalrun'=>0,
-//            'totalcost'=>0,
-//            'netprofit'=>0,
-//            'olddebt'=>0,
-//        );
-//        if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
-//            $retval['flag_note']=1;
-//            $retval['netdat_id']=$netdat['profit_id'];
-//            $this->load->model('balances_model');
-//            $total_options=array(
-//                'type'=>'week',
-//                'start'=>$this->config->item('netprofit_start'),
-//            );
-//            $rundat=$this->balances_model->get_netprofit_runs($total_options);
-//            $oldtotalrun=$rundat['out_debtval'];
-//            $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
-//            $netprofit=floatval($netdat['gross_profit'])-$totalcost;
-//            $olddebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
-//            $retval['rundat']=$rundat;
-//            $retval['oldtotalrun']=$oldtotalrun;
-//            $retval['totalcost']=$totalcost;
-//            $retval['netprofit']=$netprofit;
-//            $retval['olddebt']=$olddebt;
-//            $retval['datebgn']=$netdat['datebgn'];
-//            $retval['dateend']=$netdat['dateend'];
-//        }
-//        return $retval;
-//    }
+
+
+    // Net Profit per week
+    private function _get_netpofitweek($order_date) {
+        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+        $this->db->from('netprofit np');
+        $this->db->where('np.profit_month',NULL);
+        $this->db->where('np.datebgn <= ',$order_date);
+        $this->db->where('np.dateend > ',$order_date);
+        $netdat=$this->db->get()->row_array();
+
+        $retval=array(
+            'netdat_id'=>0,
+            'flag_note'=>0,
+            'rundat'=>0,
+            'oldtotalrun'=>0,
+            'totalcost'=>0,
+            'netprofit'=>0,
+            'olddebt'=>0,
+        );
+        if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
+            $retval['flag_note']=1;
+            $retval['netdat_id']=$netdat['profit_id'];
+            $this->load->model('balances_model');
+            $total_options=array(
+                'type'=>'week',
+                'start'=>$this->config->item('netprofit_start'),
+            );
+            $rundat=$this->balances_model->get_netprofit_runs($total_options);
+            $oldtotalrun=$rundat['out_debtval'];
+            $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
+            $netprofit=floatval($netdat['gross_profit'])-$totalcost;
+            $olddebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
+            $retval['rundat']=$rundat;
+            $retval['oldtotalrun']=$oldtotalrun;
+            $retval['totalcost']=$totalcost;
+            $retval['netprofit']=$netprofit;
+            $retval['olddebt']=$olddebt;
+            $retval['datebgn']=$netdat['datebgn'];
+            $retval['dateend']=$netdat['dateend'];
+        }
+        return $retval;
+    }
 
     private function _leadorder_profit($order) {
         $profit=floatval($order['revenue'])-(floatval($order['shipping'])*$order['is_shipping'])-floatval($order['tax'])-floatval($order['cc_fee'])-floatval($order['order_cog']);
@@ -5856,155 +5847,155 @@ Class Leadorder_model extends My_Model {
         }
         $leadorder['message']['history']=$newhistory;
         $leadorder['message']['update']='';
-        $this->func->session($ordersession, $leadorder);
+        usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         return $out;
     }
 
-//    // Try to pay
-//    public function order_payment($options) {
-//        $cntcode = $options['country'];
-//        if (isset($options['cardnum'])) {
-//            $options['cardnum']=str_replace('-', '',$options['cardnum']);
-//        }
-//        if ($this->config->item('default_paysystem')=='paypal') {
-//            $realconfig=1;
-//            $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
-//            if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
-//                $realconfig=0;
-//            }
-//            // Load PayPal library
-//            if ($realconfig==0) {
-//                $this->config->load('paypal_test');
-//                $config = array(
-//                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
-//                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-//                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-//                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-//                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-//                    'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-//                );
-//            } else {
-//                $this->config->load('paypal_live');
-//                $config = array(
-//                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-//                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-//                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-//                    'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-//                    'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-//                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
-//                );
-//            }
-//            // Show Errors
-//            $this->load->library('paypal/Paypal_pro', $config);
-//            // Prepare Objects
-//            $DPFields = array(
-//                'paymentaction' => 'Sale', // How you want to obtain payment.  Authorization indidicates the payment is a basic auth subject to settlement with Auth & Capture.  Sale indicates that this is a final sale for which you are requesting payment.  Default is Sale.
-//                'ipaddress' => $this->input->server('REMOTE_ADDR'), // $_SERVER['REMOTE_ADDR'], // Required.  IP address of the payer's browser.
-//                'returnfmfdetails' => '1'      // Flag to determine whether you want the results returned by FMF.  1 or 0.  Default is 0.
-//            );
-//            $CCDetails = array(
-//                'creditcardtype' => $options['cardtype'],  // ($data['cctype']=='American Express' ? 'Amex' : $data['cctype']), // Required. Type of credit card.  Visa, MasterCard, Discover, Amex, Maestro, Solo.  If Maestro or Solo, the currency code must be GBP.  In addition, either start date or issue number must be specified.
-//                'acct' => $options['cardnum'], // Required.  Credit card number.  No spaces or punctuation.
-//                'expdate' => $options['exp_month'].'20'.$options['exp_year'], // Required.  Credit card expiration date.  Format is MMYYYY
-//                'cvv2' => $options['cardcode'], // Requirements determined by your PayPal account settings.  Security digits for credit card.
-//                'startdate' => '', // Month and year that Maestro or Solo card was issued.  MMYYYY
-//                'issuenumber' => ''       // Issue number of Maestro or Solo card.  Two numeric digits max.
-//            );
-//
-//            $PayerInfo = array(
-//                'email' => $options['email'], // Email address of payer.
-//                'payerid' => '', // Unique PayPal customer ID for payer.
-//                'payerstatus' => '', // Status of payer.  Values are verified or unverified
-//                'business' => ($options['company']=='' ? '' : $options['company'])        // Payer's business name.
-//            );
-//
-//            $PayerName = array(
-//                'salutation' => '', // Payer's salutation.  20 char max.
-//                'firstname' => $options['firstname'], // Payer's first name.  25 char max.
-//                'middlename' => '', // Payer's middle name.  25 char max.
-//                'lastname' => $options['lastname'], // Payer's last name.  25 char max.
-//                'suffix' => ''        // Payer's suffix.  12 char max.
-//            );
-//
-//            $BillingAddress = array(
-//                'street' => $options['address1'], // Required.  First street address.
-//                'street2' => ($options['address2']=='' ? '' : $options['address2']), // Second street address.
-//                'city' => $options['city'], // Required.  Name of City.
-//                'state' => $options['state'], // Required. Name of State or Province.
-//                'countrycode' => $cntcode,  // Required.  Country code.
-//                'zip' => $options['zip'], // Required.  Postal code of payer.
-//                'phonenum' => $options['phone']       // Phone Number of payer.  20 char max.
-//            );
-//
-//            $ShippingAddress = array(
-//                'shiptoname' => substr($options['firstname'].' '.$options['lastname'],0,32), // Required if shipping is included.  Person's name associated with this address.  32 char max.
-//                'shiptostreet' => $options['address1'], // Required if shipping is included.  First street address.  100 char max.
-//                'shiptostreet2' => $options['address2'], // Second street address.  100 char max.
-//                'shiptocity' => $options['city'], // Required if shipping is included.  Name of city.  40 char max.
-//                'shiptostate' => $options['state'], // Required if shipping is included.  Name of state or province.  40 char max.
-//                'shiptozip' => $options['zip'], // Required if shipping is included.  Postal code of shipping address.  20 char max.
-//                'shiptocountry' => $cntcode, // Required if shipping is included.  Country code of shipping address.  2 char max.
-//                'shiptophonenum' => $options['phone']     // Phone number for shipping address.  20 char max.
-//            );
-//
-//            $PaymentDetails = array(
-//                'amt' => $options['amount'], // Required.  Total amount of order, including shipping, handling, and tax.
-//                'currencycode' => 'USD', // Required.  Three-letter currency code.  Default is USD.
-//                'itemamt' => $options['amount'], // Required if you include itemized cart details. (L_AMTn, etc.)  Subtotal of items not including S&H, or tax.
-//                'shippingamt' => '', // Total shipping costs for the order.  If you specify shippingamt, you must also specify itemamt.
-//                'shipdiscamt' => '', // Shipping discount for the order, specified as a negative number.
-//                'handlingamt' => '', // Total handling costs for the order.  If you specify handlingamt, you must also specify itemamt.
-//                'taxamt' => '', // Required if you specify itemized cart tax details. Sum of tax for all items on the order.  Total sales tax.
-//                'desc' => 'Web Order', // Description of the order the customer is purchasing.  127 char max.
-//                'custom' => '', // Free-form field for your own use.  256 char max.
-//                'invnum' => '', // Your own invoice or tracking number
-//                'notifyurl' => ''      // URL for receiving Instant Payment Notifications.  This overrides what your profile is set to use.
-//            );
-//
-//            $OrderItems = array();
-//            $Item = array(
-//                'l_name' => 'Stressball', // Item Name.  127 char max.
-//                'l_desc' => 'The best stressball on the planet!', // Item description.  127 char max.
-//                'l_amt' => $options['amount'], // Cost of individual item.
-//                'l_number' => '1', // Item Number.  127 char max.
-//                'l_qty' => '1', // Item quantity.  Must be any positive integer.
-//                'l_taxamt' => '', // Item's sales tax amount.
-//                'l_ebayitemnumber' => '', // eBay auction number of item.
-//                'l_ebayitemauctiontxnid' => '', // eBay transaction ID of purchased item.
-//                'l_ebayitemorderid' => ''     // eBay order ID for the item.
-//            );
-//            array_push($OrderItems, $Item);
-//
-//            $Secure3D = array(
-//                'authstatus3d' => '',
-//                'mpivendor3ds' => '',
-//                'cavv' => '',
-//                'eci3ds' => '',
-//                'xid' => ''
-//            );
-//
-//            $PayPalRequestData = array(
-//                'DPFields' => $DPFields,
-//                'CCDetails' => $CCDetails,
-//                'PayerInfo' => $PayerInfo,
-//                'PayerName' => $PayerName,
-//                'BillingAddress' => $BillingAddress,
-//                'ShippingAddress' => $ShippingAddress,
-//                'PaymentDetails' => $PaymentDetails,
-//                'OrderItems' => $OrderItems,
-//                'Secure3D' => $Secure3D
-//            );
-//            $PayPalResult = $this->paypal_pro->DoDirectPayment($PayPalRequestData);
-//
-//            if (!$this->paypal_pro->APICallSuccessful($PayPalResult['ACK'])) {
-//                $errors = $PayPalResult['ERRORS'];
-//                return array('result' => $this->error_result, 'error_msg' => $errors[0]['L_LONGMESSAGE']);
-//            } else {
-//                // Successful call.  Load view or whatever you need to do here.
-//                return array('result' => $this->success_result , 'transaction_id' => $PayPalResult['TRANSACTIONID']);
-//            }
-//        } else {
+    // Try to pay
+    public function order_payment($options) {
+        $cntcode = $options['country'];
+        if (isset($options['cardnum'])) {
+            $options['cardnum']=str_replace('-', '',$options['cardnum']);
+        }
+        if ($this->config->item('default_paysystem')=='paypal') {
+            $realconfig=1;
+            $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
+            if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
+                $realconfig=0;
+            }
+            // Load PayPal library
+            if ($realconfig==0) {
+                $this->config->load('paypal_test');
+                $config = array(
+                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                    'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                );
+            } else {
+                $this->config->load('paypal_live');
+                $config = array(
+                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                    'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                    'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                );
+            }
+            // Show Errors
+            $this->load->library('paypal/Paypal_pro', $config);
+            // Prepare Objects
+            $DPFields = array(
+                'paymentaction' => 'Sale', // How you want to obtain payment.  Authorization indidicates the payment is a basic auth subject to settlement with Auth & Capture.  Sale indicates that this is a final sale for which you are requesting payment.  Default is Sale.
+                'ipaddress' => $this->input->server('REMOTE_ADDR'), // $_SERVER['REMOTE_ADDR'], // Required.  IP address of the payer's browser.
+                'returnfmfdetails' => '1'      // Flag to determine whether you want the results returned by FMF.  1 or 0.  Default is 0.
+            );
+            $CCDetails = array(
+                'creditcardtype' => $options['cardtype'],  // ($data['cctype']=='American Express' ? 'Amex' : $data['cctype']), // Required. Type of credit card.  Visa, MasterCard, Discover, Amex, Maestro, Solo.  If Maestro or Solo, the currency code must be GBP.  In addition, either start date or issue number must be specified.
+                'acct' => $options['cardnum'], // Required.  Credit card number.  No spaces or punctuation.
+                'expdate' => $options['exp_month'].'20'.$options['exp_year'], // Required.  Credit card expiration date.  Format is MMYYYY
+                'cvv2' => $options['cardcode'], // Requirements determined by your PayPal account settings.  Security digits for credit card.
+                'startdate' => '', // Month and year that Maestro or Solo card was issued.  MMYYYY
+                'issuenumber' => ''       // Issue number of Maestro or Solo card.  Two numeric digits max.
+            );
+
+            $PayerInfo = array(
+                'email' => $options['email'], // Email address of payer.
+                'payerid' => '', // Unique PayPal customer ID for payer.
+                'payerstatus' => '', // Status of payer.  Values are verified or unverified
+                'business' => ($options['company']=='' ? '' : $options['company'])        // Payer's business name.
+            );
+
+            $PayerName = array(
+                'salutation' => '', // Payer's salutation.  20 char max.
+                'firstname' => $options['firstname'], // Payer's first name.  25 char max.
+                'middlename' => '', // Payer's middle name.  25 char max.
+                'lastname' => $options['lastname'], // Payer's last name.  25 char max.
+                'suffix' => ''        // Payer's suffix.  12 char max.
+            );
+
+            $BillingAddress = array(
+                'street' => $options['address1'], // Required.  First street address.
+                'street2' => ($options['address2']=='' ? '' : $options['address2']), // Second street address.
+                'city' => $options['city'], // Required.  Name of City.
+                'state' => $options['state'], // Required. Name of State or Province.
+                'countrycode' => $cntcode,  // Required.  Country code.
+                'zip' => $options['zip'], // Required.  Postal code of payer.
+                'phonenum' => $options['phone']       // Phone Number of payer.  20 char max.
+            );
+
+            $ShippingAddress = array(
+                'shiptoname' => substr($options['firstname'].' '.$options['lastname'],0,32), // Required if shipping is included.  Person's name associated with this address.  32 char max.
+                'shiptostreet' => $options['address1'], // Required if shipping is included.  First street address.  100 char max.
+                'shiptostreet2' => $options['address2'], // Second street address.  100 char max.
+                'shiptocity' => $options['city'], // Required if shipping is included.  Name of city.  40 char max.
+                'shiptostate' => $options['state'], // Required if shipping is included.  Name of state or province.  40 char max.
+                'shiptozip' => $options['zip'], // Required if shipping is included.  Postal code of shipping address.  20 char max.
+                'shiptocountry' => $cntcode, // Required if shipping is included.  Country code of shipping address.  2 char max.
+                'shiptophonenum' => $options['phone']     // Phone number for shipping address.  20 char max.
+            );
+
+            $PaymentDetails = array(
+                'amt' => $options['amount'], // Required.  Total amount of order, including shipping, handling, and tax.
+                'currencycode' => 'USD', // Required.  Three-letter currency code.  Default is USD.
+                'itemamt' => $options['amount'], // Required if you include itemized cart details. (L_AMTn, etc.)  Subtotal of items not including S&H, or tax.
+                'shippingamt' => '', // Total shipping costs for the order.  If you specify shippingamt, you must also specify itemamt.
+                'shipdiscamt' => '', // Shipping discount for the order, specified as a negative number.
+                'handlingamt' => '', // Total handling costs for the order.  If you specify handlingamt, you must also specify itemamt.
+                'taxamt' => '', // Required if you specify itemized cart tax details. Sum of tax for all items on the order.  Total sales tax.
+                'desc' => 'Web Order', // Description of the order the customer is purchasing.  127 char max.
+                'custom' => '', // Free-form field for your own use.  256 char max.
+                'invnum' => '', // Your own invoice or tracking number
+                'notifyurl' => ''      // URL for receiving Instant Payment Notifications.  This overrides what your profile is set to use.
+            );
+
+            $OrderItems = array();
+            $Item = array(
+                'l_name' => 'Stressball', // Item Name.  127 char max.
+                'l_desc' => 'The best stressball on the planet!', // Item description.  127 char max.
+                'l_amt' => $options['amount'], // Cost of individual item.
+                'l_number' => '1', // Item Number.  127 char max.
+                'l_qty' => '1', // Item quantity.  Must be any positive integer.
+                'l_taxamt' => '', // Item's sales tax amount.
+                'l_ebayitemnumber' => '', // eBay auction number of item.
+                'l_ebayitemauctiontxnid' => '', // eBay transaction ID of purchased item.
+                'l_ebayitemorderid' => ''     // eBay order ID for the item.
+            );
+            array_push($OrderItems, $Item);
+
+            $Secure3D = array(
+                'authstatus3d' => '',
+                'mpivendor3ds' => '',
+                'cavv' => '',
+                'eci3ds' => '',
+                'xid' => ''
+            );
+
+            $PayPalRequestData = array(
+                'DPFields' => $DPFields,
+                'CCDetails' => $CCDetails,
+                'PayerInfo' => $PayerInfo,
+                'PayerName' => $PayerName,
+                'BillingAddress' => $BillingAddress,
+                'ShippingAddress' => $ShippingAddress,
+                'PaymentDetails' => $PaymentDetails,
+                'OrderItems' => $OrderItems,
+                'Secure3D' => $Secure3D
+            );
+            $PayPalResult = $this->paypal_pro->DoDirectPayment($PayPalRequestData);
+
+            if (!$this->paypal_pro->APICallSuccessful($PayPalResult['ACK'])) {
+                $errors = $PayPalResult['ERRORS'];
+                return array('result' => $this->error_result, 'error_msg' => $errors[0]['L_LONGMESSAGE']);
+            } else {
+                // Successful call.  Load view or whatever you need to do here.
+                return array('result' => $this->success_result , 'transaction_id' => $PayPalResult['TRANSACTIONID']);
+            }
+        } else {
 //            $this->load->library('authorizenet');
 //            if ($data['firstname']=='test' && $data['lastname']=='test' && $data['emailaddr']=='test@bluetrack.com') {
 //                $login_id = $this->config->item('authorizenet_api_login_id_test');
@@ -6062,26 +6053,25 @@ Class Leadorder_model extends My_Model {
 //            } else {
 //                return array('error' => TRUE, 'error_msg' => $response->response_reason_text);
 //            }
-//
-//        }
-//    }
-//
-//
-//    public function getCCardType($CCNumber) {
-//        $type = '';
-//        foreach ($this->creditcardTypes as $card) {
-//            if (!in_array(strlen($CCNumber), $card['cardLength'])) {
-//                continue;
-//            }
-//            $prefixes = '/^(' . implode('|', $card['cardPrefix']) . ')/';
-//            if (preg_match($prefixes, $CCNumber) == 1) {
-//                $type = $card['Name'];
-//                break;
-//            }
-//        }
-//        return $type;
-//    }
-//
+        }
+    }
+
+
+    public function getCCardType($CCNumber) {
+        $type = '';
+        foreach ($this->creditcardTypes as $card) {
+            if (!in_array(strlen($CCNumber), $card['cardLength'])) {
+                continue;
+            }
+            $prefixes = '/^(' . implode('|', $card['cardPrefix']) . ')/';
+            if (preg_match($prefixes, $CCNumber) == 1) {
+                $type = $card['Name'];
+                break;
+            }
+        }
+        return $type;
+    }
+
     public function dublicate_order($leadorder, $user_id) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
 
@@ -6736,193 +6726,193 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 //
-//    // Prepare invoice details
-//    public function prepare_invoice_details($leadorder, $adrcnt) {
-//        $order_items=$leadorder['order_items'];
-//        $order=$leadorder['order'];
-//
-//        $item_details=array();
-//        foreach ($order_items as $row) {
-//            $items=$row['items'];
-//            foreach ($items as $irow) {
-//                if ($irow['item_number']==$this->config->item('custom_itemnum')) {
-//                    $item_description='Custom Shaped Stress Balls - '.$irow['item_description'];
-//                } else {
-//                    $item_description=$irow['item_description'].' - '.$irow['item_color'];
-//                }
-//                $item_details[]=array(
-//                    'item_num'=>$irow['item_number'],
-//                    'item_description'=>$item_description,
-//                    'item_qty'=>$irow['item_qty'],
-//                    'item_price'=>$irow['item_price'],
-//                    'item_subtotal'=>$irow['item_subtotal'],
-//                    'item_color'=>'#000000',
-//                );
-//            }
-//            $imprints=$row['imprints'];
-//
-//            foreach ($imprints as $irow) {
-//                if ($irow['imprint_description']!='&nbsp;') {
-//                    $item_details[]=array(
-//                        'item_num'=>'',
-//                        'item_description'=>$irow['imprint_description'],
-//                        'item_qty'=>$irow['imprint_qty'],
-//                        'item_price'=>$irow['imprint_price'],
-//                        'item_subtotal'=>$irow['imprint_subtotal'],
-//                        'item_color'=>'#000000',
-//                    );
-//                }
-//            }
-//
-//        }
-//
-//        if (floatval($order['mischrg_val1'])!=0) {
-//            $item_details[]=array(
-//                'item_num'=>'',
-//                'item_description'=>$order['mischrg_label1'],
-//                'item_qty'=>$this->empty_htmlcontent,
-//                'item_price'=>$order['mischrg_val1'],
-//                'item_subtotal'=>$order['mischrg_val1'],
-//                'item_color'=>'#000000',
-//            );
-//        }
-//
-//        if (floatval($order['mischrg_val2'])!=0) {
-//            $item_details[]=array(
-//                'item_num'=>'',
-//                'item_description'=>$order['mischrg_label2'],
-//                'item_qty'=>$this->empty_htmlcontent,
-//                'item_price'=>$order['mischrg_val2'],
-//                'item_subtotal'=>$order['mischrg_val2'],
-//                'item_color'=>'#000000',
-//            );
-//        }
-//
-//        if (floatval($order['discount_val'])!=0) {
-//            $item_details[]=array(
-//                'item_num'=>'',
-//                'item_description'=>(empty($order['discount_label']) ? 'Discount' : $order['discount_label']),
-//                'item_qty'=>$this->empty_htmlcontent,
-//                'item_price'=>($order['discount_val'] > 0 ? '('.$order['discount_val'].')' : abs($order['discount_val'])),
-//                'item_subtotal'=>($order['discount_val'] > 0 ? '('.MoneyOutput($order['discount_val'],2).')' : MoneyOutput(abs($order['discount_val']),2)),
-//                'item_color'=>($order['discount_val'] > 0 ? '#ff0000' : '#000000'),
-//            );
-//        }
-//
-//
-//        if (!empty($leadorder['order']['shipping'])) {
-//            $shipping_address=$leadorder['shipping_address'];
-//            $shipmethod='';
-//            if (count($shipping_address)>1) {
-//                $shipmethod='Shipping Charge - Multiple Addresses';
-//            } else {
-//                $costs=$shipping_address[0]['shipping_costs'];
-//                foreach ($costs as $srow) {
-//                    if ($srow['delflag']==0 && $srow['current']==1) {
-//                        $shipmethod=$srow['shipping_method'].' Shipping Charge';
-//                    }
-//                }
-//            }
-//            $item_details[]=array(
-//                'item_num'=>'',
-//                // 'item_description'=>'Shipping',
-//                'item_description'=>$shipmethod,
-//                'item_qty'=>1,
-//                'item_price'=>$leadorder['order']['shipping'],
-//                'item_subtotal'=>  MoneyOutput($leadorder['order']['shipping'],2),
-//                'item_color'=>'#000000',
-//            );
-//            // Check Rush
-//            $shipdata=$leadorder['shipping'];
-//            $rushlist=$shipdata['out_rushlist']['rush'];
-//            $term='';
-//            foreach ($rushlist as $rrow) {
-//                if ($rrow['date']==$shipdata['shipdate']) {
-//                    $term=$rrow['rushterm'];
-//                    break;
-//                }
-//            }
-//            if (!empty($term) && $term!='Standard' && $shipdata['rush_price']>0) {
-//                $item_details[]=array(
-//                    'item_num'=>'',
-//                    'item_description'=>$term,
-//                    'item_qty'=>$this->empty_htmlcontent,
-//                    'item_price'=>$shipdata['rush_price'],
-//                    'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
-//                    'item_color'=>'#000000',
-//                );
-//            }
-//        }
-//        $detcnt=count($item_details)+$adrcnt;
-//        if ($detcnt<15) {
-//            // $numv=count($item_details);
-//            for ($i=$detcnt; $i<15; $i++) {
-//                $item_details[]=array(
-//                    'item_num'=>'&nbsp;',
-//                    'item_description'=>'',
-//                    'item_qty'=>'',
-//                    'item_price'=>'',
-//                    'item_subtotal'=>'',
-//                    'item_color'=>'#000000',
-//                );
-//            }
-//        }
-//
-//        return $item_details;
-//    }
-//
-//    // Show Imprint Location
-//    public function get_leadorder_imprintloc($imprint_loc_id) {
-//        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-//        $this->_DB_GREY = $this->load->database('grey', TRUE);
-//        $this->_DB_GREY->db_select();
-//        $this->_DB_GREY->select('i.item_inprint_id, i.item_inprint_view');
-//        $this->_DB_GREY->from('sb_item_inprints i');
-//        $this->_DB_GREY->where('i.item_inprint_id', $imprint_loc_id);
-//        $res=$this->_DB_GREY->get()->row_array();
-//        if (!isset($res['item_inprint_id'])) {
-//            $out['msg']='Image Not Found';
-//            return $out;
-//        }
-//
-//        $path_sh=$this->config->item('imprintimages_relative');
-//        $path_fl=$this->config->item('imprintimages');
-//        $source=$res['item_inprint_view'];
-//        $filesource=  str_replace($path_sh, $path_fl, $source);
-//        if (!file_exists($filesource)) {
-//            $out['msg']='Source File '.$filesource.' Not Found ';
-//            return $out;
-//        }
-//        $viewopt=array(
-//            'source'=>$source,
-//        );
-//        list($width, $height, $type, $attr) = getimagesize($filesource);
-//        // Rate
-//        if ($width >= $height) {
-//            if ($width<=200) {
-//                $viewopt['width']=$width;
-//                $viewopt['height']=$height;
-//            } else {
-//                $rate=200/$width;
-//                $viewopt['width']=ceil($width*$rate);
-//                $viewopt['height']=ceil($height*$rate);
-//            }
-//        } else {
-//            if ($height<=200) {
-//                $viewopt['width']=$width;
-//                $viewopt['height']=$height;
-//            } else {
-//                $rate=200/$height;
-//                $viewopt['width']=ceil($width*$rate);
-//                $viewopt['height']=ceil($height*$rate);
-//            }
-//        }
-//        $out['result']=$this->success_result;
-//        $out['viewoptions']=$viewopt;
-//        return $out;
-//
-//    }
-//
+    // Prepare invoice details
+    public function prepare_invoice_details($leadorder, $adrcnt) {
+        $order_items=$leadorder['order_items'];
+        $order=$leadorder['order'];
+
+        $item_details=array();
+        foreach ($order_items as $row) {
+            $items=$row['items'];
+            foreach ($items as $irow) {
+                if ($irow['item_number']==$this->config->item('custom_itemnum')) {
+                    $item_description='Custom Shaped Stress Balls - '.$irow['item_description'];
+                } else {
+                    $item_description=$irow['item_description'].' - '.$irow['item_color'];
+                }
+                $item_details[]=array(
+                    'item_num'=>$irow['item_number'],
+                    'item_description'=>$item_description,
+                    'item_qty'=>$irow['item_qty'],
+                    'item_price'=>$irow['item_price'],
+                    'item_subtotal'=>$irow['item_subtotal'],
+                    'item_color'=>'#000000',
+                );
+            }
+            $imprints=$row['imprints'];
+
+            foreach ($imprints as $irow) {
+                if ($irow['imprint_description']!='&nbsp;') {
+                    $item_details[]=array(
+                        'item_num'=>'',
+                        'item_description'=>$irow['imprint_description'],
+                        'item_qty'=>$irow['imprint_qty'],
+                        'item_price'=>$irow['imprint_price'],
+                        'item_subtotal'=>$irow['imprint_subtotal'],
+                        'item_color'=>'#000000',
+                    );
+                }
+            }
+
+        }
+
+        if (floatval($order['mischrg_val1'])!=0) {
+            $item_details[]=array(
+                'item_num'=>'',
+                'item_description'=>$order['mischrg_label1'],
+                'item_qty'=>$this->empty_htmlcontent,
+                'item_price'=>$order['mischrg_val1'],
+                'item_subtotal'=>$order['mischrg_val1'],
+                'item_color'=>'#000000',
+            );
+        }
+
+        if (floatval($order['mischrg_val2'])!=0) {
+            $item_details[]=array(
+                'item_num'=>'',
+                'item_description'=>$order['mischrg_label2'],
+                'item_qty'=>$this->empty_htmlcontent,
+                'item_price'=>$order['mischrg_val2'],
+                'item_subtotal'=>$order['mischrg_val2'],
+                'item_color'=>'#000000',
+            );
+        }
+
+        if (floatval($order['discount_val'])!=0) {
+            $item_details[]=array(
+                'item_num'=>'',
+                'item_description'=>(empty($order['discount_label']) ? 'Discount' : $order['discount_label']),
+                'item_qty'=>$this->empty_htmlcontent,
+                'item_price'=>($order['discount_val'] > 0 ? '('.$order['discount_val'].')' : abs($order['discount_val'])),
+                'item_subtotal'=>($order['discount_val'] > 0 ? '('.MoneyOutput($order['discount_val'],2).')' : MoneyOutput(abs($order['discount_val']),2)),
+                'item_color'=>($order['discount_val'] > 0 ? '#ff0000' : '#000000'),
+            );
+        }
+
+
+        if (!empty($leadorder['order']['shipping'])) {
+            $shipping_address=$leadorder['shipping_address'];
+            $shipmethod='';
+            if (count($shipping_address)>1) {
+                $shipmethod='Shipping Charge - Multiple Addresses';
+            } else {
+                $costs=$shipping_address[0]['shipping_costs'];
+                foreach ($costs as $srow) {
+                    if ($srow['delflag']==0 && $srow['current']==1) {
+                        $shipmethod=$srow['shipping_method'].' Shipping Charge';
+                    }
+                }
+            }
+            $item_details[]=array(
+                'item_num'=>'',
+                // 'item_description'=>'Shipping',
+                'item_description'=>$shipmethod,
+                'item_qty'=>1,
+                'item_price'=>$leadorder['order']['shipping'],
+                'item_subtotal'=>  MoneyOutput($leadorder['order']['shipping'],2),
+                'item_color'=>'#000000',
+            );
+            // Check Rush
+            $shipdata=$leadorder['shipping'];
+            $rushlist=$shipdata['out_rushlist']['rush'];
+            $term='';
+            foreach ($rushlist as $rrow) {
+                if ($rrow['date']==$shipdata['shipdate']) {
+                    $term=$rrow['rushterm'];
+                    break;
+                }
+            }
+            if (!empty($term) && $term!='Standard' && $shipdata['rush_price']>0) {
+                $item_details[]=array(
+                    'item_num'=>'',
+                    'item_description'=>$term,
+                    'item_qty'=>$this->empty_htmlcontent,
+                    'item_price'=>$shipdata['rush_price'],
+                    'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
+                    'item_color'=>'#000000',
+                );
+            }
+        }
+        $detcnt=count($item_details)+$adrcnt;
+        if ($detcnt<15) {
+            // $numv=count($item_details);
+            for ($i=$detcnt; $i<15; $i++) {
+                $item_details[]=array(
+                    'item_num'=>'&nbsp;',
+                    'item_description'=>'',
+                    'item_qty'=>'',
+                    'item_price'=>'',
+                    'item_subtotal'=>'',
+                    'item_color'=>'#000000',
+                );
+            }
+        }
+
+        return $item_details;
+    }
+
+    // Show Imprint Location
+    public function get_leadorder_imprintloc($imprint_loc_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
+        $this->_DB_GREY = $this->load->database('grey', TRUE);
+        $this->_DB_GREY->db_select();
+        $this->_DB_GREY->select('i.item_inprint_id, i.item_inprint_view');
+        $this->_DB_GREY->from('sb_item_inprints i');
+        $this->_DB_GREY->where('i.item_inprint_id', $imprint_loc_id);
+        $res=$this->_DB_GREY->get()->row_array();
+        if (!isset($res['item_inprint_id'])) {
+            $out['msg']='Image Not Found';
+            return $out;
+        }
+
+        $path_sh=$this->config->item('imprintimages_relative');
+        $path_fl=$this->config->item('imprintimages');
+        $source=$res['item_inprint_view'];
+        $filesource=  str_replace($path_sh, $path_fl, $source);
+        if (!file_exists($filesource)) {
+            $out['msg']='Source File '.$filesource.' Not Found ';
+            return $out;
+        }
+        $viewopt=array(
+            'source'=>$source,
+        );
+        list($width, $height, $type, $attr) = getimagesize($filesource);
+        // Rate
+        if ($width >= $height) {
+            if ($width<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$width;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        } else {
+            if ($height<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$height;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        }
+        $out['result']=$this->success_result;
+        $out['viewoptions']=$viewopt;
+        return $out;
+
+    }
+
     // Show Item Picture
     public function get_leadorder_itemimage($item_id) {
         $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
@@ -6972,100 +6962,89 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    public function payment_edit($payment, $postdata) {
-//        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-//        if (!array_key_exists('fldname',$postdata) || !array_key_exists('newval',$postdata)) {
-//            $out['msg']='Parametr Name or Value not Send';
-//            return $out;
-//        }
-//        $fldname=$postdata['fldname'];
-//        $newval=$postdata['newval'];
-//        if ($fldname=='date' && !empty($newval)) {
-//            $newval=strtotime($newval);
-//        }
-//        $payment[$fldname]=$newval;
-//        $this->func->session('newpayment', $payment);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    // Save new manual payment
-//    public function payment_save($leadorder, $payment, $ordersession) {
-//        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-//        if (empty($payment['date'])) {
-//            $out['msg']='Empty Payment Date';
-//            return $out;
-//        }
-//        if (empty($payment['paytype'])) {
-//            $out['msg']='Empty Payment Type';
-//            return $out;
-//        }
-//        if (empty($payment['paynum'])) {
-//            $out['msg']='Empty Payment#';
-//            return $out;
-//        }
-//        if (floatval($payment['amount'])<=0) {
-//            $out['msg']='Empty Payment Value';
-//            return $out;
-//        }
-//        // Save to payments
-//        $payments=$leadorder['payments'];
-//        $order=$leadorder['order'];
-//        // Make changes
-//        $paymentamnt=$payment['amount'];
-//        if ($payment['type']=='refund') {
-//            $paymentamnt=(-1)*$paymentamnt;
-//        }
-//        $payclass='text_grey';
-//        $paysum=MoneyOutput($paymentamnt,2);
-//        if ($paymentamnt<0) {
-//            $payclass='text_red';
-//            $paysum='('.MoneyOutput(abs($paymentamnt),2).')';
-//        }
-//        $idx=count($payments)+1;
-//        /*
-//Array
-//(
-//    [type] => payment
-//    [replica] => Sean
-//    [date] => 1575928800
-//    [paytype] => WriteOFF
-//    [paynum] => 1
-//    [amount] => 12.77
-//)
-//
-//         */
-//        $payments[]=array(
-//            'batch_id'=>$idx*(-1),
-//            'batch_date'=>$payment['date'],
-//            'batch_amount'=>$paymentamnt,
-//            'batch_vmd'=>0,
-//            'batch_amex'=>0,
-//            'batch_other'=>($payment['paytype']=='WriteOFF' ? 0 : $paymentamnt),
-//            'batch_writeoff'=>($payment['paytype']=='WriteOFF' ? $paymentamnt : 0),
-//            'batch_term'=>0,
-//            'batch_due'=>0,
-//            'batch_type'=>$payment['paytype'],
-//            'batch_num'=>$payment['paynum'],
-//            'out_date'=>date('m/d', $payment['date']),
-//            'out_name'=>$payment['paytype'].' '.$payment['paynum'],
-//            'payclass'=>$payclass,
-//            'paysum'=>$paysum,
-//        );
-//        $totalpay=0;
-//        foreach ($payments as $row) {
-//            $totalpay+=$row['batch_amount'];
-//        }
-//        $order['payment_total']=$totalpay;
-//        $leadorder['payments']=$payments;
-//        $leadorder['order']=$order;
-//        $this->func->session('newpayment', NULL);
-//        $this->func->session($ordersession, $leadorder);
-//        $this->_leadorder_totals($leadorder,$ordersession);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
+    public function payment_edit($payment, $postdata) {
+        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists('fldname',$postdata) || !array_key_exists('newval',$postdata)) {
+            $out['msg']='Parametr Name or Value not Send';
+            return $out;
+        }
+        $fldname=$postdata['fldname'];
+        $newval=$postdata['newval'];
+        if ($fldname=='date' && !empty($newval)) {
+            $newval=strtotime($newval);
+        }
+        $payment[$fldname]=$newval;
+        usersession('newpayment', $payment);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    // Save new manual payment
+    public function payment_save($leadorder, $payment, $ordersession) {
+        $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
+        if (empty($payment['date'])) {
+            $out['msg']='Empty Payment Date';
+            return $out;
+        }
+        if (empty($payment['paytype'])) {
+            $out['msg']='Empty Payment Type';
+            return $out;
+        }
+        if (empty($payment['paynum'])) {
+            $out['msg']='Empty Payment#';
+            return $out;
+        }
+        if (floatval($payment['amount'])<=0) {
+            $out['msg']='Empty Payment Value';
+            return $out;
+        }
+        // Save to payments
+        $payments=$leadorder['payments'];
+        $order=$leadorder['order'];
+        // Make changes
+        $paymentamnt=$payment['amount'];
+        if ($payment['type']=='refund') {
+            $paymentamnt=(-1)*$paymentamnt;
+        }
+        $payclass='text_grey';
+        $paysum=MoneyOutput($paymentamnt,2);
+        if ($paymentamnt<0) {
+            $payclass='text_red';
+            $paysum='('.MoneyOutput(abs($paymentamnt),2).')';
+        }
+        $idx=count($payments)+1;
+
+        $payments[]=array(
+            'batch_id'=>$idx*(-1),
+            'batch_date'=>$payment['date'],
+            'batch_amount'=>$paymentamnt,
+            'batch_vmd'=>0,
+            'batch_amex'=>0,
+            'batch_other'=>($payment['paytype']=='WriteOFF' ? 0 : $paymentamnt),
+            'batch_writeoff'=>($payment['paytype']=='WriteOFF' ? $paymentamnt : 0),
+            'batch_term'=>0,
+            'batch_due'=>0,
+            'batch_type'=>$payment['paytype'],
+            'batch_num'=>$payment['paynum'],
+            'out_date'=>date('m/d', $payment['date']),
+            'out_name'=>$payment['paytype'].' '.$payment['paynum'],
+            'payclass'=>$payclass,
+            'paysum'=>$paysum,
+        );
+        $totalpay=0;
+        foreach ($payments as $row) {
+            $totalpay+=$row['batch_amount'];
+        }
+        $order['payment_total']=$totalpay;
+        $leadorder['payments']=$payments;
+        $leadorder['order']=$order;
+        usersession('newpayment', NULL);
+        usersession($ordersession, $leadorder);
+        $this->_leadorder_totals($leadorder,$ordersession);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
     private function _create_empty_shipaddress($prvadr=array(), $newidx='') {
         $this->load->model('shipping_model');
         $packages[]=array(
@@ -7271,79 +7250,77 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    private function _recalc_shippingaddress($shipdata, $shipsession) {
-//        $order=$shipdata['order'];
-//        $shipping=$shipdata['shipping'];
-//        $shipping_address=$shipdata['shipping_address'];
-//        $order_items=$shipdata['order_items'];
-//        $order['shipping']=$this->_leadorder_shipcost($shipping_address);
-//        $total_item=0;
-//        $total_qty=0;
-//        $total_imprint=0;
-//        foreach ($order_items as $row) {
-//            $total_item+=$row['item_subtotal'];
-//            $total_imprint+=$row['imprint_subtotal'];
-//            $total_qty+=$row['item_qty'];
-//        }
-//        $order['item_imprint']=$total_imprint;
-//        $order['item_cost']=$total_item;
-//        $order['order_qty']=$total_qty;
-//        $shpidx=0;
-//        // $base_cost=floatval($order['item_cost'])+floatval($order['item_imprint'])+intval($order['is_shipping'])*floatval($order['shipping']);
-//        $base_cost=floatval($order['item_cost'])+floatval($order['item_imprint'])+floatval($order['shipping']);
-//        // $base_cost+=floatval($order['cc_fee'])+floatval($shipping['rush_price']);
-//        $base_cost+=floatval($shipping['rush_price']);
-//        $base_cost+=floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
-//
-//        $tax=0;
-//        $shipadrcnt=count($shipping_address);
-//
-//        foreach ($shipping_address as $row) {
-//            if ($row['taxcalc']==0) {
-//                $shipping_address[$shpidx]['tax']=0;
-//                $shipping_address[$shpidx]['sales_tax']=0;
-//            } else {
-//                $taxpercent=$this->config->item('salestax');
-//                if ($order['order_date']>=$this->config->item('datenewtax')) {
-//                    $taxpercent=$this->config->item('salesnewtax');
-//                }
-//                if ($shipadrcnt==1) {
-//                    // $adrtax=round($base_cost*$this->config->item('salestax')/100,2);
-//                    $adrtax=round($base_cost*$taxpercent/100,2);
-//                    $shipping_address[$shpidx]['sales_tax']=$adrtax;
-//                    $shipping_address[$shpidx]['tax']=$adrtax;
-//                    $tax+=$adrtax;
-//                } else {
-//                    // $adrtax=round($base_cost/$total_qty*$row['item_qty']*$this->config->item('salestax')/100,2);
-//                    $adrtax=round($base_cost/$total_qty*$row['item_qty']*$taxpercent/100,2);
-//                    $shipping_address[$shpidx]['sales_tax']=$adrtax;
-//                    $shipping_address[$shpidx]['tax']=$adrtax;
-//                    $tax+=$adrtax;
-//                }
-//            }
-//            $shpidx++;
-//        }
-//        $order['tax']=$tax;
-//        $revenue=$base_cost+floatval($order['tax']);
-//        $order['revenue']=$revenue;
-//        if ($order['order_cog']=='') {
-//            $profit=round($revenue*$this->config->item('default_profit')/100,2);
-//        } else {
-//            $profit=$this->_leadorder_profit($order);
-//            if ($revenue!=0) {
-//                $profit_perc=round($profit/$revenue*100,1);
-//                $order['profit_perc']=$profit_perc;
-//            } else {
-//                $order['profit_perc']=0;
-//            }
-//        }
-//        $order['profit']=$profit;
-//        $shipdata['order']=$order;
-//        $shipdata['shipping']=$shipping;
-//        $shipdata['shipping_address']=$shipping_address;
-//        $this->func->session($shipsession,$shipdata);
-//    }
-//
+    private function _recalc_shippingaddress($shipdata, $shipsession) {
+        $order=$shipdata['order'];
+        $shipping=$shipdata['shipping'];
+        $shipping_address=$shipdata['shipping_address'];
+        $order_items=$shipdata['order_items'];
+        $order['shipping']=$this->_leadorder_shipcost($shipping_address);
+        $total_item=0;
+        $total_qty=0;
+        $total_imprint=0;
+        foreach ($order_items as $row) {
+            $total_item+=$row['item_subtotal'];
+            $total_imprint+=$row['imprint_subtotal'];
+            $total_qty+=$row['item_qty'];
+        }
+        $order['item_imprint']=$total_imprint;
+        $order['item_cost']=$total_item;
+        $order['order_qty']=$total_qty;
+        $shpidx=0;
+        // $base_cost=floatval($order['item_cost'])+floatval($order['item_imprint'])+intval($order['is_shipping'])*floatval($order['shipping']);
+        $base_cost=floatval($order['item_cost'])+floatval($order['item_imprint'])+floatval($order['shipping']);
+        // $base_cost+=floatval($order['cc_fee'])+floatval($shipping['rush_price']);
+        $base_cost+=floatval($shipping['rush_price']);
+        $base_cost+=floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+
+        $tax=0;
+        $shipadrcnt=count($shipping_address);
+
+        foreach ($shipping_address as $row) {
+            if ($row['taxcalc']==0) {
+                $shipping_address[$shpidx]['tax']=0;
+                $shipping_address[$shpidx]['sales_tax']=0;
+            } else {
+                $taxpercent=$this->config->item('salestax');
+                if ($order['order_date']>=$this->config->item('datenewtax')) {
+                    $taxpercent=$this->config->item('salesnewtax');
+                }
+                if ($shipadrcnt==1) {
+                    $adrtax=round($base_cost*$taxpercent/100,2);
+                    $shipping_address[$shpidx]['sales_tax']=$adrtax;
+                    $shipping_address[$shpidx]['tax']=$adrtax;
+                    $tax+=$adrtax;
+                } else {
+                    $adrtax=round($base_cost/$total_qty*$row['item_qty']*$taxpercent/100,2);
+                    $shipping_address[$shpidx]['sales_tax']=$adrtax;
+                    $shipping_address[$shpidx]['tax']=$adrtax;
+                    $tax+=$adrtax;
+                }
+            }
+            $shpidx++;
+        }
+        $order['tax']=$tax;
+        $revenue=$base_cost+floatval($order['tax']);
+        $order['revenue']=$revenue;
+        if ($order['order_cog']=='') {
+            $profit=round($revenue*$this->config->item('default_profit')/100,2);
+        } else {
+            $profit=$this->_leadorder_profit($order);
+            if ($revenue!=0) {
+                $profit_perc=round($profit/$revenue*100,1);
+                $order['profit_perc']=$profit_perc;
+            } else {
+                $order['profit_perc']=0;
+            }
+        }
+        $order['profit']=$profit;
+        $shipdata['order']=$order;
+        $shipdata['shipping']=$shipping;
+        $shipdata['shipping_address']=$shipping_address;
+        usersession($shipsession,$shipdata);
+    }
+
 //    private function _get_oldorder_item($item_id, $item_qty) {
 //        $itemdata=$this->_get_itemdata($item_id);
 //
@@ -7460,15 +7437,15 @@ Class Leadorder_model extends My_Model {
 //        $newitem['imprint_details']=$impr_details;
 //        return $newitem;
 //    }
-//
-//    public function search_items($item_num) {
-//        $this->db->select('i.item_number as label, i.item_id as id');
-//        $this->db->from('v_itemsearch i');
-//        $this->db->like('i.item_number', $item_num);
-//        $this->db->order_by('i.item_number');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
+
+    public function search_items($item_num) {
+        $this->db->select('i.item_number as label, i.item_id as id');
+        $this->db->from('v_itemsearch i');
+        $this->db->like('i.item_number', $item_num);
+        $this->db->order_by('i.item_number');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
     public function _get_oldorder_itemdata($item_id) {
         $this->db->select('i.item_id, i.item_number, i.item_name');
@@ -7486,314 +7463,302 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    // Prepare Invoce File
-//    public function prepare_invoicedoc($leadorder, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//
-//        $this->load->model('shipping_model');
-//        $this->load->helper(array('dompdf', 'file'));
-//        $order=$leadorder['order'];
-//
-//        $customer_po='';
-//        $biladr=array();
-//        if (isset($leadorder['billing'])) {
-//            $billing=$leadorder['billing'];
-//            if (!empty($billing['customer_name'])) {
-//                if (!empty($billing['company'])) {
-//                    array_push($biladr, $billing['company']);
-//                }
-//                if (!empty($billing['customer_name'])) {
-//                    array_push($biladr, $billing['customer_name']);
-//                }
-//                if (!empty($billing['address_1'])) {
-//                    array_push($biladr, $billing['address_1']);
-//                }
-//                if (!empty($billing['address_2'])) {
-//                    array_push($biladr, $billing['address_2']);
-//                }
-//                $adrrow='';
-//                if (!empty($billing['city'])) {
-//                    $adrrow.=$billing['city'];
-//                    if (!empty($billing['state_id'])) {
-//                        // Get State
-//                        $statedat=$this->shipping_model->get_state($billing['state_id']);
-//                        if (isset($statedat['state_id'])) {
-//                            $adrrow.=' '.$statedat['state_code'];
-//                        }
-//                    }
-//                    if (!empty($billing['zip'])) {
-//                        $adrrow.=' '.$billing['zip'];
-//                    }
-//                }
-//                if (!empty($adrrow)) {
-//                    array_push($biladr, $adrrow);
-//                }
-//                if (!empty($billing['customer_ponum'])) {
-//                    $customer_po=$billing['customer_ponum'];
-//                }
-//            }
-//        }
-//        $shipping_address=$leadorder['shipping_address'];
-//        $shipadr=array();
-//        $idx=0;
-//        $shipdate=$arivedate=0;
-//        if (count($shipping_address)>1) {
-//            array_push($shipadr, 'Shipping/shipped to '.count($shipping_address).' addresses');
-//        } else {
-//            foreach ($shipping_address as $row) {
-//                if ($idx==0) {
-//                    // array_push($shipadr, $order['customer_name']);
-//                }
-//                if (!empty($row['ship_contact'])) {
-//                    array_push($shipadr, $row['ship_contact']);
-//                }
-//                if (!empty($row['ship_company'])) {
-//                    array_push($shipadr, $row['ship_company']);
-//                }
-//                if (!empty($row['ship_address1'])) {
-//                    array_push($shipadr, $row['ship_address1']);
-//                }
-//                if (!empty($row['ship_address2'])) {
-//                    array_push($shipadr, $row['ship_address2']);
-//                }
-//                $adrrow='';
-//                if (!empty($row['city'])) {
-//                    $adrrow.=$row['city'];
-//                }
-//                if (!empty($row['state_id'])) {
-//                    $statedat=$this->shipping_model->get_state($row['state_id']);
-//                    if (isset($statedat['state_id'])) {
-//                        $adrrow.=' '.$statedat['state_code'];
-//                    }
-//                }
-//                if (!empty($row['zip'])) {
-//                    $adrrow.=' '.$row['zip'];
-//                }
-//                array_push($shipadr, $adrrow);
-//                if ($row['ship_date']>$shipdate) {
-//                    $shipdate=$row['ship_date'];
-//                }
-//                if ($row['arrive_date']>$arivedate) {
-//                    $arivedate=$row['arrive_date'];
-//                }
-//                $idx++;
-//            }
-//
-//        }
-//        $shipdata=$leadorder['shipping'];
-//
-//        if (count($biladr)==0 && count($shipping_address)==1) {
-//            $biladr=$shipadr;
-//        }
-//
-//        $shpadrcnt=count($shipadr);
-//        if (count($biladr)>$shpadrcnt) {
-//            $shpadrcnt=count($biladr);
-//        }
-//        // Prepare details
-//        $items=$this->prepare_invoice_details($leadorder, $shpadrcnt);
-//        $balance=$order['revenue']-$order['payment_total'];
-//        $invnum=$order['order_num'];
-//        if (!empty($order['order_confirmation'])) {
-//            $invnum=$order['order_confirmation'];
-//        }
-//        $options=array(
-//            'order_num'=>$invnum,
-//            'invoice_message'=>$order['invoice_message'],
-//            'order_date'=>date('m/d/Y',$order['order_date']),
-//            'customer_code'=>$customer_po,
-//            /* 'terms'=>'By Credit Card', */
-//            'terms'=>$this->empty_htmlcontent,
-//            'payment_due'=>'',
-//            // 'shipdate'=>($shipdate==0 ? '' : date('m/d/Y',$shipdate)),
-//            'shipdate'=>(empty($shipdata['out_shipdate']) ? '' : $shipdata['out_shipdate']),
-//            // 'arrive'=>($arivedate==0 ? '' : date('m/d/Y', $arivedate)),
-//            'arrive'=>(empty($shipdata['out_arrivedate']) ? '' : $shipdata['out_arrivedate']),
-//            'billing'=>$biladr,
-//            'shipping'=>$shipadr,
-//            'details'=>$items,
-//            'tax'=>MoneyOutput($order['tax']),
-//            'total'=>  MoneyOutput($order['revenue']),
-//            'payments'=> MoneyOutput($order['payment_total']),
-//            'balance'=>  MoneyOutput($balance),
-//            'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
-//        );
-//
-//        $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
-//        // $file_name = $this->func->uniq_link(15) . '.pdf';
-//        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/'),'_',$order['order_items']).'.pdf';
-//        $file_out = $this->config->item('upload_path_preload') . $file_name;
-//
-//        $data = pdf_create($html, '', false);
-//        write_file($file_out, $data);
-//        $out['result']=$this->success_result;
-//        $out['html_path']=$this->config->item('pathpreload').$file_name;
-//        $out['doc_path']=$file_out;
-//        return $out;
-//    }
-//
-//
-//    public function prepare_orderinvemail($leadorder, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $contacts=$leadorder['contacts'];
-//        $inv=array();
-//        foreach ($contacts as $row) {
-//            if (intval($row['contact_inv'])==1 && $this->func->valid_email_address($row['contact_emal'])) {
-//                $inv[]=array(
-//                    'name'=>$row['contact_name'],
-//                    'email'=>$row['contact_emal'],
-//                );
-//            }
-//        }
-//        if (empty($inv)) {
-//            $out['msg']='No contacts, associated with invoice';
-//        }
-//        $contact_mail='';
-//        $contact_name='';
-//        foreach ($inv as $row) {
-//            $contact_mail.=$row['email'].',';
-//            if (empty($contact_name)) {
-//                $contact_name=$row['name'];
-//            }
-//
-//        }
-//        $mail=substr($contact_mail,0,-1);
-//        // $contact=substr($contact_name,0,-1);
-//
-//        $order=$leadorder['order'];
-//
-//        $this->load->model('user_model');
-//        $this->load->model('email_model');
-//        $template='invoice';
-//
-//        $userdat = $this->user_model->get_user_data($user_id);
-//        $user_name = $userdat['user_name'];
-//        $email_sign=$userdat['email_signature'];
-//        if (empty($userdat['email_signature'])) {
-//            $email_sign='Sincerely, '.PHP_EOL;
-//            $email_sign.=''.PHP_EOL;
-//            $email_sign.=$userdat['user_name'].PHP_EOL;
-//            $email_sign.='BLUETRACK, Inc.'.PHP_EOL;
-//            $email_sign.=$userdat['user_email'];
-//        }
-//        $mail_template = $this->email_model->get_emailtemplate_byname($template);
-//        // $msgdat = "BT" . $order['order_num'];
-//        // $doc_type = 'Order';
-//        $srcreplace=array(
-//            '<<order_confirmation>>',
-//            '<<contact_name>>',
-//            '<<user_email_signature>>',
-//            '<<item_name>>',
-//        );
-//        $orddata=array(
-//            $order['order_confirmation'],
-//            $contact_name,
-//            $email_sign,
-//            $order['order_items'],
-//        );
-////        $itemname = $order['order_items'];
-////        $message = $mail_template['email_template_body'];
-////        $message = str_replace('<<customer_name>>', $order['customer_name'], $message);
-////        $message = str_replace('<<order_number>>', $msgdat, $message);
-////        $message = str_replace('<<order_confirmation>>', $order['order_confirmation'], $message);
-////
-////        $subj = str_replace('<<order_number>>', $msgdat, $mail_template['email_template_subject']);
-//
-//        $message=  str_replace($srcreplace, $orddata, $mail_template['email_template_body']);
-//        $subj=  str_replace($srcreplace, $orddata, $mail_template['email_template_subject']);
-//
-//        $data=array(
-//            'order_id'=>$order['order_id'],
-//            'contacts'=>$inv,
-//            'order_num'=>$order['order_num'],
-//            'order_confirmation'=>$order['order_confirmation'],
-//            'contact_mail'=>$mail,
-//            'subject'=>$subj,
-//            'message'=>$message,
-//            'sender'=>(empty($userdat['personal_email']) ? $userdat['user_email'] : $userdat['personal_email']),
-//        );
-//        $out['result']=$this->success_result;
-//        $out['data']=$data;
-//        return $out;
-//    }
-//
-//    public function send_invoicemail($data, $leadorder, $user_id, $ordersession) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->load->model('user_model');
-//        $this->load->model('artwork_model');
-//        /* Check Data */
-//        if (empty($data['from'])) {
-//            $out['msg']='Enter Sender Email';
-//            return $out;
-//        }
-//        if (empty($data['customer'])) {
-//            $out['msg']='Enter Customer Email';
-//            return $out;
-//        }
-//        if (empty($data['subject'])) {
-//            $out['msg']='Enter Message Subject';
-//            return $out;
-//        }
-//        if (empty($data['message'])) {
-//            $out['msg']='Enter Message Body';
-//            return $out;
-//        }
-//        $toarray = explode(',', $data['customer']);
-//        foreach ($toarray as $row) {
-//            if (!$this->func->valid_email_address(trim($row))) {
-//                $out['msg'] = $row . ' Is not Valid';
-//                return $out;
-//            }
-//        }
-//        if (!empty($data['cc'])) {
-//            $ccarray = explode(',', $data['cc']);
-//            foreach ($ccarray as $row) {
-//                if (!$this->func->valid_email_address(trim($row))) {
-//                    $out['msg'] = 'BCC Email Address ' . $row . ' Is not Valid';
-//                    return $out;
-//                }
-//            }
-//        }
-//        $docdata=$this->prepare_invoicedoc($leadorder, $user_id);
-//        if ($docdata['result']==$this->error_result) {
-//            $out['msg']=$docdata['msg'];
-//            return $out;
-//        }
-//        $invdoc=$docdata['doc_path'];
-//
-//        // Send message
-//        $this->load->library('email');
-//        $config = $this->config->item('email_setup');
-//        $config['mailtype'] = 'text';
-//        $this->email->initialize($config);
-//        if ($config['protocol']=='smtp') {
-//            $this->email->from($config['smtp_user']);
-//        } else {
-//            $this->email->from($data['from']);
-//        }
-//
-//        $this->email->to($data['customer']);
-//        if ($data['cc'] != '') {
-//            $cc = $data['cc'];
-//            $this->email->cc($cc);
-//        }
-//        $this->email->subject($data['subject']);
-//
-//
-//        $this->email->message($data['message']);
-//        $this->email->attach($invdoc);
-//
-//        $mailres=$this->email->send();
-//
-//        $this->email->clear(TRUE);
-//
-//        $this->func->session($ordersession, $leadorder);
-//
-//        $out['result'] = $this->success_result;
-//
-//        return $out;
-//    }
-//
+    // Prepare Invoce File
+    public function prepare_invoicedoc($leadorder, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+
+        $this->load->model('shipping_model');
+        $this->load->helper(array('dompdf', 'file'));
+        $order=$leadorder['order'];
+
+        $customer_po='';
+        $biladr=array();
+        if (isset($leadorder['billing'])) {
+            $billing=$leadorder['billing'];
+            if (!empty($billing['customer_name'])) {
+                if (!empty($billing['company'])) {
+                    array_push($biladr, $billing['company']);
+                }
+                if (!empty($billing['customer_name'])) {
+                    array_push($biladr, $billing['customer_name']);
+                }
+                if (!empty($billing['address_1'])) {
+                    array_push($biladr, $billing['address_1']);
+                }
+                if (!empty($billing['address_2'])) {
+                    array_push($biladr, $billing['address_2']);
+                }
+                $adrrow='';
+                if (!empty($billing['city'])) {
+                    $adrrow.=$billing['city'];
+                    if (!empty($billing['state_id'])) {
+                        // Get State
+                        $statedat=$this->shipping_model->get_state($billing['state_id']);
+                        if (isset($statedat['state_id'])) {
+                            $adrrow.=' '.$statedat['state_code'];
+                        }
+                    }
+                    if (!empty($billing['zip'])) {
+                        $adrrow.=' '.$billing['zip'];
+                    }
+                }
+                if (!empty($adrrow)) {
+                    array_push($biladr, $adrrow);
+                }
+                if (!empty($billing['customer_ponum'])) {
+                    $customer_po=$billing['customer_ponum'];
+                }
+            }
+        }
+        $shipping_address=$leadorder['shipping_address'];
+        $shipadr=array();
+        $idx=0;
+        $shipdate=$arivedate=0;
+        if (count($shipping_address)>1) {
+            array_push($shipadr, 'Shipping/shipped to '.count($shipping_address).' addresses');
+        } else {
+            foreach ($shipping_address as $row) {
+                if ($idx==0) {
+                    // array_push($shipadr, $order['customer_name']);
+                }
+                if (!empty($row['ship_contact'])) {
+                    array_push($shipadr, $row['ship_contact']);
+                }
+                if (!empty($row['ship_company'])) {
+                    array_push($shipadr, $row['ship_company']);
+                }
+                if (!empty($row['ship_address1'])) {
+                    array_push($shipadr, $row['ship_address1']);
+                }
+                if (!empty($row['ship_address2'])) {
+                    array_push($shipadr, $row['ship_address2']);
+                }
+                $adrrow='';
+                if (!empty($row['city'])) {
+                    $adrrow.=$row['city'];
+                }
+                if (!empty($row['state_id'])) {
+                    $statedat=$this->shipping_model->get_state($row['state_id']);
+                    if (isset($statedat['state_id'])) {
+                        $adrrow.=' '.$statedat['state_code'];
+                    }
+                }
+                if (!empty($row['zip'])) {
+                    $adrrow.=' '.$row['zip'];
+                }
+                array_push($shipadr, $adrrow);
+                if ($row['ship_date']>$shipdate) {
+                    $shipdate=$row['ship_date'];
+                }
+                if ($row['arrive_date']>$arivedate) {
+                    $arivedate=$row['arrive_date'];
+                }
+                $idx++;
+            }
+
+        }
+        $shipdata=$leadorder['shipping'];
+
+        if (count($biladr)==0 && count($shipping_address)==1) {
+            $biladr=$shipadr;
+        }
+
+        $shpadrcnt=count($shipadr);
+        if (count($biladr)>$shpadrcnt) {
+            $shpadrcnt=count($biladr);
+        }
+        // Prepare details
+        $items=$this->prepare_invoice_details($leadorder, $shpadrcnt);
+        $balance=$order['revenue']-$order['payment_total'];
+        $invnum=$order['order_num'];
+        if (!empty($order['order_confirmation'])) {
+            $invnum=$order['order_confirmation'];
+        }
+        $options=array(
+            'order_num'=>$invnum,
+            'invoice_message'=>$order['invoice_message'],
+            'order_date'=>date('m/d/Y',$order['order_date']),
+            'customer_code'=>$customer_po,
+            'terms'=>$this->empty_htmlcontent,
+            'payment_due'=>'',
+            'shipdate'=>(empty($shipdata['out_shipdate']) ? '' : $shipdata['out_shipdate']),
+            'arrive'=>(empty($shipdata['out_arrivedate']) ? '' : $shipdata['out_arrivedate']),
+            'billing'=>$biladr,
+            'shipping'=>$shipadr,
+            'details'=>$items,
+            'tax'=>MoneyOutput($order['tax']),
+            'total'=>  MoneyOutput($order['revenue']),
+            'payments'=> MoneyOutput($order['payment_total']),
+            'balance'=>  MoneyOutput($balance),
+            'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
+        );
+
+        $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
+
+        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/'),'_',$order['order_items']).'.pdf';
+        $file_out = $this->config->item('upload_path_preload') . $file_name;
+
+        $data = pdf_create($html, '', false);
+        write_file($file_out, $data);
+        $out['result']=$this->success_result;
+        $out['html_path']=$this->config->item('pathpreload').$file_name;
+        $out['doc_path']=$file_out;
+        return $out;
+    }
+
+
+    public function prepare_orderinvemail($leadorder, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $contacts=$leadorder['contacts'];
+        $inv=array();
+        foreach ($contacts as $row) {
+            if (intval($row['contact_inv'])==1 && $this->func->valid_email_address($row['contact_emal'])) {
+                $inv[]=array(
+                    'name'=>$row['contact_name'],
+                    'email'=>$row['contact_emal'],
+                );
+            }
+        }
+        if (empty($inv)) {
+            $out['msg']='No contacts, associated with invoice';
+        }
+        $contact_mail='';
+        $contact_name='';
+        foreach ($inv as $row) {
+            $contact_mail.=$row['email'].',';
+            if (empty($contact_name)) {
+                $contact_name=$row['name'];
+            }
+
+        }
+        $mail=substr($contact_mail,0,-1);
+
+        $order=$leadorder['order'];
+
+        $this->load->model('user_model');
+        $this->load->model('email_model');
+        $template='invoice';
+
+        $userdat = $this->user_model->get_user_data($user_id);
+        $user_name = $userdat['user_name'];
+        $email_sign=$userdat['email_signature'];
+        if (empty($userdat['email_signature'])) {
+            $email_sign='Sincerely, '.PHP_EOL;
+            $email_sign.=''.PHP_EOL;
+            $email_sign.=$userdat['user_name'].PHP_EOL;
+            $email_sign.='BLUETRACK, Inc.'.PHP_EOL;
+            $email_sign.=$userdat['user_email'];
+        }
+        $mail_template = $this->email_model->get_emailtemplate_byname($template);
+
+        $srcreplace=array(
+            '<<order_confirmation>>',
+            '<<contact_name>>',
+            '<<user_email_signature>>',
+            '<<item_name>>',
+        );
+        $orddata=array(
+            $order['order_confirmation'],
+            $contact_name,
+            $email_sign,
+            $order['order_items'],
+        );
+
+        $message=  str_replace($srcreplace, $orddata, $mail_template['email_template_body']);
+        $subj=  str_replace($srcreplace, $orddata, $mail_template['email_template_subject']);
+
+        $data=array(
+            'order_id'=>$order['order_id'],
+            'contacts'=>$inv,
+            'order_num'=>$order['order_num'],
+            'order_confirmation'=>$order['order_confirmation'],
+            'contact_mail'=>$mail,
+            'subject'=>$subj,
+            'message'=>$message,
+            'sender'=>(empty($userdat['personal_email']) ? $userdat['user_email'] : $userdat['personal_email']),
+        );
+        $out['result']=$this->success_result;
+        $out['data']=$data;
+        return $out;
+    }
+
+    public function send_invoicemail($data, $leadorder, $user_id, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->load->model('user_model');
+        $this->load->model('artwork_model');
+        /* Check Data */
+        if (empty($data['from'])) {
+            $out['msg']='Enter Sender Email';
+            return $out;
+        }
+        if (empty($data['customer'])) {
+            $out['msg']='Enter Customer Email';
+            return $out;
+        }
+        if (empty($data['subject'])) {
+            $out['msg']='Enter Message Subject';
+            return $out;
+        }
+        if (empty($data['message'])) {
+            $out['msg']='Enter Message Body';
+            return $out;
+        }
+        $toarray = explode(',', $data['customer']);
+        foreach ($toarray as $row) {
+            if (!valid_email_address(trim($row))) {
+                $out['msg'] = $row . ' Is not Valid';
+                return $out;
+            }
+        }
+        if (!empty($data['cc'])) {
+            $ccarray = explode(',', $data['cc']);
+            foreach ($ccarray as $row) {
+                if (!valid_email_address(trim($row))) {
+                    $out['msg'] = 'BCC Email Address ' . $row . ' Is not Valid';
+                    return $out;
+                }
+            }
+        }
+        $docdata=$this->prepare_invoicedoc($leadorder, $user_id);
+        if ($docdata['result']==$this->error_result) {
+            $out['msg']=$docdata['msg'];
+            return $out;
+        }
+        $invdoc=$docdata['doc_path'];
+
+        // Send message
+        $this->load->library('email');
+        $config = $this->config->item('email_setup');
+        $config['mailtype'] = 'text';
+        $this->email->initialize($config);
+        if ($config['protocol']=='smtp') {
+            $this->email->from($config['smtp_user']);
+        } else {
+            $this->email->from($data['from']);
+        }
+
+        $this->email->to($data['customer']);
+        if ($data['cc'] != '') {
+            $cc = $data['cc'];
+            $this->email->cc($cc);
+        }
+        $this->email->subject($data['subject']);
+
+
+        $this->email->message($data['message']);
+        $this->email->attach($invdoc);
+
+        $mailres=$this->email->send();
+
+        $this->email->clear(TRUE);
+
+        usersession($ordersession, $leadorder);
+
+        $out['result'] = $this->success_result;
+
+        return $out;
+    }
+
 //    public function _leadorder_shipping_status($order_id) {
 //        $order_status='FF - To Ship ';
 //        $order_status_class='fulfillment';
@@ -8153,16 +8118,16 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-//    public function get_leadorder_amounts($order_id) {
-//        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//        $this->db->where('oa.order_id', $order_id);
-//        $this->db->order_by('oa.amount_date');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
+    public function get_leadorder_amounts($order_id) {
+        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where('oa.order_id', $order_id);
+        $this->db->order_by('oa.amount_date');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 //    private function _emptyzip_notification($leadorder, $user_id) {
 //        $this->load->library('email');
 //        $this->db->select('user_name');
@@ -8265,7 +8230,7 @@ Class Leadorder_model extends My_Model {
 //        }
 //        if ($found==1) {
 //            $leadorder['charges']=$charges;
-//            $this->func->session($session_id, $leadorder);
+//            usersession($session_id, $leadorder);
 //            $out['result']=$this->success_result;
 //        }
 //        return $out;
@@ -8340,27 +8305,27 @@ Class Leadorder_model extends My_Model {
         );
     }
 
-//    private function _check_contact_info($contacts) {
-//        $out= $this->error_result;
-//        $chkname=0;
-//        $chkemail=0;
-//        $chkphone=0;
-//        foreach ($contacts as $row) {
-//            if (!empty($row['contact_name'])) {
-//                $chkname=1;
-//                if (!empty($row['contact_emal']) && $this->func->valid_email_address($row['contact_emal'])) {
-//                    $chkemail=1;
-//                }
-//                if (!empty($row['contact_phone'])) {
-//                    $chkphone=1;
-//                }
-//            }
-//        }
-//        if ($chkname==1 && $chkemail==1) { // && $chkphone==1) {
-//            $out=$this->success_result;
-//        }
-//        return $out;
-//    }
+    private function _check_contact_info($contacts) {
+        $out= $this->error_result;
+        $chkname=0;
+        $chkemail=0;
+        $chkphone=0;
+        foreach ($contacts as $row) {
+            if (!empty($row['contact_name'])) {
+                $chkname=1;
+                if (!empty($row['contact_emal']) && valid_email_address($row['contact_emal'])) {
+                    $chkemail=1;
+                }
+                if (!empty($row['contact_phone'])) {
+                    $chkphone=1;
+                }
+            }
+        }
+        if ($chkname==1 && $chkemail==1) { // && $chkphone==1) {
+            $out=$this->success_result;
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */

@@ -725,7 +725,132 @@ class United_parcel_service
  	$request['AddressKeyFormat'] = $addrkeyfrmt;
         
         return $request;
-  }    
-    
+  }
+
+    public function trackpackage($package) {
+        //Configuration
+        $wsdl = $this->_CI->config->item('wsdl_path') . "track/Track.wsdl";
+        $operation = "ProcessTrack";
+        $endpointurl = $this->ups_track_url;
+        $outputFileName = $this->_CI->config->item('upload_path_preload') . "TrackResult.xml";
+
+        try {
+
+            $mode = array
+            (
+                'soap_version' => 'SOAP_1_1', // use soap 1.1 client
+                'trace' => 1
+            );
+
+            // initialize soap client
+            $client = new SoapClient($wsdl, $mode);
+
+            //set endpoint url
+            $client->__setLocation($endpointurl);
+
+
+            //create soap header
+            $usernameToken['Username'] = $this->ups_account_username;
+            $usernameToken['Password'] = $this->ups_account_password;
+            $serviceAccessLicense['AccessLicenseNumber'] = $this->access_key;
+            $upss['UsernameToken'] = $usernameToken;
+            $upss['ServiceAccessToken'] = $serviceAccessLicense;
+
+            $header = new SoapHeader('http://www.ups.com/XMLSchema/XOLTWS/UPSS/v1.0', 'UPSSecurity', $upss);
+            $client->__setSoapHeaders($header);
+
+            //get response
+            $resp = $client->__soapCall($operation, array($this->processTrack($package)));
+            //get status
+            $responsecode=$resp->Response->ResponseStatus->Code;
+            if ($responsecode!=1) {
+                // Error During Tracking
+                if (isset($resp->Response->ResponseStatus->Description)) {
+                    $errmsg=$resp->Response->ResponseStatus->Description;
+                } else {
+                    $errmsg='Error during Tracking';
+                }
+                return array('result'=>FALSE, 'msg'=>$errmsg);
+            }
+            $return_array=array(
+                'result'=>TRUE,
+            );
+            $packs=$resp->Shipment->Package;
+
+            $out=array();
+            $numpp=1;
+            if (is_array($packs)) {
+                foreach ($packs as $prow) {
+                    $activ = $prow->Activity;
+                    $adress='';
+                    if (isset($activ->ActivityLocation->Address->City)) {
+                        $adress.=$activ->ActivityLocation->Address->City.' ';
+                    }
+                    if (isset($activ->ActivityLocation->Address->StateProvinceCode)) {
+                        $adress.=$activ->ActivityLocation->Address->StateProvinceCode.' ';
+                    }
+                    if (isset($activ->ActivityLocation->Address->CountryCode)) {
+                        $adress.=$activ->ActivityLocation->Address->CountryCode.' ';
+                    }
+                    if (isset($activ->ActivityLocation->Address->PostalCode)) {
+                        $adress.=$activ->ActivityLocation->Address->PostalCode;
+                    }
+                    $out[]=array(
+                        'log_id'=>$numpp*-1,
+                        'package_num'=>$prow->TrackingNumber,
+                        'status'=>$activ->Status->Description,
+                        'date'=>strtotime($activ->Date . ' ' . $activ->Time),
+                        'address'=>$adress,
+                    );
+                    $numpp++;
+                }
+            } else {
+                $activ = $packs->Activity;
+                $adress='';
+                if (isset($activ->ActivityLocation->Address->City)) {
+                    $adress.=$activ->ActivityLocation->Address->City.' ';
+                }
+                if (isset($activ->ActivityLocation->Address->StateProvinceCode)) {
+                    $adress.=$activ->ActivityLocation->Address->StateProvinceCode.' ';
+                }
+                if (isset($activ->ActivityLocation->Address->CountryCode)) {
+                    $adress.=$activ->ActivityLocation->Address->CountryCode.' ';
+                }
+                if (isset($activ->ActivityLocation->Address->PostalCode)) {
+                    $adress.=$activ->ActivityLocation->Address->PostalCode;
+                }
+
+                $out[]=array(
+                    'log_id'=>$numpp*-1,
+                    'package_num'=>$packs->TrackingNumber,
+                    'status'=>$activ->Status->Description,
+                    'date'=>strtotime($activ->Date . ' ' . $activ->Time),
+                    'address'=>$adress,
+                );
+            }
+            $return_array['tracklog']=$out;
+            $return_array['trackcode']=$package;
+            $return_array['system']='UPS';
+            return $return_array;
+        } catch (Exception $ex) {
+            $return_array=array(
+                'result'=>FALSE,
+                'msg'=>$ex->getMessage(),
+            );
+            return $return_array;
+        }
+    }
+
+    function processTrack($package) {
+        //create soap request
+        $req['RequestOption'] = '0';
+        $tref['CustomerContext'] = 'Add description here';
+        $req['TransactionReference'] = $tref;
+        $request['Request'] = $req;
+        $request['InquiryNumber'] = $package;
+        $request['TrackingOption'] = '0';
+
+        return $request;
+    }
 
 }

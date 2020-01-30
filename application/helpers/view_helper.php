@@ -417,4 +417,20 @@ if (!function_exists('creditcard_format')) {
         return $out;
     }
 }
+
+if (!function_exists('formatPhoneNumber')) {
+    function formatPhoneNumber($phoneNumber)
+    {
+        $plusdig = 0;
+        if (substr($phoneNumber, 0, 1) == '+') {
+            $plusdig = 1;
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+        $areaCode = substr($phoneNumber, 0, 3);
+        $nextThree = substr($phoneNumber, 3, 3);
+        $lastFour = substr($phoneNumber, 6);
+        $phoneNumber = ($plusdig == 1 ? '+' : '') . $areaCode . '-' . $nextThree . '-' . $lastFour;
+        return $phoneNumber;
+    }
+}
 ?>

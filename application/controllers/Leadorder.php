@@ -1564,7 +1564,7 @@ class Leadorder extends MY_Controller
                     $error=$res['msg'];
                 } else {
                     if ($fldname=='contact_emal') {
-                        if (!$this->func->valid_email_address($newval)) {
+                        if (valid_email_address($newval)) {
                             $mdata['locstatus']=1;
                         } else {
                             $mdata['locstatus']=0;
@@ -1798,7 +1798,7 @@ class Leadorder extends MY_Controller
                         }
                     }
                     // Prepare View 
-                    $imptintid='imprintdetails'.$this->func->uniq_link(15);
+                    $imptintid='imprintdetails'.uniq_link(15);
                     $options=array(
                         'details'=>$details,
                         'item_number'=>$res['item_number'],
@@ -2831,7 +2831,6 @@ class Leadorder extends MY_Controller
                         $shpreload=$this->config->item('pathpreload');
                         $mdata['proofdocurl']=  str_replace($fullpreload,$shpreload, $proofdoc['src']);
                     }
-
                     $mdata['proofdocname']=$proofdoc['source_name'];
                 }
             }
@@ -2840,7 +2839,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    // Ticket related with order
+    // Ticket related with order ????????????????????????????
     public function order_ticket() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2882,7 +2881,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    // Save ticket
+    // Save ticket ??????????????
     public function save_orderticket() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2966,7 +2965,7 @@ class Leadorder extends MY_Controller
                 $shipview='';
                 $numaddr=1;
                 $showalltrack=0;
-                $session_id='shiptraccodes'.$this->func->uniq_link(15);
+                $session_id='shiptraccodes'.uniq_link(15);
 
                 if ($leadorder['order_system']=='new') {
                     foreach ($shipaddrs as $srow) {
@@ -3491,7 +3490,7 @@ class Leadorder extends MY_Controller
 
                 $shipaddrview=$this->_build_shippadress_view($shipping_address, $shipping, $order_qty, $edit);
                 $shipstotal=$this->_build_shiptotals_view($shipping_address, $order_qty);
-                $session_id='multiship'.$this->func->uniq_link(15);
+                $session_id='multiship'.uniq_link(15);
                 $options=array(
                     'shipping'=>$shipping,
                     'edit'=>$edit,
@@ -3755,16 +3754,6 @@ class Leadorder extends MY_Controller
                                 $mdata['stateview']=$this->load->view('leadorderdetails/shipping_state_select', $stateoptions, TRUE);
                             }
                         }
-//                        if ($fldname=='state_id') {                        
-//                            $shipaddr=$srow;
-//                            if ($shipaddr['taxview']==0) {
-//                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
-//                            } else {                                    
-//                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);                                    
-//                            }
-//                            $mdata['taxview']=$taxview;                        
-//                            $mdata['taxdata']=1;
-//                        }
                         $shipaddr=$srow;
                         if ($shipaddr['taxview']==0) {
                             $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
@@ -3928,18 +3917,6 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    // View Item Image
-    public function viewitemimage() {
-        $item_id=$this->input->get('id');
-        $res=$this->leadorder_model->get_leadorder_itemimage($item_id);
-        if ($res['result']==$this->error_result) {
-            die($res['msg']);
-        }
-        $viewopt=$res['viewoptions'];
-        $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
-        echo $content;
-    }
-
     private function _build_shiptotals_view($shipping_address, $order_qty) {
         $totalqty=$totalship=$totaltax=0;
         foreach ($shipping_address as $srow) {
@@ -4088,7 +4065,6 @@ class Leadorder extends MY_Controller
                     $error=$locres['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
-
                 $newpay=array(
                     'type'=>'payment',
                     'replica'=>$this->USER_REPLICA,
@@ -4099,7 +4075,6 @@ class Leadorder extends MY_Controller
                 );
                 usersession('newpayment', $newpay);
                 $mdata['content']=$this->load->view('leadorderdetails/newpayment_view', $newpay, TRUE);
-
             }
             // Calc new period for lock
             $mdata['loctime'] = (time() + $this->config->item('loctimeout')) * 1000;
@@ -4216,64 +4191,6 @@ class Leadorder extends MY_Controller
         $item_number=strtoupper($item_num);
         $get_dat=$this->leadorder_model->search_items($item_number);
         echo json_encode($get_dat);
-
-    }
-    // Check lock status of order
-    public function checklockedorder() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error='';
-            $postdata=$this->input->post();
-            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
-            $leadorder=usersession($ordersession);
-            if (empty($leadorder)) {
-                $error = $this->restore_orderdata_error;
-            } else {
-                $curlock=$this->input->post('curlock');
-                $order=$leadorder['order'];
-                $order_id=$order['order_id'];
-                $editbtn=$switchtempl='&nbsp;';
-                if ($order_id<=0) {
-                    $mdata['lockstatus']=$curlock;
-                } else {
-                    if ($order['is_canceled']) {
-                        $editbtn=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
-                    } else {
-                        $this->load->model('engaded_model');
-                        $options=array(
-                            'entity'=>'ts_orders',
-                            'entity_id'=>$order_id,
-                        );
-                        $engadres=$this->engaded_model->check_engade($options);
-                        $mdata['lockstatus']=$engadres['result'];
-                        if ($engadres['result']!=$curlock) {
-                            if ($engadres['result']==$this->success_result) {
-                                $editbtn=$this->load->view('leadorderdetails/orderedit_btn_view', array(), TRUE);
-                                $switchtempl=$this->load->view('leadorderdetails/order_systemselect_view', array(), TRUE);
-                            } else {
-                                // Lock view
-                                $voptions=array(
-                                    'user'=>$engadres['lockusr'],
-                                );
-                                $editbtn=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
-                            }
-                        } else {
-                            if ($engadres['result']==$this->error_result) {
-                                // Lock view
-                                $voptions=array(
-                                    'user'=>$engadres['lockusr'],
-                                );
-                                $editbtn=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
-                            }
-                        }
-                    }
-                }
-                $mdata['editbutton']=$editbtn;
-                $mdata['switchtemplate']=$switchtempl;
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
     }
 
     // Update data about locked for Edit
@@ -4365,7 +4282,6 @@ class Leadorder extends MY_Controller
 
                 if ($res['result'] == $this->error_result) {
                     $error = $res['msg'];
-                    /* Build new content for proofs */
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -4511,48 +4427,6 @@ class Leadorder extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
-    }
-
-    public function art_showtemplates() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $postdata=$this->input->post();
-            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
-            $leadorder=usersession($ordersession);
-
-            if (empty($leadorder)) {
-                $error=$this->restore_orderdata_error;
-            } else {
-                $this->load->model('leadorder_model');
-                $res=$this->leadorder_model->get_templates($leadorder);
-
-                $error=$res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    $templates=$res['templates'];
-                    $mdata['custom']=$res['custom'];
-                    if ($res['custom']==1) {
-                        $templates=$res['templates'];
-                        $templ_options=array();
-                        if (count($templates)==0) {
-                            $error='Empty list of Templates';
-                        } else {
-                            $templ_options['templates_list']=$this->load->view('artpage/templates_list_view',array('templates'=>$templates),TRUE);
-                            $mdata['content']=$this->load->view('artpage/item_templates_view',$templ_options,TRUE);
-                        }
-                    } else {
-                        if (count($templates)==0) {
-                            $error='Empty list of Templates';
-                        } else {
-                            $mdata['templates']=$templates;
-                        }
-
-                    }
-                }
-                $this->ajaxResponse($mdata, $error);
-
-            }
-        }
     }
 
     public function show_update_details() {

@@ -3045,6 +3045,30 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
+    // Get Update details
+    public function get_updatehistory_details($artwork_history_id) {
+        $out=array('result'=>  Artwork_model::ERROR_RESULT,'msg'=>'History Update Not Found');
+        $this->db->select('ah.artwork_history_id, ah.created_time, ah.message, u.user_name, u.user_leadname, ah.parsed_mailbody, ah.message_details');
+        $this->db->select('a.order_id, o.create_date as order_date, a.mail_id, e.email_date');
+        $this->db->from('ts_artwork_history ah');
+        $this->db->join('users u','u.user_id=ah.user_id','left');
+        $this->db->join('ts_artworks a','a.artwork_id=ah.artwork_id');
+        $this->db->join('ts_orders o','o.order_id=a.order_id','left');
+        $this->db->join('ts_emails e','e.email_id=a.mail_id','left');
+        $this->db->where('ah.artwork_history_id',$artwork_history_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['artwork_history_id'])) {
+            $out['result']=  Artwork_model::SUCCESS_RESULR;
+            $out['head']=$res;
+            // Get Details
+            $this->db->select('*');
+            $this->db->from('ts_artwork_historydetails');
+            $this->db->where('artwork_history_id', $artwork_history_id);
+            $out['details']=$this->db->get()->result_array();
+        }
+        return $out;
+    }
+
     public function _artlocation_log($artwork_id, $location_id, $event) {
         $this->db->set('artwork_id', $artwork_id);
         $this->db->set('art_id', $location_id);
