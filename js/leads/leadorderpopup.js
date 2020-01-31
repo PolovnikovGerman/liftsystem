@@ -909,8 +909,13 @@ function init_leadorder_artmanage() {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         $.post(url,params,function(response){
             if (response.errors=='') {
-                show_popup1('approvemailarea');
-                $("div#popupwin").empty().html(response.data.content);
+                // show_popup1('approvemailarea');
+                // $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','390px');
+                $("#artNextModal").find('.modal-title').empty().html('Proof Doc Email');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
+
                 $("div.addbccapprove").click(function(){
                     var bcctype=$(this).data('applybcc');
                     if (bcctype=='hidden') {
@@ -969,8 +974,10 @@ function init_leadorder_artmanage() {
         var url='/leadorder/artlocation_rdnoteview';
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup1('logoupload');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','475px');
+                $("#artNextModal").find('.modal-title').empty().html('Redo Message');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 $("div.vectorsave_data").show();
                 $("textarea.artworkusertext").focus();
                 $("div.vectorsave_data").unbind('click').click(function(){
@@ -1028,7 +1035,11 @@ function change_artcustomer_text(artloc) {
     var url='/leadorder/artlocation_customtextview';
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('logoupload');
+            $("#artNextModal").find('div.modal-dialog').css('width','475px');
+            $("#artNextModal").find('.modal-title').empty().html('Location Customer Text');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+
             $("div#popupwin").empty().html(response.data.content);
             $("div.vectorsave_data").show();
             $("textarea.artworkusertext").focus();
@@ -1051,9 +1062,11 @@ function change_leadartlockfont(art_id) {
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('fontselectarea');
-            $("div#popupwin").empty().html(response.data.content);
-            $("div.imprintfonts").jqTransform();
+            $("#artNextModal").find('div.modal-dialog').css('width','1005px');
+            $("#artNextModal").find('.modal-title').empty().html('Select Font');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+            // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
                 $("input#fontselectfor").val(fontval);
@@ -1068,7 +1081,7 @@ function change_leadartlockfont(art_id) {
             $("div.font_button_select").click(function(){
                 var fontval=$("input#fontselectfor").val();
                 $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
-                disable_popup1();
+                $("#artNextModal").modal('hide');
                 change_leadartlocation('font', fontval, art_id);
                 $("input.art_input[data-artloc='"+art_id+"']").val(fontval);
             })
@@ -1090,7 +1103,7 @@ function save_leadordercustomtext(artloc) {
     var url='/leadorder/artlocation_rdnotesave';
     $.post(url, params, function(response){
         if (response.errors=='') {            
-            disable_popup1();  
+            $("#artNextModal").modal('hide');
             $("div.customertext[data-artloc='"+artloc+"']").removeClass('active').addClass(response.data.newclass);
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
@@ -1108,7 +1121,7 @@ function save_leadorderrdnote(artloc) {
     var url='/leadorder/artlocation_rdnotesave';
     $.post(url, params, function(response){
         if (response.errors=='') {            
-            disable_popup1();  
+            $("#artNextModal").modal('hide');
             $("div.redrawmsgarea[data-artloc='"+artloc+"']").removeClass('active').addClass(response.data.newclass);
             init_onlineleadorder_edit();
         } else {
@@ -1248,9 +1261,13 @@ function init_showartlocs() {
         $.post(url, params, function(response){
             if (response.errors=='') {
                 if (parseInt(response.data.custom)==1) {
-                    show_popup1('imprint_area');
+                    // show_popup1('imprint_area');
                 // openai(response.data.fileurl, response.data.filename);
-                    $("div#popupwin").empty().html(response.data.content);                    
+                    // $("div#popupwin").empty().html(response.data.content);
+                    $("#artNextModal").find('div.modal-dialog').css('width','665px');
+                    $("#artNextModal").find('.modal-title').empty().html('Item Template');
+                    $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#artNextModal").modal('show');
                 } else {
                     for (index = 0; index < response.data.templates.length; ++index) {                    
                         openai(response.data.templates[index]['fileurl'], response.data.templates[index]['filename']);
@@ -1275,7 +1292,6 @@ function init_showartlocs() {
             $.post(url, {'item_id':itemid}, function(response){
                 if (response.errors=='') {
                     openai(response.data.fileurl, response.data.filename);
-                    // window.open(response.data.fileurl, 'itemtemplate', 'width=300,height=200,toolbar=0')
                 } else {
                     show_error(response);
                 }
@@ -1302,7 +1318,7 @@ function send_leadapprovemail() {
     var url="/leadorder/sendproofs";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("div#profdocsshowarea").empty().html(response.data.content).css('width', parseInt(response.data.profdocwidth));
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();                    
@@ -1310,8 +1326,6 @@ function send_leadapprovemail() {
             show_error(response);
         }
     }, 'json');
-    /* */
-    
 }
 
 // Change Art Location Parameter
@@ -1558,8 +1572,13 @@ function show_leadorder_imprint(orderitem) {
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     $.post(url,params,function(response){
         if (response.errors=='') {
-            show_popup1('leadorderimprintdetails');
-            $("div#popupwin").empty().html(response.data.content);
+            // 1052px
+            // show_popup1('leadorderimprintdetails');
+            // $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-dialog').css('width','1077px');
+            $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
             // Init Save functions
             init_imprint_details();
             $("input#loctimeout").val(response.data.loctime);
@@ -1669,21 +1688,21 @@ function init_imprint_details() {
         },'json');
     });
     // View Location
-    $("div.locattempl.active").bt({        
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 220,            
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        ajaxPath: ["$(this).attr('href')"]
-    });        
+    // $("div.locattempl.active").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 220,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     ajaxPath: ["$(this).attr('href')"]
+    // });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
-        disable_popup1();
+        $("#artNextModal").modal('hide');
     });
 }
 
@@ -1701,9 +1720,7 @@ function edit_imprintnote(detail) {
         href: '/leadorder/edit_repeatnote',
         data: params,
         onComplete: function() {
-            // init_check();
             $.colorbox.resize();
-            // cm_tooltip('#editviewarea .cm_tooltip');
             init_edit_repeatnote(detail);
         }
     });    
@@ -1786,7 +1803,7 @@ function save_imprint_details() {
     
     $.post(url, params , function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("#ordertotaloutput").empty().html(response.data.order_revenue);            
             $("div.imprintdataarea[data-orderitem='"+response.data.order_item_id+"']").empty().html(response.data.imprint_content);
             $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
@@ -1900,10 +1917,11 @@ function change_leadorder_item(params) {
 }
 
 function init_confirmshipcost(content) {
-    show_popup1('uploadproofdocsarea');
-    $("div#popupwin").empty().html(content);
+    $("#artNextModal").find('div.modal-dialog').css('width','455px');
+    $("#artNextModal").find('.modal-title').empty().html('Change Shipping Cost');
+    $("#artNextModal").find('div.modal-body').empty().html(content);
+    $("#artNextModal").modal('show');
     /* Init restore shipcost */
-    
     $("div.restoreoldshipcost").unbind('click').click(function(){
         var fldname='shipping';
         var newval=$("input#orderoldshipcostvalue").val();
@@ -1918,7 +1936,7 @@ function init_confirmshipcost(content) {
         $("#loader").show();
         $.post(url, params, function(response){
             if (response.errors=='') {
-                disable_popup1();                
+                $("#artNextModal").modal('hide');
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 $("#ordertotaloutput").empty().html(response.data.order_revenue);
                 $("input.salestaxcost").val(response.data.tax);
@@ -1937,13 +1955,16 @@ function init_confirmshipcost(content) {
         },'json');                
     });       
     $("div.leavenewshipcost").unbind('click').click(function(){
-        disable_popup1();
+        $("#artNextModal").modal('hide');
         init_onlineleadorder_edit();
     });
 }
 
 function init_leadorder_shipping() {
-    // $("input.eventdatevalue").datepicker();
+    $("input.eventdatevalue").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:'shipping'});
@@ -2389,8 +2410,10 @@ function init_leadorder_shipping() {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});        
         $.post(url,params,function(response){
             if (response.errors=='') {
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','350px');
+                $("#artNextModal").find('.modal-title').empty().html('Tax Exception Doc');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_taxdocupload();
                 $("div.artlogouploadsave_data").unbind('click').click(function(){
                     var newdoc=$("input#filename").val();
@@ -2412,13 +2435,9 @@ function init_leadorder_shipping() {
         var url="/leadorder/multishipview";
         $.post(url,params , function(response){
             if (response.errors=='') {
-                show_popup1('multiaddressshipping');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    disable_popup1();
-                    $("div#popupwin").empty();
-                    init_onlineleadorder_edit();
-                });
+                $("#artNextModal").find('div.modal-dialog').css('width','625px');
+                $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("div.manageship.save").hide();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
@@ -2436,13 +2455,10 @@ function init_leadorder_shipping() {
         var url="/leadorder/multishipview";
         $.post(url,params, function(response){
             if (response.errors=='') {
-                show_popup1('multiaddressshipping');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    disable_popup1();
-                    $("div#popupwin").empty();
-                    init_onlineleadorder_edit();                
-                });
+                $("#artNextModal").find('div.modal-dialog').css('width','625px');
+                $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
@@ -2461,7 +2477,7 @@ function edit_multishipaddress() {
     var url="/leadorder/multishipview";
     $.post(url,params, function(response){
         if (response.errors=='') {
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
             init_multiaddress_ship();
@@ -2474,12 +2490,8 @@ function edit_multishipaddress() {
 // Multiship View
 function init_multiaddress_ship() {
     $("input.eventdatevalue").datepicker({
-        beforeShow:function(input) {
-        $(input).css({
-            "position": "relative",
-            "z-index": 183,
-        });
-        }    
+        autoclose: true,
+        todayHighlight: true
     });
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
@@ -2493,7 +2505,7 @@ function init_multiaddress_ship() {
             if (response.errors=='') {                
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 // Save button
-                show_multishipsave(response);                
+                show_multishipsave(response);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
@@ -2819,8 +2831,7 @@ function init_multiaddress_ship() {
         params.push({name:'shipsession', value: $("input#shipsession").val()});        
         $.post(url,params, function(response){
             if (response.errors=='') {
-                disable_popup1();
-                $("div#popupwin").empty();
+                $("#artNextModal").modal('hide');
                 // Show new content
                 $("div.bl_ship_tax_content").empty().html(response.data.content);
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
@@ -2901,7 +2912,7 @@ function save_taxdoc(shipaddr, newdoc, srcname) {
     var url="/leadorder/taxexcptdocsave";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
         } else {
@@ -3077,8 +3088,10 @@ function init_leadorder_charges() {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});        
         $.post(url,params,function(response){
             if (response.errors=='') {
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','350px');
+                $("#artNextModal").find('.modal-title').empty().html('Credit App Doc');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_taxdocupload();
                 $("div.artlogouploadsave_data").unbind('click').click(function(){
                     var newdoc=$("input#filename").val();
@@ -3124,7 +3137,7 @@ function save_creditappdoc(newdoc, srcname) {
     var url="/leadorder/creditappdocsave";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").hide();
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
         } else {
@@ -3140,12 +3153,10 @@ function init_orderbottom_content(edit_mode) {
         var url="/leadorder/order_ticket";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup1('ticketdata');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    $("div#popupwin").empty();
-                    disable_popup1();
-                });
+                $("#artNextModal").find('div.modal-dialog').css('width','975px');
+                $("#artNextModal").find('.modal-title').empty().html('Tickets');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 $("form#tickededitform").find("input#order_num").prop('readonly','readonly');
                 // $("form#tickededitform").find("select#type").prop('disabled',true);
                 $("div#popupwin a.saveticketdat").unbind('click').click(function(){
@@ -3164,13 +3175,11 @@ function init_orderbottom_content(edit_mode) {
         var params=new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         $.post(url, params, function(response){
-            if (response.errors=='') {                
-                show_popup1('shiptrackpopup');
-                $("div#popupwin").empty().html(response.data.content);                
-                $("a#popupClose").unbind('click').click(function(){
-                    $("div#popupwin").empty();
-                    disable_popup1();                    
-                });                
+            if (response.errors=='') {
+                $("#artNextModal").find('div.modal-dialog').css('width','925px');
+                $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_orderstatus_change(edit_mode);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
@@ -3199,7 +3208,7 @@ function save_orderticket() {
     var url="/leadorder/save_orderticket";
     $.post(url, dat, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $(".ticketdataviewarea").empty().html(response.data.ticket_content);
             $("input#loctimeout").val(response.data.loctime);            
             init_onlineleadorder_edit();
@@ -3365,13 +3374,12 @@ function init_orderstatus_change(edit_mode) {
             var url="/leadorder/shiptrackmessage_send";            
             $.post(url,params, function(response){
                 if (response.errors=='') {
-                    $("div#popupwin").empty();
-                    disable_popup1();
+                    $("#artNextModal").modal('hide');
                     $(".shippingdataviewarea").empty().html(response.data.shipstatus);
                     if (edit_mode==1) {
                         $("input#loctimeout").val(response.data.loctime);
                         init_onlineleadorder_edit();
-                    }                    
+                    }
                 } else {
                     show_error(response);
                 }
@@ -3386,14 +3394,13 @@ function init_orderstatus_change(edit_mode) {
         params.push({name:'shiptraccodes', value: $("input#tracksession").val()});            
         $.post(url,params,function(response){
             if (response.errors=='') {
-                $("div#popupwin").empty();
-                disable_popup1();
+                $("#artNextModal").modal('hide');
                 $("#loader").hide();
                 $(".shippingdataviewarea").empty().html(response.data.shipstatus);
                 if (edit_mode==1) {
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
-                }                
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -3494,7 +3501,6 @@ function shiptrack_message_change(fldname, newval) {
 
 // New Manualy Payment
 function init_newpayment() {
-
     $("input.paydatadetails.paydate").datepicker({
         autoclose: true,
         todayHighlight: true
@@ -3558,9 +3564,9 @@ function change_order_template() {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         $.post(url,params, function(response){
             if (response.errors=='') {
-                $("#pop_content").empty().html(response.data.content);            
+                // $("#pop_content").empty().html(response.data.content);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
                 clearTimeout(timerId);
-                // timerId = setTimeout('updlockedorder()', timeoutlock);                
                 init_onlineleadorder_edit();                
             } else {
                 show_error(response);
@@ -3581,21 +3587,24 @@ function place_neworder() {
         if (response.errors=='') {
             save_leadorderdata();
         } else {
-            show_popup1('uploadproofdocsarea');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-dialog').css('width','475px');
+            $("#artNextModal").find('.modal-title').empty().html('Place Order');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+
+            // show_popup1('uploadproofdocsarea');
+            // $("div#popupwin").empty().html(response.data.content);
             // Init choice
             $("div.leavesamepayment").unbind('click').click(function(){
-                disable_popup1();
+                // disable_popup1();
+                $("#artNextModal").modal('hide');
                 save_leadorderdata();
             });
             $("div.applynewpayment").unbind('click').click(function(){
-                disable_popup1();
+                // disable_popup1();
+                $("#artNextModal").modal('hide');
                 change_paymenttotal();
             });    
-            $("a#popupClose").unbind('click').click(function(){
-                disable_popup1();
-                $("#loader").hide();
-            });
         }
     },'json');
 }
@@ -3630,6 +3639,22 @@ function save_leadorderdata() {
         if (response.errors=='') {       
             clearTimeout(timerId);
             // Current page
+
+            /*if (callpage=='artorderlist') {
+                $("#orderlist").show();
+                init_orders();
+            }*/
+
+            $("#pop_content").empty().html(response.data.content);
+            $("#loader").hide();
+            if(typeof response.data.popupmsg !== 'undefined') {
+                $("#flash").css('width','975');
+                $.flash(response.data.popupmsg,5000);
+            }
+            navigation_init();
+
+            /*
+            $("#artModal").modal('hide');
             if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
@@ -3659,6 +3684,7 @@ function save_leadorderdata() {
                 }
                 navigation_init();                
             }
+            */
         } else {
             $("#loader").hide();
             show_error(response);            

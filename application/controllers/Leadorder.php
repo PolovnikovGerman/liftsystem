@@ -57,7 +57,14 @@ class Leadorder extends MY_Controller
                     $options['order_data']=$order_data;
                     $options['leadsession']=$leadsession;
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
-                    $mdata['content']=$content;
+                    // $mdata['content']=$content;
+                    $head_options = [
+                        'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+                        'prvorder' => 0,
+                        'nxtorder' => 0,
+                        'order_id' => 0,
+                    ];
+                    $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     $locking='';
                 } else {
                     if ($edit==0) {
@@ -73,6 +80,7 @@ class Leadorder extends MY_Controller
                             'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
+                            'order_id' => $orddata['order_id'],
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 0);

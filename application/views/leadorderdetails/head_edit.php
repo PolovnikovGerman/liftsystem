@@ -24,8 +24,14 @@
             </div>
         </div>
         <div class="button_save text_style_1 text_white">
-            <div class="button_save_text orderdatasave">save</div>
+            <?php if ($order_id==0) { ?>
+            <?php } else { ?>
+                <div class="button_save_text orderdatasave">save</div>
+            <?php } ?>
+
         </div>
-        <div class="timeroutarea"></div>
+        <?php if ($order_id>0) { ?>
+            <div class="timeroutarea"></div>
+        <?php } ?>
     </div>
 </div>

@@ -97,6 +97,7 @@ function general_view_init() {
     });
     $('div.artlastmessageview').hover(
         function(){
+            $(".popover").hide();
             $(".art_tooltip").hide();
             var e=$(this);
             $.get(e.data('messageview'),function(d) {
@@ -143,18 +144,12 @@ function general_view_init() {
         change_generalcc(order_id);
     })
 
-    // $("div.artstage").unbind('click').click(function(){
-    //     var order_id=$(this).data('orderid');
-    //     order_artstage(order_id);
-    // })
-
     $("div.rowdata").find('div.ordernote').unbind('click').click(function(){
         var order_id=$(this).data('orderid');
         edit_generalartnote(order_id);
     });
     $("div.addneworder").unbind('click').click(function(){
-        // var order_id=$(this).data('orderid');
-        order_artstage(0);
+        order_artstage(0,'artorderlist');
     });
 }
 /* Inline Edit */
