@@ -57,4 +57,52 @@ Class Utils extends CI_Controller
         die('{error: "server-error query params not passed"}');
     }
 
+    function redrawattach() {
+
+        $this->load->helper('upload');
+        $filename = '';
+        $filesize = 0;
+        $file = null;
+        $path = $this->config->item('upload_path_preload');
+        $path_sh = $this->config->item('pathpreload');
+
+        $arrayext=array('jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png');
+        if (isset($_GET['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } elseif (isset($_FILES['qqfile'])) {
+            $file = new qqUploadedFileForm();
+        } elseif (isset($_POST['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } else {
+            die('{error: "server-error file not passed"}');
+        }
+
+        if ($file) {
+            $filename = $file->getName();
+            $filesize = $file->getSize();
+
+            if ($filesize == 0)
+                die('{error: "server-error file size is zero"}');
+
+            $pathinfo = pathinfo($file->getName());
+
+            $filename = uniq_link(12);
+            $ext = strtolower($pathinfo['extension']);
+            if (!in_array($ext, $arrayext )) {
+                $these = implode(', ', $arrayext);
+                echo (json_encode(array('success' => false, 'error' => 'File has an invalid extension, it should be one of '. $these . '.')));
+                exit();
+            } else {
+                $file->save($path . $filename . '.' . $ext);
+                echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                exit();
+            }
+        } else {
+            echo (json_encode(array('success' => false,'path'=>$path)));
+            exit();
+        }
+
+        die('{error: "server-error query params not passed"}');
+    }
+
 }

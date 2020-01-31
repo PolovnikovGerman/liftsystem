@@ -8,7 +8,7 @@
         </div>
         <input type="hidden" id="sourcename" value=""/>
         <div class="artlogouploadsave_data">
-            <img src="/img/saveticket.png"/>
+            <img src="/img/leadorder/saveticket.png"/>
         </div>
     </div>
 </div>

@@ -16,6 +16,17 @@ function navigation_init() {
     });  
     $("div.button_edit_text").unbind('click').click(function(){
         edit_currentorder();
+    });
+    $("#artModal").find('button.close').unbind('click').click(function () {
+        // Check - may be we close edit content
+        $("#artModal").modal('hide');
+        if ($("input#root_call_page").length>0) {
+            var callpage=$("input#root_call_page").val();
+            if (callpage=='artorderlist') {
+                $("#orderlist").show();
+                init_orders();
+            }
+        }
     })
     $("input.artlocationinpt").prop('disabled', true);
     // Show Art Locat Images and AI
@@ -245,7 +256,7 @@ function init_onlineleadorder_edit() {
     // Cancel
     $("#artModal").find('button.close').unbind('click').click(function(){
         clearTimeout(timerId);
-        var callpage=$("input#callpage").val();
+        var callpage=$("input#root_call_page").val();
         // Check - may be we close edit content
         if ($("input#locrecid").length>0) {
             // Clean locked record
@@ -259,7 +270,7 @@ function init_onlineleadorder_edit() {
         $("#artModal").modal('hide');
         $("#artModalLabel").empty();
         $("#artModal").find('div.modal-body').empty();
-        // console.log('Call Page '+callpage);
+        console.log('Call Page '+callpage);
         // Current page
         if (callpage=='artorderlist') {
             $("#orderlist").show();
@@ -2413,12 +2424,7 @@ function init_leadorder_shipping() {
                 $("#artNextModal").find('.modal-title').empty().html('Tax Exception Doc');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal('show');
-                init_taxdocupload();
-                $("div.artlogouploadsave_data").unbind('click').click(function(){
-                    var newdoc=$("input#filename").val();
-                    var srcname=$("input#sourcename").val();
-                    save_taxdoc(shipaddr, newdoc, srcname);
-                });
+                init_taxdocupload(shipaddr);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -2861,7 +2867,7 @@ function show_multishipsave(response) {
     }
 }
 
-function init_taxdocupload() {
+function init_taxdocupload(shipadr) {
     var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
       '<em>Upload</em></span></div>' +
       '<ul class="qq-upload-list"></ul>' +
@@ -2872,24 +2878,21 @@ function init_taxdocupload() {
         element: document.getElementById('file-uploader'),
         allowedExtensions: ['pdf', 'eps','doc', 'docx'],
         action: '/utils/redrawattach',
-        template: temp,
+        /* template: temp, */
         multiple: false,
         debug: false,
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success) {
-                var url="/art/art_newartupload";
+                var url="/leadorder/taxexcptdocsave";
                 $("ul.qq-upload-list").css('display','none');
-                $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                var params = new Array();
+                params.push({name: 'shipadr', value: shipadr});
+                params.push({name: 'newdoc', value: responseJSON.filename});
+                params.push({name: 'srcname', value: responseJSON.source});
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                $.post(url, params, function(response){
                     if (response.errors=='') {
-                        $("#orderattachlists").empty().html(response.data.content);
-                        $("input#sourcename").val(responseJSON.source);
-                        $(".qq-uploader").hide();
-                        $("div.artlogouploadsave_data").show();
-                        $("div.delvectofile").click(function(){
-                            $("#orderattachlists").empty();
-                            $(".qq-uploader").show();
-                            $("div.artlogouploadsave_data").hide();
-                        })
+                        $("#artNextModal").modal('hide');
                     } else {
                         alert(response.errors);
                         if(response.data.url !== undefined) {

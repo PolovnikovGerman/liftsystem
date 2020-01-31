@@ -9,6 +9,7 @@ function order_artstage(order_id, callpage) {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
             $("#artModal").modal('show');
             if (parseInt(order_id)==0) {
                 init_onlineleadorder_edit();
