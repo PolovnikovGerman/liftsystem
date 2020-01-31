@@ -3047,7 +3047,7 @@ Class Artwork_model extends MY_Model
 
     // Get Update details
     public function get_updatehistory_details($artwork_history_id) {
-        $out=array('result'=>  Artwork_model::ERROR_RESULT,'msg'=>'History Update Not Found');
+        $out=array('result'=>  $this->error_result, 'msg'=>'History Update Not Found');
         $this->db->select('ah.artwork_history_id, ah.created_time, ah.message, u.user_name, u.user_leadname, ah.parsed_mailbody, ah.message_details');
         $this->db->select('a.order_id, o.create_date as order_date, a.mail_id, e.email_date');
         $this->db->from('ts_artwork_history ah');
@@ -3058,7 +3058,7 @@ Class Artwork_model extends MY_Model
         $this->db->where('ah.artwork_history_id',$artwork_history_id);
         $res=$this->db->get()->row_array();
         if (isset($res['artwork_history_id'])) {
-            $out['result']=  Artwork_model::SUCCESS_RESULR;
+            $out['result']= $this->success_result;
             $out['head']=$res;
             // Get Details
             $this->db->select('*');
