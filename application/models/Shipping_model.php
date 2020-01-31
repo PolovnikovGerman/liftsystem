@@ -91,8 +91,8 @@ Class Shipping_model extends MY_Model
         $proof_date=$start_time;
 
         $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
-        $this->db->from("{$this->item_table} i");
-        $this->db->join("{$this->venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
         $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
         $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
         $this->db->where('i.item_id',$item_id);
@@ -232,8 +232,8 @@ Class Shipping_model extends MY_Model
         $proof_date=$start_time;
 
         $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
-        $this->db->from("{$this->item_table} i");
-        $this->db->join("{$this->venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
         $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
         $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
         $this->db->where('i.item_id',$item_id);
@@ -388,8 +388,8 @@ Class Shipping_model extends MY_Model
         $dayweek=date('w',$start_date);
         /* Get weekends */
         $this->db->select('item_id, c.calendar_id as calendar_id, c.mon_work, c.tue_work, c.wed_work, c.thu_work, c.fri_work, c.sat_work, c.sun_work',FALSE);
-        $this->db->from("{$this->item_table} i");
-        $this->db->join("{$this->venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
         $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
         $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
         $this->db->where('i.item_id',$item_id);

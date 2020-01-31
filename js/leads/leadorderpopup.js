@@ -351,7 +351,7 @@ function init_onlineleadorder_edit() {
     //
     //     }
     // })
-    $("select.order_itemnumber_select").searchable();
+    // $("select.order_itemnumber_select").searchable();
     $("select.order_itemnumber_select").unbind('change').change(function(){
         var params=new Array();        
         params.push({name: 'entity', value:'order'});
@@ -706,7 +706,7 @@ function show_leadorditemsearch() {
             } else {
                 $("div.order_itemedit_text").hide();
             }
-            $("select#orderitem_id").searchable();
+            // $("select#orderitem_id").searchable();
             $("select#orderitem_id").focus();
             $("select#orderitem_id").change(function(){
                 var item_id=$("select#orderitem_id").val();

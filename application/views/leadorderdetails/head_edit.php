@@ -3,7 +3,7 @@
         <div id="currentorderheaddataarea">
             <?= $order_head ?>
         </div>
-        <div class="block_4">
+        <div class="block_4 <?=$order_id==0 ? 'neworder' : ''?>">
             <div class="block_4_text text_blue">
                 <div class="block_4_text1 hidden">
                     <img src="/img/leadorder/arrow_l.png" width="8" height="10" alt="arrow left"> prev
@@ -23,13 +23,13 @@
                 <div class="block_4_text2 hidden">pdf</div>
             </div>
         </div>
-        <div class="button_save text_style_1 text_white">
-            <?php if ($order_id==0) { ?>
-            <?php } else { ?>
+        <?php if ($order_id==0) { ?>
+            <div class="placeorderbtn">ORDER</div>
+        <?php } else { ?>
+            <div class="button_save text_style_1 text_white">
                 <div class="button_save_text orderdatasave">save</div>
-            <?php } ?>
-
-        </div>
+            </div>
+        <?php } ?>
         <?php if ($order_id>0) { ?>
             <div class="timeroutarea"></div>
         <?php } ?>

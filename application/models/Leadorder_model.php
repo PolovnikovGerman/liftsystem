@@ -1014,7 +1014,7 @@ Class Leadorder_model extends My_Model {
     public function edit_contact($leadorder, $contact_id, $fldname, $newval, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         if ($fldname=='contact_emal' && !empty($newval)) {
-            if (!$this->func->valid_email_address($newval)) {
+            if (!valid_email_address($newval)) {
                 $out['msg']='Contact Email Incorrect';
                 return $out;
             }
@@ -1036,7 +1036,7 @@ Class Leadorder_model extends My_Model {
         }
         $contacts[$idx][$fldname]=$newval;
         if ($fldname=='contact_emal') {
-            if (!$this->func->valid_email_address($newval)) {
+            if (!valid_email_address($newval)) {
                 $contacts[$idx]['contact_art']=0;
                 $contacts[$idx]['contact_inv']=0;
                 $contacts[$idx]['contact_trk']=0;
@@ -3105,7 +3105,7 @@ Class Leadorder_model extends My_Model {
                 // Devide value by coma
                 $valdata=  explode(',', $newval);
                 foreach ($newval as $row) {
-                    if (!empty($row) && !$this->func->valid_email_address($row)) {
+                    if (!empty($row) && !valid_email_address($row)) {
                         $out['msg']='Email Address '.$row.' is not Valid';
                         return $out;
                     }
@@ -4187,8 +4187,8 @@ Class Leadorder_model extends My_Model {
             if ($data['newappcreditlink']<0) {
                 // New Upload Link
                 $docsrc=$data['credit_applink'];
-                $docparams=$this->func->extract_filename($docsrc);
-                $newdocname=$this->func->uniq_link(15).'.'.$docparams['ext'];
+                $docparams=extract_filename($docsrc);
+                $newdocname=uniq_link(15).'.'.$docparams['ext'];
                 $doctarget=$this->config->item('creditappdoc').$newdocname;
                 if (!is_dir($this->config->item('creditappdoc'))) {
                     mkdir($this->config->item('creditappdoc'),0777);
@@ -4241,7 +4241,7 @@ Class Leadorder_model extends My_Model {
         $this->db->set('discount_val', floatval($data['discount_val']));
         $this->db->set('discount_descript', $data['discount_descript']);
         if ($order_id==0) {
-            $confirm=strtoupper($this->func->uniq_link(2,'chars')).'-'.$this->func->uniq_link(5,'digits');
+            $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
             $this->db->set('order_confirmation', $confirm);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
@@ -7597,7 +7597,7 @@ Class Leadorder_model extends My_Model {
         $contacts=$leadorder['contacts'];
         $inv=array();
         foreach ($contacts as $row) {
-            if (intval($row['contact_inv'])==1 && $this->func->valid_email_address($row['contact_emal'])) {
+            if (intval($row['contact_inv'])==1 && valid_email_address($row['contact_emal'])) {
                 $inv[]=array(
                     'name'=>$row['contact_name'],
                     'email'=>$row['contact_emal'],

@@ -217,6 +217,9 @@ input.calendarinpt[readonly="readonly"] {
     height: 34px;
     margin-left: -2px;
 }
+.block_4.neworder {
+    width: 229px;
+}
 .block_4_text {
     width: 246px;
     line-height: 26px;

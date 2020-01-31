@@ -1572,7 +1572,7 @@ class Leadorder extends MY_Controller
                     $error=$res['msg'];
                 } else {
                     if ($fldname=='contact_emal') {
-                        if (valid_email_address($newval)) {
+                        if (empty($newval) || !valid_email_address($newval)) {
                             $mdata['locstatus']=1;
                         } else {
                             $mdata['locstatus']=0;
