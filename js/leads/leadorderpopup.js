@@ -3863,8 +3863,8 @@ function show_updatedetails(history) {
     var url="/leadorder/show_update_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-dialog').css('width','465px');
-            $("#artNextModal").find('.modal-title').empty().html('');
+            $("#artNextModal").find('div.modal-dialog').css('width','742px');
+            $("#artNextModal").find('.modal-title').empty().html('Update Details');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal('show');
         } else {
