@@ -678,14 +678,12 @@ class United_parcel_service
                     }
                     if (isset($resp->Candidate->AddressKeyFormat->PoliticalDivision1)) {
                         $return_array['state']=$resp->Candidate->AddressKeyFormat->PoliticalDivision1;
-                        /*
+
                         $this->_CI->load->model('shipping_model');
                         $statedet=$this->_CI->shipping_model->get_stateups($return_array['state'], $cntcode);
                         if ($statedet['result']==1) {
                             $return_array['state_id']=$statedet['state_id'];
                         }
-                         * 
-                         */
                     }
                     return $return_array;
                 } else {

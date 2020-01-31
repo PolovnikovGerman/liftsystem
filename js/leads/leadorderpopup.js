@@ -3846,12 +3846,10 @@ function show_updatedetails(history) {
     var url="/leadorder/show_update_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup1('question_details_dialog');
-            $("#popupwin").empty().html(response.data.content);
-            $("a#popupClose").unbind('click').click(function(){
-                $("#popupwin").empty();
-                disable_popup1();
-            });
+            $("#artNextModal").find('div.modal-dialog').css('width','465px');
+            $("#artNextModal").find('.modal-title').empty().html('');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
         } else {
             show_error(response);
         }
