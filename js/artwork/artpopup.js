@@ -728,19 +728,14 @@ function add_location(artwork,art_type) {
 
 /* Uploader for Logo files */
 function init_artlogoupload() {
-    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
-      '<em>Upload</em></span></div>' +
-      '<ul class="qq-upload-list"></ul>' +
-      '<ul class="qq-upload-drop-area"></ul>'+
-      '<div class="clear"></div></div>';
 
     var uploader = new qq.FileUploader({
         element: document.getElementById('file-uploader'),
         allowedExtensions: ['jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png'],
         action: '/artproofrequest/art_redrawattach',
-        // template: temp,
         multiple: false,
         debug: false,
+        uploadButtonText:'',
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success) {
                 var url="/artproofrequest/art_newartupload";

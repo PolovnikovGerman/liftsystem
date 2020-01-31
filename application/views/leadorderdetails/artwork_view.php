@@ -78,10 +78,10 @@
         </div>
         <?php if ($edit==1) { ?>
             <div class="button_addproof">
-                <div class="button_addproof_text">add</div>
+                <div class="button_addproof_text" id="uploadproofdoc" data-artwork="<?=$artwork_id?>">add</div>
             </div>            
             <div class="button_proofemail">
-                <div class="button_email_text">email</div>
+                <div class="button_email_text" data-artwork="<?=$artwork_id?>">email</div>
             </div>
         <?php } ?>
     </div>

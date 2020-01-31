@@ -81,6 +81,9 @@ class Art extends MY_Controller {
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
         // File Download
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+        // Datepicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
 
         $options = [
             'title' => $head['title'],

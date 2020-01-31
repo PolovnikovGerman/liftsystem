@@ -474,7 +474,8 @@ input.order_itemqty_input {
     float: left;
     width: 536px;
     height: 162px;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
+    overflow-y: auto;
     overflow-x: hidden;
 }
 .bord_l {border-left: 1px solid #b5b5b5;}
@@ -1894,7 +1895,7 @@ input.artrepeat {
 }
 .button_addproof {
     float: left;
-    background: url(/img/leadorder/button_email.png) no-repeat transparent;    
+    /* background: url(/img/leadorder/button_email.png) no-repeat transparent; */
     width: 64px;
     height: 27px;
     margin: 2px 0px 0px;

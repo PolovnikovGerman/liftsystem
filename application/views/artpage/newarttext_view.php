@@ -1,7 +1,9 @@
 <div class="vectorupload_container">
     <div class="vectorupload_data">
         <input type="hidden" id="newartid" value="<?=$artwork_id?>"/>
-        <div class="vectorupload_title"><?=$title?></div>
+        <?php if (isset($title)) { ?>
+            <div class="vectorupload_title"><?=$title?></div>
+        <?php } ?>
         <div class="vectoruploads">
             <textarea class="artworkusertext"><?=$usrtxt?></textarea>
         </div>

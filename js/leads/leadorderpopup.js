@@ -351,7 +351,7 @@ function init_onlineleadorder_edit() {
     //
     //     }
     // })
-    // $("select.order_itemnumber_select").searchable();
+    $("select.order_itemnumber_select").searchable();
     $("select.order_itemnumber_select").unbind('change').change(function(){
         var params=new Array();        
         params.push({name: 'entity', value:'order'});
@@ -557,12 +557,10 @@ function init_onlineleadorder_edit() {
         var url="/leadorder/paymentadd";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup1('manualpayments');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    disable_popup1();
-                    $("div#popupwin").empty();
-                });                
+                $("#artNextModal").find('div.modal-dialog').css('width','356px');
+                $("#artNextModal").find('.modal-title').empty().html('New Manual Payment');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_newpayment();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -583,19 +581,61 @@ function init_onlineleadorder_edit() {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/orderdiscount_preview";
         $.post(url, params, function(response){
-            show_popup1('logoupload');
-            $("div#popupwin").empty().html(response.data.content);
+            $("#artNextModal").find('div.modal-dialog').css('width','475px');
+            $("#artNextModal").find('.modal-title').empty().html(response.data.title);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
+
             $("div.vectorsave_data").show();
             $("textarea.artworkusertext").focus();
             $("input#loctimeout").val(response.data.loctime);
             $("div.vectorsave_data").unbind('click').click(function(){
                 save_discountdescription();
             });
-            // init_onlineleadorder_edit();                            
             create_editorder_timer();
         },'json');        
     })
-    
+    // Upload Proof doc
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/artpage/artpopup_add_btn.png" alt="Add Proof"/></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('uploadproofdoc'),
+        action: '/artproofrequest/proofattach',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        params: {
+            'artwork_id': $("#uploadproofdoc").data("artwork")
+        },
+        allowedExtensions: ['pdf','PDF'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadorder/saveproofdocload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'proofdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.srcname});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("div#profdocsshowarea").empty().html(response.data.content).css('width', response.data.profdocwidth+'px');
+                        init_leadorder_artmanage();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
@@ -612,7 +652,7 @@ function save_discountdescription() {
     var url='/leadorder/orderdiscount_save';
     $.post(url, params, function(response){
         if (response.errors=='') {            
-            disable_popup1();  
+            $("#artNextModal").modal('hide');
             $("div.discountdescript").removeClass('empty_icon_file').removeClass('icon_file').addClass(response.data.newclass);
             init_onlineleadorder_edit();
         } else {
@@ -657,8 +697,10 @@ function show_leadorditemsearch() {
         if (response.errors=='') {
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
-            show_popup1('leadorderitems');
-            $("div#popupwin").empty().html(response.data.content);            
+            $("#artNextModal").find('div.modal-dialog').css('width','455px');
+            $("#artNextModal").find('.modal-title').empty().html('Order Item');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
             if (response.data.showother=='1') {
                 $("div.order_itemedit_text").show();
             } else {
@@ -703,8 +745,7 @@ function save_leadorderitem() {
     var url="/leadorder/save_orderitem";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
-            $("div#popupwin").empty();
+            $("#artNextModal").modal('hide');
             if (response.data.order_system=='old') {
                 $("input.order_itemnumber_input").val(response.data.item_num);
                 $("input.order_itemdescript_input").val(response.data.item_description);
@@ -726,7 +767,6 @@ function save_leadorderitem() {
 }
 
 function init_leadorder_artmanage() {
-    // Add a art location
     $("div.button_newart_text").unbind('click').click(function(){
         var loctype=$("select#arttypechoice").val();
         var params=new Array();
@@ -735,8 +775,14 @@ function init_leadorder_artmanage() {
         var url="/leadorder/artlocation_add";
         $.post(url, params, function(response){
             if (loctype=='Logo' || loctype=='Reference') {
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','455px');
+                if (loctype=='Logo') {
+                    $("#artNextModal").find('.modal-title').empty().html('New Logo Location');
+                } else {
+                    $("#artNextModal").find('.modal-title').empty().html('New Reference Location');
+                }
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_artlogoupload();
                 $("div.artlogouploadsave_data").click(function(){
                     save_newleadlogoartloc(loctype);
@@ -748,8 +794,10 @@ function init_leadorder_artmanage() {
                 init_leadorder_artmanage();            
             } else {
                 // Copy
-                show_popup1('uploadartlogoarea');
-                $("div#popupwin").empty().html(response.data.content);
+                $("#artNextModal").find('div.modal-dialog').css('width','455px');
+                $("#artNextModal").find('.modal-title').empty().html('New Repeat Location');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 $("div.orderarchive_save").click(function(){
                     var order_num=$("input#archiveord").val();
                     var artwork_id=$("input#newartid").val();
@@ -769,25 +817,7 @@ function init_leadorder_artmanage() {
             remove_leadartlocat(artloc);
         }
     });
-    $("div.button_addproof").unbind('click').click(function(){
-        var url="/leadorder/proofdoc_add";
-        var params=new Array();
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                show_popup1('uploadproofdocsarea');
-                $("div#popupwin").empty().html(response.data.content);
-                init_proofupload();
-                $("div.vectorsave_data").click(function(){
-                    save_newleadartproof();
-                });   
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+
     // Candidat to send
     $("input.sendprofdocdata").unbind('change').change(function(){
         var newval=0;
@@ -988,6 +1018,7 @@ function init_leadorder_artmanage() {
     // Show Source and Redrawen 
     init_showartlocs();
 }
+
 
 // Change User Text
 function change_artcustomer_text(artloc) {
@@ -1283,24 +1314,6 @@ function send_leadapprovemail() {
     
 }
 
-function save_newleadartproof() {
-    var url="/leadorder/saveproofdocload";
-    var params=new Array();
-    params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    params.push({name: 'uploadsession', value: $("input#uploadsession").val()});
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            disable_popup1();
-            $("div#profdocsshowarea").empty().html(response.data.content).css('width', parseInt(response.data.profdocwidth));
-            $("input#loctimeout").val(response.data.loctime);
-            init_onlineleadorder_edit();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-    
-}
-
 // Change Art Location Parameter
 function change_leadartlocation(locitem, newval, artloc) {
     var params=new Array();
@@ -1370,7 +1383,7 @@ function save_newleadlogoartloc(loctype) {
     var url="/leadorder/artnewlocation_save";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("div#artlocationsarea").empty().html(response.data.content);
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
@@ -1389,7 +1402,7 @@ function save_newartloccopy(artwork_id, order_num) {
     var url="/leadorder/artnewlocation_save";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            disable_popup1();
+            $("#artNextModal").modal('hide');
             $("div#artlocationsarea").empty().html(response.data.content);
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
@@ -3481,14 +3494,10 @@ function shiptrack_message_change(fldname, newval) {
 
 // New Manualy Payment
 function init_newpayment() {
-    $("div.paytype").jqTransform();
+
     $("input.paydatadetails.paydate").datepicker({
-        beforeShow:function(input) {
-        $(input).css({
-            "position": "relative",
-            "z-index": 183,
-        });
-        }    
+        autoclose: true,
+        todayHighlight: true
     });
     $("div.paymentdatasave").unbind('click').click(function(){
         var params=$("form#paymentdataform").serializeArray();
@@ -3496,8 +3505,7 @@ function init_newpayment() {
         var url="/leadorder/payment_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                disable_popup1();
-                $("div#popupwin").empty();
+                $("#artNextModal").modal('hide');
                 $("div.payments_table.payments_table_text").empty().html(response.data.content);
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 if (response.data.ordersystem=='new') {

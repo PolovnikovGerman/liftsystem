@@ -4,9 +4,7 @@
         <div class="artlogoupload_title">Upload Logo</div>
         <div id="orderattachlists" class="artlogouploads">&nbsp;</div>
         <div class="clear"></div>
-        <div id="file-uploader">
-
-        </div>
+        <div id="file-uploader"></div>
         <div class="artlogouploadsave_data">
             <img src="/img/artpage/saveticket.png"/>
         </div>

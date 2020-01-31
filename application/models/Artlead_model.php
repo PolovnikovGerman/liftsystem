@@ -308,40 +308,37 @@ Class Artlead_model extends MY_Model
     }
 
     // Save uploaded
-    public function save_artproofdocs($leadorder, $proofupload, $ordersession, $uplsession) {
-        $out=array('result'=>$this->error_result,'msg'=>$this->init_msg);
-        $proofdocs=$leadorder['artproofs'];
-        $newidx=count($proofdocs)+1;
-        foreach ($proofupload as $row) {
-            $newdoc=array(
-                'artwork_proof_id'=>$newidx*(-1),
-                'created_time'=>date('Y-m-d H:i:s'),
-                'proof_ordnum'=>$newidx,
-                'sended'=>0,
-                'sended_time'=>0,
-                'approved'=>0,
-                'approved_time'=>0,
-                'source_name'=>$row['filename'],
-                'proofdoc_link'=>'',
-                'src'=>$row['filesource'],
-                'out_proofname'=>'proof_'.str_pad($newidx,2,'0',STR_PAD_LEFT),
-                'senddoc'=>0,
-                'deleted'=>'',
-            );
-            $proofdocs[]=$newdoc;
-            $newidx++;
-        }
-        $leadorder['artproofs']=$proofdocs;
+    public function save_artproofdocs($leadorder, $proofdoc, $sourcename, $ordersession)
+    {
+        $out = array('result' => $this->error_result, 'msg' => $this->init_msg);
+        $proofdocs = $leadorder['artproofs'];
+        $newidx = count($proofdocs) + 1;
+        $newdoc = array(
+            'artwork_proof_id' => $newidx * (-1),
+            'created_time' => date('Y-m-d H:i:s'),
+            'proof_ordnum' => $newidx,
+            'sended' => 0,
+            'sended_time' => 0,
+            'approved' => 0,
+            'approved_time' => 0,
+            'source_name' => $sourcename,
+            'proofdoc_link' => '',
+            'src' => $this->config->item('pathpreload').$proofdoc,
+            'out_proofname' => 'proof_' . str_pad($newidx, 2, '0', STR_PAD_LEFT),
+            'senddoc' => 0,
+            'deleted' => '',
+        );
+        $proofdocs[] = $newdoc;
+        $leadorder['artproofs'] = $proofdocs;
         usersession($ordersession, $leadorder);
-        usersession($uplsession, NULL);
-        $out['result']=$this->success_result;
-        $out_proof=array();
+        $out['result'] = $this->success_result;
+        $out_proof = array();
         foreach ($proofdocs as $row) {
-            if ($row['deleted']=='') {
-                $out_proof[]=$row;
+            if ($row['deleted'] == '') {
+                $out_proof[] = $row;
             }
         }
-        $out['outproof']=$out_proof;
+        $out['outproof'] = $out_proof;
         return $out;
     }
 

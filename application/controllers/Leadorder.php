@@ -597,9 +597,10 @@ class Leadorder extends MY_Controller
                 $options=array(
                     'artwork_id'=>-1,
                     'usrtxt'=>$leadorder['order']['discount_descript'],
-                    'title'=>'Type Discount Description',
+                    /* 'title'=>'Type Discount Description', */
                 );
                 $mdata['content']=$this->load->view('artpage/newarttext_view', $options, TRUE);
+                $mdata['title']='Type Discount Description';
                 $error='';
             }
             // Calc new period for lock
@@ -2649,17 +2650,8 @@ class Leadorder extends MY_Controller
                     $error=$locres['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
-                $uplsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : '');
-                if ($uplsession=='') {
-                    $error=$this->restore_orderdata_error;
-                    $this->ajaxResponse($mdata, $error);
-                }
-                $proofupload=usersession($uplsession);
-                if (empty($proofupload)) {
-                    $error=$this->restore_orderdata_error;
-                } else {
                     $this->load->model('artlead_model');
-                    $res=$this->artlead_model->save_artproofdocs($leadorder, $proofupload['docs'], $ordersession, $uplsession);
+                    $res=$this->artlead_model->save_artproofdocs($leadorder, $postdata['proofdoc'], $postdata['sourcename'] , $ordersession);
                     if ($res['result']==$this->error_result) {
                         $error=$res['msg'];
                     } else {
@@ -2668,7 +2660,6 @@ class Leadorder extends MY_Controller
                         $numoutprofdoc=ceil(count($proofs)/5);
                         $mdata['profdocwidth']=$numoutprofdoc*160;
                     }
-                }
             }
             // Calc new period for lock
             $mdata['loctime'] = (time() + $this->config->item('loctimeout')) * 1000;
