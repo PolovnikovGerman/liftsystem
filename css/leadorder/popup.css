@@ -728,9 +728,10 @@ span.text_bold {
     width: 70px;
 }
 input.eventdatevalue {
-    height: 16px;
+    height: 22px;
     font-size: 11px;
-    width: 53px;
+    width: 59px;
+    line-height: 22px;
 }
 .rushselectarea {
     float: left;
@@ -2250,7 +2251,7 @@ input.orderitem_price {
     margin-top: 13px;
 }
 
-.imprintdetailstitle > .orderblank > .label {
+.imprintdetailstitle > .orderblank .labeltxt {
     float: left;
     font-size: 12px;
     margin-left: 7px;

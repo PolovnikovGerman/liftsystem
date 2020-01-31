@@ -8,7 +8,7 @@
             </div>
             <div class="block_7_artwork2">
                 <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=$artwork_rush==0 ? '' : 'checked="checked"'?>
-                 <?=($edit==0 ? 'disabled="disabled"' : 'data-entity="artwork" data-field="artwork_rush"')?> <?=($rushallow==0 ? 'disabled="disabled"' : '')?> > rush
+                 <?=($edit==0 ? 'disabled="disabled"' : 'data-entity="artwork" data-field="artwork_rush"')?> > rush
             </div>
         </div>
     </div>

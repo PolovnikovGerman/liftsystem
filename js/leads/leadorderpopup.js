@@ -30,12 +30,10 @@ function navigation_init() {
         var url="/leadorder/multishipview";
         $.post(url,params, function(response){
             if (response.errors=='') {
-                show_popup1('multiaddressshipping');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    disable_popup1();
-                    $("div#popupwin").empty();
-                });
+                $("#artNextModal").find('div.modal-dialog').css('width','625px');
+                $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
             } else {
                 show_error(response);                
             }
@@ -46,12 +44,10 @@ function navigation_init() {
         var url="/leadorder/creditapp_lines";
         $.post(url,{'edit':0}, function(response){
             if (response.errors=='') {
-                show_popup1('creditapplines');
-                $("div#popupwin").empty().html(response.data.content);
-                $("a#popupClose").unbind('click').click(function(){
-                    disable_popup1();
-                    $("div#popupwin").empty();
-                });                
+                $("#artNextModal").find('div.modal-dialog').css('width','1030px');
+                $("#artNextModal").find('.modal-title').empty().html('Credit App');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal('show');
                 init_creditappfunc();
             } else {
                 show_error(response);
@@ -64,11 +60,14 @@ function navigation_init() {
         if (confirm('Duplicate Order ?')==true) {
             var params=new Array();
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'current_page', value: $("#curpage").val()});
             var url="/leadorder/leadorder_dublicate";
             $("#loader").show();
             $.post(url,params,function(response){
                 if (response.errors=='') {
-                    $("#pop_content").empty().html(response.data.content);
+                    // $("#pop_content").empty().html(response.data.content);
+                    $("#artModalLabel").empty().html(response.data.header);
+                    $("#artModal").find('div.modal-body').empty().html(response.data.content);
                     clearTimeout(timerId);
                     init_onlineleadorder_edit();
                     $("#loader").hide();
@@ -85,7 +84,7 @@ function navigation_init() {
         var url="/leadorder/prepare_invoice";        
         $.post(url,params, function(response){
             if (response.errors=='') {
-                var newWin = window.open(response.data.docurl,"Invoice","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");                
+                var newWin = window.open(response.data.docurl,"Invoice","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
             } else {
                 show_error(response)
             }
@@ -3644,12 +3643,12 @@ function save_leadorderdata() {
                 $("#orderlist").show();
                 init_orders();
             }*/
-
-            $("#pop_content").empty().html(response.data.content);
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#loader").hide();
             if(typeof response.data.popupmsg !== 'undefined') {
-                $("#flash").css('width','975');
-                $.flash(response.data.popupmsg,5000);
+                // $("#flash").css('width','975');
+                // $.flash(response.data.popupmsg,5000);
             }
             navigation_init();
 

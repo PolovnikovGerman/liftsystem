@@ -4,7 +4,7 @@
         <div class="imprintdetailstitle">
             <div class="orderblank">
                 <input type="checkbox" class="orderblankchk" data-fldname="order_blank" <?=($order_blank==1 ? 'checked' : '')?> />
-                <div class="label">Blank, no imprinting</div>
+                <div class="labeltxt">Blank, no imprinting</div>
             </div>
         </div>
         <div class="imprintdetailsdata_left">

@@ -354,10 +354,9 @@ class Leadorder extends MY_Controller
             } else {
                 $this->load->model('leadorder_model');
                 $res=$this->leadorder_model->dublicate_order($leadorder, $this->USR_ID);
-
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                     $options=array();
                     $orddata=$res['order'];
                     // Build Head                    
@@ -370,9 +369,16 @@ class Leadorder extends MY_Controller
                     $options['order_data']=$order_data;
                     $options['order_confirmation']='Duplicate';
                     $options['leadsession']=$ordersession;
-                    $options['current_page']='orders';
+                    $options['current_page']=ifset($postdata,'current_page','orders');
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
                     $mdata['content']=$content;
+                    $head_options = [
+                        'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+                        'prvorder' => 0,
+                        'nxtorder' => 0,
+                        'order_id' => 0,
+                    ];
+                    $mdata['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     /* Save to session */
                     if ($res['order_system_type']=='old') {
                         $leadorder=array(
@@ -405,7 +411,6 @@ class Leadorder extends MY_Controller
                         );
                     }
                     usersession($ordersession, $leadorder);
-                    $mdata['content']=$content;
                 }
                 $this->ajaxResponse($mdata, $error);
             }
@@ -4022,6 +4027,7 @@ class Leadorder extends MY_Controller
                 } else {
                     $mdata['docurl']=$res['html_path'];
                 }
+                $mdata['content'] = $res;
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -4387,21 +4393,38 @@ class Leadorder extends MY_Controller
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
                         $res['unlocked']=$engade_res['result'];
                         $orddata=$res['order'];
-                        $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                        $options['prvorder']=$res['prvorder'];
-                        $options['nxtorder']=$res['nxtorder'];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $options['order_data']=$order_data;
-                        $options['order_dublcnum']=$orddata['order_num'];
                         $options['order_system']=$res['order_system_type'];
-                        $options['unlocked']=$engade_res['result'];
                         $options['leadsession']=$ordersession;
-                        $options['current_page']='orders';
+                        // $options['current_page']='orders';
+                        $options['current_page'] = $callpage;
+                        $options['unlocked'] = $engade_res['result'];
                         $mdata['content']=$this->load->view('leadorderdetails/top_menu_view',$options, TRUE);
+                        $head_options = [
+                            'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+                            'prvorder' => $res['prvorder'],
+                            'nxtorder' => $res['nxtorder'],
+                            'order_id' => $orddata['order_id'],
+                            'unlocked' => $engade_res['result'],
+                        ];
+                        if ($engade_res['result']==$this->error_result) {
+                            $voptions=array(
+                                'user'=>$engade_res['lockusr'],
+                            );
+                            // $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            $head_options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                        } elseif ($orddata['is_canceled']==1) {
+                            $head_options['unlocked']=$this->error_result;
+                            $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+                        }
+                        $head_options['order_dublcnum']=$orddata['order_num'];
+                        $mdata['header'] = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
+
                         /* Save to session */
                         $leadorder=array(
                             'order'=>$orddata,
