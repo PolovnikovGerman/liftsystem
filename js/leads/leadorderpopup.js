@@ -219,10 +219,12 @@ function edit_currentorder() {
     params.push({name: 'order', value: $("input#orderdataid").val()});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});    
     params.push({name: 'page', value: $("input#currentpage").val()});
+    params.push({name: 'edit', value: 1});
     var url="/leadorder/leadorder_change";
     $.post(url,params, function(response){
         if (response.errors=='') {
-            $("#pop_content").empty().html(response.data.content);
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
             clearTimeout(timerId);            
             init_onlineleadorder_edit();            
         } else {
@@ -245,7 +247,8 @@ function init_onlineleadorder_edit() {
         place_neworder();
     })
     // Cancel
-    $("#popupContactClose").unbind('click').click(function(){                
+    // $("#popupContactClose").unbind('click').click(function(){
+    $("#artModal").find('button.close').unbind('click').click(function(){
         clearTimeout(timerId);
         var callpage=$("input#callpage").val();
         // Check - may be we close edit content
@@ -258,9 +261,15 @@ function init_onlineleadorder_edit() {
             $.post(url, params, function(response){                
             },'json');                    
         }
-        $("#pop_content").empty();
-        disablePopup();
-            // Current page
+        $("#artModal").modal('hide');
+        $("#artModalLabel").empty();
+        $("#artModal").find('div.modal-body').empty();
+        // console.log('Call Page '+callpage);
+        // Current page
+        if (callpage=='artorderlist') {
+            $("#orderlist").show();
+            init_orders();
+        }
             if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
@@ -281,9 +290,9 @@ function init_onlineleadorder_edit() {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
                 invetory_exitorder(response.data.color);                
-            } else {
+/*            } else {
                 var curpage=$("input#leadorderpage").val();
-                pageLeadorderCallback(curpage);
+                pageLeadorderCallback(curpage); */
             }
     });
     
@@ -320,36 +329,36 @@ function init_onlineleadorder_edit() {
     // $("input.contact_phone_input").mask("999-999-9999",{placeholder:" "});
     
     // Calendar call
-    $("input#shipdatecalendinput").on('click').datepicker();
+    // $("input#shipdatecalendinput").on('click').datepicker();
     var order_date=$("input.calendarinpt").data('order');
     
-    $("input.calendarinpt").datepicker({
-        // date: $(this).data('order'),
-        defaultDate:new Date(order_date),
-        onSelect: function(date) {
-            var params=new Array();        
-            params.push({name: 'entity', value:'order'});
-            params.push({name: 'fldname', value: 'order_date'});
-            params.push({name: 'newval', value: date});
-            params.push({name: 'ordersession', value: $("input#ordersession").val()});    
-            var url="/leadorder/change_leadorder_item";
-            $("#loader").show();
-            $.post(url, params, function(response){
-                if (response.errors=='') {   
-                    // $("input.calendarinpt").val(response.data.order_items);
-                    $("div.orderdatechange").empty().html(response.data.order_dateview);
-                    $("input#loctimeout").val(response.data.loctime);
-                    init_onlineleadorder_edit();                    
-                    $("#loader").hide();
-                } else {
-                    $("#loader").hide();
-                    show_error(response);
-                }
-            },'json');
-            
-        }
-    })
-    $("select.order_itemnumber_select").searchable();
+    // $("input.calendarinpt").datepicker({
+    //     // date: $(this).data('order'),
+    //     defaultDate:new Date(order_date),
+    //     onSelect: function(date) {
+    //         var params=new Array();
+    //         params.push({name: 'entity', value:'order'});
+    //         params.push({name: 'fldname', value: 'order_date'});
+    //         params.push({name: 'newval', value: date});
+    //         params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    //         var url="/leadorder/change_leadorder_item";
+    //         $("#loader").show();
+    //         $.post(url, params, function(response){
+    //             if (response.errors=='') {
+    //                 // $("input.calendarinpt").val(response.data.order_items);
+    //                 $("div.orderdatechange").empty().html(response.data.order_dateview);
+    //                 $("input#loctimeout").val(response.data.loctime);
+    //                 init_onlineleadorder_edit();
+    //                 $("#loader").hide();
+    //             } else {
+    //                 $("#loader").hide();
+    //                 show_error(response);
+    //             }
+    //         },'json');
+    //
+    //     }
+    // })
+    // $("select.order_itemnumber_select").searchable();
     $("select.order_itemnumber_select").unbind('change').change(function(){
         var params=new Array();        
         params.push({name: 'entity', value:'order'});
@@ -1928,8 +1937,7 @@ function init_confirmshipcost(content) {
 }
 
 function init_leadorder_shipping() {
-    $("input.eventdatevalue").datepicker();
-    // $("input.")
+    // $("input.eventdatevalue").datepicker();
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:'shipping'});
@@ -2951,13 +2959,7 @@ function init_leadorder_billing() {
 }
 
 function init_leadorder_charges() {
-    // $("input.pay_method_input2").unmask().mask("9999-9999-9999-9999",{placeholder:" "});
-// $("input.pay_method_input2").unmask().mask("9999-9999-9999-9999");
-//    $("input.pay_method_input2").formatter({
-//        'pattern': '{{9999}}-{{9999}}-{{9999}}-{{9999}}',
-//        'persistent': true,
-//    });
-    $("input.creditappduedate").datepicker();
+    // $("input.creditappduedate").datepicker();
     $("input.chargeinput").unbind('change').change(function(response){
         var fldname=$(this).data('field');
         var chargeid=$(this).data('charge');

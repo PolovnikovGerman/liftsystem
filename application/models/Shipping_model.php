@@ -2,6 +2,8 @@
 
 Class Shipping_model extends MY_Model
 {
+    private $error_message='Unknown error. Try later';
+    private $empty_htmlcontent='&nbsp;';
 
     public function __construct()
     {

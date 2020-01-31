@@ -20,3 +20,4 @@ composer.lock
 /tests/results/
 .htaccess
 /uploads/
+/wsdl/

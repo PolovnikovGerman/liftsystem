@@ -495,4 +495,14 @@ if (!function_exists('businessdate')) {
     }
 }
 
+if (!function_exists('ValidEmail')) {
+    function ValidEmail($mail) {
+        if (empty($mail)) {
+            return FALSE;
+        } else {
+            return valid_email_address($mail);
+        }
+    }
+}
+
 ?>

@@ -1859,7 +1859,8 @@ input.artrepeat {
     font-weight: bold;
     height: 28px;
     line-height: 28px;
-    margin-left: 6px;
+    margin-left: 2px;
+    width: 14px;
 }
 .button_update {
     background: url("/img/leadorder/button_update.png") no-repeat transparent;    

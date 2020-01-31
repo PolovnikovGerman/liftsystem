@@ -24,7 +24,7 @@ class Leadorder extends MY_Controller
     {
     }
 
-    public function order_change() {
+    public function leadorder_change() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
@@ -74,14 +74,10 @@ class Leadorder extends MY_Controller
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
                         ];
-                        $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                        $options['prvorder']=$res['prvorder'];
-                        $options['nxtorder']=$res['nxtorder'];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
-                        // $options['unlocked']=$engade_res['result'];
                         $head_options['unlocked']=$engade_res['result'];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(
@@ -90,13 +86,10 @@ class Leadorder extends MY_Controller
                             // $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
                             $head_options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
                         } elseif ($orddata['is_canceled']==1) {
-                            // $options['unlocked']=$this->error_result;
-                            // $options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                             $head_options['unlocked']=$this->error_result;
                             $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
                         $options['order_data']=$order_data;
-                        // $options['order_dublcnum']=$orddata['order_num'];
                         $head_options['order_dublcnum']=$orddata['order_num'];
                         $header = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
                         $options['order_system']=$res['order_system_type'];
@@ -118,9 +111,13 @@ class Leadorder extends MY_Controller
                         $locking=$this->engaded_model->lockentityrec($lockoptions);
                         $res['locrecid']=$locking;
                         // Build Head
-                        $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
+                        $head_options = [
+                            'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
+                            'prvorder' => $res['prvorder'],
+                            'nxtorder' => $res['nxtorder'],
+                        ];
                         // Build View
-                        $data=$this->func->_prepare_leadorder_view($res,$this->USR_ID, $edit);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $edit);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -129,6 +126,8 @@ class Leadorder extends MY_Controller
                         $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
                         $options['current_page']=(isset($postdata['page']) ? $postdata['page'] : 'art_tasks');
                         $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
+                        // $head_options['order_dublcnum']=$orddata['order_num'];
+                        $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     }
                 }
                 /* Save to session */

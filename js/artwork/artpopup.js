@@ -1,6 +1,6 @@
 /* Order Popup */
 function order_artstage(order_id, callpage) {
-    var url="/leadorder/order_change";
+    var url="/leadorder/leadorder_change";
     var params = {order: order_id, 'page': callpage, 'edit': 0};
     $.post(url, params, function(response){
         if (response.errors=='') {

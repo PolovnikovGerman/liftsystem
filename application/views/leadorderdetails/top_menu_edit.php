@@ -6,8 +6,6 @@
     <input type="hidden" id="locrecid" value="<?=$locrecid?>"/>
     <?php } ?>
     <input type="hidden" id="loctimeout" value="<?=$timeout?>"/>
-    <div class="timeroutarea"></div>
-    </div>
     <div id="currentorderdataarea">
         <?=$order_data?>
     </div>    
