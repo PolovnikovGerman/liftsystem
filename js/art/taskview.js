@@ -71,18 +71,6 @@ function init_tasks_page() {
                 trigger: 'hover',
                 placement: 'right'
             });
-            // $("div.taskview_order").bt({
-            //     fill : '#EDEDED',
-            //     cornerRadius: 10,
-            //     width: 310,
-            //     padding: 10,
-            //     strokeWidth: '2',
-            //     positions: "top",
-            //     strokeStyle : '#FFFFFF',
-            //     strokeHeight: '18',
-            //     cssClass: 'green_tooltip',
-            //     cssStyles: {color: '#OOOOOO'}
-            // });
         } else {
             $("#loader").hide();
             show_error(response);
@@ -259,10 +247,10 @@ function call_details(obj) {
     var objid=obj.id;
     if (objid.substr(0,3)=='ord') {
         var order_id=objid.substr(3);
-        // order_artstage(order_id);
+        order_artstage(order_id,'art_tasks');
     } else {
         var mailid=objid.substr(2);
-        // artproof_lead(mailid)
+        artproof_lead(mailid);
     }
 }
 

@@ -25,6 +25,10 @@ function navigation_init() {
             if (callpage=='artorderlist') {
                 $("#orderlist").show();
                 init_orders();
+            } else if (callpage=='art_tasks') {
+                $("#taskview").show();
+                init_tasks_management();
+                init_tasks_page();
             }
         }
     })
@@ -270,11 +274,15 @@ function init_onlineleadorder_edit() {
         $("#artModal").modal('hide');
         $("#artModalLabel").empty();
         $("#artModal").find('div.modal-body').empty();
-        console.log('Call Page '+callpage);
+
         // Current page
         if (callpage=='artorderlist') {
             $("#orderlist").show();
             init_orders();
+        } else if (callpage=='art_tasks') {
+            $("#taskview").show();
+            init_tasks_management();
+            init_tasks_page();
         }
             if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           

@@ -414,7 +414,7 @@ Class Artlead_model extends MY_Model
         // Analise contacts
         $emails=array();
         foreach ($contacts as $row) {
-            if ($row['contact_art']==1 && $this->func->valid_email_address($row['contact_emal'])) {
+            if ($row['contact_art']==1 && valid_email_address($row['contact_emal'])) {
                 $emails[]=array(
                     'contact_name'=>$row['contact_name'],
                     'contact_emal'=>$row['contact_emal'],
@@ -458,8 +458,7 @@ Class Artlead_model extends MY_Model
     public function send_artproofmail($data, $leadorder, $user_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
         $proofdocs=$leadorder['artproofs'];
-        // $contacts=$leadorder['contacts'];
-        // $order=$leadorder['order'];
+        $this->load->model('artproof_model');
         $artwork=$leadorder['artwork'];
         $artwork_id=$artwork['artwork_id'];
         $this->load->model('user_model');
@@ -515,19 +514,19 @@ Class Artlead_model extends MY_Model
             if ($row['deleted']=='' && $row['senddoc']==1) {
                 $row['sended']=1;
                 $row['sended_time']=time();
-                $row['proofdoc_link']=(empty($row['proofdoc_link']) ? $this->func->uniq_link(20) : $row['proofdoc_link']);
+                $row['proofdoc_link']=(empty($row['proofdoc_link']) ? uniq_link(20) : $row['proofdoc_link']);
             }
             $res=$this->_save_proofdoc($row, $artwork_id, $user_id);
             if ($res['result']==$this->error_result) {
-                $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Lost Upload');
+                $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Lost Upload');
             } else {
                 if ($row['deleted']=='' && $row['senddoc']==1) {
-                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Send Proof');
+                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Send Proof');
                     array_push($attachlink, $row['proofdoc_link']);
                     $attachsrc = $row['proofdoc_link'];
                     $attachments[] = $proofurl . $attachsrc;
                 } else {
-                    $this->func->proofdoclog($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
+                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
                 }
             }
         }
@@ -587,7 +586,8 @@ Class Artlead_model extends MY_Model
         if (count($attachments) > 0) {
             $logoptions['attachments'] = $attachments;
         }
-        $this->func->logsendmail($logoptions);
+        $this->load->model('email_model');
+        $this->email_model->logsendmail($logoptions);
 
         $proofdat=$this->artwork_model->get_artproofs($artwork_id);
         $leadorder['artproofs']=$proofdat;
@@ -855,77 +855,77 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
-//    private function _save_proofdoc($proofdoc, $artwork_id, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
-//
-//        $fullpath=$this->config->item('artwork_proofs');
-//        $shrtpath=$this->config->item('artwork_proofs_relative');
-//        $fullpreload=$this->config->item('upload_path_preload');
-//
-//        if ($proofdoc['deleted'] != '') {
-//            if ($proofdoc['artwork_proof_id'] > 0) {
-//                $this->db->where('artwork_proof_id', $proofdoc['artwork_proof_id']);
-//                $this->db->delete('ts_artwork_proofs');
-//            }
-//            $out['result']=$this->success_result;
-//            return $out;
-//        }
-//        $saverow = 0;
-//        if ($proofdoc['artwork_proof_id'] < 0) {
-//            // Artwork Folder
-//            if (file_exists($proofdoc['src'])) {
-//                $this->_artworkfolder($fullpath, $artwork_id);
-//                // New Proof Doc
-//                $purename = str_replace($fullpreload, '', $proofdoc['src']);
-//                $target_file = $fullpath . $artwork_id . '/' . $purename;
-//                $cpres = @copy($proofdoc['src'], $target_file);
-//                if ($cpres) {
-//                    $saverow = 1;
-//                    $proofdoc['src'] = $shrtpath . $artwork_id . '/' . $purename;
-//                }
-//            }
-//        } else {
-//            $saverow = 1;
-//        }
-//        if ($saverow == 1) {
-//            $this->db->set('updated_user', $user_id);
-//            if (isset($proofdoc['src'])) {
-//                $this->db->set('proof_name', $proofdoc['src']);
-//            }
-//            if (isset($proofdoc['sended'])) {
-//                $this->db->set('sended', $proofdoc['sended']);
-//            }
-//            if (isset($proofdoc['sended_time'])) {
-//                $this->db->set('sended_time', $proofdoc['sended_time']);
-//            }
-//            if (isset($proofdoc['approved'])) {
-//                $this->db->set('approved', $proofdoc['approved']);
-//            }
-//            if (isset($proofdoc['approved_time'])) {
-//                $this->db->set('approved_time', $proofdoc['approved_time']);
-//            }
-//            if (isset($proofdoc['source_name'])) {
-//                $this->db->set('source_name', $proofdoc['source_name']);
-//            }
-//            if (isset($proofdoc['proofdoc_link']) && !empty($proofdoc['proofdoc_link'])) {
-//                $this->db->set('proofdoc_link', $proofdoc['proofdoc_link']);
-//            }
-//            if ($proofdoc['artwork_proof_id'] <= 0) {
-//                $this->db->set('artwork_id', $artwork_id);
-//                $this->db->set('created_user', $user_id);
-//                $this->db->set('created_time', date('Y-m-d H:i:s'));
-//                $this->db->insert('ts_artwork_proofs');
-//                $retval = $this->db->insert_id();
-//            } else {
-//                $this->db->where('artwork_proof_id', $proofdoc['artwork_proof_id']);
-//                $this->db->update('ts_artwork_proofs');
-//                $retval = $proofdoc['artwork_proof_id'];
-//            }
-//            $out['result']=$this->success_result;
-//            $out['artwork_proof_id']=$retval;
-//        }
-//        return $out;
-//    }
+    private function _save_proofdoc($proofdoc, $artwork_id, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
+
+        $fullpath=$this->config->item('artwork_proofs');
+        $shrtpath=$this->config->item('artwork_proofs_relative');
+        $fullpreload=$this->config->item('upload_path_preload');
+
+        if ($proofdoc['deleted'] != '') {
+            if ($proofdoc['artwork_proof_id'] > 0) {
+                $this->db->where('artwork_proof_id', $proofdoc['artwork_proof_id']);
+                $this->db->delete('ts_artwork_proofs');
+            }
+            $out['result']=$this->success_result;
+            return $out;
+        }
+        $saverow = 0;
+        if ($proofdoc['artwork_proof_id'] < 0) {
+            // Artwork Folder
+            if (file_exists($proofdoc['src'])) {
+                $this->_artworkfolder($fullpath, $artwork_id);
+                // New Proof Doc
+                $purename = str_replace($fullpreload, '', $proofdoc['src']);
+                $target_file = $fullpath . $artwork_id . '/' . $purename;
+                $cpres = @copy($proofdoc['src'], $target_file);
+                if ($cpres) {
+                    $saverow = 1;
+                    $proofdoc['src'] = $shrtpath . $artwork_id . '/' . $purename;
+                }
+            }
+        } else {
+            $saverow = 1;
+        }
+        if ($saverow == 1) {
+            $this->db->set('updated_user', $user_id);
+            if (isset($proofdoc['src'])) {
+                $this->db->set('proof_name', $proofdoc['src']);
+            }
+            if (isset($proofdoc['sended'])) {
+                $this->db->set('sended', $proofdoc['sended']);
+            }
+            if (isset($proofdoc['sended_time'])) {
+                $this->db->set('sended_time', $proofdoc['sended_time']);
+            }
+            if (isset($proofdoc['approved'])) {
+                $this->db->set('approved', $proofdoc['approved']);
+            }
+            if (isset($proofdoc['approved_time'])) {
+                $this->db->set('approved_time', $proofdoc['approved_time']);
+            }
+            if (isset($proofdoc['source_name'])) {
+                $this->db->set('source_name', $proofdoc['source_name']);
+            }
+            if (isset($proofdoc['proofdoc_link']) && !empty($proofdoc['proofdoc_link'])) {
+                $this->db->set('proofdoc_link', $proofdoc['proofdoc_link']);
+            }
+            if ($proofdoc['artwork_proof_id'] <= 0) {
+                $this->db->set('artwork_id', $artwork_id);
+                $this->db->set('created_user', $user_id);
+                $this->db->set('created_time', date('Y-m-d H:i:s'));
+                $this->db->insert('ts_artwork_proofs');
+                $retval = $this->db->insert_id();
+            } else {
+                $this->db->where('artwork_proof_id', $proofdoc['artwork_proof_id']);
+                $this->db->update('ts_artwork_proofs');
+                $retval = $proofdoc['artwork_proof_id'];
+            }
+            $out['result']=$this->success_result;
+            $out['artwork_proof_id']=$retval;
+        }
+        return $out;
+    }
 
     private function _artworkfolder($path, $artwork_id) {
         $pathdir=$path.$artwork_id;
