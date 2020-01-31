@@ -236,18 +236,14 @@ function edit_currentorder() {
 function init_onlineleadorder_edit() {
     // Create Edit Timer
     create_editorder_timer();
-    // Blinked text
-    // init_blinkedtext(1);    
     // Save
     $("div.orderdatasave").unbind('click').click(function(){
         save_leadorderdata();
     });
     $("div.placeorderbtn").unbind('click').click(function(){
-        // save_leadorderdata();
         place_neworder();
     })
     // Cancel
-    // $("#popupContactClose").unbind('click').click(function(){
     $("#artModal").find('button.close').unbind('click').click(function(){
         clearTimeout(timerId);
         var callpage=$("input#callpage").val();
@@ -295,39 +291,36 @@ function init_onlineleadorder_edit() {
                 pageLeadorderCallback(curpage); */
             }
     });
-    
     // Revert
-    $("div.button_revert_text").unbind('click').click(function(){
-        var order=$("input#orderdataid").val();
-        if (parseInt(order)===0) {
-            disablePopup();
-        } else {
-            clearTimeout(timerId);
-            var locrecid=$("input#locrecid").val();
-            var url="/orders/leadorder_edit";
-            var params=new Array();            
-            params.push({name: 'order_id', value: order});
-            params.push({name: 'locrecid', value: locrecid});
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    $("#pop_content").empty().html(response.data.content);
-                    $("#popupContactClose").unbind('click').click(function(){
-                        $("#pop_content").empty();
-                        disablePopup();
-                        var curpage=$("input#leadorderpage").val();
-                        pageLeadorderCallback(curpage);
-                    });
-                    navigation_init();
-                } else {
-                    show_error(response);
-                }
-            },'json');
-            
-        }
-    });
-    // Phone Mask
-    // $("input.contact_phone_input").mask("999-999-9999",{placeholder:" "});
-    
+    // $("div.button_revert_text").unbind('click').click(function(){
+    //     var order=$("input#orderdataid").val();
+    //     if (parseInt(order)===0) {
+    //         disablePopup();
+    //     } else {
+    //         clearTimeout(timerId);
+    //         var locrecid=$("input#locrecid").val();
+    //         var url="/orders/leadorder_edit";
+    //         var params=new Array();
+    //         params.push({name: 'order_id', value: order});
+    //         params.push({name: 'locrecid', value: locrecid});
+    //         $.post(url, params, function(response){
+    //             if (response.errors=='') {
+    //                 $("#pop_content").empty().html(response.data.content);
+    //                 $("#popupContactClose").unbind('click').click(function(){
+    //                     $("#pop_content").empty();
+    //                     disablePopup();
+    //                     var curpage=$("input#leadorderpage").val();
+    //                     pageLeadorderCallback(curpage);
+    //                 });
+    //                 navigation_init();
+    //             } else {
+    //                 show_error(response);
+    //             }
+    //         },'json');
+    //
+    //     }
+    // });
+
     // Calendar call
     // $("input#shipdatecalendinput").on('click').datepicker();
     var order_date=$("input.calendarinpt").data('order');

@@ -594,42 +594,42 @@ Class Shipping_model extends MY_Model
     }
 
 
-//    public function get_ship_methods($country_id,$option='all') {
-//
-//        $this->db->select('m.shipping_method_id, m.shipping_method_name, m.ups_code, m.default_rate, m.minimal_rate,
-//            m.shipping_method_available, zm.method_dimens,zm.method_percent');
-//        $this->db->from('sb_countries cnt');
-//        $this->db->join('sb_shipzone_methods zm','cnt.zone_id=zm.shipzone_id');
-//        $this->db->join('sb_shipping_methods m','m.shipping_method_id=zm.method_id');
-//        $this->db->where('cnt.country_id',$country_id);
-//        if ($option=='not_null') {
-//            $this->db->where('m.default_rate != ',0);
-//            $this->db->where('m.minimal_rate != ',0);
-//        }
-//        $this->db->order_by('m.sort');
-//        $result = $this->db->get()->result_array();
-//        return $result;
-//    }
-//
-//    public function get_stateups($statecode, $cntcode) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->select('s.state_id, s.state_name, c.country_id, c.country_name');
-//        $this->db->from('ts_states s');
-//        $this->db->join('ts_countries c','c.country_id=s.country_id');
-//        $this->db->where('c.country_iso_code_2', $cntcode);
-//        $this->db->where('s.state_code', $statecode);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['state_id'])) {
-//            $out['msg']='State Not Found';
-//        } else {
-//            $out['result']=$this->success_result;
-//            $out['state_id']=$res['state_id'];
-//            $out['state_name']=$res['state_name'];
-//            $out['country_id']=$res['country_id'];
-//            $out['country_name']=$res['country_name'];
-//        }
-//        return $out;
-//    }
+    public function get_ship_methods($country_id,$option='all') {
+
+        $this->db->select('m.shipping_method_id, m.shipping_method_name, m.ups_code, m.default_rate, m.minimal_rate,
+            m.shipping_method_available, zm.method_dimens,zm.method_percent');
+        $this->db->from('sb_countries cnt');
+        $this->db->join('sb_shipzone_methods zm','cnt.zone_id=zm.shipzone_id');
+        $this->db->join('sb_shipping_methods m','m.shipping_method_id=zm.method_id');
+        $this->db->where('cnt.country_id',$country_id);
+        if ($option=='not_null') {
+            $this->db->where('m.default_rate != ',0);
+            $this->db->where('m.minimal_rate != ',0);
+        }
+        $this->db->order_by('m.sort');
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
+    public function get_stateups($statecode, $cntcode) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('s.state_id, s.state_name, c.country_id, c.country_name');
+        $this->db->from('ts_states s');
+        $this->db->join('ts_countries c','c.country_id=s.country_id');
+        $this->db->where('c.country_iso_code_2', $cntcode);
+        $this->db->where('s.state_code', $statecode);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['state_id'])) {
+            $out['msg']='State Not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $out['state_id']=$res['state_id'];
+            $out['state_name']=$res['state_name'];
+            $out['country_id']=$res['country_id'];
+            $out['country_name']=$res['country_name'];
+        }
+        return $out;
+    }
 
     private function _get_default_calend() {
         $this->db->select('calendar_id');
