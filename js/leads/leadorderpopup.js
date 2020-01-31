@@ -3879,7 +3879,10 @@ function show_chargeattempts(order) {
     var url='/leadorder/show_charge_attempts';
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $.colorbox({html:response.data.content});            
+            $("#artNextModal").find('div.modal-dialog').css('width','856px');
+            $("#artNextModal").find('.modal-title').empty().html('Charge Attempts');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal('show');
         } else {
             show_error(response);
         }
