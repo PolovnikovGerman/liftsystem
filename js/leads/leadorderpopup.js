@@ -292,10 +292,6 @@ function init_onlineleadorder_edit() {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
                 init_paymonitor();
-            } else if (callpage=='art_tasks') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                init_tasks_page();
             } else if (callpage=='art_order') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
