@@ -422,7 +422,7 @@ if (!function_exists('calculate_shipcost')) {
         }
         $out['ship'] = $ship;
         $out['code'] = $code;
-        $out['codes'] = $codes;
+        // $out['codes'] = $codes;
         return $out;
     }
 }

@@ -4,6 +4,6 @@
         <input type="text" id="repeatnotevalue" value="<?=$repeat_note?>"/>
     </div>
     <div class="order_itemedit_save">
-        <img src="/img/saveticket.png" alt="Save"/>
+        <img src="/img/leadorder/saveticket.png" alt="Save"/>
     </div>    
 </div>

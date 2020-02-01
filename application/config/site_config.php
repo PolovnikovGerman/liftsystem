@@ -124,6 +124,8 @@ $config['default_paysystem']='paypal';
 $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',
+    'lift.stressballs.com',
+    'lift_stressballs.local',
 );
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
