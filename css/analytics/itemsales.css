@@ -1,0 +1,427 @@
+/*
+    Created on : Dec 14, 2015, 5:47:00 PM
+    Author     : german
+    Purpose : Item Sales Report
+*/
+.itemsalesreportarea {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    margin-top: 15px;
+    width: 995px;
+}
+.itemsalesheadrow {
+    clear: both;
+    float: left;
+    margin-bottom: 6px;
+    width: 100%;
+}
+.sortitemsalesarea {
+    float: left;
+    height: 26px;
+    line-height: 26px;
+    font-size: 13px;
+    width: 326px;
+}
+.sortitemsalesarea > div {
+    float: left;
+}
+.sortitemsalesarea > .label {
+    width: 50px;
+}
+.sortitemsalesarea > .selectsortarea {
+    border: 1px solid #767676;
+    background: none #e7e7e7;
+    font-weight: bold;
+}
+.sortitemsalesarea > .selectsortarea > input {
+    float: left;
+    margin-top: 6px;
+    width: 18px;
+}
+.sortitemsalesarea > .selectsortarea > .label {
+    float: left;
+    width: 57px;
+}
+.vendorchoicearea {
+    float: right;
+    height: 26px;
+    line-height: 26px;
+    font-size: 13px;
+}
+.vendorchoicearea  > .label {
+    float: left;
+    width: 50px;
+}
+.vendorchoicearea > .selectsortarea {
+    border:  1px solid #767676;
+    background: none #e7e7e7;
+    float: left;
+    font-weight: bold;
+}
+.vendorchoicearea > .selectsortarea > div {
+    float: left;
+}
+.vendorchoicearea > .selectsortarea > input {
+    float: left;
+    margin-top: 6px;
+    width: 18px;
+}
+.vendorchoicearea > .selectsortarea > .label {
+    width: 54px;
+}
+.vendorchoicearea > .selectsortarea > .labelallvend {
+    width: 79px;
+}
+.vendorcost {
+    float: left;
+    height: 18px;
+    line-height: 18px;
+    width: 207px;
+}
+.vendorcost > .label {
+    float: left;
+    font-size: 13px;
+    width: 78px;
+}
+.optionselect {
+    float: left;
+    width: 108px;
+}
+select.vendorcostcalcselect {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    width: 102px;
+}
+select.selectrepsoldcalcyear {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    width: 124px;
+}
+.itemsalesshowrecords {
+    float: right;
+    width: 156px;
+}
+.itemsalesshowrecords > select.perpage {
+    border: 1px solid #000000;
+    background: none #FFFFFF;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    float: left;
+    width: 150px;
+}
+.itemsales_search {
+    float: left;
+    width: 350px;
+}
+input.itemsales_searchdata {
+    float: left;
+    font-size: 13px;
+    height: 18px;
+    line-height: 18px;
+    width: 175px;
+}
+.itemsales_findall {
+    background: transparent url("/img/reports/searchall_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 87px;
+}
+.itemsales_clear {
+    background: transparent url("/img/reports/clean_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 51px;
+}
+.itemsalescaclarea {
+    float: left;
+    height: 18px;
+    line-height: 18px;
+    margin-left: 16px;
+    margin-top: 8px;
+    width: 187px;
+}
+.itemsalescaclarea > .calclabel {
+    color: #5e5e5e;
+    float: left;
+    font-size: 11px;
+    width: 69px;
+}
+.itemsalescaclarea > input {
+    float: left;
+    width: 18px;
+}
+.itemsalescaclarea > .label {
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    width: 33px;
+}
+.itemsalesaddcost {
+    float: left;
+    height: 18px;
+    line-height: 22px;
+    margin-top: 8px;
+    width: 209px;
+}
+.itemsalesaddcost > .addlcostlabel {
+    color: #5e5e5e;
+    float: left;
+    font-size: 11px;
+    margin-left: 15px;
+    width: 55px;
+}
+.itemsalesaddcost > .saveaddcost {
+    background: transparent url("/img/reports/saveticket.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    display: none;
+    float: left;
+    height: 26px;
+    margin-left: 4px;
+    width: 82px;
+}
+input.addlcostinpt {
+    float: left;
+    height: 14px;
+    width: 41px;
+}
+.itemsalespagination {
+    float: right;
+    height: 20px;
+    line-height: 33px;
+}
+.itemsalesreporthead {
+    background: #000000 none repeat scroll 0 0;
+    border: 2px solid #767676;
+    clear: both;
+    color: #ffffff;
+    float: left;
+    font-size: 11px;
+    height: 21px;
+    line-height: 21px;
+    width: 995px;
+}
+.itemsalesreporthead > div {
+    border-right: 1px solid #4e4e4e;
+    float: left;
+    text-align: center;
+}
+.itemsalesreporthead > div.lastcol {
+    border-right: 3px solid #4e4e4e;
+}
+.itemsalesreporthead > .edit {
+    width: 14px;
+}
+.itemsalesreporthead > .itemnumber {
+    width: 58px;
+}
+.itemsalesreporthead > .itemname {
+    width: 116px;
+}
+.itemsalesreporthead > .repqty {
+    width: 45px;
+}
+.itemsalesreporthead > .ordqty {
+    width: 22px;
+}
+.itemsalesreporthead > .qtychange {
+    width: 48px;
+}
+.itemsalesreporthead > .reprevenue {
+    width: 48px;
+}
+.itemsalesreporthead > .vendorname {
+    width: 49px;
+}
+.itemsalesreporthead > .cost {
+    width: 36px;
+}
+.itemsalesreporthead > .curcog {
+    width: 55px;
+}
+.itemsalesreporthead > .curprofit {
+    width: 54px;
+}
+.itemsalesreporthead > .curprofitperc {
+    width: 29px;
+}
+.itemsalesreporthead > .imptcost {
+    width: 48px;
+}
+.itemsalesreporthead > .imptcog {
+    width: 57px;
+}
+.itemsalesreporthead > .imptprofit {
+    width: 56px;
+}
+.itemsalesreporthead > .imptprofitproc {
+    width: 29px;
+}
+.itemsalesreporthead > .savings {
+    border-right: none;
+    width: 49px;
+}
+.itemsalesreportdata {
+    border-bottom: 1px solid #1b1b1b;
+    clear: both;
+    float: left;
+    height: 523px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 999px;
+}
+.itemsalesdatarow {
+    border-left: 1px solid #1b1b1b;
+    /* border-bottom: 1px solid #0000ff; */
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    width: 999px;
+}
+.itemsalesdatarow > div {
+    border-right: 1px solid #4e4e4e;
+    float: left;
+    text-align: center;
+}
+.itemsalesdatarow > div.negative {
+    color: #FF0000;
+}
+.itemsalesdatarow > div.lastcol {
+    border-right: 3px solid #4e4e4e;
+}
+.itemsalesdatarow.totaldataview {
+    display: none;
+    border-bottom: 3px solid #4e4e4e;
+    color: #FFFFFF;
+    background: none #5e5e5e;
+}
+.itemsalesdatarow.totaldataview > div.negative {
+    color: #ff8d00;
+}
+.itemsalesdatarow > .totallabel {
+    font-weight: bold;
+    width: 193px;
+}
+.itemsalesdatarow > .edit {
+    cursor: pointer;
+    height: 20px;
+    width: 14px;
+}
+input.itemsoldtotalchk, input.itemsoldalldatachk {
+    margin-left: 0;
+    width: 14px;
+}
+.itemsalesdatarow > .itemnumber {
+    font-size: 12px;
+    color: #0000ff;
+    cursor: pointer;
+    width: 58px;
+}
+.itemsalesdatarow > .itemname {
+    font-size: 11px;
+    padding-left: 2px;
+    padding-right: 3px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 112px;
+}
+.itemsalesdatarow > .repqty {
+    width: 45px;
+}
+.itemsalesdatarow > .ordqty {
+    cursor: pointer;
+    width: 22px;
+}
+.itemsalesdatarow > .qtychange {
+    width: 48px;
+}
+.itemsalesdatarow > .reprevenue {
+    width: 48px;
+}
+.itemsalesdatarow > .vendorname {
+    overflow: hidden;
+    padding-left: 2px;
+    padding-right: 3px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 44px;
+}
+.itemsalesdatarow > .cost {
+    width: 36px;
+}
+.itemsalesdatarow > .curcog {
+    width: 55px;
+}
+.itemsalesdatarow > .curprofit {
+    width: 54px;
+}
+.itemsalesdatarow > .curprofitperc {
+    width: 29px;
+}
+.itemsalesdatarow > .imptcost {
+    cursor: pointer;
+    width: 48px;
+}
+.itemsalesdatarow > .imptcost.emptyimptcost {
+    background: rgba(0, 0, 0, 0) url("/img/reports/edit.png") no-repeat scroll 16px 0;
+}
+/* Input */
+input.itemsalesimptcostval {
+    border: 1px solid #000;
+    float: left;
+    font-size: 11px;
+    height: 14px;
+    width: 44px;
+}
+.itemsalesdatarow > .imptcog {
+    width: 57px;
+}
+.itemsalesdatarow > .imptcog > .itemsalesform_save {
+    cursor: pointer;
+    height: 20px;
+}
+.itemsalesdatarow > .imptcog > .itemsalesform_save > img {
+    width: 19px;
+}
+.itemsalesdatarow > .imptprofit {
+    width: 56px;
+}
+.itemsalesdatarow > .imptprofit > .itemsalesform_revert {
+    cursor: pointer;
+    height: 20px;
+}
+.itemsalesdatarow > .imptprofit > .itemsalesform_revert > img {
+    width: 19px;
+}
+.itemsalesdatarow > .imptprofitproc {
+    width: 29px;
+}
+.itemsalesdatarow > .savings {
+    border-right: none;
+    width: 46px;
+}
+/* Image Popup */
+.itemimagearea {
+    width: 354px;
+    height: 354px;
+}
+.itemimagearea img {
+    width: 100%;
+    height: 100%;
+}

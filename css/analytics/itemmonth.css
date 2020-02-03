@@ -1,0 +1,230 @@
+/*
+    Created on : Dec 17, 2015, 9:50:42 PM
+    Author     : german
+    Item Sales Report by Months
+*/
+.itemmonthsalesreportarea {
+    font-size: 11px;
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    margin-top: 15px;
+    width: 995px;
+}
+.itemmonthsalesreportarea select {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+}
+.itemmonthsalesreportarea input {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+}
+.itemmonthheadrow {
+    clear: both;
+    height: 20px;
+    line-height: 20px;
+    float: left;
+    width: 995px;
+}
+.itemmonthsort {
+    float: left;
+}
+.itemmonthsort > .label {
+    float: left;
+    font-size: 12px;
+    width: 47px;
+}
+.itemmonthsort > select.sortselect {
+    margin-right: 5px;
+    width: 53px;
+}
+.itemmonthshowrecords {
+    float: right;
+}
+.itemmonthshowrecords > select.selectperrecord {
+    width: 150px;
+}
+.itemmonth_search {
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    width: 350px;
+}
+input.itemmonth_searchdata {
+    margin-top: 2px;
+    width: 175px;
+}
+.itemmonth_findall {
+    background: transparent url("/img/reports/searchall_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 87px;
+}
+.itemmonth_clear {
+    background: transparent url("/img/reports/clean_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 51px;
+}
+.itemmonthpagination {
+    float: right;
+    width: 160px;
+}
+/* Table Head */
+.itemmonth_head {
+    border: 1px solid #979797;
+    clear: both;
+    float: left;
+    height: 21px;
+    line-height: 21px;
+    margin-top: 7px;
+    width: 993px;
+}
+.itemmonth_head > div {
+    float: left;
+    border-right: 1px solid #4e4e4e;
+    text-align: center;
+    background: none #000000 repeat;
+    color: #ffffff;
+}
+.itemmonth_head > div.lastcol {
+    border-right: 2px solid #4e4e4e;
+}
+.itemmonth_head > div.monthdetail {
+    background: none #8d8d8d repeat;
+    color: #000000;
+}
+.itemmonth_head > .numrec {
+    width: 26px;
+}
+.itemmonth_head > .itemnumber {
+    width: 59px;
+}
+.itemmonth_head > .itemname {
+    width: 170px;
+}
+.itemmonth_head > .year {
+    width: 34px;
+}
+.itemmonth_head > .orders {
+    width: 39px;
+}
+.itemmonth_head > .qty {
+    width: 51px;
+}
+.itemmonth_head > .monthdata {
+    width: 49px;
+}
+.itemmonth_head > .monthdatalast {
+    border-right: none;
+    width: 56px;
+}
+.itemmonth_data {
+    border: 1px solid #979797;
+    clear: both;
+    float: left;
+    height: 544px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 993px;
+}
+.itemmonth_data_row {
+    clear: both;
+    float: left;
+    border-bottom: 2px solid #4e4e4e;
+    /* height: 21px;
+    line-height: 21px; */
+    width: 987px;
+}
+.itemmonth_data_row > .itemdetails {
+    float: left;
+}
+.itemmonth_data_row > .itemdetails > div {
+    float: left;
+    border-right: 1px solid #4e4e4e;
+    text-align: center;
+}
+.itemmonth_data_row > .itemdetails > div.lastcol {
+    border-right: 2px solid #4e4e4e;
+}
+.itemmonth_data_row > .itemdetails > .numrec {
+    width: 26px;
+}
+.itemmonth_data_row > .itemdetails > .itemnumber {
+    cursor: pointer;
+    color: #0000FF;
+    width: 59px;
+}
+.itemmonth_data_row > .itemdetails > .itemname {
+    text-align: left;
+    width: 170px;
+}
+.itemmonth_data_row > .itemdetails > .itemname > .itemnameview {
+    clear: both;
+    float: left;
+    width: 170px;
+}
+.itemmonth_data_row > .itemdetails > .itemname > .vendornameview {
+    clear: both;
+    float: left;
+    width: 170px;
+}
+.itemmonth_data_row > .itemsoldresult {
+    float: left;
+}
+.itemsoldresultrow {
+    border-bottom: 1px solid #4e4e4e;
+    clear: both;
+    float: left;
+    height: 21px;
+    line-height: 21px;
+}
+.itemsoldresultrow.lastyear {
+    border-bottom: none;
+}
+.itemsoldresultrow > div {
+    border-right: 1px solid #4e4e4e;
+    float: left;
+    text-align: center;
+}
+.itemsoldresultrow > div.lastcol {
+    border-right: 2px solid #4e4e4e;
+}
+.itemsoldresultrow > .year {
+    font-weight: bold;
+    width: 34px;
+}
+.itemsoldresultrow > .orders {
+    font-weight: bold;
+    width: 39px;
+}
+.itemsoldresultrow > .qty {
+    font-weight: bold;
+    width: 51px;
+}
+.itemsoldresultrow > .monthdata {
+    color: #4e4e4e;
+    width: 49px;
+}
+.itemsoldresultrow > .monthdata.datacell {
+    cursor: pointer;
+}
+.itemsoldresultrow > .monthdatalast {
+    border-right: none;
+    width: 56px;
+}
+span.vendorname {
+    color: #797979;
+}

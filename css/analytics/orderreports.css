@@ -1,0 +1,234 @@
+.content_header {
+    clear: both;
+    float:left;
+    width:600px;
+}
+.graph {
+    font-size: 13px;
+    float: left;
+    color: #0000ff;
+    padding-top: 20px;
+    padding-left:27px;
+}
+.table-reports {
+    /* border: 1px solid; */
+    clear: both;
+    float: left;
+    margin-left: 11px;
+    margin-top: 6px;
+    width: 996px;
+}
+.table-reports-info {
+    clear: both;
+    float: left;
+    max-height: 505px;
+    margin-left: 12px;
+    overflow-y: scroll;
+    width: 995px;
+}
+.table-reports-footer {
+    clear: both;
+    float: left;
+    height: 74px;
+    margin-left: 12px;
+    margin-top: 10px;
+    width: 995px;
+}
+
+.table-bor-1 {
+    border-right: 2px solid #2f2f2f;
+}
+.table-bor-2 {
+    border-bottom: 2px solid #2f2f2f;
+}
+.table-bor-3 {
+    border-right: 2px solid #2f2f2f;
+    border-left: 1px solid #2f2f2f;
+}
+.table-bor-4 {
+    border-right: 1px solid #2f2f2f;
+}
+
+.book-mark-02-activ {
+    float: left;
+    z-index:125;
+    background-image: url("../img/bookmark-order-02-activ.png");
+    width: 133px;
+    height: 44px;
+}
+.book-mark-01 {
+    float: left;
+    background-image: url("../img/bookmark-order-01.png");
+    margin-top: 7px;
+    width: 109px;
+    height: 28px;
+}
+.name-book-mark-01 {
+    font: 14px Arial,sans-serif;
+    padding-top:10px;
+    padding-left:31px;
+}
+.name-book-mark-02-activ {
+    font: 16px Arial,sans-serif;
+    padding-top:13px;
+    padding-left:37px;
+}
+.blok-reports {
+    background-color: #ffffff;
+    border: 1px solid #c6d4df;
+    width: 15px;
+    height: 15px;
+    float: left;
+    margin-right:8px;
+}
+.graph-days, .graph-weeks {
+    float: left;
+    margin-right:15px;
+}
+
+.blue-table-01 {
+    background-image: url("../img/report-head-left.png");
+    background-repeat: no-repeat;
+    width: 102px;
+    height: 36px;
+}
+.blue-table-02 {
+    background-image: url("../img/report-head-center.png");
+    background-repeat: repeat-x;
+    height: 36px;
+}
+.blue-table-03 {
+    background-image: url("../img/report-head-right.png");
+    background-repeat: no-repeat;
+    width: 118px;
+    height: 36px;
+}
+.Table-bor-5 {
+    border-right: 2px solid #2f2f2f;
+    border-left: 1px solid #d0d0d0;
+    border-bottom: 1px solid #d0d0d0;
+}
+.Table-bor-6 {
+    border-right: 2px solid #2f2f2f;
+    border-bottom: 1px solid #d0d0d0;
+}
+.Table-bor-6.weekend {
+    background-color: #e5e5e5;
+}
+.Table-bor-7 {
+    border-bottom: 1px solid #d0d0d0;
+}
+.line-reports {
+    font: 14px Arial,sans-serif;
+    height:40px;
+    text-align: center;
+}
+.grey-line-reports {
+    font: 14px Arial,sans-serif;
+    background-color:#ededed;
+    height:40px;
+    text-align: center;
+}
+.blue-cell-reports {
+    background-color:#dbdbf6;
+}
+.daynumber {
+    float:left;
+    font: 14px Arial,sans-serif;
+    color: #000000;
+    margin: 14px 0 12px 9px;
+}
+.info {
+    text-align: right;
+    padding-right: 7px;
+    float:right;
+    padding-top:7px;
+}
+.table-orders-text1 {
+    font-size:  14px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.table-Orders-text12 {
+    font: 12px Arial,sans-serif;
+    color: #868686;
+}
+.grey-blok {
+    float:left;
+    background-image: url("../img/subtotal-orderreport-bg.png");
+    background-repeat: no-repeat;
+    position: relative;
+    width: 109px;
+    height:47px;
+    text-align: center;
+    padding-top:6px;
+}
+.ordernums {
+    clear: both;
+    float: left;
+    width: 107px;
+    text-align: center;
+    font-size: 13px;
+    color: #ffffff;
+}
+.revenuesum {
+    clear: both;
+    float: left;
+    width: 107px;
+    text-align: center;
+    font-size: 13px;
+    color: #ffffff;
+}
+.table-reports-text1 {
+    font: 12px Arial,sans-serif;
+    color: #000000;
+    text-align: center;
+}
+
+#report_dialog {
+    width: 726px;
+    height:407px;
+    position:absolute;
+    display:none;
+    z-index:9999;
+    padding:20px;
+}
+
+.report_graph {
+    float: left;
+    clear: both;
+    width: 725px;
+    height: 405px;
+    background-image: url("../img/report_bg.png");
+    background-repeat: no-repeat;
+}
+
+.report_graph_title {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    width: 710px;
+    margin-bottom: 10px;
+}
+.chart-container {
+    background-color: #FFFFFF;
+    clear: both;
+    float: left;
+    height: 305px;
+    /*margin-left: 67px;*/
+    margin-top: 10px;
+    width: 602px;
+}
+#chart2 {
+    height: 310px;
+    /*margin-left: 30px;*/
+    width: 610px;
+}
+.tickLabel {
+    color:#FFFFFF;
+}
