@@ -724,7 +724,11 @@ function show_leadorditemsearch() {
                 $("div.order_itemedit_text").hide();
             }
             // $("select#orderitem_id").searchable();
-            $("select#orderitem_id").focus();
+            $('#orderitem_id').select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#artNextModal')
+            });
+            // $("select#orderitem_id").focus();
             $("select#orderitem_id").change(function(){
                 var item_id=$("select#orderitem_id").val();
                 switch(item_id) {

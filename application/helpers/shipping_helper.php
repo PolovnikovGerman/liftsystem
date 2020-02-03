@@ -39,7 +39,7 @@ if (!function_exists('calculate_shipcost')) {
 
         $daydiff = round((time() - $startdeliv) / (24 * 60 * 60), 0);
         // $daydiff=BankDays($startdeliv, strtotime(date('Y-m-d')));
-        if ($daydiff > 10) {
+        if (abs($daydiff) > 10) {
             $startdeliv = strtotime(date('Y-m-d') . ' + 1 day');
         }
 
@@ -99,7 +99,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['GND'])) {
                                 array_push($codes, 'GND');
                                 $delivdate = $transit_arr['GND']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -111,7 +111,7 @@ if (!function_exists('calculate_shipcost')) {
                             } elseif (isset ($transit_arr['G'])) {
                                 array_push($codes, 'GND');
                                 $delivdate = $transit_arr['G']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -124,7 +124,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '11') {
                             if (isset($transit_arr['03'])) {
                                 $delivdate = $transit_arr['03']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -136,7 +136,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '02') {
                             if (isset($transit_arr['2DA'])) {
                                 $delivdate = $transit_arr['2DA']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -146,7 +146,7 @@ if (!function_exists('calculate_shipcost')) {
                                 $code .= "2DA|";
                             } elseif (isset($transit_arr['02'])) {
                                 $delivdate = $transit_arr['02']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -158,7 +158,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '13') {
                             if (isset($transit_arr['1DP'])) {
                                 $delivdate = $transit_arr['1DP']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -171,7 +171,7 @@ if (!function_exists('calculate_shipcost')) {
                             // 1 Day Air
                             if (isset($transit_arr['01'])) {
                                 $delivdate = $transit_arr['01']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -183,7 +183,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '14') {
                             if (isset($transit_arr['1DM'])) {
                                 $delivdate = $transit_arr['1DM']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -195,7 +195,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '08') {
                             if (isset($transit_arr['05'])) {
                                 $delivdate = $transit_arr['05']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -208,7 +208,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '07') {
                             if (isset($transit_arr['01'])) {
                                 $delivdate = $transit_arr['01']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -221,7 +221,7 @@ if (!function_exists('calculate_shipcost')) {
                         } elseif ($row['ServiceCode'] == '65') {
                             if (isset($transit_arr['28'])) {
                                 $delivdate = $transit_arr['28']['transit_timestamp'];
-                                if ($daydiff > 10) {
+                                if (abs($daydiff) > 10) {
                                     // Make changes in deliv date
                                     $delivdate = fixdeliv_different($delivdate, $daydiff);
                                 }
@@ -244,7 +244,7 @@ if (!function_exists('calculate_shipcost')) {
                                 if (!in_array('GND', $codes)) {
                                     array_push($codes, 'GND');
                                     $delivdate = $transit_arr['GND']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -258,7 +258,7 @@ if (!function_exists('calculate_shipcost')) {
                                 if (!in_array('GND', $codes)) {
                                     array_push($codes, 'GND');
                                     $delivdate = $transit_arr['G']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -275,7 +275,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['03'])) {
                                 if (!in_array('UPSStandard', $codes)) {
                                     $delivdate = $transit_arr['03']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -292,7 +292,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['2DA'])) {
                                 if (!in_array('DA2', $codes)) {
                                     $delivdate = $transit_arr['2DA']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -305,7 +305,7 @@ if (!function_exists('calculate_shipcost')) {
                             } elseif (isset($transit_arr['02'])) {
                                 if (!in_array('DA2', $codes)) {
                                     $delivdate = $transit_arr['02']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -321,7 +321,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['1DP'])) {
                                 if (!in_array('DP1', $codes)) {
                                     $delivdate = $transit_arr['1DP']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -353,7 +353,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['1DM'])) {
                                 if (!in_array('DA1', $codes)) {
                                     $delivdate = $transit_arr['1DM']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -368,7 +368,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['05'])) {
                                 if (!in_array('UPSExpedited', $codes)) {
                                     $delivdate = $transit_arr['05']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -385,7 +385,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['01'])) {
                                 if (!in_array('UPSExpress', $codes)) {
                                     $delivdate = $transit_arr['01']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -402,7 +402,7 @@ if (!function_exists('calculate_shipcost')) {
                             if (isset($transit_arr['28'])) {
                                 if (!in_array('UPSSaver', $codes)) {
                                     $delivdate = $transit_arr['28']['transit_timestamp'];
-                                    if ($daydiff > 10) {
+                                    if (abs($daydiff) > 10) {
                                         // Make changes in deliv date
                                         $delivdate = fixdeliv_different($delivdate, $daydiff);
                                     }
@@ -539,7 +539,11 @@ if (!function_exists('recalc_rates')) {
 if (!function_exists('fixdeliv_different')) {
     function fixdeliv_different($delivdate, $daydiff) {
         $ci=&get_instance();
-        $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' - '.$daydiff.'days');
+        if ($daydiff>0) {
+            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' - '.$daydiff.'days');
+        } else {
+            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' + '.abs($daydiff).'days');
+        }
         $calendar_id=$ci->config->item('bank_calendar');
         $start=date("Y-m-d",$newdeliv);
         $last_date=strtotime(date("Y-m-d", strtotime($start)) . " +365 days");

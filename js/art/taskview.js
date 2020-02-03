@@ -66,10 +66,15 @@ function init_tasks_page() {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").popover({
-                html: true,
-                trigger: 'hover',
-                placement: 'right'
+            $("div.taskview_order").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    'my': 'bottom center',
+                    'at': 'top center'
+                },
+                style: 'qtip_light task_detailview',
             });
         } else {
             $("#loader").hide();
@@ -118,10 +123,17 @@ function change_approved_view(stage) {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").popover({
-                html: true,
-                trigger: 'hover',
-                placement: 'left'
+            $("div.taskview_order").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    my: 'bottom right',
+                    at: 'top left',
+                },
+                style: 'qtip_light task_detailview',
+                show: 'click',
+                hide: 'click'
             });
             $("#loader").hide();
         } else {

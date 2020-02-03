@@ -75,6 +75,8 @@ input.proofsearch {
     font-size: 12px;
     width: 954px;
     text-align: center;
+    height: 24px;
+    line-height: 24px!important;
 }
 .proof_ordnum {
     float: left;

@@ -344,3 +344,13 @@ select.ordproofview {
     text-align: left;
     width: 73px;
 }
+/* Popover */
+.task_detailview {
+    background-color: #EDEDED!important;
+    float: left;
+    padding: 0px;
+    font-size: 13px!important;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+}

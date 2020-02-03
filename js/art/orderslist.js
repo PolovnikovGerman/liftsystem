@@ -83,7 +83,7 @@ function pageArtOrderCallback(page_index){
 }
 
 function artorders_view_init() {
-    $("div.artnoteshow").popover({
+    $("div.artnoteshow").qtip({
         content: {
             attr: 'data-content'
         },

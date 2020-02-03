@@ -3696,3 +3696,61 @@ a.historydetailsview {
     height: 27px;
     width: 107px;
 }
+/* Item data */
+.order_itemedit_area {
+    background: none repeat scroll 0 0 #fff;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    min-height: 150px;
+    padding: 15px;
+    width: 391px;
+}
+.order_itemedit_title {
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.order_itemedit {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+}
+.order_itemedit_text {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    height: 58px;
+    width: 100%;
+    text-align: left;
+}
+.order_itemedit_text label {
+    clear: both;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    width: 80%;
+}
+textarea.orderitemsvalue {
+    float: left;
+    height: 47px;
+    overflow-y: auto;
+    resize: none;
+    width: 96%;
+}
+select.selectorderitem {
+    font-size: 12px;
+    width: 393px;
+}
+.order_itemedit_save {
+    clear: both;
+    float: left;
+    margin-left: 291px;
+    margin-top: 15px;
+    width: 90px;
+    cursor: pointer;
+}

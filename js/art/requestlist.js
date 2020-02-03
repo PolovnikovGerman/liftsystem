@@ -114,8 +114,6 @@ function pageProofsCallback(page_index) {
 
 function init_prooflistmanage() {
     /* change size */
-    var arttemplate='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-
     var maxh=$("div.proof_tabledat").css('max-height');
     maxh=parseInt(maxh.replace('px',''));
     var dath=$("div.proof_tabledat").css('height');
@@ -179,32 +177,44 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         edit_note(mailid);
     });
-    $("div.proof_note_dat").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $("div.proof_parsedata").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $('div.prooflastmessageview').hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('messageview'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'left',
-                    html: true,
-                    template: arttemplate
-                }).popover('show');
-            });
+    $("div.proof_note_dat").qtip({
+        content: {
+            attr: 'data-content'
         },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light'
+    });
+    $("div.proof_parsedata").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light'
+    });
+
+    $('div.prooflastmessageview').qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('messageview') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        style: 'art_lastmessage'
+    });
 
     $("div.proof_includ_dat").click(function(){
         var mailid=$(this).data('proofid');
