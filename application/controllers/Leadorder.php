@@ -33,6 +33,9 @@ class Leadorder extends MY_Controller
             $ordersession=$this->input->post('ordersession');
             // Remove from session
             usersession($ordersession,NULL);
+            if (ifset($postdata,'locrecid',0)>0) {
+                $this->engaded_model->clean_engade($postdata['locrecid']);
+            }
             if ($order==0) {
                 $res=$this->leadorder_model->add_newlead_order($this->USR_ID);
                 $edit=1;
@@ -131,7 +134,11 @@ class Leadorder extends MY_Controller
                         // Build Content
                         $options['order_data']=$order_data;
                         $options['locrecid']=$locking;
-                        $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
+                        if ($this->input->ip_address()=='127.0.0.1') {
+                            $options['timeout']=(time()+$this->config->item('loctimeout_local'))*1000;
+                        } else {
+                            $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
+                        }
                         $options['current_page']=(isset($postdata['page']) ? $postdata['page'] : 'art_tasks');
                         $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
                         // $head_options['order_dublcnum']=$orddata['order_num'];
@@ -4310,18 +4317,19 @@ class Leadorder extends MY_Controller
     }
 
     public function extend_edittime() {
-        // Extend Edit Time
-        $ordersession=$this->input->post('ordersession');
-
-        $leadorder=usersession($ordersession);
-        if (empty($leadorder)) {
-            echo $this->restore_orderdata_error;
-            die();
-        } else {
-            $content=$this->load->view('leadorderdetails/extent_edittime_view', array(),TRUE);
-            echo $content;
+        if ($this->isAjax()) {
+            // Extend Edit Time
+            $postdata = $this->input->post();
+            $ordersession=ifset($postdata, 'ordersession','defsession');
+            $leadorder=usersession($ordersession);
+            $mdata=[];
+            $error = $this->restore_orderdata_error;
+            if (!empty($leadorder)) {
+                $mdata['content']=$this->load->view('leadorderdetails/extent_edittime_view', array(),TRUE);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
         }
-        return TRUE;
     }
 
     public function extendtime_order() {

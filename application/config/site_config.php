@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='1.083';
-$config['css_version']='1.083';
+$config['js_version']='1.085';
+$config['css_version']='1.085';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -152,11 +152,8 @@ $config['defqty_custom']=1000;
 // Minimal timeout of lock - 20 min
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
-if ($_SERVER['SERVER_NAME']=='brown.bluetrack.com') {
-    $config['loctimeout']=130;
-} else {
-    $config['loctimeout']=1200;
-}
+$config['loctimeout']=130;
+$config['loctimeout_local']=1200; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=151;
 $config['inventory_paymethod']=5;

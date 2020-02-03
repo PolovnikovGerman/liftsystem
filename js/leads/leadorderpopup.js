@@ -3796,22 +3796,18 @@ function timershow() {
         today = Math.floor((timeend-today)/1000);        
         if (today<=0) {
             clearTimeout(timerId);
-            $.colorbox.close();
+            $("#artNextModal").modal('hide');
             var order=$("input#orderdataid").val();
             var locrecid=$("input#locrecid").val();
-            var url="/orders/leadorder_edit";
+            var url="/leadorder/leadorder_change";
             var params=new Array();            
-            params.push({name: 'order_id', value: order});
+            params.push({name: 'order', value: order});
             params.push({name: 'locrecid', value: locrecid});
+            params.push({name: 'edit', value: 0});
             $.post(url, params, function(response){
                 if (response.errors=='') {
-                    $("#pop_content").empty().html(response.data.content);
-                    $("#popupContactClose").unbind('click').click(function(){
-                        $("#pop_content").empty();
-                        disablePopup();
-                        var curpage=$("input#leadorderpage").val();
-                        pageLeadorderCallback(curpage);
-                    });
+                    $("#artModalLabel").empty().html(response.data.header);
+                    $("#artModal").find('div.modal-body').empty().html(response.data.content);
                     navigation_init();
                     alert('Your Edit Time has expired prior to saving.  Please re-do any work you meant to do.');
                 } else {
@@ -3819,20 +3815,23 @@ function timershow() {
                 }
             },'json');
         }
-        if (today==15) {        
-            // Call colorbox            
-            $.colorbox({
-               opacity: 0,
-               transition: 'fade',
-               ajax: true,
-               width:440,        
-               href: '/leadorder/extend_edittime',
-               data: {ordersession: $("input#ordersession").val()},
-               onComplete: function() {                   
-                   $.colorbox.resize();                   
-                   init_extendtime();
-               }
-           });
+        if (today==15) {
+            // Call colorbox
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            var url='/leadorder/extend_edittime';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#artNextModal").modal('hide');
+                    $("#artNextModal").find('div.modal-dialog').css('width','440px');
+                    $("#artNextModal").find('.modal-title').empty().html('Extend Edit Time');
+                    $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#artNextModal").modal('show');
+                    init_extendtime();
+                } else {
+                    show_error(response);
+                }
+            },'json')
         }
         var tsec=today%60; today=Math.floor(today/60); if(tsec<10)tsec='0'+tsec;
         var tmin=today%60; today=Math.floor(today/60); if(tmin<10)tmin='0'+tmin;    
@@ -3850,7 +3849,7 @@ function init_extendtime() {
         var url="/leadorder/extendtime_order";
         $.post(url, {ordersession: $("input#ordersession").val()}, function(response){
             if (response.errors=='') {
-                $.colorbox.close();
+                $("#artNextModal").modal('hide');
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
             } else {
