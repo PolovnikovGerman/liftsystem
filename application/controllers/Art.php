@@ -84,13 +84,14 @@ class Art extends MY_Controller {
         // Datepicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
-        /* Color Box  */
-        $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
-        $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
-        /* Flash MSG */
-        $head['scripts'][]=array('src'=>'/js/jsflash/flash.js');
-        $head['styles'][]=array('style'=>'/css/jsflash/flash.css');
-
+//        /* Color Box  */
+//        $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
+//        $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
+//        /* Flash MSG */
+//        $head['scripts'][]=array('src'=>'/js/jsflash/flash.js');
+//        $head['styles'][]=array('style'=>'/css/jsflash/flash.css');
+        $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
+        $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -465,7 +466,7 @@ class Art extends MY_Controller {
             $options=array();
 
             $options['search']=$search;
-            $options['artfiltr']=$filter;
+            $options['artfilter']=$filter;
             $options['artadd_filtr']=$add_filtr;
             /* count number of orders */
             $this->load->model('orders_model');

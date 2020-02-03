@@ -25,7 +25,7 @@ and open the template in the editor.
 .generealorder_content > .headrow > .searchform {
     height: 27px;
     line-height: 27px;
-    width: 360px;
+    /* width: 360px; */
 }
 .generealorder_content > .headrow > .searchform img {
     float: left;
@@ -38,9 +38,9 @@ input.generealorder_search {
     background-color: #FFFFFF;
     float: left;
     font-size: 13px;
-    height: 18px;
-    line-height: 18px;
-    width: 175px;
+    height: 24px;
+    line-height: 24px;
+    width: 207px;
 }
 .generealorder_content > .headrow > .searchform > .findall {
     background: url('/img/art/search_btn.png') no-repeat transparent;
@@ -64,8 +64,9 @@ select.filter_select {
 .generealorder_content > .headrow > .filtersarea {
     height: 27px;
     line-height: 27px;
-    margin-left: 306px;
-    width: 332px;
+    /* margin-left: 306px; */
+    /* width: 332px; */
+    float: right;
 }
 .generealorder_content > .headrow > .filtersarea select {
     height: 27px;
@@ -81,6 +82,9 @@ select.filter_select {
     background: url('/img/art/addnew_btn.png') no-repeat transparent;
     height: 27px;
     width: 64px;
+}
+.artOrderPagination {
+    float: right!important;
 }
 .generealorder_content > .headrow > .monitor_pagesviews {
     float: right;
