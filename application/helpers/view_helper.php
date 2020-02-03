@@ -417,4 +417,34 @@ if (!function_exists('creditcard_format')) {
         return $out;
     }
 }
+
+if (!function_exists('BankDays')) {
+    function BankDays($datbgn, $datend, $calendar_id=0) {
+        $bank_days = 0;
+        $ci=&get_instance();
+        if ($calendar_id==0) {
+            $def_calendar=$ci->config->item('bank_calendar');
+        } else {
+            $def_calendar=$calendar_id;
+        }
+        
+        $ci->load->model('calendars_model');
+        $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
+        $holidays=array();
+        foreach ($holidays_src as $row) {
+            array_push($holidays, date('Y-m-d',$row));
+        }
+        
+        $weekends=array(0,6);
+        $days = ceil(($datend - $datbgn) / 3600 / 24);        
+        for ($i = 0; $i <= $days; $i++) {
+            $curr = strtotime('+' . $i . ' days', $datbgn);
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {            
+                $bank_days++;
+            }
+        }
+        return $bank_days;
+    }
+}
+
 ?>
