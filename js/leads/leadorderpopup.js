@@ -1630,6 +1630,17 @@ function init_imprint_details() {
         // Save Params
         change_imprint_details(params);
     });
+    $("input.imprintrepeatnote").unbind('change').change(function(){
+        var params=new Array();
+        var details=$(this).data('details');
+        params.push({name:'newval', value: $(this).val()});
+        params.push({name:'fldname', value: 'repeat_note'});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        // Save Params
+        change_imprint_details(params);
+    });
     $("select.imprintcolorschoice").unbind('change').change(function(){
         var params=new Array();
         var details=$(this).data('details');
@@ -1792,15 +1803,18 @@ function change_imprint_details(params) {
                 }                                
             } else if (response.data.fldname=='imprint_type') {
                 if (response.data.newval=='REPEAT') {
-                    $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
+                    // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
                     for (i=1; i<=4; i++) {
                         $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
                     }
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();
                 } else {
-                    $("div.repeatdetail[data-details='"+response.data.details+"']").removeClass('active').removeClass('full');
+                    // $("div.repeatdetail[data-details='"+response.data.details+"']").removeClass('active').removeClass('full');
                     for (i=1; i<=4; i++) {
                         $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val(response.data.setup);
                     }
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',true);
                 }
             }
             init_imprint_details();
@@ -1859,9 +1873,11 @@ function activate_imprint_details(details, newval) {
         $("div.imprintlocdata[data-details='"+details+"']").addClass('active');
         $("select.locationtype[data-details='"+details+"']").prop('disabled',false);
         if ($("select.locationtype[data-details='"+details+"']").val()=='REPEAT') {
-            $("div.repeatdetail[data-details='"+details+"']").addClass('active');
+            // $("div.repeatdetail[data-details='"+details+"']").addClass('active');
+            $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',false);
         } else {
-            $("div.repeatdetail[data-details='"+details+"']").removeClass('active');
+            // $("div.repeatdetail[data-details='"+details+"']").removeClass('active');
+            $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',true);
         }
         $("select.imprintcolorschoice[data-details='"+details+"']").prop('disabled',false);
         $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
@@ -1875,7 +1891,8 @@ function activate_imprint_details(details, newval) {
         $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
     } else {
         $("div.imprintlocdata[data-details='"+details+"']").removeClass('active');
-        $("div.repeatdetail[data-details='"+details+"']").removeClass('active');       
+        // $("div.repeatdetail[data-details='"+details+"']").removeClass('active');
+        $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',true);
         $("select.locationtype[data-details='"+details+"']").prop('disabled',true);
         $("select.imprintcolorschoice[data-details='"+details+"']").prop('disabled',true);
         $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);

@@ -8,6 +8,12 @@
             </div>
         </div>
         <div class="imprintdetailsdata_left">
+            <div class="imprintdetails_location_subltitle">
+                <div class="locname_subtitle">Loc Name</div>
+                <div class="newrepeat_subtitle">New/Repeat</div>
+                <div class="numcolors_subtitle"># Colors</div>
+                <div class="printsetupcost_subtitle">Print & Setup Note</div>
+            </div>
             <?php for ($i=0; $i<6; $i++) { ?>
             <?php $row=$details[$i];?>
             <div class="imprintlocdata <?=$row['active']==0 ? '' : 'active'?>" data-details="<?=$row['order_imprindetail_id']?>">
@@ -18,14 +24,17 @@
                         <option value="NEW" <?=$row['imprint_type']=='NEW' ? 'selected="selected"' : ''?>>New</option>
                         <option value="REPEAT" <?=$row['imprint_type']=='REPEAT' ? 'selected="selected"' : ''?>>Repeat</option>
                     </select>
-                    <div class="repeatdetail <?=(empty($row['repeat_note']) ? '' : 'full')?> <?=($row['active']==0 || empty($row['repeat_note'])) ? '' : 'active'?>" data-details="<?=$row['order_imprindetail_id']?>">&nbsp;</div>
+                    <div class="repeatdetail">
+                        <input type="text" class="imprintrepeatnote" <?=($row['active']==0 || $row['imprint_type']=='NEW') ? 'disabled="disabled"' : ''?>
+                               data-details="<?=$row['order_imprindetail_id']?>" value="<?=$row['repeat_note']?>"/>
+                    </div>
                     <select class="imprintcolorschoice" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?>>
                         <option value="1" <?=$row['num_colors']==1 ? 'selected="selected"' : ''?>>1</option>
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>
                         <option value="3" <?=$row['num_colors']==3 ? 'selected="selected"' : ''?>>3</option>
                         <option value="4" <?=$row['num_colors']==4 ? 'selected="selected"' : ''?>>4</option>
                     </select>
-                    <div class="label">prints</div>
+                    <div class="labeltxt">prints</div>
                     <div class="imprintlocprices">
                         <input type="text" class="imprintprice input_text_right" data-fldname="print_1" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?> value="<?=number_format(floatval($row['print_1']),2)?>"/>
                         <input type="text" class="imprintprice input_text_right" data-fldname="print_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<2 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_2']),2)?>"/>
@@ -42,7 +51,7 @@
                     </select>
                     <div class="extracostlabel">extra cost</div>
                     <input type="text" class="imprintprice input_text_right" data-fldname="extra_cost" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?> value="<?=number_format(floatval($row['extra_cost']),2)?>"/>
-                    <div class="label">setup</div>
+                    <div class="labeltxt">setup</div>
                     <div class="imprintlocprices">
                         <input type="text" class="imprintprice input_text_right" data-fldname="setup_1" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?> value="<?=number_format(floatval($row['setup_1']),2)?>"/>
                         <input type="text" class="imprintprice input_text_right" data-fldname="setup_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<2 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_2']),2)?>"/>
@@ -54,6 +63,12 @@
             <?php } ?>
         </div>
         <div class="imprintdetailsdata_right">
+            <div class="imprintdetails_location_subltitle">
+                <div class="locname_subtitle">Loc Name</div>
+                <div class="newrepeat_subtitle">New/Repeat</div>
+                <div class="numcolors_subtitle"># Colors</div>
+                <div class="printsetupcost_subtitle">Print & Setup Note</div>
+            </div>
             <?php for ($i=6; $i<12; $i++) { ?>
             <?php $row=$details[$i];?>
             <div class="imprintlocdata <?=$row['active']==0 ? '' : 'active'?>" data-details="<?=$row['order_imprindetail_id']?>">
@@ -64,7 +79,10 @@
                         <option value="NEW" <?=$row['imprint_type']=='NEW' ? 'selected="selected"' : ''?>>New</option>
                         <option value="REPEAT" <?=$row['imprint_type']=='REPEAT' ? 'selected="selected"' : ''?>>Repeat</option>
                     </select>
-                    <div class="repeatdetail <?=(empty($row['repeat_note']) ? '' : 'full')?> <?=($row['active']==0 || empty($row['repeat_note'])) ? '' : 'active'?>" data-details="<?=$row['order_imprindetail_id']?>">&nbsp;</div>
+                    <div class="repeatdetail">
+                        <input type="text" class="imprintrepeatnote" <?=($row['active']==0 || $row['imprint_type']=='NEW') ? 'disabled="disabled"' : ''?>
+                               data-details="<?=$row['order_imprindetail_id']?>" value="<?=$row['repeat_note']?>"/>
+                    </div>
                     <select class="imprintcolorschoice" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?>>
                         <option value="1" <?=$row['num_colors']==1 ? 'selected="selected"' : ''?>>1</option>
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>

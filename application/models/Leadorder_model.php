@@ -5846,9 +5846,9 @@ Class Leadorder_model extends My_Model {
         if ($this->config->item('default_paysystem')=='paypal') {
             $realconfig=1;
             $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
-            // if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
+            if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
                 $realconfig=0;
-            // }
+            }
             // Load PayPal library
             if ($realconfig==0) {
                 $this->config->load('paypal_test');

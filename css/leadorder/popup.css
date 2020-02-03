@@ -2260,15 +2260,40 @@ input.orderitem_price {
 .imprintdetailsdata_left {
     clear: both;
     float: left;
-    margin-top: 27px;
+    /* margin-top: 27px; */
     margin-left: -5px;
     width: 362px;
 }
 .imprintdetailsdata_right {
     float: left;
-    margin-left: 11px;
-    margin-top: 27px;
-    width: 362px;    
+    margin-left: 16px;
+    /* margin-top: 27px; */
+    width: 362px;
+
+}
+.imprintdetails_location_subltitle {
+    float: left;
+    width: 100%;
+    margin-top: 6px;
+}
+.imprintdetails_location_subltitle > div {
+    font-size: 12px;
+    color: #252525;
+    float: left;
+    height: 21px;
+    line-height: 21px;
+}
+.imprintdetails_location_subltitle > .locname_subtitle {
+    width: 68px;
+}
+.newrepeat_subtitle {
+    width: 95px;
+}
+.numcolors_subtitle {
+    width: 68px;
+}
+.printsetupcost_subtitle {
+
 }
 .imprintlocdata {
     border-bottom: 1px solid #000000;
@@ -2320,10 +2345,15 @@ select.locationtype {
 .repeatdetail {
     background: transparent url("/img/leadorder/icon_fileempty.png") no-repeat scroll 0 0;
     float: left;
-    margin-left: 2px;
-    margin-top: 4px;
-    opacity: 0.5;
-    width: 17px;    
+    /* margin-left: 2px;*/
+    margin-top: 1px;
+    /* opacity: 0.5; */
+    /* width: 17px; */
+    width: 39px;
+}
+input.imprintrepeatnote {
+    width: 37px;
+    font-size: 12px;
 }
 .repeatdetail.active {
     opacity: 1;
@@ -2336,14 +2366,17 @@ select.imprintcolorschoice {
     margin-top: 2px;
     width: 32px;
 }
-.imprintlocrow > .label {
+.imprintlocrow > .labeltxt {
     float: left;
     font-size: 12px;
-    width: 41px;
+    width: 31px;
+    margin-left: 2px;
+    height: 22px;
+    line-height: 21px;
 }
 .imprintlocprices {
     float: left;
-    width: 141px;
+    /* width: 141px; */
 }
 input.imprintprice {    
     font-size: 11px;        
@@ -2361,8 +2394,8 @@ select.imprintlocationchoice {
     line-height: 10px;
     height: 22px;
     font-size: 10px;
-    margin-right: 3px;
-    width: 27px;
+    margin-right: 7px;
+    width: 39px;
 }
 .imprintdetailssample {
     float: left;
