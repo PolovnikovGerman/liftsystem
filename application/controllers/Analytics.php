@@ -66,6 +66,8 @@ class Analytics extends MY_Controller
     }
 
     private function _prepare_salestype_view() {
+        $this->load->model('permissions_model');
+        $this->load->model('reports_model');
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
         $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn');
         $profitview=$this->permissions_model->get_pageprofit_view($this->USR_ID, 'salestypebtn');
@@ -371,6 +373,30 @@ class Analytics extends MY_Controller
         $content=$this->load->view('reports/salestype_view', $options, TRUE);
         return $content;
 
+    }
+
+    private function _prepare_comparefrom_select($start, $finish) {
+        $yearDiff =[];
+        for ($i=0; $i<100; $i++) {
+            if (($start+$i) >= $finish) {
+                break;
+            } else {
+                array_push($yearDiff, ($start+$i));
+            }
+        }
+        return $yearDiff;
+    }
+
+    private function _prepare_compareto_select($start, $finish) {
+        $yearDiff =[];
+        for ($i=0; $i<100; $i++) {
+            if (($start+$i) > $finish) {
+                break;
+            } else {
+                array_push($yearDiff, ($start+$i));
+            }
+        }
+        return $yearDiff;
     }
 
 }
