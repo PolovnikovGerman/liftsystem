@@ -212,15 +212,10 @@ function init_itemsales_content() {
         var url="/analytics/sales_year_details";
         $.post(url, {'item': item, 'year': year}, function(response){
             if (response.errors=='') {
-                show_popup('salesmonthdetails');
-                $("div#pop_content").empty().html(response.data.content);
-                if (response.data.countdata<20) {
-                    $("div.datarow").find('div.profit_perc').css('width','55');
-                    $("div.datatotals").find('div.profit_perc').css('width','54');
-                }
-                $("a#popupContactClose").unbind('click').click(function(){
-                    disablePopup();
-                });
+                $("#pageModalLabel").empty().html('Sales Month Details');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").find('div.modal-dialog').css('width','685px');
+                $("#pageModal").modal('show');
             } else {
                 show_error(response);
             }

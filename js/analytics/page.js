@@ -21,10 +21,9 @@ function init_page(objid) {
             $("#reportitemsoldyearview").show();
             itemsales_reportinit();
             break;
-    //     case 'taskview':
-    //         $("#taskview").show();
-    //         init_tasks_management();
-    //         init_tasks_page();
-    //         break;
+        case 'reportitemsoldmonthview':
+            $("#reportitemsoldmonthview").show();
+            itemmonth_reportinit();
+            break;
     }
 }
