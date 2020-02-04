@@ -4,7 +4,7 @@
         <div class="edit lastcol">
             <input type="checkbox" class="itemsoldtotalchk" data-item="<?=$row['item_id']?>" <?=  in_array($row['item_id'], $itemchk) ? 'checked="checked"' : ''?>/>
         </div>
-        <div class="itemnumber" data-imgurl="/reports/itemimage?item=<?=$row['item_id']?>"><?=$row['item_number']?></div>
+        <div class="itemnumber" data-imgurl="/analytics/itemimage?item=<?=$row['item_id']?>"><?=$row['item_number']?></div>
         <div class="itemname lastcol"><?=$row['item_name']?></div>
         <div class="repqty"><?=$row['out_curqty']?></div>
         <div class="ordqty lastcol" data-year="<?=$curyear?>"><?=$row['curordsale']?></div>

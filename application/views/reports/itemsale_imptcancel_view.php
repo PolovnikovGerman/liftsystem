@@ -1,1 +1,1 @@
-<div class="itemsalesform_revert"><img src="/img/cancel.png"></div>
+<div class="itemsalesform_revert"><img src="/img/reports/cancel.png"></div>

@@ -381,6 +381,17 @@ class Analytics extends MY_Controller
         show_404();
     }
 
+    // Show image
+    public function itemimage() {
+        $item_id=$this->input->get('item');
+        $res=$this->reports_model->get_item_mainimage($item_id);
+        if ($res['result']==$this->success_result) {
+            $content=$this->load->view('reports/itemimage_view', $res, TRUE);
+            echo $content;
+        }
+    }
+
+
     // Change Base Year
     public function itemsales_baseyear() {
         if ($this->isAjax()) {
@@ -497,7 +508,7 @@ class Analytics extends MY_Controller
             $year=$postdata['year'];
             $curentyear=$postdata['current_year'];
             $prevyear=$postdata['prev_year'];
-            $itemchk=$this->func->session('itemsaleschk');
+            $itemchk=usersession('itemsaleschk');
             $options=array(
                 'item_id'=>$item_id,
                 'current_year'=>$curentyear,
@@ -513,7 +524,7 @@ class Analytics extends MY_Controller
                 $data['itemchk']=$itemchk;
                 $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 

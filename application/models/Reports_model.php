@@ -2169,24 +2169,24 @@ Class Reports_model extends My_Model
         $totals['title_curqty']=$row['title_prevqty']='';
         $totals['out_curqty']=$totals['out_prevqty']=$this->empty_show;
         if ($totals['curqty']>=0) {
-            $totaldat=ItemSalesTotals($totals['curqty']);
+            $totaldat=$this->ItemSalesTotals($totals['curqty']);
             $totals['title_curqty']=$totaldat['title'];
             $totals['out_curqty']=$totaldat['data'];
         }
         if ($totals['prevqty']>0) {
-            $totaldat=ItemSalesTotals($totals['prevqty']);
+            $totaldat=$this->ItemSalesTotals($totals['prevqty']);
             $totals['title_prevqty']=$totaldat['title'];
             $totals['out_prevqty']=$totaldat['data'];
         }
         $totals['title_curordsale']=$row['title_prevordsale']='';
         $totals['out_curordsale']=$totals['out_prevordsale']=$this->empty_show;
         if ($totals['curordsale']>0) {
-            $totaldat=ItemSalesTotals($totals['curordsale']);
+            $totaldat=$this->ItemSalesTotals($totals['curordsale']);
             $totals['title_curordsale']=$totaldat['title'];
             $totals['out_curordsale']=$totaldat['data'];
         }
         if ($totals['prevordsale']>0) {
-            $totaldat=ItemSalesTotals($totals['prevordsale']);
+            $totaldat=$this->ItemSalesTotals($totals['prevordsale']);
             $totals['title_prevordsale']=$totaldat['title'];
             $totals['out_prevordsale']=$totaldat['data'];
         }
@@ -2209,24 +2209,24 @@ Class Reports_model extends My_Model
         $totals['title_currevenue']=$row['title_prevrevenue']='';
         $totals['out_currevenue']=$totals['out_prevrevenue']=$this->empty_show;
         if ($totals['currevenue']>0) {
-            $totaldat=ItemSalesTotals($totals['currevenue'],1);
+            $totaldat=$this->ItemSalesTotals($totals['currevenue'],1);
             $totals['title_currevenue']=$totaldat['title'];
             $totals['out_currevenue']=$totaldat['data'];
         }
         if ($totals['prevrevenue']>0) {
-            $totaldat=ItemSalesTotals($totals['prevrevenue'],1);
+            $totaldat=$this->ItemSalesTotals($totals['prevrevenue'],1);
             $totals['title_prevrevenue']=$totaldat['title'];
             $totals['out_prevrevenue']=$totaldat['data'];
         }
         $totals['title_cog']=$row['title_profit']='';
         $totals['out_cog']=$totals['out_profit']=$this->empty_show;
         if ($totals['cog']>0) {
-            $totaldat=ItemSalesTotals($totals['cog'],1);
+            $totaldat=$this->ItemSalesTotals($totals['cog'],1);
             $totals['title_cog']=$totaldat['title'];
             $totals['out_cog']=$totaldat['data'];
         }
         if ($totals['profit']>0) {
-            $totaldat=ItemSalesTotals($totals['profit'],1);
+            $totaldat=$this->ItemSalesTotals($totals['profit'],1);
             $totals['title_profit']=$totaldat['title'];
             $totals['out_profit']=$totaldat['data'];
         }
@@ -2249,11 +2249,11 @@ Class Reports_model extends My_Model
         $totals['imptprofit_perc']=$totals['savings_class']=$totals['imptprofit_class']='';
         $totals['out_imptcog']=$totals['out_imprpofit']=$totals['out_savings']=$this->empty_show;
         if ($totals['ipcog']!=0) {
-            $totaldat=ItemSalesTotals($totals['ipcog'],1);
+            $totaldat=$this->ItemSalesTotals($totals['ipcog'],1);
             $totals['title_imptcog']=$totaldat['title'];
             $totals['out_imptcog']=$totaldat['data'];
             if ($totals['iprofit']!=0) {
-                $totaldat=ItemSalesTotals($totals['iprofit'],1);
+                $totaldat=$this->ItemSalesTotals($totals['iprofit'],1);
                 $totals['title_imprpofit']=$totaldat['title'];
                 $totals['out_imprpofit']=$totaldat['data'];
                 $totals['out_imprpofitclass']=($totals['iprofit']<0 ? 'negative' : '');
@@ -2273,7 +2273,7 @@ Class Reports_model extends My_Model
             $totals['imptprofit_class']=$iprofit_class;
             $totals['imptprofit_perc']=$iprofit_perc;
             if ($totals['savings']!=0) {
-                $totaldat=ItemSalesTotals($totals['savings'],1);
+                $totaldat=$this->ItemSalesTotals($totals['savings'],1);
                 $totals['title_savings']=$totaldat['title'];
                 $totals['out_savings']=$totaldat['data'];
                 $totals['savings_class']=($totals['savings']<0 ? 'negative' : '');
@@ -6299,4 +6299,38 @@ Class Reports_model extends My_Model
         }
         return $quater;
     }
+
+    private function ItemSalesTotals($val,$money=0) {
+        $title=$data='';
+        if (abs($val)>1000) {
+            if ($money==0) {
+                $title=number_format($val,0,'.',',');
+            } else {
+                $title=  MoneyOutput($val,0);
+            }
+        }
+        if (abs($val)>1000000) {
+            if ($money==0) {
+                $data=number_format(round($val/1000000,1),1,'.',',').'M';
+            } else {
+                $data=MoneyOutput(round($val/1000000,1),1).'M';
+            }
+        } elseif (abs($val)>1000) {
+            if ($money==0) {
+                $data=number_format(round($val/1000,1),1,'.',',').'K';
+            } else {
+                $data=MoneyOutput(round($val/1000,1),1).'K';
+            }
+        } else {
+            if ($money==0) {
+                $data=number_format($val,0,'.',',');
+            } else {
+                $data=MoneyOutput($val,0);
+            }
+        }
+        return array('title'=>$title, 'data'=>$data);
+
+    }
+
+
 }

@@ -175,11 +175,30 @@ function init_itemsales_content() {
         change_importcost(item, year);
     });
     $("div.itemsalesdatarow").children('div.itemnumber').each(function(){
-        $(this).bt({
-            width: '359px',
-            height: '359px',
-            filling: '#FFFFFF',
-            ajaxPath: ["$(this).data('imgurl')"]
+        $(this).qtip({
+            content: {
+                text: function(event, api) {
+                    $.ajax({
+                        url: api.elements.target.data('imgurl') // Use href attribute as URL
+                    }).then(function(content) {
+                        // Set the tooltip content upon successful retrieval
+                        api.set('content.text', content);
+                    }, function(xhr, status, error) {
+                        // Upon failure... set the tooltip content to error
+                        api.set('content.text', status + ': ' + error);
+                    });
+                    return 'Loading...'; // Set some initial text
+                }
+            },
+            style: {
+                classes: 'salestypepopup',
+                height: '359px',
+                width: '359px'
+            },
+            position: {
+                my: 'left center',
+                at: 'right center'
+            }
         });
     });
     $("div.itemsalesdatarow").children('div.itemnumber').unbind('click').click(function(){

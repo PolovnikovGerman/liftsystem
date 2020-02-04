@@ -1,7 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 04.02.20
- * Time: 19:42
- */
+<div class="itemimagearea">
+    <img src="<?=$data['item_img_name']?>" alt='Item Image'/>
+</div>
