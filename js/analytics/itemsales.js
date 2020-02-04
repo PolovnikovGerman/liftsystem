@@ -190,7 +190,7 @@ function init_itemsales_content() {
     $("div.itemsalesdatarow").children('div.ordqty').unbind('click').click(function(){
         var item=$(this).parent('div').data('item');
         var year=$(this).data('year');
-        var url="/reports/sales_year_details";
+        var url="/analytics/sales_year_details";
         $.post(url, {'item': item, 'year': year}, function(response){
             if (response.errors=='') {
                 show_popup('salesmonthdetails');
@@ -223,7 +223,7 @@ function init_itemsales_content() {
         params.push({name:'search',value:search});
         params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
         params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
-        var url="/reports/itemsales_checkitem";
+        var url="/analytics/itemsales_checkitem";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 if (response.data.totals==0) {
@@ -245,7 +245,7 @@ function change_importcost(item, year) {
     var params=new Array();
     params.push({name: 'item', value: item});
     params.push({name: 'year', value: year});
-    var url="/reports/itemsalesedit";
+    var url="/analytics/itemsalesedit";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.itemsalesdatarow").children('div.imptcost').unbind('click');
@@ -271,7 +271,7 @@ function revert_importcost(item, year) {
     params.push({name:'current_year', value: $("input#itemsalecurrentyear").val()});
     params.push({name:'prev_year', value: $("input#itemsaleprevyear").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
-    var url="/reports/itemsalesgetrow";
+    var url="/analytics/itemsalesgetrow";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.itemsalesdatarow[data-item='"+item+"']").empty().html(response.data.content);
@@ -295,7 +295,7 @@ function save_importcost(item, year) {
     params.push({name:'search',value:search});
     params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
-    var url="/reports/itemsalessave";
+    var url="/analytics/itemsalessave";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.itemsalesdatarow[data-item='"+item+"']").empty().html(response.data.content);
@@ -321,7 +321,7 @@ function filter_itemsalereport() {
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
     $("#loader").show();
-    var url='/reports/itemsalessearch';
+    var url='/analytics/itemsalessearch';
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("input#itemsalestotal").val(response.data.totals);

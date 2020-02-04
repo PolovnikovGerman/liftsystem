@@ -403,6 +403,177 @@ class Analytics extends MY_Controller
         }
     }
 
+    public function sales_year_details() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+
+            $year=$postdata['year'];
+            $item_id=$postdata['item'];
+            $month=0;
+            $res=$this->reports_model->get_monthsales_itemdetails($month, $year, $item_id);
+
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $options=array(
+                    'data'=>$res['data'],
+                    'totals'=>$res['totals'],
+                    'title'=>$res['title'],
+                );
+                $mdata['content']=$this->load->view('reports/itemdata_details_view', $options, TRUE);
+
+                $mdata['countdata']=count($res['data']);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsales_checkitem() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $item_id=$postdata['item'];
+            $chkres=$postdata['check'];
+            // Change Check
+            $totalchk=$this->reports_model->itemsale_change_itemcheck($item_id, $chkres);
+            $mdata['totals']=$totalchk;
+            if ($totalchk>0) {
+                $itemchk=$this->func->session('itemsaleschk');
+                $options=array(
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                    'calc_year'=>$postdata['calc_year'],
+                    'checked'=>$itemchk,
+                    'vendor'=>$postdata['vendor'],
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=$postdata['search'];
+                }
+                $res=$this->reports_model->_get_totalcheck($options);
+                if (empty($res)) {
+                    $mdata['totals']=0;
+                } else {
+                    $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Edit value
+    public function itemsalesedit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            // Get Item values
+            $postdata=$this->input->post();
+            if (!array_key_exists('item', $postdata) || !array_key_exists('year', $postdata)) {
+                $error='Fill all Parameters';
+            } else {
+                $item_id=$postdata['item'];
+                $year=$postdata['year'];
+                $item_cost=$this->reports_model->get_itemimport_cost($item_id, $year);
+                $mdata['editcontent']=$this->load->view('reports/itemsale_imptedit_view', array('cost'=>$item_cost), TRUE);
+                $mdata['savecontent']=$this->load->view('reports/itemsale_imptsave_view', array(), TRUE);
+                $mdata['cancelcontent']=$this->load->view('reports/itemsale_imptcancel_view', array(), TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemsalesgetrow() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $item_id=$postdata['item'];
+            $year=$postdata['year'];
+            $curentyear=$postdata['current_year'];
+            $prevyear=$postdata['prev_year'];
+            $itemchk=$this->func->session('itemsaleschk');
+            $options=array(
+                'item_id'=>$item_id,
+                'current_year'=>$curentyear,
+                'prev_year'=>$prevyear,
+                'calc_year'=>$year,
+                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+            );
+            $res=$this->reports_model->itemsale_data($options);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $data=$res['data'][0];
+                $data['itemchk']=$itemchk;
+                $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+    }
+
+    // Save Import Cost
+    public function itemsalessave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
+            $options=array(
+                'item_id'=>$postdata['item'],
+                'current_year'=>$postdata['current_year'],
+                'prev_year'=>$postdata['prev_year'],
+                'calc_year'=>$postdata['calc_year'],
+                'vendor'=>$vendor,
+                'cost'=>$postdata['cost'],
+                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+
+            $res=$this->reports_model->save_itemimport_cost($options);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $data=$res['data'];
+                $itemchk=usersession('itemsaleschk');
+                $data['itemchk']=$itemchk;
+                $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
+                $mdata['totals']=count($itemchk);
+                if (count($itemchk)>0) {
+                    $options=array(
+                        'current_year'=>$postdata['current_year'],
+                        'prev_year'=>$postdata['prev_year'],
+                        'calc_year'=>$postdata['calc_year'],
+                        'checked'=>$itemchk,
+                        'vendor'=>$postdata['vendor'],
+                        'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    );
+                    if (isset($postdata['search']) && !empty($postdata['search'])) {
+                        $options['search']=$postdata['search'];
+                    }
+                    $res=$this->reports_model->_get_totalcheck($options);
+                    if (empty($res)) {
+                        $mdata['totals']=0;
+                    } else {
+                        $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
+
+
     // Mass check Items
     public function itemsales_masscheck() {
         if ($this->isAjax()) {
