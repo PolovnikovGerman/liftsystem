@@ -51,7 +51,7 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
-                $content_options['checkoutreportview']='';
+                $content_options['checkoutreportview']=$this->_prepare_checkout_report();
             }
         }
         $content_options['menu']=$menu;
@@ -681,6 +681,19 @@ class Analytics extends MY_Controller
         show_404();
     }
 
+    public function checkout_reports_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $mdata['content']='';
+            $this->load->model('orders_model');
+            $datz=$this->orders_model->checkout_reportdata();
+            $mdata['content']=$this->load->view('reports/checkout_reportdata_view',array('tabledat'=>$datz),TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_salestype_view() {
         $this->load->model('permissions_model');
@@ -1107,7 +1120,7 @@ class Analytics extends MY_Controller
         return $content;
     }
 
-    public function _prepare_monthsales() {
+    private function _prepare_monthsales() {
         // Get current year
         $curyear=intval(date('Y'));
         $years=array();
@@ -1135,6 +1148,18 @@ class Analytics extends MY_Controller
         );
         $content=$this->load->view('reports/itemmonthsales_head_view', $options, TRUE);
         return $content;
+    }
+
+    private function _prepare_checkout_report() {
+        /* Get Sums by date */
+        $this->load->model('orders_model');
+        $sum_days=$this->orders_model->get_checkouts_by_weekday();
+        /* Load Footer */
+        $content['footer']=$this->load->view('reports/checkout_footer_view',$sum_days,TRUE);
+        // $content['dialog']=$this->load->view('orders/order_graph_view',array(),TRUE);
+        return $this->load->view('reports/checkout_page_view',$content,TRUE);
+        // return $content;
+
     }
 
 }

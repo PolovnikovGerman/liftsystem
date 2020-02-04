@@ -545,4 +545,242 @@ Class Orders_model extends MY_Model
     }
 
 
+
+
+    public function get_checkouts_by_weekday() {
+        $out_array = [];
+        /* Add Empty values */
+        $out_array['mon'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['tue'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['wed'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['thu'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['fri'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['sat'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['sun'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['total'] = ['cnt' => 0, 'sum' => 0.00];
+        $this->db->select('date_format(order_date,\'%w\') as dayweek,count(order_id) as cnt_ord, sum(order_total) as sum_order',FALSE);
+        $this->db->from('sb_orders');
+        $this->db->where('is_void',0);
+        $this->db->group_by('dayweek');
+        $res = $this->db->get()->result_array();
+
+        foreach ($res as $row) {
+            switch ($row['dayweek']) {
+                case '0':
+                    $out_array['sun']['cnt'] = $row['cnt_ord'];
+                    $out_array['sun']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '1':
+                    $out_array['mon']['cnt'] = $row['cnt_ord'];
+                    $out_array['mon']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '2':
+                    $out_array['tue']['cnt'] = $row['cnt_ord'];
+                    $out_array['tue']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '3':
+                    $out_array['wed']['cnt'] = $row['cnt_ord'];
+                    $out_array['wed']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '4':
+                    $out_array['thu']['cnt'] = $row['cnt_ord'];
+                    $out_array['thu']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '5':
+                    $out_array['fri']['cnt'] = $row['cnt_ord'];
+                    $out_array['fri']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '6':
+                    $out_array['sat']['cnt'] = $row['cnt_ord'];
+                    $out_array['sat']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+            }
+            $out_array['total']['cnt']+=$row['cnt_ord'];
+            $out_array['total']['sum']+=$row['sum_order'];
+        }
+        if ($out_array['total']['sum'] > 0) {
+            $out_array['total']['sum'] = MoneyOutput($out_array['total']['sum']);
+        }
+        return $out_array;
+    }
+
+    public function checkout_reportdata($d_bgn = '', $d_end = '') {
+        if ($d_end == '') {
+            $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
+        }
+        /* Get Begin & End of Week  */
+        $weekend = date('W', $d_end);
+        $yearend = date('Y', $d_end);
+        $dates = getDatesByWeek($weekend, $yearend);
+        $d_end = $dates['end_week'];
+
+        /* Calculate END day */
+        if ($d_bgn == '') {
+            $this->db->select('min(unix_timestamp(order_date)) as min_date', FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('is_void', 0);
+            $res_ar = $this->db->get()->row_array();
+            $last_date = $res_ar['min_date'];
+        } else {
+            $last_date = $d_bgn;
+        }
+        if ($last_date == '') {
+            $last_date = $dates['start_week'];
+        }
+        $d_bgn = $last_date;
+        /* Select # of weekes between end date and begin date */
+        $this->db->select('TIMESTAMPDIFF(WEEK, from_unixtime(' . $d_bgn . '),from_unixtime(' . ($d_end) . ')) as numweeks');
+        $wres = $this->db->get()->row_array();
+
+
+        $out_array = array();
+        // $out_index=-1;
+        for ($j = 0; $j <= $wres['numweeks']; $j++) {
+
+            $weekend = date('W', $d_end);
+            $yearend = date('Y', $d_end);
+            $dates = getDatesByWeek($weekend, $yearend);
+
+            $week_bgn = $dates['start_week'];
+            $week_end = $dates['end_week'];
+            if (date('m', $week_bgn) != date('m', $week_end)) {
+                if (date('Y', $week_bgn) != date('Y', $week_end)) {
+                    $week_name = date('M, Y', $week_bgn) . '/' . date('M, Y', $week_end);
+                } else {
+                    $week_name = date('M', $week_bgn) . '/' . date('M, Y', $week_end);
+                }
+            } else {
+                $week_name = date('F, Y', $week_bgn);
+            }
+            $out_array[] = array(
+                'date' => $week_name,
+                'mon_day' => '',
+                'mon_cnt' => 0,
+                'mon_sum' => 0,
+                'tue_day' => 0,
+                'tue_cnt' => 0,
+                'tue_sum' => 0,
+                'wed_day' => 0,
+                'wed_cnt' => 0,
+                'wed_sum' => 0,
+                'thu_day' => 0,
+                'thu_cnt' => 0,
+                'thu_sum' => 0,
+                'fri_day' => 0,
+                'fri_cnt' => 0,
+                'fri_sum' => 0,
+                'sat_day' => 0,
+                'sat_cnt' => 0,
+                'sat_sum' => 0,
+                'sun_day' => 0,
+                'sun_cnt' => 0,
+                'sun_sum' => 0,
+                'total_cnt' => 0,
+                'total_sum' => 0,
+                'week_num' => $weekend,
+                'year' => $yearend,
+            );
+            $outidx = count($out_array) - 1;
+            $this->db->select("date_format(order_date,'%Y-%m-%d') as weekday, count(order_id) as cnt_ord, sum(order_total) as sum_ord ", FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('unix_timestamp(order_date) >= ', $week_bgn);
+            $this->db->where('unix_timestamp(order_date) <= ', $week_end);
+            $this->db->group_by('weekday');
+            $res = $this->db->get()->result_array();
+            foreach ($res as $row) {
+                $datrep = strtotime($row['weekday']);
+                $weekday = date('w', $datrep);
+                switch ($weekday) {
+                    case '0':
+                        /* Sun */
+                        $out_array[$outidx]['sun_day'] = date('j', $datrep);
+                        $out_array[$outidx]['sun_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['sun_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '1':
+                        /* Mon */
+                        $out_array[$outidx]['mon_day'] = date('j', $datrep);
+                        $out_array[$outidx]['mon_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['mon_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '2' :
+                        /* Tue */
+                        $out_array[$outidx]['tue_day'] = date('j', $datrep);
+                        $out_array[$outidx]['tue_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['tue_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '3':
+                        /* Wed */
+                        $out_array[$outidx]['wed_day'] = date('j', $datrep);
+                        $out_array[$outidx]['wed_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['wed_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '4':
+                        /* Thu */
+                        $out_array[$outidx]['thu_day'] = date('j', $datrep);
+                        $out_array[$outidx]['thu_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['thu_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '5':
+                        /* Thu */
+                        $out_array[$outidx]['fri_day'] = date('j', $datrep);
+                        $out_array[$outidx]['fri_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['fri_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '6':
+                        /* Sat */
+                        $out_array[$outidx]['sat_day'] = date('j', $datrep);
+                        $out_array[$outidx]['sat_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['sat_sum'] = floatval($row['sum_ord']);
+                        break;
+                }
+                $out_array[$outidx]['total_cnt']+=$row['cnt_ord'];
+                $out_array[$outidx]['total_sum']+=floatval($row['sum_ord']);
+            }
+            /* Rebuild Date End */
+            $d_end = strtotime(date("Y-m-d", $d_end) . " - 7 days");
+        }
+        $out = array();
+        foreach ($out_array as $row) {
+            if ($row['sun_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 7);
+                $row['sun_day'] = date('j', $dayw);
+            }
+            $row['sun_sum'] = MoneyOutput($row['sun_sum']);
+            if ($row['mon_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 1);
+                $row['mon_day'] = date('j', $dayw);
+            }
+            $row['mon_sum'] = MoneyOutput($row['mon_sum']);
+            if ($row['tue_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 2);
+                $row['tue_day'] = date('j', $dayw);
+            }
+            $row['tue_sum'] = MoneyOutput($row['tue_sum']);
+            if ($row['wed_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 3);
+                $row['wed_day'] = date('j', $dayw);
+            }
+            $row['wed_sum'] = MoneyOutput($row['wed_sum']);
+            if ($row['thu_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 4);
+                $row['thu_day'] = date('j', $dayw);
+            }
+            $row['thu_sum'] = MoneyOutput($row['thu_sum']);
+            if ($row['fri_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 5);
+                $row['fri_day'] = date('j', $dayw);
+            }
+            $row['fri_sum'] = MoneyOutput($row['fri_sum']);
+            if ($row['sat_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 6);
+                $row['sat_day'] = date('j', $dayw);
+            }
+            $row['sat_sum'] = MoneyOutput($row['sat_sum']);
+            $row['total_sum'] = MoneyOutput($row['total_sum']);
+            $out[] = $row;
+        }
+        return $out;
+    }
+
 }

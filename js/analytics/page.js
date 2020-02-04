@@ -25,5 +25,8 @@ function init_page(objid) {
             $("#reportitemsoldmonthview").show();
             itemmonth_reportinit();
             break;
+        case 'checkoutreportview':
+            $("#checkoutreportview").show();
+            init_ordersreports();
     }
 }

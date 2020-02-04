@@ -1,6 +1,6 @@
 function init_ordersreports() {
     init_reportdata();
-    $('#mask').click(function () {
+    /*$('#mask').click(function () {
         $(this).hide();
         $('#report_dialog').hide();
         $("#tooltip").remove();
@@ -13,14 +13,14 @@ function init_ordersreports() {
     })
     $("#attempts_report").live('click',function(){
         attempt_report();
-    })
+    })*/
 }
 
 function init_reportdata() {
-    var url='/orders/reports_data';
+    var url='/analytics/checkout_reports_data';
     $.post(url, {}, function(response){
         if (response.errors=='') {
-            $("div.table-reports-info").empty().html(response.data.content);
+            $("#reportsinfo").empty().html(response.data.content);
         } else {
             show_error(response);
         }
