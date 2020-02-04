@@ -47,7 +47,7 @@ class Analytics extends MY_Controller
                 $content_options['reportitemsoldmonthview'] = '';
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
-                $head['scripts'][]=array('src'=>'/js/analytics/ordersreports.js');
+                $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
                 $content_options['checkoutreportview']='';
             }
         }

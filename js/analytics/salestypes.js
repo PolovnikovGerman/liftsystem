@@ -9,6 +9,9 @@ function salestype_report_init() {
         var saletype=$(this).data('saletype');
         show_monthsalesdetails(month, year, saletype);
     });
+    $("div.yeardata").find("div.magnifying").qtip({
+
+    });
     $("div.yeardata").find("div.magnifying").bt({
         ajaxCache: false,
         fill: '#FFFFFF',

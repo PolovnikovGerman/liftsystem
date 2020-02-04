@@ -9,14 +9,14 @@ $(document).ready(function(){
 });
 function init_page(objid) {
     console.log('Page '+objid);
-    // $(".artcontentarea").hide();
-    // $(".maincontentmenu_item").removeClass('active');
-    // $(".maincontentmenu_item[data-link='" + objid + "']").addClass('active');
-    // switch (objid) {
-    //     case 'orderlist':
-    //         $("#orderlist").show();
-    //         init_orders();
-    //         break;
+    $(".analyticcontentarea").hide();
+    $(".maincontentmenu_item").removeClass('active');
+    $(".maincontentmenu_item[data-link='" + objid + "']").addClass('active');
+    switch (objid) {
+         case 'reportsalestypeview':
+             $("#reportsalestypeview").show();
+             salestype_report_init();
+             break;
     //     case 'requestlist':
     //         $("#requestlist").show();
     //         init_proofdata();
@@ -26,5 +26,5 @@ function init_page(objid) {
     //         init_tasks_management();
     //         init_tasks_page();
     //         break;
-    // }
+    }
 }
