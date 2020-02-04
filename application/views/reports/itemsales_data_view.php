@@ -1,6 +1,6 @@
 <?php $nrow=0;?>
 <?php foreach ($data as $row) { ?>
-    <div class="itemsalesdatarow <?= ($nrow % 2 == 0 ? 'grey' : 'white' )?>" data-item="<?= $row['item_id'] ?>">
+    <div class="itemsalesdatarow <?= ($nrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' )?>" data-item="<?= $row['item_id'] ?>">
         <div class="edit lastcol">
             <input type="checkbox" class="itemsoldtotalchk" data-item="<?=$row['item_id']?>" <?=  in_array($row['item_id'], $itemchk) ? 'checked="checked"' : ''?>/>
         </div>

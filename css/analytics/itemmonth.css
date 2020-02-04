@@ -9,6 +9,7 @@
     float: left;
     margin-left: 10px;
     margin-top: 15px;
+    margin-bottom: 15px;
     width: 995px;
 }
 .itemmonthsalesreportarea select {
@@ -31,15 +32,16 @@
 }
 .itemmonthheadrow {
     clear: both;
-    height: 20px;
-    line-height: 20px;
-    float: left;
     width: 995px;
 }
 .itemmonthsort {
-    float: left;
+    margin-bottom: 8px;
 }
-.itemmonthsort > .label {
+.itemmonthsort > div {
+    height: 20px;
+    line-height: 20px!important;
+}
+.itemmonthsort > .labeltxt {
     float: left;
     font-size: 12px;
     width: 47px;
@@ -49,7 +51,7 @@
     width: 53px;
 }
 .itemmonthshowrecords {
-    float: right;
+    float: right!important;
 }
 .itemmonthshowrecords > select.selectperrecord {
     width: 150px;
@@ -57,44 +59,43 @@
 .itemmonth_search {
     float: left;
     height: 27px;
-    line-height: 27px;
+    line-height: 27px!important;
     width: 350px;
 }
 input.itemmonth_searchdata {
     margin-top: 2px;
     width: 175px;
+    height: 21px;
+    line-height: 21px;
 }
 .itemmonth_findall {
     background: transparent url("/img/reports/searchall_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
-    float: left;
     height: 27px;
     width: 87px;
 }
 .itemmonth_clear {
     background: transparent url("/img/reports/clean_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
-    float: left;
     height: 27px;
     width: 51px;
 }
 .itemmonthpagination {
-    float: right;
+    float: right!important;
     width: 160px;
 }
 /* Table Head */
 .itemmonth_head {
     border: 1px solid #979797;
     clear: both;
-    float: left;
-    height: 21px;
-    line-height: 21px;
     margin-top: 7px;
     width: 993px;
+    background: #8d8d8d;
 }
 .itemmonth_head > div {
-    float: left;
     border-right: 1px solid #4e4e4e;
+    height: 21px;
+    line-height: 21px;
     text-align: center;
     background: none #000000 repeat;
     color: #ffffff;
@@ -134,7 +135,6 @@ input.itemmonth_searchdata {
 .itemmonth_data {
     border: 1px solid #979797;
     clear: both;
-    float: left;
     height: 544px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -142,17 +142,12 @@ input.itemmonth_searchdata {
 }
 .itemmonth_data_row {
     clear: both;
-    float: left;
     border-bottom: 2px solid #4e4e4e;
-    /* height: 21px;
-    line-height: 21px; */
     width: 987px;
 }
 .itemmonth_data_row > .itemdetails {
-    float: left;
 }
 .itemmonth_data_row > .itemdetails > div {
-    float: left;
     border-right: 1px solid #4e4e4e;
     text-align: center;
 }
@@ -173,12 +168,10 @@ input.itemmonth_searchdata {
 }
 .itemmonth_data_row > .itemdetails > .itemname > .itemnameview {
     clear: both;
-    float: left;
     width: 170px;
 }
 .itemmonth_data_row > .itemdetails > .itemname > .vendornameview {
     clear: both;
-    float: left;
     width: 170px;
 }
 .itemmonth_data_row > .itemsoldresult {
@@ -188,16 +181,15 @@ input.itemmonth_searchdata {
     border-bottom: 1px solid #4e4e4e;
     clear: both;
     float: left;
-    height: 21px;
-    line-height: 21px;
 }
 .itemsoldresultrow.lastyear {
     border-bottom: none;
 }
 .itemsoldresultrow > div {
     border-right: 1px solid #4e4e4e;
-    float: left;
     text-align: center;
+    height: 21px;
+    line-height: 21px!important;
 }
 .itemsoldresultrow > div.lastcol {
     border-right: 2px solid #4e4e4e;

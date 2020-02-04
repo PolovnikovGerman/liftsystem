@@ -47,7 +47,7 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
-                $content_options['reportitemsoldmonthview'] = '';
+                $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales();
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
@@ -582,9 +582,6 @@ class Analytics extends MY_Controller
         show_404();
     }
 
-
-
-
     // Mass check Items
     public function itemsales_masscheck() {
         if ($this->isAjax()) {
@@ -623,6 +620,67 @@ class Analytics extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    // Item Month Sold Data
+    public function itemmonthsalesdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $limit=(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE);
+            $numpage=(isset($postdata['offset']) ? $postdata['offset'] : 0);
+            $offset=$numpage*$limit;
+            $current_year=$postdata['current_year'];
+            $start_year=$postdata['start_year'];
+            // Options
+            $options=array(
+                'limit'=>$limit,
+                'offset'=>$offset,
+                'current_year'=>$current_year,
+                'start_year'=>$start_year,
+                'sort_year'=>(isset($postdata['order_year']) ? $postdata['order_year'] : $current_year),
+                'sort_fld'=>(isset($postdata['order_fld']) ? $postdata['order_fld'] : 'total'),
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=$postdata['search'];
+            }
+            $res=$this->reports_model->get_itemmonthsolddata($options);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $voptions=array(
+                    'data'=>$res['data'],
+                    'years'=>$res['years'],
+                    'start_year'=>$start_year,
+                );
+                $mdata['content']=$this->load->view('reports/itemmonthsales_data_view', $voptions, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Apply filter to Sales Month
+    public function itemmonthsearch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $curyear=(isset($postdata['current_year']) ? $postdata['current_year'] : date('Y'));
+            $startyear=(isset($postdata['start_year']) ? $postdata['start_year'] : intval(date('Y'))-1);
+            $cntoptions=array(
+                'startyear'=>$startyear,
+                'curentyear'=>$curyear,
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $cntoptions['search']=  strtoupper($postdata['search']);
+            }
+            $mdata['totals']=$this->reports_model->get_itemmonth_total($cntoptions);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_salestype_view() {
         $this->load->model('permissions_model');
@@ -1049,5 +1107,34 @@ class Analytics extends MY_Controller
         return $content;
     }
 
+    public function _prepare_monthsales() {
+        // Get current year
+        $curyear=intval(date('Y'));
+        $years=array();
+        for($i=0; $i<3; $i++) {
+            $chkyear=$curyear-$i;
+            if ($chkyear<2014) {
+                break;
+            }
+            array_push($years, $chkyear);
+            $startyear=$chkyear;
+        }
+        // Get data
+        $cntoptions=array(
+            'startyear'=>$startyear,
+            'curentyear'=>$curyear,
+        );
+        $totals=$this->reports_model->get_itemmonth_total($cntoptions);
+        $options=array(
+            'curentyear'=>$curyear,
+            'startyear'=>$startyear,
+            'totals'=>$totals,
+            'perpage'=>  $this->perpage_options,
+            'currenrows'=>$this->PERPAGE,
+            'sortyears'=>$years,
+        );
+        $content=$this->load->view('reports/itemmonthsales_head_view', $options, TRUE);
+        return $content;
+    }
 
 }

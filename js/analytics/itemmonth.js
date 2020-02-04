@@ -64,7 +64,7 @@ function pageItemMonthreport(page_index) {
     params.push({name:'current_year', value: $("input#itemmonthcurrentyear").val()});
     params.push({name:'start_year', value: $("input#itemmonthstartyear").val()});
     $("#loader").show();
-    var url='/reports/itemmonthsalesdata';
+    var url='/analytics/itemmonthsalesdata';
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("#loader").hide();
@@ -84,18 +84,13 @@ function itemmonth_content_init() {
         params.push({name: 'month', value: $(this).data('month')});
         params.push({name: 'year', value: $(this).data('year')});
         params.push({name: 'item', value: $(this).data('item')});
-        var url="/reports/sales_month_details";
+        var url="/analytics/sales_month_details";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup('salesmonthdetails');
-                $("div#pop_content").empty().html(response.data.content);
-                if (response.data.countdata<20) {
-                    $("div.datarow").find('div.profit_perc').css('width','55');
-                    $("div.datatotals").find('div.profit_perc').css('width','54');
-                }
-                $("a#popupContactClose").unbind('click').click(function(){
-                    disablePopup();
-                });
+                $("#pageModalLabel").empty().html('Sales Month Details');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").find('div.modal-dialog').css('width','685px');
+                $("#pageModal").modal('show');
             } else {
                 show_error(response);
             }
@@ -115,7 +110,7 @@ function filter_itemmonthreport() {
     params.push({name:'current_year', value: $("input#itemmonthcurrentyear").val()});
     params.push({name:'start_year', value: $("input#itemmonthstartyear").val()});
     $("#loader").show();
-    var url='/reports/itemmonthsearch';
+    var url='/analytics/itemmonthsearch';
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("input#itemmonthtotal").val(response.data.totals);

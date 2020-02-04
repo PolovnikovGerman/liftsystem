@@ -13,7 +13,7 @@
         <?php if (isset($reportitemsoldyearview)) { ?>
             <div class="analyticcontentarea" id="reportitemsoldyearview" style="display: none;"><?=$reportitemsoldyearview?></div>
         <?php } ?>
-        <?php if (isset($requestlist)) { ?>
+        <?php if (isset($reportitemsoldmonthview)) { ?>
             <div class="analyticcontentarea" id="reportitemsoldmonthview" style="display: none;"><?=$reportitemsoldmonthview?></div>
         <?php } ?>
         <?php if (isset($checkoutreportview)) { ?>
