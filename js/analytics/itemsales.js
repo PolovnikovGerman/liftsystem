@@ -57,7 +57,7 @@ function itemsales_reportinit() {
         params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
         params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
         // Check Uncheck current page
-        var url="/reports/itemsales_masscheck";
+        var url="/analytics/itemsales_masscheck";
         $.post(url,params, function(response){
             if (response.errors=='') {
                 if (chkres==0) {
@@ -96,7 +96,7 @@ function change_reportbaseyear() {
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
 
-    var url="/reports/itemsales_baseyear";
+    var url="/analytics/itemsales_baseyear";
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -153,7 +153,7 @@ function pageItemSalereport(page_index) {
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
 
     $("#loader").show();
-    var url='/reports/itemsalesdata';
+    var url='/analytics/itemsalesdata';
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("#loader").hide();

@@ -17,10 +17,10 @@ function init_page(objid) {
              $("#reportsalestypeview").show();
              salestype_report_init();
              break;
-    //     case 'requestlist':
-    //         $("#requestlist").show();
-    //         init_proofdata();
-    //         break;
+        case 'reportitemsoldyearview':
+            $("#reportitemsoldyearview").show();
+            itemsales_reportinit();
+            break;
     //     case 'taskview':
     //         $("#taskview").show();
     //         init_tasks_management();

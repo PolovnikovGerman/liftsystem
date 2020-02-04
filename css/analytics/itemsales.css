@@ -5,28 +5,28 @@
 */
 .itemsalesreportarea {
     clear: both;
-    float: left;
     margin-left: 10px;
     margin-top: 15px;
     width: 995px;
+    margin-bottom: 10px;
 }
 .itemsalesheadrow {
     clear: both;
-    float: left;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     width: 100%;
 }
 .sortitemsalesarea {
-    float: left;
-    height: 26px;
-    line-height: 26px;
-    font-size: 13px;
     width: 326px;
+}
+.sortitemsalesarea > div {
+    height: 26px;
+    line-height: 26px!important;
+    font-size: 13px;
 }
 .sortitemsalesarea > div {
     float: left;
 }
-.sortitemsalesarea > .label {
+.sortitemsalesarea > .labeltxt {
     width: 50px;
 }
 .sortitemsalesarea > .selectsortarea {
@@ -39,18 +39,20 @@
     margin-top: 6px;
     width: 18px;
 }
-.sortitemsalesarea > .selectsortarea > .label {
-    float: left;
+.sortitemsalesarea > .selectsortarea > .labeltxt {
     width: 57px;
-}
-.vendorchoicearea {
-    float: right;
     height: 26px;
     line-height: 26px;
+}
+.vendorchoicearea {
+    float: right!important;
+}
+.vendorchoicearea > div {
+    height: 26px;
+    line-height: 26px!important;
     font-size: 13px;
 }
-.vendorchoicearea  > .label {
-    float: left;
+.vendorchoicearea  > .labeltxt {
     width: 50px;
 }
 .vendorchoicearea > .selectsortarea {
@@ -67,25 +69,27 @@
     margin-top: 6px;
     width: 18px;
 }
-.vendorchoicearea > .selectsortarea > .label {
+.vendorchoicearea > .selectsortarea > .labeltxt,
+.vendorchoicearea > .selectsortarea > .labelallvend {
     width: 54px;
+    height: 26px;
+    line-height: 26px;
 }
 .vendorchoicearea > .selectsortarea > .labelallvend {
     width: 79px;
 }
 .vendorcost {
-    float: left;
-    height: 18px;
-    line-height: 18px;
     width: 207px;
 }
-.vendorcost > .label {
-    float: left;
+.vendorcost > div {
+    height: 18px;
+    line-height: 18px!important;
+}
+.vendorcost > .labeltxt {
     font-size: 13px;
     width: 78px;
 }
 .optionselect {
-    float: left;
     width: 108px;
 }
 select.vendorcostcalcselect {
@@ -107,7 +111,7 @@ select.selectrepsoldcalcyear {
     width: 124px;
 }
 .itemsalesshowrecords {
-    float: right;
+    float: right!important;
     width: 156px;
 }
 .itemsalesshowrecords > select.perpage {
@@ -120,41 +124,37 @@ select.selectrepsoldcalcyear {
     width: 150px;
 }
 .itemsales_search {
-    float: left;
     width: 350px;
 }
 input.itemsales_searchdata {
     float: left;
     font-size: 13px;
-    height: 18px;
-    line-height: 18px;
+    height: 24px;
+    line-height: 24px;
     width: 175px;
 }
 .itemsales_findall {
     background: transparent url("/img/reports/searchall_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
-    float: left;
     height: 27px;
     width: 87px;
 }
 .itemsales_clear {
     background: transparent url("/img/reports/clean_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
-    float: left;
     height: 27px;
     width: 51px;
 }
 .itemsalescaclarea {
-    float: left;
-    height: 18px;
-    line-height: 18px;
     margin-left: 16px;
-    margin-top: 8px;
     width: 187px;
+}
+.itemsalescaclarea > div {
+    height: 26px;
+    line-height: 26px!important;
 }
 .itemsalescaclarea > .calclabel {
     color: #5e5e5e;
-    float: left;
     font-size: 11px;
     width: 69px;
 }
@@ -162,17 +162,13 @@ input.itemsales_searchdata {
     float: left;
     width: 18px;
 }
-.itemsalescaclarea > .label {
+.itemsalescaclarea > .labeltxt {
     color: #000000;
     float: left;
     font-size: 12px;
     width: 33px;
 }
 .itemsalesaddcost {
-    float: left;
-    height: 18px;
-    line-height: 22px;
-    margin-top: 8px;
     width: 209px;
 }
 .itemsalesaddcost > .addlcostlabel {
@@ -181,6 +177,8 @@ input.itemsales_searchdata {
     font-size: 11px;
     margin-left: 15px;
     width: 55px;
+    height: 26px;
+    line-height: 26px;
 }
 .itemsalesaddcost > .saveaddcost {
     background: transparent url("/img/reports/saveticket.png") no-repeat scroll 0 0;
@@ -193,13 +191,13 @@ input.itemsales_searchdata {
 }
 input.addlcostinpt {
     float: left;
-    height: 14px;
-    width: 41px;
+    height: 25px;
+    width: 45px;
 }
 .itemsalespagination {
-    float: right;
+    float: right!important;
     height: 20px;
-    line-height: 33px;
+    line-height: 33px!important;
 }
 .itemsalesreporthead {
     background: #000000 none repeat scroll 0 0;
@@ -208,20 +206,20 @@ input.addlcostinpt {
     color: #ffffff;
     float: left;
     font-size: 11px;
-    height: 21px;
-    line-height: 21px;
     width: 995px;
 }
 .itemsalesreporthead > div {
     border-right: 1px solid #4e4e4e;
     float: left;
     text-align: center;
+    height: 21px;
+    line-height: 21px;
 }
 .itemsalesreporthead > div.lastcol {
     border-right: 3px solid #4e4e4e;
 }
 .itemsalesreporthead > .edit {
-    width: 14px;
+    width: 18px;
 }
 .itemsalesreporthead > .itemnumber {
     width: 58px;
@@ -283,19 +281,18 @@ input.addlcostinpt {
 }
 .itemsalesdatarow {
     border-left: 1px solid #1b1b1b;
-    /* border-bottom: 1px solid #0000ff; */
     clear: both;
     color: #000000;
     float: left;
     font-size: 11px;
-    height: 20px;
-    line-height: 20px;
     width: 999px;
 }
 .itemsalesdatarow > div {
     border-right: 1px solid #4e4e4e;
     float: left;
     text-align: center;
+    height: 20px;
+    line-height: 20px;
 }
 .itemsalesdatarow > div.negative {
     color: #FF0000;
@@ -319,7 +316,7 @@ input.addlcostinpt {
 .itemsalesdatarow > .edit {
     cursor: pointer;
     height: 20px;
-    width: 14px;
+    width: 19px;
 }
 input.itemsoldtotalchk, input.itemsoldalldatachk {
     margin-left: 0;
@@ -339,7 +336,7 @@ input.itemsoldtotalchk, input.itemsoldalldatachk {
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 112px;
+    width: 116px;
 }
 .itemsalesdatarow > .repqty {
     width: 45px;
@@ -360,7 +357,7 @@ input.itemsoldtotalchk, input.itemsoldalldatachk {
     padding-right: 3px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 44px;
+    width: 49px;
 }
 .itemsalesdatarow > .cost {
     width: 36px;

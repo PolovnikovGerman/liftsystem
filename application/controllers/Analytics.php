@@ -5,6 +5,8 @@ class Analytics extends MY_Controller
 {
 
     private $pagelink = '/analytics';
+    private $PERPAGE = 100;
+    private $perpage_options = [50, 100, 250, 500];
 
     public function __construct()
     {
@@ -41,7 +43,7 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldyearview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemsales.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemsales.js'];
-                $content_options['reportitemsoldyearview'] = '';
+                $content_options['reportitemsoldyearview'] = $this->_prepare_itemsales();
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
@@ -60,6 +62,9 @@ class Analytics extends MY_Controller
         $head['scripts'][] = array('src' => '/js/analytics/page.js');
         $head['styles'][] = array('style' => '/css/analytics/analyticpage.css');
         // Utils
+        $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
@@ -286,7 +291,155 @@ class Analytics extends MY_Controller
             'profit' => $profit_type,
         ];
         echo $this->load->view('reports/diffdetails_view', $options, TRUE);
+    }
 
+    // Item Sales - Year
+    // Item Sales page
+    public function itemsalesdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $limit=(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE);
+            $start=(isset($postdata['offset']) ? $postdata['offset'] : 0);
+            $offset=$start*$limit;
+            $orderby=(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty');
+            $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
+
+            $options=array(
+                'limit'=>$limit,
+                'offset'=>$offset,
+                'orderby'=>$orderby,
+                'vendor'=>$vendor,
+                'current_year'=>$postdata['current_year'],
+                'prev_year'=>$postdata['prev_year'],
+                'calc_year'=>(isset($postdata['calc_year']) ? $postdata['calc_year'] : $postdata['current_year']),
+                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+            $res=$this->reports_model->itemsale_data($options);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $itemchk=usersession('itemsaleschk');
+                $voptions=array(
+                    'data'=>$res['data'],
+                    'curyear'=>$postdata['current_year'],
+                    'prevyear'=>$postdata['prev_year'],
+                    'itemchk'=>$itemchk,
+                );
+                $mdata['content']=$this->load->view('reports/itemsales_data_view', $voptions, TRUE);
+                $mdata['addcost']=$this->reports_model->get_addcost();
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    // Count # of records for show in Item Sale Report
+    public function itemsalessearch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
+            $options=array(
+                'curentyear'=>$postdata['current_year'],
+                'prevyear'=>$postdata['prev_year'],
+                'vendor'=>$vendor,
+                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+            $mdata['totals']=$this->reports_model->itemsales_totals($options);
+            // Build Totals
+            $itemchk=usersession('itemsaleschk');
+            $mdata['chktotals']=0;
+            if (empty($itemchk)) {
+            } else {
+                $toptions=array(
+                    'checked'=>$itemchk,
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                    'calc_year'=>$postdata['calc_year'],
+                    'vendor'=>$vendor,
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $toptions['search']=strtoupper($postdata['search']);
+                }
+                $totals=$this->reports_model->_get_totalcheck($toptions);
+                if (!empty($totals)) {
+                    $mdata['chktotals']=count($itemchk);
+                    $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $totals, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Change Base Year
+    public function itemsales_baseyear() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $contoptions=array(
+                'baseyear'=>(isset($postdata['baseyear']) ? $postdata['baseyear'] : intval(date('Y'))),
+                'limit'=>(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE),
+                'vendor'=>(isset($postdata['vendor']) ? $postdata['vendor'] : ''),
+                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                'order_by'=>(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty'),
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $contoptions['search']=$postdata['search'];
+            }
+            // Try to build content
+            $mdata['content']=$this->_prepare_itemsales($contoptions);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    // Mass check Items
+    public function itemsales_masscheck() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            if ($postdata['check']==0) {
+                usersession('itemsaleschk', array());
+            } else {
+                // Add All items
+                $chkoptions=array(
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                );
+                $this->reports_model->itemsales_checkitem($chkoptions);
+                $itemchk=usersession('itemsaleschk');
+                $mdata['totals']=count($itemchk);
+                $options=array(
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                    'calc_year'=>$postdata['calc_year'],
+                    'checked'=>$itemchk,
+                    'vendor'=>$postdata['vendor'],
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=$postdata['search'];
+                }
+                $res=$this->reports_model->_get_totalcheck($options);
+                if (empty($res)) {
+                    $mdata['totals']=0;
+                } else {
+                    $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 
     private function _prepare_salestype_view() {
@@ -621,5 +774,98 @@ class Analytics extends MY_Controller
         }
         return $yearDiff;
     }
+
+    // Item Sales (Year)
+    private function _prepare_itemsales($options=array()) {
+        // Get current year
+        // $current_year=0
+        if (!isset($options['baseyear'])) {
+            $current_year=0;
+        } else {
+            $current_year=$options['baseyear'];
+        }
+        if ($current_year==0) {
+            $curyear=intval(date('Y'));
+        } else {
+            $curyear=intval($current_year);
+        }
+        $chkyear=intval(date('Y'))-2;
+        $prvyear=$curyear-1;
+        $selectyearcalcview='';
+        if ($chkyear>=2014) {
+            // Build show for select
+            $yoptions=array(
+                'start_year'=>intval(date('Y')),
+                'current_year'=>$curyear,
+            );
+            $selectyearcalcview=$this->load->view('reports/selectcalcyear_view', $yoptions, TRUE);
+        }
+        // Default
+        $defvenfor='';
+        if (isset($options['vendor']) && !empty($options['vendor'])) {
+            $defvenfor=$options['vendor'];
+        }
+        $cntoptions=array(
+            'curentyear'=>$curyear,
+            'prevyear'=>$prvyear,
+            'vendor'=>$defvenfor,
+        );
+        if (isset($options['search'])) {
+            $cntoptions['search']=strtoupper($options['search']);
+        }
+
+        $totals=$this->reports_model->itemsales_totals($cntoptions);
+
+        $addcost=$this->reports_model->get_addcost();
+
+        $voptions=array(
+            'sort'=>(isset($options['order_by']) ? $options['order_by'] : 'curyearqty'),
+            'curentyear'=>$curyear,
+            'prevyear'=>$prvyear,
+            'vendor'=>$defvenfor,
+            'itmtotals'=>$totals,
+            'vendors'=>$this->config->item('report_vendors'),
+            'perpage'=>  $this->perpage_options,
+            'currenrows'=>(isset($options['limit']) ? $options['limit'] : $this->PERPAGE),
+            'addcost'=>$addcost,
+            'selectyearshow'=>$selectyearcalcview,
+            'search'=>(isset($options['search']) ? $options['search'] : ''),
+            'vendor_cost'=>(isset($options['vendor_cost']) ? $options['vendor_cost'] : 'high'),
+        );
+
+        $voptions['totals']=0;
+
+        $itemchk=usersession('itemsaleschk');
+
+        if (!is_array($itemchk) || empty($itemchk)) {
+            $itemchk=array();
+        } else {
+            // Get Totals for view
+            $totaloptions=array(
+                'current_year'=>$curyear,
+                'prev_year'=>$prvyear,
+                'calc_year'=>$curyear,
+                'checked'=>$itemchk,
+                'vendor'=>$defvenfor,
+                'vendor_cost'=>(isset($options['vendor_cost']) ? $options['vendor_cost'] : 'high'),
+            );
+            if (isset($options['search']) && !empty($options['search'])) {
+                $totaloptions['search']=$options['search'];
+            }
+
+            $res=$this->reports_model->_get_totalcheck($totaloptions);
+
+            if (!empty($res)) {
+                $voptions['totals']=1;
+                $voptions['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+            }
+        }
+
+        $content=$this->load->view('reports/itemsales_head_view', $voptions, TRUE);
+        // Prepare session for check
+        usersession('itemsaleschk', $itemchk);
+        return $content;
+    }
+
 
 }
