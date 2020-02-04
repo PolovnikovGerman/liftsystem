@@ -1,0 +1,1 @@
+<div class="itemsalesform_revert"><img src="/img/cancel.png"></div>
