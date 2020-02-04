@@ -2,8 +2,8 @@
 
 Class Orders_model extends MY_Model
 {
-    const START_ORDNUM=22000;
-    const INIT_ERRMSG='Unknown error. Try later';
+    protected $START_ORDNUM=22000;
+    protected $INIT_ERRMSG='Unknown error. Try later';
     protected $project_name='PROJ';
 
     protected $NO_ART = '06_noart';
@@ -504,5 +504,45 @@ Class Orders_model extends MY_Model
             return 'No User Messages';
         }
     }
+
+    public function change_goal_value($data, $field, $newval) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        if (!isset($data[$field])) {
+            $out['msg']='Unknown field '.$field;
+            return $out;
+        }
+        $data[$field]=$newval;
+        usersession('goaldata', $data);
+        $out['result']=  $this->success_result;
+        // Count new params
+        $goal_avgprofit=$goal_avgrevenue=$goal_avgprofit_perc='&nbsp;';
+        if ($data['goal_orders']!=0) {
+            $goal_avgrevenue=($data['goal_revenue']/$data['goal_orders']);
+            $goal_avgrevenue=MoneyOutput($goal_avgrevenue);
+            $goal_avgprofit=($data['goal_profit']/$data['goal_orders']);
+            $goal_avgprofit=MoneyOutput($goal_avgprofit);
+        }
+        if ($data['goal_revenue']) {
+            $goal_avgprofit_perc=($data['goal_profit']/$data['goal_revenue']*100);
+            $goal_avgprofit_perc=number_format($goal_avgprofit_perc,1).'%';
+        }
+        $out['goalavgrevenue']=$goal_avgrevenue;
+        $out['goalavgprofit']=$goal_avgprofit;
+        $out['goalavgprofitperc']=$goal_avgprofit_perc;
+        return $out;
+    }
+
+    public function save_profitdate_goal($data) {
+        $out = array('result' => $this->error_result, 'msg' => $this->INIT_ERRMSG);
+        $this->db->where('goal_order_id', $data['goal_order_id']);
+        $this->db->set('goal_orders', $data['goal_orders']);
+        $this->db->set('goal_revenue', $data['goal_revenue']);
+        $this->db->set('goal_profit', $data['goal_profit']);
+        $this->db->update('ts_goal_orders');
+        $out['result']=$this->success_result;
+        usersession('goaldata', NULL);
+        return $out;
+    }
+
 
 }

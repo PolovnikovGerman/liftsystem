@@ -43,7 +43,7 @@
         <?php foreach ($quarters as $qrow) { ?>
             <div class="quaterdatabefore <?=$qrow['view_class']?>">&nbsp;</div>
             <div class="quaterdata <?=$qrow['view_class']?>">
-                <span class="quaterlabel" data-calcurl="<?=$qrow['calcurl']?>"><?=$qrow['label']?></span> <span class="<?=$qrow['chg_revenue_class']?>"><?=$qrow['chg_revenue']?></span> <span class="<?=$qrow['chg_perc_class']?>"><?=$qrow['chg_perc']?></span>
+                <span class="<?=empty($qrow['calcurl']) ? 'quaterlabelempty' : 'quaterlabel' ?>" data-calcurl="<?=$qrow['calcurl']?>"><?=$qrow['label']?></span> <span class="<?=$qrow['chg_revenue_class']?>"><?=$qrow['chg_revenue']?></span> <span class="<?=$qrow['chg_perc_class']?>"><?=$qrow['chg_perc']?></span>
             </div>
             <div class="quaterdataafter <?=$qrow['view_class']?>">&nbsp;</div>
         <?php } ?>

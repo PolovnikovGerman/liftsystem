@@ -5822,7 +5822,7 @@ Class Reports_model extends My_Model
                     'calcurl' =>'',
                 ];
             } else {
-                $calcUrl ='/reports/showdifference_calc/?q='.$i.'&start='.$diffYearBgn.'&finish='.$diffYearEnd.'&type='.$salestype.'&view='.$profit_type;
+                $calcUrl ='/analytics/showdifference_calc/?q='.$i.'&start='.$diffYearBgn.'&finish='.$diffYearEnd.'&type='.$salestype.'&view='.$profit_type;
                 $prvval = $curval = 0;
                 $orderproj = 0;
                 foreach ($prvQuater as $row) {

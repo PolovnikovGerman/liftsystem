@@ -1,0 +1,36 @@
+/* Profit classes */
+.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.green {
+    background-color: #00e947;
+    color: #000000;
+}
+.red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.black {
+    background-color: #000000;
+    color: #ffffff;
+}
+.orange {
+    background-color: #ea8a0e;
+    color: #000000;
+}
+.cancelprof {
+    background: #919191;
+    color: #000000;
+}
+.moroon {
+    background-color: #6d0303;
+    color: #ffffff;
+}
+.white {
+    background-color: #ffffff;
+    color: #000000;
+}
+.qtip {
+    max-width: initial!important;
+}

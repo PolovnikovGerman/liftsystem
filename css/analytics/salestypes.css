@@ -8,8 +8,8 @@
     float: left;
     margin-left: 7px;
     margin-top: 10px;
-    max-height: 643px;
-    overflow-y: auto;
+    /* max-height: 643px;
+    overflow-y: auto;*/
     width: 1030px;
 }
 .salestype_dataarea {
@@ -122,6 +122,8 @@
     float: left;
     text-align: right;
     width: 58px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .yeardata > .total > .row.percent {
     font-size: 15px;
@@ -163,6 +165,8 @@
     float: left;
     text-align: right;
     width: 38px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .yeardata > .totaldiff > .row.percent {
     font-size: 13px;
@@ -198,7 +202,7 @@
     height: 72px;
     margin-left: 4px;
     text-align: center;
-    width: 30px;
+    width: 35px;
 }
 .yeardata.customs > .map {
     height: 124px;
@@ -209,6 +213,8 @@
     height: 18px;
     line-height: 18px;
     width: 100%;
+    margin-left: 0;
+    margin-right: 0;
 }
 .yeardata > .map > .row.datayear {
     display: none;
@@ -227,6 +233,7 @@
 .yeardata > .monthdataarea > .month {
     border: 1px solid #000000;
     height: 72px;
+    width: 100%;
 }
 .yeardata  > .monthdataarea > .month.customs {
     height: 124px;
@@ -260,6 +267,8 @@
     float: left;
     text-align: right;
     width: 95%;
+    margin-right: 0;
+    margin-left: 0;
 }
 .yeardata  > .monthdataarea > .month > .row > .magnifying {
     float: left;
@@ -373,6 +382,8 @@
     text-align: center;
     color: #0d01b3;
     width: 100%;
+    margin-right: 0;
+    margin-left: 0;
 }
 .differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month > .row.negative {
     color: #ff0000;
@@ -506,6 +517,8 @@
     float: left;
     text-align: right;
     width: 69px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .pacehitdata > .row.percent {
     font-size: 14px;
@@ -547,6 +560,8 @@
     float: left;
     text-align: right;
     width: 39px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .pacehitdiffdata > .row.percent {
     font-size: 13px;
@@ -601,6 +616,8 @@
     float: left;
     text-align: right;
     width: 69px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .salesgoaldata > .row.percent {
     font-size: 14px;
@@ -668,6 +685,8 @@
     float: left;
     text-align: right;
     width: 69px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .salesavgarea > .salesavgdata > .row.profit {
     font-size: 13px;
@@ -694,6 +713,15 @@
     height: 17px;
     line-height: 17px;
     width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+/* POPUP class */
+.salestypepopup {
+    background: #ffffff!important;
+    border-color: #000000!important;
+    font-size: 15px!important;
+    color: #000!important;
 }
 /* Goal Edit POPUP */
 .goaleditarea {

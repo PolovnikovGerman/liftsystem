@@ -10,29 +10,38 @@ function salestype_report_init() {
         show_monthsalesdetails(month, year, saletype);
     });
     $("div.yeardata").find("div.magnifying").qtip({
-
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('diffurl') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        style: {
+            classes: 'salestypepopup',
+            height: '270px',
+            width: '365px'
+        },
+        position: {
+            my: 'left center',
+            at: 'right center'
+        }
     });
-    $("div.yeardata").find("div.magnifying").bt({
-        ajaxCache: false,
-        fill: '#FFFFFF',
-        /* trigger: 'click', */
-        height: '270px',
-        width: '359px',
-        ajaxPath: ["$(this).data('diffurl')"]
-    });
-    $("div.yeardata").find("div.total").bt({
-        /* trigger: 'click', */
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 217,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {
-            color: '#000000'
+    $("div.yeardata").find("div.total").qtip({
+        style: {
+            classes: 'salestypepopup',
+            width: '227px'
+        },
+        position: {
+            my: 'left center',
+            at: 'right center'
         }
     });
     // Show / hide to see reps for custom shaped
@@ -87,20 +96,40 @@ function salestype_report_init() {
         var profit=$(this).data('profit');
         show_difference(type, profit);
     });
-    $("div.quaterdata").find("span.quaterlabel").bt({
-        ajaxCache: false,
-        fill: '#FFFFFF',
-        /* trigger: 'click', */
-        height: '270px',
-        width: '259px',
-        ajaxPath: ["$(this).data('calcurl')"]
+    $("div.quaterdata").find('span.quaterlabel').qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('calcurl') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        style: {
+            classes: 'salestypepopup'
+        }
     });
+    // $("div.quaterdata").find("span.quaterlabel").bt({
+    //     ajaxCache: false,
+    //     fill: '#FFFFFF',
+    //     /* trigger: 'click', */
+    //     height: '270px',
+    //     width: '259px',
+    //     ajaxPath: ["$(this).data('calcurl')"]
+    // });
 }
 
 function edit_salestype_goal(goal) {
-    var url="/reports/salesgoal_editform";
+    var url="/analytics/salesgoal_editform";
     $.post(url, {'goal': goal}, function(response){
         if (response.errors=='') {
+            $("#pageModal").
             show_popup('profitdategoaledit');
             $("div#pop_content").empty().html(response.data.content);
             $("a#popupContactClose").unbind('click').click(function(){
@@ -121,7 +150,7 @@ function edit_salestype_goal(goal) {
 }
 
 function edit_goalparam(fld, newval) {
-    var url="/reports/salesgoal_changeparam";
+    var url="/analytics/salesgoal_changeparam";
     $.post(url, {'field': fld,'newval': newval}, function(response){
         if (response.errors=='') {
             $("div.goaleditvalue[data-fld='goalavgrevenue']").empty().html(response.data.goalavgrevenue);
@@ -134,7 +163,7 @@ function edit_goalparam(fld, newval) {
 }
 
 function save_profitdategoal() {
-    var url="/reports/salesgoal_save";
+    var url="/analytics/salesgoal_save";
     $.post(url,{},function(response){
         if (response.errors=='') {
             $("div#"+response.data.area).empty().html(response.data.content);
@@ -152,7 +181,7 @@ function show_monthsalesdetails(month, year, saletype) {
     params.push({name: 'month', value: month});
     params.push({name: 'year', value: year});
     params.push({name: 'saletype', value: saletype});
-    var url="/reports/sales_month_details";
+    var url="/analytics/sales_month_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
             show_popup('salesmonthdetails');
