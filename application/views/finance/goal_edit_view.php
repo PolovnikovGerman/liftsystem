@@ -32,7 +32,7 @@
     </div>
     <div class="goaleditrow">
         <div class="goaleditsave">
-            <img src="/img/saveticket.png" alt="Save"/>
+            <img src="/img/reports/saveticket.png" alt="Save"/>
         </div>
     </div>
 </div>

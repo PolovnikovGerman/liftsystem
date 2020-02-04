@@ -231,6 +231,63 @@ class Analytics extends MY_Controller
         show_404();
     }
 
+    // Show difference section in type
+    public function salestype_showdifference() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty parameters for compare';
+            $postdata = $this->input->post();
+            if (isset($postdata['type']) && isset($postdata['profit']) && isset($postdata['compare']) && isset($postdata['to'])) {
+                $error = 'Error in select years for compare';
+                $type = $postdata['type'];
+                $profit_type = $postdata['profit'];
+                $diffYearBgn = intval($postdata['compare']);
+                $diffYearEnd = intval($postdata['to']);
+                if ($diffYearEnd > $diffYearBgn) {
+                    $error = '';
+                    $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, $type);
+                    $sales_years = $this->reports_model->get_report_years();
+                    $yearDifffrom = $this->_prepare_comparefrom_select($sales_years['start'], $sales_years['finish']);
+                    $yearDiffTo = $this->_prepare_compareto_select($sales_years['start'], $sales_years['finish']);
+                    $diffoptions = [
+                        'months' => $custom_diffs['months'],
+                        'quarters' => $custom_diffs['quarters'],
+                        'years_from' => $yearDifffrom,
+                        'years_to' => $yearDiffTo,
+                        'type' => $type,
+                        'year_from' => $diffYearBgn,
+                        'year_to' => $diffYearEnd,
+                        'profit_type' => $profit_type,
+                    ];
+                    $mdata['content'] = $this->load->view('reports/differences_view', $diffoptions, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showdifference_calc() {
+        $postdata = $this->input->get();
+        // echo var_dump($postdata); die();
+        $quarter=(isset($postdata['q']) ? $postdata['q'] : 1);
+        $yearBgn = (isset($postdata['start']) ? $postdata['start'] : date('Y')-1);
+        $yearEnd = (isset($postdata['finish']) ? $postdata['finish'] : date('Y'));
+        $salestype = (isset($postdata['type']) ? $postdata['type'] : 'test');
+        $profit_type = (isset($postdata['view']) ? $postdata['view'] : 'Points');
+        // Get data
+        $res = $this->reports_model->get_differences_details($quarter, $yearBgn, $yearEnd, $salestype, $profit_type);
+        $options = [
+            'qt' => $quarter,
+            'start' => $yearBgn,
+            'finish' => $yearEnd,
+            'startval' => $res['prvval'],
+            'finishval' => $res['curval'],
+            'profit' => $profit_type,
+        ];
+        echo $this->load->view('reports/diffdetails_view', $options, TRUE);
+
+    }
 
     private function _prepare_salestype_view() {
         $this->load->model('permissions_model');

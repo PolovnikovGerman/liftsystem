@@ -5810,7 +5810,8 @@ Class Reports_model extends My_Model
         $quarters = [];
         for ($i=1; $i<5; $i++) {
             // Build a date
-            $date_check = strtotime(date('Y') . '-' . ($i * 3) . '-1');
+            // $date_check = strtotime(date('Y') . '-' . ($i * 3) . '-1');
+            $date_check = strtotime($diffYearEnd . '-' . ($i * 3) . '-1');
             if ($date_check>=$last_quater_date) {
                 $quarters[]=[
                     'view_class' => 'future',

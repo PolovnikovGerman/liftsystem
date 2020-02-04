@@ -115,26 +115,16 @@ function salestype_report_init() {
             classes: 'salestypepopup'
         }
     });
-    // $("div.quaterdata").find("span.quaterlabel").bt({
-    //     ajaxCache: false,
-    //     fill: '#FFFFFF',
-    //     /* trigger: 'click', */
-    //     height: '270px',
-    //     width: '259px',
-    //     ajaxPath: ["$(this).data('calcurl')"]
-    // });
 }
 
 function edit_salestype_goal(goal) {
     var url="/analytics/salesgoal_editform";
     $.post(url, {'goal': goal}, function(response){
         if (response.errors=='') {
-            $("#pageModal").
-            show_popup('profitdategoaledit');
-            $("div#pop_content").empty().html(response.data.content);
-            $("a#popupContactClose").unbind('click').click(function(){
-                disablePopup();
-            })
+            $("#pageModalLabel").empty().html('Goal Edit');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','445px');
+            $("#pageModal").modal('show');
             $("input.goaleditinput").unbind('change').change(function(){
                 var fld=$(this).prop('id');
                 var newval=parseFloat($(this).val());
@@ -167,7 +157,7 @@ function save_profitdategoal() {
     $.post(url,{},function(response){
         if (response.errors=='') {
             $("div#"+response.data.area).empty().html(response.data.content);
-            disablePopup();
+            $("#pageModal").modal('hide');
             salestype_report_init();
         } else {
             show_error(response);
@@ -184,14 +174,13 @@ function show_monthsalesdetails(month, year, saletype) {
     var url="/analytics/sales_month_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup('salesmonthdetails');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModalLabel").empty().html('Month Sales');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','685px');
+            $("#pageModal").modal('show');
             if (response.data.countdata<20) {
-                $("div.dataarea").children('div.datarow').css('width','620px');
+                // $("div.dataarea").children('div.datarow').css('width','620px');
             }
-            $("a#popupContactClose").unbind('click').click(function(){
-                disablePopup();
-            });
         } else {
             show_error(response);
         }
@@ -210,7 +199,7 @@ function show_difference(type, profit) {
         params.push({name: 'profit', value: profit});
         params.push({'name': 'compare', value: compare});
         params.push({'name': 'to', value: compareto});
-        var url='/reports/salestype_showdifference';
+        var url='/analytics/salestype_showdifference';
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".differences_area[data-type='"+type+"']").empty().html(response.data.content);
@@ -219,6 +208,25 @@ function show_difference(type, profit) {
                     var type = $(this).data('type');
                     var profit=$(this).data('profit');
                     show_difference(type, profit);
+                });
+                $("div.quaterdata").find('span.quaterlabel').qtip({
+                    content: {
+                        text: function(event, api) {
+                            $.ajax({
+                                url: api.elements.target.data('calcurl') // Use href attribute as URL
+                            }).then(function(content) {
+                                // Set the tooltip content upon successful retrieval
+                                api.set('content.text', content);
+                            }, function(xhr, status, error) {
+                                // Upon failure... set the tooltip content to error
+                                api.set('content.text', status + ': ' + error);
+                            });
+                            return 'Loading...'; // Set some initial text
+                        }
+                    },
+                    style: {
+                        classes: 'salestypepopup'
+                    }
                 });
             } else {
                 show_error(response);
