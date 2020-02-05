@@ -211,9 +211,10 @@ body div {
 }
 .menurow {
     padding-top: 4px;
+    padding-left: 20px;
 }
 .menubutton {
-    width: 92px;
+    /* width: 92px; */
     height: 23px;
     line-height: 23px!important;
     cursor: pointer;
@@ -222,6 +223,7 @@ body div {
     margin-right: 4px;
     text-align: center;
     font-weight: bold;
+    padding: 0 13px;
 }
 .menubutton.adminbutton {
     background: #ff1c1c;
@@ -276,6 +278,34 @@ body div {
 .activemenubutton.databasebtn {
     background: #228927;
     color: #ffffff;
+}
+/* Classes for left tabs */
+.page_container {
+    float: left; width: 100%; background: #000000;
+}
+.left_maincontent {
+    float: left;
+    width: 25px;
+    margin-top: 30px;
+}
+.left_maincontent > .left_tab {
+    background: url('/img/page_view/nonactive_side_tab.png');
+    width: 33px;
+    height: 119px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+.left_maincontent > .left_tab img {
+    padding-top: 10px;
+    padding-left: 3px;
+}
+.left_maincontent > .left_tab.active {
+    background: url('/img/page_view/active_side_tab.png');
+}
+.right_maincontent {
+    background: #ededed;
+    float: left;
+    width: calc(100% - 25px);
 }
 .maincontent {
     width: 100%;
