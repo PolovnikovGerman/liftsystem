@@ -1,5 +1,6 @@
 $(document).ready(function(){
     // Find first item
+    google.charts.load('current', {packages: ['corechart', 'line']});
     var start = $(".maincontentmenu_item:first").data('link');
     init_page(start);
     $(".maincontentmenu_item").unbind('click').click(function () {

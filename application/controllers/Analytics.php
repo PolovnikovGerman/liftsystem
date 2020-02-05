@@ -66,6 +66,7 @@ class Analytics extends MY_Controller
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
         // Chart draw
         $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
+        // $head['scripts'][]=['src'=>'https://www.google.com/jsapi'];
 
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
@@ -707,7 +708,8 @@ class Analytics extends MY_Controller
                 'content' => $this->load->view('reports/checkout_chart_view',[], TRUE),
                 'title' => ($chart_type=='chart-bydate' ? '' : ''),
             ];
-
+            $this->load->model('orders_model');
+            $mdata['chartdata'] = $this->orders_model->get_graphp_data($chart_type);
             $this->ajaxResponse($mdata, $error);
         }
     }

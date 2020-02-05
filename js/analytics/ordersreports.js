@@ -32,26 +32,27 @@ function build_chart(charttype) {
     $("#loader").show();
     $.post(url, {'charttype': charttype}, function (response) {
         if (response.errors=='') {
+            $("#loader").hide();
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','925px');
             $("#pageModal").modal('show');
             var datarows = response.data.chartdata;
-
             var data = google.visualization.arrayToDataTable(datarows);
 
             var options = {
                 title: '',
                 curveType: 'none',
                 legend: {position: 'right', textStyle: {color: 'black', fontSize: 11}},
-
                 axes: {
                     y: {label: ''}
                 },
-                chartArea: {
-                    top: 40,
-                    backgroundColor: {stroke: "#3eac48", strokeWidth: 2}
-                },
+                // chartArea: {
+                //     top: 40,
+                //     backgroundColor: {stroke: "#3eac48", strokeWidth: 2}
+                // },
+                width: 900,
+                height: 500,
                 series: {
                     0: { color: '#0000ff'}
                 },
