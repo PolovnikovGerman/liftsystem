@@ -1,0 +1,1099 @@
+.emailstat {
+    clear: both;
+    float: left;
+    font-size: 10px;
+    font-weight: bold;
+    padding-left: 15px;
+    text-align: left;
+    width: 100px;
+}
+.emailstat.active {
+    font-size: 12px;
+    width: 136px;
+}
+
+a.emailtypelink {
+    text-decoration: none;
+    font-weight: normal;
+    color:#000000;
+}
+a.emailtypelink_activate {
+    font-weight: bold;
+    color:#0000FF;
+}
+
+.help {
+    font-size: 11px;
+    color: #ffffff;
+    float: right;
+    margin-top: 14px;
+    margin-right:9px;
+}
+.content {
+    clear: both;
+    float: left;
+    background-image: url("../img/emailcontent_win.png");
+    height: 635px;
+    margin-left: 25px;
+    margin-top: -26px;
+    /* position: relative; */
+    clear: both;
+    float: left;
+    width: 1017px;
+}
+.content_header {
+    clear: both;
+    float: left;
+    width: 1015px;
+}
+.question_header {
+    float: left;
+    width: 500px;
+    margin: 18px 22px 5px 28px;
+}
+.select_type {
+    float: left;
+    width:170px;
+}
+.newmessages {
+    float: left;
+    margin-left: 10px;
+    padding-top: 5px;
+    width: 150px;
+}
+.newmessages_value {
+    float:left;
+    width: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 12px;
+}
+.ViewingPage {
+    font-size: 15px;
+    color: #000000;
+    float: left;
+    width:300px;
+    margin: 18px 0 5px 164px;
+}
+#Pagination {
+    float: right;
+    width: 300px;
+}
+#dbcontent {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+}
+.question_tabledat {
+    clear: both;
+    float: left;
+    max-height: 529px;
+    overflow-y: auto;
+    width: 992px;
+    margin-left: 1px;
+}
+.signups_tabledat {
+    float: left;
+    max-height: 529px;
+    overflow-y: auto;
+    width: 487px;
+    margin-left: 1px;
+
+}
+.TableTitle-1-red {
+    background-image: url("../img/emailtable-red-left.png");
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 33px;
+}
+.TableTitle-2-red {
+    background-image: url("../img/emailtable-red-center.png");
+    background-repeat: repeat-x;
+    height: 33px;
+}
+.TableTitle-3-red {
+    background-image: url("../img/emailtable-red-right.png");
+    background-repeat: no-repeat;
+    width: 93px;
+    height: 33px;
+}
+.TableTitle-4 {
+    background-image: url("../img/tableend-orders-1.png");
+    background-repeat: no-repeat;
+    width: 113px;
+    height: 7px;
+    float: left;
+}
+.TableTitle-5 {
+    background-image: url("../img/tableend-orders-2.png");
+    background-repeat: repeat-x;
+    height: 7px;
+    float: left;
+}
+.TableTitle-6 {
+    background-image: url("../img/tableend-orders-3.png");
+    background-repeat: no-repeat;
+    width: 62px;
+    height: 7px;
+    float: left;
+}
+.table-Questions {
+    margin-left:12px;
+    float:left;
+}
+.TableTitle-text1 {
+    font-size:  14px;
+    color: #ffffff;
+    text-align: center;
+}
+.TableTitle-text2 {
+    font-size: 13px;
+    color: #000000;
+    text-align: center;
+}
+.TableTitle-text3 {
+    font-size: 13px;
+    color: #000000;
+    text-align: left;
+}
+.TableTitle-text4 {
+    font-size: 13px;
+    text-align: left;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.TableTitle-b1 {
+    border-right: 2px solid #2f2f2f;
+}
+.TableTitle-b2 {
+    border-bottom: 2px solid #2f2f2f;
+}
+.TableTitle-b3 {
+    border-right: 2px solid #2f2f2f;
+    border-left: 1px solid #2f2f2f;
+}
+.TableTitle-b4 {
+    border-right: 1px solid #2f2f2f;
+}
+.TableTitle-b5 {
+    border-right: 1px solid #2f2f2f;
+}
+.line {
+    height:22px;
+    text-align: center;
+}
+.grey-line {
+    background-color:#ededed;
+    height:22px;
+    text-align: center;
+}
+.blok-1 {
+    float:left;
+    background-image: url("../img/emailblok-1.png");
+    position: relative;
+    width: 15px;
+    margin-left:9px;
+    margin-top:2px;
+}
+.blok-2 {
+    float:left;
+    background-image: url("../img/emailblok-2.png");
+    background-repeat: no-repeat;
+    position: relative;
+    width: 53px;
+    height:19px;
+    margin-left:9px;
+    margin-top: 2px;
+}
+
+/*emails-customsb*/
+.TableTitle-1-blue {
+    background-image: url("../img/emailtable-blue-left.png");
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 33px;
+}
+.TableTitle-2-blue {
+    background-image: url("../img/emailtable-blue-center.png");
+    background-repeat: repeat-x;
+    height: 33px;
+}
+.TableTitle-3-blue {
+    background-image: url("../img/emailtable-blue-right.png");
+    background-repeat: no-repeat;
+    width: 243px;
+    height: 33px;
+}
+.TableTitle-7 {
+    background-image: url("img/end-table-03-2.png");
+    background-repeat: no-repeat;
+    width: 225px;
+    height: 7px;
+}
+.TableTitle-text5 {
+    font-size: 13px;
+    color: #787878;
+    text-align: center;
+}
+
+/*emails-leads*/
+.TableTitle-1-orange {
+    background-image: url("../img/emailtable-orange-left.png");
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 33px;
+}
+.TableTitle-2-orange {
+    background-image: url("../img/emailtable-orange-center.png");
+    background-repeat: repeat-x;
+    height: 33px;
+}
+.TableTitle-3-orange {
+    background-image: url("../img/emailtable-orange-right.png");
+    background-repeat: no-repeat;
+    width: 119px;
+    height: 33px;
+}
+.TableTitle-8 {
+    background-image: url("img/end-table-03-3.png");
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 7px;
+}
+.TableTitle-text6 {
+    font-size: 13px;
+    text-align: right;
+    padding-right: 3px;
+}
+
+/*emails-testimonials*/
+.TableTitle-1-green {
+    background-image: url("../img/emailtable-green-left.png");
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 37px;
+}
+.TableTitle-2-green {
+    background-image: url("../img/emailtable-green-center.png");
+    background-repeat: repeat-x;
+    height: 37px;
+}
+.TableTitle-3-green {
+    background-image: url("../img/emailtable-green-right.png");
+    background-repeat: no-repeat;
+    width: 228px;
+    height: 37px;
+}
+.verttext {
+    float: left;
+    height: 30px;
+    padding-top: 7px;
+    text-align: center;
+    width: 33px;
+}
+.TableTitle-9 {
+    background-image: url("../img/end-table-03-4.png");
+    background-repeat: no-repeat;
+    width: 210px;
+    height: 7px;
+}
+/*emails-signups*/
+.left-table {
+    /*position: relative;*/
+    float: left;
+}
+.right-table {
+    position: relative;
+    float: left;
+    margin-left:17px;
+}
+.TableTitle-1-feoletovy {
+    background-image: url("../img/table-violet-left.png");
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 33px;
+}
+.TableTitle-2-feoletovy {
+    background-image: url("../img/table-violet-center.png");
+    background-repeat: repeat-x;
+    height: 33px;
+}
+.TableTitle-3-feoletovy {
+    background-image: url("../img/table-violet-right.png");
+    background-repeat: no-repeat;
+    width: 244px;
+    height: 33px;
+}
+.TableTitle-10 {
+    background-image: url("img/end-table-03-5.png");
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 7px;
+}
+#question_details_dialog {
+    width:740px;
+    height:410px;
+    position:absolute;
+    display:none;
+    z-index:9999;
+    padding:20px;
+}
+#customsb_details_dialog {
+    width: 900px;;
+    height:410px;
+    position:absolute;
+    display:none;
+    z-index:9999;
+    padding:20px;
+}
+#testimonials_details_dialog {
+    width: 960px;;
+    height:410px;
+    position:absolute;
+    display:none;
+    z-index:9999;
+    padding:20px;
+}
+/* Tooltips */
+.tooltip-fon-EmailsQuestions {
+    background-image: url("../img/tooltip-fon-emails-questions.png");
+    position: relative;
+    margin: 0px auto;
+    width:723px;
+    height:403px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.MessageDetails-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-top:-3px;
+    padding-left:33px;
+}
+.TooltipClose {
+    position: relative;
+    float:right;
+    margin-top:10px;
+    margin-right:11px;
+}
+.contentMessage-1 {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width: 684px;
+    height:270px;
+    border: 1px solid #2d2d2d;
+}
+.Date-EmailsQuestions {
+    float:left;
+    width: 194px;
+}
+.nameDate-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-right:6px;
+}
+.TooltipBlok-1 {
+    float:left;
+    width: 147px;
+    margin-bottom:6px;
+}
+.inptdetdate {
+    background-image: url("../img/tooltip-blok-1.png");
+    width: 147px;
+}
+.msgtext {
+    background-color: #FFFFFF;
+    height: 264px;
+    width: 679px;
+}
+.Type-EmailsQuestions {
+    position: relative;
+    float:left;
+}
+.nameType-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:22px;
+    margin-right:5px;
+}
+.Webpage-EmailsQuestions {
+    position: relative;
+    float:left;
+}
+.nameWebpage-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:6px;
+    margin-right:5px;
+}
+.Name-EmailsQuestions {
+    position: relative;
+    float:left;
+}
+.nameName-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:-5px;
+    margin-right:5px;
+}
+.Email-EmailsQuestions {
+    position: relative;
+    float:left;
+}
+.nameEmail-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:15px;
+    margin-right:7px;
+}
+.Phone-EmailsQuestions {
+    position: relative;
+    float:left;
+}
+.namePhone-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:25px;
+    margin-right:4px;
+}
+.Message-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-left:20px;
+    margin-top:7px;
+}
+.nameMessage-EmailsQuestions {
+    position: relative;
+    float:left;
+    margin-bottom:4px;
+}
+
+/*Tooltip-EmailsCustomSB*/
+
+.tooltip-fon-EmailsCustomSB {
+    background-image: url("../img/tooltip-fon-emails-customsb.png");
+    position: relative;
+    margin: 0px auto;
+    width:889px;
+    height:403px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.MessageDetails-EmailsCustomSB {
+    position: relative;
+    float:left;
+    width:805px;
+    margin-top:26px;
+    padding-left:24px;
+    margin-bottom:7px;
+}
+.left-blok {
+    padding-left:24px;
+    padding-right:10px;
+}
+.name-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    margin-bottom:5px;
+}
+.nameDate-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:7px;
+    padding-right:11px;
+}
+.namePhone-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:29px;
+    padding-right:8px;
+}
+.nameEmail-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:30px;
+    padding-right:5px;
+}
+.nameName-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:0px;
+    padding-right:10px;
+}
+.nameCompany-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:10px;
+    padding-right:8px;
+}
+.nameQuantity-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:13px;
+    padding-right:5px;
+}
+.nameDueBy-EmailsCustomSB {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:14px;
+    padding-right:4px;
+}
+.Date-EmailsCustomSB, .Phone-EmailsCustomSB, .Email-EmailsCustomSB,
+.Company-EmailsCustomSB,.Quantity-EmailsCustomSB, .DueBy-EmailsCustomSB,
+.Printing-EmailsCustomSB, .Questions-EmailsCustomSB, .Attachments-EmailsCustomSB {
+    position: relative;
+    float:left;
+}
+.Description-EmailsCustomSB {
+    position: relative;
+    float:left;
+    width:213px;
+}
+.SpecialRequest-EmailsCustomSB {
+    position: relative;
+    float:left;
+    width:214px;
+    padding-left:10px;
+}
+.Printing-EmailsCustomSB, .left-blok {
+    position: relative;
+    float:left;
+    width:438px;
+}
+.Questions-EmailsCustomSB {
+    position: relative;
+    float:left;
+    width:213px;
+}
+.Attachments-EmailsCustomSB {
+    position: relative;
+    float:left;
+    width:166px;
+    padding-left:10px;
+}
+.OtherInfo-EmailsCustomSB, .right-blok {
+    position: relative;
+    float:left;
+    width:393px;
+}
+.TooltipBlok-2 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-2.png");
+    width: 164px;
+    margin-bottom:11px;
+}
+.TooltipBlok-3 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-3.png");
+    width: 283px;
+    margin-bottom:11px;
+}
+.TooltipBlok-4 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-4.png");
+    width: 118px;
+    margin-bottom:11px;
+}
+.TooltipBlok-5 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-5.png");
+    width: 98px;
+    margin-bottom:11px;
+}
+.Description-blok, .Questions-blok {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width:213px;
+    height:197px;
+    border: 1px solid #2d2d2d;
+    margin-bottom:6px;
+    font-size: 12px;
+}
+.SpecialRequest-blok {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width:214px;
+    height:197px;
+    border: 1px solid #2d2d2d;
+}
+.Attachments-blok {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width: 166px;
+    height:197px;
+    border: 1px solid #2d2d2d;
+}
+.Attachments-blok ul {
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+.OtherInfo-blok {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width:393px;
+    height:41px;
+    border: 1px solid #2d2d2d;
+}
+.Printing-blok {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width:438px;
+    height:41px;
+    border: 1px solid #2d2d2d;
+}
+.blue-text{
+    font: 13px Arial,sans-serif;
+    color: #0000ff;
+    float: left;
+    padding-left:5px;
+}
+
+/*Tooltip-Testimonials*/
+
+.tooltip-fon-Testimonials {
+    background-image: url("../img/tooltip-fon-emails-testimonials.png");
+    position: relative;
+    margin: 0px auto;
+    width:946px;
+    height:403px;
+}
+.TooltipBlok-6 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-6.png");
+    width: 186px;
+    margin-bottom:11px;
+}
+.TooltipBlok-7 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-7.png");
+    width: 268px;
+    margin-bottom:11px;
+}
+.TooltipBlok-8 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-8.png");
+    background-repeat: no-repeat;
+    width: 26px;
+    height:26px;
+    margin-bottom:5px;
+    margin-top:-5px;
+}
+.TooltipBlok-9 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-9.png");
+    width: 68px;
+    margin-bottom:11px;
+}
+.TooltipBlok-10 {
+    position: relative;
+    float:left;
+    background-image: url("../img/tooltip-blok-10.png");
+    width: 105px;
+    margin-bottom:11px;
+}
+.MessageDetails-Testimonials {
+    position: relative;
+    float:left;
+    width:895px;
+    margin-top:22px;
+    padding-left:22px;
+    margin-bottom:7px;
+}
+.nameDate-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:7px;
+    padding-right:11px;
+}
+
+.Date-Testimonials, .Email-Testimonials, .CanWeUse-Testimonials, .Name-Testimonials,
+.Company-Testimonials, .Order-Testimonials, .Website-Testimonials, .CustomerServ-Testimonials,
+.Artwork-Testimonials, .Items-Testimonials, .Overall-Testimonials {
+    position: relative;
+    float:left;
+}
+.nameEmail-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:48px;
+    padding-right:8px;
+}
+.nameCanWeUse-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:27px;
+    padding-right:9px;
+}
+.nameName-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-right:11px;
+}
+.nameCompany-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:23px;
+    padding-right:8px;
+}
+.nameOrder-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:121px;
+    padding-right:9px;
+}
+.nameRatings-Testimonials, .nameComments-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    margin-bottom:7px;
+}
+.nameWebsite-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:0px;
+    padding-right:9px;
+}
+.nameCustomerServ-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:10px;
+    padding-right:7px;
+}
+.nameArtwork-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:8px;
+    padding-right:6px;
+}
+.nameItems-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:17px;
+    padding-right:9px;
+}
+.nameOverall-Testimonials {
+    font: 13px Arial,sans-serif;
+    color: #ffffff;
+    float: left;
+    padding-left:9px;
+}
+.Ratings-Testimonials, .BlokRatings-Testimonials, .Comments-Testimonials {
+    position: relative;
+    float:left;
+    width: 946px;
+    padding-left:22px;
+}
+.BlokComments-Testimonials {
+    background-color: #ffffff;
+    position: relative;
+    float:left;
+    width: 906px;
+    height:225px;
+    border: 1px solid #2d2d2d;
+}
+.black-text{
+    font: 14px Arial,sans-serif;
+    color: #000000;
+    padding-top:4px;
+    float: left;
+    text-align:center;
+}
+#editmail_form {
+    width: 370px;
+    height: 200px;
+}
+#editmail_form input {
+    font-size: 12px;
+    color:#000;
+    background-color: #FFF;
+}
+.dialog-location-row {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 345px;
+}
+.dialog-location-rowlegend {
+    float:left;
+    width:100px;
+    font-size:12px;
+}
+.dialog-location-rowvalue {
+    float:left;
+    margin-left:5px;
+    width:230px;
+}
+/* Artsubmit views */
+.artproff_tabledat {
+    clear: both;
+    float: left;
+    margin-left: 1px;
+    max-height: 529px;
+    overflow-y: scroll;
+    width: 980px;
+}
+.artline {
+    clear: both;
+    float: left;
+    height: 22px;
+    text-align: center;
+    width: 964px;
+
+}
+.artgrey-line {
+    clear: both;
+    float:left;
+    background-color:#ededed;
+    height:22px;
+    text-align: center;
+    width: 964px;
+
+}
+.artnummess {
+    float:left;
+    width: 42px;
+    border-left: 1px solid #2F2F2F;
+    border-right: 2px solid #2F2F2F;
+    height: 22px;
+}
+.artstatus {
+    float:left;
+    width:94px;
+    border-right: 2px solid #2F2F2F;
+    height: 22px;
+}
+.artdate {
+    float:left;
+    width:68px;
+    border-right: 2px solid #2F2F2F;
+    height: 22px;
+}
+.artmailsender {
+    float: left;
+    border-right: 2px solid #2F2F2F;
+    height: 22px;
+    width:118px;
+    padding-left: 5px;
+    padding-right: 3px;
+    text-align: left;
+}
+.artmailaddr {
+    float: left;
+    width:178px;
+    height: 22px;
+    padding-left: 5px;
+    padding-right: 3px;
+    border-right: 2px solid #2F2F2F;
+    text-align: left;
+}
+.artitemnumber {
+    float:left;
+    width: 70px;
+    height: 22px;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 3px;
+    border-right: 2px solid #2F2F2F;
+}
+.artitemname {
+    float:left;
+    width: 152px;
+    height: 22px;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 3px;
+    border-right: 2px solid #2F2F2F;
+}
+.artitemqty {
+    float:left;
+    width:57px;
+    border-right: 2px solid #2F2F2F;
+    height: 22px;
+}
+.artsubtext {
+    float:left;
+    width: 135px;
+    height: 22px;
+    border-right: 1px solid #2F2F2F;
+}
+.artmagnglass {
+    float: left;
+    width:18px;
+}
+
+.arttext {
+    float: left;
+    font-size: 13px;
+    padding-left: 5px;
+    padding-right: 3px;
+    text-align: left;
+    width: 102px;
+}
+/* Detail form */
+.artsubmit_details {
+    clear: both;
+    float: left;
+    padding: 15px;
+    width: 827px;
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0 2px 2px #464746, 0 2px 2px #464746;
+
+}
+.artsubmit_details input {
+    background-color: #FFFFFF;
+    color: #000;
+    border: 1px solid #000000;
+    margin-left: 5px;
+}
+.artsubmit_commons {
+    clear: both;
+    float: left;
+    width: 815px;
+    margin-bottom: 15px;
+}
+.artdetail_date {
+    float: left;
+    width: 150px;
+}
+input.artdetail_date_val {
+    width: 90px;
+    margin-left: 5px;
+}
+.artdetail_customer {
+    float: left;
+    width: 220px;
+}
+input.artdetail_customer_val {
+    width: 120px;
+    margin-left: 5px;
+}
+.artdetail_company {
+    float: left;
+    width: 270px;
+}
+input.artdetail_company_val {
+    width: 180px;
+}
+.artdetail_email {
+    float: left;
+    width: 230px;
+}
+input.artdetail_email_val {
+    width: 160px;
+}
+.artdetail_phone {
+    float: left;
+    width: 220px;
+}
+input.artdetail_phone_val {
+    width: 150px;
+}
+.artdetail_itemnumber {
+    float: left;
+    width: 170px;
+}
+input.artdetail_itemnumber_val {
+    width: 80px;
+}
+.artdetail_itemname {
+    float: left;
+    width: 270px;
+}
+input.artdetail_itemname {
+    width: 170px;
+}
+.artdetail_qty {
+    float: left;
+    width: 160px;
+}
+input.artdetail_qty_val {
+    width: 60px;
+}
+.artdetail_text {
+    float: left;
+    width: 80px;
+}
+textarea.artdetail_notes_val {
+    background-color: #FFFFFF;
+    color: #000000;
+    float: left;
+    height: 70px;
+    margin-right: 15px;
+    width: 255px;
+}
+.artdetail_color {
+    float: left;
+    width: 380px;
+}
+input.artdetail_color_val {
+    width: 280px;
+}
+.artdetail_logo {
+    float: left;
+    width: 90px;
+}
+.artdetail_logo_val {
+    float: left;
+    width: 110px;
+}
+.artdetail_logo_val a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.artdetail_notes {
+    float: left;
+    width: 190px;
+}
+.question_header input.datepicker {
+    border: 1px solid #9e9e9e;
+    background-color: #ffffff;
+    color: #494948;
+    float: left;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-right: 10px;
+    padding: 2px 2px;
+    width: 65px;
+}
+.btnexportsignup i {
+    /* color: #000; */
+    font-size: 14px;
+}

@@ -31,6 +31,34 @@ class Marketing extends MY_Controller
         $head['title'] = 'Marketing';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#searchestimeview') {
+                // Search results by time
+                $head['styles'][]=array('style'=>'/css/marketing/searchestimeview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/searchestimeview.js');
+                $content_options['searchestimeview'] =  ''; // $this->_prepare_task_view();
+            } elseif ($row['item_link']=='#searcheswordview') {
+                // Search Results by Keywords
+                // $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
+                // $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
+                $content_options['searcheswordview'] = ''; // $this->_prepare_orderlist_view();
+            } elseif ($row['item_link']=='#searchesipadrview') {
+                // Search results by IP
+                // $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
+                // $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
+                $content_options['searchesipadrview'] = ''; // $this->_prepare_requestlist_view();
+            } elseif ($row['item_link']=='#signupview') {
+                // Search results by IP
+                $head['styles'][]=array('style'=>'/css/marketing/signupview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/signupview.js');
+                $content_options['signupview'] = ''; // $this->_prepare_requestlist_view();
+            } elseif ($row['item_link']=='#couponsview') {
+                // Search results by IP
+                $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
+                $content_options['couponsview'] = ''; // $this->_prepare_requestlist_view();
+            }
+        }
 
         $content_options['menu'] = $menu;
         $content_view = $this->load->view('marketing/page_view', $content_options, TRUE);
