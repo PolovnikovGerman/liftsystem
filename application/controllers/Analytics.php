@@ -64,6 +64,8 @@ class Analytics extends MY_Controller
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+        // Chart draw
+        $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
 
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
@@ -692,6 +694,22 @@ class Analytics extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    // Chart data
+    public function chekout_report_chart() {
+        if ($this->isAjax()) {
+            $postdata=$this->input->post();
+            $chart_type = ifset($postdata,'charttype','chart-bydate');
+
+            $error='';
+            $mdata=[
+                'content' => $this->load->view('reports/checkout_chart_view',[], TRUE),
+                'title' => ($chart_type=='chart-bydate' ? '' : ''),
+            ];
+
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 
 

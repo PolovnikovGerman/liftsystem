@@ -1,30 +1,68 @@
 function init_ordersreports() {
     init_reportdata();
-    /*$('#mask').click(function () {
-        $(this).hide();
-        $('#report_dialog').hide();
-        $("#tooltip").remove();
+    $(".blok-reports").unbind('click').click(function () {
+        var charttype = $(this).data('charttype');
+        build_chart(charttype);
     });
+    /*
     $("#chartbyday").live('click',function(){
         showdetails('day');
     })
     $("#chartbyweek").live('click',function(){
         showdetails('week');
     })
-    $("#attempts_report").live('click',function(){
-        attempt_report();
-    })*/
+    */
 }
 
 function init_reportdata() {
     var url='/analytics/checkout_reports_data';
+    $("#loader").show();
     $.post(url, {}, function(response){
         if (response.errors=='') {
             $("#reportsinfo").empty().html(response.data.content);
+            $("#loader").hide();
         } else {
             show_error(response);
         }
     }, 'json');
+}
+
+function build_chart(charttype) {
+    var url="/analytics/chekout_report_chart";
+    $("#loader").show();
+    $.post(url, {'charttype': charttype}, function (response) {
+        if (response.errors=='') {
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','925px');
+            $("#pageModal").modal('show');
+            var datarows = response.data.chartdata;
+
+            var data = google.visualization.arrayToDataTable(datarows);
+
+            var options = {
+                title: '',
+                curveType: 'none',
+                legend: {position: 'right', textStyle: {color: 'black', fontSize: 11}},
+
+                axes: {
+                    y: {label: ''}
+                },
+                chartArea: {
+                    top: 40,
+                    backgroundColor: {stroke: "#3eac48", strokeWidth: 2}
+                },
+                series: {
+                    0: { color: '#0000ff'}
+                },
+                lineWidth: 4
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+            chart.draw(data, options);
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function showdetails(type) {

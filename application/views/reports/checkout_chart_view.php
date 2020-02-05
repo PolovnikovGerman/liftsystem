@@ -1,7 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 05.02.20
- * Time: 13:45
- */
+<div class="checkoutreportchartarea">
+    <div style="height: 420px; width: 580px;" id="curve_chart" class="grapharea"></div>
+</div>

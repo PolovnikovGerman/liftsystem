@@ -1,14 +1,16 @@
 <div class="content_header">
     <div class="graph">
         <div class="graph-days">
-            <div class="blok-reports">
-                <a id="chartbyday" href="javascript:void(0)" style="color:#FFF">ch</a>
-            </div> Graph by Days
+            <div class="blok-reports" data-charttype="chart-bydate">
+                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                Graph by Days
+            </div>
         </div>
         <div class="graph-weeks">
-            <div class="blok-reports">
-                <a id="chartbyweek" href="javascript:void(0)" style="color:#FFF">ch</a>
-            </div> Graph by Weeks
+            <div class="blok-reports" data-charttype="chart-byweek">
+                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                Graph by Weeks
+            </div>
         </div>
     </div>
 </div>

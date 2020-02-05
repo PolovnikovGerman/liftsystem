@@ -783,4 +783,74 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    function get_graphp_data($type, $d_bgn = '', $d_end = '') {
+
+        if ($d_end == '') {
+            $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
+        }
+        /* Calculate nearlest monday */
+        $cur_weekday = date('w', $d_end);
+        switch ($cur_weekday) {
+            case 0:
+                $period = 0 * 24 * 60 * 60;
+                break;
+            case 1:
+                $period = 6 * 24 * 60 * 60;
+                break;
+            case 2:
+                $period = 5 * 24 * 60 * 60;
+                break;
+            case 3:
+                $period = 4 * 24 * 60 * 60;
+                break;
+            case 4:
+                $period = 3 * 24 * 60 * 60;
+                break;
+            case 5:
+                $period = 2 * 24 * 60 * 60;
+                break;
+            case 6:
+                $period = 1 * 24 * 60 * 60;
+                break;
+            default:
+                $period = 0;
+                break;
+        }
+        $d_end = $d_end + $period;
+        /* Calculate END day */
+        if ($d_bgn == '') {
+            $d_bgn = $d_end - ((53 * 7 - 1) * 24 * 60 * 60 + 23 * 60 * 60 + 59 * 60 + 59); /* 53 weeks ago */
+        }
+
+        if ($type == 'day') {
+            $sql = "select date_format(order_date,'%Y-%m-%d') as date, coalesce(sum(order_total),0) as sum_order from sb_orders  where unix_timestamp(order_date) between " . $d_bgn . " and " . $d_end . " group by 1 order by 1";
+        } else {
+            $sql = "select date_format(order_date,'%Y %u') as date, coalesce(sum(order_total),0) as sum_order from sb_orders  where unix_timestamp(order_date) between " . $d_bgn . " and " . $d_end . " group by 1 order by 1";
+        }
+        $res_array = $this->db->query($sql)->result_array();
+        /* If query return data */
+
+        // $repdat = array();
+        // $repval = array();
+        $i = 0;
+        foreach ($res_array as $v) {
+            if ($type == 'day') {
+                $repdat[] = strtotime($v['date']) . '000';
+            } else {
+                // $new_dat=$d_bgn+($i*7*24*60*60);
+                $year = substr($v['date'], 0, 4);
+                $week = substr($v['date'], 5);
+                $new_dat = $this->func->getDayOfWeek($week, $year, 1);
+                $new_dat = $new_dat . '000';
+                $repdat[] = $new_dat;
+            }
+
+            $repval[] = round($v['sum_order'], 0);
+            // $repdat[ strtotime($v['date']) ] = $v['sum_order'];
+
+            $i++;
+        }
+        return array('repdat' => $repdat, 'repval' => $repval);
+    }
+
 }
