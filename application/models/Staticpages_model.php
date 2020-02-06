@@ -763,7 +763,7 @@ Class Staticpages_model extends MY_Model
 
     public function add_termsparam($session_data, $postdata, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Term Not Found'];
-        $data = $session_data['terms'];
+        $data = ifset($session_data,'terms',[]);
         $found = 0;
         $minid = 0;
         $maxorder = 0;
@@ -787,7 +787,6 @@ Class Staticpages_model extends MY_Model
         usersession($session_id, $session_data);
         $out['result'] = $this->success_result;
         $out['terms'] = $data;
-
         return $out;
     }
 
@@ -836,21 +835,22 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_termspagecontent($session_data, $session_id, $user) {
+    public function save_termspagecontent($session_data, $session_id, $brand,  $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
-        $terms = $session_data['terms'];
+        $terms = ifset($session_data,'terms',[]);
         $deleted = $session_data['deleted'];
         // Meta
-        $this->_save_page_metadata($meta);
+        $this->_save_page_metadata($meta, $brand);
         // Static content
-        $this->_save_page_params($data, $user);
+        $this->_save_page_params($data, 'terms', $brand, $user);
         // Faq sections
         foreach ($terms as $row) {
             $this->db->set('term_header', $row['term_header']);
             $this->db->set('term_text', $row['term_text']);
             if ($row['term_id']<0) {
+                $this->db->set('brand', $brand);
                 $this->db->insert('sb_terms');
             } else {
                 $this->db->where('term_id', $row['term_id']);
@@ -1103,9 +1103,10 @@ Class Staticpages_model extends MY_Model
         return $result;
     }
 
-    public function get_terms() {
+    public function get_terms($brand) {
         $this->db->select('*',FALSE);
         $this->db->from('sb_terms');
+        $this->db->where('brand', $brand);
         $this->db->order_by('term_order, term_id');
         $result = $this->db->get()->result_array();
         return $result;
