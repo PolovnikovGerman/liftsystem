@@ -219,34 +219,36 @@ function init_customshape_editcontent() {
         }
     });
     // Add main image
-    var uploader = new qq.FileUploader({
-        element: document.getElementById('mainimageupload'),
-        action: '/utils/save_itemimg',
-        /* template: temp,            */
-        uploadButtonText: '',
-        multiple: false,
-        debug: false,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-        onComplete: function(id, fileName, responseJSON){
-            if (responseJSON.success==true) {
-                $("li.qq-upload-success").hide();
-                var params=new Array();
-                params.push({name: 'session', value: $("#custom_session").val()});
-                params.push({name: 'type', value: 'data'});
-                params.push({name: 'field', value: 'custom_mainimage'});
-                params.push({name: 'newval', value: responseJSON.filename});
-                var url="/content/change_customparam";
-                $.post(url, params, function (response) {
-                    if (response.errors=='') {
-                        $("#custom_mainimagearea").empty().html(response.data.content);
-                        init_customshape_editcontent();
-                    } else {
-                        show_error(response);
-                    }
-                },'json');
+    if ($("#mainimageupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('mainimageupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#custom_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'custom_mainimage'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_customparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#custom_mainimagearea").empty().html(response.data.content);
+                            init_customshape_editcontent();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
             }
-        }
-    });
+        });
+    }
     // Open image
     $(".custom_mainimagesrc").unbind('click').click(function(){
         var imgsrc = $(this).find('img').prop('src');
@@ -275,34 +277,36 @@ function init_customshape_editcontent() {
             },'json');
         }
     });
-    // Add main image
-    var uploader = new qq.FileUploader({
-        element: document.getElementById('homepageimageupload'),
-        action: '/utils/save_itemimg',
-        uploadButtonText: '',
-        multiple: false,
-        debug: false,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-        onComplete: function(id, fileName, responseJSON){
-            if (responseJSON.success==true) {
-                $("li.qq-upload-success").hide();
-                var params=new Array();
-                params.push({name: 'session', value: $("#custom_session").val()});
-                params.push({name: 'type', value: 'data'});
-                params.push({name: 'field', value: 'custom_homepageimage'});
-                params.push({name: 'newval', value: responseJSON.filename});
-                var url="/content/change_customparam";
-                $.post(url, params, function (response) {
-                    if (response.errors=='') {
-                        $("#custom_homepageimagearea").empty().html(response.data.content);
-                        init_customshape_editcontent();
-                    } else {
-                        show_error(response);
-                    }
-                },'json');
+    if ($("#homepageimageupload").length>0) {
+        // Add main image
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('homepageimageupload'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#custom_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'custom_homepageimage'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_customparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#custom_homepageimagearea").empty().html(response.data.content);
+                            init_customshape_editcontent();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
             }
-        }
-    });
+        });
+    }
     // View
     $(".custom_homepageimagesrc").unbind('click').click(function () {
         var imgsrc = $(this).find('img').prop('src');

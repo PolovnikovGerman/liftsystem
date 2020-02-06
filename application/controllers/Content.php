@@ -112,22 +112,22 @@ class Content extends MY_Controller
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'faq') {
                     $page_name_full = 'Frequently Asked Questions';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'terms') {
                     $page_name_full = 'Terms & Polices';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'about') {
                     $page_name_full = 'About Us';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'contactus') {
                     $page_name_full = 'Contact Us';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'categories') {
                     $page_name_full = 'Categories';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'extraservice') {
                     $page_name_full = 'Services';
-                    $special_content = $this->_prepare_custom_content($page_name);
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 }
                 $button_options = ['page' => $page_name, 'content_name' => $page_name_full];
                 $buttons_view = $this->load->view('content/content_viewbuttons_view', $button_options, TRUE);
@@ -594,26 +594,33 @@ class Content extends MY_Controller
 
     public function edit_faqcontent() {
         if ($this->isAjax()) {
-            $page_name = 'faq';
-            $page_name_full = 'Frequently Asked Questions';
-            $session_id = uniq_link(15);
-            $this->load->model('staticpages_model');
-            $meta = $this->staticpages_model->get_metadata($page_name);
-            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
-            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
-            $session_data = usersession($session_id);
-            $session_data['meta'] = $meta;
-            $session_data['deleted'] = []; // type , id
-            usersession($session_id, $session_data);
-            $button_options = ['page'=>'faq', 'content_name' => $page_name_full, 'session'=> $session_id];
-            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
-            $options = [
-                'meta_view' => $meta_view,
-                'buttons_view' => $buttons_view,
-                'special_content' => $special_content,
-            ];
-            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
-            $this->ajaxResponse($mdata, '');
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $error = '';
+                $page_name = 'faq';
+                $page_name_full = 'Frequently Asked Questions';
+                $session_id = uniq_link(15);
+                $this->load->model('staticpages_model');
+                $meta = $this->staticpages_model->get_metadata($page_name, $brand);
+                $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+                $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
+                $session_data = usersession($session_id);
+                $session_data['meta'] = $meta;
+                $session_data['deleted'] = []; // type , id
+                usersession($session_id, $session_data);
+                $button_options = ['page'=>'faq', 'content_name' => $page_name_full, 'session'=> $session_id];
+                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                $options = [
+                    'meta_view' => $meta_view,
+                    'buttons_view' => $buttons_view,
+                    'special_content' => $special_content,
+                ];
+                $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -1088,11 +1095,11 @@ class Content extends MY_Controller
                 usersession($session, $session_data);
             }
         } elseif ($page_name=='faq') {
-            $faq_sections = $this->staticpages_model->get_faq_sections();
+            $faq_sections = $this->staticpages_model->get_faq_sections($brand);
             $idx = 0;
             $faq_content = '';
             foreach ($faq_sections as $row) {
-                $quest = $this->staticpages_model->get_faq(['faq_section'=>$row['faq_section']]);
+                $quest = $this->staticpages_model->get_faq(['faq_section'=>$row['faq_section'],'brand'=>$brand]);
                 $faq_sections[$idx]['questions'] = $quest;
                 $faq_sections[$idx]['title'] = ucfirst($row['faq_section']).' Questions';
                 if ($edit_mode==0) {

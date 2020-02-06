@@ -38,7 +38,9 @@ function display_faqsection(section) {
 
 function init_faqpage_edit() {
     var url = "/content/edit_faqcontent";
-    $.post(url, {}, function (response) {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
+    $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#faqview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {

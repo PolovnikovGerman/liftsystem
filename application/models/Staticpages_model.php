@@ -1074,9 +1074,10 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function get_faq_sections() {
+    public function get_faq_sections($brand) {
         $this->db->select('faq_section, count(faq_id) as cnt',FALSE);
         $this->db->from('sb_faq');
+        $this->db->where('brand', $brand);
         $this->db->group_by('faq_section');
         $result = $this->db->get()->result_array();
         return $result;
@@ -1087,6 +1088,9 @@ Class Staticpages_model extends MY_Model
         $this->db->from('sb_faq');
         if (isset($options['faq_section'])) {
             $this->db->where('faq_section',$options['faq_section']);
+        }
+        if (isset($options['brand'])) {
+            $this->db->where('brand', $options['brand']);
         }
         if (isset($options['order_by'])) {
             $this->db->order_by($options['order_by']);
