@@ -997,16 +997,16 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_contactus($session_data,  $session_id, $user) {
+    public function save_contactus($session_data,  $session_id, $brand, $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
         $address = $session_data['address'];
         // Meta
-        $this->_save_page_metadata($meta);
+        $this->_save_page_metadata($meta, $brand);
         // Static content
-        $this->_save_page_params($data, $user);
-        $this->_save_page_params($address, $user);
+        $this->_save_page_params($data, 'contactus', $brand, $user);
+        $this->_save_page_params($address, 'address', $brand, $user);
         usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;
