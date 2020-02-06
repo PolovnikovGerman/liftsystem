@@ -82,6 +82,7 @@ function init_faqpage_editcontent() {
     $(".save_button[data-page='faq']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#faq_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_faqpagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {

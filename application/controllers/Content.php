@@ -5,6 +5,12 @@ class Content extends MY_Controller
 {
 
     private $pagelink = '/content';
+    private $faq_sections = [
+        "artwork",
+        "general",
+        "ordering",
+        "product",
+    ];
 
 
     public function __construct()
@@ -699,9 +705,10 @@ class Content extends MY_Controller
             $postdata = $this->input->post();
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
             $session_data = usersession($session_id);
-            if (!empty($session_data)) {
+            $brand = ifset($postdata, 'brand');
+            if (!empty($session_data) && !empty($brand)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $this->USR_ID);
+                $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -1096,19 +1103,30 @@ class Content extends MY_Controller
             }
         } elseif ($page_name=='faq') {
             $faq_sections = $this->staticpages_model->get_faq_sections($brand);
-            $idx = 0;
             $faq_content = '';
-            foreach ($faq_sections as $row) {
-                $quest = $this->staticpages_model->get_faq(['faq_section'=>$row['faq_section'],'brand'=>$brand]);
-                $faq_sections[$idx]['questions'] = $quest;
-                $faq_sections[$idx]['title'] = ucfirst($row['faq_section']).' Questions';
-                if ($edit_mode==0) {
-                    $faq_content.=$this->load->view('content/faqsection_view', ['faq'=>$faq_sections[$idx]], TRUE);
-                } else {
-                    $faq_items = $this->load->view('content/faqsection_item_edit',['faq'=>$faq_sections[$idx],'faq_section'=>$faq_sections[$idx]['faq_section']],TRUE);
-                    $faq_content.=$this->load->view('content/faqsection_edit', ['faq'=>$faq_sections[$idx],'details'=>$faq_items], TRUE);
+            if (!empty($faq_sections)) {
+                $idx = 0;
+                foreach ($faq_sections as $row) {
+                    $quest = $this->staticpages_model->get_faq(['faq_section'=>$row['faq_section'],'brand'=>$brand]);
+                    $faq_sections[$idx]['questions'] = $quest;
+                    $faq_sections[$idx]['title'] = ucfirst($row['faq_section']).' Questions';
+                    if ($edit_mode==0) {
+                        $faq_content.=$this->load->view('content/faqsection_view', ['faq'=>$faq_sections[$idx]], TRUE);
+                    } else {
+                        $faq_items = $this->load->view('content/faqsection_item_edit',['faq'=>$faq_sections[$idx],'faq_section'=>$faq_sections[$idx]['faq_section']],TRUE);
+                        $faq_content.=$this->load->view('content/faqsection_edit', ['faq'=>$faq_sections[$idx],'details'=>$faq_items], TRUE);
+                    }
+                    $idx++;
                 }
-                $idx++;
+            } else {
+                if ($edit_mode==1) {
+                    $sections = $this->faq_sections;
+                    foreach ($sections as $frow) {
+                        $faqdat=['title' => ucfirst($frow).' Questions', 'faq_section'=>$frow];
+                        $faq_content.=$this->load->view('content/faqsection_edit', ['faq'=>$faqdat,'details'=>''], TRUE);
+                        $faq_sections[]=['faq_section'=>$frow];
+                    }
+                }
             }
             $page_options = [
                 'faq_sections' => $faq_content,

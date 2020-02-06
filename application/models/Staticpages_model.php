@@ -590,7 +590,7 @@ Class Staticpages_model extends MY_Model
                 $idx++;
             }
             if ($found==1) {
-                $questions=$data[$idx]['questions'];
+                $questions=ifset($data[$idx],'questions',[]);
                 $minidx=0;
                 foreach ($questions as $qrow) {
                     if ($qrow['faq_id']<$minidx) {
@@ -653,19 +653,19 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_faqpagecontent($session_data, $session_id, $user) {
+    public function save_faqpagecontent($session_data, $session_id, $brand, $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
         $faq_sections = $session_data['faq_sections'];
         $deleted = $session_data['deleted'];
         // Meta
-        $this->_save_page_metadata($meta);
+        $this->_save_page_metadata($meta, $brand);
         // Static content
-        $this->_save_page_params($data, $user);
+        $this->_save_page_params($data, 'faq', $brand, $user);
         // Faq sections
         foreach ($faq_sections as $row) {
-            $questions = $row['questions'];
+            $questions = ifset($row,'questions',[]);
             foreach ($questions as $qrow) {
                 $this->db->set('faq_quest', $qrow['faq_quest']);
                 $this->db->set('faq_answ', $qrow['faq_answ']);
@@ -674,6 +674,7 @@ Class Staticpages_model extends MY_Model
                     $this->db->update('sb_faq');
                 } else {
                     $this->db->set('faq_section', $row['faq_section']);
+                    $this->db->set('brand', $brand);
                     $this->db->insert('sb_faq');
                 }
             }
