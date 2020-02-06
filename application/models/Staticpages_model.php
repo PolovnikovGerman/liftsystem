@@ -910,7 +910,7 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_aboutus($session_data,  $session_id, $user) {
+    public function save_aboutus($session_data,  $session_id, $brand,  $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
@@ -923,43 +923,49 @@ Class Staticpages_model extends MY_Model
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         // Meta
-        $this->_save_page_metadata($meta);
-        if ($data['about_mainimage'] && stripos($data['about_mainimage'],$path_preload_short)!==FALSE) {
-            // Save image
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_mainimage']);
-            $imagedetails = extract_filename($data['about_mainimage']);
-            $filename = 'about_mainimage_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['about_mainimage']='';
-            if ($res) {
-                $data['about_mainimage']=$this->config->item('contents_images').$filename;
+        $this->_save_page_metadata($meta, $brand);
+        if (!empty(ifset($data,'about_mainimage'))) {
+            if ($data['about_mainimage'] && stripos($data['about_mainimage'],$path_preload_short)!==FALSE) {
+                // Save image
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_mainimage']);
+                $imagedetails = extract_filename($data['about_mainimage']);
+                $filename = 'about_mainimage_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['about_mainimage']='';
+                if ($res) {
+                    $data['about_mainimage']=$this->config->item('contents_images').$filename;
+                }
             }
         }
-        if ($data['about_affilationsrc1'] && stripos($data['about_affilationsrc1'],$path_preload_short)!==FALSE) {
-            // Save image
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc1']);
-            $imagedetails = extract_filename($data['about_affilationsrc1']);
-            $filename = 'about_affilationsrc_1_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['about_affilationsrc1']='';
-            if ($res) {
-                $data['about_affilationsrc1']=$this->config->item('contents_images').$filename;
+        if (!empty(ifset($data,'about_affilationsrc1'))) {
+            if ($data['about_affilationsrc1'] && stripos($data['about_affilationsrc1'],$path_preload_short)!==FALSE) {
+                // Save image
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc1']);
+                $imagedetails = extract_filename($data['about_affilationsrc1']);
+                $filename = 'about_affilationsrc_1_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['about_affilationsrc1']='';
+                if ($res) {
+                    $data['about_affilationsrc1']=$this->config->item('contents_images').$filename;
+                }
             }
         }
-        if ($data['about_affilationsrc2'] && stripos($data['about_affilationsrc2'],$path_preload_short)!==FALSE) {
-            // Save image
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc2']);
-            $imagedetails = $this->func->extract_filename($data['about_affilationsrc2']);
-            $filename = 'about_affilationsrc_2_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['about_affilationsrc2']='';
-            if ($res) {
-                $data['about_affilationsrc2']=$this->config->item('contents_images').$filename;
+        if (!empty(ifset($data,'about_affilationsrc2'))) {
+            if ($data['about_affilationsrc2'] && stripos($data['about_affilationsrc2'],$path_preload_short)!==FALSE) {
+                // Save image
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc2']);
+                $imagedetails = $this->func->extract_filename($data['about_affilationsrc2']);
+                $filename = 'about_affilationsrc_2_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['about_affilationsrc2']='';
+                if ($res) {
+                    $data['about_affilationsrc2']=$this->config->item('contents_images').$filename;
+                }
             }
         }
         // Static content
-        $this->_save_page_params($data, $user);
-        $this->_save_page_params($address, $user);
+        $this->_save_page_params($data, 'about', $brand, $user);
+        $this->_save_page_params($address, 'address', $brand, $user);
         usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;

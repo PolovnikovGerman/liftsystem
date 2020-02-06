@@ -485,26 +485,32 @@ class Content extends MY_Controller
 
     public function edit_aboutcontent() {
         if ($this->isAjax()) {
-            $page_name = 'about';
-            $page_name_full = 'About Us';
-            $session_id = uniq_link(15);
-            $this->load->model('staticpages_model');
-            $meta = $this->staticpages_model->get_metadata($page_name);
-            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
-            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
-            $session_data = usersession($session_id);
-            $session_data['meta'] = $meta;
-            $session_data['deleted'] = []; // type , id
-            usersession($session_id, $session_data);
-            $button_options = ['page'=>'about', 'content_name' => $page_name_full, 'session'=> $session_id];
-            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
-            $options = [
-                'meta_view' => $meta_view,
-                'buttons_view' => $buttons_view,
-                'special_content' => $special_content,
-            ];
-            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
-            $this->ajaxResponse($mdata, '');
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $error = '';
+                $page_name = 'about';
+                $page_name_full = 'About Us';
+                $session_id = uniq_link(15);
+                $this->load->model('staticpages_model');
+                $meta = $this->staticpages_model->get_metadata($page_name,$brand);
+                $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+                $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
+                $session_data = usersession($session_id);
+                $session_data['meta'] = $meta;
+                $session_data['deleted'] = []; // type , id
+                usersession($session_id, $session_data);
+                $button_options = ['page'=>'about', 'content_name' => $page_name_full, 'session'=> $session_id];
+                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                $options = [
+                    'meta_view' => $meta_view,
+                    'buttons_view' => $buttons_view,
+                    'special_content' => $special_content,
+                ];
+                $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -567,9 +573,10 @@ class Content extends MY_Controller
             $postdata = $this->input->post();
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'aboutus');
             $session_data = usersession($session_id);
-            if (!empty($session_data)) {
+            $brand = ifset($postdata, 'brand');
+            if (!empty($session_data) && !empty($brand)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->save_aboutus($session_data,  $session_id, $this->USR_ID);
+                $res = $this->staticpages_model->save_aboutus($session_data,  $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -1171,7 +1178,7 @@ class Content extends MY_Controller
                 usersession($session, $session_data);
             }
         } elseif ($page_name=='about') {
-            $address = $this->staticpages_model->get_page_inner_content('address');
+            $address = $this->staticpages_model->get_page_inner_content('address', $brand);
             $page_options = [
                 'data' => $data,
                 'address' => $address,
