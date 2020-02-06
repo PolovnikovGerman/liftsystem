@@ -27,6 +27,3 @@
 <?php if ($numr > 0) {?>
     </div>
 <?php } ?>
-<div class="content-row">
-    <div class="add_new_question" data-faqsection="<?=$faq_section?>">Add New Question</div>
-</div>

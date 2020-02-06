@@ -7,11 +7,11 @@
 <div class="termscontent-area">
     <div class="content-row">
         <div class="label term_maintitle">Main Title:</div>
-        <input class="term_maintitle" name="term_maintitle" readonly="readonly" value="<?=$data['term_maintitle']?>"/>
+        <input class="term_maintitle" name="term_maintitle" readonly="readonly" value="<?=ifset($data,'term_maintitle')?>"/>
     </div>
     <div class="content-row">
         <div class="label term_smalltext">Main Body Text:</div>
-        <textarea class="term_smalltext" name="term_smalltext" readonly="readonly"><?=$data['term_smalltext']?></textarea>
+        <textarea class="term_smalltext" name="term_smalltext" readonly="readonly"><?=ifset($data,'term_smalltext')?></textarea>
     </div>
 </div>
 <div class="termsinfotitle">
