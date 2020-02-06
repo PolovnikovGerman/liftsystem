@@ -1032,7 +1032,7 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_extraservice($session_data,  $session_id, $user) {
+    public function save_extraservice($session_data,  $session_id, $brand, $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
@@ -1046,36 +1046,40 @@ Class Staticpages_model extends MY_Model
         // Meta
 
         // Meta
-        $this->_save_page_metadata($meta);
+        $this->_save_page_metadata($meta, $brand);
         // Static content
-        if ($data['service_mainimage'] && stripos($data['service_mainimage'],$path_preload_short)!==FALSE) {
-            // Save image
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['service_mainimage']);
-            $imagedetails = extract_filename($data['service_mainimage']);
-            $filename = 'service_mainimage_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['service_mainimage']='';
-            if ($res) {
-                $data['service_mainimage']=$this->config->item('contents_images').$filename;
+        if (!empty(ifset($data,'service_mainimage'))) {
+            if ($data['service_mainimage'] && stripos($data['service_mainimage'],$path_preload_short)!==FALSE) {
+                // Save image
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['service_mainimage']);
+                $imagedetails = extract_filename($data['service_mainimage']);
+                $filename = 'service_mainimage_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['service_mainimage']='';
+                if ($res) {
+                    $data['service_mainimage']=$this->config->item('contents_images').$filename;
+                }
             }
         }
         // Services images
         for ($j=1; $j<9; $j++) {
             $imagename = 'service_image'.$j;
-            if ($data[$imagename] && stripos($data[$imagename],$path_preload_short)!==FALSE) {
-                // Save image
-                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data[$imagename]);
-                $imagedetails = extract_filename($data[$imagename]);
-                $filename = 'service_image_'.$j.'_'.time().'.'.$imagedetails['ext'];
-                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-                $data[$imagename]='';
-                if ($res) {
-                    $data[$imagename]=$this->config->item('contents_images').$filename;
+            if (!empty(ifset($data,$imagename))) {
+                if ($data[$imagename] && stripos($data[$imagename],$path_preload_short)!==FALSE) {
+                    // Save image
+                    $imagesrc = str_replace($path_preload_short, $path_preload_full, $data[$imagename]);
+                    $imagedetails = extract_filename($data[$imagename]);
+                    $filename = 'service_image_'.$j.'_'.time().'.'.$imagedetails['ext'];
+                    $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                    $data[$imagename]='';
+                    if ($res) {
+                        $data[$imagename]=$this->config->item('contents_images').$filename;
+                    }
                 }
             }
         }
         // Static content
-        $this->_save_page_params($data, $user);
+        $this->_save_page_params($data, 'extraservice', $brand, $user);
         usersession($session_id,null);
         $out['result']=$this->success_result;
         return $out;

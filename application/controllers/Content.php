@@ -384,27 +384,33 @@ class Content extends MY_Controller
 
     public function edit_servicecontent() {
         if ($this->isAjax()) {
-            $page_name = 'extraservice';
-            $page_name_full = 'Services';
-            $session_id = uniq_link(15);
-            $this->load->model('staticpages_model');
-            $meta = $this->staticpages_model->get_metadata($page_name);
-            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
-            $special_content = $this->_prepare_custom_content($page_name, 1, $session_id);
-            $session_data = usersession($session_id);
-            $session_data['meta'] = $meta;
-            $session_data['deleted'] = []; // type , id
-            usersession($session_id, $session_data);
-            $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
-            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
-            $options = [
-                'meta_view' => $meta_view,
-                'buttons_view' => $buttons_view,
-                'special_content' => $special_content,
-            ];
-            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
-            $this->ajaxResponse($mdata, '');
-
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            $error = 'Empty Brand';
+            $mdata=[];
+            if (!empty($brand)) {
+                $error = '';
+                $page_name = 'extraservice';
+                $page_name_full = 'Services';
+                $session_id = uniq_link(15);
+                $this->load->model('staticpages_model');
+                $meta = $this->staticpages_model->get_metadata($page_name, $brand);
+                $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+                $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
+                $session_data = usersession($session_id);
+                $session_data['meta'] = $meta;
+                $session_data['deleted'] = []; // type , id
+                usersession($session_id, $session_data);
+                $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
+                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                $options = [
+                    'meta_view' => $meta_view,
+                    'buttons_view' => $buttons_view,
+                    'special_content' => $special_content,
+                ];
+                $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -451,9 +457,10 @@ class Content extends MY_Controller
             $postdata = $this->input->post();
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
             $session_data = usersession($session_id);
-            if (!empty($session_data)) {
+            $brand = ifset($postdata,'brand');
+            if (!empty($session_data) && !empty($brand)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->save_extraservice($session_data,  $session_id, $this->USR_ID);
+                $res = $this->staticpages_model->save_extraservice($session_data,  $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
