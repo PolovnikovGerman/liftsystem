@@ -5,6 +5,10 @@ $(document).ready(function(){
     $(".maincontentmenu_item").unbind('click').click(function () {
         var objid = $(this).data('link');
         init_page(objid);
+    });
+    $(".left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        change_brand(brand);
     })
 });
 
@@ -41,6 +45,7 @@ function init_page(objid) {
 function init_contentpage(page_name) {
     var params=new Array();
     params.push({name:'page_name', value: page_name});
+    params.push({name:'brand', value: $("#contentbrand").val()});
     var url = '/content/get_content_view';
     $.post(url, params, function(response) {
         if (response.errors=='') {
@@ -61,9 +66,6 @@ function init_contentpage(page_name) {
             } else if (page_name=='contactus') {
                  $("#contactusview").show().empty().html(response.data.content);
                  init_contactus_view();
-            // } else if (page_name=='categories') {
-            //     $("#categories").empty().html(response.data.content);
-            //     init_categories_page();
             } else if (page_name=='extraservice') {
                  $("#serviceview").show().empty().html(response.data.content);
                  init_service_page();
@@ -84,4 +86,12 @@ function window_alignment() {
             $(".content_window").css('height',(contentheigth-125)+'px');
         }
     }
+}
+
+function change_brand(brand) {
+    $("#contentbrand").val(brand);
+    $(".left_tab").removeClass('active');
+    $(".left_tab[data-brand='"+brand+"']").addClass('active');
+    var start = $(".maincontentmenu_item:first").data('link');
+    init_page(start);
 }

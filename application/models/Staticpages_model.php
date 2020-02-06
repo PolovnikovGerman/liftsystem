@@ -8,20 +8,22 @@ Class Staticpages_model extends MY_Model
         parent::__construct();
     }
 
-    function get_metadata($page_name) {
+    function get_metadata($page_name, $brand) {
         $this->db->select('meta_title,meta_keywords,meta_description,bottom_text,rollover_help, internal_keywords');
         $this->db->select('page_name, page_id');
         $this->db->from('sb_static_pages');
         $this->db->where('page_name',$page_name);
+        $this->db->where('brand', $brand);
         $res = $this->db->get()->row_array();
         if (empty($res) || !array_key_exists('meta_title',$res)) {
             $result=array(
-                'meta_title'=>$this->config->item('meta_title'),
-                'meta_keywords'=>$this->config->item('meta_keywords'),
-                'meta_description'=>$this->config->item('meta_description'),
-                'bottom_text'=>$this->config->item('bottom_text'),
+                'meta_title'=>'', // $this->config->item('meta_title'),
+                'meta_keywords'=>'', // $this->config->item('meta_keywords'),
+                'meta_description'=>'', //$this->config->item('meta_description'),
+                'bottom_text'=>'', $this->config->item('bottom_text'),
                 'rollover_help'=>1,
                 'page_name' => $page_name,
+                'internal_keywords' => '',
                 'page_id' => -1,
             );
         } else {
@@ -30,10 +32,11 @@ Class Staticpages_model extends MY_Model
         return $result;
     }
 
-    public function get_page_inner_content($page_name) {
+    public function get_page_inner_content($page_name, $brand) {
         $this->db->select('*');
         $this->db->from('sb_static_contents');
         $this->db->where('page_name', $page_name);
+        $this->db->where('brand', $brand);
         $res  = $this->db->get()->result_array();
         $content = [];
         foreach ($res as $row) {
@@ -42,11 +45,12 @@ Class Staticpages_model extends MY_Model
         return $content;
     }
 
-    public function get_custom_galleries() {
+    public function get_custom_galleries($brand) {
         // For custom Shaped page
         $this->db->select('*');
         $this->db->from('sb_custom_galleries');
         $this->db->where('gallery_delete',0);
+        $this->db->where('brand', $brand);
         $this->db->order_by('gallery_order');
         $categ = $this->db->get()->result_array();
         $out = [];
@@ -67,10 +71,11 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function get_case_study() {
+    public function get_case_study($brand) {
         $this->db->select('*');
         $this->db->from('sb_custom_casestudy');
         $this->db->where('casestudy_delete',0);
+        $this->db->where('brand', $brand);
         $this->db->order_by('casestudy_order');
         $res = $this->db->get()->result_array();
         $out=$res;
@@ -353,7 +358,7 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
-    public function save_customshaped($session_data, $postdata, $session_id, $user) {
+    public function save_customshaped($session_data, $postdata, $session_id, $brand, $user) {
         $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
         $meta=$session_data['meta'];
         $data = $session_data['data'];
@@ -374,40 +379,44 @@ Class Staticpages_model extends MY_Model
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         // Meta
-        $this->_save_page_metadata($meta);
+        $this->_save_page_metadata($meta, $brand);
         // check an images - custom_mainimage custom_homepageimage
-        if ($data['custom_mainimage'] && stripos($data['custom_mainimage'],$this->config->item('upload_preload'))!==FALSE) {
-            // Save image
-            $full_path = $this->config->item('contents_images_relative');
-            if (!file_exists($full_path)) {
-                mkdir($full_path, 0777, true);
-            }
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_mainimage']);
-            $imagedetails = $this->func->extract_filename($data['custom_mainimage']);
-            $filename = 'custom_mainimage_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['custom_mainimage']='';
-            if ($res) {
-                $data['custom_mainimage']=$this->config->item('contents_images').$filename;
+        if (!empty(ifset($data,'custom_mainimage'))) {
+            if ($data['custom_mainimage'] && stripos($data['custom_mainimage'],$this->config->item('upload_preload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_mainimage']);
+                $imagedetails = $this->func->extract_filename($data['custom_mainimage']);
+                $filename = 'custom_mainimage_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['custom_mainimage']='';
+                if ($res) {
+                    $data['custom_mainimage']=$this->config->item('contents_images').$filename;
+                }
             }
         }
-        if ($data['custom_homepageimage'] && stripos($data['custom_homepageimage'],$this->config->item('upload_preload'))!==FALSE) {
-            // Save image
-            $full_path = $this->config->item('contents_images_relative');
-            if (!file_exists($full_path)) {
-                mkdir($full_path, 0777, true);
-            }
-            $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_homepageimage']);
-            $imagedetails = $this->func->extract_filename($data['custom_homepageimage']);
-            $filename = 'custom_homepageimage_'.time().'.'.$imagedetails['ext'];
-            $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
-            $data['custom_homepageimage']='';
-            if ($res) {
-                $data['custom_homepageimage']=$this->config->item('contents_images').$filename;
+        if (!empty(ifset($data,'custom_homepageimage'))) {
+            if ($data['custom_homepageimage'] && stripos($data['custom_homepageimage'],$this->config->item('upload_preload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_homepageimage']);
+                $imagedetails = $this->func->extract_filename($data['custom_homepageimage']);
+                $filename = 'custom_homepageimage_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['custom_homepageimage']='';
+                if ($res) {
+                    $data['custom_homepageimage']=$this->config->item('contents_images').$filename;
+                }
             }
         }
         // Static content
-        $this->_save_page_params($data, $user);
+        $this->_save_page_params($data, 'custom', $brand, $user);
         // Gallery
         foreach ($galleries as $gallery) {
             $gallery_id = $gallery['custom_gallery_id'];
@@ -418,6 +427,7 @@ Class Staticpages_model extends MY_Model
             if ($gallery['custom_gallery_id']<0) {
                 $this->db->set('create_user', $user);
                 $this->db->set('create_date', date('Y-m-d H:i:s'));
+                $this->db->set('brand', $brand);
                 $this->db->insert('sb_custom_galleries');
                 $gallery_id = $this->db->insert_id();
             } else {
@@ -467,6 +477,7 @@ Class Staticpages_model extends MY_Model
                     if ($item['custom_casestudy_id']<0) {
                         $this->db->set('create_date', date('Y-m-d H:i:s'));
                         $this->db->set('created', $user);
+                        $this->db->set('brand', $brand);
                         $this->db->insert('sb_custom_casestudy');
                         $custom_casestudy_id = $this->db->insert_id();
                     } else {
@@ -1157,13 +1168,14 @@ Class Staticpages_model extends MY_Model
         }
     }
 
-    private function _save_page_metadata($meta) {
+    private function _save_page_metadata($meta, $brand) {
         $this->db->set('meta_title', $meta['meta_title']);
         $this->db->set('meta_keywords', $meta['meta_keywords']);
         $this->db->set('meta_description', $meta['meta_description']);
         $this->db->set('internal_keywords', $meta['internal_keywords']);
         if ($meta['page_id']<0) {
             $this->db->set('page_name', $meta['page_name']);
+            $this->db->set('brand',$brand);
            $this->db->insert('sb_static_pages');
         } else {
             $this->db->where('page_id', $meta['page_id']);
@@ -1172,14 +1184,36 @@ Class Staticpages_model extends MY_Model
 
     }
 
-    private function _save_page_params($data, $user) {
+    private function _save_page_params($data, $page_name,  $brand, $user) {
         foreach ($data as $key=>$val) {
+            $chk = $this->_check_static_content($key, $page_name, $brand);
             $this->db->set('last_update', $user);
             $this->db->set('content_value', $val);
-            $this->db->where('content_parameter', $key);
-            $this->db->update('sb_static_contents');
+            if ($chk) {
+                $this->db->where('static_content_id', $chk);
+                $this->db->update('sb_static_contents');
+            } else {
+                $this->db->set('brand', $brand);
+                $this->db->set('content_parameter', $key);
+                $this->db->set('page_name', $page_name);
+                $this->db->insert('sb_static_contents');
+            }
         }
         return TRUE;
+    }
+
+    private function _check_static_content($key, $page_name, $brand) {
+        $out_key = 0;
+        $this->db->select('max(static_content_id) as content_id, count(static_content_id) cnt');
+        $this->db->from('sb_static_contents');
+        $this->db->where('page_name', $page_name);
+        $this->db->where('brand', $brand);
+        $this->db->where('content_parameter', $key);
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==1) {
+            $out_key = $res['content_id'];
+        }
+        return $out_key;
     }
 
 

@@ -1,8 +1,6 @@
 <div class="page_container">
     <div class="left_maincontent">
-        <div class="left_tab active" data-brand="all"><img src="/img/page_view/universal_lefttab_logo.png"/></div>
-        <div class="left_tab"  data-brand="SB"><img src="/img/page_view/sb_lefttab_logo.png"/></div>
-        <div class="left_tab"  data-brand="BT"><img src="/img/page_view/bt_lefttab_logo.png"/></div>
+        <?=$left_menu?>
     </div>
     <div class="right_maincontent">
         <div class="maincontent">
@@ -14,6 +12,7 @@
                 </div>
             </div>
             <div class="maincontent_view">
+                <input type="hidden" id="contentbrand" value="<?=$brand?>"/>
                 <?php foreach ($menu as $item) { ?>
                     <div class="contentpagearea" id="<?=str_replace('#','', $item['item_link'])?>">&nbsp;</div>
                 <?php } ?>
