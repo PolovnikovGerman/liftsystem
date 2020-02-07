@@ -37,7 +37,9 @@ function display_terms() {
 
 function init_termspage_edit() {
     var url = "/content/edit_termscontent";
-    $.post(url, {}, function (response) {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
+    $.post(url, params, function (response) {
         if (response.errors == '') {
             $("#termsview").empty().html(response.data.content);
             $(".content_preview").on('click', function () {
@@ -77,6 +79,7 @@ function init_termspage_editcontent() {
     $(".save_button[data-page='terms']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#terms_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_termspagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {

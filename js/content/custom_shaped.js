@@ -81,7 +81,9 @@ function display_casestudy() {
 
 function init_customshape_edit() {
     var url = "/content/edit_customcontent";
-    $.post(url, {}, function (response) {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
+    $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#customshappedview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {
@@ -128,6 +130,7 @@ function init_customshape_editcontent() {
     $(".save_button[data-page='custom']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#custom_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_customcontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
@@ -199,36 +202,6 @@ function init_customshape_editcontent() {
     // Remove main image
     $(".custom_mainimageremove").unbind('click').click(function(){
         if (confirm('Delete Main Image?')) {
-            $("#custom_mainimagearea").empty().html('<div class="custom_mainimageempty"><div class="custom_mainimageupload" id="mainimageupload"></div></div>');
-            // Add main image
-            var uploader = new qq.FileUploader({
-                element: document.getElementById('mainimageupload'),
-                action: '/utils/save_itemimg',
-                /* template: temp,            */
-                uploadButtonText: '',
-                multiple: false,
-                debug: false,
-                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-                onComplete: function(id, fileName, responseJSON){
-                    if (responseJSON.success==true) {
-                        $("li.qq-upload-success").hide();
-                        var params=new Array();
-                        params.push({name: 'session', value: $("#custom_session").val()});
-                        params.push({name: 'type', value: 'data'});
-                        params.push({name: 'field', value: 'custom_mainimage'});
-                        params.push({name: 'newval', value: responseJSON.filename});
-                        var url="/content/change_customparam";
-                        $.post(url, params, function (response) {
-                            if (response.errors=='') {
-                                $("#custom_mainimagearea").empty().html(response.data.content);
-                                init_customshape_editcontent();
-                            } else {
-                                show_error(response);
-                            }
-                        },'json');
-                    }
-                }
-            });
             var params=new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'type', value: 'data'});
@@ -237,6 +210,7 @@ function init_customshape_editcontent() {
             var url="/content/change_customparam";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
+                    $("#custom_mainimagearea").empty().html('<div class="custom_mainimageempty"><div class="custom_mainimageupload" id="mainimageupload"></div></div>');
                     init_customshape_editcontent();
                 } else {
                     show_error(response);
@@ -244,6 +218,37 @@ function init_customshape_editcontent() {
             },'json');
         }
     });
+    // Add main image
+    if ($("#mainimageupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('mainimageupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#custom_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'custom_mainimage'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_customparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#custom_mainimagearea").empty().html(response.data.content);
+                            init_customshape_editcontent();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
     // Open image
     $(".custom_mainimagesrc").unbind('click').click(function(){
         var imgsrc = $(this).find('img').prop('src');
@@ -256,36 +261,6 @@ function init_customshape_editcontent() {
     // Remove collage
     $(".custom_homeimageremove").unbind('click').click(function(){
         if (confirm('Delete Homepage Collage Image?')) {
-            $("#custom_homepageimagearea").empty().html('<div class="custom_homepageimageempty"><div class="custom_mainimageupload" id="homepageimageupload"></div></div>');
-            // Add main image
-            var uploader = new qq.FileUploader({
-                element: document.getElementById('homepageimageupload'),
-                action: '/utils/save_itemimg',
-                uploadButtonText: '',
-                multiple: false,
-                debug: false,
-                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-                onComplete: function(id, fileName, responseJSON){
-                    if (responseJSON.success==true) {
-                        $("li.qq-upload-success").hide();
-                        var params=new Array();
-                        params.push({name: 'session', value: $("#custom_session").val()});
-                        params.push({name: 'type', value: 'data'});
-                        params.push({name: 'field', value: 'custom_homepageimage'});
-                        params.push({name: 'newval', value: responseJSON.filename});
-                        var url="/content/change_customparam";
-                        $.post(url, params, function (response) {
-                            if (response.errors=='') {
-                                $("#custom_homepageimagearea").empty().html(response.data.content);
-                                init_customshape_editcontent();
-                            } else {
-                                show_error(response);
-                            }
-                        },'json');
-                    }
-                }
-            });
-
             var params=new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'type', value: 'data'});
@@ -294,6 +269,7 @@ function init_customshape_editcontent() {
             var url="/content/change_customparam";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
+                    $("#custom_homepageimagearea").empty().html('<div class="custom_homepageimageempty"><div class="custom_mainimageupload" id="homepageimageupload"></div></div>');
                     init_customshape_editcontent();
                 } else {
                     show_error(response);
@@ -301,6 +277,36 @@ function init_customshape_editcontent() {
             },'json');
         }
     });
+    if ($("#homepageimageupload").length>0) {
+        // Add main image
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('homepageimageupload'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#custom_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'custom_homepageimage'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_customparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#custom_homepageimagearea").empty().html(response.data.content);
+                            init_customshape_editcontent();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
     // View
     $(".custom_homepageimagesrc").unbind('click').click(function () {
         var imgsrc = $(this).find('img').prop('src');
