@@ -9,11 +9,11 @@
 <div class="termscontent-area">
     <div class="content-row">
         <div class="label term_maintitle">Main Title:</div>
-        <input class="term_maintitle" name="term_maintitle" data-content="content" data-field="term_maintitle" value="<?=$data['term_maintitle']?>"/>
+        <input class="term_maintitle" name="term_maintitle" data-content="content" data-field="term_maintitle" value="<?=ifset($data,'term_maintitle')?>"/>
     </div>
     <div class="content-row">
         <div class="label term_smalltext">Main Body Text:</div>
-        <textarea class="term_smalltext" name="term_smalltext" data-content="content" data-field="term_smalltext"><?=$data['term_smalltext']?></textarea>
+        <textarea class="term_smalltext" name="term_smalltext" data-content="content" data-field="term_smalltext"><?=ifset($data,'term_smalltext')?></textarea>
     </div>
 </div>
 <div class="termsinfotitle">
@@ -24,4 +24,7 @@
 </div>
 <div class="termsdata-area">
     <?=$terms?>
+</div>
+<div class="content-row addnewtermrule">
+    <div class="addnewterm">Add New Term</div>
 </div>
