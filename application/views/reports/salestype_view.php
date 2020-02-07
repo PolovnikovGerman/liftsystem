@@ -48,5 +48,5 @@
         </div>
     <?php } ?>
 </div>
-<div id="profitdategoaledit" style="display: none; width: 420px; height: 280px;"></div>
-<div id='salesmonthdetails' style="display: none; width: 660px; height: 450px;"></div>
+<input type="hidden" id="salestypereportbrand"/>
+<?=$top_menu?>

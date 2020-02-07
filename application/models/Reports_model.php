@@ -13,7 +13,7 @@ Class Reports_model extends My_Model
         parent::__construct();
     }
 
-    public function get_old_salestypes($reppermis, $profitview, $usr_profitview) {
+    public function get_old_salestypes($reppermis, $profitview, $usr_profitview, $brand) {
         $start_date=strtotime($this->salestype_start.'-01-01');
         $end_report=strtotime(date('Y').'-01-01');
         $item_table='sb_items';
@@ -21,35 +21,35 @@ Class Reports_model extends My_Model
         $cust_years=$stock_years=$ariel_years=$alpi_years=$mailine_years=$hit_years=$other_years=$esp_years=array();
         // Select Custom Shaped SB
         if (in_array('itemsalescustoms', $reppermis)) {
-            $cust_years=$this->_get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report);
+            $cust_years=$this->_get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // Stock shape
         if (in_array('itemsalesstock', $reppermis)) {
-            $stock_years=$this->_get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report);
+            $stock_years=$this->_get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // Ariel Items
         if (in_array('itemsalesariel', $reppermis)) {
-            $ariel_years=$this->_get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report);
+            $ariel_years=$this->_get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // Alpi Items
         if (in_array('itemsalesalpi', $reppermis)) {
-            $alpi_years=$this->_get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report);
+            $alpi_years=$this->_get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // Mailine Items
         if (in_array('itemsalesmailine', $reppermis)) {
-            $mailine_years=$this->_get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report);
+            $mailine_years=$this->_get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report,$brand);
         }
         // Hits Items
         if (in_array('itemsaleshit', $reppermis)) {
-            $hit_years=$this->_get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report);
+            $hit_years=$this->_get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // Other Items
         if (in_array('itemsalesother', $reppermis)) {
-            $other_years=$this->_get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report);
+            $other_years=$this->_get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         // ESP/Other Items
         if (in_array('itemsalesesp', $reppermis)) {
-            $esp_years=$this->_get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report);
+            $esp_years=$this->_get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
         }
         $out['customs']=$cust_years;
         $out['stocks']=$stock_years;
@@ -98,10 +98,6 @@ Class Reports_model extends My_Model
                         $row['months'][$monthidx]['revenue']=($mrow['revenue']>=10000 ? MoneyOutput($mrow['revenue'],0,',') : MoneyOutput($mrow['revenue'],2,''));
                         $row['months'][$monthidx]['profit']=($mrow['profit']>=10000 ? MoneyOutput($mrow['profit'],0,',') : MoneyOutput($mrow['profit'],2,''));
                         $row['months'][$monthidx]['profitpnts']=($mrow['profitpnts']>0 ? number_format($mrow['profitpnts'],0,'.',',').'pts' : '&nbsp;');
-//                        $row['months'][$monthidx]['prvrevenueshow']=$mrow['prvrevenueshow'];
-//                        $row['months'][$monthidx]['prvrevenueprc']=$mrow['prvrevenueprc'];
-//                        $row['months'][$monthidx]['prvrevenueclass']=$mrow['prvrevenueclass'];
-//                        $row['months'][$monthidx]['prvrevenuediff']=$mrow['prvrevenuediff'];
                     }
                 }
                 $monthidx++;
@@ -244,7 +240,7 @@ Class Reports_model extends My_Model
         return $out;
     }
 
-    public function get_newcustoms_salestypes($dates, $oldcustoms) {
+    public function get_newcustoms_salestypes($dates, $oldcustoms, $brand) {
         // Get Month Data
         $year=date('Y');
         $month=date('m');
@@ -284,6 +280,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.item_id', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $custom_monthdat=$this->db->get()->result_array();
@@ -300,6 +299,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',19);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $robres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -308,6 +310,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',3);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $sageres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -317,6 +322,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',1);
             $seanres=$this->db->get()->row_array();
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
 
             $customs[]=array(
                 'year'=>$row['repyear'],
@@ -340,6 +348,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.item_id != ', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $custom_monthotherdat=$this->db->get()->result_array();
@@ -355,6 +366,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',19);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $robres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -363,6 +377,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',3);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $sageres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -371,6 +388,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',1);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $seanres=$this->db->get()->row_array();
 
             $key=$row['repyear'].'-'.$row['repmonth'];
@@ -410,6 +430,9 @@ Class Reports_model extends My_Model
         $this->db->from('ts_goal_orders');
         $this->db->where('goal_year', date('Y'));
         $this->db->where('goal_type', 'CUSTOMS');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $goalres=$this->db->get()->row_array();
         $out=$this->_prepare_newdata($customs, $custom_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'CUSTOMS');
         return $out;
@@ -1116,81 +1139,6 @@ Class Reports_model extends My_Model
                         $prvclass='';
                         $outrevenue='';
                         $outrevenueprc='';
-//                        $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                        $this->db->from('ts_orders o');
-//                        if ($goaltype=='CUSTOMS') {
-//                            $this->db->where('o.item_id', $this->config->item('custom_id'));
-//                        } elseif ($goaltype=='STOCK') {
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id');
-//                        } elseif ($goaltype=='ALPI') {
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                            $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                            $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                            $this->db->where('v.vendor_name', 'Alpi');
-//                            $this->db->where('st.item_id is null');
-//                        } elseif ($goaltype=='ARIEL') {
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                            $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                            $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                            $this->db->where('v.vendor_name', 'Ariel');
-//                            $this->db->where('st.item_id is null');
-//                        } elseif ($goaltype=='ESP') {
-//                            $other_vendor = array(
-//                                'Ariel', 'Alpi', 'Mailine', 'Hit',
-//                            );
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                            $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                            $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                            $this->db->where_not_in('v.vendor_name', $other_vendor);
-//                            $this->db->where('st.item_id is null');
-//                        } elseif ($goaltype=='HIT') {
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                            $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                            $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//
-//                        } elseif ($goaltype=='MAILINE') {
-//                            $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                            $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                            $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                            $this->db->where('v.vendor_name', 'Mailine');
-//                            $this->db->where('st.item_id is null');
-//                        } elseif ($goaltype=='OTHER') {
-//                            $this->db->where('o.item_id', $this->config->item('other_id'));
-//                        }
-//                        $this->db->where('o.is_canceled', 0);
-//                        $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                        $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                        $prvres=$this->db->get()->row_array();
-//                        if ($prvres['cnt']>0) {
-//                            $prvrevenue=floatval($prvres['profit']);
-//                            $revdiff=$mprofit-$prvrevenue;
-//                            if ($revdiff<0) {
-//                                $prvclass='negative';
-//                                if ($profit_type=='Profit') {
-//                                    $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                                } else {
-//                                    $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                                }
-//                                if ($mprofit!=0) {
-//                                    $outrevenueprc='('.round(abs($revdiff)/$mprofit*100,0).')%';
-//                                }
-//                            } elseif ($revdiff>0) {
-//                                $prvclass='positive';
-//                                if ($profit_type=='Profit') {
-//                                    $outrevenue=''.MoneyOutput($revdiff,0);
-//                                } else {
-//                                    $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                                }
-//                                if ($mprofit!=0) {
-//                                    $outrevenueprc='+'.round(abs($revdiff)/$mprofit*100,0).'%';
-//                                }
-//                            }
-//                        }
 
                         if ($goaltype=='CUSTOMS') {
                             $rob+=$monthdata[$key]['rob'];
@@ -1208,10 +1156,6 @@ Class Reports_model extends My_Model
                                 'rob'=>$monthdata[$key]['rob'],
                                 'sage'=>$monthdata[$key]['sage'],
                                 'sean'=>$monthdata[$key]['sean'],
-//                                'prvrevenuediff'=>$outrevenue,
-//                                'prvrevenueclass'=>$prvclass,
-//                                'prvrevenueprc'=>$outrevenueprc,
-//                                'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                             );
                         } else {
                             $months[]=array(
@@ -1352,7 +1296,6 @@ Class Reports_model extends My_Model
         } else {
             $goals['profitpts']=round($goals['goal_profit']*$this->config->item('profitpts'),0);
         }
-//        $this->firephp->log($goals,'GoalsData');
         // Pace Hits
         $pacehits=array(
             'numorders'=>round($numorders*$pacekf,0),
@@ -3521,7 +3464,7 @@ Class Reports_model extends My_Model
     }
 
     // Items Report - Section Customs - get old data
-    private function _get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
 
         $profit_type = $usr_profitview;
         $cust_scryears=$customs=$custom_keys=array();
@@ -3538,6 +3481,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled', 0);
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $custom_monthdat = $this->db->get()->result_array();
@@ -3554,6 +3500,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 19);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $robres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -3562,6 +3511,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 3);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $sageres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -3570,6 +3522,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 1);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $seanres = $this->db->get()->row_array();
             $customs[] = array(
                 'year' => $row['repyear'],
@@ -3592,6 +3547,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled', 0);
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $custom_monthotherdat = $this->db->get()->result_array();
@@ -3607,6 +3565,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 19);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $robres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -3615,6 +3576,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 3);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $sageres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
             $this->db->from('ts_orders o');
@@ -3623,8 +3587,10 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $startmonth);
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 1);
+            if ($brand!=='ALL') {
+                $this->db->db->where('o.brand', $brand);
+            }
             $seanres = $this->db->get()->row_array();
-
             $key = $row['repyear'] . '-' . $row['repmonth'];
             if (!in_array($key, $custom_keys)) {
                 array_push($custom_keys, $key);
@@ -3720,38 +3686,6 @@ Class Reports_model extends My_Model
                     $outrevenue='';
                     $outrevenueprc='';
 
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->where('is_canceled', 0);
-//                    $this->db->where('o.item_id', $this->config->item('custom_id'));
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$customs[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($customs[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$customs[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($customs[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$customs[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
 
                     $months[] = array(
                         'year' => $i,
@@ -3766,10 +3700,6 @@ Class Reports_model extends My_Model
                         'rob' => $customs[$key]['rob'],
                         'sage' => $customs[$key]['sage'],
                         'sean' => $customs[$key]['sean'],
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -3785,7 +3715,7 @@ Class Reports_model extends My_Model
         return $cust_years;
     }
 
-    private function _get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $stocks = $stock_keys = $stock_scryears = array();
         $profit_type = $usr_profitview;
         foreach ($profitview as $prow) {
@@ -3800,6 +3730,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled', 0);
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $stock_monthdat = $this->db->get()->result_array();
@@ -3865,38 +3798,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$stocks[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($stocks[$key]['revenue']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$stocks[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($stocks[$key]['revenue']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$stocks[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -3907,10 +3808,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $stocks[$key]['profitpnts'],
                         'revenue' => $stocks[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -3926,7 +3823,7 @@ Class Reports_model extends My_Model
         return $stock_years;
     }
 
-    private function _get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $ariels = $ariel_keys = $ariel_scryears = array();
         $item_table='.sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -3948,6 +3845,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where('v.vendor_name', 'Ariel');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->where('st.item_id is null');
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4015,43 +3915,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                    $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                    $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                    $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $this->db->where('v.vendor_name', 'Ariel');
-//                    $this->db->where('st.item_id is null');
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$ariels[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($ariels[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$ariels[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($ariels[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$ariels[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
 
                     $months[] = array(
                         'year' => $i,
@@ -4063,10 +3926,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $ariels[$key]['profitpnts'],
                         'revenue' => $ariels[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -4082,7 +3941,7 @@ Class Reports_model extends My_Model
         return $ariel_years;
     }
 
-    private function _get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $item_table = 'sb_items';
         $vendoritem_table = 'sb_vendor_items';
 
@@ -4105,6 +3964,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where('v.vendor_name', 'Alpi');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $alpi_monthdat = $this->db->get()->result_array();
@@ -4171,43 +4033,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                    $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                    $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                    $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $this->db->where('v.vendor_name', 'Alpi');
-//                    $this->db->where('st.item_id is null');
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$alpis[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($alpis[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$alpis[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($alpis[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$alpis[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -4218,10 +4043,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $alpis[$key]['profitpnts'],
                         'revenue' => $alpis[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -4237,7 +4058,7 @@ Class Reports_model extends My_Model
         return $alpi_years;
     }
 
-    private function _get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
 
@@ -4260,6 +4081,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where('v.vendor_name', 'Mailine');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $mailine_monthdat = $this->db->get()->result_array();
@@ -4326,43 +4150,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                    $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                    $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                    $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $this->db->where('v.vendor_name', 'Mailine');
-//                    $this->db->where('st.item_id is null');
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$mailines[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($mailines[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$mailines[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($mailines[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$mailines[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -4373,10 +4160,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $mailines[$key]['profitpnts'],
                         'revenue' => $mailines[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -4392,7 +4175,7 @@ Class Reports_model extends My_Model
         return $mailine_years;
     }
 
-    private function _get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $item_table = 'sb_items';
         $vendoritem_table = 'sb_vendor_items';
 
@@ -4415,6 +4198,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where('v.vendor_name', 'Hit');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $hits_monthdata = $this->db->get()->result_array();
@@ -4481,43 +4267,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                    $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                    $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                    $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $this->db->where('v.vendor_name', 'Hit');
-//                    $this->db->where('st.item_id is null');
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$hits[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($hits[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$hits[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($hits[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$hits[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -4528,10 +4277,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $hits[$key]['profitpnts'],
                         'revenue' => $hits[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -4547,7 +4292,7 @@ Class Reports_model extends My_Model
         return $hit_years;
     }
 
-    private function _get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $others = $other_keys = $other_scryears = array();
         $profit_type = $usr_profitview;
         foreach ($profitview as $prow) {
@@ -4562,6 +4307,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled', 0);
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $other_monthdata = $this->db->get()->result_array();
@@ -4628,38 +4376,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->where('o.item_id', $this->config->item('other_id'));
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$others[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($others[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$others[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($others[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$others[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -4670,10 +4386,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $others[$key]['profitpnts'],
                         'revenue' => $others[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }
@@ -4689,7 +4401,7 @@ Class Reports_model extends My_Model
         return $other_years;
     }
 
-    private function _get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report) {
+    private function _get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $item_table = 'sb_items';
         $vendoritem_table = 'sb_vendor_items';
 
@@ -4715,6 +4427,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where_not_in('v.vendor_name', $other_vendor);
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $esp_monthdata = $this->db->get()->result_array();
@@ -4815,43 +4530,6 @@ Class Reports_model extends My_Model
                     $prvclass='';
                     $outrevenue='';
                     $outrevenueprc='';
-//                    $this->db->select('sum(o.profit) as profit, count(o.order_id) as cnt');
-//                    $this->db->from('ts_orders o');
-//                    $this->db->join('ts_stock_items st', 'st.item_id=o.item_id', 'left');
-//                    $this->db->join("{$item_table} i", 'i.item_id=o.item_id');
-//                    $this->db->join("{$vendoritem_table} vi", 'vi.vendor_item_id=i.vendor_item_id');
-//                    $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
-//                    $this->db->where('o.is_canceled', 0);
-//                    $this->db->where('o.order_date >= ', strtotime($prvyear.'-'.$j.'-01'));
-//                    $this->db->where('o.order_date < ', strtotime($nxtyear.'-'.$nxtmnth.'-01'));
-//                    $this->db->where_not_in('v.vendor_name', $other_vendor);
-//                    $this->db->where('st.item_id is null');
-//                    $prvres=$this->db->get()->row_array();
-//                    if ($prvres['cnt']>0) {
-//                        $prvrevenue=floatval($prvres['profit']);
-//                        $revdiff=$esps[$key]['profit']-$prvrevenue;
-//                        if ($revdiff<0) {
-//                            $prvclass='negative';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue='('.MoneyOutput(abs($revdiff),0).')';
-//                            } else {
-//                                $outrevenue='('.round(abs($revdiff) * $this->config->item('profitpts'), 0).')';
-//                            }
-//                            if ($esps[$key]['profit']!=0) {
-//                                $outrevenueprc='('.round(abs($revdiff)/$esps[$key]['profit']*100,0).')%';
-//                            }
-//                        } elseif ($revdiff>0) {
-//                            $prvclass='positive';
-//                            if ($profit_type=='Profit') {
-//                                $outrevenue=''.MoneyOutput($revdiff,0);
-//                            } else {
-//                                $outrevenue='+'.round(abs($revdiff) * $this->config->item('profitpts'), 0);
-//                            }
-//                            if ($esps[$key]['profit']!=0) {
-//                                $outrevenueprc=''.round(abs($revdiff)/$esps[$key]['profit']*100,0).'%';
-//                            }
-//                        }
-//                    }
                     $months[] = array(
                         'year' => $i,
                         'month' => $j,
@@ -4862,10 +4540,6 @@ Class Reports_model extends My_Model
                         'profitpnts' => $esps[$key]['profitpnts'],
                         'revenue' => $esps[$key]['revenue'],
                         'profit_view' => $profit_type,
-//                        'prvrevenuediff'=>$outrevenue,
-//                        'prvrevenueclass'=>$prvclass,
-//                        'prvrevenueprc'=>$outrevenueprc,
-//                        'prvrevenueshow'=>($prvrevenue==0 ? 0 : 1),
                     );
                 }
             }

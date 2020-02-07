@@ -248,6 +248,14 @@ Class Menuitems_model extends MY_Model
                 ['brand' => 'SB', 'logo' => $this->sb_logo],
                 ['brand' => 'BT', 'logo' => $this->bt_logo],
             ];
+        } else {
+            // Top Menu
+            $brands =[
+                ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All'],
+                ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'Stressball'],
+                ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'Bluetrack'],
+            ];
+
         }
         return $brands;
     }

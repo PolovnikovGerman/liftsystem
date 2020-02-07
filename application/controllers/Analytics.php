@@ -34,27 +34,37 @@ class Analytics extends MY_Controller
         $head['title'] = 'Analytics';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
+
+        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+        if (count($brands)==0) {
+            redirect('/');
+        }
+        $brand = $brands[0]['brand'];
+        $top_options = [
+            'brands' => $brands,
+            'active' => $brand,
+        ];
+        $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#reportsalestypeview') {
                 // Taks View
                 $head['styles'][] = ['style' => '/css/analytics/salestypes.css'];
                 $head['scripts'][] = ['src' => '/js/analytics/salestypes.js'];
-                $content_options['reportsalestypeview'] = $this->_prepare_salestype_view();
+                $content_options['reportsalestypeview'] = $this->_prepare_salestype_view($brand, $top_menu);
             } elseif ($row['item_link']=='#reportitemsoldyearview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemsales.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemsales.js'];
-                $content_options['reportitemsoldyearview'] = $this->_prepare_itemsales();
+                $content_options['reportitemsoldyearview'] = $this->_prepare_itemsales($brand);
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
-                $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales();
+                $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales($brand);
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
-                $content_options['checkoutreportview']=$this->_prepare_checkout_report();
+                $content_options['checkoutreportview']=$this->_prepare_checkout_report($brand);
             }
         }
-        $content_options['menu']=$menu;
 
         $content_options['menu'] = $menu;
         $content_view = $this->load->view('analytics/page_view', $content_options, TRUE);
@@ -715,13 +725,13 @@ class Analytics extends MY_Controller
     }
 
 
-    private function _prepare_salestype_view() {
+    private function _prepare_salestype_view($brand, $top_menu) {
         $this->load->model('permissions_model');
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
         $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn');
         $profitview=$this->permissions_model->get_pageprofit_view($this->USR_ID, 'salestypebtn');
         $usr_profitview = $usrdat['profit_view'];
-        $olddata=$this->reports_model->get_old_salestypes($reppermis, $profitview, $usr_profitview);
+        $olddata=$this->reports_model->get_old_salestypes($reppermis, $profitview, $usr_profitview, $brand);
         $dates=$this->reports_model->get_bisness_dates();
         $sales_years = $this->reports_model->get_report_years();
         $yearDifffrom = $this->_prepare_comparefrom_select($sales_years['start'], $sales_years['finish']);
@@ -738,7 +748,7 @@ class Analytics extends MY_Controller
                 }
             }
             $dates['profit_type']=$profit_type;
-            $newcustoms=$this->reports_model->get_newcustoms_salestypes($dates, $olddata['customs']);
+            $newcustoms=$this->reports_model->get_newcustoms_salestypes($dates, $olddata['customs'], $brand);
             $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs');
             $diffoptions = [
                 'months' => $custom_diffs['months'],
@@ -1018,6 +1028,8 @@ class Analytics extends MY_Controller
             'other_view'=>$other_view,
             'hit_view'=>$hit_view,
             'esp_view'=>$esp_view,
+            'top_menu' => $top_menu,
+            'brand' => $brand,
         );
         $content=$this->load->view('reports/salestype_view', $options, TRUE);
         return $content;
