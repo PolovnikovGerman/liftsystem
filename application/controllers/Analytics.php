@@ -84,14 +84,39 @@ class Analytics extends MY_Controller
         $this->load->view('page/page_template_view', $dat);
     }
 
+    public function salestypebrand() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            $mdata = [];
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+                if (count($brands)>0) {
+                    $top_options = [
+                        'brands' => $brands,
+                        'active' => $brand,
+                    ];
+                    $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+                    $mdata['content'] = $this->_prepare_salestype_view($brand, $top_menu);
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function salesmonthdiff() {
         $postdata=$this->input->get();
-        if (isset($postdata['month']) || isset($postdata['year']) || isset($postdata['type'])) {
-            $month=$postdata['month'];
-            $year=$postdata['year'];
-            $salestype=$postdata['type'];
+        $month=ifset($postdata, 'month');
+        $year=ifset($postdata, 'year');
+        $salestype=ifset($postdata, 'type');
+        $brand = ifset($postdata,'brand');
+        // if (isset($postdata['month']) || isset($postdata['year']) || isset($postdata['type'])) {
+        if (!empty($month) && !empty($year) && !empty($salestype) && !empty($brand)) {
             $usrdat=$this->user_model->get_user_data($this->USR_ID);
-            $data=$this->reports_model->salesmonthdiff($month, $year, $salestype,$usrdat['profit_view']);
+            $data=$this->reports_model->salesmonthdiff($month, $year, $salestype, $brand, $usrdat['profit_view']);
             $content=$this->load->view('reports/salestype_monthdiff_view', $data, TRUE);
             echo $content;
             return TRUE;
@@ -215,34 +240,37 @@ class Analytics extends MY_Controller
     public function sales_month_details() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Empty Brand';
             $postdata=$this->input->post();
             $month=$postdata['month'];
             $year=$postdata['year'];
-            if (isset($postdata['saletype'])) {
-                $salestype=$postdata['saletype'];
-                $res=$this->reports_model->get_monthsales_details($month, $year, $salestype, $this->USR_ID);
-                $qtyview=0;
-            } else {
-                $item_id=$postdata['item'];
-                $res=$this->reports_model->get_monthsales_itemdetails($month, $year, $item_id);
-                $qtyview=1;
-            }
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error='';
-                $options=array(
-                    'data'=>$res['data'],
-                    'totals'=>$res['totals'],
-                    'title'=>$res['title'],
-                );
-                if ($qtyview==0) {
-                    $options['profit_type']=$res['profit_type'];
-                    $mdata['content']=$this->load->view('reports/salesmonth_details_view', $options, TRUE);
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                if (isset($postdata['saletype'])) {
+                    $salestype=$postdata['saletype'];
+                    $res=$this->reports_model->get_monthsales_details($month, $year, $salestype, $brand, $this->USR_ID);
+                    $qtyview=0;
                 } else {
-                    $mdata['content']=$this->load->view('reports/itemdata_details_view', $options, TRUE);
+                    $item_id=$postdata['item'];
+                    $res=$this->reports_model->get_monthsales_itemdetails($month, $year, $item_id, $brand);
+                    $qtyview=1;
                 }
-                $mdata['countdata']=count($res['data']);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $options=array(
+                        'data'=>$res['data'],
+                        'totals'=>$res['totals'],
+                        'title'=>$res['title'],
+                    );
+                    if ($qtyview==0) {
+                        $options['profit_type']=$res['profit_type'];
+                        $mdata['content']=$this->load->view('reports/salesmonth_details_view', $options, TRUE);
+                    } else {
+                        $mdata['content']=$this->load->view('reports/itemdata_details_view', $options, TRUE);
+                    }
+                    $mdata['countdata']=count($res['data']);
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -766,12 +794,14 @@ class Analytics extends MY_Controller
             $newcustoms['profit_type']=$profit_type;
             $newcustoms['differences'] = $custom_diffview;
             $newcustoms['type'] = 'customs';
+            $newcustoms['brand'] = $brand;
             $newcustom_view=$this->load->view('reports/current_customdata_view', $newcustoms, TRUE);
             $custom_options=array(
                 'data'=>$olddata['customs'],
                 'curview'=>$newcustom_view,
                 'newlabel'=>'customs',
                 'profit_type'=>$profit_type,
+                'brand' => $brand,
             );
             $customs_view=$this->load->view('reports/customitems_data_view', $custom_options, TRUE);
         }
@@ -784,7 +814,7 @@ class Analytics extends MY_Controller
                 }
             }
             $dates['profit_type']=$profit_type;
-            $newstock=$this->reports_model->get_newstock_salestypes($dates, $olddata['stocks']);
+            $newstock=$this->reports_model->get_newstock_salestypes($dates, $olddata['stocks'], $brand);
             $stock_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'stock');
             $diffoptions = [
                 'months' => $stock_diffs['months'],
@@ -802,12 +832,14 @@ class Analytics extends MY_Controller
             $newstock['profit_type']=$profit_type;
             $newstock['differences'] = $stock_diffview;
             $newstock['type'] = 'stock';
+            $newstock['brand'] = $brand;
             $newstock_view=$this->load->view('reports/current_data_view', $newstock, TRUE);
             $stock_options=array(
                 'data'=>$olddata['stocks'],
                 'curview'=>$newstock_view,
                 'newlabel'=>'stock',
                 'profit_type'=>$profit_type,
+                'brand' => $brand,
             );
             $stocks_view=$this->load->view('reports/customs_data_view', $stock_options, TRUE);
         }
@@ -820,7 +852,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newariel=$this->reports_model->get_newariel_salestypes($dates, $olddata['ariel']);
+            $newariel=$this->reports_model->get_newariel_salestypes($dates, $olddata['ariel'], $brand);
             $ariel_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'ariel');
             $diffoptions = [
                 'months' => $ariel_diffs['months'],
@@ -838,11 +870,13 @@ class Analytics extends MY_Controller
             $newariel['profit_type']=$profit_type;
             $newariel['differences'] = $ariel_diffview;
             $newariel['type'] = 'ariel';
+            $newariel['brand'] = $brand;
             $newariel_view=$this->load->view('reports/current_data_view', $newariel, TRUE);
             $ariel_options=array(
                 'data'=>$olddata['ariel'],
                 'curview'=>$newariel_view,
                 'newlabel'=>'ariel',
+                'brand' => $brand,
             );
             $ariel_view=$this->load->view('reports/customs_data_view', $ariel_options, TRUE);
         }
@@ -854,7 +888,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newalpi=$this->reports_model->get_newalpi_salestypes($dates, $olddata['alpi']);
+            $newalpi=$this->reports_model->get_newalpi_salestypes($dates, $olddata['alpi'], $brand);
             $alpi_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'alpi');
             $diffoptions = [
                 'months' => $alpi_diffs['months'],
@@ -872,11 +906,13 @@ class Analytics extends MY_Controller
             $newalpi['profit_type']=$profit_type;
             $newalpi['differences'] = $alpi_diffview;
             $newalpi['type'] = 'alpi';
+            $newalpi['brand'] = $brand;
             $newalpi_view=$this->load->view('reports/current_data_view', $newalpi, TRUE);
             $alpi_options=array(
                 'data'=>$olddata['alpi'],
                 'curview'=>$newalpi_view,
                 'newlabel'=>'alpi',
+                'brand' => $brand,
             );
             $alpi_view=$this->load->view('reports/customs_data_view', $alpi_options, TRUE);
         }
@@ -888,7 +924,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newmailine=$this->reports_model->get_newmailine_salestypes($dates, $olddata['mailine']);
+            $newmailine=$this->reports_model->get_newmailine_salestypes($dates, $olddata['mailine'], $brand);
             $mailine_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'mailine');
             $diffoptions = [
                 'months' => $mailine_diffs['months'],
@@ -906,11 +942,13 @@ class Analytics extends MY_Controller
             $newmailine['profit_type']=$profit_type;
             $newmailine['differences'] = $mailine_diffview;
             $newmailine['type'] = 'mailine';
+            $newmailine['brand'] = $brand;
             $newmailine_view=$this->load->view('reports/current_data_view', $newmailine, TRUE);
             $mailine_options=array(
                 'data'=>$olddata['mailine'],
                 'curview'=>$newmailine_view,
                 'newlabel'=>'mailine',
+                'brand' => $brand,
             );
             $mailine_view=$this->load->view('reports/customs_data_view', $mailine_options, TRUE);
         }
@@ -922,7 +960,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newesp=$this->reports_model->get_newesp_salestypes($dates, $olddata['esp']);
+            $newesp=$this->reports_model->get_newesp_salestypes($dates, $olddata['esp'], $brand);
             $esp_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'esp');
             $diffoptions = [
                 'months' => $esp_diffs['months'],
@@ -940,11 +978,13 @@ class Analytics extends MY_Controller
             $newesp['profit_type']=$profit_type;
             $newesp['differences'] = $esp_diffview;
             $newesp['type'] = 'esp';
+            $newesp['brand'] = $brand;
             $newesp_view=$this->load->view('reports/current_data_view', $newesp, TRUE);
             $esp_options=array(
                 'data'=>$olddata['esp'],
                 'curview'=>$newesp_view,
                 'newlabel'=>'esp',
+                'brand' => $brand,
             );
             $esp_view=$this->load->view('reports/customs_data_view', $esp_options, TRUE);
         }
@@ -956,7 +996,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newhit=$this->reports_model->get_newhit_salestypes($dates, $olddata['hits']);
+            $newhit=$this->reports_model->get_newhit_salestypes($dates, $olddata['hits'], $brand);
             $hit_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'hit');
             $diffoptions = [
                 'months' => $hit_diffs['months'],
@@ -974,11 +1014,13 @@ class Analytics extends MY_Controller
             $newhit['profit_type']=$profit_type;
             $newhit['differences'] = $hit_diffview;
             $newhit['type'] = 'hit';
+            $newhit['brand'] = $brand;
             $newhit_view=$this->load->view('reports/current_data_view', $newhit, TRUE);
             $hit_options=array(
                 'data'=>$olddata['hits'],
                 'curview'=>$newhit_view,
                 'newlabel'=>'hits',
+                'brand' => $brand,
             );
             $hit_view=$this->load->view('reports/customs_data_view', $hit_options, TRUE);
         }
@@ -991,7 +1033,7 @@ class Analytics extends MY_Controller
                     $profit_type=$prow['profit_view'];
                 }
             }
-            $newother=$this->reports_model->get_newother_salestypes($dates, $olddata['others']);
+            $newother=$this->reports_model->get_newother_salestypes($dates, $olddata['others'], $brand);
             $other_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'other');
             $diffoptions = [
                 'months' => $other_diffs['months'],
@@ -1009,12 +1051,14 @@ class Analytics extends MY_Controller
             $newother['profit_type']=$profit_type;
             $newother['differences'] = $other_diffview;
             $newother['type'] = 'other';
+            $newother['brand'] = $brand;
             $newother_view=$this->load->view('reports/current_data_view', $newother, TRUE);
 
             $other_options=array(
                 'data'=>$olddata['others'],
                 'curview'=>$newother_view,
                 'newlabel'=>'others',
+                'brand' => $brand,
             );
             $other_view=$this->load->view('reports/customs_data_view', $other_options, TRUE);
         }

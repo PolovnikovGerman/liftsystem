@@ -251,9 +251,9 @@ Class Menuitems_model extends MY_Model
         } else {
             // Top Menu
             $brands =[
-                ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All'],
-                ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'Stressball'],
-                ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'Bluetrack'],
+                ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All brands'],
+                ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
+                ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
             ];
 
         }

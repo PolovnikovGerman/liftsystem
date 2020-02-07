@@ -281,7 +281,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -300,7 +300,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',19);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $robres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -311,7 +311,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',3);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $sageres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -323,7 +323,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_usr_repic',1);
             $seanres=$this->db->get()->row_array();
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
 
             $customs[]=array(
@@ -349,7 +349,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -367,7 +367,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',19);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $robres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -378,7 +378,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',3);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $sageres=$this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -389,7 +389,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ',$endmonth);
             $this->db->where('o.order_usr_repic',1);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $seanres=$this->db->get()->row_array();
 
@@ -426,19 +426,32 @@ Class Reports_model extends My_Model
             }
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'CUSTOMS');
-        if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'CUSTOMS');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'CUSTOMS');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
         }
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($customs, $custom_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'CUSTOMS');
+        $out=$this->_prepare_newdata($customs, $custom_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'CUSTOMS');
         return $out;
     }
 
-    public function get_newstock_salestypes($dates, $oldstocks) {
+    public function get_newstock_salestypes($dates, $oldstocks, $brand) {
         // Get Month Data
         $year=date('Y');
         $month=date('m');
@@ -479,6 +492,9 @@ Class Reports_model extends My_Model
         $this->db->join('ts_stock_items st','st.item_id=o.item_id');
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $stock_monthdat=$this->db->get()->result_array();
@@ -496,16 +512,33 @@ Class Reports_model extends My_Model
             array_push($stock_keys,$row['repyear'].'-'.$row['repmonth']);
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'STOCK');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($stocks, $stock_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'STOCK');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'STOCK');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'STOCK');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+
+        $out=$this->_prepare_newdata($stocks, $stock_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'STOCK');
         return $out;
     }
 
-    public function get_newariel_salestypes($dates, $oldariel) {
+    public function get_newariel_salestypes($dates, $oldariel, $brand) {
         // Get Month Data
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -552,6 +585,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start);
         $this->db->where('v.vendor_name','Ariel');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $ariel_monthdat=$this->db->get()->result_array();
@@ -569,16 +605,32 @@ Class Reports_model extends My_Model
             array_push($ariel_keys,$row['repyear'].'-'.$row['repmonth']);
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'ARIEL');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($ariels, $ariel_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'ARIEL');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ARIEL');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ARIEL');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($ariels, $ariel_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'ARIEL');
         return $out;
     }
 
-    public function get_newalpi_salestypes($dates, $oldalpi) {
+    public function get_newalpi_salestypes($dates, $oldalpi, $brand) {
         // Get Month Data
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -625,6 +677,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start);
         $this->db->where('v.vendor_name','Alpi');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $alpi_monthdat=$this->db->get()->result_array();
@@ -642,16 +697,32 @@ Class Reports_model extends My_Model
             array_push($alpi_keys,$row['repyear'].'-'.$row['repmonth']);
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'ALPI');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($alpis, $alpi_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'ALPI');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ALPI');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ALPI');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($alpis, $alpi_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'ALPI');
         return $out;
     }
 
-    public function get_newmailine_salestypes($dates, $oldmailine) {
+    public function get_newmailine_salestypes($dates, $oldmailine, $brand) {
         // Get Month Data
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -698,6 +769,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start);
         $this->db->where('v.vendor_name','Mailine');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $mailine_monthdat=$this->db->get()->result_array();
@@ -715,16 +789,32 @@ Class Reports_model extends My_Model
             array_push($mailine_keys,$row['repyear'].'-'.$row['repmonth']);
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'MAILINE');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($mailines, $mailine_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'MAILINE');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'MAILINE');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'MAILINE');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($mailines, $mailine_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'MAILINE');
         return $out;
     }
 
-    public function get_newesp_salestypes($dates, $oldesp) {
+    public function get_newesp_salestypes($dates, $oldesp, $brand) {
         // Get Month Data
         $item_table='.sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -774,6 +864,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start);
         $this->db->where_not_in('v.vendor_name',$other_vendor);
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $esp_monthdata=$this->db->get()->result_array();
@@ -823,16 +916,32 @@ Class Reports_model extends My_Model
         }
 
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'ESP');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($esps, $esp_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, 'ESP');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ESP');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'ESP');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($esps, $esp_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'ESP');
         return $out;
     }
 
-    public function get_newhit_salestypes($dates, $oldhits) {
+    public function get_newhit_salestypes($dates, $oldhits, $brand) {
         // Get Month Data
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -879,6 +988,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start);
         $this->db->where('v.vendor_name','Hit');
         $this->db->where('st.item_id is null');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $hits_monthdata=$this->db->get()->result_array();
@@ -896,16 +1008,32 @@ Class Reports_model extends My_Model
             array_push($hit_keys,$row['repyear'].'-'.$row['repmonth']);
         }
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'HIT');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($hits, $hit_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals,  'HIT');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'HIT');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'HIT');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($hits, $hit_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'HIT');
         return $out;
     }
 
-    public function get_newother_salestypes($dates, $oldothers) {
+    public function get_newother_salestypes($dates, $oldothers, $brand) {
         // Get Month Data
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
@@ -948,6 +1076,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.item_id', $this->config->item('other_id'));
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $other_monthdata=$this->db->get()->result_array();
@@ -966,16 +1097,32 @@ Class Reports_model extends My_Model
         }
 
         // Get Goals
-        $this->db->select('*');
-        $this->db->from('ts_goal_orders');
-        $this->db->where('goal_year', date('Y'));
-        $this->db->where('goal_type', 'OTHER');
-        $goalres=$this->db->get()->row_array();
-        $out=$this->_prepare_newdata($others, $other_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals,  'OTHER');
+        if ($brand=='ALL') {
+            $this->db->select('sum(goal_orders) as goal_orders, sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
+            $this->db->select('count(goal_order_id) as cnt_goals');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'OTHER');
+            $goalres=$this->db->get()->row_array();
+            $goalres['goal_order_id']=-1;
+            if ($goalres['cnt_goals']==0) {
+                $goalres['goal_orders']=0;
+                $goalres['goal_revenue']=0;
+                $goalres['goal_profit']=0;
+            }
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_goal_orders');
+            $this->db->where('goal_year', date('Y'));
+            $this->db->where('goal_type', 'OTHER');
+            $this->db->where('brand', $brand);
+            $goalres=$this->db->get()->row_array();
+        }
+        $out=$this->_prepare_newdata($others, $other_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand,  'OTHER');
         return $out;
     }
 
-    private function _prepare_newdata($monthdata, $monthkeys, $goals, $year, $month, $days, $pacekf, $prvtotals, $goaltype) {
+    private function _prepare_newdata($monthdata, $monthkeys, $goals, $year, $month, $days, $pacekf, $prvtotals, $brand, $goaltype) {
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
 
@@ -1278,21 +1425,24 @@ Class Reports_model extends My_Model
         }
 
         if (empty($goals)) {
-            // Add New goals records
-            $this->db->set('goal_year', $year);
-            $this->db->set('goal_type', $goaltype);
-            $this->db->set('goal_orders', round($numorders*$pacekf,0));
-            $this->db->set('goal_revenue', round($revenue*$pacekf,2));
-            $this->db->set('goal_profit', round($profit*$pacekf,2));
-            $this->db->insert('ts_goal_orders');
-            $goal_id=$this->db->insert_id();
-            $goals=array(
-                'goal_order_id'=>$goal_id,
-                'goal_orders'=>round($numorders*$pacekf,0),
-                'goal_revenue'=>round($revenue*$pacekf,2),
-                'goal_profit'=>round($profit*$pacekf,2),
-                'goal_profitpts'=>round($profit*$pacekf*$this->config->item('profitpts'),0),
-            );
+            if ($brand!='ALL') {
+                // Add New goals records
+                $this->db->set('goal_year', $year);
+                $this->db->set('goal_type', $goaltype);
+                $this->db->set('goal_orders', round($numorders*$pacekf,0));
+                $this->db->set('goal_revenue', round($revenue*$pacekf,2));
+                $this->db->set('goal_profit', round($profit*$pacekf,2));
+                $this->db->set('brand', $brand);
+                $this->db->insert('ts_goal_orders');
+                $goal_id=$this->db->insert_id();
+                $goals=array(
+                    'goal_order_id'=>$goal_id,
+                    'goal_orders'=>round($numorders*$pacekf,0),
+                    'goal_revenue'=>round($revenue*$pacekf,2),
+                    'goal_profit'=>round($profit*$pacekf,2),
+                    'goal_profitpts'=>round($profit*$pacekf*$this->config->item('profitpts'),0),
+                );
+            }
         } else {
             $goals['profitpts']=round($goals['goal_profit']*$this->config->item('profitpts'),0);
         }
@@ -1402,10 +1552,10 @@ Class Reports_model extends My_Model
         if ($days!=0) {
             $avg_data['numorders']=round(($goals['goal_orders']-$numorders)/$days,0);
             $avg_data['profit']=round(($goals['goal_profit']-$profit)/$days,2);
-            $avg_data['profitpts']=round(($goals['profitpts']-$profitpts)/$days,2);
+            $avg_data['profitpts']=round((ifset($goals,'profitpts',0) - (isset($profitpts) ? $profitpts : 0))/$days,2);
             $avg_data['revenue']=round(($goals['goal_revenue']-$revenue)/$days,2);
         }
-//        $this->firephp->log($avg_data,'AvgData');
+
         $year_data=array(
             'year'=>$year,
             'totals'=>$totals,
@@ -1457,7 +1607,7 @@ Class Reports_model extends My_Model
             'profit_class'=>$goal_class,
             'profit_percent'=>$goal_profit_proc.'%',
             'profit'=>($goals['goal_profit']==0 ? $this->empty_show : ($goals['goal_profit']>=10000 ? MoneyOutput($goals['goal_profit'],0,',') : MoneyOutput($goals['goal_profit'],2,''))),
-            'profitpts'=>($goals['profitpts']==0 ? $this->empty_show : number_format($goals['profitpts'],0,'.',',').'pts'),
+            'profitpts'=>(ifset($goals,'profitpts',0)==0 ? $this->empty_show : number_format($goals['profitpts'],0,'.',',').'pts'),
             'revenue'=>($goals['goal_revenue']==0 ? $this->empty_show : ($goals['goal_revenue']>=10000 ? MoneyOutput($goals['goal_revenue'],0,',') : MoneyOutput($goals['goal_revenue'],2,''))),
         );
         // Out AVG data
@@ -1504,7 +1654,7 @@ Class Reports_model extends My_Model
         return $out;
     }
 
-    public function get_monthsales_details($month, $year, $salestype, $user_id) {
+    public function get_monthsales_details($month, $year, $salestype, $brand, $user_id) {
         $this->load->model('permissions_model');
 
         $out=array('result'=>$this->error_result, 'msg'=>$this->init_errmsg);
@@ -1515,6 +1665,9 @@ Class Reports_model extends My_Model
         $this->db->select("date_format(from_unixtime(o.order_date),'%m/%d/%y') as order_date",FALSE);
         $this->db->select('o.order_num, o.customer_name, o.item_id, o.order_items, o.revenue, o.profit, o.order_cog, o.order_usr_repic');
         $this->db->from('ts_orders o');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $profit_type='';
         switch ($salestype) {
             case 'customs':
@@ -1690,9 +1843,7 @@ Class Reports_model extends My_Model
             'profitpts'=>0,
             'revenue'=>0,
         );
-//        if ($salestype=='customs') {
-//            $totals['rob']=$totals['sage']=$totals['sean']=0;
-//        }
+
         $orders=array();
         foreach ($data as $row) {
             $row['rowclass']='';
@@ -1721,15 +1872,6 @@ Class Reports_model extends My_Model
             $totals['profit']+=$row['profit'];
             $totals['profitpts']+=$row['profitpts'];
             $totals['revenue']+=$row['revenue'];
-//            if ($salestype=='customs') {
-//                if ($row['order_usr_repic']==19) {
-//                    $totals['rob']+=1;
-//                } elseif ($row['order_usr_repic']==3) {
-//                    $totals['sage']+=1;
-//                } elseif ($row['order_usr_repic']==1) {
-//                    $totals['sean']+=1;
-//                }
-//            }
         }
         $out['data']=$orders;
         if ($totals['revenue']==0) {
@@ -1746,20 +1888,11 @@ Class Reports_model extends My_Model
         $out['totals']=$totals;
         $out['profit_type']=$profit_type;
         // Grow Data
-//        $prvyear=$year-1;
-//        $prvdatbgn=strtotime($prvyear.'-'.str_pad($month,2,'0', STR_PAD_LEFT).'-01');
-//        $prvdatend=strtotime($prvyear.'-'.str_pad($month,2,'0', STR_PAD_LEFT).'-01 +1 month');
-//
-//        $growres=$this->_get_monthdata_grow($salestype, $totals, $prvdatbgn, $prvdatend);
-//        $out['growresult']=$growres['result'];
-//        if ($growres['result']==$this->success_result) {
-//            $out['grow']=$growres['grow'];
-//        }
         return $out;
     }
 
     // Month details per Item
-    public function get_monthsales_itemdetails($month, $year, $item_id) {
+    public function get_monthsales_itemdetails($month, $year, $item_id, $brand) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->init_errmsg);
         if ($month==0) {
             $datbgn=strtotime($year.'-01-01');
@@ -1790,6 +1923,9 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $datbgn);
         $this->db->where('o.order_date < ', $datend);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->order_by('o.order_date');
         $data=$this->db->get()->result_array();
         if (count($data)==0) {
@@ -3482,7 +3618,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -3501,7 +3637,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 19);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $robres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -3512,7 +3648,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 3);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $sageres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -3523,7 +3659,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 1);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $seanres = $this->db->get()->row_array();
             $customs[] = array(
@@ -3548,7 +3684,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -3566,7 +3702,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 19);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $robres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -3577,7 +3713,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 3);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $sageres = $this->db->get()->row_array();
             $this->db->select('count(o.order_id) as cnt_orders');
@@ -3588,7 +3724,7 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $endmonth);
             $this->db->where('o.order_usr_repic', 1);
             if ($brand!=='ALL') {
-                $this->db->db->where('o.brand', $brand);
+                $this->db->where('o.brand', $brand);
             }
             $seanres = $this->db->get()->row_array();
             $key = $row['repyear'] . '-' . $row['repmonth'];
@@ -3731,7 +3867,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -3846,7 +3982,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date < ', $end_report);
         $this->db->where('v.vendor_name', 'Ariel');
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->where('st.item_id is null');
         $this->db->group_by('repyear, repmonth');
@@ -3965,7 +4101,7 @@ Class Reports_model extends My_Model
         $this->db->where('v.vendor_name', 'Alpi');
         $this->db->where('st.item_id is null');
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4082,7 +4218,7 @@ Class Reports_model extends My_Model
         $this->db->where('v.vendor_name', 'Mailine');
         $this->db->where('st.item_id is null');
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4199,7 +4335,7 @@ Class Reports_model extends My_Model
         $this->db->where('v.vendor_name', 'Hit');
         $this->db->where('st.item_id is null');
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4308,7 +4444,7 @@ Class Reports_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4428,7 +4564,7 @@ Class Reports_model extends My_Model
         $this->db->where_not_in('v.vendor_name', $other_vendor);
         $this->db->where('st.item_id is null');
         if ($brand!=='ALL') {
-            $this->db->db->where('o.brand', $brand);
+            $this->db->where('o.brand', $brand);
         }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
@@ -4771,7 +4907,7 @@ Class Reports_model extends My_Model
         return $out;
     }
 
-    public function salesmonthdiff($month, $year, $salestype, $profit_view) {
+    public function salesmonthdiff($month, $year, $salestype, $brand, $profit_view) {
         // Get previous year
         $item_table = 'sb_items';
         $vendoritem_table = 'sb_vendor_items';
@@ -4839,6 +4975,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $curmnthfinish);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.item_id', $this->config->item('custom_id'));
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $curmnthdat=$this->db->get()->row_array();
             // Other Parts
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -4848,6 +4987,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled', 0);
             $this->db->where('o.order_date >= ', $curmnthstart);
             $this->db->where('o.order_date < ', $curmnthfinish);
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $othercurmnth=$this->db->get()->row_array();
             $curmnthdat['cnt']=$curmnthdat['cnt']+$othercurmnth['cnt'];
             $curmnthdat['profit']=floatval($curmnthdat['profit'])+floatval($othercurmnth['profit']);
@@ -4859,6 +5001,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $prvmnthfinish);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.item_id', $this->config->item('custom_id'));
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $prvmnthdat=$this->db->get()->row_array();
             // Other Part
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -4868,6 +5013,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled', 0);
             $this->db->where('o.order_date >= ', $prvmnthstart);
             $this->db->where('o.order_date < ', $prvmnthfinish);
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $otherprvmnth=$this->db->get()->row_array();
             $prvmnthdat['cnt']=$prvmnthdat['cnt']+$otherprvmnth['cnt'];
             $prvmnthdat['profit']=floatval($prvmnthdat['profit'])+floatval($otherprvmnth['profit']);
@@ -4880,6 +5028,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $curquoterfinish);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.item_id', $this->config->item('custom_id'));
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $curqtrdat=$this->db->get()->row_array();
             // Other Parts
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -4889,6 +5040,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled', 0);
             $this->db->where('o.order_date >= ', $curquoterstart);
             $this->db->where('o.order_date < ', $curquoterfinish);
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $otherqtrdat=$this->db->get()->row_array();
             $curqtrdat['cnt']=$curqtrdat['cnt']+$otherqtrdat['cnt'];
             $curqtrdat['profit']=floatval($curqtrdat['profit'])+floatval($otherqtrdat['profit']);
@@ -4900,6 +5054,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $prvquoterfinish);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.item_id', $this->config->item('custom_id'));
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $prvqtrdat=$this->db->get()->row_array();
             // Other Parts
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -4909,6 +5066,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled', 0);
             $this->db->where('o.order_date >= ', $prvquoterstart);
             $this->db->where('o.order_date < ', $prvquoterfinish);
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $otherqtrdat=$this->db->get()->row_array();
             $prvqtrdat['cnt']=$prvqtrdat['cnt']+$otherqtrdat['cnt'];
             $prvqtrdat['profit']=floatval($prvqtrdat['profit'])+floatval($otherqtrdat['profit']);
@@ -4944,6 +5104,9 @@ Class Reports_model extends My_Model
             if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
                 $this->db->where('st.item_id is null');
             }
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $curmnthdat=$this->db->get()->row_array();
 
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -4975,6 +5138,9 @@ Class Reports_model extends My_Model
             }
             if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
                 $this->db->where('st.item_id is null');
+            }
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
             }
             $prvmnthdat=$this->db->get()->row_array();
 
@@ -5008,6 +5174,9 @@ Class Reports_model extends My_Model
             if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
                 $this->db->where('st.item_id is null');
             }
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $curqtrdat=$this->db->get()->row_array();
 
             $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
@@ -5039,6 +5208,9 @@ Class Reports_model extends My_Model
             }
             if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
                 $this->db->where('st.item_id is null');
+            }
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
             }
             $prvqtrdat=$this->db->get()->row_array();
         }

@@ -83,7 +83,7 @@
             <div class="monthdataarea">
                 <div class="month <?=($mrow['numorders']>0 ? 'salesmonthview' : '')?> <?=$mrow['profit_class']?>" data-month="<?=$mrow['month']?>" data-year="<?=$mrow['year']?>" data-saletype="<?=$newlabel?>">
                     <div class="row">
-                        <div class="magnifying" data-diffurl="/analytics/salesmonthdiff?month=<?=$mrow['month']?>&year=<?=$mrow['year']?>&type=customs">
+                        <div class="magnifying" data-diffurl="/analytics/salesmonthdiff?month=<?=$mrow['month']?>&year=<?=$mrow['year']?>&type=customs&brand=<?=$brand?>">
                             <img src="/img/icons/magnifier.png" alt="Popup"/>
                         </div>
                         <div class="rowpercent"><?=$mrow['profit_percent']?></div>

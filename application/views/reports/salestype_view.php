@@ -48,5 +48,5 @@
         </div>
     <?php } ?>
 </div>
-<input type="hidden" id="salestypereportbrand"/>
+<input type="hidden" id="salestypereportbrand" value="<?=$brand?>"/>
 <?=$top_menu?>

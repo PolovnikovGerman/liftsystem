@@ -41,7 +41,7 @@
         <div class="monthdataarea">
             <div class="month <?=($mrow['numorders']>0 ? 'salesmonthview' : '')?> <?=$mrow['profit_class']?>" data-month="<?=$mrow['month']?>" data-year="<?=$mrow['year']?>" data-saletype="<?=strtolower($goals['goal_type'])?>">
                 <div class="row">
-                    <div class="magnifying" data-diffurl="/analytics/salesmonthdiff?month=<?=$mrow['month']?>&year=<?=$mrow['year']?>&type=<?=strtolower($goals['goal_type'])?>">
+                    <div class="magnifying" data-diffurl="/analytics/salesmonthdiff?month=<?=$mrow['month']?>&year=<?=$mrow['year']?>&type=<?=strtolower($goals['goal_type'])?>&brand=<?=$brand?>">
                         <img src="/img/icons/magnifier.png" alt="Popup"/>
                     </div>
                     <div class="rowpercent"><?=$mrow['profit_percent']?></div>
@@ -84,7 +84,9 @@
             <div class="row orders"><?=$goals['numorders']?></div>
             <div class="row orders"><?=$goals['revenue']?></div>
         </div>
-        <div class="salesgoaledit" data-goal="<?=$goals['goal_order_id']?>" data-goaltype="<?=  strtolower($goals['goal_type'])?>">Edit</div>
+        <?php if ($goals['goal_order_id']>0) { ?>
+            <div class="salesgoaledit" data-goal="<?=$goals['goal_order_id']?>" data-goaltype="<?=  strtolower($goals['goal_type'])?>">Edit</div>
+        <?php } ?>
     </div>
     <div class="salesavgtitle">
         <div class="label">Need to Avg:</div>

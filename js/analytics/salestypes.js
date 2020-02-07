@@ -1,4 +1,21 @@
 function salestype_report_init() {
+    $(".brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        var params = new Array();
+        params.push({name: 'brand', value: brand});
+        var url = "/analytics/salestypebrand";
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#reportsalestypeview").empty().html(response.data.content);
+                salestype_report_init();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
     $("div.salesgoaledit").unbind('click').click(function(){
         var goal=$(this).data('goal');
         edit_salestype_goal(goal);
@@ -171,6 +188,7 @@ function show_monthsalesdetails(month, year, saletype) {
     params.push({name: 'month', value: month});
     params.push({name: 'year', value: year});
     params.push({name: 'saletype', value: saletype});
+    params.push({name: 'brand', value: $("#salestypereportbrand").val()});
     var url="/analytics/sales_month_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
