@@ -5546,12 +5546,12 @@ Class Reports_model extends My_Model
         );
     }
 
-    public function get_difference($diffYearBgn, $diffYearEnd, $profit_type, $salestype) {
+    public function get_difference($diffYearBgn, $diffYearEnd, $profit_type, $salestype, $brand) {
         // Get prvyear date
-        $prvMonth = $this->_get_diff_month($diffYearBgn, $salestype);
-        $curMonth = $this->_get_diff_month($diffYearEnd, $salestype);
-        $prvQuater = $this->_get_diff_quater($diffYearBgn, $salestype);
-        $curQuater = $this->_get_diff_quater($diffYearEnd, $salestype);
+        $prvMonth = $this->_get_diff_month($diffYearBgn, $salestype, $brand);
+        $curMonth = $this->_get_diff_month($diffYearEnd, $salestype, $brand);
+        $prvQuater = $this->_get_diff_quater($diffYearBgn, $salestype, $brand);
+        $curQuater = $this->_get_diff_quater($diffYearEnd, $salestype, $brand);
         // Calc last day of current month, current quater
         $month = date('F');
         $last_day = strtotime('last day of '.$month);
@@ -5669,7 +5669,7 @@ Class Reports_model extends My_Model
                     'calcurl' =>'',
                 ];
             } else {
-                $calcUrl ='/analytics/showdifference_calc/?q='.$i.'&start='.$diffYearBgn.'&finish='.$diffYearEnd.'&type='.$salestype.'&view='.$profit_type;
+                $calcUrl ='/analytics/showdifference_calc/?q='.$i.'&start='.$diffYearBgn.'&finish='.$diffYearEnd.'&type='.$salestype.'&view='.$profit_type.'&brand='.$brand;
                 $prvval = $curval = 0;
                 $orderproj = 0;
                 foreach ($prvQuater as $row) {
@@ -5769,9 +5769,9 @@ Class Reports_model extends My_Model
             ];
     }
 
-    public function get_differences_details($quarter, $yearBgn, $yearEnd, $salestype, $profit_type) {
-        $quarterPrev = $this->_get_diff_quater($yearBgn, $salestype);
-        $quarterCur = $this->_get_diff_quater($yearEnd, $salestype);
+    public function get_differences_details($quarter, $yearBgn, $yearEnd, $salestype, $profit_type, $brand) {
+        $quarterPrev = $this->_get_diff_quater($yearBgn, $salestype, $brand);
+        $quarterCur = $this->_get_diff_quater($yearEnd, $salestype, $brand);
         $prevVal = 0;
         foreach ($quarterPrev as $row) {
             if ($row['quater']==$quarter) {
@@ -5791,7 +5791,7 @@ Class Reports_model extends My_Model
         ];
     }
 
-    private function _get_diff_month($diffYear, $salestype) {
+    private function _get_diff_month($diffYear, $salestype, $brand) {
         $item_table = 'sb_items';
         $vendoritem_table = 'sb_vendor_items';
         $other_vendor = array(
@@ -5831,6 +5831,9 @@ Class Reports_model extends My_Model
         if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
             $this->db->where('st.item_id is null');
         }
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('month');
         $monthRes = $this->db->get()->result_array();
         // Count orders in stage - project
@@ -5867,9 +5870,11 @@ Class Reports_model extends My_Model
             $this->db->where('st.item_id is null');
         }
         $this->db->where('o.profit_perc is null');
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('month');
         $projorder=$this->db->get()->result_array();
-        $tt = $this->db->last_query();
         if ($salestype=='esp') {
             $this->db->select('date_format(from_unixtime(o.order_date),\'%c\') as month, sum(o.revenue) revenue', FALSE);
             $this->db->from('ts_orders o');
@@ -5877,6 +5882,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.order_date >= ', $dateBgn);
             $this->db->where('o.order_date < ', $dateEnd);
+            if ($brand!='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $this->db->group_by('month');
             $multi_monthdata=$this->db->get()->result_array();
             // Add multiple
@@ -5907,6 +5915,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $dateBgn);
             $this->db->where('o.order_date < ', $dateEnd);
             $this->db->where('o.profit_perc is null');
+            if ($brand!='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $this->db->group_by('month');
             $proj_multi=$this->db->get()->result_array();
             // Add multiple
@@ -5968,7 +5979,7 @@ Class Reports_model extends My_Model
         return $month;
     }
 
-    private function _get_diff_quater($diffYear, $salestype) {
+    private function _get_diff_quater($diffYear, $salestype, $brand) {
         $item_table = 'sb_items';
         $vendoritem_table =  'sb_vendor_items';
         $other_vendor = array(
@@ -6009,6 +6020,9 @@ Class Reports_model extends My_Model
         if ($salestype=='alpi' || $salestype=='ariel' || $salestype=='esp' || $salestype=='hit' || $salestype=='mailine') {
             $this->db->where('st.item_id is null');
         }
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('qt');
         $quaterRes = $this->db->get()->result_array();
 
@@ -6046,6 +6060,9 @@ Class Reports_model extends My_Model
             $this->db->where('st.item_id is null');
         }
         $this->db->where('o.profit_perc is null');
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('qt');
         $project_ord = $this->db->get()->result_array();
 
@@ -6056,6 +6073,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.is_canceled', 0);
             $this->db->where('o.order_date >= ', $dateBgn);
             $this->db->where('o.order_date < ', $dateEnd);
+            if ($brand!='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $this->db->group_by('qt');
             $multi_quartdata = $this->db->get()->result_array();
 
@@ -6087,6 +6107,9 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $dateEnd);
             $this->db->where('o.profit_perc is null');
             $this->db->group_by('qt');
+            if ($brand!='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
             $proj_multi = $this->db->get()->result_array();
 
             foreach ($proj_multi as $row) {
@@ -6108,7 +6131,6 @@ Class Reports_model extends My_Model
                     ];
                 }
             }
-
         }
         $quater = [];
         for ($i=1; $i<5; $i++) {

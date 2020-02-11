@@ -283,15 +283,16 @@ class Analytics extends MY_Controller
             $mdata=[];
             $error = 'Empty parameters for compare';
             $postdata = $this->input->post();
-            if (isset($postdata['type']) && isset($postdata['profit']) && isset($postdata['compare']) && isset($postdata['to'])) {
+            $type = ifset($postdata, 'type');
+            $profit_type = ifset($postdata, 'profit');
+            $diffYearBgn = ifset($postdata,'compare',0);
+            $diffYearEnd = ifset($postdata, 'to',0);
+            $brand = ifset($postdata,'brand');
+            if (!empty($type) && !empty($profit_type) && !empty($diffYearBgn) && !empty($diffYearEnd) && !empty($brand)) {
                 $error = 'Error in select years for compare';
-                $type = $postdata['type'];
-                $profit_type = $postdata['profit'];
-                $diffYearBgn = intval($postdata['compare']);
-                $diffYearEnd = intval($postdata['to']);
-                if ($diffYearEnd > $diffYearBgn) {
+                if (intval($diffYearEnd) > intval($diffYearBgn)) {
                     $error = '';
-                    $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, $type);
+                    $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, $type, $brand);
                     $sales_years = $this->reports_model->get_report_years();
                     $yearDifffrom = $this->_prepare_comparefrom_select($sales_years['start'], $sales_years['finish']);
                     $yearDiffTo = $this->_prepare_compareto_select($sales_years['start'], $sales_years['finish']);
@@ -321,8 +322,9 @@ class Analytics extends MY_Controller
         $yearEnd = (isset($postdata['finish']) ? $postdata['finish'] : date('Y'));
         $salestype = (isset($postdata['type']) ? $postdata['type'] : 'test');
         $profit_type = (isset($postdata['view']) ? $postdata['view'] : 'Points');
+        $brand = (ifset($postdata,'brand','ALL'));
         // Get data
-        $res = $this->reports_model->get_differences_details($quarter, $yearBgn, $yearEnd, $salestype, $profit_type);
+        $res = $this->reports_model->get_differences_details($quarter, $yearBgn, $yearEnd, $salestype, $profit_type, $brand);
         $options = [
             'qt' => $quarter,
             'start' => $yearBgn,
@@ -777,7 +779,7 @@ class Analytics extends MY_Controller
             }
             $dates['profit_type']=$profit_type;
             $newcustoms=$this->reports_model->get_newcustoms_salestypes($dates, $olddata['customs'], $brand);
-            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs');
+            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs', $brand);
             $diffoptions = [
                 'months' => $custom_diffs['months'],
                 'quarters' => $custom_diffs['quarters'],
@@ -815,7 +817,7 @@ class Analytics extends MY_Controller
             }
             $dates['profit_type']=$profit_type;
             $newstock=$this->reports_model->get_newstock_salestypes($dates, $olddata['stocks'], $brand);
-            $stock_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'stock');
+            $stock_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'stock', $brand);
             $diffoptions = [
                 'months' => $stock_diffs['months'],
                 'quarters' => $stock_diffs['quarters'],
@@ -853,7 +855,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newariel=$this->reports_model->get_newariel_salestypes($dates, $olddata['ariel'], $brand);
-            $ariel_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'ariel');
+            $ariel_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'ariel', $brand);
             $diffoptions = [
                 'months' => $ariel_diffs['months'],
                 'quarters' => $ariel_diffs['quarters'],
@@ -889,7 +891,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newalpi=$this->reports_model->get_newalpi_salestypes($dates, $olddata['alpi'], $brand);
-            $alpi_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'alpi');
+            $alpi_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'alpi', $brand);
             $diffoptions = [
                 'months' => $alpi_diffs['months'],
                 'quarters' => $alpi_diffs['quarters'],
@@ -925,7 +927,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newmailine=$this->reports_model->get_newmailine_salestypes($dates, $olddata['mailine'], $brand);
-            $mailine_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'mailine');
+            $mailine_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'mailine', $brand);
             $diffoptions = [
                 'months' => $mailine_diffs['months'],
                 'quarters' => $mailine_diffs['quarters'],
@@ -961,7 +963,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newesp=$this->reports_model->get_newesp_salestypes($dates, $olddata['esp'], $brand);
-            $esp_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'esp');
+            $esp_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'esp', $brand);
             $diffoptions = [
                 'months' => $esp_diffs['months'],
                 'quarters' => $esp_diffs['quarters'],
@@ -997,7 +999,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newhit=$this->reports_model->get_newhit_salestypes($dates, $olddata['hits'], $brand);
-            $hit_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'hit');
+            $hit_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'hit', $brand);
             $diffoptions = [
                 'months' => $hit_diffs['months'],
                 'quarters' => $hit_diffs['quarters'],
@@ -1034,7 +1036,7 @@ class Analytics extends MY_Controller
                 }
             }
             $newother=$this->reports_model->get_newother_salestypes($dates, $olddata['others'], $brand);
-            $other_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'other');
+            $other_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'other', $brand);
             $diffoptions = [
                 'months' => $other_diffs['months'],
                 'quarters' => $other_diffs['quarters'],

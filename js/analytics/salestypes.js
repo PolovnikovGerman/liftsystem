@@ -217,6 +217,7 @@ function show_difference(type, profit) {
         params.push({name: 'profit', value: profit});
         params.push({'name': 'compare', value: compare});
         params.push({'name': 'to', value: compareto});
+        params.push({name: 'brand', value: $("#salestypereportbrand").val()});
         var url='/analytics/salestype_showdifference';
         $.post(url, params, function(response){
             if (response.errors=='') {
