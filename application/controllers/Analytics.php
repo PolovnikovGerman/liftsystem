@@ -403,6 +403,10 @@ class Analytics extends MY_Controller
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $itemchk=usersession('itemsaleschk');
+                if (!is_array($itemchk)) {
+                    $itemchk = [];
+                    usersession('itemsaleschk', $itemchk);
+                }
                 $voptions=array(
                     'data'=>$res['data'],
                     'curyear'=>$postdata['current_year'],
@@ -741,35 +745,40 @@ class Analytics extends MY_Controller
     public function itemmonthsalesdata() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Empty Brand';
             $postdata=$this->input->post();
             $limit=(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE);
             $numpage=(isset($postdata['offset']) ? $postdata['offset'] : 0);
             $offset=$numpage*$limit;
             $current_year=$postdata['current_year'];
             $start_year=$postdata['start_year'];
-            // Options
-            $options=array(
-                'limit'=>$limit,
-                'offset'=>$offset,
-                'current_year'=>$current_year,
-                'start_year'=>$start_year,
-                'sort_year'=>(isset($postdata['order_year']) ? $postdata['order_year'] : $current_year),
-                'sort_fld'=>(isset($postdata['order_fld']) ? $postdata['order_fld'] : 'total'),
-            );
-            if (isset($postdata['search']) && !empty($postdata['search'])) {
-                $options['search']=$postdata['search'];
-            }
-            $res=$this->reports_model->get_itemmonthsolddata($options);
-            if ($res['result']==$this->error_result) {
-                $error=$res['msg'];
-            } else {
-                $voptions=array(
-                    'data'=>$res['data'],
-                    'years'=>$res['years'],
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                // Options
+                $options=array(
+                    'limit'=>$limit,
+                    'offset'=>$offset,
+                    'current_year'=>$current_year,
                     'start_year'=>$start_year,
+                    'sort_year'=>(isset($postdata['order_year']) ? $postdata['order_year'] : $current_year),
+                    'sort_fld'=>(isset($postdata['order_fld']) ? $postdata['order_fld'] : 'total'),
+                    'brand' => $brand,
                 );
-                $mdata['content']=$this->load->view('reports/itemmonthsales_data_view', $voptions, TRUE);
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=$postdata['search'];
+                }
+                $res=$this->reports_model->get_itemmonthsolddata($options);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $voptions=array(
+                        'data'=>$res['data'],
+                        'years'=>$res['years'],
+                        'start_year'=>$start_year,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('reports/itemmonthsales_data_view', $voptions, TRUE);
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -780,22 +789,51 @@ class Analytics extends MY_Controller
     public function itemmonthsearch() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Empty Brand';
             $postdata=$this->input->post();
             $curyear=(isset($postdata['current_year']) ? $postdata['current_year'] : date('Y'));
             $startyear=(isset($postdata['start_year']) ? $postdata['start_year'] : intval(date('Y'))-1);
-            $cntoptions=array(
-                'startyear'=>$startyear,
-                'curentyear'=>$curyear,
-            );
-            if (isset($postdata['search']) && !empty($postdata['search'])) {
-                $cntoptions['search']=  strtoupper($postdata['search']);
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $cntoptions=array(
+                    'startyear'=>$startyear,
+                    'curentyear'=>$curyear,
+                    'brand' => $brand,
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $cntoptions['search']=  strtoupper($postdata['search']);
+                }
+                $mdata['totals']=$this->reports_model->get_itemmonth_total($cntoptions);
+
             }
-            $mdata['totals']=$this->reports_model->get_itemmonth_total($cntoptions);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
+
+    // Show Vendor Item Prices
+    public function vendoritem_prices() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $item_id=$this->input->post('item');
+            $res=$this->reports_model->get_vendoritem_prices($item_id);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            } else {
+                $options=array(
+                    'data'=>$res['data'],
+                    'prices'=>$res['prices'],
+                );
+
+                $mdata['content']=$this->load->view('reports/vendoritem_price_view', $options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function checkout_reports_data() {
         if ($this->isAjax()) {
@@ -1271,7 +1309,7 @@ class Analytics extends MY_Controller
         return $content;
     }
 
-    private function _prepare_monthsales() {
+    private function _prepare_monthsales($brand, $top_menu) {
         // Get current year
         $curyear=intval(date('Y'));
         $years=array();
@@ -1287,6 +1325,7 @@ class Analytics extends MY_Controller
         $cntoptions=array(
             'startyear'=>$startyear,
             'curentyear'=>$curyear,
+            'brand' => $brand,
         );
         $totals=$this->reports_model->get_itemmonth_total($cntoptions);
         $options=array(
@@ -1296,6 +1335,8 @@ class Analytics extends MY_Controller
             'perpage'=>  $this->perpage_options,
             'currenrows'=>$this->PERPAGE,
             'sortyears'=>$years,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
         );
         $content=$this->load->view('reports/itemmonthsales_head_view', $options, TRUE);
         return $content;

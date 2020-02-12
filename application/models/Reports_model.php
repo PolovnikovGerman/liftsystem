@@ -2479,6 +2479,9 @@ Class Reports_model extends My_Model
         $this->db->where('isale.yearsale >=', $start_year);
         $this->db->where('isale.yearsale <=', $current_year);
         $this->db->where('isale.qtysale > ',0);
+        if ($options['brand']!=='ALL') {
+            $this->db->where('isale.brand', $options['brand']);
+        }
         if (isset($options['limit'])) {
             if (isset($options['offset']) && !empty($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);
@@ -2494,7 +2497,11 @@ Class Reports_model extends My_Model
             $this->db->select('coalesce(srt.sort_field,0) as sort_field',FALSE);
             $yearsort=(isset($options['sort_year']) ? $options['sort_year'] : $current_year);
             if ($options['sort_fld']=='total') {
-                $joinsql="select item_id, qtysale as sort_field from v_itemsales where yearsale=".$yearsort;
+                if ($options['brand']=='ALL') {
+                    $joinsql="select item_id, sum(qtysale) as sort_field from v_itemsales where yearsale=".$yearsort.' group by item_id';
+                } else {
+                    $joinsql="select item_id, qtysale as sort_field from v_itemsales where yearsale=".$yearsort.' and brand=\''.$options['brand'].'\'';
+                }
                 $this->db->join("({$joinsql}) as srt",'srt.item_id=i.item_id','left');
             } else {
                 $montshsort=$options['sort_fld'];
@@ -2506,10 +2513,13 @@ Class Reports_model extends My_Model
                     $monnxt=$montshsort+1;
                     $dend=strtotime($yearsort.'-'.$monnxt.'-01');
                 }
-                $joinsql="select item_id, sum(order_qty) as sort_field from ts_orders where order_date>=".$dbgn.' and order_date< '.$dend.' and is_canceled=0 group by item_id';
+                if ($options['brand']=='ALL') {
+                    $joinsql="select item_id, sum(order_qty) as sort_field from ts_orders where order_date>=".$dbgn.' and order_date< '.$dend.' and is_canceled=0 group by item_id';
+                } else {
+                    $joinsql="select item_id, sum(order_qty) as sort_field from ts_orders where order_date>=".$dbgn.' and order_date< '.$dend.' and is_canceled=0 and brand=\''.$options['brand'].'\' group by item_id';
+                }
+
                 $this->db->join("({$joinsql}) as srt",'srt.item_id=i.item_id','left');
-
-
             }
             $this->db->order_by('sort_field desc');
         }
@@ -2550,6 +2560,9 @@ Class Reports_model extends My_Model
                 $this->db->where('o.item_id', $row['item_id']);
                 $this->db->where('o.is_canceled',0);
                 $this->db->group_by('ordmonth');
+                if ($options['brand']!=='ALL') {
+                    $this->db->where('o.brand', $options['brand']);
+                }
                 $yres=$this->db->get()->result_array();
                 foreach ($yres as $resrow) {
                     $yearrow['orders']+=$resrow['cntord'];

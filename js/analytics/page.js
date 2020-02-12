@@ -31,3 +31,18 @@ function init_page(objid) {
             init_ordersreports();
     }
 }
+
+// Show item details - Item Sold (Yr) Item Sold (Mo)
+function show_vendoritem_prices(item) {
+    var url="/analytics/vendoritem_prices";
+    $.post(url,{'item': item}, function(response){
+        if (response.errors=='') {
+            $("#pageModalLabel").empty().html('Sales Month Details');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','685px');
+            $("#pageModal").modal('show');
+        } else {
+            show_error(response);
+        }
+    },'json');
+}

@@ -1,19 +1,22 @@
 function itemmonth_reportinit() {
     initItemMonthPagination();
-    // change Per Page
-
+    // Change Brand
     $("#itemmonthreporttopmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
+        $("#itemmonthreportbrand").val(brand);
         $("#itemmonthreporttopmenu").find("div.brandchoseval").each(function(){
             var curbrand=$(this).data('brand');
             if (curbrand==brand) {
                 $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#itemmonthreporttopmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
             } else {
                 $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#itemmonthreporttopmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
-        })
+        });
+        filter_itemmonthreport();
     });
-
+    // change Per Page
     $("select#itemmonthperpage").unbind('change').change(function(){
         initItemMonthPagination();
     });
@@ -98,6 +101,7 @@ function itemmonth_content_init() {
         params.push({name: 'month', value: $(this).data('month')});
         params.push({name: 'year', value: $(this).data('year')});
         params.push({name: 'item', value: $(this).data('item')});
+        params.push({name:'brand', value: $("#itemmonthreportbrand").val()});
         var url="/analytics/sales_month_details";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -123,6 +127,7 @@ function filter_itemmonthreport() {
     params.push({name:'search',value:search});
     params.push({name:'current_year', value: $("input#itemmonthcurrentyear").val()});
     params.push({name:'start_year', value: $("input#itemmonthstartyear").val()});
+    params.push({name:'brand', value: $("#itemmonthreportbrand").val()});
     $("#loader").show();
     var url='/analytics/itemmonthsearch';
     $.post(url, params, function(response){
