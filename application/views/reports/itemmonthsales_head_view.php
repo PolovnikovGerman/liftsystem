@@ -67,3 +67,8 @@
     </div>
     <div class="itemmonth_data">&nbsp;</div>
 </div>
+<input type="hidden" id="itemmonthreportbrand" value="<?=$brand?>"/>
+<div id="itemmonthreporttopmenu">
+    <?=$top_menu?>
+</div>
+

@@ -1,6 +1,19 @@
 function itemmonth_reportinit() {
     initItemMonthPagination();
     // change Per Page
+
+    $("#itemmonthreporttopmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itemmonthreporttopmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+            }
+        })
+    });
+
     $("select#itemmonthperpage").unbind('change').change(function(){
         initItemMonthPagination();
     });
@@ -63,6 +76,7 @@ function pageItemMonthreport(page_index) {
     params.push({name:'offset',value:page_index});
     params.push({name:'current_year', value: $("input#itemmonthcurrentyear").val()});
     params.push({name:'start_year', value: $("input#itemmonthstartyear").val()});
+    params.push({name: 'brand', value: $("#itemmonthreportbrand").val()});
     $("#loader").show();
     var url='/analytics/itemmonthsalesdata';
     $.post(url,params,function(response){

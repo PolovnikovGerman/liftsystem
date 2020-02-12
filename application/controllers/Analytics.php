@@ -62,7 +62,7 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
-                $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales($brand);
+                $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales($brand, $top_menu);
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
@@ -1297,7 +1297,7 @@ class Analytics extends MY_Controller
         return $content;
     }
 
-    private function _prepare_monthsales() {
+    private function _prepare_monthsales($brand, $top_menu) {
         // Get current year
         $curyear=intval(date('Y'));
         $years=array();
@@ -1313,6 +1313,7 @@ class Analytics extends MY_Controller
         $cntoptions=array(
             'startyear'=>$startyear,
             'curentyear'=>$curyear,
+            'brand' => $brand,
         );
         $totals=$this->reports_model->get_itemmonth_total($cntoptions);
         $options=array(
@@ -1322,6 +1323,8 @@ class Analytics extends MY_Controller
             'perpage'=>  $this->perpage_options,
             'currenrows'=>$this->PERPAGE,
             'sortyears'=>$years,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
         );
         $content=$this->load->view('reports/itemmonthsales_head_view', $options, TRUE);
         return $content;

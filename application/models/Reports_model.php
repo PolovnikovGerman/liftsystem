@@ -2444,6 +2444,9 @@ Class Reports_model extends My_Model
         }
         $this->db->where('isale.yearsale >=',$options['startyear']);
         $this->db->where('isale.yearsale <=',$options['curentyear']);
+        if ($options['brand']!='ALL') {
+            $this->db->where('isale.brand', $options['brand']);
+        }
         $this->db->where('isale.qtysale > ',0);
         $data=$this->db->get()->row_array();
 
