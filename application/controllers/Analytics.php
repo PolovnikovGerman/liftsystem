@@ -418,7 +418,38 @@ class Analytics extends MY_Controller
     }
 
     public function itemsalesaddcost() {
-        
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Fill all parameters';
+            $postdata=$this->input->post();
+            if (isset($postdata['addcost'])) {
+                $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
+                $options=array(
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                    'calc_year'=>$postdata['calc_year'],
+                    'vendor'=>$vendor,
+                    'addcost'=>$postdata['addcost'],
+                    'brand' => ifset($postdata,'brand', 'ALL'),
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=strtoupper($postdata['search']);
+                }
+
+                $res=$this->reports_model->update_itemsaleaddcost($options);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['totals']=0;
+                    if (!empty($res['totals'])) {
+                        $mdata['totals']=count($res['totals']);
+                        $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res['totals'], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+
     }
 
     // Count # of records for show in Item Sale Report
@@ -480,21 +511,34 @@ class Analytics extends MY_Controller
     // Change Base Year
     public function itemsales_baseyear() {
         if ($this->isAjax()) {
-            $mdata=array();
-            $error='';
             $postdata=$this->input->post();
-            $contoptions=array(
-                'baseyear'=>(isset($postdata['baseyear']) ? $postdata['baseyear'] : intval(date('Y'))),
-                'limit'=>(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE),
-                'vendor'=>(isset($postdata['vendor']) ? $postdata['vendor'] : ''),
-                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
-                'order_by'=>(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty'),
-            );
-            if (isset($postdata['search']) && !empty($postdata['search'])) {
-                $contoptions['search']=$postdata['search'];
+            $brand = ifset($postdata, 'brand','ALL');
+            $mdata = [];
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $error = '';
+                $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+
+                $contoptions=array(
+                    'baseyear'=>(isset($postdata['baseyear']) ? $postdata['baseyear'] : intval(date('Y'))),
+                    'limit'=>(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE),
+                    'vendor'=>(isset($postdata['vendor']) ? $postdata['vendor'] : ''),
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'order_by'=>(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty'),
+                    'brand' => $brand,
+                    'top_menu' => $top_menu,
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $contoptions['search']=$postdata['search'];
+                }
+                // Try to build content
+                $mdata['content']=$this->_prepare_itemsales($contoptions);
             }
-            // Try to build content
-            $mdata['content']=$this->_prepare_itemsales($contoptions);
             $this->ajaxResponse($mdata, $error);
         }
     }
@@ -507,19 +551,19 @@ class Analytics extends MY_Controller
 
             $year=$postdata['year'];
             $item_id=$postdata['item'];
+            $brand = $postdata['brand'];
             $month=0;
-            $res=$this->reports_model->get_monthsales_itemdetails($month, $year, $item_id);
+            $res=$this->reports_model->get_monthsales_itemdetails($month, $year, $item_id, $brand);
+            $error=$res['msg'];
 
-            if ($res['result']==$this->error_result) {
-                $error=$res['msg'];
-            } else {
+            if ($res['result']==$this->success_result) {
+                $error = '';
                 $options=array(
                     'data'=>$res['data'],
                     'totals'=>$res['totals'],
                     'title'=>$res['title'],
                 );
                 $mdata['content']=$this->load->view('reports/itemdata_details_view', $options, TRUE);
-
                 $mdata['countdata']=count($res['data']);
             }
             $this->ajaxResponse($mdata, $error);
@@ -538,7 +582,7 @@ class Analytics extends MY_Controller
             $totalchk=$this->reports_model->itemsale_change_itemcheck($item_id, $chkres);
             $mdata['totals']=$totalchk;
             if ($totalchk>0) {
-                $itemchk=$this->func->session('itemsaleschk');
+                $itemchk=usersession('itemsaleschk');
                 $options=array(
                     'current_year'=>$postdata['current_year'],
                     'prev_year'=>$postdata['prev_year'],
@@ -546,6 +590,7 @@ class Analytics extends MY_Controller
                     'checked'=>$itemchk,
                     'vendor'=>$postdata['vendor'],
                     'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'brand' => $postdata['brand'],
                 );
                 if (isset($postdata['search']) && !empty($postdata['search'])) {
                     $options['search']=$postdata['search'];
@@ -569,13 +614,13 @@ class Analytics extends MY_Controller
             $error='';
             // Get Item values
             $postdata=$this->input->post();
-            if (!array_key_exists('item', $postdata) || !array_key_exists('year', $postdata)) {
-                $error='Fill all Parameters';
-            } else {
-                $item_id=$postdata['item'];
-                $year=$postdata['year'];
-                $item_cost=$this->reports_model->get_itemimport_cost($item_id, $year);
-                $mdata['editcontent']=$this->load->view('reports/itemsale_imptedit_view', array('cost'=>$item_cost), TRUE);
+            $item_id=ifset($postdata, 'item',0);
+            $year=ifset($postdata,'year',0);
+            $brand = ifset($postdata,'brand');
+            $error='Fill all Parameters';
+            if ($item_id!=0 && $year!=0 && !empty($brand)) {
+                $item_cost=$this->reports_model->get_itemimport_cost($item_id, $year, $brand);
+                $mdata['editcontent']=$this->load->view('reports/itemsale_imptedit_view', array('cost'=>$item_cost,), TRUE);
                 $mdata['savecontent']=$this->load->view('reports/itemsale_imptsave_view', array(), TRUE);
                 $mdata['cancelcontent']=$this->load->view('reports/itemsale_imptcancel_view', array(), TRUE);
             }
@@ -587,27 +632,32 @@ class Analytics extends MY_Controller
     public function itemsalesgetrow() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Empty Brand';
             $postdata=$this->input->post();
             $item_id=$postdata['item'];
             $year=$postdata['year'];
+            $brand = ifset($postdata,'brand');
             $curentyear=$postdata['current_year'];
             $prevyear=$postdata['prev_year'];
             $itemchk=usersession('itemsaleschk');
-            $options=array(
-                'item_id'=>$item_id,
-                'current_year'=>$curentyear,
-                'prev_year'=>$prevyear,
-                'calc_year'=>$year,
-                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
-            );
-            $res=$this->reports_model->itemsale_data($options);
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error='';
-                $data=$res['data'][0];
-                $data['itemchk']=$itemchk;
-                $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
+            if (!empty($brand)) {
+                $options=array(
+                    'item_id'=>$item_id,
+                    'current_year'=>$curentyear,
+                    'prev_year'=>$prevyear,
+                    'calc_year'=>$year,
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'brand' => $brand,
+                );
+                $res=$this->reports_model->itemsale_data($options);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $data=$res['data'][0];
+                    $data['itemchk']=$itemchk;
+                    $data['brand'] = $brand;
+                    $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -617,48 +667,53 @@ class Analytics extends MY_Controller
     public function itemsalessave() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $postdata=$this->input->post();
-            $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
-            $options=array(
-                'item_id'=>$postdata['item'],
-                'current_year'=>$postdata['current_year'],
-                'prev_year'=>$postdata['prev_year'],
-                'calc_year'=>$postdata['calc_year'],
-                'vendor'=>$vendor,
-                'cost'=>$postdata['cost'],
-                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
-            );
-            if (isset($postdata['search']) && !empty($postdata['search'])) {
-                $options['search']=strtoupper($postdata['search']);
-            }
-
-            $res=$this->reports_model->save_itemimport_cost($options);
-            if ($res['result']==$this->error_result) {
+            $brand = ifset($postdata,'brand');
+            $error='Empty Brand';
+            if (!empty($brand)) {
+                $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
+                $options=array(
+                    'item_id'=>$postdata['item'],
+                    'current_year'=>$postdata['current_year'],
+                    'prev_year'=>$postdata['prev_year'],
+                    'calc_year'=>$postdata['calc_year'],
+                    'vendor'=>$vendor,
+                    'cost'=>$postdata['cost'],
+                    'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'brand' => $brand,
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=strtoupper($postdata['search']);
+                }
+                $res=$this->reports_model->save_itemimport_cost($options);
                 $error=$res['msg'];
-            } else {
-                $data=$res['data'];
-                $itemchk=usersession('itemsaleschk');
-                $data['itemchk']=$itemchk;
-                $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
-                $mdata['totals']=count($itemchk);
-                if (count($itemchk)>0) {
-                    $options=array(
-                        'current_year'=>$postdata['current_year'],
-                        'prev_year'=>$postdata['prev_year'],
-                        'calc_year'=>$postdata['calc_year'],
-                        'checked'=>$itemchk,
-                        'vendor'=>$postdata['vendor'],
-                        'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
-                    );
-                    if (isset($postdata['search']) && !empty($postdata['search'])) {
-                        $options['search']=$postdata['search'];
-                    }
-                    $res=$this->reports_model->_get_totalcheck($options);
-                    if (empty($res)) {
-                        $mdata['totals']=0;
-                    } else {
-                        $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data=$res['data'];
+                    $itemchk=usersession('itemsaleschk');
+                    $data['itemchk']=$itemchk;
+                    $data['brand'] = $brand;
+                    $mdata['content']=$this->load->view('reports/itemsales_row_view', $data, TRUE);
+                    $mdata['totals']=count($itemchk);
+                    if (count($itemchk)>0) {
+                        $options=array(
+                            'current_year'=>$postdata['current_year'],
+                            'prev_year'=>$postdata['prev_year'],
+                            'calc_year'=>$postdata['calc_year'],
+                            'checked'=>$itemchk,
+                            'vendor'=>$postdata['vendor'],
+                            'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                            'brand' => $brand,
+                        );
+                        if (isset($postdata['search']) && !empty($postdata['search'])) {
+                            $options['search']=$postdata['search'];
+                        }
+                        $res=$this->reports_model->_get_totalcheck($options);
+                        if (empty($res)) {
+                            $mdata['totals']=0;
+                        } else {
+                            $mdata['totalview']=$this->load->view('reports/itemsales_totals_view', $res, TRUE);
+                        }
                     }
                 }
             }
@@ -680,6 +735,7 @@ class Analytics extends MY_Controller
                 $chkoptions=array(
                     'current_year'=>$postdata['current_year'],
                     'prev_year'=>$postdata['prev_year'],
+                    'brand' => $postdata['brand'],
                 );
                 $this->reports_model->itemsales_checkitem($chkoptions);
                 $itemchk=usersession('itemsaleschk');
@@ -691,6 +747,7 @@ class Analytics extends MY_Controller
                     'checked'=>$itemchk,
                     'vendor'=>$postdata['vendor'],
                     'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'brand' => $postdata['brand'],
                 );
                 if (isset($postdata['search']) && !empty($postdata['search'])) {
                     $options['search']=$postdata['search'];

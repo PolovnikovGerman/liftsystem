@@ -9,7 +9,6 @@ function itemsales_reportinit() {
     // Init Brand
     $(".brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
-        console.log('Brand '+brand);
         var params = new Array();
         params.push({name: 'baseyear', value: $("select.selectrepsoldcalcyear").val()});
         params.push({name:'limit',value:$("#itemsalesperpage").val()});
@@ -84,6 +83,7 @@ function itemsales_reportinit() {
         params.push({name:'search',value:search});
         params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
         params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
+        params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
         // Check Uncheck current page
         var url="/analytics/itemsales_masscheck";
         $.post(url,params, function(response){
@@ -123,7 +123,7 @@ function change_reportbaseyear() {
     params.push({name:'maxval',value:$('#itemsalestotal').val()});
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
-
+    params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
     var url="/analytics/itemsales_baseyear";
     $("#loader").show();
     $.post(url, params, function(response){
@@ -200,7 +200,8 @@ function init_itemsales_content() {
     $("div.itemsalesdatarow").children('div.imptcost').unbind('click').click(function(){
         var item=$(this).parent('div').data('item');
         var year=$("input.calcyear:checked").val();
-        change_importcost(item, year);
+        var brand = $(this).data('brand');
+        change_importcost(item, year, brand);
     });
     $("div.itemsalesdatarow").children('div.itemnumber').each(function(){
         $(this).qtip({
@@ -235,10 +236,12 @@ function init_itemsales_content() {
     })
     // Show popup orders list
     $("div.itemsalesdatarow").children('div.ordqty').unbind('click').click(function(){
-        var item=$(this).parent('div').data('item');
-        var year=$(this).data('year');
+        var params = new Array();
+        params.push({name: 'item', value: $(this).parent('div').data('item')});
+        params.push({name: 'year', value: $(this).data('year')});
+        params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
         var url="/analytics/sales_year_details";
-        $.post(url, {'item': item, 'year': year}, function(response){
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#pageModalLabel").empty().html('Sales Month Details');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
@@ -265,6 +268,7 @@ function init_itemsales_content() {
         params.push({name:'search',value:search});
         params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
         params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
+        params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
         var url="/analytics/itemsales_checkitem";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -283,10 +287,11 @@ function init_itemsales_content() {
     });
 }
 
-function change_importcost(item, year) {
+function change_importcost(item, year, brand) {
     var params=new Array();
     params.push({name: 'item', value: item});
     params.push({name: 'year', value: year});
+    params.push({name: 'brand', value: brand});
     var url="/analytics/itemsalesedit";
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -295,10 +300,10 @@ function change_importcost(item, year) {
             $("div.itemsalesdatarow[data-item='"+item+"']").children('div.imptcog').empty().html(response.data.savecontent);
             $("div.itemsalesdatarow[data-item='"+item+"']").children('div.imptprofit').empty().html(response.data.cancelcontent);
             $("div.itemsalesform_save").unbind('click').click(function(){
-                save_importcost(item, year);
+                save_importcost(item, year, brand);
             });
             $("div.itemsalesform_revert").unbind('click').click(function(){
-                revert_importcost(item, year);
+                revert_importcost(item, year, brand);
             });
         } else {
             show_error(response);
@@ -306,10 +311,11 @@ function change_importcost(item, year) {
     },'json');
 }
 
-function revert_importcost(item, year) {
+function revert_importcost(item, year, brand) {
     var params=new Array();
     params.push({name: 'item', value: item});
     params.push({name: 'year', value: year});
+    params.push({name: 'brand', value: brand});
     params.push({name:'current_year', value: $("input#itemsalecurrentyear").val()});
     params.push({name:'prev_year', value: $("input#itemsaleprevyear").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
@@ -325,7 +331,7 @@ function revert_importcost(item, year) {
 
 }
 
-function save_importcost(item, year) {
+function save_importcost(item, year, brand) {
     var imptcost=parseFloat($("input.itemsalesimptcostval").val());
     var params=new Array();
     var search=$("input.itemsales_searchdata").val();
@@ -337,6 +343,7 @@ function save_importcost(item, year) {
     params.push({name:'search',value:search});
     params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
+    params.push({name: 'brand', value: brand});
     var url="/analytics/itemsalessave";
     $.post(url, params, function(response){
         if (response.errors=='') {

@@ -2071,6 +2071,9 @@ Class Reports_model extends My_Model
         $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor');
         $this->db->where_in('isale.yearsale',array($options['current_year'], $options['prev_year']));
         $this->db->where('isale.qtysale > ',0);
+        if ($options['brand']!='ALL') {
+            $this->db->where('isale.brand', $options['brand']);
+        }
         $data=$this->db->get()->result_array();
         $out_array=array();
         foreach ($data as $row) {
@@ -2144,12 +2147,13 @@ Class Reports_model extends My_Model
     }
 
     // Get Item Import Cost
-    public function get_itemimport_cost($item_id) {
-        $item_table='sb_items';
-        $vendoritem_table='sb_vendor_items';
+    public function get_itemimport_cost($item_id, $year=0, $brand='ALL') {
         $this->db->select('*');
         $this->db->from('ts_itemsold_impts');
         $this->db->where('item_id', $item_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         // $this->db->where('year', $year);
         $res=$this->db->get()->row_array();
         if (isset($res['itemsold_impt_id'])) {
@@ -2165,6 +2169,7 @@ Class Reports_model extends My_Model
         $this->db->select('*');
         $this->db->from('ts_itemsold_impts');
         $this->db->where('item_id', $options['item_id']);
+        $this->db->where('brand',$options['brand']);
         $res=$this->db->get()->row_array();
         $imprcost_id=NULL;
         if (isset($res['itemsold_impt_id'])) {
@@ -2180,6 +2185,7 @@ Class Reports_model extends My_Model
             if (floatval($options['cost'])>0) {
                 $this->db->set('item_id', $options['item_id']);
                 $this->db->set('cost', floatval($options['cost']));
+                $this->db->set('brand', $options['brand']);
                 $this->db->insert('ts_itemsold_impts');
                 if (!$this->db->insert_id()) {
                     $out['msg']='Error During Insert Imprint Cost';
@@ -2673,7 +2679,9 @@ Class Reports_model extends My_Model
                     $this->db->order_by('prevqty','desc');
                     break;
                 case 'cursaved':
-                    $this->db->order_by('savings','desc');
+                    if ($options['brand']!=='ALL') {
+                        $this->db->order_by('savings','desc');
+                    }
                     break;
             }
         }

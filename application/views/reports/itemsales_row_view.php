@@ -16,7 +16,7 @@
 <div class="curcog"><?=$out_cog ?></div>
 <div class="curprofit <?=$profitvalclass ?>"><?= $out_profit ?></div>
 <div class="curprofitperc lastcol <?=$profit_class ?>"><?= (empty($profit_perc) ? '&nbsp;' : $profit_perc . '%') ?></div>
-<div class="imptcost <?=$imptcost==0 ? 'emptyimptcost' : ''?>"><?=$out_imptcost ?></div>
+<div class="imptcost <?=$imptcost==0 ? 'emptyimptcost' : ''?>" data-brand="<?=$brand?>"><?=$out_imptcost ?></div>
 <div class="imptcog"><?=$out_imptcog ?></div>        
 <div class="imptprofit <?=$out_imprpofitclass ?>"><?=$out_imprpofit ?></div>
 <div class="imptprofitproc lastcol <?=$imptprofit_class ?>"><?=(empty($imptprofit_perc) ? '&nbsp;' : $imptprofit_perc . '%') ?></div>
