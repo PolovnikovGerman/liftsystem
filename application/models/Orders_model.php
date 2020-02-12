@@ -547,7 +547,7 @@ Class Orders_model extends MY_Model
 
 
 
-    public function get_checkouts_by_weekday() {
+    public function get_checkouts_by_weekday($brand) {
         $out_array = [];
         /* Add Empty values */
         $out_array['mon'] = ['cnt' => 0, 'sum' => 0.00];
@@ -561,6 +561,9 @@ Class Orders_model extends MY_Model
         $this->db->select('date_format(order_date,\'%w\') as dayweek,count(order_id) as cnt_ord, sum(order_total) as sum_order',FALSE);
         $this->db->from('sb_orders');
         $this->db->where('is_void',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $this->db->group_by('dayweek');
         $res = $this->db->get()->result_array();
 
@@ -604,7 +607,7 @@ Class Orders_model extends MY_Model
         return $out_array;
     }
 
-    public function checkout_reportdata($d_bgn = '', $d_end = '') {
+    public function checkout_reportdata($brand, $d_bgn = '', $d_end = '') {
         if ($d_end == '') {
             $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
         }
@@ -619,6 +622,9 @@ Class Orders_model extends MY_Model
             $this->db->select('min(unix_timestamp(order_date)) as min_date', FALSE);
             $this->db->from('sb_orders');
             $this->db->where('is_void', 0);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
             $res_ar = $this->db->get()->row_array();
             $last_date = $res_ar['min_date'];
         } else {
@@ -685,6 +691,9 @@ Class Orders_model extends MY_Model
             $this->db->from('sb_orders');
             $this->db->where('unix_timestamp(order_date) >= ', $week_bgn);
             $this->db->where('unix_timestamp(order_date) <= ', $week_end);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
             $this->db->group_by('weekday');
             $res = $this->db->get()->result_array();
             foreach ($res as $row) {

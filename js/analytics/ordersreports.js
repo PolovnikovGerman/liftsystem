@@ -1,23 +1,34 @@
 function init_ordersreports() {
     init_reportdata();
+    // Change Brand
+    $("#checkoutreporttopmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#checkoutreportbrand").val(brand);
+        $("#checkoutreporttopmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#checkoutreporttopmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#checkoutreporttopmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        init_checkoutreport();
+    });
+
     $(".blok-reports").unbind('click').click(function () {
         var charttype = $(this).data('charttype');
         build_chart(charttype);
     });
-    /*
-    $("#chartbyday").live('click',function(){
-        showdetails('day');
-    })
-    $("#chartbyweek").live('click',function(){
-        showdetails('week');
-    })
-    */
 }
 
 function init_reportdata() {
     var url='/analytics/checkout_reports_data';
+    var params=new Array();
+    params.push({name: 'brand', value: $("#checkoutreportbrand").val()});
     $("#loader").show();
-    $.post(url, {}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#reportsinfo").empty().html(response.data.content);
             $("#loader").hide();
@@ -168,29 +179,46 @@ function showdetails(type) {
 
 }
 
-function close_details() {
-    $("#question_details_dialog").fadeOut(500);
-    $("#tooltip").remove();
-    $('#mask').hide();
-}
-
-function attempt_report() {
-    var url="/ordersview/attempts_report";
-    $.post(url,{},function(response){
-        if (response.filename!='') {
-            var winname="report";
-
-            var windowWidth = document.documentElement.clientWidth;
-            var windowHeight = document.documentElement.clientHeight;
-
-            var popupHeight = 572;
-            var popupWidth = 695;
-
-            var top = windowHeight/2-popupHeight/2;
-            var left= windowWidth/2-popupWidth/2;
-
-            window.open(response.filename,winname,'width='+popupWidth+',height='+popupHeight+',top='+top+', left='+left+',resizable=no,toolbar=no,menubar=no,status=no,fullscreen=no,directories=no');
-
+function init_checkoutreport() {
+    var params=new Array();
+    params.push({name: 'brand', value: $("#checkoutreportbrand").val()});
+    var url='/analytics/checkout_reports_totals';
+    $("#loader").show();
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#checkout_footerarea").empty().html(response.data.content);
+            init_reportdata();
+        } else {
+            show_error(response);
         }
-    },'json')
+    },'json');
+
 }
+
+
+// function close_details() {
+//     $("#question_details_dialog").fadeOut(500);
+//     $("#tooltip").remove();
+//     $('#mask').hide();
+// }
+//
+// function attempt_report() {
+//     var url="/ordersview/attempts_report";
+//     $.post(url,{},function(response){
+//         if (response.filename!='') {
+//             var winname="report";
+//
+//             var windowWidth = document.documentElement.clientWidth;
+//             var windowHeight = document.documentElement.clientHeight;
+//
+//             var popupHeight = 572;
+//             var popupWidth = 695;
+//
+//             var top = windowHeight/2-popupHeight/2;
+//             var left= windowWidth/2-popupWidth/2;
+//
+//             window.open(response.filename,winname,'width='+popupWidth+',height='+popupHeight+',top='+top+', left='+left+',resizable=no,toolbar=no,menubar=no,status=no,fullscreen=no,directories=no');
+//
+//         }
+//     },'json')
+// }

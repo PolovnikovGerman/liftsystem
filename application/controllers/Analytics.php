@@ -66,7 +66,7 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
-                $content_options['checkoutreportview']=$this->_prepare_checkout_report($brand);
+                $content_options['checkoutreportview']=$this->_prepare_checkout_report($brand, $top_menu);
             }
         }
 
@@ -834,15 +834,37 @@ class Analytics extends MY_Controller
         show_404();
     }
 
+    public function checkout_reports_totals() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $sum_days=$this->orders_model->get_checkouts_by_weekday($brand);
+                /* Load Footer */
+                $mdata['content']=$this->load->view('reports/checkout_footer_view',$sum_days,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function checkout_reports_data() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $mdata['content']='';
-            $this->load->model('orders_model');
-            $datz=$this->orders_model->checkout_reportdata();
-            $mdata['content']=$this->load->view('reports/checkout_reportdata_view',array('tabledat'=>$datz),TRUE);
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $datz=$this->orders_model->checkout_reportdata($brand);
+                $mdata['content']=$this->load->view('reports/checkout_reportdata_view',array('tabledat'=>$datz),TRUE);
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1342,12 +1364,13 @@ class Analytics extends MY_Controller
         return $content;
     }
 
-    private function _prepare_checkout_report() {
+    private function _prepare_checkout_report($brand, $top_menu) {
         /* Get Sums by date */
         $this->load->model('orders_model');
-        $sum_days=$this->orders_model->get_checkouts_by_weekday();
+        $sum_days=$this->orders_model->get_checkouts_by_weekday($brand);
         /* Load Footer */
         $content['footer']=$this->load->view('reports/checkout_footer_view',$sum_days,TRUE);
+        $content['top_menu'] = $top_menu;
         // $content['dialog']=$this->load->view('orders/order_graph_view',array(),TRUE);
         return $this->load->view('reports/checkout_page_view',$content,TRUE);
         // return $content;

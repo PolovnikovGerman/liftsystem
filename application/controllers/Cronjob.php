@@ -37,6 +37,17 @@ Class Cronjob extends CI_Controller
             $this->db->where('itemsold_impt_id', $row['itemsold_impt_id']);
             $this->db->update('ts_itemsold_impts');
         }
+        $this->db->select('order_id, order_num');
+        $this->db->from('sb_orders');
+        $this->db->where('is_void',0);
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('order_id', $row['order_id']);
+            $this->db->update('sb_orders');
+            echo 'Order # '.$row['order_num'].' - '.$webs.PHP_EOL;
+        }
     }
 
 

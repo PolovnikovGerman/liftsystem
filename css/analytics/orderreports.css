@@ -1,7 +1,7 @@
 .content_header {
     clear: both;
     float:left;
-    width:600px;
+    width:900px;
 }
 .graph {
     font-size: 13px;
@@ -49,7 +49,7 @@
 }
 .blok-reports {
     background-color: #ffffff;
-    width: 117px;
+    width: 123px;
     height: 22px;
     float: left;
     margin-right: 8px;

@@ -13,6 +13,10 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="checkoutreportbrand" value="<?=$brand?>"/>
+    <div id="checkoutreporttopmenu">
+        <?=$top_menu?>
+    </div>
 </div>
 <div class="clearfix"></div>
 <div class="table-reports">
@@ -34,11 +38,6 @@
 <div class="table-reports-info" id="reportsinfo">
 
 </div>
-<div class="table-reports-footer">
+<div class="table-reports-footer" id="checkout_footerarea">
     <?= $footer ?>
 </div>
-<!--
-<div id="report_dialog">
-    <?php // $dialog ?>
-</div>
--->

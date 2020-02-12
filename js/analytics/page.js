@@ -9,7 +9,6 @@ $(document).ready(function(){
     })
 });
 function init_page(objid) {
-    console.log('Page '+objid);
     $(".analyticcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='" + objid + "']").addClass('active');
