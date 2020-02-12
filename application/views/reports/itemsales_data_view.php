@@ -19,7 +19,7 @@
         <div class="curcog"><?=$row['out_cog']?></div>
         <div class="curprofit <?=$row['profitvalclass']?>"><?=$row['out_profit']?></div>
         <div class="curprofitperc lastcol <?=$row['profit_class']?>"><?=(empty($row['profit_perc']) ? '&nbsp;' : $row['profit_perc'].'%')?></div>
-        <div class="imptcost <?=$row['imptcost']==0 ? 'emptyimptcost' : ''?>">
+        <div class="imptcost <?=$row['imptcost']==0 ? ($brand=='ALL' ? '' : 'emptyimptcost') : ''?>" data-brand="<?=$brand?>">
             <?=$row['out_imptcost']?>
         </div>
         <div class="imptcog"><?=$row['out_imptcog']?></div>

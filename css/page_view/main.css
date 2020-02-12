@@ -397,10 +397,13 @@ body div {
     font-size: 14px;
     color: #000000;
     margin-right: 6px;
+    margin-top: 8px;
+    margin-left: 10px;
 }
 .brandschoosearea {
     background: #ffffff;
     border: 1px solid #7a7a7a;
+    margin-top: 8px;
 }
 .brandschoosearea > div {
     height: 22px;

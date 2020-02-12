@@ -54,7 +54,11 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldyearview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemsales.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemsales.js'];
-                $content_options['reportitemsoldyearview'] = $this->_prepare_itemsales($brand);
+                $options=[
+                    'brand' => $brand,
+                    'top_menu' => $top_menu,
+                ];
+                $content_options['reportitemsoldyearview'] = $this->_prepare_itemsales($options);
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
@@ -337,18 +341,49 @@ class Analytics extends MY_Controller
     }
 
     // Item Sales - Year
+    public function itemsales_year() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand','ALL');
+            $mdata = [];
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $error = '';
+                $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+                // Prepare new content
+                $contoptions=array(
+                    'baseyear'=>ifset($postdata, 'baseyear', intval(date('Y'))),
+                    'limit'=> ifset($postdata, 'limit', $this->PERPAGE),
+                    'vendor'=> ifset($postdata, 'vendor'),
+                    'vendor_cost'=> ifset($postdata, 'vendor_cost', 'high'),
+                    'order_by'=> ifset($postdata, 'order_by', 'curyearqty'),
+                    'brand' => $brand,
+                    'top_menu' => $top_menu,
+                );
+                if (!empty(ifset($postdata,'search'))) {
+                    $contoptions['search']=$postdata['search'];
+                }
+                $mdata['content'] = $this->_prepare_itemsales($contoptions);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
     // Item Sales page
     public function itemsalesdata() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $postdata=$this->input->post();
-            $limit=(isset($postdata['limit']) ? $postdata['limit'] : $this->PERPAGE);
-            $start=(isset($postdata['offset']) ? $postdata['offset'] : 0);
+            $limit=ifset($postdata, 'limit', $this->PERPAGE);
+            $start=ifset($postdata, 'offset',0);
             $offset=$start*$limit;
-            $orderby=(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty');
-            $vendor=(isset($postdata['vendor']) ? $postdata['vendor'] : '');
-
+            $orderby= ifset($postdata, 'order_by','curyearqty');
+            $vendor=ifset($postdata, 'vendor');
+            $brand = ifset($postdata,'brand','ALL');
             $options=array(
                 'limit'=>$limit,
                 'offset'=>$offset,
@@ -357,27 +392,33 @@ class Analytics extends MY_Controller
                 'current_year'=>$postdata['current_year'],
                 'prev_year'=>$postdata['prev_year'],
                 'calc_year'=>(isset($postdata['calc_year']) ? $postdata['calc_year'] : $postdata['current_year']),
-                'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                'vendor_cost'=>ifset($postdata, 'vendor_cost','high'),
+                'brand' => $brand,
             );
             if (isset($postdata['search']) && !empty($postdata['search'])) {
                 $options['search']=strtoupper($postdata['search']);
             }
             $res=$this->reports_model->itemsale_data($options);
-            if ($res['result']==$this->error_result) {
-                $error=$res['msg'];
-            } else {
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
                 $itemchk=usersession('itemsaleschk');
                 $voptions=array(
                     'data'=>$res['data'],
                     'curyear'=>$postdata['current_year'],
                     'prevyear'=>$postdata['prev_year'],
                     'itemchk'=>$itemchk,
+                    'brand' => $brand,
                 );
                 $mdata['content']=$this->load->view('reports/itemsales_data_view', $voptions, TRUE);
                 $mdata['addcost']=$this->reports_model->get_addcost();
             }
             $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    public function itemsalesaddcost() {
+        
     }
 
     // Count # of records for show in Item Sale Report
@@ -392,6 +433,7 @@ class Analytics extends MY_Controller
                 'prevyear'=>$postdata['prev_year'],
                 'vendor'=>$vendor,
                 'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                'brand' => ifset($postdata, 'brand','ALL'),
             );
             if (isset($postdata['search']) && !empty($postdata['search'])) {
                 $options['search']=strtoupper($postdata['search']);
@@ -1110,11 +1152,8 @@ class Analytics extends MY_Controller
     private function _prepare_itemsales($options=array()) {
         // Get current year
         // $current_year=0
-        if (!isset($options['baseyear'])) {
-            $current_year=0;
-        } else {
-            $current_year=$options['baseyear'];
-        }
+        $brand = ifset($options,'brand','ALL');
+        $current_year = ifset($options,'baseyear',0);
         if ($current_year==0) {
             $curyear=intval(date('Y'));
         } else {
@@ -1140,6 +1179,7 @@ class Analytics extends MY_Controller
             'curentyear'=>$curyear,
             'prevyear'=>$prvyear,
             'vendor'=>$defvenfor,
+            'brand' => $brand,
         );
         if (isset($options['search'])) {
             $cntoptions['search']=strtoupper($options['search']);
@@ -1162,6 +1202,8 @@ class Analytics extends MY_Controller
             'selectyearshow'=>$selectyearcalcview,
             'search'=>(isset($options['search']) ? $options['search'] : ''),
             'vendor_cost'=>(isset($options['vendor_cost']) ? $options['vendor_cost'] : 'high'),
+            'brand' => $brand,
+            'top_menu' => ifset($options,'top_menu'),
         );
 
         $voptions['totals']=0;

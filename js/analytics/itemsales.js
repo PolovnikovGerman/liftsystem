@@ -6,6 +6,34 @@
 
 function itemsales_reportinit() {
     initItemSalesReportPagination();
+    // Init Brand
+    $(".brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        console.log('Brand '+brand);
+        var params = new Array();
+        params.push({name: 'baseyear', value: $("select.selectrepsoldcalcyear").val()});
+        params.push({name:'limit',value:$("#itemsalesperpage").val()});
+        params.push({name:'order_by',value:$("input[name='selectsort']:checked").val()});
+        params.push({name:'search',value: $("input.itemsales_searchdata").val()});
+        params.push({name:'vendor',value:$("input[name='selectvendor']:checked").val()});
+        params.push({name:'maxval',value:$('#itemsalestotal').val()});
+        params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
+        params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
+        params.push({name: 'brand', value: brand});
+        var url = "/analytics/itemsales_year";
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#reportitemsoldyearview").empty().html(response.data.content);
+                itemsales_reportinit();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+
     // Init Management
     $("input[name='selectsort']").unbind('change').change(function(){
         var pagenum=$("input#curpageitemsale").val();
@@ -151,7 +179,7 @@ function pageItemSalereport(page_index) {
     params.push({name:'prev_year', value: $("input#itemsaleprevyear").val()});
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
-
+    params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
     $("#loader").show();
     var url='/analytics/itemsalesdata';
     $.post(url,params,function(response){
@@ -334,6 +362,7 @@ function filter_itemsalereport() {
     params.push({name:'prev_year', value: $("input#itemsaleprevyear").val()});
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
     params.push({name:'vendor_cost', value: $("select.vendorcostcalcselect").val()});
+    params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
     $("#loader").show();
     var url='/analytics/itemsalessearch';
     $.post(url, params, function(response){
@@ -362,7 +391,8 @@ function saveitemsold_addcost() {
     params.push({name:'current_year', value: $("input#itemsalecurrentyear").val()});
     params.push({name:'prev_year', value: $("input#itemsaleprevyear").val()});
     params.push({name:'calc_year', value: $("input[name='calcyear']:checked").val()});
-    var url="/reports/itemsalesaddcost";
+    params.push({name: 'brand', value: $("#itemsalesreportbrand").val()});
+    var url="/analytics/itemsalesaddcost";
     $.post(url,params, function(response){
         if (response.errors=='') {
             if (parseInt(response.data.totals)==0) {

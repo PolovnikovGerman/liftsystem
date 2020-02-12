@@ -101,3 +101,5 @@
     </div>
     <div class="itemsalesreportdata"></div>
 </div>
+<input type="hidden" id="itemsalesreportbrand" value="<?=$brand?>"/>
+<?=$top_menu?>

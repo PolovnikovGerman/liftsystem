@@ -2028,6 +2028,7 @@ Class Reports_model extends My_Model
 
     // Count
     public function itemsales_totals($options) {
+        $brand = ifset($options,'brand','ALL');
         $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
         if (isset($options['vendor_cost']) && $options['vendor_cost']=='avg') {
@@ -2053,6 +2054,9 @@ Class Reports_model extends My_Model
         }
         $this->db->where_in('isale.yearsale',array($options['curentyear'], $options['prevyear']));
         $this->db->where('isale.qtysale > ',0);
+        if ($brand!='ALL') {
+            $this->db->where('isale.brand', $brand);
+        }
         $data=$this->db->get()->row_array();
         return $data['cnt'];
     }
@@ -2114,13 +2118,17 @@ Class Reports_model extends My_Model
             $row['savings_class']='';
             // $row['imptprofit_class']=$row['imptprofit_perc']=
             // Get imptcost
-            $this->db->select('cost');
-            $this->db->from('ts_itemsold_impts');
-            $this->db->where('item_id', $row['item_id']);
-            $imprcostdata=$this->db->get()->row_array();
-            if (isset($imprcostdata['cost']) && floatval($imprcostdata['cost'])>0) {
-                $row['imptcost']=floatval($imprcostdata['cost']);
-                $row['out_imptcost']=MoneyOutput($imprcostdata['cost'],3);
+            if ($options['brand']=='ALL') {
+                $row['ipcog']=0; // Temporary
+            } else {
+                $this->db->select('cost');
+                $this->db->from('ts_itemsold_impts');
+                $this->db->where('item_id', $row['item_id']);
+                $imprcostdata=$this->db->get()->row_array();
+                if (isset($imprcostdata['cost']) && floatval($imprcostdata['cost'])>0) {
+                    $row['imptcost']=floatval($imprcostdata['cost']);
+                    $row['out_imptcost']=MoneyOutput($imprcostdata['cost'],3);
+                }
             }
             if ($row['ipcog']>0) {
                 $row['out_imptcog']=MoneyOutput($row['ipcog'],0);
@@ -2583,18 +2591,20 @@ Class Reports_model extends My_Model
         $vendoritem_table='sb_vendor_items';
         $addcost=$this->get_addcost();
         // Prepare Left select with Impt Data
-        $imptsql="select i.item_id, i.cost, (i.cost+{$addcost})*v.qtysale as ipcog,";
-        $imptsql.="v.revenue-(i.cost+{$addcost})*v.qtysale-v.shipsale as iprofit,";
-        $imptsql.="(v.revenue-(i.cost+{$addcost})*v.qtysale-v.shipsale)-(v.revenue-v.qtysale*vi.vendor_item_cost-v.shipsale) as savings ";
-        $imptsql.='from ts_itemsold_impts i ';
-        if (isset($options['vendor_cost']) && $options['vendor_cost']=='avg') {
-            $imptsql.='join v_itemcogsales v on v.item_id=i.item_id ';
-        } else {
-            $imptsql.='join v_itemsales v on v.item_id=i.item_id ';
+        if ($options['brand']!='ALL') {
+            $imptsql="select i.item_id, i.cost, (i.cost+{$addcost})*v.qtysale as ipcog,";
+            $imptsql.="v.revenue-(i.cost+{$addcost})*v.qtysale-v.shipsale as iprofit,";
+            $imptsql.="(v.revenue-(i.cost+{$addcost})*v.qtysale-v.shipsale)-(v.revenue-v.qtysale*vi.vendor_item_cost-v.shipsale) as savings ";
+            $imptsql.='from ts_itemsold_impts i ';
+            if (isset($options['vendor_cost']) && $options['vendor_cost']=='avg') {
+                $imptsql.='join v_itemcogsales v on v.item_id=i.item_id ';
+            } else {
+                $imptsql.='join v_itemsales v on v.item_id=i.item_id ';
+            }
+            $imptsql.="join {$item_table} itsp on itsp.item_id=i.item_id ";
+            $imptsql.="join {$vendoritem_table} vi on vi.vendor_item_id=itsp.vendor_item_id ";
+            $imptsql.="where v.yearsale={$options['calc_year']} and coalesce(i.cost,0)!=0 and v.brand='{$options['brand']}' and i.brand='{$options['brand']}'";
         }
-        $imptsql.="join {$item_table} itsp on itsp.item_id=i.item_id ";
-        $imptsql.="join {$vendoritem_table} vi on vi.vendor_item_id=itsp.vendor_item_id ";
-        $imptsql.="where v.yearsale={$options['calc_year']} and coalesce(i.cost,0)!=0 ";
         // Try to select
         $this->db->select('i.item_id, i.item_number, i.item_name, v.vendor_name, vi.vendor_item_cost as cost, vi.vendor_item_id');
         // Current year yeas qty
@@ -2602,8 +2612,10 @@ Class Reports_model extends My_Model
         $this->db->select('coalesce(salecur.shipsale, 0) as curshipsale, coalesce(salecur.ordsale,0) as curordsale',FALSE);
         $this->db->select('coalesce(saleprev.qtysale, 0) as prevqty, coalesce(saleprev.revenue,0) as prevrevenue',FALSE);
         $this->db->select('coalesce(saleprev.shipsale, 0) as prevshipsale, coalesce(saleprev.ordsale,0) as prevordsale',FALSE);
-        $this->db->select('coalesce(impt.cost,0) as imptcost, coalesce(impt.savings,-9999999999) as savings',FALSE);
-        $this->db->select('coalesce(impt.iprofit,0) as iprofit, coalesce(impt.ipcog,0) as ipcog',FALSE);
+        if ($options['brand']!='ALL') {
+            $this->db->select('coalesce(impt.cost,0) as imptcost, coalesce(impt.savings,-9999999999) as savings',FALSE);
+            $this->db->select('coalesce(impt.iprofit,0) as iprofit, coalesce(impt.ipcog,0) as ipcog',FALSE);
+        }
         if (isset($options['vendor_cost']) && $options['vendor_cost']=='avg') {
             $this->db->select('coalesce(salecur.cogsale,0) as curcog, coalesce(saleprev.cogsale,0) as prevcog',FALSE);
         }
@@ -2611,13 +2623,25 @@ Class Reports_model extends My_Model
         $this->db->join("{$vendoritem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
         $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor');
         if (isset($options['vendor_cost']) && $options['vendor_cost']=='avg') {
-            $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['current_year']}) salecur", 'salecur.item_id=i.item_id','left');
-            $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['prev_year']}) saleprev", 'saleprev.item_id=i.item_id','left');
+            if ($options['brand']=='ALL') {
+                $this->db->join("(select item_id, sum(qtysale) as qtysale, sum(revenue) as revenue, sum(shipsale) as shipsale, sum(ordsale) as ordsale, sum(cogsale) as cogsale from v_itemsales where yearsale={$options['current_year']} group by item_id) salecur", 'salecur.item_id=i.item_id','left');
+                $this->db->join("(select item_id, sum(qtysale) as qtysale, sum(revenue) as revenue, sum(shipsale) as shipsale, sum(ordsale) as ordsale, sum(cogsale) as cogsale from v_itemsales where yearsale={$options['prev_year']} group by item_id) saleprev", 'saleprev.item_id=i.item_id','left');
+            } else {
+                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['current_year']} and brand='{$options['brand']}') salecur", 'salecur.item_id=i.item_id','left');
+                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['prev_year']} and brand='{$options['brand']}) saleprev", 'saleprev.item_id=i.item_id','left');
+            }
         } else {
-            $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale from v_itemsales where yearsale={$options['current_year']}) salecur", 'salecur.item_id=i.item_id','left');
-            $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale from v_itemsales where yearsale={$options['prev_year']}) saleprev", 'saleprev.item_id=i.item_id','left');
+            if ($options['brand']=='ALL') {
+                $this->db->join("(select item_id, sum(qtysale) as qtysale, sum(revenue) as revenue, sum(shipsale) as shipsale, sum(ordsale) as ordsale from v_itemsales where yearsale={$options['current_year']} group by item_id) salecur", 'salecur.item_id=i.item_id','left');
+                $this->db->join("(select item_id, sum(qtysale) as qtysale, sum(revenue) as revenue, sum(shipsale) as shipsale, sum(ordsale) as ordsale from v_itemsales where yearsale={$options['prev_year']} group by item_id) saleprev", 'saleprev.item_id=i.item_id','left');
+            } else {
+                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale from v_itemsales where yearsale={$options['current_year']} and brand='{$options['brand']}') salecur", 'salecur.item_id=i.item_id','left');
+                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale from v_itemsales where yearsale={$options['prev_year']} and brand='{$options['brand']}') saleprev", 'saleprev.item_id=i.item_id','left');
+            }
         }
-        $this->db->join("({$imptsql}) impt",'impt.item_id=i.item_id','left');
+        if ($options['brand']!='ALL') {
+            $this->db->join("({$imptsql}) impt",'impt.item_id=i.item_id','left');
+        }
         if (isset($options['vendor']) && !empty($options['vendor'])) {
             if ($options['vendor']=='other') {
                 $vendexclude=$this->config->item('report_vendors');
@@ -2722,11 +2746,11 @@ Class Reports_model extends My_Model
             $row['profit']=$profit;
             $row['savings']=$this->empty_show;
             $row['imptprofit_perc']=$row['out_imprpofitclass']=$row['imptprofit_class']='';
-
+            if ($options['brand']=='ALL') {
+                $row['imptcost']=0;
+            }
             if ($row['imptcost']>0) {
-                // $imptcost=$row['imptcost'];
                 $iprofit_perc=$iprofit_class='';
-                // $imptcog=$row['ipcog'];
                 $iprofit=$row['iprofit'];
                 if ($options['calc_year']==$options['current_year']) {
                     if ($row['currevenue']!=0) {

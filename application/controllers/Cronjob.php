@@ -17,16 +17,25 @@ Class Cronjob extends CI_Controller
 
     public function order_add_brand() {
         $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
         $this->db->select('order_id, order_num');
         $this->db->from('ts_orders');
         $res = $this->db->get()->result_array();
-        $this->load->helper('array_helper');
         foreach ($res as $row) {
             $webs = random_element($brands);
             $this->db->set('brand', $webs);
             $this->db->where('order_id', $row['order_id']);
             $this->db->update('ts_orders');
             echo 'Order # '.$row['order_num'].' - '.$webs.PHP_EOL;
+        }
+        $this->db->select('itemsold_impt_id');
+        $this->db->from('ts_itemsold_impts');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('itemsold_impt_id', $row['itemsold_impt_id']);
+            $this->db->update('ts_itemsold_impts');
         }
     }
 
