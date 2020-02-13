@@ -173,6 +173,8 @@ function show_timesearchweek() {
 
 function timesearch_customrange() {
     $("#datarangeview").css('visibility','visible');
+    $("#dbgn_timesearch").val('');
+    $("#dend_timesearch").val('');
 }
 /*
 function showgraph(obj) {

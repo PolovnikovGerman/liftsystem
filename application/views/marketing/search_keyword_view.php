@@ -6,13 +6,13 @@
             <input type="radio" name="keywordsearchradio" id="month_keywords" value="thismonth"/> This Month
             <input type="radio" name="keywordsearchradio" id="custom_keywords" value="custom"/> Custom Range:
         </div>
-        <div class="select_custom_period" id="datarangeview">
+        <div class="select_custom_period" id="datarangeview_keywords">
             <div>
                 <input type="text" class="datesearchinpt" readonly id="dbgn_keywords"/>
                 <span> to </span>
                 <input type="text" class="datesearchinpt" readonly id="dend_keywords"/>
             </div>
-            <div class="customsearchbtn" id="showcustomrange">
+            <div class="customsearchbtn" id="showcustomrange_keywords">
                 <img src="/img/marketing/show_customrange.png"/>
             </div>
         </div>

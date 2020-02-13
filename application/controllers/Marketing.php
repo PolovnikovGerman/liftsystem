@@ -130,6 +130,56 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    public function searchkeyworddata() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $period = ifset($postdata, 'period');
+            $show_result = ifset($postdata, 'result');
+            $brand = ifset($postdata,'brand');
+            $error = 'Empty Parameters';
+            if (!empty($period) && !empty($show_result) && !empty($brand)) {
+                $error='Unknown Period';
+                if (in_array($period,['today','week','month','custom'])) {
+                    $error = '';
+                    switch ($period) {
+                        case 'custom':
+                            $d_bgn=ifset($postdata, 'd_bgn');
+                            if (!empty($d_bgn)) {
+                                $d_bgn=strtotime($d_bgn.' 00:00:00');
+                            }
+                            $d_end=ifset($postdata, 'd_end');
+                            if (!empty($d_end)) {
+                                $d_end=strtotime($d_end.' 23:59:59');
+                            }
+                            break;
+                        case 'today' :
+                            $d_bgn=time();
+                            $d_end=time();
+                            break;
+                        case 'week' :
+                            $dates = getDatesByWeek(date('W'),date('Y'));
+                            $d_bgn = $dates['start_week'];
+                            $d_end = $dates['end_week'];
+                            break;
+                        case 'month':
+                            $curtime=date('Y-m-').'01 00:00:00';
+                            $d_bgn=strtotime($curtime);
+                            $curtime=date('Y-m-t').' 23:59:59';
+                            $d_end=strtotime($curtime);
+                            break;
+                    }
+                    $this->load->model('searchresults_model');
+                    $data=$this->searchresults_model->get_search_bykeywords($brand, $d_bgn,$d_end,$show_result);
+                    $mdata['num_cols']=ceil(count($data)/20);
+                    $mdata['content']=$this->load->view('marketing/searchkeyword_dat_view',['dat'=> $data],TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_searchbytime($brand, $top_menu) {
         $options = [
             'brand' => $brand,

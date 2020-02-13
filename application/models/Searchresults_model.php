@@ -180,4 +180,59 @@ class Searchresults_model extends My_Model
         }
         return $out_array;
     }
+
+    public function get_search_bykeywords($brand, $d_bgn, $d_end, $show_result) {
+        /* Empty D-END */
+        if ($d_end=='') {
+            $this->db->select('max(search_time) as max_time');
+            $this->db->from('sb_search_results');
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $res=$this->db->get()->row_array();
+            if (isset($res['max_time'])) {
+                $max_time=$res['max_time'];
+                $max_time=strtotime($max_time);
+            } else {
+                $max_time=time();
+            }
+            $d_end=strtotime(date('Y-m-d',$max_time).' 23:59:59');
+        } else {
+            $d_end=strtotime(date('Y-m-d',$d_end).' 23:59:59');
+        }
+
+        if ($d_bgn=='') {
+            $this->db->select('min(search_time) as min_time');
+            $this->db->from('sb_search_results');
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $res=$this->db->get()->row_array();
+            if (isset($res['min_time'])) {
+                $min_time=$res['min_time'];
+                $min_time=strtotime($min_time);
+            } else {
+                $min_time=time();
+            }
+            $d_bgn=strtotime(date('Y-m-d',$min_time).' 00:00:00');
+        } else {
+            $d_bgn=strtotime(date('Y-m-d',$d_bgn).' 00:00:00');
+        }
+        $this->db->select('search_text, search_result, count(*) as cnt');
+        $this->db->from('sb_search_results');
+        $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
+        $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        if ($show_result==0) {
+            $this->db->where('search_result',0);
+        } elseif ($show_result==1) {
+            $this->db->where('search_result',1);
+        }
+        $this->db->group_by('search_text, search_result');
+        $this->db->order_by('cnt desc');
+        $res_ar=$this->db->get()->result_array();
+        return $res_ar;
+    }
 }
