@@ -30,13 +30,26 @@ class Marketing extends MY_Controller
         $head = [];
         $head['title'] = 'Marketing';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+
+        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+        if (count($brands)==0) {
+            redirect('/');
+        }
+        $brand = $brands[0]['brand'];
+        $top_options = [
+            'brands' => $brands,
+            'active' => $brand,
+        ];
+
+        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#searchestimeview') {
                 // Search results by time
                 $head['styles'][]=array('style'=>'/css/marketing/searchestimeview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchestimeview.js');
-                $content_options['searchestimeview'] =  ''; // $this->_prepare_task_view();
+                $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand, $top_menu);
             } elseif ($row['item_link']=='#searcheswordview') {
                 // Search Results by Keywords
                 // $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
@@ -70,5 +83,13 @@ class Marketing extends MY_Controller
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
+    }
+
+    private function _prepare_searchbytime($brand, $top_menu) {
+        $options = [
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        return $this->load->view('marketing/search_time_view', $options,TRUE);
     }
 }

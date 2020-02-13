@@ -7,6 +7,11 @@
         </div>
     </div>
     <div class="maincontent_view">
+        <?php foreach ($menu as $item) { ?>
+            <?php if (isset($taskview)) { ?>
+                <div class="marketingcontentarea" id="<?=str_replace('#','', $item['item_link'])?>" style="display: none;"><?=$test?></div>
+            <?php } ?>
+        <?php } ?>
     </div>
 </div>
 
