@@ -21,6 +21,28 @@ function init_searchtime_content() {
         autoclose: true,
         todayHighlight: true
     });
+    // Change Brand
+    $("#searchtimebrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#searchtimebrand").val(brand);
+        $("#searchtimebrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#searchtimebrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#searchtimebrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        if ($("#week").prop('checked')==true) {
+            show_thisweek();
+        } else if ($("#month").prop('checked')==true) {
+            show_thismonth();
+        } else {
+            show_custom();
+        }
+    });
 }
 
 
