@@ -72,6 +72,15 @@ input.datesearchinpt {
     width: 100%;
     overflow-x: hidden;
 }
+.searchtime_dataconatiner .datacontainer_content .datarow.emptyresults {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    color: #ff0000;
+    width: 937px;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
 .searchtime_dataconatiner .datacontainer_content .datarow > div {
     height: 22px;
     line-height: 22px;

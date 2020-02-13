@@ -117,7 +117,7 @@ class Marketing extends MY_Controller
                         }
                         $d_end=ifset($postdata,'d_end','');
                         if (!empty($d_end)) {
-                            $d_end=strtotime(date('Y-m-d').' 23-59-59');
+                            $d_end=strtotime($d_end. ' 23:59:59');
                         }
                     }
                     $this->load->model('searchresults_model');
