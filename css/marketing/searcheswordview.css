@@ -1,0 +1,47 @@
+.searchkeywords_content {
+    clear: both;
+    margin-left: 10px;
+    width: 1003px;
+}
+.searchkeywords_content input {
+    font-size: 13px;
+    font-family: arial, verdana, sans-serif;
+}
+.searchckeywords_head {
+    clear: both;
+    width: 100%;
+}
+.searchckeywords_head > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searchckeywords_head .select_timesearsch {
+    margin-left: 5px;
+    width: 360px;
+}
+.searchckeywords_head .select_custom_period {
+    visibility: hidden;
+    margin-left: 10px;
+}
+.searchckeywords_head .select_custom_period > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searchckeywords_head input.datesearchinpt {
+    width: 75px;
+    margin-right: 10px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+}
+.searchckeywords_head .select_custom_period .customsearchbtn {
+    cursor: pointer;
+}
+.searchckeywords_head .display-results {
+    margin-left: 17px;
+}
+.searchkeyword_dataconatiner {
+    clear: both;
+    width: 100%;
+    margin-top: 10px;
+}

@@ -10,6 +10,9 @@
         <?php if (isset($searchestimeview)) { ?>
             <div class="marketingcontentarea" id="searchestimeview" style="display: none;"><?= $searchestimeview ?></div>
         <?php } ?>
+        <?php if (isset($searcheswordview)) { ?>
+            <div class="marketingcontentarea" id="searcheswordview" style="display: none"><?=$searcheswordview?></div>
+        <?php } ?>
     </div>
 </div>
 

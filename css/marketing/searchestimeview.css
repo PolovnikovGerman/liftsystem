@@ -29,7 +29,7 @@
 .searhctime_head .select_custom_period .customsearchbtn {
     cursor: pointer;
 }
-input.datesearchinpt {
+.searhctime_head input.datesearchinpt {
     width: 75px;
     margin-right: 10px;
     height: 20px;

@@ -52,9 +52,9 @@ class Marketing extends MY_Controller
                 $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand, $top_menu);
             } elseif ($row['item_link']=='#searcheswordview') {
                 // Search Results by Keywords
-                // $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
-                // $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
-                $content_options['searcheswordview'] = ''; // $this->_prepare_orderlist_view();
+                $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
+                $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand, $top_menu);
             } elseif ($row['item_link']=='#searchesipadrview') {
                 // Search results by IP
                 // $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
@@ -136,5 +136,14 @@ class Marketing extends MY_Controller
             'top_menu' => $top_menu,
         ];
         return $this->load->view('marketing/search_time_view', $options,TRUE);
+    }
+
+    private function _prepare_searchbywords($brand, $top_menu) {
+        $options = [
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        // searchkeyword_view
+        return $this->load->view('marketing/search_keyword_view', $options,TRUE);
     }
 }
