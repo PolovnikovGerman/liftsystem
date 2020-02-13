@@ -255,7 +255,6 @@ Class Menuitems_model extends MY_Model
                 ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
                 ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
             ];
-
         }
         return $brands;
     }
