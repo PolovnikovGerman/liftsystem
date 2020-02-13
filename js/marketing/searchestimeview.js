@@ -1,4 +1,4 @@
-$(document).ready(function(){
+function init_searchtime_content() {
     $("#f_btn1").attr('disabled',"disabled");
     $("#f_btn2").attr('disabled',"disabled");
     $("#alltime").attr('checked','cheked');
@@ -25,7 +25,7 @@ $(document).ready(function(){
         $('#report_dialog').hide();
         $("#tooltip").remove();
     });
-})
+}
 
 function showgraph(obj) {
     var weekday=obj.id.substr(3);

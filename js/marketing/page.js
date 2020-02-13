@@ -13,9 +13,9 @@ function init_page(objid) {
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
-        case 'orderlist':
-            $("#orderlist").show();
-            init_orders();
+        case 'searchestimeview':
+            $("#searchestimeview").show();
+            init_searchtime_content();
             break;
         // case 'requestlist':
         //     $("#requestlist").show();

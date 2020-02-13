@@ -20,7 +20,7 @@
                 </button>
             </div>
             <div style="float: left; width: 53px; padding-top: 2px; margin-left: 5px;">
-                <img src="/img/show_customrange.png" id="showcustomrange"/>
+                <img src="/img/marketing/show_customrange.png" id="showcustomrange"/>
             </div>
         </div>
     </div>
