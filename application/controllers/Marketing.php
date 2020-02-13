@@ -79,6 +79,10 @@ class Marketing extends MY_Controller
         $head['scripts'][] = array('src' => '/js/marketing/page.js');
         $head['styles'][] = array('style' => '/css/marketing/marketpage.css');
         // Utils
+        // Datepicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
@@ -94,76 +98,34 @@ class Marketing extends MY_Controller
             $error = 'Empty Search Parameter';
 
             if (!empty($period) && !empty($brand)) {
-                if ($period=='week') {
-                    $dates = getDatesByWeek(date('W'),date('Y'));
-                    $d_bgn = $dates['start_week'];
-                    $d_end = $dates['end_week'];
+                $error = 'Unknown period';
+                if (in_array($period,['week','month','custom'])) {
+                    $error = '';
+                    if ($period=='week') {
+                        $dates = getDatesByWeek(date('W'),date('Y'));
+                        $d_bgn = $dates['start_week'];
+                        $d_end = $dates['end_week'];
+                    } elseif ($period=='month') {
+                        $curtime=date('Y-m-').'01 00:00:00';
+                        $d_bgn=strtotime($curtime);
+                        $curtime=date('Y-m-t').' 23:59:59';
+                        $d_end=strtotime($curtime);
+                    } else {
+                        $d_bgn=ifset($postdata,'d_bgn','');
+                        if (!empty($d_bgn)) {
+                            $d_bgn=strtotime($d_bgn);
+                        }
+                        $d_end=ifset($postdata,'d_end','');
+                        if (!empty($d_end)) {
+                            $d_end=strtotime(date('Y-m-d').' 23-59-59');
+                        }
+                    }
+                    $this->load->model('searchresults_model');
+                    $data=$this->searchresults_model->get_search_bytime($brand, $d_bgn,$d_end);
+                    $mdata['content']=$this->load->view('marketing/searchtime_dat_view',['dat' => $data],TRUE);
                 }
-
-                $this->load->model('searchresults_model');
-                $data=$this->searchresults_model->get_search_bytime($d_bgn,$d_end);
-                $content=$this->load->view('search/searchtime_dat_view',$datz,TRUE);
-
-
             }
             $this->ajaxResponse($mdata, $error);
-
-//            switch ($period) {
-//                case 'alltime':
-//                    $d_bgn='';
-//                    $d_end='';
-//                    break;
-//                case 'week':
-//                    $curtime=date('Y-m-d').' 00:00:00';
-//                    $curtime=strtotime($curtime);
-//                    $curweekday=date('w');
-//                    if ($curweekday==0) {
-//                        $d_bgn=$curtime-(6*24*60*60);
-//                        $d_end=$curtime+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==1) {
-//                        $d_bgn=$curtime;
-//                        $d_end=$curtime+(6*24*60*60)+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==2) {
-//                        $d_bgn=$curtime-(1*24*60*60);
-//                        $d_end=$curtime+(5*24*60*60)+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==3) {
-//                        $d_bgn=$curtime-(2*24*60*60);
-//                        $d_end=$curtime+(4*24*60*60)+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==4) {
-//                        $d_bgn=$curtime-(3*24*60*60);
-//                        $d_end=$curtime+(3*24*60*60)+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==5) {
-//                        $d_bgn=$curtime-(4*24*60*60);
-//                        $d_end=$curtime+(2*24*60*60)+(23*60*60+59*60+59);
-//                    } elseif ($curweekday==6) {
-//                        $d_bgn=$curtime-(5*24*60*60);
-//                        $d_end=$curtime+(1*24*60*60)+(23*60*60+59*60+59);
-//                    }
-//                    break;
-//                case 'month':
-//                    $curtime=date('Y-m-').'01 00:00:00';
-//                    $d_bgn=strtotime($curtime);
-//                    $curtime=date('Y-m-t').' 23:59:59';
-//                    $d_end=strtotime($curtime);
-//                    break;
-//                case 'custom':
-//                    $d_bgn=$this->input->post('d_bgn');
-//                    if ($d_bgn!='') {
-//                        $d_bgn=$d_bgn.' 00:00:00';
-//                        $d_bgn=strtotime($d_bgn);
-//                    }
-//                    $d_end=$this->input->post('d_end');
-//                    if ($d_end!='') {
-//                        $d_end=$d_end.' 23:59:59';
-//                        $d_end=strtotime($d_end);
-//                    }
-//                    break;
-//            }
-//
-//            $datz=array();
-//            $datz['dat']=$this->msearch->get_search_bytime($d_bgn,$d_end);
-//            $content=$this->load->view('search/searchtime_dat_view',$datz,TRUE);
-//            echo json_encode(array('content'=>$content));
         }
         show_404();
     }

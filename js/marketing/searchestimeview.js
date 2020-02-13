@@ -1,22 +1,15 @@
 function init_searchtime_content() {
     show_thisweek();
-    $("#f_btn1").attr('disabled',"disabled");
-    $("#f_btn2").attr('disabled',"disabled");
-    // $("#alltime").attr('checked','cheked');
-    /* Live click functions */
-    // $("#alltime").unbind('click').click(function(){
-    //     show_alltime();
-    // });
     $("#week").unbind('click').click(function(){
         show_thisweek();
     });
-    $("#month").live('click',function(){
+    $("#month").unbind('click').click(function(){
         show_thismonth();
     })
-    $("#custom").live('click',function(){
+    $("#custom").unbind('click').click(function(){
         custom_range();
     })
-    $("#showcustomrange").live('click',function(){
+    $("#showcustomrange").unbind('click').click(function(){
         show_custom();
     })
     // calendar_init();
@@ -32,61 +25,68 @@ function init_searchtime_content() {
 
 
 function show_custom() {
-    var avail=$("#custom").prop('checked');
-    if (avail==true) {
-        var d_bgn=$("#d_bgn").val();
-        var d_end=$("#d_end").val();
-        if (d_end=='' && d_bgn=='') {
-            alert('Please enter custom date range');
-        } else {
-            /* Transform date */
-            if (d_bgn!='') {
-                d_bgn=d_bgn.substr(6)+'-'+d_bgn.substr(0,2)+'-'+d_bgn.substr(3,2);
+    var d_bgn = $("#d_bgn").val();
+    var d_end = $("#d_end").val();
+    if (d_end == '' && d_bgn == '') {
+        alert('Please enter custom date range');
+    } else {
+        var params = new Array();
+        params.push({name: 'period', value: 'custom'});
+        params.push({name: 'd_bgn', value: d_bgn});
+        params.push({name: 'd_end', value: d_end});
+        params.push({name: 'brand', value: $("#searchtimebrand").val()});
+        var url='/marketing/searchtimedata';
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#timesearchresultcontent").empty().html(response.data.content);
+                // var heigh = $("#tabcontent").css('height');
+                // heigh = heigh.replace('px', '');
+                // heigh = parseInt(heigh);
+                // if (heigh < 550) {
+                //     $("#tabcontent").css('overflow-y', 'hidden');
+                //     $(".table-dat-row").css('width', '992');
+                //     $(".last_column").css('width', '135');
+                // } else {
+                //     $(".table-dat-row").css('width', '970');
+                //     $(".last_column").css('width', '112');
+                //     $("#tabcontent").css('overflow-y', 'auto');
+                // }
+                $("#loader").hide();
+            } else {
+                show_error(response);
             }
-            if (d_end!='') {
-                d_end=d_end.substr(6)+'-'+d_end.substr(0,2)+'-'+d_end.substr(3,2);
-            }
-            var url='/searchresults/timedata';
-            $.post(url, {'period':'custom','d_bgn':d_bgn,'d_end':d_end}, function(data){
-                $("#tabcontent").empty().html(data.content);
-                var heigh=$("#tabcontent").css('height');
-                heigh=heigh.replace('px','');
-                heigh=parseInt(heigh);
-                if (heigh<550) {
-                    $("#tabcontent").css('overflow-y','hidden');
-                    $(".table-dat-row").css('width','992');
-                    $(".last_column").css('width','135');
-                } else {
-                    $(".table-dat-row").css('width','970');
-                    $(".last_column").css('width','112');
-                    $("#tabcontent").css('overflow-y','auto');
-                }
+        }, 'json');
 
-            }, 'json');
-
-        }
     }
 
 }
 
 
 function show_thismonth() {
-    $("#f_btn1").attr("disabled",'disabled');
-    $("#f_btn2").attr('disabled','disabled');
-    $("#d_bgn").val('');
-    $("#d_end").val('');
-    var url='/searchresults/timedata';
-    $.post(url, {'period':'month'}, function(data){
-        $("#tabcontent").empty().html(data.content);
-        var heigh=$("#tabcontent").css('height');
-        heigh=heigh.replace('px','');
-        heigh=parseInt(heigh);
-        if (heigh<550) {
-            $("#tabcontent").css('overflow','');
-            $(".table-dat-row").css('width','992');
-            $(".last_column").css('width','135');
+    $("#datarangeview").css('visibility','hidden');
+    var url='/marketing/searchtimedata';
+    var params = new Array();
+    params.push({name: 'period', value: 'month'});
+    params.push({name: 'brand', value: $("#searchtimebrand").val()});
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#timesearchresultcontent").empty().html(response.data.content);
+            // var heigh=$("#tabcontent").css('height');
+            // heigh=heigh.replace('px','');
+            // heigh=parseInt(heigh);
+            // if (heigh<550) {
+            //     $("#tabcontent").css('overflow','');
+            //     $(".table-dat-row").css('width','992');
+            //     $(".last_column").css('width','135');
+            // } else {
+            //     $("#tabcontent").css('overflow-y','auto');
+            // }
+            $("#loader").hide();
         } else {
-            $("#tabcontent").css('overflow-y','auto');
+            $("#loader").hide();
+            show_error(response);
         }
 
     }, 'json');
@@ -94,24 +94,25 @@ function show_thismonth() {
 
 function show_thisweek() {
     // Hide Custom range
-    $("#datarangeview").hide();
+    $("#datarangeview").css('visibility','hidden');
     var url='/marketing/searchtimedata';
     var params = new Array();
     params.push({name: 'period', value: 'week'});
+    params.push({name: 'brand', value: $("#searchtimebrand").val()});
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#tabcontent").empty().html(data.content);
-            var heigh=$("#tabcontent").css('height');
-            heigh=heigh.replace('px','');
-            heigh=parseInt(heigh);
-            if (heigh<550) {
-                $("#tabcontent").css('overflow','');
-                $(".table-dat-row").css('width','992');
-                $(".last_column").css('width','135');
-            } else {
-                $("#tabcontent").css('overflow-y','auto');
-            }
+            $("#timesearchresultcontent").empty().html(response.data.content);
+            // var heigh=$("#tabcontent").css('height');
+            // heigh=heigh.replace('px','');
+            // heigh=parseInt(heigh);
+            // if (heigh<550) {
+            //     $("#tabcontent").css('overflow','');
+            //     $(".table-dat-row").css('width','992');
+            //     $(".last_column").css('width','135');
+            // } else {
+            //     $("#tabcontent").css('overflow-y','auto');
+            // }
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -120,26 +121,26 @@ function show_thisweek() {
     }, 'json');
 }
 
-function show_alltime() {
-    $("#f_btn1").attr("disabled",'disabled');
-    $("#f_btn2").attr('disabled','disabled');
-    $("#d_bgn").val('');
-    $("#d_end").val('');
-    var url='/searchresults/timedata';
-    $.post(url, {'period':'alltime'}, function(data){
-        $("#tabcontent").empty().html(data.content);
-        var heigh=$("#tabcontent").css('height');
-        heigh=heigh.replace('px','');
-        heigh=parseInt(heigh);
-        if (heigh<550) {
-            $("#tabcontent").css('overflow','');
-            $(".table-dat-row").css('width','992');
-            $(".last_column").css('width','135');
-        } else {
-            $("#tabcontent").css('overflow-y','auto');
-        }
-    }, 'json');
-}
+// function show_alltime() {
+//     $("#f_btn1").attr("disabled",'disabled');
+//     $("#f_btn2").attr('disabled','disabled');
+//     $("#d_bgn").val('');
+//     $("#d_end").val('');
+//     var url='/searchresults/timedata';
+//     $.post(url, {'period':'alltime'}, function(data){
+//         $("#tabcontent").empty().html(data.content);
+//         var heigh=$("#tabcontent").css('height');
+//         heigh=heigh.replace('px','');
+//         heigh=parseInt(heigh);
+//         if (heigh<550) {
+//             $("#tabcontent").css('overflow','');
+//             $(".table-dat-row").css('width','992');
+//             $(".last_column").css('width','135');
+//         } else {
+//             $("#tabcontent").css('overflow-y','auto');
+//         }
+//     }, 'json');
+// }
 
 function close_details() {
     $("#report_dialog").fadeOut(500);
@@ -149,9 +150,7 @@ function close_details() {
 
 
 function custom_range() {
-    $("#f_btn1").attr("disabled",false);
-    $("#f_btn2").attr('disabled',false);
-
+    $("#datarangeview").css('visibility','visible');
 }
 /*
 function showgraph(obj) {

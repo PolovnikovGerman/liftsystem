@@ -1,61 +1,38 @@
-<div class="clearfix"></div>
-<div class="window">
-    <div class="SearchResults-interview">
-        <div class="select_timesearsch" style="clear: both; float: left; width: 368px; margin-left: 5px;">
+<div class="searchtime_content">
+    <div class="searhctime_head">
+        <div class="select_timesearsch">
             <!-- <input type="radio" name="time" id="alltime" value="all"/> All Time -->
             <input type="radio" name="time" id="week" value="thisweek" checked="checked"/> This Week
             <input type="radio" name="time" id="month" value="thismonth"/> This Month
             <input type="radio" name="time" id="custom" value="custom"/> Custom Range:
         </div>
-        <div class="SearchResults-blok1" id="datarangeview" style="display: none">
-            <div style="float:left;width: 223px;">
-                <input type="text" style="width:75px;" readonly id="d_bgn"/>
-                to
-                <input type="text" style="width:75px;margin-left: 5px;" readonly id="d_end"/>
+        <div class="select_custom_period" id="datarangeview">
+            <div>
+                <input type="text" class="datesearchinpt" readonly id="d_bgn"/>
+                <span> to </span>
+                <input type="text" class="datesearchinpt" readonly id="d_end"/>
             </div>
-            <div style="float: left; width: 53px; padding-top: 2px; margin-left: 5px;">
-                <img src="/img/marketing/show_customrange.png" id="showcustomrange"/>
+            <div class="customsearchbtn" id="showcustomrange">
+                <img src="/img/marketing/show_customrange.png"/>
             </div>
         </div>
     </div>
-    <div class="table-SearchResults">
-        <table cellspacing="0" cellpadding="0">
-            <tr class="table-SearchResults-text1">
-                <td style="width:147px;height: 36px;" class="table-01-grey TableTitle-b2 TableTitle-b1">
-                    <b>Week of</b>
-                </td>
-                <td style="width:109px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day1" onclick="showgraph(this);"><b>Mon</b></a>
-                </td>
-                <td style="width:115px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day2" onclick="showgraph(this);"><b>Tue</b></a>
-                </td>
-                <td style="width:118px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day3" onclick="showgraph(this);"><b>Wed</b></a>
-                </td>
-                <td style="width:117px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day4" onclick="showgraph(this);"><b>Thu</b></a>
-                </td>
-                <td style="width:118px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day5" onclick="showgraph(this);"><b>Fri</b></a>
-                </td>
-                <td style="width:118px;height: 36px;" class="TableTitle-b1 TableTitle-b2 table-02-grey">
-                    <a href="javascript:void(0)" id="day6" onclick="showgraph(this);"><b>Sat</b></a>
-                </td>
-                <td style="width:136px;height: 36px;" class="table-03-grey TableTitle-b2">
-                    <a href="javascript:void(0)" id="day0" onclick="showgraph(this);"><b>Sun</b></a>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-dat" id="tabcontent">
+    <div class="searchtime_dataconatiner">
+        <div class="datacontainer_head weekdates">Week of</div>
+        <div class="datacontainer_head weekday">Mon</div>
+        <div class="datacontainer_head weekday">Tue</div>
+        <div class="datacontainer_head weekday">Wed</div>
+        <div class="datacontainer_head weekday">Thu</div>
+        <div class="datacontainer_head weekday">Fri</div>
+        <div class="datacontainer_head weekday">Sat</div>
+        <div class="datacontainer_head weekdayend">Sun</div>
 
-    </div>
-    <div class="clearfix"></div>
-    <div class="table-dat-rowend">
-        <div class="tableEnd-SearchResults-1">&nbsp;</div>
-        <div style="width:816px;"  class="tableEnd-SearchResults-2">&nbsp;</div>
-        <div class="tableEnd-SearchResults-3">&nbsp;</div>
-    </div>
+        <div class="datacontainer_content" id="timesearchresultcontent">
 
+        </div>
+    </div>
+</div>
+<input type="hidden" id="searchtimebrand" value="<?=$brand?>"/>
+<div id="searchtimebrandmenu">
+    <?=$top_menu?>
 </div>
