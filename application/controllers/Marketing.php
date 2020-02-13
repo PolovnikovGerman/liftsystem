@@ -99,9 +99,9 @@ class Marketing extends MY_Controller
                     $d_bgn = $dates['start_week'];
                     $d_end = $dates['end_week'];
                 }
-                $datz=array();
-                
-                $datz['dat']=$this->msearch->get_search_bytime($d_bgn,$d_end);
+
+                $this->load->model('searchresults_model');
+                $data=$this->searchresults_model->get_search_bytime($d_bgn,$d_end);
                 $content=$this->load->view('search/searchtime_dat_view',$datz,TRUE);
 
 
