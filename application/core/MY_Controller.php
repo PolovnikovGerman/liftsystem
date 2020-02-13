@@ -41,6 +41,7 @@ if (!defined('BASEPATH'))
  * @property Batches_model batches_model
  * @property Permissions_model permissions_model
  * @property Reports_model reports_model
+ * @property Searchresults_model searchresults_model
 */
 
 
