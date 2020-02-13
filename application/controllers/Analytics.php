@@ -44,7 +44,7 @@ class Analytics extends MY_Controller
             'brands' => $brands,
             'active' => $brand,
         ];
-        $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#reportsalestypeview') {
                 // Taks View
@@ -101,7 +101,7 @@ class Analytics extends MY_Controller
                         'brands' => $brands,
                         'active' => $brand,
                     ];
-                    $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+                    $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                     $mdata['content'] = $this->_prepare_salestype_view($brand, $top_menu);
                     $error = '';
                 }
@@ -354,7 +354,7 @@ class Analytics extends MY_Controller
                     'brands' => $brands,
                     'active' => $brand,
                 ];
-                $top_menu = $this->load->view('analytics/top_menu_view', $top_options, TRUE);
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 // Prepare new content
                 $contoptions=array(
                     'baseyear'=>ifset($postdata, 'baseyear', intval(date('Y'))),
