@@ -1,23 +1,23 @@
 function init_searchtime_content() {
-    show_thisweek();
-    $("#week").unbind('click').click(function(){
-        show_thisweek();
+    show_timesearchweek();
+    $("#timesearchweek").unbind('click').click(function(){
+        show_timesearchweek();
     });
-    $("#month").unbind('click').click(function(){
-        show_thismonth();
+    $("#timesearchmonth").unbind('click').click(function(){
+        show_timesearchthismonth();
     })
-    $("#custom").unbind('click').click(function(){
-        custom_range();
+    $("#timesearchcustom").unbind('click').click(function(){
+        timesearch_customrange();
     })
     $("#showcustomrange").unbind('click').click(function(){
-        show_custom();
+        show_timesearchcustom();
     })
     // calendar_init();
-    $("#d_bgn").datepicker({
+    $("#dbgn_timesearch").datepicker({
         autoclose: true,
         todayHighlight: true
     });
-    $("#d_end").datepicker({
+    $("#dend_timesearch").datepicker({
         autoclose: true,
         todayHighlight: true
     });
@@ -35,20 +35,20 @@ function init_searchtime_content() {
                 $("#searchtimebrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
         });
-        if ($("#week").prop('checked')==true) {
-            show_thisweek();
-        } else if ($("#month").prop('checked')==true) {
-            show_thismonth();
+        if ($("#timesearchweek").prop('checked')==true) {
+            show_timesearchweek();
+        } else if ($("#timesearchmonth").prop('checked')==true) {
+            show_timesearchthismonth();
         } else {
-            show_custom();
+            show_timesearchcustom();
         }
     });
 }
 
 
-function show_custom() {
-    var d_bgn = $("#d_bgn").val();
-    var d_end = $("#d_end").val();
+function show_timesearchcustom() {
+    var d_bgn = $("#dbgn_timesearch").val();
+    var d_end = $("#dend_timesearch").val();
     if (d_end == '' && d_bgn == '') {
         alert('Please enter custom date range');
     } else {
@@ -85,7 +85,7 @@ function show_custom() {
 }
 
 
-function show_thismonth() {
+function show_timesearchthismonth() {
     $("#datarangeview").css('visibility','hidden');
     var url='/marketing/searchtimedata';
     var params = new Array();
@@ -114,7 +114,7 @@ function show_thismonth() {
     }, 'json');
 }
 
-function show_thisweek() {
+function show_timesearchweek() {
     // Hide Custom range
     $("#datarangeview").css('visibility','hidden');
     var url='/marketing/searchtimedata';
@@ -146,8 +146,8 @@ function show_thisweek() {
 // function show_alltime() {
 //     $("#f_btn1").attr("disabled",'disabled');
 //     $("#f_btn2").attr('disabled','disabled');
-//     $("#d_bgn").val('');
-//     $("#d_end").val('');
+//     $("#dbgn_timesearch").val('');
+//     $("#dend_timesearch").val('');
 //     var url='/searchresults/timedata';
 //     $.post(url, {'period':'alltime'}, function(data){
 //         $("#tabcontent").empty().html(data.content);
@@ -164,14 +164,14 @@ function show_thisweek() {
 //     }, 'json');
 // }
 
-function close_details() {
-    $("#report_dialog").fadeOut(500);
-    $("#tooltip").remove();
-    $('#mask').hide();
-}
+// function close_details() {
+//     $("#report_dialog").fadeOut(500);
+//     $("#tooltip").remove();
+//     $('#mask').hide();
+// }
 
 
-function custom_range() {
+function timesearch_customrange() {
     $("#datarangeview").css('visibility','visible');
 }
 /*
@@ -206,14 +206,14 @@ function showgraph(obj) {
     var period='alltimes';
     var d_bgn='';
     var d_end='';
-    if ($("#week").prop('checked')) {
+    if ($("#timesearchweek").prop('checked')) {
         period='week';
-    } else if($("#month").prop('checked')) {
+    } else if($("#timesearchmonth").prop('checked')) {
         period='month';
-    } else if($("#custom").prop('checked')) {
+    } else if($("#timesearchcustom").prop('checked')) {
         period='custom';
-        d_bgn=$("#d_bgn").val();
-        d_end=$("#d_end").val();
+        d_bgn=$("#dbgn_timesearch").val();
+        d_end=$("#dend_timesearch").val();
         if (d_bgn!='') {
             d_bgn=d_bgn.substr(6)+'-'+d_bgn.substr(0,2)+'-'+d_bgn.substr(3,2);
         }

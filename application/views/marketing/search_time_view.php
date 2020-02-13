@@ -2,15 +2,15 @@
     <div class="searhctime_head">
         <div class="select_timesearsch">
             <!-- <input type="radio" name="time" id="alltime" value="all"/> All Time -->
-            <input type="radio" name="time" id="week" value="thisweek" checked="checked"/> This Week
-            <input type="radio" name="time" id="month" value="thismonth"/> This Month
-            <input type="radio" name="time" id="custom" value="custom"/> Custom Range:
+            <input type="radio" name="time" id="timesearchweek" value="thisweek" checked="checked"/> This Week
+            <input type="radio" name="time" id="timesearchmonth" value="thismonth"/> This Month
+            <input type="radio" name="time" id="timesearchcustom" value="custom"/> Custom Range:
         </div>
         <div class="select_custom_period" id="datarangeview">
             <div>
-                <input type="text" class="datesearchinpt" readonly id="d_bgn"/>
+                <input type="text" class="datesearchinpt" readonly id="dbgn_timesearch"/>
                 <span> to </span>
-                <input type="text" class="datesearchinpt" readonly id="d_end"/>
+                <input type="text" class="datesearchinpt" readonly id="dend_timesearch"/>
             </div>
             <div class="customsearchbtn" id="showcustomrange">
                 <img src="/img/marketing/show_customrange.png"/>
