@@ -2,22 +2,16 @@
 <div class="window">
     <div class="SearchResults-interview">
         <div class="select_timesearsch" style="clear: both; float: left; width: 368px; margin-left: 5px;">
-            <input type="radio" name="time" id="alltime" value="all"/> All Time
-            <input type="radio" name="time" id="week" value="thisweek"/> This Week
+            <!-- <input type="radio" name="time" id="alltime" value="all"/> All Time -->
+            <input type="radio" name="time" id="week" value="thisweek" checked="checked"/> This Week
             <input type="radio" name="time" id="month" value="thismonth"/> This Month
             <input type="radio" name="time" id="custom" value="custom"/> Custom Range:
         </div>
-        <div class="SearchResults-blok1">
+        <div class="SearchResults-blok1" id="datarangeview" style="display: none">
             <div style="float:left;width: 223px;">
                 <input type="text" style="width:75px;" readonly id="d_bgn"/>
-                <button style="padding: 0pt; width: 20px; height: 19px;" id="f_btn1">
-                    <img src="/img/calendar.gif" style="margin-top: -2px; margin-left: -4px;"/>
-                </button>
                 to
                 <input type="text" style="width:75px;margin-left: 5px;" readonly id="d_end"/>
-                <button style="padding: 0pt; width: 20px; height: 19px;" id="f_btn2">
-                    <img style="margin-top: -2px; margin-left: -4px;"  src="/img/calendar.gif" disabled="disabled">
-                </button>
             </div>
             <div style="float: left; width: 53px; padding-top: 2px; margin-left: 5px;">
                 <img src="/img/marketing/show_customrange.png" id="showcustomrange"/>

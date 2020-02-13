@@ -85,6 +85,89 @@ class Marketing extends MY_Controller
         $this->load->view('page/page_template_view', $dat);
     }
 
+    public function searchtimedata() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period');
+            $brand = ifset($postdata,'brand', 'ALL');
+            $mdata=[];
+            $error = 'Empty Search Parameter';
+
+            if (!empty($period) && !empty($brand)) {
+                if ($period=='week') {
+                    $dates = getDatesByWeek(date('W'),date('Y'));
+                    $d_bgn = $dates['start_week'];
+                    $d_end = $dates['end_week'];
+                }
+                $datz=array();
+                
+                $datz['dat']=$this->msearch->get_search_bytime($d_bgn,$d_end);
+                $content=$this->load->view('search/searchtime_dat_view',$datz,TRUE);
+
+
+            }
+            $this->ajaxResponse($mdata, $error);
+
+//            switch ($period) {
+//                case 'alltime':
+//                    $d_bgn='';
+//                    $d_end='';
+//                    break;
+//                case 'week':
+//                    $curtime=date('Y-m-d').' 00:00:00';
+//                    $curtime=strtotime($curtime);
+//                    $curweekday=date('w');
+//                    if ($curweekday==0) {
+//                        $d_bgn=$curtime-(6*24*60*60);
+//                        $d_end=$curtime+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==1) {
+//                        $d_bgn=$curtime;
+//                        $d_end=$curtime+(6*24*60*60)+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==2) {
+//                        $d_bgn=$curtime-(1*24*60*60);
+//                        $d_end=$curtime+(5*24*60*60)+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==3) {
+//                        $d_bgn=$curtime-(2*24*60*60);
+//                        $d_end=$curtime+(4*24*60*60)+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==4) {
+//                        $d_bgn=$curtime-(3*24*60*60);
+//                        $d_end=$curtime+(3*24*60*60)+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==5) {
+//                        $d_bgn=$curtime-(4*24*60*60);
+//                        $d_end=$curtime+(2*24*60*60)+(23*60*60+59*60+59);
+//                    } elseif ($curweekday==6) {
+//                        $d_bgn=$curtime-(5*24*60*60);
+//                        $d_end=$curtime+(1*24*60*60)+(23*60*60+59*60+59);
+//                    }
+//                    break;
+//                case 'month':
+//                    $curtime=date('Y-m-').'01 00:00:00';
+//                    $d_bgn=strtotime($curtime);
+//                    $curtime=date('Y-m-t').' 23:59:59';
+//                    $d_end=strtotime($curtime);
+//                    break;
+//                case 'custom':
+//                    $d_bgn=$this->input->post('d_bgn');
+//                    if ($d_bgn!='') {
+//                        $d_bgn=$d_bgn.' 00:00:00';
+//                        $d_bgn=strtotime($d_bgn);
+//                    }
+//                    $d_end=$this->input->post('d_end');
+//                    if ($d_end!='') {
+//                        $d_end=$d_end.' 23:59:59';
+//                        $d_end=strtotime($d_end);
+//                    }
+//                    break;
+//            }
+//
+//            $datz=array();
+//            $datz['dat']=$this->msearch->get_search_bytime($d_bgn,$d_end);
+//            $content=$this->load->view('search/searchtime_dat_view',$datz,TRUE);
+//            echo json_encode(array('content'=>$content));
+        }
+        show_404();
+    }
+
     private function _prepare_searchbytime($brand, $top_menu) {
         $options = [
             'brand' => $brand,
