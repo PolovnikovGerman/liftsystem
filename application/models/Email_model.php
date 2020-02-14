@@ -198,7 +198,7 @@ class Email_model extends My_Model
         $out = ['result' => 0, 'msg' => 'Data not found'];
         $this->db->select('email_date, email_sendermail');
         $this->db->from('ts_emails');
-        $this->db->where('email_websys', $this->websys);
+        // $this->db->where('email_websys', $this->websys);
         if (isset($options['type'])) {
             $this->db->where("email_type", $options['type']);
         }
@@ -208,45 +208,16 @@ class Email_model extends My_Model
         if (isset($options['enddate'])) {
             $this->db->where('unix_timestamp(email_date) <= ', $options['enddate']);
         }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $this->db->order_by('email_id');
         $res = $this->db->get()->result_array();
         if (count($res) > 0) {
-            $this->load->library('PHPExcel');
-            $this->load->library('PHPExcel/IOFactory');
-            $this->load->library('Func');
-            /* create report */
-            $report_name = 'signup_export_' . (microtime(TRUE) * 10000) . '.xls';
-            $filename = $this->config->item('upload_path_preload') . $report_name;
-
-            $objPHPExcel = new PHPExcel();
-            //
-            $objPHPExcel->getProperties()->setCreator("PHP");
-            $namesheet = 'email_report';
-            /* set reports options */
-            $objPHPExcel->getActiveSheet()->setTitle($namesheet);
-
-            $styleGray = array('font' => array('bold' => true, 'color' => array('argb' => 'FFFFFFFF')), 'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,), 'borders' => array('allborders' => array('style' => PHPExcel_Style_Border::BORDER_THIN,)), 'fill' => array('type' => PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRAY),);
-            /* sheet */
-            $sheet = $objPHPExcel->getActiveSheet();
-            $sheet->setTitle('Ariel Report');
-            $sheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT);
-            $sheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-
-            $sheet->getColumnDimension('A')->setWidth(20);
-            $sheet->getColumnDimension('B')->setWidth(40);
-            $objPHPExcel->getActiveSheet()->getStyle('A1:AC1')->applyFromArray($styleGray);
-            $sheet->setCellValue('A1', 'Date');
-            $sheet->setCellValue('B1', 'Signup Email');
-            $i = 2;
-            foreach ($res as $row) {
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $i, $row['email_date'])->setCellValue('B' . $i, $row['email_sendermail']);
-                $i++;
-            }
-
-            $objWriter = IOFactory::createWriter($objPHPExcel, 'Excel5');
-            $objWriter->save($filename);
+            $this->load->model('exportexcell_model');
+            $report_name = $this->exportexcell_model->export_signup($res);
             $out['result'] = 1;
-            $out['url'] = $this->config->item('upload_preload') . $report_name;
+            $out['url'] = $this->config->item('pathpreload') . $report_name;
         }
         return $out;
     }

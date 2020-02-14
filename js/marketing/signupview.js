@@ -14,7 +14,26 @@ function init_signup(){
 
     $("#exportgignup").unbind().click(function () {
         export_signup();
-    })
+    });
+    // Change Brand
+    // Change Brand
+    $("#signupemailbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#signupemailbrand").val(brand);
+        $("#signupemailbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#signupemailbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#signupemailbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        $("#cursign").val(0);
+        apply_signup_filter();
+    });
+
 }
 
 function init_signup_management() {
@@ -109,6 +128,7 @@ function export_signup() {
     params.push({name: 'startdate', value: $("#beginsignup").val()});
     params.push({name: 'enddate', value: $("#endsignup").val()});
     params.push({name: 'type', value: 'Signups'});
+    params.push({name: 'brand', value: $("#signupemailbrand").val()});
     var url = "/marketing/export_signups";
     $.post(url, params, function (response) {
         if (response.errors=='') {

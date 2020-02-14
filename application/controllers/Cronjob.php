@@ -64,4 +64,19 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function emails_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('email_id');
+        $this->db->from('ts_emails');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('email_id', $row['email_id']);
+            $this->db->update('ts_emails');
+            echo 'Email '.$row['email_id'].' Brand '.$webs.PHP_EOL;
+        }
+    }
+
 }
