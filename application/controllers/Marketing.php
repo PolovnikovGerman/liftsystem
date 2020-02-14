@@ -57,9 +57,9 @@ class Marketing extends MY_Controller
                 $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand, $top_menu);
             } elseif ($row['item_link']=='#searchesipadrview') {
                 // Search results by IP
-                // $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
-                // $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
-                $content_options['searchesipadrview'] = ''; // $this->_prepare_requestlist_view();
+                $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
+                $content_options['searchesipadrview'] = $this->_prepare_searckipaddress($brand, $top_menu);
             } elseif ($row['item_link']=='#signupview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/signupview.css');
@@ -180,6 +180,55 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    public function searchipaddresdata() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error='Empty Parameter';
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period');
+            $brand = ifset($postdata,'brand');
+            if (!empty($period) && !empty($brand)) {
+                $error = 'Unknown period';
+                if (in_array($period,['today','week','month','custom'])) {
+                    $error = '';
+                    switch ($period) {
+                        case 'custom':
+                            $d_bgn = ifset($postdata, 'd_bgn');
+                            if (!empty($d_bgn)) {
+                                $d_bgn = strtotime($d_bgn . ' 00:00:00');
+                            }
+                            $d_end = ifset($postdata, 'd_end');
+                            if (!empty($d_end)) {
+                                $d_end = strtotime($d_end . ' 23:59:59');
+                            }
+                            break;
+                        case 'today' :
+                            $d_bgn = time();
+                            $d_end = time();
+                            break;
+                        case 'week' :
+                            $dates = getDatesByWeek(date('W'), date('Y'));
+                            $d_bgn = $dates['start_week'];
+                            $d_end = $dates['end_week'];
+                            break;
+                        case 'month':
+                            $curtime = date('Y-m-') . '01 00:00:00';
+                            $d_bgn = strtotime($curtime);
+                            $curtime = date('Y-m-t') . ' 23:59:59';
+                            $d_end = strtotime($curtime);
+                            break;
+                    }
+                    $this->load->model('searchresults_model');
+                    $data=$this->searchresults_model->get_search_byipaddress($brand, $d_bgn,$d_end);
+                    $mdata['num_cols']=ceil(count($data)/20);
+                    $mdata['content']=$this->load->view('marketing/searchipaddress_dat_view',['dat'=>$data],TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_searchbytime($brand, $top_menu) {
         $options = [
             'brand' => $brand,
@@ -195,5 +244,15 @@ class Marketing extends MY_Controller
         ];
         // searchkeyword_view
         return $this->load->view('marketing/search_keyword_view', $options,TRUE);
+    }
+
+    private function _prepare_searckipaddress($brand, $top_menu) {
+        $options = [
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        // searchkeyword_view
+        return $this->load->view('marketing/search_ipaddress_view', $options,TRUE);
+
     }
 }

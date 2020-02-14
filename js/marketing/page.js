@@ -21,6 +21,10 @@ function init_page(objid) {
             $("#searcheswordview").show();
             init_searchkeyword_content();
             break;
+        case 'searchesipadrview':
+            $("#searchesipadrview").show();
+            init_searchipaddres_content();
+            break
         // case 'requestlist':
         //     $("#requestlist").show();
         //     init_proofdata();

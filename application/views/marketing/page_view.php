@@ -13,6 +13,9 @@
         <?php if (isset($searcheswordview)) { ?>
             <div class="marketingcontentarea" id="searcheswordview" style="display: none"><?=$searcheswordview?></div>
         <?php } ?>
+        <?php if (isset($searchesipadrview)) { ?>
+            <div class="marketingcontentarea" id="searchesipadrview" style="display: none"><?=$searchesipadrview?></div>
+        <?php } ?>
     </div>
 </div>
 
