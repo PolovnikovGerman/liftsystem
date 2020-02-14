@@ -405,4 +405,8 @@ class Marketing extends MY_Controller
 
         return $this->load->view('marketing/signups_head_view',$content_dat,TRUE);
     }
+
+    private function _prepare_couponsview($brand, $top_menu) {
+
+    }
 }
