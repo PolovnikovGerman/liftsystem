@@ -433,3 +433,8 @@ body div {
 .greydatarow {
     background-color: #ededed;
 }
+.truncateoverflowtext {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

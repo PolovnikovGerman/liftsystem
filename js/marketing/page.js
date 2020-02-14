@@ -25,15 +25,10 @@ function init_page(objid) {
             $("#searchesipadrview").show();
             init_searchipaddres_content();
             break
-        // case 'requestlist':
-        //     $("#requestlist").show();
-        //     init_proofdata();
-        //     break;
-        // case 'taskview':
-        //     $("#taskview").show();
-        //     init_tasks_management();
-        //     init_tasks_page();
-        //     break;
+        case 'signupview':
+            $("#signupview").show();
+            init_signup();
+            break;
     }
 
 }

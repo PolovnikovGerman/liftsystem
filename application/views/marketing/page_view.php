@@ -16,6 +16,9 @@
         <?php if (isset($searchesipadrview)) { ?>
             <div class="marketingcontentarea" id="searchesipadrview" style="display: none"><?=$searchesipadrview?></div>
         <?php } ?>
+        <?php if (isset($signupview)) { ?>
+            <div class="marketingcontentarea" id="signupview" style="display: none"><?=$signupview?></div>
+        <?php } ?>
     </div>
 </div>
 
