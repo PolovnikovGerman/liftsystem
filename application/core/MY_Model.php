@@ -40,6 +40,7 @@
  * @property Permissions_model permissions_model
  * @property Reports_model reports_model
  * @property Searchresults_model searchresults_model
+ * @property Coupons_model coupons_model
  */
 
 class MY_Model extends CI_Model
