@@ -12,31 +12,51 @@ Class Coupons_model extends MY_Model
         parent::__construct();
     }
     
-//    function get_coupons_number($options=array()) {
-//        $this->db->select('count(coupon_id) as cnt',FALSE);
-//        $this->db->from('sb_coupons');
-//        foreach ($options as $key=>$value) {
-//            $this->db->where($key,$value);
-//        }
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//
-//    function get_coupons($options,$order_by,$direction) {
-//        $this->db->select('*');
-//        $this->db->from('sb_coupons');
-//        foreach ($options as $key=>$value) {
-//            if ($key=='coupon_code') {
-//                $this->db->where("replace(coupon_code,'-','')", str_replace(array(' ','-'), '', $value));
-//            } else {
-//                $this->db->where($key,$value);
-//            }
-//        }
-//        $this->db->order_by($order_by,$direction);
-//        $results=$this->db->get()->result_array();
-//        return $results;
-//    }
-//
+    public function get_coupons_number($options=array()) {
+        $this->db->select('count(coupon_id) as cnt',FALSE);
+        $this->db->from('sb_coupons');
+        foreach ($options as $key=>$value) {
+            if ($key!=='brand') {
+                $this->db->where($key,$value);
+            }
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_coupons($options) {
+        $this->db->select('*');
+        $this->db->from('sb_coupons');
+        if (isset($options['coupon_code']) && !empty($options['coupon_code'])) {
+            $this->db->where("replace(coupon_code,'-','')", str_replace(array(' ','-'), '', $value));
+        }
+        if (isset($options['coupon_deleted'])) {
+            $this->db->where('coupon_deleted',$options['coupon_deleted']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
+        if (isset($options['order_by']) && !empty($options['order_by'])) {
+            if (isset($options['direction']) && !empty($options['direction'])) {
+                $this->db->order_by($options['order_by'],$options['direction']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        if (isset($options['limit']) && !empty($options['limit'])) {
+            if (isset($options['offset']) && !empty($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        $results=$this->db->get()->result_array();
+        return $results;
+    }
+
 //    function del_coupon($coupon_id) {
 //        $this->db->set('coupon_deleted',1);
 //        $this->db->where('coupon_id',$coupon_id);

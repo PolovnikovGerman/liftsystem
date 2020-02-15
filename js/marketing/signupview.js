@@ -16,7 +16,6 @@ function init_signup(){
         export_signup();
     });
     // Change Brand
-    // Change Brand
     $("#signupemailbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
         $("#signupemailbrand").val(brand);
@@ -33,7 +32,6 @@ function init_signup(){
         $("#cursign").val(0);
         apply_signup_filter();
     });
-
 }
 
 function init_signup_management() {

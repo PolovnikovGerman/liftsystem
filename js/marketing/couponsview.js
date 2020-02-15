@@ -1,107 +1,65 @@
-$(document).ready(function(){
-    init_couponedit();
-});
-function addcoupon() {
-    var coupon_id=$("#coupon_id").val();
-    var chkv=$('#pub').prop('checked');
-    if (chkv==true) {
-        var pub=1;
-    } else {
-        pub=0;
-    }
-    var discount_perc=$("#discount_perc").val();
-    var discount_sum=$("#discount_sum").val();
-    var minlimit=$("#minlimit").val();
-    var maxlimit=$("#maxlimit").val();
-    var description=$("#description").val();
-    var code1=$("#code1").val();
-    var code2=$("#code2").val();
-    var url='/coupons/updcoupon';
-    $.post(url, {'coupon_id':coupon_id,'pub':pub,'discount_perc':discount_perc,'discount_sum':discount_sum,'minlimit':minlimit,'maxlimit':maxlimit,
-        'description':description,'code1':code1,'code2':code2}, function(data){
-        if (data.error!='') {
-            alert(data.error);
-        } else {
-            $("#tabinfo").empty().html(data.content);
-            init_couponedit();
-            $("#coupon_id").val(0);
-            $('#pub').removeAttr('checked');
-            $("#discount_perc").val('');
-            $("#discount_sum").val('');
-            $("#minlimit").val('');
-            $("#maxlimit").val('');
-            $("#description").val('');
-            $("#code1").val('');
-            $("#code2").val('');
-        }
-    }, 'json');
-}
-
-function editcoupon(obj) {
-    var objid=obj.id.substr(3);
-    /* Get data about coupon */
-    var url='/coupons/coupon_details';
-    $.post(url, {'coupon_id':objid}, function(data){
-        if (data.error=='') {
-            $("#coupon_id").val(data.coupon_id);
-            if (data.coupon_ispublic==1) {
-                $('#pub').attr('checked','checked');
+function init_coupon_view() {
+    // Change Brand
+    $("#couponmanagebrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#signupemailbrand").val(brand);
+        $("#couponmanagebrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#couponmanagebrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
             } else {
-                $('#pub').removeAttr('checked');
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#couponmanagebrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
-            $("#discount_perc").val(data.coupon_discount_perc);
-            $("#discount_sum").val(data.coupon_discount_sum);
-            $("#minlimit").val(data.coupon_minlimit);
-            $("#maxlimit").val(data.coupon_maxlimit);
-            $("#description").val(data.coupon_description);
-            $("#code1").val(data.coupon_code.substr(0,3));
-            $("#code2").val(data.coupon_code.substr(4,3));
-        } else {
-            alert(data.error);
-        }
-    }, 'json');
-}
-
-function delcoupon(obj) {
-    var objid=obj.id.substr(3);
-    if (confirm('Are you sure?')) {
-        var url='/coupons/del_coupon';
-        $.post(url, {'coupon_id':objid}, function(data){
-            if (data.error=='') {
-                $("#tabinfo").empty().html(data.content);
-                // $(".overflowtext").textOverflow();
-                $("#coupon_id").val(0);
-                $('#pub').removeAttr('checked');
-                $("#discount_perc").val('');
-                $("#discount_sum").val('');
-                $("#minlimit").val('');
-                $("#maxlimit").val('');
-                $("#description").val('');
-                $("#code1").val('');
-                $("#code2").val('');
-            } else {
-                alert(data.error);
-            }
-        }, 'json')
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function init_couponedit() {
-    // $(".overflowtext").textOverflow();
-    $("input.couponactivchk").unbind('change').change(function(){
-        var activ=0;
-        if ($(this).prop('checked')==false) {
-            activ=1;
-        }
-        var data=new Array();
-        data.push({name:'coupon_id', value: $(this).data('couponid')});
-        data.push({name:'old_active', value: activ});
-        var url="/coupons/coupon_activate";
-        $.post(url, data, function(response){
-
-        },'json');
+        });
+        $("#curcoupon").val(0);
+        initCouponsPagination();
     });
+    initCouponsPagination();
+}
+
+function initCouponsPagination() {
+    // count entries inside the hidden content
+    var num_entries = $('#totalcoupon').val();
+    var perpage = $("#perpagecoupon").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $("#couponPaginator").empty();
+        $("input#curcoupon").val(0);
+        pageCouponsCallback(0);
+    } else {
+        var curpage = $("#cursign").val();
+        // Create content inside pagination element
+        $("#couponPaginator").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pageCouponsCallback,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 3,
+            prev_text : '<<',
+            next_text : '>>'
+        });
+    }
+}
+
+function pageCouponsCallback(page_index) {
+    var params = new Array();
+    params.push({name: 'offset', value: page_index});
+    params.push({name: 'limit', value: $("#perpagecoupon").val()});
+    params.push({name: 'order_by', value: $("#ordercoupon").val()});
+    params.push({name: 'direction', value: $("#directcoupon").val()});
+    params.push({name: 'brand', value: $("#signupemailbrand").val()});
+    var url = "/marketing/couponsdat";
+    $("#loader").show();
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $(".coupondata_content").empty().html(response.data.content);
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+    
 }

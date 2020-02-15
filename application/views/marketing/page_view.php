@@ -19,6 +19,9 @@
         <?php if (isset($signupview)) { ?>
             <div class="marketingcontentarea" id="signupview" style="display: none"><?=$signupview?></div>
         <?php } ?>
+        <?php if (isset($couponsview)) { ?>
+            <div class="marketingcontentarea" id="couponsview" style="display: none"><?=$couponsview?></div>
+        <?php } ?>
     </div>
 </div>
 

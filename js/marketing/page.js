@@ -29,6 +29,10 @@ function init_page(objid) {
             $("#signupview").show();
             init_signup();
             break;
+        case 'couponsview':
+            $("#couponsview").show();
+            init_coupon_view();
+            break;
     }
 
 }

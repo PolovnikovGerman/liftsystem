@@ -69,7 +69,7 @@ class Marketing extends MY_Controller
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
-                $content_options['couponsview'] = ''; // $this->_prepare_requestlist_view();
+                $content_options['couponsview'] = $this->_prepare_couponsview($brand, $top_menu);
             }
         }
 
@@ -350,6 +350,35 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    public function couponsdat() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $page_num = ifset($postdata,'offset',0);
+                $limit = ifset($postdata, 'limit', 100);
+                $this->load->model('coupons_model');
+                $options = [
+                    'is_deleted' => 0,
+                    'brand' => $brand,
+                    'order_by' => ifset($postdata,'order_by','coupon_id'),
+                    'direction' => ifset($postdata,'direction','desc'),
+                    'offset' => $page_num * $limit,
+                    'limit' => $limit,
+                ];
+
+                $data=$this->coupons_model->get_coupons($options);
+                $mdata['content'] = $this->load->view('marketing/coupons_data_view', ['data'=>$data], TRUE);
+
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_searchbytime($brand, $top_menu) {
         $options = [
@@ -407,6 +436,35 @@ class Marketing extends MY_Controller
     }
 
     private function _prepare_couponsview($brand, $top_menu) {
+        $options=[
+            'coupon_deleted'=>0,
+            'brand' => $brand,
+        ];
+        $this->load->model('coupons_model');
+        $total_rec=$this->coupons_model->get_coupons_number($options);
+        /* Get Data about coupons */
+
+        $cur_page=0;
+        $order_by='coupon_id';
+        $direction='desc';
+        // $coupons_dat=$this->mcoupons->get_coupons($options,$order_by,$direction);
+        // $datl=array('coupons'=>$coupons_dat);
+        /* Prepare contetn for display */
+        $content=array();
+        /* View Window Legend */
+        $view_options=[
+            'order_by'=>$order_by,
+            'direction'=>$direction,
+            'total_rec'=>$total_rec,
+            'cur_page'=>$cur_page,
+            'perpage' => 100,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+
+        // $content['table_view']=$this->load->view('coupons/coupons_table_view',$content_dat,TRUE);
+        // $content['table_dat']=$this->load->view('coupons/coupons_tabledat_view',$datl,TRUE);
+        return $this->load->view('marketing/coupons_view',$view_options,TRUE);
 
     }
 }
