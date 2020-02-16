@@ -159,3 +159,69 @@
     cursor: pointer;
     width: 76px;
 }
+/* Details */
+.coupon_details {
+    width: 490px;
+    padding: 20px;
+    float: left;
+}
+.coupon_details input {
+    height: 25px;
+    line-height: 25px;
+    font-size: 13px;
+}
+.coupon_details > .datarow {
+    width: 450px;
+    margin-bottom: 10px;
+    float: left;
+}
+.coupon_details > .datarow > div {
+    float: left;
+}
+.coupon_details > .datarow > .coupon_active {
+    width: 62px;
+}
+.coupon_details > .datarow > .coupon-system {
+    width: 140px;
+}
+.coupon_details > .datarow select.couponsystem {
+    width: 130px;
+    height: 25px;
+}
+.coupon_details > .datarow > .coupon_paramsoff {
+    width: 82px;
+}
+.coupon_details > .datarow > .coupon_paramsofftext {
+    width: 31px;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+}
+.coupon_details > .datarow input.coupon_paramsoffvalue {
+    width: 70px;
+}
+.coupon_details > .datarow > .coupon_revenue {
+    width: 92px;
+}
+.coupon_details > .datarow input.coupon_revenuevalue {
+    width: 70px;
+}
+.coupon_details > .datarow > .coupon_code {
+    width: 145px;
+    display: inline-block;
+}
+.coupon_details > .datarow input.coupon_codevalue {
+    width: 46px;
+}
+.coupon_details > .datarow > .coupon_description {
+    width: 450px;
+}
+.coupon_details > .datarow input.coupon_descriptionvalue {
+    width: 446px;
+}
+.coupon_details > .datarow > .coupon_save {
+    float: right!important;
+    width: 60px;
+}
+.toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 15px; }
+.toggle.ios .toggle-handle { border-radius: 15px; }

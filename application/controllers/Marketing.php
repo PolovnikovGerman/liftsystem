@@ -82,6 +82,9 @@ class Marketing extends MY_Controller
         // Datepicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        // Switcher
+        $head['scripts'][]=array('src'=>"https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js");
+        $head['styles'][]=array('style'=>"https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css");
         // Pagination
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -362,7 +365,7 @@ class Marketing extends MY_Controller
                 $limit = ifset($postdata, 'limit', 100);
                 $this->load->model('coupons_model');
                 $options = [
-                    'is_deleted' => 0,
+                    'coupon_deleted' => 0,
                     'brand' => $brand,
                     'order_by' => ifset($postdata,'order_by','coupon_id'),
                     'direction' => ifset($postdata,'direction','desc'),
@@ -375,6 +378,89 @@ class Marketing extends MY_Controller
 
             }
             $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function coupon_details() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coupon_id = ifset($postdata,'coupon_id',0);
+            $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+            $this->load->model('coupons_model');
+            if ($coupon_id==0) {
+                $res = $this->coupons_model->new_coupon($brands);
+            } else {
+                $res = $this->coupons_model->get_coupon_details($coupon_id, $brands);
+            }
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['content']=$this->load->view('marketing/coupon_detail_view',['data'=>$res['data'],'brands'=>$res['brands']], TRUE);
+                if ($coupon_id==0) {
+                    $mdata['label']='New Coupon';
+                } else {
+                    $mdata['label']='Edit Coupon '.$res['data']['coupon_code1'].'-'.$res['data']['coupon_code2'];
+                }
+                $mdata['percent_lock'] = $res['percent_lock'];
+                $mdata['money_lock'] = $res['money_lock'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function coupon_activate() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coupon_id = ifset($postdata,'coupon_id',0);
+            $this->load->model('coupons_model');
+            $res = $this->coupons_model->update_coupon_status($coupon_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                if ($res['active']==1) {
+                    $mdata['content'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                } else {
+                    $mdata['content'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function coupon_delete() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coupon_id = ifset($postdata, 'coupon_id', 0);
+            $this->load->model('coupons_model');
+            $res = $this->coupons_model->del_coupon($coupon_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['total'] = $res['total'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function coupon_details_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $this->load->model('coupons_model');
+            $res = $this->coupons_model->update_coupon($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['total']=$res['total'];
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -447,10 +533,6 @@ class Marketing extends MY_Controller
         $cur_page=0;
         $order_by='coupon_id';
         $direction='desc';
-        // $coupons_dat=$this->mcoupons->get_coupons($options,$order_by,$direction);
-        // $datl=array('coupons'=>$coupons_dat);
-        /* Prepare contetn for display */
-        $content=array();
         /* View Window Legend */
         $view_options=[
             'order_by'=>$order_by,
@@ -461,9 +543,6 @@ class Marketing extends MY_Controller
             'brand' => $brand,
             'top_menu' => $top_menu,
         ];
-
-        // $content['table_view']=$this->load->view('coupons/coupons_table_view',$content_dat,TRUE);
-        // $content['table_dat']=$this->load->view('coupons/coupons_tabledat_view',$datl,TRUE);
         return $this->load->view('marketing/coupons_view',$view_options,TRUE);
 
     }

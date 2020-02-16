@@ -4,7 +4,7 @@
     <?php $numr = 0;?>
     <?php foreach ($data as $row) { ?>
         <div class="rowdata <?=$numr%2==0 ? 'greydatarow' : 'whitedatarow'?>">
-            <div class="activedoc" data-couponid="<?=$row['coupon_id']?>">
+            <div class="activedoc" data-coupon="<?=$row['coupon_id']?>">
                 <?=($row['coupon_ispublic']==0 ? '<i class="fa fa-square-o" aria-hidden="true"></i>' : '<i class="fa fa-check-square-o" aria-hidden="true"></i>')?>
             </div>
             <div class="percentoff"><?=($row['coupon_discount_perc']==0 ? '&nbsp;' : $row['coupon_discount_perc'].'%' )?></div>
