@@ -151,6 +151,34 @@ class Leads extends MY_Controller
         show_404();
     }
 
+    public function leadsclosed_details() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $options=array(
+                'week'=>$postdata['week'],
+                'start'=>$postdata['start'],
+                'end'=>$postdata['end'],
+            );
+            if (isset($postdata['user_id']) && $postdata['user_id']) {
+                $options['user_id']=$postdata['user_id'];
+            }
+            $this->load->model('leads_model');
+            $data=$this->leads_model->get_leadclosed_details($options);
+            if (count($data)==0) {
+                $error='Empty Week Details';
+            } else {
+                $det_options=array(
+                    'data'=>$data,
+                );
+                $mdata['content']=$this->load->view('leads/lead_weekdetails_view', $det_options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
         $this->load->model('leads_model');
