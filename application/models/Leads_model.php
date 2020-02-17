@@ -1445,21 +1445,21 @@ Class Leads_model extends MY_Model
             $weeks[$idx]['newleads']=($row['newleads']==0 ? $emptyval : $row['newleads']);
             $weeks[$idx]['wrkleads']=($row['wrkleads']==0 ? $emptyval : $row['wrkleads']);
             $weeks[$idx]['outcalls']=($row['outcalls']==0 ? $emptyval : $row['outcalls']);
-            $ordersurl='href=""';
+            $ordersurl='';
             if ($row['orders']>0) {
                 if (isset($options['user_id'])) {
-                    $ordersurl='href="/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'"';
+                    $ordersurl='/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'"';
                 } else {
-                    $ordersurl='href="/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'"';
+                    $ordersurl='/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'"';
                 }
             }
             $weeks[$idx]['ordersurl']=$ordersurl;
             $weeks[$idx]['orders']=($row['orders']==0 ? $emptyval : $row['orders']);
             $weeks[$idx]['revenue']=($row['revenue']==0 ? $emptyval : '$'.number_format(round($row['revenue'],0),0,'.',','));
             $weeks[$idx]['profit']=($row['profit']==0 ? $emptyval : round($row['profit']*$this->config->item('profitpts'),0));
-            $cmpordurl='href=""';
+            $cmpordurl='';
             if ($row['points']>0) {
-                $cmpordurl='href="/leads/leadsclosed_cmporders?bgn='.$row['bgn'].'"';
+                $cmpordurl='/leads/leadsclosed_cmporders?bgn='.$row['bgn'];
             }
             $weeks[$idx]['cmporderurl']=$cmpordurl;
             $weeks[$idx]['points']=($row['points']==0 ? $emptyval : $row['points']);
@@ -1839,108 +1839,108 @@ Class Leads_model extends MY_Model
 //        );
 //        return $data;
 //    }
-//
-//    // Totals from Year begin
-//    public function get_yearleads() {
-//        $emptyval='&mdash;';
-//        $out=array(
-//            'weeks'=>$emptyval,
-//            'newleads'=>$emptyval,
-//            'wrkleads'=>$emptyval,
-//            'outcalls'=>$emptyval,
-//            'orders_reg'=>$emptyval,
-//            'orders_cust'=>$emptyval,
-//            'orders'=>$emptyval,
-//            'revenue_reg'=>$emptyval,
-//            'revenue_cust'=>$emptyval,
-//            'revenue'=>$emptyval,
-//            'points_reg'=>$emptyval,
-//            'points_cust'=>$emptyval,
-//            'points'=>$emptyval,
-//        );
-//        // Get first monday;
-//        $date=strtotime(date('Y').'-01-01');
-//        $sundate=strtotime(date('Y-m-d', strtotime('Sunday this week', $date)));
-//        $startdate = strtotime(date("Y-m-d", $sundate) . " -6 days");
-//        $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week')).' 23:59:59');
-//        // New Leads
-//        $out['weeks']=intval(date('W'));
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(create_date) >=', $startdate);
-//        $this->db->where('unix_timestamp(create_date) < ', $enddate);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']>0) {
-//            $out['newleads']=$res['cnt'];
-//        }
-//        // New Leads
-//        $out['weeks']=intval(date('W'));
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(update_date) >=', $startdate);
-//        $this->db->where('unix_timestamp(update_date) < ', $enddate);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']>0) {
-//            $out['wrkleads']=$res['cnt'];
-//        }
-//        // All Orders
-//        $this->db->select('count(order_id) as cnt, sum(revenue) as revenue, sum(profit) as profit');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_date >=', $startdate);
-//        $this->db->where('order_date < ', $enddate);
-//        $this->db->where('is_canceled',0);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            return $out;
-//        }
-//        $orders=$revenue=$points=0;
-//        if ($res['cnt']>0) {
-//            $orders=$res['cnt'];
-//            $out['orders']=$res['cnt'];
-//        }
-//        if (floatval($res['revenue'])!=0) {
-//            $revenue=$res['revenue'];
-//            $out['revenue']=number_format($revenue,0,'.',',');
-//        }
-//        if (floatval($res['profit'])!=0) {
-//            $points=round($res['profit']*$this->config->item('profitpts'),0);
-//            $out['points']=number_format($points,0,'.',',');
-//        }
-//        // Count Custom Orders
-//        $this->db->select('count(order_id) as cnt, sum(revenue) as revenue, sum(profit) as profit');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_date >=', $startdate);
-//        $this->db->where('order_date < ', $enddate);
-//        $this->db->where('item_id',$this->config->item('custom_id'));
-//        $this->db->where('is_canceled',0);
-//        $res=$this->db->get()->row_array();
-//        $orders_cust=$revenue_cust=$points_cust=0;
-//        if ($res['cnt']>0) {
-//            $orders_cust=$res['cnt'];
-//            $out['orders_cust']=$orders_cust;
-//        }
-//        $orders_reg=($orders-$orders_cust);
-//        if ($orders_reg>0) {
-//            $out['orders_reg']=$orders_reg;
-//        }
-//        if (floatval($res['revenue'])!=0) {
-//            $revenue_cust=$res['revenue'];
-//            $out['revenue_cust']=number_format($revenue_cust,0,'.',',');
-//        }
-//        $revenue_reg=($revenue-$revenue_cust);
-//        if ($revenue_reg!=0) {
-//            $out['revenue_reg']=number_format($revenue_reg,0,'.',',');
-//        }
-//        if (floatval($res['profit'])!=0) {
-//            $points_cust=round($res['profit']*$this->config->item('profitpts'),0);
-//            $out['points_cust']=number_format($points_cust,0,'.',',');
-//        }
-//        $points_reg=($points-$points_cust);
-//        if ($points_reg!=0) {
-//            $out['points_reg']=number_format($points_reg,0,'.',',');
-//        }
-//        return $out;
-//    }
+
+    // Totals from Year begin
+    public function get_yearleads() {
+        $emptyval='&mdash;';
+        $out=array(
+            'weeks'=>$emptyval,
+            'newleads'=>$emptyval,
+            'wrkleads'=>$emptyval,
+            'outcalls'=>$emptyval,
+            'orders_reg'=>$emptyval,
+            'orders_cust'=>$emptyval,
+            'orders'=>$emptyval,
+            'revenue_reg'=>$emptyval,
+            'revenue_cust'=>$emptyval,
+            'revenue'=>$emptyval,
+            'points_reg'=>$emptyval,
+            'points_cust'=>$emptyval,
+            'points'=>$emptyval,
+        );
+        // Get first monday;
+        $date=strtotime(date('Y').'-01-01');
+        $sundate=strtotime(date('Y-m-d', strtotime('Sunday this week', $date)));
+        $startdate = strtotime(date("Y-m-d", $sundate) . " -6 days");
+        $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week')).' 23:59:59');
+        // New Leads
+        $out['weeks']=intval(date('W'));
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(create_date) >=', $startdate);
+        $this->db->where('unix_timestamp(create_date) < ', $enddate);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']>0) {
+            $out['newleads']=$res['cnt'];
+        }
+        // New Leads
+        $out['weeks']=intval(date('W'));
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(update_date) >=', $startdate);
+        $this->db->where('unix_timestamp(update_date) < ', $enddate);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']>0) {
+            $out['wrkleads']=$res['cnt'];
+        }
+        // All Orders
+        $this->db->select('count(order_id) as cnt, sum(revenue) as revenue, sum(profit) as profit');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', $startdate);
+        $this->db->where('order_date < ', $enddate);
+        $this->db->where('is_canceled',0);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            return $out;
+        }
+        $orders=$revenue=$points=0;
+        if ($res['cnt']>0) {
+            $orders=$res['cnt'];
+            $out['orders']=$res['cnt'];
+        }
+        if (floatval($res['revenue'])!=0) {
+            $revenue=$res['revenue'];
+            $out['revenue']=number_format($revenue,0,'.',',');
+        }
+        if (floatval($res['profit'])!=0) {
+            $points=round($res['profit']*$this->config->item('profitpts'),0);
+            $out['points']=number_format($points,0,'.',',');
+        }
+        // Count Custom Orders
+        $this->db->select('count(order_id) as cnt, sum(revenue) as revenue, sum(profit) as profit');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', $startdate);
+        $this->db->where('order_date < ', $enddate);
+        $this->db->where('item_id',$this->config->item('custom_id'));
+        $this->db->where('is_canceled',0);
+        $res=$this->db->get()->row_array();
+        $orders_cust=$revenue_cust=$points_cust=0;
+        if ($res['cnt']>0) {
+            $orders_cust=$res['cnt'];
+            $out['orders_cust']=$orders_cust;
+        }
+        $orders_reg=($orders-$orders_cust);
+        if ($orders_reg>0) {
+            $out['orders_reg']=$orders_reg;
+        }
+        if (floatval($res['revenue'])!=0) {
+            $revenue_cust=$res['revenue'];
+            $out['revenue_cust']=number_format($revenue_cust,0,'.',',');
+        }
+        $revenue_reg=($revenue-$revenue_cust);
+        if ($revenue_reg!=0) {
+            $out['revenue_reg']=number_format($revenue_reg,0,'.',',');
+        }
+        if (floatval($res['profit'])!=0) {
+            $points_cust=round($res['profit']*$this->config->item('profitpts'),0);
+            $out['points_cust']=number_format($points_cust,0,'.',',');
+        }
+        $points_reg=($points-$points_cust);
+        if ($points_reg!=0) {
+            $out['points_reg']=number_format($points_reg,0,'.',',');
+        }
+        return $out;
+    }
 
     private function _leadclose_log($leadpost, $oldlead, $usrlog, $mails)
     {

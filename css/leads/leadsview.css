@@ -697,7 +697,7 @@ input.lead_searchinput {
 .cmpusrorderviewtitle {
     clear: both;
     float: left;
-    margin-left: 48px;
+    margin-left: 39px;
     margin-top: 5px;
     height: 13px;
     line-height: 13px;
@@ -806,7 +806,7 @@ input.lead_searchinput {
 }
 .ordertotal_legend {
     float: left;
-    width: 55px;
+    width: 52px;
 }
 .ordertotal_legend.bad {
     width: 35px;
@@ -842,11 +842,11 @@ input.lead_searchinput {
 }
 .ordertotalhead > .orderdate {
     float: left;
-    width: 48px;
+    width: 45px;
 }
 .ordertotalhead > .customer {
     float: left;
-    width: 91px;
+    width: 86px;
 }
 .ordertotalhead > .itemname {
     float: left;
@@ -866,6 +866,7 @@ input.lead_searchinput {
     float: left;
     height: 187px;
     overflow-y: scroll;
+    overflow-x: hidden;
     width: 393px;
 }
 .ordertotaldatarow {
@@ -898,7 +899,7 @@ input.lead_searchinput {
     text-overflow: ellipsis;
     text-align: left;
     white-space: nowrap;
-    width: 84px;
+    width: 90px;
 }
 .ordertotaldatarow .itemname {
     border-right: 1px solid #000000;
@@ -909,7 +910,7 @@ input.lead_searchinput {
     text-overflow: ellipsis;
     text-align: left;
     white-space: nowrap;
-    width: 100px;
+    width: 106px;
 }
 .ordertotaldatarow .revenue {
     border-right: 1px solid #000000;
@@ -1246,7 +1247,7 @@ input.lead_searchinput {
     line-height: 16px;
     height: 16px;
     text-align: center;
-    width: 545px;
+    /* width: 545px; */
 }
 .leadorderyeartotals.data {
     font-weight: normal;
@@ -1256,22 +1257,22 @@ input.lead_searchinput {
     border-right: 1px solid #000000;
     float: left;
     margin-left: 34px;
-    width: 102px;
+    width: 99px;
 }
 .leadorderyeartotalshead > .orders {
     border-right: 1px solid #000000;
     float: left;
-    width: 92px;
+    width: 90px;
 }
 .leadorderyeartotalshead > .revenue {
     border-right: 1px solid #000000;
     float: left;
-    width: 176px;
+    width: 174px;
 }
 .leadorderyeartotalshead >.points {
     border-right: 1px solid #000000;
     float: left;
-    width: 137px;
+    width: 135px;
 }
 .leadorderyeartotals > .weeks {
     border-right: 1px solid #000000;
@@ -1297,4 +1298,24 @@ input.lead_searchinput {
     border-right: 1px solid #000000;
     float: left;
     width: 45px;
+}
+/* Tooltips */
+.curpoints_tooltip {
+    width: 198px;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.yeartodate_tooltip {
+    width: 557px;
+    max-width: 557px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.weekuserorder_tooltip {
+    width: 420px;
+    max-width: 420px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
 }

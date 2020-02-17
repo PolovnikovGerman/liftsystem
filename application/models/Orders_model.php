@@ -557,4 +557,176 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
+    public function get_cmporders($bgn) {
+        $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
+        $data=array();
+        $emptydata='&mdash;';
+        // Get data about orders per week
+        $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $bgn);
+        $this->db->where('o.order_date <= ', $end);
+        $this->db->where('o.is_canceled',0);
+        $totals=$this->db->get()->row_array();
+        $points=round($totals['profit']*$this->config->item('profitpts'),0);
+        $totals['points']=($points==0 ? $emptydata : $points);
+        $totals['revenue']=($totals['revenue']==0 ? $emptydata : '$'.number_format($totals['revenue'],2,'.',','));
+        $totals['cnt']=($totals['cnt']==0 ? $emptydata : $totals['cnt']);
+        $data['totals']=$totals;
+        $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $bgn);
+        $this->db->where('o.order_date <= ', $end);
+        $this->db->where('o.item_id = ', $this->config->item('custom_id'));
+        $this->db->where('o.is_canceled',0);
+        $customs=$this->db->get()->row_array();
+        $points=round($customs['profit']*$this->config->item('profitpts'),0);
+        $customs['points']=($points==0 ? $emptydata : $points);
+        $customs['revenue']=($customs['revenue']==0 ? $emptydata : '$'.number_format($customs['revenue'],2,'.',','));
+        $customs['cnt']=($customs['cnt']==0 ? $emptydata : $customs['cnt']);
+        $data['customs']=$customs;
+
+        $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as profit');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $bgn);
+        $this->db->where('o.order_date <= ', $end);
+        $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+        $this->db->where('o.is_canceled',0);
+        $regular=$this->db->get()->row_array();
+        $points=round($regular['profit']*$this->config->item('profitpts'),0);
+        $regular['points']=($points==0 ? $emptydata : $points);
+        $regular['revenue']=($regular['revenue']==0 ? $emptydata : '$'.number_format($regular['revenue'],2,'.',','));
+        $regular['cnt']=($regular['cnt']==0 ? $emptydata : $regular['cnt']);
+        $data['regular']=$regular;
+        return $data;
+    }
+
+    public function get_leadorders($options) {
+        $item_dbtable='sb_items';
+        $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name, o.customer_email, o.revenue');
+        $this->db->select('o.shipping,o.is_shipping, o.tax, o.cc_fee, o.order_cog, o.profit, o.profit_perc, b.brand_name, o.is_canceled');
+        $this->db->select('o.reason, itm.item_name, o.item_id, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate');
+        $this->db->select('finance_order_amountsum(o.order_id) as cnt_amnt, u.user_leadname, u.user_name');
+        $this->db->select('o.invoice_doc, o.invoice_send, o.order_confirmation');
+        // ',FALSE);
+        $this->db->from('ts_orders o');
+        $this->db->join('brands b','b.brand_id=o.brand_id','left');
+        $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
+        $this->db->join('users u','u.user_id=o.order_usr_repic','left');
+        $this->db->where('o.is_canceled',0);
+        if (isset($options['unassigned'])) {
+            $this->db->where('o.order_usr_repic is null');
+        }
+        if (isset($options['weborder'])) {
+            $this->db->where('o.weborder', $options['weborder']);
+        }
+        if (isset($options['order_usr_repic'])) {
+            $this->db->where('o.order_usr_repic',$options['order_usr_repic']);
+        }
+        if (isset($options['search'])) {
+            $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ',o.revenue) ",strtoupper($options['search']));
+        }
+        if (isset($options['begin'])) {
+            $this->db->where('o.order_date >= ',$options['begin']);
+        }
+        if (isset($options['end'])) {
+            $this->db->where('o.order_date <= ',$options['end']);
+        }
+        if (isset($options['order_qty'])) {
+            $this->db->where('o.order_qty',$options['order_qty']);
+        }
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'],$options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['order_by'],$options['direct']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+
+        $res=$this->db->get()->result_array();
+        /* Summary */
+        $out_array=array();
+        if (isset($options['offset'])) {
+            $numpp=$options['offset']+1;
+        } else {
+            $numpp=1;
+        }
+        if (count($res)>0) {
+            $ordnxt=$res[0]['order_num'];
+        }
+
+        foreach ($res as $row) {
+            $row['rowclass']='';
+            if ($row['order_num']!=$ordnxt) {
+                $row['rowclass']='underline';
+            }
+            $ordnxt=intval($row['order_num'])-1;
+            $row['numpp']=$numpp;
+            $row['editlnk']='<a class="editclayord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/edit.png"/></a>';
+            $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
+            $row['revenue']=(intval($row['revenue'])==0 ? '-' : '$'.number_format($row['revenue'],2,'.',','));
+            $row['shipping']=(intval($row['shipping'])==0 ? '-' : '$'.number_format($row['shipping'],2,'.',','));
+            $row['tax']=(intval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'],2,'.',','));
+            $row['cc_fee_show']=($row['cc_fee']==0 ? 0 : 1);
+            $row['cc_fee']=(floatval($row['cc_fee'])==0 ? '' : '$'.number_format($row['cc_fee'],2,'.',','));
+
+            $row['profit_class']='';
+            $row['proftitleclass']='';
+            $row['proftitle']='';
+            $row['input_ship']='&nbsp;';
+            $row['input_other']='&nbsp;';
+            $row['out_item']='&nbsp;';
+            if ($row['order_items']) {
+                $row['out_item']=$row['order_items'];
+            } elseif ($row['item_name']) {
+                $row['out_item']=$row['item_name'];
+            }
+            $row['custom_order']=($row['item_id']==$this->config->item('custom_id') ? 1 : 0);
+            $row['input_ship']='<input type="checkbox" id="cship'.$row['order_id'].'" class="calcship" '.($row['is_shipping'] ? 'checked="checked"' : '').' />';
+            $row['input_other']='<input type="checkbox" data-order="'.$row['order_id'].'" class="calcccfee" '.($row['cc_fee'] ?  'checked="checked"' : '' ).' title="'.($row['cc_fee']==0 ? '-' : '$'.number_format($row['cs_fee'],2,'.',',')).'" />';
+            $row['points']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+            $row['points_val']=round($row['profit']*$this->config->item('profitpts'),0);
+            $row['profit']='$'.number_format($row['profit'],2,'.',',');
+            if ($row['order_cog']=='') {
+                $row['order_cog']='project';
+                $row['cog_class']='projectcog';
+                $row['profit_class']='projprof';
+                $row['profit_perc']=$this->project_name;
+                $row['add']='';
+            } else {
+                $row['cog_class']='';
+                // $row['profit_class']=$this->profit_class($row['profit_perc']);
+                $row['profit_class']=orderProfitClass($row['profit_perc']);
+                if ($row['profit_perc']<$this->config->item('minimal_profitperc') && !empty($row['reason'])) {
+                    $row['proftitleclass']='lowprofittitle';
+                    $row['proftitle']='title="'.$row['reason'].'"';
+                }
+                $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
+                $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+            }
+            $row['user_replic']='&nbsp;';
+            $row['usrreplclass']='user';
+            if ($row['order_usr_repic']>0) {
+                $row['user_replic']=($row['user_leadname']=='' ? $row['user_name'] : $row['user_leadname']);
+            } else {
+                if ($row['weborder']==1) {
+                    $row['user_replic']='Website';
+                    $row['usrreplclass']='website';
+                }
+            }
+            $row['order_status']=$row['order_class']='&nbsp;';
+            $out_array[]=$row;
+            $numpp++;
+        }
+        return $out_array;
+    }
+
+
 }

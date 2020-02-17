@@ -179,6 +179,52 @@ class Leads extends MY_Controller
         show_404();
     }
 
+    public function leadsclosed_cmporders() {
+        $bgn=$this->input->get('bgn');
+        $this->load->model('orders_model');
+        $data=$this->orders_model->get_cmporders($bgn);
+        $content=$this->load->view('leads/company_ordertotals_view', $data, TRUE);
+        echo $content;
+    }
+
+    public function leadsclosed_yeartotals() {
+        $this->load->model('leads_model');
+        $leads=$this->leads_model->get_yearleads();
+        $content=$this->load->view('leads/lead_yeartotals_view', $leads, TRUE);
+        echo $content;
+    }
+
+    public function leadsclosed_usrorders() {
+        $bgn=$this->input->get('bgn');
+        $user_id=$this->input->get('user');
+        $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
+        $this->load->model('orders_model');
+        $options=array(
+            'begin'=>$bgn,
+            'order_usr_repic'=>$user_id,
+            'end'=>$end,
+            'order_by'=>'o.order_num',
+            'direct'=>'desc',
+        );
+
+        $orders=$this->orders_model->get_leadorders($options);
+        $label=date('M d',$bgn).'-';
+        if (date('m', $bgn)!=date('m',$end)) {
+            $label.=date('M d',$end);
+        } else {
+            $label.=date('d', $end);
+        }
+        $label.=','.date('Y', $end);
+
+        $data=array(
+            'total'=>count($orders),
+            'orders'=>$orders,
+            'label'=>$label,
+        );
+        $content=$this->load->view('leads/lead_userordertotals_view', $data, TRUE);
+        echo $content;
+    }
+
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
         $this->load->model('leads_model');

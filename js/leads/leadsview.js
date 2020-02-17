@@ -154,37 +154,57 @@ function init_leadclosed_content() {
             $("div.weekdatadetails[data-week='"+week+"']").hide(400);
         }
     });
+    /* Current points cell */
     $("div.weekdatarow div.curpoints").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
-            $("div#"+id).bt({
-                trigger: 'click',
-                width: '198px',
-                fill: '#a7a7a7',
-                ajaxCache: false,
-                positions: ['most'],
-                ajaxPath: ["$(this).attr('href')"]
+            $("div#"+id).qtip({
+                content : {
+                    text: function(event, api) {
+                        $.ajax({
+                            // url: href // Use href attribute as URL
+                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                        }).then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Loading...'; // Set some initial text
+                    }
+                },
+                show: {
+                    event: 'click'
+                },
+                position: {
+                    my: 'bottom right',
+                    at: 'middle left',
+                },
+                style: {
+                    classes: 'curpoints_tooltip'
+                },
             });
         }
     });
     $("div.weekdatarow div.ordersnum").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
             init_weekorders_tips(id);
         }
     });
     $("div.weekdatarow div.ordersrevenue").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
             init_weekorders_tips(id);
         }
     });
     $("div.weekdatarow div.ordersprofit").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
             init_weekorders_tips(id);
         }
@@ -203,32 +223,76 @@ function init_leadclosed_content() {
             init_weekleads_tips(id);
         }
     });
-    $("div.weekdatarowtotal").children('div.weekday').bt({
-        trigger: 'click',
-        shadow: true,
-        width: '550px',
-        fill: '#a7a7a7',
-        ajaxCache: false,
-        positions: ['most'],
-        ajaxPath: '/leads/leadsclosed_yeartotals'
+    $("div.weekdatarowtotal").children('div.weekday').qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: '/leads/leadsclosed_yeartotals' // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        show : {
+            'event' : 'click',
+        },
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        style: {
+            classes : 'qtip-plain yeartodate_tooltip',
+        }
     });
 }
 
 function init_weekorders_tips(id) {
-    $("div#"+id).bt({
-        trigger: 'click',
-        shadow: true,
-        width: '408px',
-        fill: '#a7a7a7',
-        ajaxCache: false,
-        positions: ['most'],
-        ajaxPath: ["$(this).attr('href')"],
-        postShow: function(box) {
-            $("div.ordertotaldatarow div.ordernum").unbind('click').click(function(){
-                var order=$(this).data('order');
-                $("div.bt-wrapper").css('visibility','hidden');
-                order_artstage(order);
-            });
+    $("div#"+id).qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    $("div.ordertotaldatarow div.ordernum").unbind('click').click(function(){
+                        var order=$(this).data('order');
+                        $("div.bt-wrapper").css('visibility','hidden');
+                        order_artstage(order);
+                    });
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        show : {
+            'event' : 'click',
+        },
+        hide : {
+            'event' : 'click',
+        },
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        events: {
+            postShow: function(event, api) {
+                $("div.ordertotaldatarow div.ordernum").unbind('click').click(function(){
+                    var order=$(this).data('order');
+                    $("div.bt-wrapper").css('visibility','hidden');
+                    order_artstage(order);
+                });
+            }
+        },
+        style: {
+            classes : 'qtip-plain weekuserorder_tooltip',
         }
     });
 }
@@ -239,7 +303,7 @@ function init_weekleads_tips(id) {
     if (usrrepl == '') {
         popupwidth = '212px';
     }
-    $("div#" + id).bt({
+    /* $("div#" + id).bt({
         trigger: 'click',
         shadow: true,
         width: popupwidth,
@@ -255,6 +319,7 @@ function init_weekleads_tips(id) {
             });
         }
     });
+    */
 
 }
 

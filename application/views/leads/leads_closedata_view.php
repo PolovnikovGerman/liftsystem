@@ -42,10 +42,10 @@
                 <div class="newleads" id="newlead<?=$row['bgn']?>" <?=$row['newleadsurl']?>><?=$row['newleads']?></div>
                 <div class="workleads" id="wrklead<?=$row['bgn']?>" <?=$row['wrkleadsurl']?>><?=$row['wrkleads']?></div>
                 <div class="outcalls"><?=$row['outcalls']?></div>
-                <div class="ordersnum" id="orders<?=$row['bgn']?>" <?=$row['ordersurl']?>><?=$row['orders']?></div>
-                <div class="ordersrevenue" id="ordrevenue<?=$row['bgn']?>" <?=$row['ordersurl']?>><?=$row['revenue']?></div>
-                <div class="ordersprofit" id="ordprofit<?=$row['bgn']?>" <?=$row['ordersurl']?>><?=$row['profit']?></div>
-                <div class="curpoints" id="points<?=$row['bgn']?>" <?=$row['cmporderurl']?>><?=$row['points']?></div>
+                <div class="ordersnum" id="orders<?=$row['bgn']?>" div-viewsrc="<?=$row['ordersurl']?>"><?=$row['orders']?></div>
+                <div class="ordersrevenue" id="ordrevenue<?=$row['bgn']?>" data-viewsrc="<?=$row['ordersurl']?>"><?=$row['revenue']?></div>
+                <div class="ordersprofit" id="ordprofit<?=$row['bgn']?>" data-viewsrc="<?=$row['ordersurl']?>"><?=$row['profit']?></div>
+                <div class="curpoints" id="points<?=$row['bgn']?>" data-viewsrc="<?=$row['cmporderurl']?>"><?=$row['points']?></div>
                 <div class="goalpoints"><?=$row['goals']?></div>
                 <div class="procgoals <?=$row['goalperc_class']?>"><?=$row['goalperc']?></div>
             </div>
