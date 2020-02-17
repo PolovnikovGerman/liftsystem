@@ -505,4 +505,56 @@ Class Orders_model extends MY_Model
         }
     }
 
+    // Get Total number of Orders of Year
+    public function orders_total_year($year) {
+        $start=strtotime($year.'-01-01');
+        $this->db->select("count(order_id) as total",FALSE);
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $this->db->where('order_date >= ',$start);
+        $res=$this->db->get()->row_array();
+        return $res['total'];
+    }
+
+    // Min order create date
+    public function get_order_mindate() {
+        $this->db->select('min(create_date) as mindate');
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $res=$this->db->get()->row_array();
+        return $res['mindate'];
+    }
+
+    public function get_orders_weekleadreport($options) {
+        $this->db->select("date_format(from_unixtime(o.order_date),'%m/%d/%Y') as day, count(o.order_id) as cnt, sum(o.revenue) as revenue",FALSE);
+        $this->db->select('sum(o.profit) as profit');
+        $this->db->from('ts_orders o');
+        if (isset($options['user_id'])) {
+            $this->db->where('o.order_usr_repic', $options['user_id']);
+        }
+        $this->db->where('o.order_date >= ', $options['start']);
+        $this->db->where('o.order_date <= ', $options['end']);
+        $this->db->where('o.is_canceled',0);
+        $this->db->group_by('day');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    // Get Orders, created by weeks
+    public function get_orders_leadreport($options=array()) {
+        $this->db->select("date_format(from_unixtime(o.order_date),'%x-%v') as week, count(o.order_id) as cnt, sum(o.revenue) as revenue",FALSE);
+        $this->db->select('sum(o.profit) as profit');
+        $this->db->from('ts_orders o');
+        if (isset($options['user_id'])) {
+            $this->db->where('o.order_usr_repic', $options['user_id']);
+        }
+        if (isset($options['project'])) {
+            $this->db->where('o.order_cog is null');
+        }
+        $this->db->where('o.is_canceled',0);
+        $this->db->group_by('week');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 }

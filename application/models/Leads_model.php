@@ -12,225 +12,222 @@ Class Leads_model extends MY_Model
         parent::__construct();
     }
 
-    /* Total records */
-//    function get_total_leads($options) {
-//        $this->db->select('count(l.lead_id) as cnt');
-//        $this->db->from('ts_leads l');
-//        if (isset($options['usrrepl'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['usrrepl']);
-//        }
-//        if (isset($options['lead_type'])) {
-//            switch ($options['lead_type']) {
-//                case '1':
-//                    /* Open & Priority & Soon */
-//                    $this->db->where_in('lead_type',array(1,2,6));
-//                    break;
-//                case '2':
-//                    /* Priority */
-//                    $this->db->where('lead_type',1);
-//                    break;
-//                case '3':
-//                    /* Dead */
-//                    $this->db->where('lead_type',4);
-//                    break;
-//                case '4':
-//                    /* Closed */
-//                    $this->db->where('lead_type',3);
-//                    break;
-//                case '5':
-//                    /* Open Only */
-//                    $this->db->where('lead_type',2);
-//                    break;
-//                case '6':
-//                    $this->db->where('lead_type',6);
-//                    break;
-//            }
-//        }
-//        if (isset($options['search'])) {
-//            $search='%'.strtoupper($options['search']).'%';
-//            // $this->db->like('upper(concat(coalesce(l.lead_item,\'\'),coalesce(l.other_item_name,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_company,\'\'),coalesce(l.lead_mail,\'\'),coalesce(l.lead_phone,\'\'),concat(\'L\',l.lead_number))) ',$search);
-//            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
-//            $this->db->where("{$searchdata}");
-//        }
-//        $res=$this->db->get()->row_array();
-//
-//        return $res['cnt'];
-//    }
-//
-//    /* Get data about Leads */
-//    function get_leads($options,$sort,$limit,$offset) {
-//        $this->db->select('l.*');
-//        $this->db->from('ts_leads l');
-//        if (isset($options['usrrepl'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['usrrepl']);
-//        }
-//        if (isset($options['lead_type'])) {
-//            switch ($options['lead_type']) {
-//                case '1':
-//                    /* Open & Priority & Soon */
-//                    $this->db->where_in('lead_type',array(1,2,6));
-//                    break;
-//                case '2':
-//                    /* Priority */
-//                    $this->db->where('lead_type',1);
-//                    break;
-//                case '3':
-//                    /* Dead */
-//                    $this->db->where('lead_type',4);
-//                    break;
-//                case '4':
-//                    /* Closed */
-//                    $this->db->where('lead_type',3);
-//                    break;
-//                case '5':
-//                    /* Open Only */
-//                    $this->db->where('lead_type',2);
-//                    break;
-//                case '6':
-//                    $this->db->where('lead_type',6);
-//                    break;
-//            }
-//        }
-//        if (isset($options['search'])) {
-//            // $search=strtoupper($options['search']);
-//            // $this->db->like('upper(concat(coalesce(l.lead_item,\'\'),coalesce(l.other_item_name,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_company,\'\'),coalesce(l.lead_mail,\'\'),coalesce(l.lead_phone,\'\'),concat(\'L\',l.lead_number))) ',$search);
-//            $search='%'.strtoupper($options['search']).'%';
-//            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
-//            $this->db->where("{$searchdata}");
-//        }
-//        if ($sort) {
-//            if ($sort==2) {
-//                $this->db->order_by('lead_date','desc');
-//            } elseif($sort==1) {
-//                $this->db->order_by('update_date','desc');
-//            }
-//        }
-//        $this->db->limit($limit,$offset);
-//        $result=$this->db->get()->result_array();
-//        $out=array();
-//        $cur_date='';
-//        $fl_show=0;
-//        $numpp=0;
-//
-//        foreach ($result as $row) {
-//            if ($sort==1) {
-//                $weekday=date('w',strtotime($row['update_date']));
-//                $compdat=date('m/d',strtotime($row['update_date']));
-//            } else {
-//                $weekday=date('w',$row['lead_date']);
-//                $compdat=date('m/d',$row['lead_date']);
-//            }
-//            switch ($weekday) {
-//                case '0':
-//                    $compdate='Su '.$compdat;
-//                    break;
-//                case '1':
-//                    $compdate='Md '.$compdat;
-//                    break;
-//                case '2':
-//                    $compdate='Tu '.$compdat;
-//                    break;
-//                case '3':
-//                    $compdate='Wd '.$compdat;
-//                    break;
-//                case '4':
-//                    $compdate='Th '.$compdat;
-//                    break;
-//                case '5':
-//                    $compdate='Fr '.$compdat;
-//                    break;
-//                case '6':
-//                    $compdate='St '.$compdat;
-//                    break;
-//                default :
-//                    $compdate=$compdat;
-//                    break;
-//            }
-//            $row['out_date']='---';
-//            $row['dateclass']='';
-//            $row['separate']='';
-//            if ($cur_date!=$compdate) {
-//                $cur_date=$compdate;
-//                $row['out_date']=$compdate;
-//                $row['dateclass']='leadnewdat';
-//                if ($numpp>0) {
-//                    $row['separate']='separate';
-//                }
-//            }
-//            $row['itemshow_class']='normal';
-//            if ($row['lead_item_id']==-3) {
-//                $row['itemshow_class']='custom';
-//            }
-//            $row['lead_priority_icon']='&nbsp;';
-//            if ($row['lead_type']==1) {
-//                $row['lead_priority_icon']='<img src="./img/goldstar.png" alt="Priority"/>';
-//            } elseif($row['lead_type']==6) {
-//                $row['lead_priority_icon']='<img src="./img/ordersoon.gif" alt="Soon"/>';
-//            }
-//            // $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : '$'.number_format($row['lead_value'],0,'.',''));
-//            // $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('profitpts'),0).'pts');
-//            $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('leadpts'),0).'pts');
-//            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
-//            if (empty($row['contact'])) {
-//                $row['contact']='&nbsp;';
-//            }
-//            $row['contact']=($row['contact']=='' ? '&nbsp;' : $row['contact']);
-//            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
-//            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
-//            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
-//            switch ($row['lead_item']) {
-//                case '':
-//                    $row['out_lead_item']='&nbsp;';
-//                    break;
-//                case 'Other':
-//                case 'Multiple':
-//                case 'Custom Shaped Stress Balls':
-//                    if ($row['other_item_name']=='') {
-//                        $row['out_lead_item']=$row['lead_item'];
-//                    } else {
-//                        $row['out_lead_item']=$row['other_item_name'];
-//                    }
-//                    break;
-//                default :
-//                    $row['out_lead_item']=$row['lead_item'];
-//                    break;
-//
-//            }
-//            $row['lead_item']=($row['lead_item']=='' ? '&nbsp;' : $row['lead_item']);
-//            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
-//            $row['leadrow_class']='';
-//            switch ($row['lead_type']) {
-//                case '3':
-//                    $row['leadrow_class']='dead';
-//                    break;
-//                case '4':
-//                    $row['leadrow_class']='closed';
-//                    break;
-//            }
-//            $this->db->select('u.user_initials');
-//            $this->db->from('users u');
-//            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
-//            $this->db->where('lu.lead_id',$row['lead_id']);
-//            $usr=$this->db->get()->result_array();
-//            $lusr='';
-//            $nusr=0;
-//            foreach ($usr as $urow) {
-//                if ($nusr==2) {
-//                    $lusr=substr($lusr,0,-1).'+';
-//                    break;
-//                }
-//                $lusr.=$urow['user_initials'].' ';
-//                $nusr++;
-//            }
-//            $row['usr_data']=($lusr=='' ? '&nbsp;' : $lusr);
-//            $out[]=$row;
-//            $numpp++;
-//        }
-//        return $out;
-//    }
-//    /* years for footer */
+    // Total records
+    public function get_total_leads($options) {
+        $this->db->select('count(l.lead_id) as cnt');
+        $this->db->from('ts_leads l');
+        if (isset($options['usrrepl'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['usrrepl']);
+        }
+        if (isset($options['lead_type'])) {
+            switch ($options['lead_type']) {
+                case '1':
+                    /* Open & Priority & Soon */
+                    $this->db->where_in('lead_type',array(1,2,6));
+                    break;
+                case '2':
+                    /* Priority */
+                    $this->db->where('lead_type',1);
+                    break;
+                case '3':
+                    /* Dead */
+                    $this->db->where('lead_type',4);
+                    break;
+                case '4':
+                    /* Closed */
+                    $this->db->where('lead_type',3);
+                    break;
+                case '5':
+                    /* Open Only */
+                    $this->db->where('lead_type',2);
+                    break;
+                case '6':
+                    $this->db->where('lead_type',6);
+                    break;
+            }
+        }
+        if (isset($options['search'])) {
+            $search='%'.strtoupper($options['search']).'%';
+            // $this->db->like('upper(concat(coalesce(l.lead_item,\'\'),coalesce(l.other_item_name,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_company,\'\'),coalesce(l.lead_mail,\'\'),coalesce(l.lead_phone,\'\'),concat(\'L\',l.lead_number))) ',$search);
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $this->db->where("{$searchdata}");
+        }
+        $res=$this->db->get()->row_array();
+
+        return $res['cnt'];
+    }
+
+    /* Get data about Leads */
+    public function get_leads($options,$sort,$limit,$offset) {
+        $this->db->select('l.*');
+        $this->db->from('ts_leads l');
+        if (isset($options['usrrepl'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['usrrepl']);
+        }
+        if (isset($options['lead_type'])) {
+            switch ($options['lead_type']) {
+                case '1':
+                    /* Open & Priority & Soon */
+                    $this->db->where_in('lead_type',array(1,2,6));
+                    break;
+                case '2':
+                    /* Priority */
+                    $this->db->where('lead_type',1);
+                    break;
+                case '3':
+                    /* Dead */
+                    $this->db->where('lead_type',4);
+                    break;
+                case '4':
+                    /* Closed */
+                    $this->db->where('lead_type',3);
+                    break;
+                case '5':
+                    /* Open Only */
+                    $this->db->where('lead_type',2);
+                    break;
+                case '6':
+                    $this->db->where('lead_type',6);
+                    break;
+            }
+        }
+        if (isset($options['search'])) {
+            $search='%'.strtoupper($options['search']).'%';
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $this->db->where("{$searchdata}");
+        }
+        if ($sort) {
+            if ($sort==2) {
+                $this->db->order_by('lead_date','desc');
+            } elseif($sort==1) {
+                $this->db->order_by('update_date','desc');
+            }
+        }
+        $this->db->limit($limit,$offset);
+        $result=$this->db->get()->result_array();
+        $out=array();
+        $cur_date='';
+        $fl_show=0;
+        $numpp=0;
+
+        foreach ($result as $row) {
+            if ($sort==1) {
+                $weekday=date('w',strtotime($row['update_date']));
+                $compdat=date('m/d',strtotime($row['update_date']));
+            } else {
+                $weekday=date('w',$row['lead_date']);
+                $compdat=date('m/d',$row['lead_date']);
+            }
+            switch ($weekday) {
+                case '0':
+                    $compdate='Su '.$compdat;
+                    break;
+                case '1':
+                    $compdate='Md '.$compdat;
+                    break;
+                case '2':
+                    $compdate='Tu '.$compdat;
+                    break;
+                case '3':
+                    $compdate='Wd '.$compdat;
+                    break;
+                case '4':
+                    $compdate='Th '.$compdat;
+                    break;
+                case '5':
+                    $compdate='Fr '.$compdat;
+                    break;
+                case '6':
+                    $compdate='St '.$compdat;
+                    break;
+                default :
+                    $compdate=$compdat;
+                    break;
+            }
+            $row['out_date']='---';
+            $row['dateclass']='';
+            $row['separate']='';
+            if ($cur_date!=$compdate) {
+                $cur_date=$compdate;
+                $row['out_date']=$compdate;
+                $row['dateclass']='leadnewdat';
+                if ($numpp>0) {
+                    $row['separate']='separate';
+                }
+            }
+            $row['itemshow_class']='normal';
+            if ($row['lead_item_id']==-3) {
+                $row['itemshow_class']='custom';
+            }
+            $row['lead_priority_icon']='&nbsp;';
+            if ($row['lead_type']==1) {
+                $row['lead_priority_icon']='<img src="./img/leads/goldstar.png" alt="Priority"/>';
+            } elseif($row['lead_type']==6) {
+                $row['lead_priority_icon']='<img src="./img/leads/ordersoon.gif" alt="Soon"/>';
+            }
+            $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('leadpts'),0).'pts');
+            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
+            if (empty($row['contact'])) {
+                $row['contact']='&nbsp;';
+            }
+            $row['contact']=($row['contact']=='' ? '&nbsp;' : $row['contact']);
+            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
+            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
+            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
+            switch ($row['lead_item']) {
+                case '':
+                    $row['out_lead_item']='&nbsp;';
+                    break;
+                case 'Other':
+                case 'Multiple':
+                case 'Custom Shaped Stress Balls':
+                    if ($row['other_item_name']=='') {
+                        $row['out_lead_item']=$row['lead_item'];
+                    } else {
+                        $row['out_lead_item']=$row['other_item_name'];
+                    }
+                    break;
+                default :
+                    $row['out_lead_item']=$row['lead_item'];
+                    break;
+
+            }
+            $row['lead_item']=($row['lead_item']=='' ? '&nbsp;' : $row['lead_item']);
+            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
+            $row['leadrow_class']='';
+            switch ($row['lead_type']) {
+                case '3':
+                    $row['leadrow_class']='dead';
+                    break;
+                case '4':
+                    $row['leadrow_class']='closed';
+                    break;
+            }
+            $this->db->select('u.user_initials');
+            $this->db->from('users u');
+            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
+            $this->db->where('lu.lead_id',$row['lead_id']);
+            $usr=$this->db->get()->result_array();
+            $lusr='';
+            $nusr=0;
+            foreach ($usr as $urow) {
+                if ($nusr==2) {
+                    $lusr=substr($lusr,0,-1).'+';
+                    break;
+                }
+                $lusr.=$urow['user_initials'].' ';
+                $nusr++;
+            }
+            $row['usr_data']=($lusr=='' ? '&nbsp;' : $lusr);
+            $out[]=$row;
+            $numpp++;
+        }
+        return $out;
+    }
+
+    // years for footer
 //    function get_footer_years() {
 //        $this->db->select("distinct(date_format(from_unixtime(lead_date),'%Y')) as year",FALSE);
 //        $this->db->from('ts_leads');
@@ -1157,553 +1154,553 @@ Class Leads_model extends MY_Model
     }
 
     // Count % of closed leads
-//    public function count_closed_totals($options) {
-//        $dateend=$options['enddate'];
-//        $response=array(
-//            'prev'=>0,
-//            'next'=>0,
-//        );
-//        $out=array();
-//        for ($i=1; $i<6; $i++) {
-//            $dat=strtotime(date("Y-m-d", $dateend) . " -{$i} month");
-//            $out[]=array(
-//                'label'=>date('M\'y', $dat),
-//                'month'=>date('m-Y', $dat),
-//                'base'=>0,
-//                'closed'=>0,
-//                'percent'=>'&mdash;',
-//            );
-//        }
-//        $datestart=$dat;
-//        $response['datestart']=$datestart;
-//        if (isset($options['user_id'])) {
-//            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
-//            $this->db->from('ts_leads l');
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        } else {
-//            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
-//            $this->db->from('ts_leads l');
-//        }
-//        $this->db->where('unix_timestamp(l.create_date) >= ', $datestart);
-//        $this->db->where('unix_timestamp(l.create_date) < ', $dateend);
-//        $this->db->group_by('month');
-//        $res=$this->db->get()->result_array();
-//        foreach ($res as $row) {
-//            $idx=0;
-//            foreach ($out as $orow) {
-//                if ($orow['month']==$row['month']) {
-//                    $out[$idx]['base']=$row['cnt'];
-//                }
-//                $idx++;
-//            }
-//        }
-//        //  Closed
-//        if (isset($options['user_id'])) {
-//            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
-//            $this->db->from('ts_leads l');
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        } else {
-//            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
-//            $this->db->from('ts_leads l');
-//        }
-//        $this->db->where('l.lead_type',3);
-//        $this->db->where('unix_timestamp(create_date) >= ', $datestart);
-//        $this->db->where('unix_timestamp(create_date) < ', $dateend);
-//        $this->db->group_by('month');
-//        $clres=$this->db->get()->result_array();
-//        foreach ($clres as $row) {
-//            $idx=0;
-//            foreach ($out as $orow) {
-//                if ($orow['month']==$row['month']) {
-//                    $out[$idx]['closed']=$row['cnt'];
-//                }
-//                $idx++;
-//            }
-//        }
-//        $idx=0;
-//        foreach ($out as $row) {
-//            if ($row['base']!=0) {
-//                $out[$idx]['percent']=round($row['closed']/$row['base']*100,0).'%';
-//            }
-//            $idx++;
-//        }
-//        $response['data']=$out;
-//        // Count previous period
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(create_date) < ', $datestart);
-//        $datprv=$this->db->get()->row_array();
-//        if ($datprv['cnt']>0) {
-//            $response['next']=1;
-//        }
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(create_date) >= ', $dateend);
-//        $datnxt=$this->db->get()->row_array();
-//        if ($datnxt['cnt']>0) {
-//            $response['prev']=1;
-//        }
-//        return $response;
-//    }
-//
-//    // Get Minimal Lead Create Date
-//    public function get_lead_mindate() {
-//        $this->db->select('min(unix_timestamp(create_date)) as mindate');
-//        $this->db->from('ts_leads');
-//        $res=$this->db->get()->row_array();
-//        return $res['mindate'];
-//    }
-//
-//    // Get Closed data, Orders summary per weeks
-//    public function get_closedleads_data($options) {
-//        $emptyval='&mdash;';
-//        $emptydat='&nbsp;';
-//        $startdate=$options['startdate'];
-//        // Get weeks array
-//        if ($options['show_feature']==1) {
-//            $date = strtotime(date("Y-m-d") . " +6 week");
-//            $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week', $date)).' 23:59:59');
-//        } else {
-//            $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week')).' 23:59:59');
-//        }
-//        $date=strtotime(date("Y-m-d", $enddate) . " -6 days");
-//        $curyear=date('Y');
-//        $totals=array(
-//            'newleads'=>0,
-//            'newleads'=>0,
-//            'wrkleads'=>0,
-//            'outcalls'=>0,
-//            'orders'=>0,
-//            'revenue'=>0,
-//            'profit'=>0,
-//            'points'=>0,
-//            'cmpprofit'=>0,
-//            'goals'=>0,
-//        );
-//        $weekkey=array();
-//        $weeks=array();
-//        $weeks[]=array(
-//            'bgn'=>$date,
-//            'end'=>$enddate,
-//            'week'=>date('W-o',$date),
-//            'weeknum'=>date('W',$date),
-//            'year'=>date('Y',$date),
-//            'yearweek'=>date('Y',$enddate),
-//            'newleads'=>0,
-//            'wrkleads'=>0,
-//            'outcalls'=>0,
-//            'orders'=>0,
-//            'revenue'=>0,
-//            'profit'=>0,
-//            'points'=>0,
-//            'cmpprofit'=>0,
-//            'goals'=>0,
-//            'curweek'=>($options['show_feature']==0 ? 1 : 0),
-//            'project'=>0,
-//            'goals'=>$emptyval,
-//            'goalperc'=>$emptyval,
-//            'goalperc_class'=>'empty',
-//
-//        );
-//        array_push($weekkey,date('o-W',$date));
-//        $weekoptions=array(
-//            'start'=>$date,
-//            'end'=>$enddate,
-//        );
-//        if (isset($options['user_id'])) {
-//            $weekoptions['user_id']=$options['user_id'];
-//        }
-//        $curweek=$this->get_leadclosed_details($weekoptions);
-//        while (true) {
-//            $date=strtotime(date("Y-m-d", $date) . " -1 week");
-//            $sunday=strtotime(date('Y-m-d', strtotime('Sunday this week',$date)).' 23:59:59');
-//            $weeks[]=array(
-//                'bgn'=>$date,
-//                'end'=>$sunday,
-//                'week'=>date('W-o',$date),
-//                'weeknum'=>date('W',$date),
-//                'year'=>date('Y',$date),
-//                'yearweek'=>date('Y',$sunday),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'points'=>0,
-//                'cmpprofit'=>0,
-//                'goals'=>$emptyval,
-//                'goalperc'=>$emptyval,
-//                'goalperc_class'=>'empty',
-//                'curweek'=>0,
-//                'project'=>0,
-//            );
-//            array_push($weekkey, date('o-W',$date));
-//            if ($date<$startdate) {
-//                break;
-//            }
-//        }
-//        // Select New leads
-//        $this->db->select("date_format(l.create_date,'%x-%v') as week, count(l.lead_id) as cnt",FALSE);
-//        $this->db->from('ts_leads l');
-//        if (isset($options['user_id'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        }
-//        $this->db->group_by('week');
-//        $res=$this->db->get()->result_array();
-//        foreach ($res as $row) {
-//            $key=array_search($row['week'],$weekkey);
-//            if ($key===FALSE) {
-//            } else {
-//                $weeks[$key]['newleads']+=$row['cnt'];
-//            }
-//        }
-//
-//        // Select Updated leads
-//        $this->db->select("date_format(l.update_date,'%x-%v') as week, count(l.lead_id) as cnt",FALSE);
-//        $this->db->from('ts_leads l');
-//        if (isset($options['user_id'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        }
-//        $this->db->group_by('week');
-//        $updres=$this->db->get()->result_array();
-//        foreach ($updres as $row) {
-//            $key=array_search($row['week'],$weekkey);
-//            if ($key===FALSE) {
-//            } else {
-//                $weeks[$key]['wrkleads']+=$row['cnt'];
-//            }
-//        }
-//        $this->load->model('order_model');
-//        $orderres=$this->order_model->get_orders_leadreport($options);
-//
-//        foreach ($orderres as $row) {
-//            $key=array_search($row['week'],$weekkey);
-//            if ($key===FALSE) {
-//            } else {
-//                $weeks[$key]['orders']+=$row['cnt'];
-//                $weeks[$key]['revenue']+=$row['revenue'];
-//                $weeks[$key]['profit']+=$row['profit'];
-//            }
-//        }
-//        $cmporders=$this->order_model->get_orders_leadreport();
-//        foreach ($cmporders as $row) {
-//            $key=array_search($row['week'],$weekkey);
-//            if ($key===FALSE) {
-//            } else {
-//                // $weeks[$key]['points']+=round($row['profit']*$this->config->item('profitpts'),0);
-//                $weeks[$key]['points']+=round($row['profit']*$this->config->item('profitpts'),0);
-//                $weeks[$key]['cmpprofit']+=$row['profit'];
-//            }
-//        }
-//        $proj=array(
-//            'project'=>1,
-//        );
-//        // Get count orders in PROJ stage
-//        $orderproj=$this->order_model->get_orders_leadreport($proj);
-//
-//        foreach ($orderproj as $row) {
-//            $key=array_search($row['week'],$weekkey);
-//            if ($key===FALSE) {
-//            } else {
-//                $weeks[$key]['project']=($row['cnt']>0 ? 1 : 0);
-//            }
-//        }
-//
-//        $idx=0;
-//        foreach ($weeks as $row) {
-//            $weeks[$idx]['label']=date('M d', $row['bgn']).'-'.date('d', $row['end']).', '.date('Y',$row['bgn']);
-//            $leadurl='href=""';
-//            if ($row['newleads']>0) {
-//                if (isset($options['user_id'])) {
-//                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new"';
-//                } else {
-//                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new"';
-//                }
-//            }
-//            $weeks[$idx]['newleadsurl']=$leadurl;
-//            $leadurl='href=""';
-//            if ($row['wrkleads']>0) {
-//                if (isset($options['user_id'])) {
-//                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk"';
-//                } else {
-//                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk"';
-//                }
-//            }
-//            $weeks[$idx]['wrkleadsurl']=$leadurl;
-//            if ($weeks[$idx]['yearweek']==$curyear) {
-//                $totals['newleads']+=$row['newleads'];
-//                $totals['wrkleads']+=$row['wrkleads'];
-//                $totals['outcalls']+=$row['outcalls'];
-//                $totals['orders']+=$row['orders'];
-//                $totals['revenue']+=$row['revenue'];
-//                $totals['profit']+=$row['profit'];
-//                $totals['points']+=$row['points'];
-//                $totals['cmpprofit']+=$row['cmpprofit'];
-//            }
-//            $weeks[$idx]['newleads']=($row['newleads']==0 ? $emptyval : $row['newleads']);
-//            $weeks[$idx]['wrkleads']=($row['wrkleads']==0 ? $emptyval : $row['wrkleads']);
-//            $weeks[$idx]['outcalls']=($row['outcalls']==0 ? $emptyval : $row['outcalls']);
-//            $ordersurl='href=""';
-//            if ($row['orders']>0) {
-//                if (isset($options['user_id'])) {
-//                    $ordersurl='href="/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'"';
-//                } else {
-//                    $ordersurl='href="/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'"';
-//                }
-//            }
-//            $weeks[$idx]['ordersurl']=$ordersurl;
-//            $weeks[$idx]['orders']=($row['orders']==0 ? $emptyval : $row['orders']);
-//            $weeks[$idx]['revenue']=($row['revenue']==0 ? $emptyval : '$'.number_format(round($row['revenue'],0),0,'.',','));
-//            $weeks[$idx]['profit']=($row['profit']==0 ? $emptyval : round($row['profit']*$this->config->item('profitpts'),0));
-//            $cmpordurl='href=""';
-//            if ($row['points']>0) {
-//                $cmpordurl='href="/leads/leadsclosed_cmporders?bgn='.$row['bgn'].'"';
-//            }
-//            $weeks[$idx]['cmporderurl']=$cmpordurl;
-//            $weeks[$idx]['points']=($row['points']==0 ? $emptyval : $row['points']);
-//            $weeks[$idx]['weekclass']=($row['project']==0 ? '' : 'proj');
-//            // Calc Goal and goal Proc, class
-//            if (intval(date('Y',$row['bgn']))<2015) {
-//                $weeks[$idx]['goals']=$emptydat;
-//                $weeks[$idx]['goalperc']=$emptydat;
-//            } else {
-//                $weekbgn=strtotime(date("Y-m-d", $row['bgn']) . " - 52 weeks");
-//                $newkey=date('o-W',$weekbgn);
-//                // $newkey=(intval($row['yearweek'])-1).'-'.$row['weeknum'];
-//                $srch=array_search($newkey, $weekkey);
-//                if ($srch===FALSE) {
-//                    // No data
-//                    $weeks[$idx]['goals']='n/a';
-//                    $weeks[$idx]['goalperc']='n/a';
-//                } else {
-//                    $goals=round($weeks[$srch]['cmpprofit']*$this->config->item('cmpprofitpts'),0);
-//                    if ($weeks[$idx]['yearweek']==$curyear) {
-//                        $totals['goals']+=$goals;
-//                    }
-//                    $perc=0;
-//                    if ($goals>0) {
-//                        $perc=round($weeks[$idx]['points']/$goals*100,0);
-//                    }
-//                    $weeks[$idx]['goals']=$goals;
-//                    $weeks[$idx]['goalperc']=$perc.'%';
-//                    $weeks[$idx]['goalperc_class']=($perc<100 ? 'red' : 'blue');
-//                }
-//            }
-//            $idx++;
-//        }
-//        // Out Totals
-//        if ($totals['goals']>0) {
-//            $perc=round($totals['points']/$totals['goals']*100,0).'%';
-//            $totals['goalperc_class']=($perc<100 ? 'red' : 'blue');
-//        } else {
-//            $perc='n/a';
-//            $totals['goalperc_class']='empty';
-//        }
-//        $totals['goalperc']=$perc;
-//        $totals['goals']=($totals['goals']==0 ? $emptyval : $totals['goals']);
-//        $totals['newleads']=($totals['newleads']==0 ? $emptyval : $totals['newleads']);
-//        $totals['wrkleads']=($totals['wrkleads']==0 ? $emptyval : $totals['wrkleads']);
-//        $totals['outcalls']=($totals['outcalls']==0 ? $emptyval : $totals['outcalls']);
-//        $totals['orders']=($totals['orders']==0 ? $emptyval : $totals['orders']);
-//        $totals['revenue']=($totals['revenue']==0 ? $emptyval : '$'.number_format($totals['revenue'],0,'.','.'));
-//        $totals['points']=($totals['points']==0 ? $emptyval : round($totals['points'],0));
-//        $totals['profit']=($totals['profit']==0 ? $emptyval : round($totals['profit']*$this->config->item('profitpts'),0));
-//        $totals['cmpprofit']=($totals['cmpprofit']==0 ? $emptyval : $totals['cmpprofit']);
-//        // Orders
-//        $data=array(
-//            'weeks'=>$weeks,
-//            'curweek'=>$curweek,
-//            'totals'=>$totals,
-//        );
-//        return $data;
-//    }
-//
-//    public function get_leadclosed_details($options) {
-//        // Sunday begin
-//        $emptyval='&mdash;';
-//        $date=$options['start'];
-//        $week=array();
-//        $limit=strtotime(date('Y-m-d').' 23:59:59');
-//        $day=strtotime(date('Y-m-d', strtotime('Sunday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Sunday this week',$date)),
-//                'label'=>date('d-D',strtotime('Sunday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>1,
-//            );
-//        }
-//        $day=strtotime(date('Y-m-d', strtotime('Saturday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Saturday this week',$date)),
-//                'label'=>date('d-D',strtotime('Saturday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>1,
-//            );
-//        }
-//        $day=strtotime(date('Y-m-d', strtotime('Friday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Friday this week',$date)),
-//                'label'=>date('d-D',strtotime('Friday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>0,
-//            );
-//        }
-//        $day=strtotime(date('Y-m-d', strtotime('Thursday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Thursday this week',$date)),
-//                'label'=>date('d-D',strtotime('Thursday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>0,
-//            );
-//        }
-//        $day=strtotime(date('Y-m-d', strtotime('Wednesday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Wednesday this week',$date)),
-//                'label'=>date('d-D',strtotime('Wednesday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>0,
-//            );
-//        }
-//        $day=strtotime(date('Y-m-d', strtotime('Tuesday this week',$date)).' 23:59:59');
-//        if ($day<=$limit) {
-//            $week[]=array(
-//                'day'=>date('m/d/Y',strtotime('Tuesday this week',$date)),
-//                'label'=>date('d-D',strtotime('Tuesday this week',$date)),
-//                'newleads'=>0,
-//                'wrkleads'=>0,
-//                'outcalls'=>0,
-//                'orders'=>0,
-//                'revenue'=>0,
-//                'profit'=>0,
-//                'weekend'=>0,
-//            );
-//        }
-//        $week[]=array(
-//            'day'=>date('m/d/Y',strtotime('Monday this week',$date)),
-//            'label'=>date('d-D',strtotime('Monday this week',$date)),
-//            'newleads'=>0,
-//            'wrkleads'=>0,
-//            'outcalls'=>0,
-//            'orders'=>0,
-//            'revenue'=>0,
-//            'profit'=>0,
-//            'weekend'=>0,
-//        );
-//        // Select New leads
-//        $this->db->select("date_format(l.create_date,'%m/%d/%Y') as day, count(l.lead_id) as cnt",FALSE);
-//        $this->db->from('ts_leads l');
-//        if (isset($options['user_id'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        }
-//        $this->db->where('unix_timestamp(l.create_date) >= ', $options['start']);
-//        $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
-//        $this->db->group_by('day');
-//        $res=$this->db->get()->result_array();
-//        foreach ($res as $row) {
-//            $key=0;
-//            foreach ($week as $wrow) {
-//                if ($wrow['day']==$row['day']) {
-//                    $week[$key]['newleads']+=$row['cnt'];
-//                    break;
-//                }
-//                $key++;
-//            }
-//        }
-//        // Select Updated leads
-//        $this->db->select("date_format(l.update_date,'%m/%d/%Y') as day, count(l.lead_id) as cnt",FALSE);
-//        $this->db->from('ts_leads l');
-//        if (isset($options['user_id'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        }
-//        $this->db->where('unix_timestamp(l.update_date) >= ', $options['start']);
-//        $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
-//        $this->db->group_by('day');
-//        $updres=$this->db->get()->result_array();
-//        foreach ($updres as $row) {
-//            $key=0;
-//            foreach ($week as $wrow) {
-//                if ($wrow['day']==$row['day']) {
-//                    $week[$key]['wrkleads']+=$row['cnt'];
-//                    break;
-//                }
-//                $key++;
-//            }
-//        }
-//        $this->load->model('order_model');
-//        $orderres=$this->order_model->get_orders_weekleadreport($options);
-//        foreach ($orderres as $row) {
-//            $key=0;
-//            foreach ($week as $wrow) {
-//                if ($wrow['day']==$row['day']) {
-//                    $week[$key]['orders']+=$row['cnt'];
-//                    $week[$key]['revenue']+=$row['revenue'];
-//                    $week[$key]['profit']+=$row['profit'];
-//                    break;
-//                }
-//                $key++;
-//            }
-//        }
-//
-//        $weeks=array();
-//        foreach ($week as $wrow) {
-//            if ($wrow['weekend']==1) {
-//                $total=$wrow['newleads']+$wrow['wrkleads']+$wrow['outcalls']+$wrow['orders']+$wrow['profit']; // Add Orders
-//            } else {
-//                $total=1;
-//            }
-//            if ($total!=0) {
-//                $weeks[]=array(
-//                    'label'=>$wrow['label'],
-//                    'newleads'=>($wrow['newleads']==0 ? $emptyval : $wrow['newleads']),
-//                    'wrkleads'=>($wrow['wrkleads']==0 ? $emptyval : $wrow['wrkleads']),
-//                    'outcalls'=>($wrow['outcalls']==0 ? $emptyval : $wrow['outcalls']),
-//                    'orders'=>($wrow['orders']==0 ? $emptyval : $wrow['orders']),
-//                    'revenue'=>($wrow['revenue']==0 ? $emptyval : '$'.number_format($wrow['revenue'],0,'.',',')),
-//                    'profit'=>($wrow['profit']==0 ? $emptyval : number_format(round($wrow['profit']*$this->config->item('profitpts'),0),0,'.',',')),
-//                );
-//            }
-//        }
-//        // Get Created
-//        return $weeks;
-//    }
-//
+    public function count_closed_totals($options) {
+        $dateend=$options['enddate'];
+        $response=array(
+            'prev'=>0,
+            'next'=>0,
+        );
+        $out=array();
+        for ($i=1; $i<6; $i++) {
+            $dat=strtotime(date("Y-m-d", $dateend) . " -{$i} month");
+            $out[]=array(
+                'label'=>date('M\'y', $dat),
+                'month'=>date('m-Y', $dat),
+                'base'=>0,
+                'closed'=>0,
+                'percent'=>'&mdash;',
+            );
+        }
+        $datestart=$dat;
+        $response['datestart']=$datestart;
+        if (isset($options['user_id'])) {
+            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
+            $this->db->from('ts_leads l');
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        } else {
+            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
+            $this->db->from('ts_leads l');
+        }
+        $this->db->where('unix_timestamp(l.create_date) >= ', $datestart);
+        $this->db->where('unix_timestamp(l.create_date) < ', $dateend);
+        $this->db->group_by('month');
+        $res=$this->db->get()->result_array();
+        foreach ($res as $row) {
+            $idx=0;
+            foreach ($out as $orow) {
+                if ($orow['month']==$row['month']) {
+                    $out[$idx]['base']=$row['cnt'];
+                }
+                $idx++;
+            }
+        }
+        //  Closed
+        if (isset($options['user_id'])) {
+            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
+            $this->db->from('ts_leads l');
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        } else {
+            $this->db->select("date_format(l.create_date,'%m-%Y') as month, count(l.lead_id) as cnt", FALSE);
+            $this->db->from('ts_leads l');
+        }
+        $this->db->where('l.lead_type',3);
+        $this->db->where('unix_timestamp(create_date) >= ', $datestart);
+        $this->db->where('unix_timestamp(create_date) < ', $dateend);
+        $this->db->group_by('month');
+        $clres=$this->db->get()->result_array();
+        foreach ($clres as $row) {
+            $idx=0;
+            foreach ($out as $orow) {
+                if ($orow['month']==$row['month']) {
+                    $out[$idx]['closed']=$row['cnt'];
+                }
+                $idx++;
+            }
+        }
+        $idx=0;
+        foreach ($out as $row) {
+            if ($row['base']!=0) {
+                $out[$idx]['percent']=round($row['closed']/$row['base']*100,0).'%';
+            }
+            $idx++;
+        }
+        $response['data']=$out;
+        // Count previous period
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(create_date) < ', $datestart);
+        $datprv=$this->db->get()->row_array();
+        if ($datprv['cnt']>0) {
+            $response['next']=1;
+        }
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(create_date) >= ', $dateend);
+        $datnxt=$this->db->get()->row_array();
+        if ($datnxt['cnt']>0) {
+            $response['prev']=1;
+        }
+        return $response;
+    }
+
+    // Get Minimal Lead Create Date
+    public function get_lead_mindate() {
+        $this->db->select('min(unix_timestamp(create_date)) as mindate');
+        $this->db->from('ts_leads');
+        $res=$this->db->get()->row_array();
+        return $res['mindate'];
+    }
+
+    // Get Closed data, Orders summary per weeks
+    public function get_closedleads_data($options) {
+        $emptyval='&mdash;';
+        $emptydat='&nbsp;';
+        $startdate=$options['startdate'];
+        // Get weeks array
+        if ($options['show_feature']==1) {
+            $date = strtotime(date("Y-m-d") . " +6 week");
+            $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week', $date)).' 23:59:59');
+        } else {
+            $enddate=strtotime(date('Y-m-d', strtotime('Sunday this week')).' 23:59:59');
+        }
+        $date=strtotime(date("Y-m-d", $enddate) . " -6 days");
+        $curyear=date('Y');
+        $totals=array(
+            'newleads'=>0,
+            'newleads'=>0,
+            'wrkleads'=>0,
+            'outcalls'=>0,
+            'orders'=>0,
+            'revenue'=>0,
+            'profit'=>0,
+            'points'=>0,
+            'cmpprofit'=>0,
+            'goals'=>0,
+        );
+        $weekkey=array();
+        $weeks=array();
+        $weeks[]=array(
+            'bgn'=>$date,
+            'end'=>$enddate,
+            'week'=>date('W-o',$date),
+            'weeknum'=>date('W',$date),
+            'year'=>date('Y',$date),
+            'yearweek'=>date('Y',$enddate),
+            'newleads'=>0,
+            'wrkleads'=>0,
+            'outcalls'=>0,
+            'orders'=>0,
+            'revenue'=>0,
+            'profit'=>0,
+            'points'=>0,
+            'cmpprofit'=>0,
+            'goals'=>0,
+            'curweek'=>($options['show_feature']==0 ? 1 : 0),
+            'project'=>0,
+            'goals'=>$emptyval,
+            'goalperc'=>$emptyval,
+            'goalperc_class'=>'empty',
+
+        );
+        array_push($weekkey,date('o-W',$date));
+        $weekoptions=array(
+            'start'=>$date,
+            'end'=>$enddate,
+        );
+        if (isset($options['user_id'])) {
+            $weekoptions['user_id']=$options['user_id'];
+        }
+        $curweek=$this->get_leadclosed_details($weekoptions);
+        while (true) {
+            $date=strtotime(date("Y-m-d", $date) . " -1 week");
+            $sunday=strtotime(date('Y-m-d', strtotime('Sunday this week',$date)).' 23:59:59');
+            $weeks[]=array(
+                'bgn'=>$date,
+                'end'=>$sunday,
+                'week'=>date('W-o',$date),
+                'weeknum'=>date('W',$date),
+                'year'=>date('Y',$date),
+                'yearweek'=>date('Y',$sunday),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'points'=>0,
+                'cmpprofit'=>0,
+                'goals'=>$emptyval,
+                'goalperc'=>$emptyval,
+                'goalperc_class'=>'empty',
+                'curweek'=>0,
+                'project'=>0,
+            );
+            array_push($weekkey, date('o-W',$date));
+            if ($date<$startdate) {
+                break;
+            }
+        }
+        // Select New leads
+        $this->db->select("date_format(l.create_date,'%x-%v') as week, count(l.lead_id) as cnt",FALSE);
+        $this->db->from('ts_leads l');
+        if (isset($options['user_id'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        }
+        $this->db->group_by('week');
+        $res=$this->db->get()->result_array();
+        foreach ($res as $row) {
+            $key=array_search($row['week'],$weekkey);
+            if ($key===FALSE) {
+            } else {
+                $weeks[$key]['newleads']+=$row['cnt'];
+            }
+        }
+
+        // Select Updated leads
+        $this->db->select("date_format(l.update_date,'%x-%v') as week, count(l.lead_id) as cnt",FALSE);
+        $this->db->from('ts_leads l');
+        if (isset($options['user_id'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        }
+        $this->db->group_by('week');
+        $updres=$this->db->get()->result_array();
+        foreach ($updres as $row) {
+            $key=array_search($row['week'],$weekkey);
+            if ($key===FALSE) {
+            } else {
+                $weeks[$key]['wrkleads']+=$row['cnt'];
+            }
+        }
+        $this->load->model('orders_model');
+        $orderres=$this->orders_model->get_orders_leadreport($options);
+
+        foreach ($orderres as $row) {
+            $key=array_search($row['week'],$weekkey);
+            if ($key===FALSE) {
+            } else {
+                $weeks[$key]['orders']+=$row['cnt'];
+                $weeks[$key]['revenue']+=$row['revenue'];
+                $weeks[$key]['profit']+=$row['profit'];
+            }
+        }
+        $cmporders=$this->orders_model->get_orders_leadreport();
+        foreach ($cmporders as $row) {
+            $key=array_search($row['week'],$weekkey);
+            if ($key===FALSE) {
+            } else {
+                // $weeks[$key]['points']+=round($row['profit']*$this->config->item('profitpts'),0);
+                $weeks[$key]['points']+=round($row['profit']*$this->config->item('profitpts'),0);
+                $weeks[$key]['cmpprofit']+=$row['profit'];
+            }
+        }
+        $proj=array(
+            'project'=>1,
+        );
+        // Get count orders in PROJ stage
+        $orderproj=$this->orders_model->get_orders_leadreport($proj);
+
+        foreach ($orderproj as $row) {
+            $key=array_search($row['week'],$weekkey);
+            if ($key===FALSE) {
+            } else {
+                $weeks[$key]['project']=($row['cnt']>0 ? 1 : 0);
+            }
+        }
+
+        $idx=0;
+        foreach ($weeks as $row) {
+            $weeks[$idx]['label']=date('M d', $row['bgn']).'-'.date('d', $row['end']).', '.date('Y',$row['bgn']);
+            $leadurl='href=""';
+            if ($row['newleads']>0) {
+                if (isset($options['user_id'])) {
+                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new"';
+                } else {
+                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new"';
+                }
+            }
+            $weeks[$idx]['newleadsurl']=$leadurl;
+            $leadurl='href=""';
+            if ($row['wrkleads']>0) {
+                if (isset($options['user_id'])) {
+                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk"';
+                } else {
+                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk"';
+                }
+            }
+            $weeks[$idx]['wrkleadsurl']=$leadurl;
+            if ($weeks[$idx]['yearweek']==$curyear) {
+                $totals['newleads']+=$row['newleads'];
+                $totals['wrkleads']+=$row['wrkleads'];
+                $totals['outcalls']+=$row['outcalls'];
+                $totals['orders']+=$row['orders'];
+                $totals['revenue']+=$row['revenue'];
+                $totals['profit']+=$row['profit'];
+                $totals['points']+=$row['points'];
+                $totals['cmpprofit']+=$row['cmpprofit'];
+            }
+            $weeks[$idx]['newleads']=($row['newleads']==0 ? $emptyval : $row['newleads']);
+            $weeks[$idx]['wrkleads']=($row['wrkleads']==0 ? $emptyval : $row['wrkleads']);
+            $weeks[$idx]['outcalls']=($row['outcalls']==0 ? $emptyval : $row['outcalls']);
+            $ordersurl='href=""';
+            if ($row['orders']>0) {
+                if (isset($options['user_id'])) {
+                    $ordersurl='href="/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'"';
+                } else {
+                    $ordersurl='href="/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'"';
+                }
+            }
+            $weeks[$idx]['ordersurl']=$ordersurl;
+            $weeks[$idx]['orders']=($row['orders']==0 ? $emptyval : $row['orders']);
+            $weeks[$idx]['revenue']=($row['revenue']==0 ? $emptyval : '$'.number_format(round($row['revenue'],0),0,'.',','));
+            $weeks[$idx]['profit']=($row['profit']==0 ? $emptyval : round($row['profit']*$this->config->item('profitpts'),0));
+            $cmpordurl='href=""';
+            if ($row['points']>0) {
+                $cmpordurl='href="/leads/leadsclosed_cmporders?bgn='.$row['bgn'].'"';
+            }
+            $weeks[$idx]['cmporderurl']=$cmpordurl;
+            $weeks[$idx]['points']=($row['points']==0 ? $emptyval : $row['points']);
+            $weeks[$idx]['weekclass']=($row['project']==0 ? '' : 'proj');
+            // Calc Goal and goal Proc, class
+            if (intval(date('Y',$row['bgn']))<2015) {
+                $weeks[$idx]['goals']=$emptydat;
+                $weeks[$idx]['goalperc']=$emptydat;
+            } else {
+                $weekbgn=strtotime(date("Y-m-d", $row['bgn']) . " - 52 weeks");
+                $newkey=date('o-W',$weekbgn);
+                // $newkey=(intval($row['yearweek'])-1).'-'.$row['weeknum'];
+                $srch=array_search($newkey, $weekkey);
+                if ($srch===FALSE) {
+                    // No data
+                    $weeks[$idx]['goals']='n/a';
+                    $weeks[$idx]['goalperc']='n/a';
+                } else {
+                    $goals=round($weeks[$srch]['cmpprofit']*$this->config->item('cmpprofitpts'),0);
+                    if ($weeks[$idx]['yearweek']==$curyear) {
+                        $totals['goals']+=$goals;
+                    }
+                    $perc=0;
+                    if ($goals>0) {
+                        $perc=round($weeks[$idx]['points']/$goals*100,0);
+                    }
+                    $weeks[$idx]['goals']=$goals;
+                    $weeks[$idx]['goalperc']=$perc.'%';
+                    $weeks[$idx]['goalperc_class']=($perc<100 ? 'red' : 'blue');
+                }
+            }
+            $idx++;
+        }
+        // Out Totals
+        if ($totals['goals']>0) {
+            $perc=round($totals['points']/$totals['goals']*100,0).'%';
+            $totals['goalperc_class']=($perc<100 ? 'red' : 'blue');
+        } else {
+            $perc='n/a';
+            $totals['goalperc_class']='empty';
+        }
+        $totals['goalperc']=$perc;
+        $totals['goals']=($totals['goals']==0 ? $emptyval : $totals['goals']);
+        $totals['newleads']=($totals['newleads']==0 ? $emptyval : $totals['newleads']);
+        $totals['wrkleads']=($totals['wrkleads']==0 ? $emptyval : $totals['wrkleads']);
+        $totals['outcalls']=($totals['outcalls']==0 ? $emptyval : $totals['outcalls']);
+        $totals['orders']=($totals['orders']==0 ? $emptyval : $totals['orders']);
+        $totals['revenue']=($totals['revenue']==0 ? $emptyval : '$'.number_format($totals['revenue'],0,'.','.'));
+        $totals['points']=($totals['points']==0 ? $emptyval : round($totals['points'],0));
+        $totals['profit']=($totals['profit']==0 ? $emptyval : round($totals['profit']*$this->config->item('profitpts'),0));
+        $totals['cmpprofit']=($totals['cmpprofit']==0 ? $emptyval : $totals['cmpprofit']);
+        // Orders
+        $data=array(
+            'weeks'=>$weeks,
+            'curweek'=>$curweek,
+            'totals'=>$totals,
+        );
+        return $data;
+    }
+
+    public function get_leadclosed_details($options) {
+        // Sunday begin
+        $emptyval='&mdash;';
+        $date=$options['start'];
+        $week=array();
+        $limit=strtotime(date('Y-m-d').' 23:59:59');
+        $day=strtotime(date('Y-m-d', strtotime('Sunday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Sunday this week',$date)),
+                'label'=>date('d-D',strtotime('Sunday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>1,
+            );
+        }
+        $day=strtotime(date('Y-m-d', strtotime('Saturday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Saturday this week',$date)),
+                'label'=>date('d-D',strtotime('Saturday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>1,
+            );
+        }
+        $day=strtotime(date('Y-m-d', strtotime('Friday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Friday this week',$date)),
+                'label'=>date('d-D',strtotime('Friday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>0,
+            );
+        }
+        $day=strtotime(date('Y-m-d', strtotime('Thursday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Thursday this week',$date)),
+                'label'=>date('d-D',strtotime('Thursday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>0,
+            );
+        }
+        $day=strtotime(date('Y-m-d', strtotime('Wednesday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Wednesday this week',$date)),
+                'label'=>date('d-D',strtotime('Wednesday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>0,
+            );
+        }
+        $day=strtotime(date('Y-m-d', strtotime('Tuesday this week',$date)).' 23:59:59');
+        if ($day<=$limit) {
+            $week[]=array(
+                'day'=>date('m/d/Y',strtotime('Tuesday this week',$date)),
+                'label'=>date('d-D',strtotime('Tuesday this week',$date)),
+                'newleads'=>0,
+                'wrkleads'=>0,
+                'outcalls'=>0,
+                'orders'=>0,
+                'revenue'=>0,
+                'profit'=>0,
+                'weekend'=>0,
+            );
+        }
+        $week[]=array(
+            'day'=>date('m/d/Y',strtotime('Monday this week',$date)),
+            'label'=>date('d-D',strtotime('Monday this week',$date)),
+            'newleads'=>0,
+            'wrkleads'=>0,
+            'outcalls'=>0,
+            'orders'=>0,
+            'revenue'=>0,
+            'profit'=>0,
+            'weekend'=>0,
+        );
+        // Select New leads
+        $this->db->select("date_format(l.create_date,'%m/%d/%Y') as day, count(l.lead_id) as cnt",FALSE);
+        $this->db->from('ts_leads l');
+        if (isset($options['user_id'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        }
+        $this->db->where('unix_timestamp(l.create_date) >= ', $options['start']);
+        $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
+        $this->db->group_by('day');
+        $res=$this->db->get()->result_array();
+        foreach ($res as $row) {
+            $key=0;
+            foreach ($week as $wrow) {
+                if ($wrow['day']==$row['day']) {
+                    $week[$key]['newleads']+=$row['cnt'];
+                    break;
+                }
+                $key++;
+            }
+        }
+        // Select Updated leads
+        $this->db->select("date_format(l.update_date,'%m/%d/%Y') as day, count(l.lead_id) as cnt",FALSE);
+        $this->db->from('ts_leads l');
+        if (isset($options['user_id'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        }
+        $this->db->where('unix_timestamp(l.update_date) >= ', $options['start']);
+        $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
+        $this->db->group_by('day');
+        $updres=$this->db->get()->result_array();
+        foreach ($updres as $row) {
+            $key=0;
+            foreach ($week as $wrow) {
+                if ($wrow['day']==$row['day']) {
+                    $week[$key]['wrkleads']+=$row['cnt'];
+                    break;
+                }
+                $key++;
+            }
+        }
+        $this->load->model('orders_model');
+        $orderres=$this->orders_model->get_orders_weekleadreport($options);
+        foreach ($orderres as $row) {
+            $key=0;
+            foreach ($week as $wrow) {
+                if ($wrow['day']==$row['day']) {
+                    $week[$key]['orders']+=$row['cnt'];
+                    $week[$key]['revenue']+=$row['revenue'];
+                    $week[$key]['profit']+=$row['profit'];
+                    break;
+                }
+                $key++;
+            }
+        }
+
+        $weeks=array();
+        foreach ($week as $wrow) {
+            if ($wrow['weekend']==1) {
+                $total=$wrow['newleads']+$wrow['wrkleads']+$wrow['outcalls']+$wrow['orders']+$wrow['profit']; // Add Orders
+            } else {
+                $total=1;
+            }
+            if ($total!=0) {
+                $weeks[]=array(
+                    'label'=>$wrow['label'],
+                    'newleads'=>($wrow['newleads']==0 ? $emptyval : $wrow['newleads']),
+                    'wrkleads'=>($wrow['wrkleads']==0 ? $emptyval : $wrow['wrkleads']),
+                    'outcalls'=>($wrow['outcalls']==0 ? $emptyval : $wrow['outcalls']),
+                    'orders'=>($wrow['orders']==0 ? $emptyval : $wrow['orders']),
+                    'revenue'=>($wrow['revenue']==0 ? $emptyval : '$'.number_format($wrow['revenue'],0,'.',',')),
+                    'profit'=>($wrow['profit']==0 ? $emptyval : number_format(round($wrow['profit']*$this->config->item('profitpts'),0),0,'.',',')),
+                );
+            }
+        }
+        // Get Created
+        return $weeks;
+    }
+
 //    public function get_newleads($options) {
 //        $emptyval='&mdash;';
 //        $this->db->select('l.*');

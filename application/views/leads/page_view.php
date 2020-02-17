@@ -7,6 +7,9 @@
         </div>
     </div>
     <div class="maincontent_view">
+        <?php if (isset($leadsview)) { ?>
+            <div class="leadscontentarea" id="leadsview" style="display: none;"><?=$leadsview?></div>
+        <?php } ?>
     </div>
 </div>
 
