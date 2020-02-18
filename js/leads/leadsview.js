@@ -148,7 +148,7 @@ function initLeadClosed() {
     params.push({name: 'showfeature', value: $("input#showfuturereport").val()});
     var url="/leads/leadsclosed_data";
     $("#loader").show();
-    $.post(url,{'user_id': user_id,'showfeature':show_featue}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#leadcloseddataarea").empty().html(response.data.content);
             init_leadclosed_content();
