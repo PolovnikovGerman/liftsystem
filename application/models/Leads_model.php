@@ -53,6 +53,9 @@ Class Leads_model extends MY_Model
             $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $res=$this->db->get()->row_array();
 
         return $res['cnt'];

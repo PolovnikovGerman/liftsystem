@@ -31,6 +31,8 @@ function init_leads_management() {
 function init_leadsview() {
     initLeaddataPagination();
     initLeadClosed();
+    // Change Brand
+    
 }
 
 function initLeaddataPagination() {
@@ -328,19 +330,6 @@ function init_weekleads_tips(id) {
             classes : 'qtip-plain weekuserleads_tooltip',
         }
     })
-    /* $("div#" + id).bt({
-        trigger: 'click',
-        shadow: true,
-        width: popupwidth,
-        fill: '#a7a7a7',
-        ajaxCache: false,
-        positions: ['most'],
-        ajaxPath: ["$(this).attr('href')"],
-        postShow: function (box) {
-        }
-    });
-    */
-
 }
 
 function show_week_details(week, bgn, end) {
@@ -367,6 +356,7 @@ function search_usrdat(userid) {
     params.push({name: 'usrrepl', value:userid});
     params.push({name: 'leadtype', value: $("#sortprior").val()});
     params.push({name: 'search', value: search});
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("input#totallead").val(response.data.totalrec);
@@ -380,14 +370,20 @@ function search_usrdat(userid) {
 /* Change sorting option */
 function search_leads() {
     var search=$("input.lead_searchinput").val();
+    var params = new Array();
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
+    params.push({name: 'search', value: search});
     var usrreplic='';
     var leadtype='';
     if (search=='') {
         usrreplic=$("#leads_replica").val();
         leadtype=$("#sortprior").val();
     }
+    params.push({name: 'usrrepl', value: usrreplic});
+    params.push({name: 'leadtype', value: leadtype});
+
     var url="/leads/search_leads";
-    $.post(url, {'search':search,'usrrepl':usrreplic,'leadtype':leadtype}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("input#totallead").val(response.data.totalrec);
             initLeaddataPagination();

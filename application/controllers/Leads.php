@@ -114,6 +114,36 @@ class Leads extends MY_Controller
         show_404();
     }
 
+    public function search_leads() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $options=[
+                    'brand' => $brand,
+                ];
+                /* Post parameters */
+                $search=ifset($postdata, 'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl = ifset($postdata,'usrrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                $leadtype = ifset($postdata,'leadtype');
+                if (!empty($leadtype)) {
+                    $options['lead_type']=$leadtype;
+                }
+                $this->load->model('leads_model');
+                $mdata['totalrec']=$this->leads_model->get_total_leads($options);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
     public function leadsclosed_data() {
         if ($this->isAjax()) {
             $mdata=array();
