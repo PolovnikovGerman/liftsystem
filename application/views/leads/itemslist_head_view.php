@@ -4,12 +4,11 @@
 <div class="leaditem_headarea">
     <div class="leaditem_headrow">
         <div class="leaditem_search">
-            <img src="/img/magnifier.png"/>
+            <img src="/img/icons/magnifier.png"/>
             <input class="leaditem_searchdata" value="" placeholder="Enter Item#, Item Name"/>
             <div class="leaditem_find">&nbsp;</div>
             <div class="leaditem_clear">&nbsp;</div>
         </div>
-        <div class="leaditem_emptyspace" style="width: 15%">&nbsp;</div>
         <div class="leaditem_filters">
             <select class="leaditem_filterselect leaditemsvendor">
                 <option value="">All Vendors</option>
@@ -74,4 +73,8 @@
         <div class="vendorsetup">Setup</div>
     </div>
     <div class="leaditems_dataarea">&nbsp;</div>
+</div>
+<input type="hidden" id="itemslistbrand" value="<?=$brand?>"/>
+<div id="itemslistbrandmenu">
+    <?=$top_menu?>
 </div>

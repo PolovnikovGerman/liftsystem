@@ -52,9 +52,7 @@ class Leads extends MY_Controller
             } elseif ($row['item_link']=='#itemslistview') {
                 $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
-                $content_options['leadsview'] = $this->_prepare_itemslistview($brand, $top_menu);
-
-                // #itemslistview
+                $content_options['itemslistview'] = $this->_prepare_itemslistview($brand, $top_menu);
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -377,6 +375,80 @@ class Leads extends MY_Controller
         echo $content;
     }
 
+    // Items lists
+    public function itemslist_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $this->load->model('items_model');
+            $postdata=$this->input->post();
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $limit=(isset($postdata['limit']) ? $postdata['limit'] : 150);
+                $offset=(isset($postdata['offset']) ? $postdata['offset']*$limit : 0);
+                $options=array(
+                    'offset'=>$offset,
+                    'limit'=>$limit,
+                    'order_by'=>'item_number',
+                    'prices'=>$this->config->item('normal_price_base'),
+                    'brand' => $brand,
+                );
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=strtoupper($postdata['search']);
+                }
+                if (isset($postdata['vendor_id']) && !empty($postdata['vendor_id'])) {
+                    $options['vendor_id']=$postdata['vendor_id'];
+                }
+                if (isset($postdata['priority']) && !empty($postdata['priority'])) {
+                    $options['priority']=$postdata['priority'];
+                }
+                // Manage other parameters
+                $items=$this->items_model->get_leaditems_data($options);
+                if (count($items)==0) {
+                    // Empty Content
+                    $mdata['content']=$this->load->view('leads/itemslist_emptydata_view', array(), TRUE);
+                } else {
+                    $outoptions=array(
+                        'data'=>$items,
+                        'prices'=>$this->config->item('normal_price_base'),
+                    );
+                    $mdata['content']=$this->load->view('leads/itemslist_tabledata_view', $outoptions, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    // Count Items
+    public function leaditems_count() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('items_model');
+            $error='Empty Brand';
+            $postdata=$this->input->post();
+            $brand= ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $options=[];
+                if ($brand!=='ALL') {
+                    $options['brand']=$brand;
+                }
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=strtoupper($postdata['search']);
+                }
+                if (isset($postdata['vendor_id']) && !empty($postdata['vendor_id'])) {
+                    $options['vendor_id']=$postdata['vendor_id'];
+                }
+                $mdata['total']=$this->items_model->count_lead_items($options);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
         $this->load->model('leads_model');
@@ -421,10 +493,16 @@ class Leads extends MY_Controller
     private function _prepare_itemslistview($brand, $top_menu) {
         $datqs=array();
         $this->load->model('vendors_model');
+        $this->load->model('items_model');
         // Get list of vendors
         $datqs['vendors']=$this->vendors_model->get_vendors_list('v.vendor_name');
         $datqs['perpage']=$this->config->item('orders_perpage');
-        $datqs['total']=$this->items_model->count_items($brand);
+
+        $item_options = [];
+        if ($brand!=='ALL') {
+            $item_options[]=['brand'=>$brand];
+        }
+        $datqs['total']=$this->items_model->count_lead_items($item_options);
         $datqs['cur_page']=0;
         $datqs['prices']=$this->config->item('normal_price_base');
         $content=$this->load->view('leads/itemslist_head_view',$datqs,TRUE);

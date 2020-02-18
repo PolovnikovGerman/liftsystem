@@ -10,6 +10,9 @@
         <?php if (isset($leadsview)) { ?>
             <div class="leadscontentarea" id="leadsview" style="display: none;"><?=$leadsview?></div>
         <?php } ?>
+        <?php if (isset($itemslistview)) { ?>
+            <div class="leadscontentarea" id="itemslistview" style="display: none;"><?=$itemslistview?></div>
+        <?php } ?>
     </div>
 </div>
 

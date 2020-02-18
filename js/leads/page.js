@@ -17,6 +17,10 @@ function init_page(objid) {
             $("#leadsview").show();
             init_leadsview();
             break;
+        case 'itemslistview':
+            $("#itemslistview").show();
+            init_leaditems();
+            break
     }
 
 }
