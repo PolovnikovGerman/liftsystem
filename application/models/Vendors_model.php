@@ -199,5 +199,21 @@ Class Vendors_model extends My_Model
 
     }
 
+    public function get_count_vendors() {
+        $this->db->select('count(vendor_id) as cnt');
+        $this->db->from('vendors');
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_vendors_list($order_by='v.vendor_id',$direct='asc') {
+        $this->db->select('v.*, c.calendar_name');
+        $this->db->from('vendors v');
+        $this->db->join('calendars c','c.calendar_id=v.calendar_id','left');
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 
 }

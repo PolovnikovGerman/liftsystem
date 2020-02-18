@@ -220,3 +220,4 @@ $config['normal_price_base']=array(
 );
 
 $config['leads_perpage'] = 250;
+$config['orders_perpage'] = 150;

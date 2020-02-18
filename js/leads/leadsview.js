@@ -19,6 +19,7 @@ function init_leadsview() {
         initLeaddataPagination();
         initLeadClosed();
     });
+    init_leads_management();
 }
 
 // Management

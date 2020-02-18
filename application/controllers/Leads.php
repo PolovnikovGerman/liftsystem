@@ -49,6 +49,12 @@ class Leads extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand, $top_menu);
+            } elseif ($row['item_link']=='#itemslistview') {
+                $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
+                $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
+                $content_options['leadsview'] = $this->_prepare_itemslistview($brand, $top_menu);
+
+                // #itemslistview
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -126,6 +132,7 @@ class Leads extends MY_Controller
             $postdata = $this->input->post();
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
+                $error = '';
                 $options=[
                     'brand' => $brand,
                 ];
@@ -409,5 +416,19 @@ class Leads extends MY_Controller
         $ldat['top_menu'] = $top_menu;
         $content=$this->load->view('leads/leadtab_view',$ldat,TRUE);
         return $content;
+    }
+
+    private function _prepare_itemslistview($brand, $top_menu) {
+        $datqs=array();
+        $this->load->model('vendors_model');
+        // Get list of vendors
+        $datqs['vendors']=$this->vendors_model->get_vendors_list('v.vendor_name');
+        $datqs['perpage']=$this->config->item('orders_perpage');
+        $datqs['total']=$this->items_model->count_items($brand);
+        $datqs['cur_page']=0;
+        $datqs['prices']=$this->config->item('normal_price_base');
+        $content=$this->load->view('leads/itemslist_head_view',$datqs,TRUE);
+        return $content;
+
     }
 }
