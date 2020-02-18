@@ -75,41 +75,46 @@ class Leads extends MY_Controller
     public function leadpage_data() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            /* Posts */
-            /* 'search':search, 'offset':page_index,'limit':perpage,'maxval':maxval,'usrrepl':usrreplic,'sorttime':sorttime,'leadtype':leadtype */
-            $search=$this->input->post('search');
-            $offset=$this->input->post('offset');
-            $limit=$this->input->post('limit');
-            /* $maxval=$this->input->post('maxval'); */
-            $usrrepl=$this->input->post('usrrepl');
-            $sorttime=$this->input->post('sorttime');
-            $leadtype=$this->input->post('leadtype');
-            $offset=$offset*$limit;
-            /*  */
-            $options=array();
-            if ($search!='') {
-                $options['search']=$search;
-            }
-            if ($leadtype!='') {
-                $options['lead_type']=$leadtype;
-            }
-            if ($usrrepl!='') {
-                $options['usrrepl']=$usrrepl;
-            }
-            $sort=$sorttime;
-            $this->load->model('leads_model');
-            $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+            $error='Empty Brand';
+            // Posts
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $pagenum=ifset($postdata, 'offset',0);
+                $limit=ifset($postdata, 'limit', 250);
+                $sorttime=$this->input->post('sorttime');
+                $sort=$sorttime;
+                $offset=$pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search=ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl=ifset($postdata, 'usrrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                $leadtype=ifset($postdata, 'leadtype');
+                if (!empty($leadtype)) {
+                    $options['lead_type']=$leadtype;
+                }
 
-            if (count($leaddat)==0) {
-                $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
-            } else {
-                $options=array(
-                    'data'=>$leaddat,
-                );
-                $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+
+                if (count($leaddat)==0) {
+                    $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
+                } else {
+                    $options=array(
+                        'data'=>$leaddat,
+                    );
+                    $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
+                }
+                $this->ajaxResponse($mdata,$error);
             }
-            $this->ajaxResponse($mdata,$error);
         }
         show_404();
     }
@@ -147,34 +152,39 @@ class Leads extends MY_Controller
     public function leadsclosed_data() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $out_options=[];
-            $this->load->model('orders_model');
-            $this->load->model('leads_model');
-            $minlead=$this->leads_model->get_lead_mindate();
-            $minorder=$this->orders_model->get_order_mindate();
-            $user_id=$this->input->post('user_id');
-            $show_feature=$this->input->post('showfeature');
-            $options=array(
-                'startdate'=>($minlead>$minorder ? $minorder : $minlead),
-                'show_feature'=>$show_feature,
-            );
-            if ($user_id) {
-                $options['user_id']=$user_id;
-                $usrdata=$this->user_model->get_user_data($user_id);
-                if ($usrdata['user_leadname']) {
-                    $out_options['owner_name']=$usrdata['user_leadname'].'&apos;s';
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $this->load->model('leads_model');
+                $minlead=$this->leads_model->get_lead_mindate($brand);
+                $minorder=$this->orders_model->get_order_mindate($brand);
+                $out_options=[];
+                $user_id=$this->input->post('user_id');
+                $show_feature=$this->input->post('showfeature');
+                $options=array(
+                    'startdate'=>($minlead>$minorder ? $minorder : $minlead),
+                    'show_feature'=>$show_feature,
+                );
+                if ($user_id) {
+                    $options['user_id']=$user_id;
+                    $usrdata=$this->user_model->get_user_data($user_id);
+                    if ($usrdata['user_leadname']) {
+                        $out_options['owner_name']=$usrdata['user_leadname'].'&apos;s';
+                    } else {
+                        $out_options['owner_name']=$usrdata['user_name'];
+                    }
                 } else {
-                    $out_options['owner_name']=$usrdata['user_name'];
+                    $out_options['owner_name']='Company ';
                 }
-            } else {
-                $out_options['owner_name']='Company ';
+                $data=$this->leads_model->get_closedleads_data($options);
+                $out_options['weeks']=$data['weeks'];
+                $out_options['curweek']=$data['curweek'];
+                $out_options['totals']=$data['totals'];
+                $mdata['content']=$this->load->view('leads/leads_closedata_view', $out_options, TRUE);
             }
-            $data=$this->leads_model->get_closedleads_data($options);
-            $out_options['weeks']=$data['weeks'];
-            $out_options['curweek']=$data['curweek'];
-            $out_options['totals']=$data['totals'];
-            $mdata['content']=$this->load->view('leads/leads_closedata_view', $out_options, TRUE);
             $this->ajaxResponse($mdata,$error);
 
         }

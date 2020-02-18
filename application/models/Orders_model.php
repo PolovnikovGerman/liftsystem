@@ -517,10 +517,13 @@ Class Orders_model extends MY_Model
     }
 
     // Min order create date
-    public function get_order_mindate() {
+    public function get_order_mindate($brand) {
         $this->db->select('min(create_date) as mindate');
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         return $res['mindate'];
     }

@@ -1,6 +1,27 @@
-// Management
-// var empty_search='Enter customer, item ...';
+function init_leadsview() {
+    initLeaddataPagination();
+    initLeadClosed();
+    // Change Brand
+    $("#leadsviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#leadsveiwbrand").val(brand);
+        $("#leadsviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#leadsviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#leadsviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        $("#cursign").val(0);
+        initLeaddataPagination();
+        initLeadClosed();
+    });
+}
 
+// Management
 function init_leads_management() {
     $("select#leads_replica").unbind('change').change(function(){
         search_leads();
@@ -27,12 +48,6 @@ function init_leads_management() {
             search_leads();
         }
     });
-}
-function init_leadsview() {
-    initLeaddataPagination();
-    initLeadClosed();
-    // Change Brand
-    
 }
 
 function initLeaddataPagination() {
@@ -76,7 +91,7 @@ function pageLeaddataCallback(page_index) {
     params.push({name:'usrrepl', value:usrreplic});
     params.push({name:'sorttime', value:$("select#sorttime").val()});
     params.push({name:'leadtype', value:leadtype});
-
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
     var url='/leads/leadpage_data';
     $("#loader").css('display','block');
     $.post(url,params,function(response){
@@ -127,8 +142,10 @@ function init_leadpage_manage() {
 }
 
 function initLeadClosed() {
-    var user_id=$("#leads_replica").val();
-    var show_featue=$("input#showfuturereport").val();
+    params = new Array();
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
+    params.push({name: 'user_id', value: $("#leads_replica").val()});
+    params.push({name: 'showfeature', value: $("input#showfuturereport").val()});
     var url="/leads/leadsclosed_data";
     $("#loader").show();
     $.post(url,{'user_id': user_id,'showfeature':show_featue}, function(response){

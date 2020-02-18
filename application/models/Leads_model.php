@@ -101,6 +101,9 @@ Class Leads_model extends MY_Model
             $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
+        if (ifset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         if ($sort) {
             if ($sort==2) {
                 $this->db->order_by('lead_date','desc');
@@ -1249,9 +1252,12 @@ Class Leads_model extends MY_Model
     }
 
     // Get Minimal Lead Create Date
-    public function get_lead_mindate() {
+    public function get_lead_mindate($brand) {
         $this->db->select('min(unix_timestamp(create_date)) as mindate');
         $this->db->from('ts_leads');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         return $res['mindate'];
     }
