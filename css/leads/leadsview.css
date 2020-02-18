@@ -968,6 +968,7 @@ input.lead_searchinput {
     float: left;
     height: 187px;
     overflow-y: scroll;
+    overflow-x: hidden;
     width: 375px;
 }
 .leadtotaldatarow {
@@ -1315,6 +1316,13 @@ input.lead_searchinput {
 .weekuserorder_tooltip {
     width: 420px;
     max-width: 420px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.weekuserleads_tooltip {
+    width: 405px;
+    max-width: 405px;
     float: left;
     background: #a7a7a7;
     border: 2px solid #000000;

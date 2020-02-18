@@ -225,6 +225,62 @@ class Leads extends MY_Controller
         echo $content;
     }
 
+    public function leadsclosed_usrleads() {
+        $bgn=$this->input->get('bgn');
+        $user_id=$this->input->get('user');
+        $leadtype=$this->input->get('leadtype');
+        $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
+        $options=array(
+            'begin'=>$bgn,
+            'end'=>$end,
+            'user_id'=>$user_id,
+            'leadtype'=>$leadtype,
+        );
+        $this->load->model('leads_model');
+        $leads=$this->leads_model->get_newleads($options);
+        $label=date('M d',$bgn).'-';
+        if (date('m', $bgn)!=date('m',$end)) {
+            $label.=date('M d',$end);
+        } else {
+            $label.=date('d', $end);
+        }
+        $label.=','.date('Y', $end);
+
+        $data=array(
+            'total'=>count($leads),
+            'leads'=>$leads,
+            'label'=>$label,
+        );
+        $content=$this->load->view('leads/lead_userleadstotal_view', $data, TRUE);
+        echo $content;
+    }
+
+    public function leadsclosed_companyleads() {
+        $bgn=$this->input->get('bgn');
+        $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
+        $options=array(
+            'begin'=>$bgn,
+            'end'=>$end,
+        );
+        $this->load->model('leads_model');
+        $leads=$this->leads_model->get_company_leads($options);
+        // Label
+        $label=date('M d',$bgn).'-';
+        if (date('m', $bgn)!=date('m',$end)) {
+            $label.=date('M d',$end);
+        } else {
+            $label.=date('d', $end);
+        }
+        $label.=','.date('Y', $end);
+        $data=array(
+            'label'=>$label,
+            'totals'=>$leads['totals'],
+            'leads'=>$leads['usrdata'],
+        );
+        $content=$this->load->view('leads/lead_companyleadstotal_view', $data, TRUE);
+        echo $content;
+    }
+
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
         $this->load->model('leads_model');

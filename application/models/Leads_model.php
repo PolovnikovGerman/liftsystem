@@ -1414,21 +1414,21 @@ Class Leads_model extends MY_Model
         $idx=0;
         foreach ($weeks as $row) {
             $weeks[$idx]['label']=date('M d', $row['bgn']).'-'.date('d', $row['end']).', '.date('Y',$row['bgn']);
-            $leadurl='href=""';
+            $leadurl='';
             if ($row['newleads']>0) {
                 if (isset($options['user_id'])) {
-                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new"';
+                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new';
                 } else {
-                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new"';
+                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new';
                 }
             }
             $weeks[$idx]['newleadsurl']=$leadurl;
-            $leadurl='href=""';
+            $leadurl='';
             if ($row['wrkleads']>0) {
                 if (isset($options['user_id'])) {
-                    $leadurl='href="/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk"';
+                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk';
                 } else {
-                    $leadurl='href="/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk"';
+                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk';
                 }
             }
             $weeks[$idx]['wrkleadsurl']=$leadurl;
@@ -1448,9 +1448,9 @@ Class Leads_model extends MY_Model
             $ordersurl='';
             if ($row['orders']>0) {
                 if (isset($options['user_id'])) {
-                    $ordersurl='/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'"';
+                    $ordersurl='/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'];
                 } else {
-                    $ordersurl='/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'"';
+                    $ordersurl='/leads/leadsclosed_companyorders?bgn='.$row['bgn'];
                 }
             }
             $weeks[$idx]['ordersurl']=$ordersurl;
@@ -1701,144 +1701,144 @@ Class Leads_model extends MY_Model
         return $weeks;
     }
 
-//    public function get_newleads($options) {
-//        $emptyval='&mdash;';
-//        $this->db->select('l.*');
-//        $this->db->from('ts_leads l');
-//        if (isset($options['user_id'])) {
-//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//            $this->db->where('lu.user_id',$options['user_id']);
-//        }
-//        if (isset($options['begin'])) {
-//            if ($options['leadtype']=='new') {
-//                $this->db->where('unix_timestamp(l.create_date) >= ', $options['begin']);
-//            } else {
-//                $this->db->where('unix_timestamp(l.update_date) >= ', $options['begin']);
-//            }
-//        }
-//        if (isset($options['end'])) {
-//            if ($options['leadtype']=='new') {
-//                $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
-//            } else {
-//                $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
-//            }
-//        }
-//        $this->db->order_by('l.lead_number','desc');
-//        $result=$this->db->get()->result_array();
-//        $out=array();
-//
-//        foreach ($result as $row) {
-//            // $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : '$'.number_format($row['lead_value'],0,'.',''));
-//            $row['out_value']=(floatval($row['lead_value'])==0 ? $emptyval : round($row['lead_value']*$this->config->item('leadpts'),0));
-//            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
-//            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
-//            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
-//            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
-//            $row['lead_itemclass']='';
-//            switch ($row['lead_item']) {
-//                case '':
-//                    $row['out_lead_item']='&nbsp;';
-//                    break;
-//                case 'Other':
-//                case 'Multiple':
-//                case 'Custom Shaped Stress Balls':
-//                    $row['lead_itemclass']='custom';
-//                    if ($row['other_item_name']=='') {
-//                        $row['out_lead_item']=$row['lead_item'];
-//                    } else {
-//                        $row['out_lead_item']=$row['other_item_name'];
-//                    }
-//                    break;
-//                default :
-//                    $row['out_lead_item']=$row['lead_item'];
-//                    break;
-//            }
-//            $out[]=$row;
-//        }
-//        return $out;
-//    }
-//
-//    public function get_company_leads($options) {
-//        $emptyval='&mdash;';
-//        $totals=array(
-//            'newleads'=>0,
-//            'wrkleads'=>0,
-//            'outcalls'=>0,
-//        );
-//        $usrs=array();
-//        $usrleads=array();
-//        // New Leads
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
-//        $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
-//        $resnew=$this->db->get()->row_array();
-//        $totals['newleads']=($resnew['cnt']==0 ? $emptyval : $resnew['cnt']);
-//        $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
-//        $this->db->from('ts_leads l');
-//        $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//        $this->db->join('users u','u.user_id=lu.user_id');
-//        $this->db->where('unix_timestamp(l.update_date) >= ', $options['begin']);
-//        $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
-//        $this->db->group_by('u.user_leadname, lu.user_id');
-//        $this->db->order_by('cnt','desc');
-//        $usrwrk=$this->db->get()->result_array();
-//        foreach ($usrwrk as $row) {
-//            array_push($usrs, $row['user_id']);
-//            $usrleads[]=array(
-//                'user_name'=>$row['user_leadname'],
-//                'newleads'=>0,
-//                'wrkleads'=>$row['cnt'],
-//                'outcalls'=>0,
-//            );
-//        }
-//        // Update Leads
-//        $this->db->select('count(lead_id) as cnt');
-//        $this->db->from('ts_leads');
-//        $this->db->where('unix_timestamp(update_date) >= ', $options['begin']);
-//        $this->db->where('unix_timestamp(update_date) <= ', $options['end']);
-//        $reswrk=$this->db->get()->row_array();
-//        $totals['wrkleads']=($reswrk['cnt']==0 ? $emptyval : $reswrk['cnt']);
-//        $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
-//        $this->db->from('ts_leads l');
-//        $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
-//        $this->db->join('users u','u.user_id=lu.user_id');
-//        $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
-//        $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
-//        $this->db->group_by('u.user_leadname, lu.user_id');
-//        $this->db->order_by('cnt','desc');
-//        $usrnew=$this->db->get()->result_array();
-//        foreach ($usrnew as $row) {
-//            if (!in_array($row['user_id'], $usrs)) {
-//                array_push($usrs, $row['user_id']);
-//                $usrleads[]=array(
-//                    'user_name'=>$row['user_leadname'],
-//                    'newleads'=>$row['cnt'],
-//                    'wrkleads'=>0,
-//                    'outcalls'=>0,
-//                );
-//            } else {
-//                $key=  array_search($row['user_id'], $usrs);
-//                $usrleads[$key]['newleads']+=$row['cnt'];
-//            }
-//        }
-//        // Out Calls
-//        $totals['outcalls']=($totals['outcalls']==0 ? $emptyval : $totals['outcalls']);
-//        // Users
-//        $idx=0;
-//        foreach ($usrleads as $row) {
-//            $usrleads[$idx]['newleads']=($row['newleads']==0 ? $emptyval : $row['newleads']);
-//            $usrleads[$idx]['wrkleads']=($row['wrkleads']==0 ? $emptyval : $row['wrkleads']);
-//            $usrleads[$idx]['outcalls']=($row['outcalls']==0 ? $emptyval : $row['outcalls']);
-//            $idx++;
-//        }
-//        // Return data
-//        $data=array(
-//            'totals'=>$totals,
-//            'usrdata'=>$usrleads,
-//        );
-//        return $data;
-//    }
+    public function get_newleads($options) {
+        $emptyval='&mdash;';
+        $this->db->select('l.*');
+        $this->db->from('ts_leads l');
+        if (isset($options['user_id'])) {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+            $this->db->where('lu.user_id',$options['user_id']);
+        }
+        if (isset($options['begin'])) {
+            if ($options['leadtype']=='new') {
+                $this->db->where('unix_timestamp(l.create_date) >= ', $options['begin']);
+            } else {
+                $this->db->where('unix_timestamp(l.update_date) >= ', $options['begin']);
+            }
+        }
+        if (isset($options['end'])) {
+            if ($options['leadtype']=='new') {
+                $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
+            } else {
+                $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
+            }
+        }
+        $this->db->order_by('l.lead_number','desc');
+        $result=$this->db->get()->result_array();
+        $out=array();
+
+        foreach ($result as $row) {
+            // $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : '$'.number_format($row['lead_value'],0,'.',''));
+            $row['out_value']=(floatval($row['lead_value'])==0 ? $emptyval : round($row['lead_value']*$this->config->item('leadpts'),0));
+            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
+            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
+            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
+            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
+            $row['lead_itemclass']='';
+            switch ($row['lead_item']) {
+                case '':
+                    $row['out_lead_item']='&nbsp;';
+                    break;
+                case 'Other':
+                case 'Multiple':
+                case 'Custom Shaped Stress Balls':
+                    $row['lead_itemclass']='custom';
+                    if ($row['other_item_name']=='') {
+                        $row['out_lead_item']=$row['lead_item'];
+                    } else {
+                        $row['out_lead_item']=$row['other_item_name'];
+                    }
+                    break;
+                default :
+                    $row['out_lead_item']=$row['lead_item'];
+                    break;
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function get_company_leads($options) {
+        $emptyval='&mdash;';
+        $totals=array(
+            'newleads'=>0,
+            'wrkleads'=>0,
+            'outcalls'=>0,
+        );
+        $usrs=array();
+        $usrleads=array();
+        // New Leads
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
+        $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
+        $resnew=$this->db->get()->row_array();
+        $totals['newleads']=($resnew['cnt']==0 ? $emptyval : $resnew['cnt']);
+        $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
+        $this->db->from('ts_leads l');
+        $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+        $this->db->join('users u','u.user_id=lu.user_id');
+        $this->db->where('unix_timestamp(l.update_date) >= ', $options['begin']);
+        $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
+        $this->db->group_by('u.user_leadname, lu.user_id');
+        $this->db->order_by('cnt','desc');
+        $usrwrk=$this->db->get()->result_array();
+        foreach ($usrwrk as $row) {
+            array_push($usrs, $row['user_id']);
+            $usrleads[]=array(
+                'user_name'=>$row['user_leadname'],
+                'newleads'=>0,
+                'wrkleads'=>$row['cnt'],
+                'outcalls'=>0,
+            );
+        }
+        // Update Leads
+        $this->db->select('count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->where('unix_timestamp(update_date) >= ', $options['begin']);
+        $this->db->where('unix_timestamp(update_date) <= ', $options['end']);
+        $reswrk=$this->db->get()->row_array();
+        $totals['wrkleads']=($reswrk['cnt']==0 ? $emptyval : $reswrk['cnt']);
+        $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
+        $this->db->from('ts_leads l');
+        $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+        $this->db->join('users u','u.user_id=lu.user_id');
+        $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
+        $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
+        $this->db->group_by('u.user_leadname, lu.user_id');
+        $this->db->order_by('cnt','desc');
+        $usrnew=$this->db->get()->result_array();
+        foreach ($usrnew as $row) {
+            if (!in_array($row['user_id'], $usrs)) {
+                array_push($usrs, $row['user_id']);
+                $usrleads[]=array(
+                    'user_name'=>$row['user_leadname'],
+                    'newleads'=>$row['cnt'],
+                    'wrkleads'=>0,
+                    'outcalls'=>0,
+                );
+            } else {
+                $key=  array_search($row['user_id'], $usrs);
+                $usrleads[$key]['newleads']+=$row['cnt'];
+            }
+        }
+        // Out Calls
+        $totals['outcalls']=($totals['outcalls']==0 ? $emptyval : $totals['outcalls']);
+        // Users
+        $idx=0;
+        foreach ($usrleads as $row) {
+            $usrleads[$idx]['newleads']=($row['newleads']==0 ? $emptyval : $row['newleads']);
+            $usrleads[$idx]['wrkleads']=($row['wrkleads']==0 ? $emptyval : $row['wrkleads']);
+            $usrleads[$idx]['outcalls']=($row['outcalls']==0 ? $emptyval : $row['outcalls']);
+            $idx++;
+        }
+        // Return data
+        $data=array(
+            'totals'=>$totals,
+            'usrdata'=>$usrleads,
+        );
+        return $data;
+    }
 
     // Totals from Year begin
     public function get_yearleads() {

@@ -39,8 +39,8 @@
         <?php foreach ($weeks as $row) { ?>
             <div class="weekdatarow <?=($numpp%2==0 ? 'white' :  'grey')?>" data-week="<?=$row['week']?>" data-start="<?=$row['bgn']?>" data-end="<?=$row['end']?>">
                 <div class="weekday <?=$row['weekclass']?>"><?=$row['label']?></div>
-                <div class="newleads" id="newlead<?=$row['bgn']?>" <?=$row['newleadsurl']?>><?=$row['newleads']?></div>
-                <div class="workleads" id="wrklead<?=$row['bgn']?>" <?=$row['wrkleadsurl']?>><?=$row['wrkleads']?></div>
+                <div class="newleads" id="newlead<?=$row['bgn']?>" data-viewsrc="<?=$row['newleadsurl']?>"><?=$row['newleads']?></div>
+                <div class="workleads" id="wrklead<?=$row['bgn']?>" data-viewsrc="<?=$row['wrkleadsurl']?>"><?=$row['wrkleads']?></div>
                 <div class="outcalls"><?=$row['outcalls']?></div>
                 <div class="ordersnum" id="orders<?=$row['bgn']?>" div-viewsrc="<?=$row['ordersurl']?>"><?=$row['orders']?></div>
                 <div class="ordersrevenue" id="ordrevenue<?=$row['bgn']?>" data-viewsrc="<?=$row['ordersurl']?>"><?=$row['revenue']?></div>

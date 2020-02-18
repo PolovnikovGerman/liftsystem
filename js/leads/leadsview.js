@@ -211,14 +211,14 @@ function init_leadclosed_content() {
     });
     $("div.weekdatarow div.newleads").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
             init_weekleads_tips(id);
         }
     });
     $("div.weekdatarow div.workleads").each(function(){
         var id=$(this).prop('id');
-        var href=$(this).attr('href');
+        var href=$(this).data('viewsrc');
         if (href!='') {
             init_weekleads_tips(id);
         }
@@ -282,15 +282,6 @@ function init_weekorders_tips(id) {
             my: 'bottom right',
             at: 'middle left',
         },
-        events: {
-            postShow: function(event, api) {
-                $("div.ordertotaldatarow div.ordernum").unbind('click').click(function(){
-                    var order=$(this).data('order');
-                    $("div.bt-wrapper").css('visibility','hidden');
-                    order_artstage(order);
-                });
-            }
-        },
         style: {
             classes : 'qtip-plain weekuserorder_tooltip',
         }
@@ -303,6 +294,40 @@ function init_weekleads_tips(id) {
     if (usrrepl == '') {
         popupwidth = '212px';
     }
+    $("div#"+id).qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    $("div.leadtotaldatarow div.leadnumber").unbind('click').click(function () {
+                        var lead = $(this).data('lead');
+                        $("div.bt-wrapper").css('visibility', 'hidden');
+                        edit_lead(lead);
+                    });
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        show : {
+            'event' : 'click',
+        },
+        hide : {
+            'event' : 'click',
+        },
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        style: {
+            classes : 'qtip-plain weekuserleads_tooltip',
+        }
+    })
     /* $("div#" + id).bt({
         trigger: 'click',
         shadow: true,
@@ -312,11 +337,6 @@ function init_weekleads_tips(id) {
         positions: ['most'],
         ajaxPath: ["$(this).attr('href')"],
         postShow: function (box) {
-            $("div.leadtotaldatarow div.leadnumber").unbind('click').click(function () {
-                var lead = $(this).data('lead');
-                $("div.bt-wrapper").css('visibility', 'hidden');
-                edit_lead(lead);
-            });
         }
     });
     */
