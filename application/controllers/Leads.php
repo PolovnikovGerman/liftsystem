@@ -162,13 +162,14 @@ class Leads extends MY_Controller
                 $minlead=$this->leads_model->get_lead_mindate($brand);
                 $minorder=$this->orders_model->get_order_mindate($brand);
                 $out_options=[];
-                $user_id=$this->input->post('user_id');
-                $show_feature=$this->input->post('showfeature');
+                $user_id = ifset($postdata,'user_id');
+                $show_feature=ifset($postdata, 'showfeature',0);
                 $options=array(
                     'startdate'=>($minlead>$minorder ? $minorder : $minlead),
                     'show_feature'=>$show_feature,
+                    'brand' => $brand,
                 );
-                if ($user_id) {
+                if (!empty($user_id)) {
                     $options['user_id']=$user_id;
                     $usrdata=$this->user_model->get_user_data($user_id);
                     if ($usrdata['user_leadname']) {
@@ -200,6 +201,7 @@ class Leads extends MY_Controller
                 'week'=>$postdata['week'],
                 'start'=>$postdata['start'],
                 'end'=>$postdata['end'],
+                'brand' => $postdata['brand'],
             );
             if (isset($postdata['user_id']) && $postdata['user_id']) {
                 $options['user_id']=$postdata['user_id'];
@@ -219,17 +221,58 @@ class Leads extends MY_Controller
         show_404();
     }
 
+    public function leadsclosed_totals() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $date = $this->input->post('date');
+                $direction = $this->input->post('direction');
+                $user_id = $this->input->post('user_id');
+                // New start
+                if ($direction == 'prev') {
+                    $newdate = strtotime(date("Y-m-d", $date) . " +5 month");
+                } else {
+                    // $newdate=strtotime(date("Y-m-d", $date) . " -1 month");
+                    $newdate = $date;
+                }
+                $total_options = [
+                    'enddate' => $newdate,
+                    'brand' => $brand,
+                ];
+                if ($user_id) {
+                    $total_options['user_id'] = $user_id;
+                }
+                $this->load->model('leads_model');
+                $rdattop = $this->leads_model->count_closed_totals($total_options);
+                $rdat['prev'] = $rdattop['prev'];
+                $rdat['next'] = $rdattop['next'];
+                $rdat['data'] = $rdattop['data'];
+                $rdat['dateend'] = $newdate;
+                $rdat['datestart'] = $rdattop['datestart'];
+                $mdata['content'] = $this->load->view('leads/leads_closetotal_view', $rdat, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function leadsclosed_cmporders() {
         $bgn=$this->input->get('bgn');
+        $brand = $this->input->get('brand');
         $this->load->model('orders_model');
-        $data=$this->orders_model->get_cmporders($bgn);
+        $data=$this->orders_model->get_cmporders($bgn, $brand);
         $content=$this->load->view('leads/company_ordertotals_view', $data, TRUE);
         echo $content;
     }
 
     public function leadsclosed_yeartotals() {
+        $brand = $this->input->get('brand');
         $this->load->model('leads_model');
-        $leads=$this->leads_model->get_yearleads();
+        $leads=$this->leads_model->get_yearleads($brand);
         $content=$this->load->view('leads/lead_yeartotals_view', $leads, TRUE);
         echo $content;
     }
@@ -237,6 +280,7 @@ class Leads extends MY_Controller
     public function leadsclosed_usrorders() {
         $bgn=$this->input->get('bgn');
         $user_id=$this->input->get('user');
+        $brand = $this->input->get('brand');
         $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
         $this->load->model('orders_model');
         $options=array(
@@ -245,6 +289,7 @@ class Leads extends MY_Controller
             'end'=>$end,
             'order_by'=>'o.order_num',
             'direct'=>'desc',
+            'brand' => $brand,
         );
 
         $orders=$this->orders_model->get_leadorders($options);
@@ -269,12 +314,14 @@ class Leads extends MY_Controller
         $bgn=$this->input->get('bgn');
         $user_id=$this->input->get('user');
         $leadtype=$this->input->get('leadtype');
+        $brand = $this->input->get('brand');
         $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
         $options=array(
             'begin'=>$bgn,
             'end'=>$end,
             'user_id'=>$user_id,
             'leadtype'=>$leadtype,
+            'brand' => $brand,
         );
         $this->load->model('leads_model');
         $leads=$this->leads_model->get_newleads($options);
@@ -297,10 +344,12 @@ class Leads extends MY_Controller
 
     public function leadsclosed_companyleads() {
         $bgn=$this->input->get('bgn');
+        $brand = $this->input->get('brand');
         $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
         $options=array(
             'begin'=>$bgn,
             'end'=>$end,
+            'brand' => $brand,
         );
         $this->load->model('leads_model');
         $leads=$this->leads_model->get_company_leads($options);

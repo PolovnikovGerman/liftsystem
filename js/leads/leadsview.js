@@ -246,7 +246,7 @@ function init_leadclosed_content() {
         content: {
             text: function(event, api) {
                 $.ajax({
-                    url: '/leads/leadsclosed_yeartotals' // Use href attribute as URL
+                    url: '/leads/leadsclosed_yeartotals?brand='+$("#leadsveiwbrand").val() // Use href attribute as URL
                 }).then(function(content) {
                     // Set the tooltip content upon successful retrieval
                     api.set('content.text', content);
@@ -355,6 +355,7 @@ function show_week_details(week, bgn, end) {
     params.push({name: 'start', value: bgn});
     params.push({name: 'end', value: end});
     params.push({name: 'user_id', value: $("select#leads_replica").val()});
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
     var url="/leads/leadsclosed_details";
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -411,9 +412,13 @@ function search_leads() {
 }
 
 function show_closed_totals(date, direction) {
-    var user_id=$("#leads_replica").val();
+    var params = new Array();
+    params.push({name: 'brand', value: $("#leadsveiwbrand").val()});
+    params.push({name: 'user_id', value: $("#leads_replica").val()});
+    params.push({name: 'date', value: date});
+    params.push({name: 'direction', value: direction});
     var url="/leads/leadsclosed_totals";
-    $.post(url, {'user_id':user_id, 'date':date,'direction': direction}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#leadclosedtotalarea").empty().html(response.data.content);
             init_leadpage_manage();

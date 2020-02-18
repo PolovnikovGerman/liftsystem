@@ -1190,6 +1190,9 @@ Class Leads_model extends MY_Model
         }
         $this->db->where('unix_timestamp(l.create_date) >= ', $datestart);
         $this->db->where('unix_timestamp(l.create_date) < ', $dateend);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('month');
         $res=$this->db->get()->result_array();
         foreach ($res as $row) {
@@ -1214,6 +1217,9 @@ Class Leads_model extends MY_Model
         $this->db->where('l.lead_type',3);
         $this->db->where('unix_timestamp(create_date) >= ', $datestart);
         $this->db->where('unix_timestamp(create_date) < ', $dateend);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('month');
         $clres=$this->db->get()->result_array();
         foreach ($clres as $row) {
@@ -1237,6 +1243,9 @@ Class Leads_model extends MY_Model
         $this->db->select('count(lead_id) as cnt');
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(create_date) < ', $datestart);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $datprv=$this->db->get()->row_array();
         if ($datprv['cnt']>0) {
             $response['next']=1;
@@ -1244,6 +1253,9 @@ Class Leads_model extends MY_Model
         $this->db->select('count(lead_id) as cnt');
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(create_date) >= ', $dateend);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $datnxt=$this->db->get()->row_array();
         if ($datnxt['cnt']>0) {
             $response['prev']=1;
@@ -1317,6 +1329,7 @@ Class Leads_model extends MY_Model
         $weekoptions=array(
             'start'=>$date,
             'end'=>$enddate,
+            'brand' => $options['brand'],
         );
         if (isset($options['user_id'])) {
             $weekoptions['user_id']=$options['user_id'];
@@ -1358,6 +1371,9 @@ Class Leads_model extends MY_Model
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['user_id']);
         }
+        if ($options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('week');
         $res=$this->db->get()->result_array();
         foreach ($res as $row) {
@@ -1374,6 +1390,9 @@ Class Leads_model extends MY_Model
         if (isset($options['user_id'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['user_id']);
+        }
+        if ($options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
         }
         $this->db->group_by('week');
         $updres=$this->db->get()->result_array();
@@ -1396,7 +1415,10 @@ Class Leads_model extends MY_Model
                 $weeks[$key]['profit']+=$row['profit'];
             }
         }
-        $cmporders=$this->orders_model->get_orders_leadreport();
+        $total_options = [
+            'brand' => $options['brand'],
+        ];
+        $cmporders=$this->orders_model->get_orders_leadreport($total_options);
         foreach ($cmporders as $row) {
             $key=array_search($row['week'],$weekkey);
             if ($key===FALSE) {
@@ -1408,6 +1430,7 @@ Class Leads_model extends MY_Model
         }
         $proj=array(
             'project'=>1,
+            'brand' => $options['brand'],
         );
         // Get count orders in PROJ stage
         $orderproj=$this->orders_model->get_orders_leadreport($proj);
@@ -1426,18 +1449,18 @@ Class Leads_model extends MY_Model
             $leadurl='';
             if ($row['newleads']>0) {
                 if (isset($options['user_id'])) {
-                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new';
+                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=new&brand='.$options['brand'];
                 } else {
-                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new';
+                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=new&brand='.$options['brand'];
                 }
             }
             $weeks[$idx]['newleadsurl']=$leadurl;
             $leadurl='';
             if ($row['wrkleads']>0) {
                 if (isset($options['user_id'])) {
-                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk';
+                    $leadurl='/leads/leadsclosed_usrleads?bgn='.$row['bgn'].'&user='.$options['user_id'].'&leadtype=wrk&brand='.$options['brand'];
                 } else {
-                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk';
+                    $leadurl='/leads/leadsclosed_companyleads?bgn='.$row['bgn'].'&leadtype=wrk&brand='.$options['brand'];
                 }
             }
             $weeks[$idx]['wrkleadsurl']=$leadurl;
@@ -1457,9 +1480,9 @@ Class Leads_model extends MY_Model
             $ordersurl='';
             if ($row['orders']>0) {
                 if (isset($options['user_id'])) {
-                    $ordersurl='/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'];
+                    $ordersurl='/leads/leadsclosed_usrorders?bgn='.$row['bgn'].'&user='.$options['user_id'].'&brand='.$options['brand'];
                 } else {
-                    $ordersurl='/leads/leadsclosed_companyorders?bgn='.$row['bgn'];
+                    $ordersurl='/leads/leadsclosed_companyorders?bgn='.$row['bgn'].'&brand='.$options['brand'];
                 }
             }
             $weeks[$idx]['ordersurl']=$ordersurl;
@@ -1468,7 +1491,7 @@ Class Leads_model extends MY_Model
             $weeks[$idx]['profit']=($row['profit']==0 ? $emptyval : round($row['profit']*$this->config->item('profitpts'),0));
             $cmpordurl='';
             if ($row['points']>0) {
-                $cmpordurl='/leads/leadsclosed_cmporders?bgn='.$row['bgn'];
+                $cmpordurl='/leads/leadsclosed_cmporders?bgn='.$row['bgn'].'&brand='.$options['brand'];
             }
             $weeks[$idx]['cmporderurl']=$cmpordurl;
             $weeks[$idx]['points']=($row['points']==0 ? $emptyval : $row['points']);
@@ -1516,7 +1539,7 @@ Class Leads_model extends MY_Model
         $totals['wrkleads']=($totals['wrkleads']==0 ? $emptyval : $totals['wrkleads']);
         $totals['outcalls']=($totals['outcalls']==0 ? $emptyval : $totals['outcalls']);
         $totals['orders']=($totals['orders']==0 ? $emptyval : $totals['orders']);
-        $totals['revenue']=($totals['revenue']==0 ? $emptyval : '$'.number_format($totals['revenue'],0,'.','.'));
+        $totals['revenue']=($totals['revenue']==0 ? $emptyval : MoneyOutput($totals['revenue'],0));
         $totals['points']=($totals['points']==0 ? $emptyval : round($totals['points'],0));
         $totals['profit']=($totals['profit']==0 ? $emptyval : round($totals['profit']*$this->config->item('profitpts'),0));
         $totals['cmpprofit']=($totals['cmpprofit']==0 ? $emptyval : $totals['cmpprofit']);
@@ -1639,6 +1662,9 @@ Class Leads_model extends MY_Model
         }
         $this->db->where('unix_timestamp(l.create_date) >= ', $options['start']);
         $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('day');
         $res=$this->db->get()->result_array();
         foreach ($res as $row) {
@@ -1660,6 +1686,9 @@ Class Leads_model extends MY_Model
         }
         $this->db->where('unix_timestamp(l.update_date) >= ', $options['start']);
         $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('day');
         $updres=$this->db->get()->result_array();
         foreach ($updres as $row) {
@@ -1701,7 +1730,7 @@ Class Leads_model extends MY_Model
                     'wrkleads'=>($wrow['wrkleads']==0 ? $emptyval : $wrow['wrkleads']),
                     'outcalls'=>($wrow['outcalls']==0 ? $emptyval : $wrow['outcalls']),
                     'orders'=>($wrow['orders']==0 ? $emptyval : $wrow['orders']),
-                    'revenue'=>($wrow['revenue']==0 ? $emptyval : '$'.number_format($wrow['revenue'],0,'.',',')),
+                    'revenue'=>($wrow['revenue']==0 ? $emptyval : MoneyOutput($wrow['revenue'],0)),
                     'profit'=>($wrow['profit']==0 ? $emptyval : number_format(round($wrow['profit']*$this->config->item('profitpts'),0),0,'.',',')),
                 );
             }
@@ -1731,6 +1760,9 @@ Class Leads_model extends MY_Model
             } else {
                 $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
             }
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
         }
         $this->db->order_by('l.lead_number','desc');
         $result=$this->db->get()->result_array();
@@ -1781,6 +1813,9 @@ Class Leads_model extends MY_Model
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
         $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $resnew=$this->db->get()->row_array();
         $totals['newleads']=($resnew['cnt']==0 ? $emptyval : $resnew['cnt']);
         $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
@@ -1789,6 +1824,9 @@ Class Leads_model extends MY_Model
         $this->db->join('users u','u.user_id=lu.user_id');
         $this->db->where('unix_timestamp(l.update_date) >= ', $options['begin']);
         $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('u.user_leadname, lu.user_id');
         $this->db->order_by('cnt','desc');
         $usrwrk=$this->db->get()->result_array();
@@ -1806,6 +1844,9 @@ Class Leads_model extends MY_Model
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(update_date) >= ', $options['begin']);
         $this->db->where('unix_timestamp(update_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
         $reswrk=$this->db->get()->row_array();
         $totals['wrkleads']=($reswrk['cnt']==0 ? $emptyval : $reswrk['cnt']);
         $this->db->select('u.user_leadname, lu.user_id, count(l.lead_id) as cnt');
@@ -1814,6 +1855,9 @@ Class Leads_model extends MY_Model
         $this->db->join('users u','u.user_id=lu.user_id');
         $this->db->where('unix_timestamp(create_date) >= ', $options['begin']);
         $this->db->where('unix_timestamp(create_date) <= ', $options['end']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('l.brand', $options['brand']);
+        }
         $this->db->group_by('u.user_leadname, lu.user_id');
         $this->db->order_by('cnt','desc');
         $usrnew=$this->db->get()->result_array();
@@ -1850,7 +1894,7 @@ Class Leads_model extends MY_Model
     }
 
     // Totals from Year begin
-    public function get_yearleads() {
+    public function get_yearleads($brand) {
         $emptyval='&mdash;';
         $out=array(
             'weeks'=>$emptyval,
@@ -1878,6 +1922,9 @@ Class Leads_model extends MY_Model
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(create_date) >=', $startdate);
         $this->db->where('unix_timestamp(create_date) < ', $enddate);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if ($res['cnt']>0) {
             $out['newleads']=$res['cnt'];
@@ -1888,6 +1935,9 @@ Class Leads_model extends MY_Model
         $this->db->from('ts_leads');
         $this->db->where('unix_timestamp(update_date) >=', $startdate);
         $this->db->where('unix_timestamp(update_date) < ', $enddate);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if ($res['cnt']>0) {
             $out['wrkleads']=$res['cnt'];
@@ -1898,6 +1948,9 @@ Class Leads_model extends MY_Model
         $this->db->where('order_date >=', $startdate);
         $this->db->where('order_date < ', $enddate);
         $this->db->where('is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if ($res['cnt']==0) {
             return $out;
@@ -1922,6 +1975,9 @@ Class Leads_model extends MY_Model
         $this->db->where('order_date < ', $enddate);
         $this->db->where('item_id',$this->config->item('custom_id'));
         $this->db->where('is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         $orders_cust=$revenue_cust=$points_cust=0;
         if ($res['cnt']>0) {

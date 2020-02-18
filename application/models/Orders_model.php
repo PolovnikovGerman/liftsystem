@@ -538,6 +538,9 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date >= ', $options['start']);
         $this->db->where('o.order_date <= ', $options['end']);
         $this->db->where('o.is_canceled',0);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
         $this->db->group_by('day');
         $res=$this->db->get()->result_array();
         return $res;
@@ -554,13 +557,16 @@ Class Orders_model extends MY_Model
         if (isset($options['project'])) {
             $this->db->where('o.order_cog is null');
         }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
         $this->db->where('o.is_canceled',0);
         $this->db->group_by('week');
         $res=$this->db->get()->result_array();
         return $res;
     }
 
-    public function get_cmporders($bgn) {
+    public function get_cmporders($bgn, $brand) {
         $end=strtotime(date('Y-m-d', strtotime('Sunday this week',$bgn)).' 23:59:59');
         $data=array();
         $emptydata='&mdash;';
@@ -570,6 +576,9 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date >= ', $bgn);
         $this->db->where('o.order_date <= ', $end);
         $this->db->where('o.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $totals=$this->db->get()->row_array();
         $points=round($totals['profit']*$this->config->item('profitpts'),0);
         $totals['points']=($points==0 ? $emptydata : $points);
@@ -582,6 +591,9 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date <= ', $end);
         $this->db->where('o.item_id = ', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $customs=$this->db->get()->row_array();
         $points=round($customs['profit']*$this->config->item('profitpts'),0);
         $customs['points']=($points==0 ? $emptydata : $points);
@@ -595,6 +607,9 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date <= ', $end);
         $this->db->where('o.item_id != ', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
         $regular=$this->db->get()->row_array();
         $points=round($regular['profit']*$this->config->item('profitpts'),0);
         $regular['points']=($points==0 ? $emptydata : $points);
@@ -637,6 +652,9 @@ Class Orders_model extends MY_Model
         }
         if (isset($options['order_qty'])) {
             $this->db->where('o.order_qty',$options['order_qty']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
         }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
