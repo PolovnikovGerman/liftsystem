@@ -20,7 +20,11 @@ function init_page(objid) {
         case 'itemslistview':
             $("#itemslistview").show();
             init_leaditems();
-            break
+            break;
+        case 'onlinequotesview':
+            $("#onlinequotesview").show();
+            init_quotes();
+            break;
     }
 
 }

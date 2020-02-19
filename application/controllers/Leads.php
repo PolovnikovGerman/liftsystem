@@ -53,6 +53,10 @@ class Leads extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
                 $content_options['itemslistview'] = $this->_prepare_itemslistview($brand, $top_menu);
+            } elseif ($row['item_link']=='#onlinequotesview') {
+                $head['styles'][]=array('style'=>'/css/leads/onlinequotes.css');
+                $head['scripts'][]=array('src'=>'/js/leads/onlinequotes.js');
+                $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand, $top_menu);
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -447,6 +451,103 @@ class Leads extends MY_Controller
         }
         show_404();
     }
+    // Online Quotes
+    // Table data
+    public function quotesdat() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+
+            $pagenum=ifset($postdata, 'offset',0);
+            $limit=ifset($postdata, 'limit',150);
+            $offset=$pagenum*$limit;
+            $order_by=ifset($postdata, 'order_by');
+            $direct = ifset($postdata, 'direction','desc');
+            $maxval=ifset($postdata, 'maxval');
+            $brand=ifset($postdata, 'brand');
+            $search_val=$this->input->post('search');
+            $assign=$this->input->post('assign');
+            $hideincl=$this->input->post('hideincl');
+            $search=array();
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($search_val) {
+                $search['search']=$search_val;
+            }
+            if (!empty($brand) && $brand!='ALL') {
+                $search['brand']=$brand;
+            }
+            if ($hideincl) {
+                $search['hideincl']=$hideincl;
+            }
+
+            /* Get data about Competitor prices */
+            /*if ($ordoffset>$maxval) {
+                $ordnum = $maxval;
+            } else {
+                $ordnum = $maxval - $ordoffset;
+            }*/
+            $this->load->model('quotes_model');
+            $email_dat=$this->quotes_model->get_quotes($search,$order_by,$direct,$limit,$offset,$maxval);
+
+            if (count($email_dat)==0) {
+                $content = $this->load->view('leads/quotes_emptytabdata_view',array(), TRUE);
+            } else {
+                $data=array('email_dat'=>$email_dat,);
+                $content = $this->load->view('leads/quotes_tabledat_view',$data, TRUE);
+
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function quotecount() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $assign=$this->input->post('assign');
+            $search_val=$this->input->post('search');
+            $brand=$this->input->post('brand');
+            $hideincl=$this->input->post('hideincl');
+            $search=array();
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($search_val) {
+                $search['search']=$search_val;
+            }
+            if ($brand) {
+                $search['brand']=$brand;
+            }
+            if ($hideincl) {
+                $search['hideincl']=$hideincl;
+            }
+            $this->load->model('quotes_model');
+            $mdata['total_rec']=$this->quotes_model->get_count_quotes($search);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function quote_details() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quote_id=$this->input->post('quote_id');
+            /* Get Data */
+            $this->load->model('quotes_model');
+            $res = $this->quotes_model->get_quote_dat($quote_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $data = $res['data'];
+                $mdata['content']=  $this->load->view('leads/quote_details_view',$data,TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
 
 
     private function _prepare_leadsview($brand, $top_menu) {
@@ -507,6 +608,21 @@ class Leads extends MY_Controller
         $datqs['prices']=$this->config->item('normal_price_base');
         $content=$this->load->view('leads/itemslist_head_view',$datqs,TRUE);
         return $content;
+    }
 
+    private function _prepare_onlinequotesview($brand, $top_menu) {
+        $datqs=array();
+        $datqs=[
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'email_date',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'brand' => $brand,
+        ];
+        $search=array('assign'=>1,'brand'=>$brand);
+        $this->load->model('quotes_model');
+        $datqs['total_rec']=$this->quotes_model->get_count_quotes($search);
+        $content=$this->load->view('leads/quotes_head_view',$datqs,TRUE);
+        return $content;
     }
 }
