@@ -549,6 +549,47 @@ class Leads extends MY_Controller
         }
     }
 
+    public function change_status() {
+        if ($this->func->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quest_id=$this->input->post('quest_id');
+            $type=$this->input->post('type');
+            $chkrel=$this->mleads->check_leadrelation($quest_id);
+            if ($chkrel) {
+                $error='This Request Related with Lead. Please, reload page';
+                $this->func->ajaxResponse($mdata, $error);
+            }
+            /* Get data about question */
+            $quest=$this->mquests->get_quest_data($quest_id);
+
+            /* Get open leads  */
+            $options=array(
+                'orderby'=>'lead_number',
+                'direction'=>'desc',
+            );
+            $leaddat=$this->mleads->get_lead_list($options);
+            $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
+            switch ($type) {
+                case 'quote':
+                    $options['title']='Quote Details';
+                    break;
+                case 'question':
+                    $options['title']='Question Details';
+                    break;
+                case 'proof':
+                    $options['title']='Proof Details';
+                    break;
+                default:
+                    $options['title']='Message Details';
+                    break;
+            }
+            $quest['leadselect']=$this->load->view('leads/lead_openlist_view',$options,TRUE);
+            $mdata['content']=$this->load->view('questions/update_status_view',$quest,TRUE);
+            $this->func->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();

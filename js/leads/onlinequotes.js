@@ -107,8 +107,8 @@ function quote_content_init() {
         var params = "left=200,top=200,width=820,height=480, menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"
         window.open(url, winname, params);
     })
-    $("div.quotes_tabrow").click(function(){
-        var quote = $(this).data('email')
+    $("div.quotes_tabrow").find('.quotecalldetails').click(function(){
+        var quote = $(this).parent().data('email')
         showquotedetails(quote);
     })
     $("div.quoteassign").click(function(){
@@ -116,7 +116,7 @@ function quote_content_init() {
         change_quotereplic(mailid);
         return false;
     });
-    $("div.quote_brand_dat").click(function(){
+    $("div.quote_brand").click(function(){
         var quote_id=$(this).data('quoteid');
         quote_include(quote_id);
         return false;

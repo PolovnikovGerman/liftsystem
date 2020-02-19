@@ -26,5 +26,10 @@ function init_page(objid) {
             init_quotes();
             break;
     }
+}
 
+function replyquestmail(mail) {
+    var mailtourl = "mailto:" + mail;
+    location.href = mailtourl;
+    return false;
 }
