@@ -108,7 +108,6 @@ Class Quotes_model extends My_Model {
         $this->db->where('e.email_id',$quote_id);
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
-
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
             $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
@@ -149,49 +148,48 @@ Class Quotes_model extends My_Model {
 //        }
 //        return $out;
 //    }
-//
-//    function get_todays() {
-//        $todaybgn=strtotime($this->startdate);
-//        $this->db->select('count(e.email_id) as cnt');
-//        $this->db->from('ts_emails e');
-//        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
-//        $this->db->where('e.email_type', Quotes_model::EMAIL_TYPE);
-//        $this->db->where('e.email_subtype', Quotes_model::EMAIL_SUBTYPE);
-//        $this->db->where('e.email_include_lead',1);
-//        $this->db->where('lem.email_id is null');
-//        $this->db->where('unix_timestamp(email_date) >=',$todaybgn);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            $retval='';
-//        } else {
-//            $retval=$res['cnt'];
-//        }
-//        return $retval;
-//    }
-//
-//    function quote_include($email_id, $newval) {
-//        $out=array('result'=> Quotes_model::ERR_FLAG, 'msg'=> Quotes_model::INIT_ERRMSG);
-//        $incl_icon='<img src="/img/noninclide_lead_icon.png" alt="Include"/>';
-//        $nonincl_icon='<img src="/img/inclide_lead_icon.png" alt="Non Include"/>';
-//        $this->db->set('email_include_lead',$newval);
-//        $this->db->where('email_id',$email_id);
-//        $this->db->update('ts_emails');
-//        if ($this->db->affected_rows()==1) {
-//            $out['result']=  Quotes_model::SUCCESS_RESULT;
-//            $out['msg']='';
-//            $out['newicon']=($newval==0 ? $nonincl_icon : $incl_icon);
-//            $options=array(
-//                'assign'=>1,
-//            );
-//            $out['newmsg']=$this->get_count_quotes($options);
-//            $today=$this->get_todays();
-//            $out['newclass']=(floatval($today)==0 ? 'empval' : 'curmail');
-//        } else {
-//            $out['msg']='Quote Not Found';
-//        }
-//        return $out;
-//
-//    }
+
+    public function get_todays() {
+        $todaybgn=strtotime($this->startdate);
+        $this->db->select('count(e.email_id) as cnt');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('e.email_subtype', $this->EMAIL_SUBTYPE);
+        $this->db->where('e.email_include_lead',1);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('unix_timestamp(email_date) >=',$todaybgn);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $retval='';
+        } else {
+            $retval=$res['cnt'];
+        }
+        return $retval;
+    }
+
+    public function quote_include($email_id, $newval) {
+        $out=array('result'=> $this->error_result, 'msg'=> $this->INIT_ERRMSG);
+        $incl_icon='<img src="/img/noninclide_lead_icon.png" alt="Include"/>';
+        $nonincl_icon='<img src="/img/inclide_lead_icon.png" alt="Non Include"/>';
+        $this->db->set('email_include_lead',$newval);
+        $this->db->where('email_id',$email_id);
+        $this->db->update('ts_emails');
+        if ($this->db->affected_rows()==1) {
+            $out['result']=  $this->success_result;
+            $out['msg']='';
+            $out['newicon']=($newval==0 ? $nonincl_icon : $incl_icon);
+            $options=array(
+                'assign'=>1,
+            );
+            $out['newmsg']=$this->get_count_quotes($options);
+            $today=$this->get_todays();
+            $out['newclass']=(floatval($today)==0 ? 'empval' : 'curmail');
+        } else {
+            $out['msg']='Quote Not Found';
+        }
+        return $out;
+    }
 
 
 }

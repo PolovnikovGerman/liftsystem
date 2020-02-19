@@ -84,6 +84,7 @@ Class Questions_model extends My_Model {
 //    }
 //
     public function get_quest_data($quest_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->INIT_ERRMSG];
         $this->db->select('e.*,lem.leademail_id, l.lead_id, l.lead_number, l.lead_date, l.lead_customer, l.lead_mail');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
@@ -91,12 +92,14 @@ Class Questions_model extends My_Model {
         $this->db->where('e.email_id',$quest_id);
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
+            $out['result']=$this->success_result;
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
             $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['chk']=($res['email_status']==0 ? 'chreplic' : '');
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
+            $out['data'] = $res;
         }
-        return $res;
+        return $out;
     }
 
 //    function save_queststatus($quest) {

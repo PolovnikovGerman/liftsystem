@@ -550,43 +550,79 @@ class Leads extends MY_Controller
     }
 
     public function change_status() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='This Request Related with Lead. Please, reload page';
+            $this->load->model('questions_model');
+            $this->load->model('leads_model');
             $quest_id=$this->input->post('quest_id');
             $type=$this->input->post('type');
-            $chkrel=$this->mleads->check_leadrelation($quest_id);
-            if ($chkrel) {
-                $error='This Request Related with Lead. Please, reload page';
-                $this->func->ajaxResponse($mdata, $error);
-            }
-            /* Get data about question */
-            $quest=$this->mquests->get_quest_data($quest_id);
+            $chkrel=$this->leads_model->check_leadrelation($quest_id);
+            if ($chkrel==0) {
+                /* Get data about question */
+                $res = $this->questions_model->get_quest_data($quest_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $quest= $res['data'];
+                        /* Get open leads  */
+                    $options=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                    );
+                    $leaddat=$this->leads_model->get_lead_list($options);
+                    $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
+                    switch ($type) {
+                        case 'quote':
+                            $options['title']='Quote Details';
+                            break;
+                        case 'question':
+                            $options['title']='Question Details';
+                            break;
+                        case 'proof':
+                            $options['title']='Proof Details';
+                            break;
+                        default:
+                            $options['title']='Message Details';
+                            break;
+                    }
+                    $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
+                    $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
 
-            /* Get open leads  */
-            $options=array(
-                'orderby'=>'lead_number',
-                'direction'=>'desc',
-            );
-            $leaddat=$this->mleads->get_lead_list($options);
-            $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
-            switch ($type) {
-                case 'quote':
-                    $options['title']='Quote Details';
-                    break;
-                case 'question':
-                    $options['title']='Question Details';
-                    break;
-                case 'proof':
-                    $options['title']='Proof Details';
-                    break;
-                default:
-                    $options['title']='Message Details';
-                    break;
+                }
             }
-            $quest['leadselect']=$this->load->view('leads/lead_openlist_view',$options,TRUE);
-            $mdata['content']=$this->load->view('questions/update_status_view',$quest,TRUE);
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function create_leadmessage() {
+
+    }
+
+    public function quote_include() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Unknown Quote';
+            $postdata = $this->input->post();
+            $quote_id = ifset($postdata, 'quote_id',0);
+            if ($quote_id > 0) {
+                $this->load->model('quotes_model');
+                $res=$this->quotes_model->get_quote_dat($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $quote = $res['data'];
+                    $newval=($quote['email_include_lead']==1 ? 0 : 1 );
+                    $updres=$this->quotes_model->quote_include($quote_id,$newval);
+                    $error=$updres['msg'];
+                    if ($updres['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['newicon']=$updres['newicon'];
+                        $mdata['newclass']=$updres['newclass'];
+                        $mdata['newmsg']=$updres['newmsg'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
         }
     }
 

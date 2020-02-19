@@ -145,13 +145,13 @@ function change_quotereplic(quote_id) {
     var url="/leads/change_status";
     $.post(url, {'quest_id':quote_id,'type':'quote'}, function(response){
         if (response.errors=='') {
-            show_popup('editmail_form');
-            $("div#pop_content").empty().html(response.data.content);
+            // <div id="editmail_form" style="display:none; width: 568px; height: 330px;"></div>
+            $("#pageModalLabel").empty().html('Change Quote Status');
+            $("#pageModal").find('div.modal-content').css('width','590px');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             /* Activate close */
-            $("a#popupContactClose").click(function(){
-                disablePopup();
-            })
-            $("select#lead_id").searchable();
+            // $("select#lead_id").searchable();
             /* Change Lead data */
             $("select#lead_id").change(function(){
                 change_leaddata();

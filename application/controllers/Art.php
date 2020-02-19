@@ -504,7 +504,6 @@ class Art extends MY_Controller {
     function change_status() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $quest_id=$this->input->post('quest_id');
             $type=$this->input->post('type');
             $this->load->model('leads_model');
@@ -515,31 +514,35 @@ class Art extends MY_Controller {
                 $this->ajaxResponse($mdata, $error);
             }
             /* Get data about question */
-            $quest=$this->questions_model->get_quest_data($quest_id);
-
-            /* Get open leads  */
-            $options=array(
-                'orderby'=>'lead_number',
-                'direction'=>'desc',
-            );
-            $leaddat=$this->leads_model->get_lead_list($options);
-            $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
-            switch ($type) {
-                case 'quote':
-                    $options['title']='Quote Details';
-                    break;
-                case 'question':
-                    $options['title']='Question Details';
-                    break;
-                case 'proof':
-                    $options['title']='Proof Details';
-                    break;
-                default:
-                    $options['title']='Message Details';
-                    break;
+            $res = $this->questions_model->get_quest_data($quest_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $quest= $res['data'];
+                /* Get open leads  */
+                $options=array(
+                    'orderby'=>'lead_number',
+                    'direction'=>'desc',
+                );
+                $leaddat=$this->leads_model->get_lead_list($options);
+                $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
+                switch ($type) {
+                    case 'quote':
+                        $options['title']='Quote Details';
+                        break;
+                    case 'question':
+                        $options['title']='Question Details';
+                        break;
+                    case 'proof':
+                        $options['title']='Proof Details';
+                        break;
+                    default:
+                        $options['title']='Message Details';
+                        break;
+                }
+                $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
+                $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
             }
-            $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
-            $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
             $this->ajaxResponse($mdata, $error);
         }
     }
@@ -615,7 +618,8 @@ class Art extends MY_Controller {
             switch ($type) {
                 case 'Question':
                     $this->load->model('questions_model');
-                    $maildat = $this->questions_model->get_quest_data($email_id);
+                    $dat = $this->questions_model->get_quest_data($email_id);
+                    $maildat = $dat['data'];
                     $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
                     break;
                 case 'Quote':
@@ -685,7 +689,8 @@ class Art extends MY_Controller {
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $this->load->model('questions_model');
-                $data=$this->questions_model->get_quest_data($quest['mail_id']);
+                $res =$this->questions_model->get_quest_data($quest['mail_id']);
+                $data = $res['data'];
                 /* Recalculate Totals New  */
                 $mdata['type']=$data['email_type'];
 //                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
