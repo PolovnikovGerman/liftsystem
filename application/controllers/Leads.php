@@ -71,6 +71,10 @@ class Leads extends MY_Controller
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
 
+        // Searchable
+        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,

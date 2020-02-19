@@ -258,7 +258,10 @@ function prooflead(mailid) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
             /* Activate close */
-            // $("select#lead_id").searchable();
+            $("select#lead_id").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#artModal')
+            });
             /* Change Lead data */
             $("select#lead_id").change(function(){
                 change_leaddata();
