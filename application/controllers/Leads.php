@@ -57,6 +57,10 @@ class Leads extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/leads/onlinequotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/onlinequotes.js');
                 $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand, $top_menu);
+            } elseif ($row['item_link']=='#proofrequestsview') {
+                $head['styles'][] = array('style' => '/css/art/requestlist.css');
+                $head['scripts'][] = array('src' => '/js/art/requestlist.js');
+                $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand, $top_menu);
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -701,5 +705,25 @@ class Leads extends MY_Controller
         $datqs['total_rec']=$this->quotes_model->get_count_quotes($search);
         $content=$this->load->view('leads/quotes_head_view',$datqs,TRUE);
         return $content;
+    }
+
+    private function _prepare_requestlist_view($brand, $top_menu) {
+        $datqs = [
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'email_date',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'assign' => '',
+            'hideart' => 0,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+
+        $search=array('assign'=>'','hideart'=>0, 'brand' => $brand);
+        $this->load->model('artproof_model');
+        $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
+        $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
+        return $content;
+
     }
 }

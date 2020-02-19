@@ -25,6 +25,10 @@ function init_page(objid) {
             $("#onlinequotesview").show();
             init_quotes();
             break;
+        case 'proofrequestsview' :
+            $("#proofrequestsview").show();
+            init_proofdata();
+            break;
     }
 }
 

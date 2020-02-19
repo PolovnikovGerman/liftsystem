@@ -16,6 +16,9 @@
         <?php if (isset($onlinequotesview)) { ?>
             <div class="leadscontentarea" id="onlinequotesview" style="display: none;"><?=$onlinequotesview?></div>
         <?php } ?>
+        <?php if (isset($proofrequestsview)) { ?>
+            <div class="leadscontentarea" id="proofrequestsview" style="display: none;"><?=$proofrequestsview?></div>
+        <?php } ?>
     </div>
 </div>
 
