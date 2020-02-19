@@ -1,3 +1,48 @@
 .chk-ordoption {
     background-color: #48e763;
 }
+.chk-ordoption-alert {
+    background-color: #3c1699;
+}
+.chk-ordoptionblank {
+    background-color: #00ff01;
+}
+a.find_it {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}
+.proof_tabrow.current_row {
+    background-color: #BCBCBC !important;
+}
+.art_tooltip {
+    background-color: #1DCD19;
+    float: left;
+    padding: 7px;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+    border-radius: 10px 0px 0px 10px;
+    line-height: 18px!important;
+}
+
+/* Beauty Tips */
+.green_tooltip {
+    background-color: #EDEDED;
+    float: left;
+    padding: 0px;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+}
+.green_background {
+    background: #1DCD19;
+}

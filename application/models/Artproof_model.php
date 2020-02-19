@@ -48,8 +48,9 @@ Class Artproof_model extends MY_Model
             $this->db->where('lem.email_id is null');
             $this->db->where('e.email_include_lead',1);
         }
-        if (isset($options['brand'])) {
-            $this->db->where('e.email_websys',$options['brand']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            // $this->db->where('e.email_websys',$options['brand']);
+            $this->db->where('e.brand', $options['brand']);
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -312,8 +313,9 @@ Class Artproof_model extends MY_Model
             $this->db->where('lem.email_id is null');
             $this->db->where('e.email_include_lead',1);
         }
-        if (isset($search['brand'])) {
-            $this->db->where('e.email_websys',$search['brand']);
+        if (isset($search['brand']) && $search['brand']!=='ALL') {
+            // $this->db->where('e.email_websys',$search['brand']);
+            $this->db->where('e.brand', $search['brand']);
         }
         if (isset($search['show_deleted'])) {
             $this->db->where('e.email_status != ',3);

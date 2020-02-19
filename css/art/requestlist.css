@@ -7,51 +7,48 @@
 }
 .proof_select_type {
     color: #353535;
-    float: left;
     font-size: 13px;
-    width: 861px;
+    /* width: 861px; */
 }
 .showproofdetails:hover {
     cursor: pointer;
 }
 .proof_selecttype_label {
-    float: left;
-    padding-top: 3px;
-    width: 50px
+    width: 50px;
+    height: 24px;
+    line-height: 24px!important;
 }
 select.proof_status_select {
     float: left;
     font-size: 12px;
     margin-left: 5px;
     width: 120px;
-}
-select.proof_brandselect {
-    float: left;
-    font-size: 12px;
-    margin-left: 5px;
-    width: 152px;
+    height: 24px;
+    line-height: 24px;
 }
 input.proofsearch {
     float: left;
     font-size: 12px;
     margin-left: 5px;
     width: 206px;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 3px;
 }
 .proof_title {
     background: none repeat scroll 0 0 #BCBCBC;
     border: 1px solid #2F2F2F;
     clear: both;
     color: #000000;
-    float: left;
     font-size: 13px;
     text-align: center;
     width: 969px;
+    margin-top: 10px;
 }
 .proof_title div {
     height: 26px;
     line-height: 26px;
 }
-
 .proof_tabledat {
     clear: both;
     float: left;
@@ -582,4 +579,6 @@ select.leadopenlist {
 .proof_pagination {
     float: right!important;
     margin-right: 15px;
+    margin-top: -20px;
+    margin-bottom: -20px;
 }
