@@ -51,6 +51,9 @@ Class Orders_model extends MY_Model
         if (isset($filtr['weborder'])) {
             $this->db->where('o.weborder', $filtr['weborder']);
         }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('o.brand', $filtr['brand']);
+        }
         $this->db->from('ts_orders o');
         if (isset($filtr['filter']) && $filtr['filter']==7) {
             $this->db->where('o.is_canceled',1);
@@ -59,7 +62,6 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.is_canceled',0);
             }
         }
-
         /*  */
         if (count($filtr)>0) {
             if (isset($filtr['hideart']) && $filtr['hideart']==1) {
@@ -349,6 +351,9 @@ Class Orders_model extends MY_Model
             if (isset($filtr['artadd_filtr']) && $filtr['artadd_filtr']==1) {
                 $this->db->where('o.order_rush',1);
             }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);
@@ -363,8 +368,6 @@ Class Orders_model extends MY_Model
             $row['shipping']=(floatval($row['shipping'])==0 ? '-' : '$'.number_format($row['shipping'], 2, '.', ','));
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
-            // $lastmsg=$this->get_lastupdate($row['order_id']);
-            // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $artlastupdat="artlastmessageview";
             $row['lastmsg']='/artorders/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');

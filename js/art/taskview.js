@@ -39,8 +39,8 @@ function init_tasks_management() {
         });
         init_tasks_page();
     });
-
 }
+
 function init_tasks_page() {
     var inclreq=$("input#ordersproofs").prop('checked');
     var showreq=0;

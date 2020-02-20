@@ -55,3 +55,7 @@
     </div>
     <div class="tabledata">&nbsp;</div>
 </div>
+<input type="hidden" id="artordersviewbrand" value="<?=$brand?>"/>
+<div id="artordersviewbrandmenu">
+    <?=$top_menu?>
+</div>

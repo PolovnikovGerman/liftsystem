@@ -65,7 +65,7 @@ class Art extends MY_Controller {
             } elseif ($row['item_link']=='#orderlist') {
                 $head['styles'][]=array('style'=>'/css/art/orderslist.css');
                 $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
-                $content_options['orderlist'] = $this->_prepare_orderlist_view();
+                $content_options['orderlist'] = $this->_prepare_orderlist_view($brand, $top_menu);
             } elseif ($row['item_link']=='#requestlist') {
                 $head['styles'][]=array('style'=>'/css/art/requestlist.css');
                 $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
@@ -187,6 +187,7 @@ class Art extends MY_Controller {
             $stage=$this->input->post('stage');
             $task_sort=$this->input->post('task_sort','time');
             $task_direc=$this->input->post('task_direc','desc');
+            $brand = $this->input->post('brand');
             $noteval=0;
             $aproved_viewall=0;
             if ($stage=='noart' || $stage=='need_approve') {
@@ -197,7 +198,7 @@ class Art extends MY_Controller {
                 $aproved_viewall=$this->input->post('aproved_viewall');
             }
             $this->load->model('artproof_model');
-            $data_task=$this->artproof_model->get_tasks_stage($stage, $taskview, $inclreq, $task_sort, $task_direc, $aproved_viewall);
+            $data_task=$this->artproof_model->get_tasks_stage($stage, $taskview, $inclreq, $task_sort, $task_direc, $brand, $aproved_viewall);
             if (count($data_task)==0) {
                 $mdata['content']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {
@@ -379,7 +380,8 @@ class Art extends MY_Controller {
                     'search'=>$search,
                 );
                 $filtr['hideart']=1;
-                // $orders=$this->morder->get_orders($filtr,$order_by,$direct,$limit,$offset);
+                $filtr['brand'] = $postdata['brand'];
+
                 $this->load->model('orders_model');
                 $orders=$this->orders_model->get_general_orders($filtr,$order_by,$direct,$limit,$offset, $this->USR_ID);
 
@@ -399,7 +401,9 @@ class Art extends MY_Controller {
                 // $maxval=$this->input->post('maxval');
                 $search=array();
                 $search['search']=$postdata['tasksearch'];
-                $email_dat=$this->mproofs->get_artproofs($search,$order_by,$direct,$limit,$offset,$limit);
+                $search['brand'] = $postdata['brand'];
+                $this->load->model('artproof_model');
+                $email_dat=$this->artproof_model->get_artproofs($search,$order_by,$direct,$limit,$offset,$limit);
                 if (count($email_dat)==0) {
                     $content = $this->load->view('artpage/proofs_emptytabledat_view',array(), TRUE);
                 } else {
@@ -437,7 +441,8 @@ class Art extends MY_Controller {
             $searchval=$this->input->post('search','');
             $add_filtr=$this->input->post('add_filtr');
             $filter=$this->input->post('filter');
-            $search=array();
+            $brand = $this->input->post('brand');
+            $search=['brand' => $brand];
             if ($searchval) {
                 $search['search']=$searchval;
             }
@@ -478,12 +483,13 @@ class Art extends MY_Controller {
             $search=$this->input->post('search');
             $filter=$this->input->post('filter');
             $add_filtr=$this->input->post('add_filtr');
-
+            $brand = $this->input->post('brand');
             $options=array();
 
             $options['search']=$search;
             $options['artfilter']=$filter;
             $options['artadd_filtr']=$add_filtr;
+            $options['brand'] = $brand;
             /* count number of orders */
             $this->load->model('orders_model');
             $mdata['totals']=$this->orders_model->get_count_orders($options);
@@ -898,8 +904,11 @@ class Art extends MY_Controller {
         return $content;
     }
 
-    private function _prepare_orderlist_view() {
-        $datqs=array();
+    private function _prepare_orderlist_view($brand, $top_menu) {
+        $datqs=array(
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
         $datqs['perpage']=$this->artorderperpage;
         $search=array('hideart'=>0);
         $this->load->model('orders_model');
@@ -909,20 +918,6 @@ class Art extends MY_Controller {
         $datqs['cur_page']=0;
         $datqs['assign']='';
         $datqs['hideart']=0;
-
-/*        $options=array(
-            'hideart'=>1,
-        );
-        $this->load->model('orders_model');
-        $totals=$this->orders_model->get_count_orders($options);
-
-        $options_view=array(
-            'perpage'=> $this->artorderperpage,
-            'order'=>'order_num',
-            'direc'=>'desc',
-            'total'=>$totals,
-            'curpage'=>0,
-        );*/
         $content=$this->load->view('artorder/page_view',$datqs,TRUE);
         return $content;
     }

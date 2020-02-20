@@ -26,6 +26,22 @@ function init_orders() {
     $("div.addneworder").unbind('click').click(function(){
         order_artstage(0,'artorderlist');
     });
+    // Change Brand
+    $("#artordersviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#artordersviewbrand").val(brand);
+        $("#artordersviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#artordersviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#artordersviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_artorderdata();
+    });
     initGeneralPagination();
 }
 
@@ -66,6 +82,7 @@ function pageArtOrderCallback(page_index){
     params.push({name:'order_by', value:$("#artordorderby").val()});
     params.push({name:'direction', value:$("#artorddirection").val()});
     params.push({name:'maxval', value:$('#artordtotalrec').val()});
+    params.push({name: 'brand', value: $("input#artordersviewbrand").val()});
 
     var url='/art/order_data';
     $("#loader").show();
@@ -139,12 +156,14 @@ function artorders_view_init() {
 
 /* Search functions */
 function search_artorderdata() {
-    var search=$("input#artordsearch").val();
-    var filter=$("select#artordfilter_options").val();
-    var add_filtr=$("select#artorder_options").val();
+    var params = new Array();
+    params.push({name: 'search', value: $("input#artordsearch").val()});
+    params.push({name: 'filter', value: $("select#artordfilter_options").val()});
+    params.push({name: 'add_filtr', value: $("select#artorder_options").val()});
+    params.push({name: 'brand', value: $("input#artordersviewbrand").val()});
     /* Recalculate total number */
     var url="/art/search_orders";
-    $.post(url, {'search':search, 'filter':filter, 'add_filtr':add_filtr}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artordtotalrec").val(response.data.totals);
             initGeneralPagination();
