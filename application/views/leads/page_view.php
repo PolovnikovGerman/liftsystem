@@ -22,6 +22,9 @@
         <?php if (isset($questionsview)) { ?>
             <div class="leadscontentarea" id="questionsview" style="display: none;"><?=$questionsview?></div>
         <?php } ?>
+        <?php if (isset($checkoutattemptsview)) { ?>
+            <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>
+        <?php } ?>
     </div>
 </div>
 

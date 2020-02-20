@@ -33,6 +33,10 @@ function init_page(objid) {
             $("#questionsview").show();
             init_questions();
             break;
+        case 'checkoutattemptsview':
+            $("#checkoutattemptsview").show();
+            init_attempts();
+            break;
     }
 }
 

@@ -65,6 +65,10 @@ class Leads extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/leads/questionsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/questionsview.js');
                 $content_options['questionsview'] = $this->_prepare_questionslist_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#checkoutattemptsview') {
+                $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
+                $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
+                $content_options['checkoutattemptsview'] = $this->_prepare_attempts_view($brand, $top_menu);
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -732,6 +736,47 @@ class Leads extends MY_Controller
         show_404();
     }
 
+    // Attempts
+    public function attempts_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error='';
+                $this->load->model('orders_model');
+                // Temp
+                $d_bgn = strtotime('2019-06-01');
+                $datz=$this->orders_model->attempts_table_dat($brand, $d_bgn);
+                $mdata['content']=$this->load->view('leads/order_attemptsdata_view',array('tabledat'=>$datz),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function attempts_details() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $date=$this->input->post('day');
+            $brand = $this->input->post('brand');
+            /* Get Attempts Results */
+            $this->load->model('orders_model');
+            $data=$this->orders_model->get_attemts_duedate($date, $brand);
+
+            $options=array(
+                'attempts'=>$data,
+                'cnt'=>count($data),
+                'date'=>$date,
+            );
+            $mdata['content']=$this->load->view('orders/order_attemtsday_view',$options, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
@@ -848,4 +893,14 @@ class Leads extends MY_Controller
         return $content;
 
     }
+
+    private function _prepare_attempts_view($brand, $top_menu) {
+        $options = [
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        $content=$this->load->view('leads/order_attempts_view', $options,TRUE);
+        return $content;
+    }
+
 }

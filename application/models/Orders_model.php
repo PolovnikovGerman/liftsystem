@@ -749,5 +749,367 @@ Class Orders_model extends MY_Model
         return $out_array;
     }
 
+    public function attempts_table_dat($brand, $d_bgn = '', $d_end = '')
+    {
+        if ($d_end == '') {
+            $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
+        }
+        /* Get Begin & End of Week  */
+        $weekend = date('W', $d_end);
+        $yearend = date('Y', $d_end);
+        $dates = getDatesByWeek($weekend, $yearend);
+        $d_end = $dates['end_week'];
+
+        /* Calculate END day */
+        if ($d_bgn == '') {
+            $this->db->select('min(unix_timestamp(order_date)) as min_date', FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('is_void', 0);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $res_ar = $this->db->get()->row_array();
+            $last_date = $res_ar['min_date'];
+        } else {
+            $last_date = $d_bgn;
+        }
+        if ($last_date == '') {
+            $last_date = $dates['start_week'];
+        }
+        $d_bgn = $last_date;
+        /* Select # of weekes between end date and begin date */
+        $this->db->select('TIMESTAMPDIFF(WEEK, from_unixtime(' . $d_bgn . '),from_unixtime(' . ($d_end) . ')) as numweeks');
+        $wres = $this->db->get()->row_array();
+        $out_array = array();
+
+        for ($j = 0; $j <= $wres['numweeks']; $j++) {
+            $weekend = date('W', $d_end);
+            $yearend = date('Y', $d_end);
+            $dates = getDatesByWeek($weekend, $yearend);
+
+            $week_bgn = $dates['start_week'];
+            $week_end = $dates['end_week'];
+            if (date('m', $week_bgn) != date('m', $week_end)) {
+                if (date('Y', $week_bgn) != date('Y', $week_end)) {
+                    $week_name = date('M, Y', $week_bgn) . '/' . date('M, Y', $week_end);
+                } else {
+                    $week_name = date('M', $week_bgn) . '/' . date('M, Y', $week_end);
+                }
+            } else {
+                $week_name = date('F, Y', $week_bgn);
+            }
+
+            $out_array[] = [
+                'date' => $week_name,
+                'mon_day' => '',
+                'mon_date' => getDayOfWeek($weekend, $yearend, 1),
+                'mon_ordercnt' => 0,
+                'mon_attemcnt' => 0,
+                'tue_day' => 0,
+                'tue_date' => getDayOfWeek($weekend, $yearend, 2),
+                'tue_ordercnt' => 0,
+                'tue_attemcnt' => 0,
+                'wed_day' => 0,
+                'wed_date' => getDayOfWeek($weekend, $yearend, 3),
+                'wed_ordercnt' => 0,
+                'wed_attemcnt' => 0,
+                'thu_day' => 0,
+                'thu_date' => getDayOfWeek($weekend, $yearend, 4),
+                'thu_ordercnt' => 0,
+                'thu_attemcnt' => 0,
+                'fri_day' => 0,
+                'fri_date' => getDayOfWeek($weekend, $yearend, 5),
+                'fri_ordercnt' => 0,
+                'fri_attemcnt' => 0,
+                'sat_day' => 0,
+                'sat_date' => getDayOfWeek($weekend, $yearend, 6),
+                'sat_ordercnt' => 0,
+                'sat_attemcnt' => 0,
+                'sun_day' => 0,
+                'sun_date' => getDayOfWeek($weekend, $yearend, 7),
+                'sun_ordercnt' => 0,
+                'sun_attemcnt' => 0,
+                'total_ordercnt' => 0,
+                'total_attemcnt' => 0,
+                'week_num' => $weekend,
+                'year' => $yearend,
+            ];
+
+            $outidx = count($out_array) - 1;
+            $this->db->select("date, sum(day_orders) as cnt_orders, sum(day_attempt) as cnt_attempt ", FALSE);
+            $this->db->from('v_orderattempts');
+            $this->db->where('unix_timestamp(date) >= ', $week_bgn);
+            $this->db->where('unix_timestamp(date) <= ', $week_end);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $this->db->group_by('date');
+            $res = $this->db->get()->result_array();
+
+            foreach ($res as $row) {
+                $datrep = strtotime($row['date']);
+                $weekday = date('w', $datrep);
+                $day_pref = '';
+                switch ($weekday) {
+                    case '0':
+                        /* Sun */
+                        $day_pref = 'sun_';
+                        break;
+                    case '1':
+                        /* Mon */
+                        $day_pref = 'mon_';
+                        break;
+                    case '2' :
+                        /* Tue */
+                        $day_pref = 'tue_';
+                        break;
+                    case '3':
+                        /* Wed */
+                        $day_pref = 'wed_';
+                        break;
+                    case '4':
+                        /* Thu */
+                        $day_pref = 'thu_';
+                        break;
+                    case '5':
+                        /* Thu */
+                        $day_pref = 'fri_';
+                        break;
+                    case '6':
+                        /* Sat */
+                        $day_pref = 'sat_';
+                        break;
+                }
+                if ($day_pref != '') {
+                    // $out_array[$outidx][$day_pref.'day']=date('j',$datrep);
+                    $out_array[$outidx][$day_pref . 'ordercnt'] = intval($row['cnt_orders']);
+                    $out_array[$outidx][$day_pref . 'attemcnt'] = intval($row['cnt_attempt']) + intval($row['cnt_orders']);
+                    $out_array[$outidx]['total_ordercnt'] += intval($row['cnt_orders']);
+                    $out_array[$outidx]['total_attemcnt'] += intval($row['cnt_attempt']) + intval($row['cnt_orders']);
+                }
+            }
+            /* Rebuild Date End */
+            $d_end = strtotime(date("Y-m-d", $d_end) . " - 7 days");
+        }
+
+        $out = array();
+        foreach ($out_array as $row) {
+            $row['sun_day'] = date('j', $row['sun_date']);
+            $row['sun_total'] = $row['sun_attemcnt'];
+            $row['sun_success'] = ($row['sun_total'] == 0 ? '&nbsp;' : round($row['sun_ordercnt'] / $row['sun_total'] * 100, 0) . '% success');
+            $row['mon_day'] = date('j', $row['mon_date']);
+            $row['mon_total'] = $row['mon_attemcnt'];
+            $row['mon_success'] = ($row['mon_total'] == 0 ? '&nbsp;' : round($row['mon_ordercnt'] / $row['mon_total'] * 100, 0) . '% success');
+            $row['tue_day'] = date('j', $row['tue_date']);
+            $row['tue_total'] = $row['tue_attemcnt'];
+            $row['tue_success'] = ($row['tue_total'] == 0 ? '&nbsp;' : round($row['tue_ordercnt'] / $row['tue_total'] * 100, 0) . '% success');
+            $row['wed_day'] = date('j', $row['wed_date']);
+            $row['wed_total'] = $row['wed_attemcnt'];
+            $row['wed_success'] = ($row['wed_total'] == 0 ? '&nbsp;' : round($row['wed_ordercnt'] / $row['wed_total'] * 100, 0) . '% success');
+            $row['thu_day'] = date('j', $row['thu_date']);
+            $row['thu_total'] = $row['thu_attemcnt'];
+            $row['thu_success'] = ($row['thu_total'] == 0 ? '&nbsp;' : round($row['thu_ordercnt'] / $row['thu_total'] * 100, 0) . '% success');
+            $row['fri_day'] = date('j', $row['fri_date']);
+            $row['fri_total'] = $row['fri_attemcnt'];
+            $row['fri_success'] = ($row['fri_total'] == 0 ? '&nbsp;' : round($row['fri_ordercnt'] / $row['fri_total'] * 100, 0) . '% success');
+            $row['sat_day'] = date('j', $row['sat_date']);
+            $row['sat_total'] = $row['sat_attemcnt'];
+            $row['sat_success'] = ($row['sat_total'] == 0 ? '&nbsp;' : round($row['sat_ordercnt'] / $row['sat_total'] * 100, 0) . '% success');
+            $row['total_totals'] = $row['total_attemcnt'];
+            $row['total_success'] = ($row['total_totals'] == 0 ? '&nbsp;' : round($row['total_ordercnt'] / $row['total_totals'] * 100, 0) . '% success');
+            $out[] = $row;
+        }
+        return $out;
+    }
+
+    public function get_attemts_duedate($date, $brand) {
+        $start = strtotime(date('Y-m-d', $date));
+        $end = strtotime(date('Y-m-d', $date) . ' 23:59:59');
+        $this->db->select('order_id, unix_timestamp(order_date) as attdate, 1 as orderdat, 0 as attempt');
+        $this->db->from('sb_orders');
+        $this->db->where('unix_timestamp(order_date) >= ', $start);
+        $this->db->where('unix_timestamp(order_date) <= ', $end);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $ordres = $this->db->get()->result_array();
+        $this->db->select('cart_id as order_id, created_date as attdate, 0 as orderdat, 1 as attempt');
+        $this->db->from('sb_cartdatas');
+        $this->db->where('created_date >= ', $start);
+        $this->db->where('created_date <= ', $end);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $attres = $this->db->get()->result_array();
+        $res = array_merge($ordres, $attres);
+        usort($res, function ($a, $b){
+            return $a['attdate'] - $b['attdate'];
+        });
+
+        /* Union select */
+        /* $sql = "select order_id, unix_timestamp(order_date) as attdate, 1 as orderdat, 0 as attempt
+              from sb_orders
+              where unix_timestamp(order_date) between " . $start . " and " . $end . " and is_void=0
+              union
+              select cart_id as order_id, created_date as attdate, 0 as orderdat, 1 as attempt
+              from sb_cartdatas
+              where created_date between " . $start . " and " . $end . "
+              order by attdate";
+        $query = $this->db->query($sql);
+        $res = $query->result_array();
+        */
+        $outarr = array();
+        foreach ($res as $row) {
+            if ($row['orderdat'] == 1) {
+                $orddat = $this->order_data($row['order_id']);
+
+                $cc_card = $orddat['payment_card_type'] . ' ' . $orddat['payment_card_number'] . ' ' . $orddat['payment_card_month'] . '/' . $orddat['payment_card_year'];
+                $datrow = array(
+                    'attempt_id' => '',
+                    'confirm' => $orddat['order_confirmation'],
+                    'customer' => $orddat['contact_first_name'] . ' ' . $orddat['contact_last_name'],
+                    'item' => $orddat['item'],
+                    'qty' => $orddat['item_qty'],
+                    'amount' => '$' . number_format($orddat['order_total'], 2, '.', ''),
+                    'email' => $orddat['contact_email'],
+                    'phone' => $orddat['contact_phone'],
+                    'item_color' => '&nbsp;',
+                    'customer_location' => '&nbsp;',
+                    'cc_details' => $cc_card,
+                    'last_field' => '&nbsp;',
+                    'row_class' => 'orderdat',
+                    'artsubm' => '&nbsp;',
+                );
+            } else {
+                $attdat = $this->attempt_data($row['order_id']);
+                $datrow = array(
+                    'attempt_id' => $row['order_id'],
+                    'confirm' => '&nbsp;',
+                    'customer' => $attdat['customer'],
+                    'item' => $attdat['item'],
+                    'qty' => $attdat['item_qty'],
+                    'amount' => $attdat['order_total'],
+                    'email' => $attdat['email'],
+                    'phone' => $attdat['phone'],
+                    'item_color' => $attdat['item_color'],
+                    'customer_location' => $attdat['customer_location'],
+                    'cc_details' => $attdat['cc_details'],
+                    'last_field' => $attdat['last_field'],
+                    'row_class' => '',
+                    'artsubm' => $attdat['artsubm'],
+                );
+            }
+            $outarr[] = $datrow;
+        }
+        return $outarr;
+    }
+
+    private function order_data($order_id) {
+        $this->db->select('ord.*, i.item_name as item, i.item_number');
+        $this->db->from('sb_orders ord');
+        $this->db->join('sb_items i', 'i.item_id=ord.order_item_id', 'left');
+        $this->db->where('ord.order_id', $order_id);
+        $res = $this->db->get()->row_array();
+        return $res;
+    }
+
+    private function attempt_data($cart_id) {
+        $ci = &get_instance();
+        $ci->load->model('items_model', 'mitem');
+        $ci->load->model('itemcolors_model', 'mcolors');
+        $this->db->select('*');
+        $this->db->from('sb_cartdatas');
+        $this->db->where('cart_id', $cart_id);
+        $dat = $this->db->get()->row_array();
+        $cartdat = (isset($dat['cart']) ? $dat['cart'] : array());
+        $out = array(
+            'customer' => '&nbsp;',
+            'item' => '&nbsp;',
+            'item_qty' => '&nbsp;',
+            'order_total' => '&nbsp;',
+            'email' => '&nbsp;',
+            'phone' => '&nbsp;',
+            'item_color' => '&nbsp;',
+            'customer_location' => '&nbsp;',
+            'cc_details' => '&nbsp;',
+            'last_field' => '&nbsp;',
+            'artsubm' => '&nbsp;',
+        );
+        if (!empty($cartdat)) {
+            $data = unserialize($cartdat);
+            if (isset($data['ship_firstname']) && $data['ship_firstname'] != '') {
+                $out['customer'].=$data['ship_firstname'] . ' ';
+            }
+            if (isset($data['ship_lastname']) && $data['ship_lastname'] != '') {
+                $out['customer'].=$data['ship_lastname'] . ' ';
+            }
+            if (isset($data['item_id'])) {
+                $itemdat = $ci->mitem->get_item($data['item_id']);
+                $out['item'] = $itemdat['item_name'];
+            }
+            if (isset($data['sumval']) && $data['sumval']) {
+                $out['item_qty'] = $data['sumval'];
+            }
+            if (isset($data['total']) && floatval($data['total']) != 0) {
+                $out['order_total'] = '$' . number_format($data['total'], 2, '.', '');
+            }
+            if (isset($data['phonenum']) && $data['phonenum'] != '') {
+                $out['phone'] = $data['phonenum'];
+            }
+            if (isset($data['emailaddr']) && $data['emailaddr'] != '') {
+                $out['email'] = $data['emailaddr'];
+            }
+            // Additional fields
+            $colors = array();
+            for ($i = 1; $i < 5; $i++) {
+                if (isset($data['col' . $i]) && $data['col' . $i]) {
+                    $colors[] = array('color' => $data['col' . $i]);
+                }
+            }
+            if (count($colors) == 1) {
+                /* Get color value */
+                $out['item_color'] = $ci->mcolors->get_colorval_item($colors[0]['color']);
+            } elseif (count($colors) > 1) {
+                $out['item_color'] = 'Multy';
+            }
+            if (isset($data['customer_location']) && $data['customer_location'] != '') {
+                $out['customer_location'] = $data['customer_location'];
+            }
+            $cc_card = '';
+            if (isset($data['cctype']) && $data['cctype'] != '') {
+                $cc_card.=$data['cctype'] . ' ';
+            }
+            if (isset($data['ccnumber']) && $data['ccnumber']) {
+                $cc_card.=$data['ccnumber'] . '';
+            }
+            if (isset($data['ccexpmonth']) && $data['ccexpmonth']) {
+                $cc_card.=$data['ccexpmonth'] . '/';
+            }
+            if (isset($data['ccexpyear']) && $data['ccexpyear']) {
+                $cc_card.=$data['ccexpyear'];
+            }
+            if ($cc_card != '') {
+                $out['cc_details'] = $cc_card;
+            }
+            if (isset($data['last_updated_item']) && $data['last_updated_item']) {
+                $lastfld = '';
+                foreach ($this->cardflds as $row) {
+                    if ($data['last_updated_item'] == $row['idx']) {
+                        $lastfld = $row['name'];
+                        break;
+                    }
+                }
+                if ($lastfld != '') {
+                    $out['last_field'] = $lastfld;
+                }
+            }
+            $artsubmit = $this->count_artlogs($dat['session_id']);
+            if ($artsubmit != 0) {
+                $out['artsubm'] = '<div id="artsubmitlog' . $cart_id . '" class="artsubmitlog" href="/orders/artsubmitlog?d=' . $dat['session_id'] . '"><img src="/img/art.png"/></div>';
+            }
+        }
+
+        return $out;
+    }
 
 }
