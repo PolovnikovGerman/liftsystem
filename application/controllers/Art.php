@@ -43,13 +43,25 @@ class Art extends MY_Controller {
         $head=[];
         $head['title']='ART';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+
+        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+        if (count($brands)==0) {
+            redirect('/');
+        }
+        $brand = $brands[0]['brand'];
+        $top_options = [
+            'brands' => $brands,
+            'active' => $brand,
+        ];
+        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View
                 $head['styles'][]=array('style'=>'/css/art/taskview.css');
                 $head['scripts'][]=array('src'=>'/js/art/taskview.js');
-                $content_options['taskview'] = $this->_prepare_task_view();
+                $content_options['taskview'] = $this->_prepare_task_view($brand, $top_menu);
             } elseif ($row['item_link']=='#orderlist') {
                 $head['styles'][]=array('style'=>'/css/art/orderslist.css');
                 $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
@@ -866,8 +878,11 @@ class Art extends MY_Controller {
         }
     }
 
-    private function _prepare_task_view() {
-        $datf=array();
+    private function _prepare_task_view($brand, $top_menu) {
+        $datf=array(
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
         $datf['sort_need_art']='time';
         $datf['direc_needart']='desc';
         $datf['sort_redraw']='time';
