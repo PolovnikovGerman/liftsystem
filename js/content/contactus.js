@@ -23,8 +23,10 @@ function display_content() {
 }
 
 function init_contactus_edit() {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
     var url = "/content/edit_contactus";
-    $.post(url, {}, function (response) {
+    $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#contactusview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {
@@ -62,6 +64,7 @@ function init_contactus_editcontent() {
     $(".save_button[data-page='contactus']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#contact_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_contactcontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {

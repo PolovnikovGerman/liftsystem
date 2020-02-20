@@ -39,8 +39,10 @@ function display_content() {
 }
 
 function init_servicepage_edit() {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
     var url = "/content/edit_servicecontent";
-    $.post(url, {}, function (response) {
+    $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#serviceview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {
@@ -78,6 +80,7 @@ function init_servicepage_editcontent() {
     $(".save_button[data-page='extraservice']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#service_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_servicepagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {

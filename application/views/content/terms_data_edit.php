@@ -17,6 +17,3 @@
         </div>
     </div>
 <?php } ?>
-<div class="content-row">
-    <div class="addnewterm">Add New Term</div>
-</div>

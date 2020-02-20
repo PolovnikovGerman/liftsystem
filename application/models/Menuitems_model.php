@@ -3,6 +3,9 @@
 Class Menuitems_model extends MY_Model
 {
 
+    private $sb_logo = '/img/page_view/sb_lefttab_logo.png';
+    private $bt_logo = '/img/page_view/bt_lefttab_logo.png';
+    private $all_logo = '/img/page_view/universal_lefttab_logo.png';
 
     public function __construct()
     {
@@ -234,5 +237,25 @@ Class Menuitems_model extends MY_Model
         $this->db->where('mm.item_link', $root_lnk);
         $this->db->order_by('m.menu_order, m.menu_section');
         return $res=$this->db->get()->result_array();
+    }
+
+    public function get_brand_permisions($user_id, $pagelink) {
+        // Temporary
+        $pages = ['/content'];
+        $brands = [];
+        if (in_array($pagelink, $pages)) {
+            $brands =[
+                ['brand' => 'SB', 'logo' => $this->sb_logo],
+                ['brand' => 'BT', 'logo' => $this->bt_logo],
+            ];
+        } else {
+            // Top Menu
+            $brands =[
+                ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All brands'],
+                ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
+                ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
+            ];
+        }
+        return $brands;
     }
 }
