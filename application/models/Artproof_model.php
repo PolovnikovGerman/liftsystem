@@ -48,18 +48,19 @@ Class Artproof_model extends MY_Model
             $this->db->where('lem.email_id is null');
             $this->db->where('e.email_include_lead',1);
         }
-        if (isset($options['brand'])) {
-            $this->db->where('e.email_websys',$options['brand']);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            // $this->db->where('e.email_websys',$options['brand']);
+            $this->db->where('e.brand', $options['brand']);
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
 
-    public function get_tasks_stage($stage, $taskview, $inclreq, $order_by, $direction, $viewall=0) {
+    public function get_tasks_stage($stage, $taskview, $inclreq, $order_by, $direction, $brand, $viewall=0) {
         /* Get with data More then then 24 hours */
-        $olddat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 0 , $viewall);
+        $olddat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 0 , $brand, $viewall);
         /* Current day */
-        $curdat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 1, $viewall);
+        $curdat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 1, $brand, $viewall);
         if ($stage=='just_approved' && $order_by=='time' && $direction=='asc') {
             $res=array_merge($curdat,$olddat);
         } else {
@@ -209,7 +210,7 @@ Class Artproof_model extends MY_Model
     }
 
 
-    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less=0, $viewall) {
+    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less=0, $brand, $viewall) {
         $daylimit=24*60*60;
         /* Get with data More then then 24 hours */
         $this->db->select('v.order_disp_id, v.order_num, v.order_rush as order_rush_val, v.specialdiff, v.commondiff, v.update_date, v.order_proj_status ');
@@ -276,6 +277,9 @@ Class Artproof_model extends MY_Model
                     $this->db->where('v.status_type','R');
                     break;
             }
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('v.brand', $brand);
         }
 
         if ($order_by=='time') {

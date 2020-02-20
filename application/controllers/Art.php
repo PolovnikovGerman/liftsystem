@@ -138,34 +138,35 @@ class Art extends MY_Controller {
             $aproved_sort=$this->input->post('approved_sort','time');
             $aproved_direc=$this->input->post('aproved_direc','desc');
             $aproved_viewall=$this->input->post('aproved_viewall');
+            $brand = $this->input->post('brand');
             /* Get data */
             $this->load->model('artproof_model');
 
-            $data_not_art=$this->artproof_model->get_tasks_stage('noart', $taskview, $inclreq, $nonart_sort, $nonart_direc);
+            $data_not_art=$this->artproof_model->get_tasks_stage('noart', $taskview, $inclreq, $nonart_sort, $nonart_direc, $brand);
             if (count($data_not_art)==0) {
                 $mdata['nonart']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {
                 $mdata['nonart']=$this->load->view('tasklist/task_data_view',array('data'=>$data_not_art,'note'=>1),TRUE);
             }
-            $data_redraw=$this->artproof_model->get_tasks_stage('redrawn', $taskview, $inclreq, $redraw_sort, $redraw_direc);
+            $data_redraw=$this->artproof_model->get_tasks_stage('redrawn', $taskview, $inclreq, $redraw_sort, $redraw_direc, $brand);
             if (count($data_redraw)==0) {
                 $mdata['redrawn']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {
                 $mdata['redrawn']=$this->load->view('tasklist/task_data_view',array('data'=>$data_redraw,'note'=>0),TRUE);
             }
-            $data_proof=$this->artproof_model->get_tasks_stage('need_proof', $taskview, $inclreq, $proof_sort, $proof_direc);
+            $data_proof=$this->artproof_model->get_tasks_stage('need_proof', $taskview, $inclreq, $proof_sort, $proof_direc, $brand);
             if (count($data_proof)==0) {
                 $mdata['toproof']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {
                 $mdata['toproof']=$this->load->view('tasklist/task_data_view',array('data'=>$data_proof,'note'=>0),TRUE);
             }
-            $data_needapr=$this->artproof_model->get_tasks_stage('need_approve', $taskview, $inclreq, $needapr_sort, $needapr_direc);
+            $data_needapr=$this->artproof_model->get_tasks_stage('need_approve', $taskview, $inclreq, $needapr_sort, $needapr_direc, $brand);
             if (count($data_needapr)==0) {
                 $mdata['needapr']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {
                 $mdata['needapr']=$this->load->view('tasklist/task_data_view',array('data'=>$data_needapr,'note'=>1),TRUE);
             }
-            $data_aproved=$this->artproof_model->get_tasks_stage('just_approved', $taskview, $inclreq, $aproved_sort, $aproved_direc, $aproved_viewall);
+            $data_aproved=$this->artproof_model->get_tasks_stage('just_approved', $taskview, $inclreq, $aproved_sort, $aproved_direc, $brand, $aproved_viewall);
             if (count($data_aproved)==0) {
                 $mdata['aproved']=$this->load->view('tasklist/task_dataempty_view',array(),TRUE);
             } else {

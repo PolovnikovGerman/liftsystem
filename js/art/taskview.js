@@ -22,7 +22,24 @@ function init_tasks_management() {
     })
     $("input#viewallapproved").unbind('change').change(function(){
         change_approved_view('just_approved');
-    })
+    });
+    // Change Brand
+    $("#arttasksviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#arttasksviewbrand").val(brand);
+        $("#arttasksviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        init_tasks_page();
+    });
+
 }
 function init_tasks_page() {
     var inclreq=$("input#ordersproofs").prop('checked');
@@ -48,6 +65,7 @@ function init_tasks_page() {
     params.push({name:'approved_sort',value:$("input#aproved_sort").val()});
     params.push({name:'aproved_direc',value:$("input#aproved_direc").val()});
     params.push({name:"aproved_viewall", value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_data";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -106,6 +124,7 @@ function change_approved_view(stage) {
         params.push({name:'task_direc',value:$("input#aproved_direc").val()});
     }
     params.push({name:'aproved_viewall', value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -238,6 +257,7 @@ function change_tasksort(tasktype,sorttype) {
     params.push({name:'task_sort',value:sortby});
     params.push({name:'task_direc',value:sort});
     params.push({name:'aproved_viewall', value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -328,6 +348,7 @@ function searchtasks() {
     var params=new Array();
     params.push({name:'tasktype', value: $("select#tasksearchselect").val()});
     params.push({name:'tasksearch', value:$("input#tasksearch").val()});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasksearch";
     $.post(url, params, function(response){
         if (response.errors=='') {
