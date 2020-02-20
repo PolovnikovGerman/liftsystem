@@ -214,6 +214,8 @@ function showquotedetails(quote_id) {
             $("#pageModal").find('div.modal-content').css('width','753px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal('show');
+        } else {
+            show_error(response);
         }
     },'json');
 }

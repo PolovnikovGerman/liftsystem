@@ -61,6 +61,10 @@ class Leads extends MY_Controller
                 $head['styles'][] = array('style' => '/css/art/requestlist.css');
                 $head['scripts'][] = array('src' => '/js/art/requestlist.js');
                 $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#questionsview') {
+                $head['styles'][]=array('style'=>'/css/leads/questionsview.css');
+                $head['scripts'][]=array('src'=>'/js/leads/questionsview.js');
+                $content_options['questionsview'] = $this->_prepare_questionslist_view($brand, $top_menu);
             }
         }
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
@@ -634,6 +638,100 @@ class Leads extends MY_Controller
         }
     }
 
+    public function questcount() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $assign=$this->input->post('assign');
+            $search_val=$this->input->post('search');
+            $brand=$this->input->post('brand');
+            $hideincl=$this->input->post('hideincl');
+
+            $search=array();
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($hideincl) {
+                $search['hideincl']=$hideincl;
+            }
+            if ($search_val) {
+                $search['search']=$search_val;
+            }
+            if ($brand) {
+                $search['brand']=$brand;
+            }
+            $this->load->model('questions_model');
+            $mdata['total_rec']=$this->questions_model->get_count_questions($search);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function questionsdat() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            /* 'search':search, 'offset':page_index,'limit':perpage,'maxval':maxval */
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','asc');
+            $searchval=$this->input->post('search','');
+            $maxval=$this->input->post('maxval');
+            $assign=$this->input->post('assign');
+            $brand=$this->input->post('brand');
+            $hideincl=$this->input->post('hideincl');
+            $search=array();
+            if ($searchval) {
+                $search['search']=$searchval;
+            }
+            if ($assign) {
+                $search['assign']=$assign;
+            }
+            if ($brand) {
+                $search['brand']=$brand;
+            }
+            if ($hideincl) {
+                $search['hideincl']=$hideincl;
+            }
+
+            $offset=$offset*$limit;
+
+            /* Fetch data about prices */
+            $this->load->model('questions_model');
+            $questdat=$this->questions_model->get_questions($search,$order_by,$direct,$limit,$offset,$maxval);
+
+            if (count($questdat)==0) {
+                $mdata['content']=$this->load->view('leads/questions_emptytabledat_view',array(),TRUE);
+            } else {
+                $data=array(
+                    'quests'=>$questdat,
+                );
+                $mdata['content']=$this->load->view('leads/questions_tabledat_view',$data, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function question_detail() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quest_id=$this->input->post('quest_id');
+            /* Get data about question */
+            $this->load->model('questions_model');
+            $res=$this->questions_model->get_quest_data($quest_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $quest=$res['data'];
+                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
@@ -727,6 +825,26 @@ class Leads extends MY_Controller
         $this->load->model('artproof_model');
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
+        return $content;
+
+    }
+
+    private function _prepare_questionslist_view($brand, $top_menu) {
+        $datqs=[
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'email_date',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        // $datqs['search_form']=$this->load->view('questions/search_form_view',array(),TRUE);
+
+        $search=array('assign'=>1,'brand'=>$brand);
+        $this->load->model('questions_model');
+        $datqs['total_rec']=$this->questions_model->get_count_questions($search);
+
+        $content=$this->load->view('leads/questions_view',$datqs,TRUE);
         return $content;
 
     }

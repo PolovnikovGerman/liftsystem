@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 20.02.20
- * Time: 2:01
- */
+<div class="quest_tabrow whitedatarow" style="font-size: 14px; text-align: center; color: #FF0000; height: 21px; line-height: 21px!important;">No records</div>

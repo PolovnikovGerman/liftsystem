@@ -29,6 +29,10 @@ function init_page(objid) {
             $("#proofrequestsview").show();
             init_proofdata();
             break;
+        case 'questionsview':
+            $("#questionsview").show();
+            init_questions();
+            break;
     }
 }
 
