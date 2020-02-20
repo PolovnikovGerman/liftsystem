@@ -69,7 +69,7 @@ class Art extends MY_Controller {
             } elseif ($row['item_link']=='#requestlist') {
                 $head['styles'][]=array('style'=>'/css/art/requestlist.css');
                 $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
-                $content_options['requestlist'] = $this->_prepare_requestlist_view();
+                $content_options['requestlist'] = $this->_prepare_requestlist_view($brand, $top_menu);
             }
         }
         $content_options['menu']=$menu;
@@ -922,10 +922,13 @@ class Art extends MY_Controller {
         return $content;
     }
 
-    private function _prepare_requestlist_view() {
-        $datqs=array();
+    private function _prepare_requestlist_view($brand, $top_menu) {
+        $datqs=[
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
         $datqs['perpage']=$this->artorderperpage;
-        $search=array('assign'=>'','hideart'=>0);
+        $search=array('assign'=>'','hideart'=>0, 'brand'=>$brand);
         $this->load->model('artproof_model');
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $datqs['order_by']='email_date';

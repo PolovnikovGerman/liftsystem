@@ -26,6 +26,22 @@ function init_proofdata() {
     $("a#find_proof").unbind('click').click(function(){
         search_proofs();
     })
+    // Change Brand
+    $("#artrequestviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#artrequestviewbrand").val(brand);
+        $("#artrequestviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#artrequestviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#artrequestviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_proofs();
+    });
     initProofPagination();
 }
 
@@ -35,7 +51,7 @@ function search_proofs() {
         search='';
     }
     var assign=$("select#proof_status").val();
-    var brand=$("select#proofbrand").val();
+    var brand=$("input#artrequestviewbrand").val();
     // var showdel=$("input#hidedelproofs").prop('checked');
     var deleted=$("select#hidedelproofs").val();
     var url=main_proofurl+"/proof_count";
@@ -81,7 +97,7 @@ function pageProofsCallback(page_index) {
     var params=new Array();
     params.push({name:'search',value:search});
     params.push({name:'assign',value:$("select#proof_status").val()});
-    params.push({name:'brand',value:$("select#proofbrand").val()});
+    params.push({name:'brand',value:$("input#artrequestviewbrand").val()});
     params.push({name:'offset',value:page_index});
     params.push({name:'limit',value:$("#perpageproof").val()});
     params.push({name:'maxval',value:$('#totalproof').val()});
@@ -257,7 +273,10 @@ function prooflead(mailid) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
             /* Activate close */
-            // $("select#lead_id").searchable();
+            $("select#lead_id").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#artModal')
+            });
             /* Change Lead data */
             $("select#lead_id").change(function(){
                 change_leaddata();
