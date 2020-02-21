@@ -84,7 +84,7 @@ class Art extends MY_Controller {
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
         // Searchable
-        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+        // $head['scripts'][]=array('src'=>'/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         // Artwork popup
         $head['scripts'][]=array('src'=>'/js/artwork/artpopup.js');
         $head['styles'][]=array('style'=>'/css/artwork/artpopup.css');
@@ -505,6 +505,20 @@ class Art extends MY_Controller {
         echo $out_msg;
     }
 
+    public function order_brand() {
+        if ($this->isAjax()) {
+            $brands =[
+                ['brand' => 'SB', 'label' => 'stressball.com only'],
+                ['brand' => 'BT', 'label' => 'bluetrack only'],
+            ];
+            $mdata = [
+                'content' => $this->load->view('leadorder/order_brands_view',['brands' => $brands], TRUE),
+            ];
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
     /* Count # of Proofs */
     public function proof_count() {
         if ($this->isAjax()) {
@@ -690,12 +704,6 @@ class Art extends MY_Controller {
 
             if ($res['result'] == $this->success_result) {
                 $error = '';
-//                $mdata['total_proof'] = $this->mproofs->get_count_proofs(array('assign' => 1));
-//                $mdata['total_quote'] = $this->mquotes->get_count_quotes(array('assign' => 1));
-//                $mdata['total_quest'] = $this->mquests->get_count_questions(array('assign' => 1));
-//                $mdata['sumquote'] = $this->mquotes->get_todays();
-//                $mdata['sumproofs'] = $this->mproofs->get_todays();
-//                $mdata['sumquest'] = $this->mquests->get_todays();
                 $mdata['leadid'] = $res['result'];
             }
             $this->ajaxResponse($mdata, $error);
@@ -742,12 +750,6 @@ class Art extends MY_Controller {
                 $data=$this->questions_model->get_quest_data($quest['mail_id']);
                 /* Recalculate Totals New  */
                 $mdata['type']=$data['email_type'];
-//                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
-//                $mdata['total_quote']=$this->mquotes->get_count_quotes(array('assign'=>1));
-//                $mdata['total_quest']=$this->mquests->get_count_questions(array('assign'=>1));
-//                $mdata['sumquote']=$this->mquotes->get_todays();
-//                $mdata['sumproofs']=$this->mproofs->get_todays();
-//                $mdata['sumquest']=$this->mquests->get_todays();
             }
             $this->ajaxResponse($mdata, $error);
         }

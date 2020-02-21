@@ -30,6 +30,7 @@ class Leadorder extends MY_Controller
             $error='';
             $postdata=$this->input->post();
             $order=(isset($postdata['order']) ? $postdata['order'] : 0);
+            $brand = ifset($postdata,'brand','ALL');
             $ordersession=$this->input->post('ordersession');
             // Remove from session
             usersession($ordersession,NULL);
@@ -37,7 +38,7 @@ class Leadorder extends MY_Controller
                 $this->engaded_model->clean_engade($postdata['locrecid']);
             }
             if ($order==0) {
-                $res=$this->leadorder_model->add_newlead_order($this->USR_ID);
+                $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
                 $edit=1;
             } else {
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID);

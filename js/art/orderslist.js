@@ -24,7 +24,7 @@ function init_orders() {
     });
 
     $("div.addneworder").unbind('click').click(function(){
-        order_artstage(0,'artorderlist');
+        show_brand_select();
     });
     // Change Brand
     $("#artordersviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
@@ -171,4 +171,25 @@ function search_artorderdata() {
             show_error(response);
         }
     }, 'json');
+}
+
+// Ask system before create new order
+function show_brand_select() {
+    var url = '/art/order_brand';
+    $.post(url,{}, function (response) {
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html('Choose Brand for New Order');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','380px');
+            $("#artModal").modal('show');
+            $("button#savebrand").unbind('click').click(function () {
+                var brand = $("#neworderbrand").val();
+                $("#artModal").modal('hide');
+                order_artstage(0,'artorderlist', brand);
+            })
+        } else {
+            show_error(response);
+        }
+    },'json');
+
 }

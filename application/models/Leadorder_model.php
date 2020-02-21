@@ -584,7 +584,7 @@ Class Leadorder_model extends My_Model {
 //
 //
     // New Order
-    public function add_newlead_order($user_id) {
+    public function add_newlead_order($user_id, $brand) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $out['result']=$this->success_result;
         $this->db->select('order_system');
@@ -619,6 +619,7 @@ Class Leadorder_model extends My_Model {
         $data['is_shipping']=1;
         $data['mischrg_val1']=$data['mischrg_val2']=$data['discount_val']=0;
         $data['showbilladdress']=1;
+        $data['brand'] = $brand;
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['numtickets']=0;
@@ -3996,6 +3997,12 @@ Class Leadorder_model extends My_Model {
         } else {
             $artsync=$this->artlead_model->art_common_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
         }
+        // Update Order -> ART TYPE
+        $arttype = $this->artlead_model->order_arttype($order_id);
+        $this->db->where('order_id', $order_id);
+        $this->db->set('arttype', $arttype);
+        $this->db->update('ts_orders');
+
         // artwork_model
         if ($savedorder_id>0) {
             // Save changes
@@ -4317,6 +4324,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('order_confirmation', $confirm);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
+            $this->db->set('brand', $data['brand']);
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';

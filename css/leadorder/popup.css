@@ -226,6 +226,7 @@ input.calendarinpt[readonly="readonly"] {
 }
 .block_4.neworder {
     width: 229px;
+    visibility: hidden;
 }
 .block_4_text {
     width: 246px;
@@ -3813,4 +3814,29 @@ select.selectorderitem {
     margin-top: 15px;
     width: 90px;
     cursor: pointer;
+}
+/* Popup for chose Brand for new order */
+.order_brandselectarea {
+    clear: both;
+    float: left;
+    width: 354px;
+    padding: 15px;
+}
+.order_brandselectarea > .brandselectarea {
+    clear: both;
+    float: left;
+    width: 322px;
+    margin-bottom: 10px;
+}
+.order_brandselectarea > .brandselectarea select.brandselectvalue {
+    float: left;
+    height: 26px;
+    line-height: 26px!important;
+    font-size: 14px;
+    padding-left: 5px;
+    width: 309px;
+}
+.order_brandselectarea > .brandselectsave {
+    clear: both;
+    float: right!important;
 }

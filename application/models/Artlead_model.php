@@ -1314,20 +1314,20 @@ Class Artlead_model extends MY_Model
         return TRUE;
     }
 
-//    function order_arttype($order_id) {
-//        $arttype = 'new';
-//        $this->db->select('count(id.order_imprindetail_id) as cnt');
-//        $this->db->from('ts_order_imprints im');
-//        $this->db->join('ts_order_items oi','oi.order_item_id=im.order_item_id');
-//        $this->db->join('ts_order_imprindetails id','id.order_item_id=oi.order_item_id');
-//        $this->db->where('oi.order_id', $order_id);
-//        $this->db->where('id.imprint_active',1);
-//        $this->db->where('id.imprint_type','REPEAT');
-//        $res = $this->db->get()->row_array();
-//        if ($res['cnt']>0) {
-//            $arttype='repeat';
-//        }
-//        return $arttype;
-//    }
+    public function order_arttype($order_id) {
+        $arttype = 'new';
+        $this->db->select('count(id.order_imprindetail_id) as cnt');
+        $this->db->from('ts_order_imprints im');
+        $this->db->join('ts_order_items oi','oi.order_item_id=im.order_item_id');
+        $this->db->join('ts_order_imprindetails id','id.order_item_id=oi.order_item_id');
+        $this->db->where('oi.order_id', $order_id);
+        $this->db->where('id.imprint_active',1);
+        $this->db->where('id.imprint_type','REPEAT');
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']>0) {
+            $arttype='repeat';
+        }
+        return $arttype;
+    }
 
 }
