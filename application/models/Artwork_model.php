@@ -3118,6 +3118,22 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>intval($ordernew['order_qty']),
             );
         }
+        if (array_key_exists('item_cost', $orderold) && array_key_exists('item_cost', $ordernew) && round(floatval($orderold['item_cost']),2)!=round(floatval($ordernew['item_cost']),2)) {
+            array_push($changes, 'item cost to '.MoneyOutput($ordernew['item_cost']));
+            $historylist[]=array(
+                'parameter_name'=>'Order Item Cost',
+                'parameter_oldvalue'=>MoneyOutput($orderold['item_cost']),
+                'parameter_newvalue'=>MoneyOutput($ordernew['item_cost']),
+            );
+        }
+        if (array_key_exists('item_imprint', $orderold) && array_key_exists('item_imprint', $ordernew) && round(floatval($orderold['item_imprint']),2)!=round(floatval($ordernew['item_imprint']),2)) {
+            array_push($changes, 'item imprint cost to '.MoneyOutput($ordernew['item_cost']));
+            $historylist[]=array(
+                'parameter_name'=>'Order Item Imprint Cost',
+                'parameter_oldvalue'=>MoneyOutput($orderold['item_imprint']),
+                'parameter_newvalue'=>MoneyOutput($ordernew['item_imprint']),
+            );
+        }
         if (round(floatval($orderold['revenue']),2)!=round(floatval($ordernew['revenue']),2)) {
             array_push($changes, 'revenue to '.MoneyOutput($ordernew['revenue'],2));
             $historylist[]=array(
@@ -3142,28 +3158,28 @@ Class Artwork_model extends MY_Model
         }
         if ($orderold['mischrg_label1']!=$ordernew['mischrg_label1']) {
             $historylist[]=array(
-                'parameter_name'=>'Misc Charge Label',
+                'parameter_name'=>'Misc Charge Label (row 1)',
                 'parameter_oldvalue'=>$orderold['mischrg_label1'],
                 'parameter_newvalue'=>$ordernew['mischrg_label1'],
             );
         }
         if (round(floatval($orderold['mischrg_val1']),2)!=round(floatval($ordernew['mischrg_val1']),2)) {
             $historylist[]=array(
-                'parameter_name'=>'Misc Charge',
+                'parameter_name'=>'Misc Charge (row 1)',
                 'parameter_oldvalue'=>MoneyOutput($orderold['mischrg_val1'],2),
                 'parameter_newvalue'=>MoneyOutput($ordernew['mischrg_val1'],2),
             );
         }
         if ($orderold['mischrg_label2']!=$ordernew['mischrg_label2']) {
             $historylist[]=array(
-                'parameter_name'=>'Misc Charge Label',
+                'parameter_name'=>'Misc Charge Label (row 2)',
                 'parameter_oldvalue'=>$orderold['mischrg_label2'],
                 'parameter_newvalue'=>$ordernew['mischrg_label2'],
             );
         }
         if (round(floatval($orderold['mischrg_val2']),2)!=round(floatval($ordernew['mischrg_val2']),2)) {
             $historylist[]=array(
-                'parameter_name'=>'Misc Charge',
+                'parameter_name'=>'Misc Charge (row 2)',
                 'parameter_oldvalue'=>MoneyOutput($orderold['mischrg_val2'],2),
                 'parameter_newvalue'=>MoneyOutput($ordernew['mischrg_val2'],2),
             );

@@ -81,6 +81,9 @@
 .input_border_gray {
     border: 1px solid #858585 !important;
 }
+.input_border_red {
+    border: 1.5px solid #FF0000 !important;
+}
 .input_border_hidden {
     border: 1px solid transparent !important;
 }
@@ -94,6 +97,10 @@ input.input_checkbox {
     border: 1px solid #858585;
     padding-left: 0px;
     margin-top: 2px;
+}
+.warningprice {
+    background: #535353!important;
+    color: #ffffff!important;
 }
 
 .line_1 {
@@ -1986,6 +1993,26 @@ input.artrepeat {
     width: 13px;
 }
 .empty_icon_file.active {
+    cursor: pointer;
+}
+.discountdescript.empty_icon_file,
+.discountdescript.icon_file {
+    background: none!important;
+    font-size: 15px;
+}
+.discountdescript.icon_file i {
+    background: #48e763!important;
+}
+.discountdescript.discountdescription_red {
+    float: left;
+    margin-top: 1px;
+    width: 13px;
+}
+.discountdescript.discountdescription_red i {
+    background: #773800!important;
+    font-size: 15px;
+}
+.discountdescription_red.active {
     cursor: pointer;
 }
 .icon_1 {

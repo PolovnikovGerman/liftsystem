@@ -418,6 +418,36 @@ function init_onlineleadorder_edit() {
             }
         },'json');
     });
+    // Update Discounts
+    $("input.inputleaddiscount").unbind('change').change(function () {
+        var fldname=$(this).data('field');
+        var params=new Array();
+        params.push({name: 'entity', value:$(this).data('entity')});
+        params.push({name: 'fldname', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_discount";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("input.inputleaddiscount[data-field='mischrg_label1']").removeClass('input_border_gray').removeClass('input_border_red').addClass(response.data.mischrg1_class);
+                $("input.inputleaddiscount[data-field='mischrg_label2']").removeClass('input_border_gray').removeClass('input_border_red').addClass(response.data.mischrg2_class);
+                // $("input.inputleaddiscount[data-field='discount_label']").removeClass('input_border_gray').removeClass('input_border_red').addClass(response.data.discnt_class);
+                $("div.discountdescript").removeClass('empty_icon_file').removeClass('icon_file').removeClass('discountdescription_red').addClass(response.data.discnt_class);
+                $(".totalduedataviewarea").empty().html(response.data.total_due);
+                $("#ordertotaloutput").empty().html(response.data.order_revenue);
+                $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
+                $("div#leadorderprofitarea").empty().html(response.data.profit_content);
+                $("input#loctimeout").val(response.data.loctime);
+                $(".discountdescript").prop('title',response.data.discnt_title);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
     $("textarea.inputleadorddata").unbind('change').change(function(){
         var fldname=$(this).data('field');
         var params=new Array();        
@@ -670,7 +700,9 @@ function save_discountdescription() {
     $.post(url, params, function(response){
         if (response.errors=='') {            
             $("#artNextModal").modal('hide');
-            $("div.discountdescript").removeClass('empty_icon_file').removeClass('icon_file').addClass(response.data.newclass);
+            // $("div.discountdescript").removeClass('empty_icon_file').removeClass('icon_file').addClass(response.data.newclass);
+            $("div.discountdescript").removeClass('empty_icon_file').removeClass('icon_file').removeClass('discountdescription_red').addClass(response.data.newclass);
+            $("div.discountdescript").prop('title', response.data.newtitle);
             init_onlineleadorder_edit();
         } else {
             show_error(response);
@@ -1839,6 +1871,7 @@ function save_imprint_details() {
             $("#ordertotaloutput").empty().html(response.data.order_revenue);            
             $("div.imprintdataarea[data-orderitem='"+response.data.order_item_id+"']").empty().html(response.data.imprint_content);
             $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
+            $(".totalduedataviewarea").empty().html(response.data.total_due);
             if (parseInt(response.data.order_blank)===1) {
                 $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',true);
                 $("div#newartbuttonareaview").hide();
@@ -1906,6 +1939,9 @@ function change_leadorder_item(params) {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
+            // Update prices classes
+            $("input.orderitem_price[data-orderitem='"+response.data.order_item+"']").removeClass('normal').removeClass('warningprice').addClass(response.data.price_class);
+            $("input.orderitem_price[data-orderitem='"+response.data.order_item+"']").prop('title', response.data.price_title);
             $(".totalduedataviewarea").empty().html(response.data.total_due);
             $("#ordertotaloutput").empty().html(response.data.order_revenue);
             $("input.salestaxcost").val(response.data.tax);

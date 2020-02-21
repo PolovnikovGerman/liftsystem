@@ -1102,6 +1102,7 @@ Class Leadorder_model extends My_Model {
             'boxqty'=>'',
             'setup_price'=>0,
             'print_price'=>0,
+            'base_price' => 0,
             'imprint_locations'=>array(),
             'item_subtotal'=>0,
             'imprint_subtotal'=>0,
@@ -1124,6 +1125,7 @@ Class Leadorder_model extends My_Model {
             $orditem['boxqty']=$itemdata['boxqty'];
             $orditem['setup_price']=$setupprice;
             $orditem['print_price']=$printprice;
+            $orditem['base_price']=$newprice;
             $orditem['imprint_locations']=$itemdata['imprints'];
             $orditem['vendor_zipcode']=$itemdata['vendor_zipcode'];
             $orditem['charge_perorder']=$itemdata['charge_perorder'];
@@ -1201,6 +1203,8 @@ Class Leadorder_model extends My_Model {
         $newitem['item_price']=$newprice;
         $newitem['item_subtotal']=MoneyOutput($defqty*$newprice);
         $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+        $newitem['qtyinput_class']='normal';
+        $newitem['qtyinput_title']='';
         $items[]=$newitem;
 
         $orditem['items']=$items;
@@ -1212,6 +1216,8 @@ Class Leadorder_model extends My_Model {
             'imprint_price'=>0,
             'imprint_item'=>0,
             'imprint_subtotal'=>'&nbsp;',
+            'imprint_price_class' => 'normal',
+            'imprint_price_title' => '',
             'delflag'=>0,
         );
         $orditem['imprints']=$imprint;
@@ -1477,6 +1483,8 @@ Class Leadorder_model extends My_Model {
             'colors'=>$colors,
             'num_colors'=>$order_items[$idx]['num_colors'],
             'item_description'=>$order_items[$idx]['item_name'],
+            'qtyinput_class' => 'normal',
+            'qtyinput_title' => '',
         );
         if ($order_items[$idx]['num_colors']==0) {
             $newitem['out_colors']=$this->empty_htmlcontent;
@@ -1560,6 +1568,8 @@ Class Leadorder_model extends My_Model {
         $imprints=$order_items[$idx]['imprints'];
 
         $out['result']=$this->success_result;
+        $out['price_class']=$items[$itmidx]['qtyinput_class'];
+        $out['price_title']=$order_items[$idx]['base_price'];
         $items[$itmidx][$fldname]=$newval;
         $out['items']=$order_items[$idx];
         $out['shipcalc']=0;
@@ -1572,9 +1582,12 @@ Class Leadorder_model extends My_Model {
             $order_items[$idx]['item_qty']=$itemsqty;
             // Get New price
             $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
+            $order_items[$idx]['base_price']=$newprice;
+            $out['price_class']='normal';
             $ridx=0;
             foreach ($items as $row) {
                 $items[$ridx]['item_price']=$newprice;
+                $items[$ridx]['qtyinput_class']='normal';
                 $ridx++;
             }
             // Recalc Shipping Rates
@@ -1587,6 +1600,21 @@ Class Leadorder_model extends My_Model {
                 'item_color'=>$items[$itmidx]['item_color'],
             );
             $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+        } elseif ($fldname=='item_price') {
+            // Get  Item price
+            if($order_items[$idx]['item_id']>0) {
+                $newprice = $order_items[$idx]['base_price'];
+                // $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
+                if (floatval(round($items[$itmidx]['item_price'],2))!==floatval(round($newprice,2))) {
+                    $items[$itmidx]['qtyinput_class']='warningprice';
+                    $out['price_class']=$items[$itmidx]['qtyinput_class'];
+                    $out['price_title']=$order_items[$idx]['base_price'];
+                } else {
+                    $items[$itmidx]['qtyinput_class']='normal';
+                    $out['price_class']=$items[$itmidx]['qtyinput_class'];
+                    $out['price_title']='';
+                }
+            }
         }
         $ridx=0;
         $subtotal=0;
@@ -1925,6 +1953,7 @@ Class Leadorder_model extends My_Model {
             }
             $leadorder['shipping']=$shipping;
         }
+
         if ($order_blank==1) {
             // Order Blank
             $imprints[]=array(
@@ -1936,6 +1965,8 @@ Class Leadorder_model extends My_Model {
                 'outqty'=>$this->empty_htmlcontent,
                 'outprice'=>$this->empty_htmlcontent,
                 'imprint_subtotal'=>$this->empty_htmlcontent,
+                'imprint_price_class' => 'normal',
+                'imprint_price_title' => '',
                 'delflag'=>0,
             );
             $imprint_total=0;
@@ -1944,15 +1975,29 @@ Class Leadorder_model extends My_Model {
             $setup_total=0;
             $imprint_total=0;
             $extra=array();
+            $numpp = 1;
             foreach ($imprint_details as $row) {
                 if ($row['active']==1) {
                     // Prepare New Imprints
                     $title=$row['title'];
                     for ($i=1; $i<=$row['num_colors']; $i++) {
+                        $imprint_price_class = 'normal';
+                        $imprint_price_title = '';
                         $imprtitle=$title.': '.date('jS',strtotime('2015-01-'.$i)).' Color Imprinting';
                         $priceindx='print_'.$i;
                         $setupindx='setup_'.$i;
                         $subtotal=$order_items[$idx]['item_qty']*floatval($row[$priceindx]);
+                        if ($row['imprint_type']!=='REPEAT' && $numpp>1) {
+                            if ($order_items[$idx]['item_id']>0) {
+                                // $newiprint_price = $this->_get_item_priceimprint($order_items[$idx]['item_id'],'imprint');
+                                $newiprint_price = $order_items[$idx]['print_price'];
+                                if (round(floatval($newiprint_price),2)!=round(floatval($row[$priceindx]),2)) {
+                                    $imprint_price_class='warningprice';
+                                    $imprint_price_title='Print price '.MoneyOutput($order_items[$idx]['print_price']);
+                                }
+                            }
+                        }
+                        $numpp++;
                         $imprint_total+=$subtotal;
                         if ($row['imprint_type']!='REPEAT') {
                             //if (floatval($row[$setupindx])>0) {
@@ -1970,6 +2015,8 @@ Class Leadorder_model extends My_Model {
                             'outqty'=>($order_items[$idx]['item_qty']==0 ? '---' : $order_items[$idx]['item_qty']),
                             'outprice'=>  MoneyOutput(floatval($row[$priceindx])),
                             'imprint_subtotal'=>  MoneyOutput($subtotal),
+                            'imprint_price_class' => $imprint_price_class,
+                            'imprint_price_title' => $imprint_price_title,
                             'delflag'=>0,
                         );
                         $newidx++;
@@ -1988,6 +2035,8 @@ Class Leadorder_model extends My_Model {
                             'outqty'=>1,
                             'outprice'=>MoneyOutput($extracost),
                             'imprint_subtotal'=>MoneyOutput($extracost),
+                            'imprint_price_class' => 'normal',
+                            'imprint_price_title' => '',
                             'delflag'=>0,
                         );
                         $newidx++;
@@ -2004,6 +2053,16 @@ Class Leadorder_model extends My_Model {
                 if ($setup_qty>0) {
                     $setup_price=round($setup_total/$setup_qty,2);
                 }
+                $imprint_price_class='normal';
+                $imprint_price_title='';
+                if ($order_items[$idx]['item_id']>0) {
+                    // $newsetup_price = $this->_get_item_priceimprint($order_items[$idx]['item_id'],'setup');
+                    $newsetup_price = $order_items[$idx]['setup_price'];
+                    if (round(floatval($newsetup_price),2)!=round(floatval($setup_price),2)) {
+                        $imprint_price_class='warningprice';
+                        $imprint_price_title='Setup price '.MoneyOutput($order_items[$idx]['setup_price']);
+                    }
+                }
                 $imprints[]=array(
                     'order_imprint_id'=>(-1)*$impridx,
                     'imprint_description'=>'One Time Art Setup Charge',
@@ -2013,6 +2072,8 @@ Class Leadorder_model extends My_Model {
                     'outqty'=>$setup_qty,
                     'outprice'=>MoneyOutput($setup_price),
                     'imprint_subtotal'=>  MoneyOutput($setup_total),
+                    'imprint_price_class' => $imprint_price_class,
+                    'imprint_price_title' => $imprint_price_title,
                     'delflag'=>0,
                 );
             }
@@ -4110,7 +4171,18 @@ Class Leadorder_model extends My_Model {
             $res['msg']='COG value is not numeric';
             return $res;
         }
-
+        if (abs(floatval($data['mischrg_val1']))>0 && empty($data['mischrg_label1'])) {
+            $res['msg']='Empty Misc Charge Notification (row 1)';
+            return $res;
+        }
+        if (abs(floatval($data['mischrg_val2']))>0 && empty($data['mischrg_label2'])) {
+            $res['msg']='Empty Misc Charge Notification (row 2)';
+            return $res;
+        }
+        if (abs(floatval($data['discount_val']))>0 && empty($data['discount_descript'])) {
+            $res['msg']='All Discounts Must Have Valid Reason Explaining Why';
+            return $res;
+        }
         if (intval($data['order_qty'])<=0) {
             $res['msg']='Order QTY required';
             return $res;
@@ -4411,7 +4483,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('item_price', $rowprice);
             $this->db->set('imprint_price', $row['print_price']);
             $this->db->set('setup_price', $row['setup_price']);
-
+            $this->db->set('base_price', $row['base_price']);
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
                 $this->db->insert('ts_order_items');
@@ -5033,29 +5105,51 @@ Class Leadorder_model extends My_Model {
         $this->db->where('item_id', $item_id);
         $itmres=$this->db->get()->row_array();
 
+        $price = 0;
         if ($itemtype==$this->normal_template) {
             $price_bases=$this->config->item('normal_price_base');
             $base=$price_bases[0];
             foreach ($price_bases as $row) {
                 if ($row>$qty) {
-                    break;
+                    $pricefld='item_price_'.$base;
+                    $salefld='item_sale_'.$base;
+                    $this->db->select("{$pricefld} as price, {$salefld} as sale, item_price_itemid");
+                    $this->db->from('sb_item_prices');
+                    $this->db->where('item_price_itemid', $item_id);
+                    $priceres=$this->db->get()->row_array();
+                    if (!isset($priceres['item_price_itemid'])) {
+                        $price=0;
+                    } else {
+                        if ($priceres['sale']=='') {
+                            $price=$priceres['price'];
+                        } else {
+                            $price=$priceres['sale'];
+                        }
+                    }
+                    if (!empty($price)) {
+                        break;
+                    } else {
+                        $base=$row;
+                    }
                 } else {
                     $base=$row;
                 }
             }
-            $pricefld='item_price_'.$base;
-            $salefld='item_sale_'.$base;
-            $this->db->select("{$pricefld} as price, {$salefld} as sale, item_price_itemid");
-            $this->db->from('sb_item_prices');
-            $this->db->where('item_price_itemid', $item_id);
-            $priceres=$this->db->get()->row_array();
-            if (!isset($priceres['item_price_itemid'])) {
-                $price=0;
-            } else {
-                if ($priceres['sale']=='') {
-                    $price=$priceres['price'];
+            if ($price==0 && $base>0) {
+                $pricefld='item_price_'.$base;
+                $salefld='item_sale_'.$base;
+                $this->db->select("{$pricefld} as price, {$salefld} as sale, item_price_itemid");
+                $this->db->from('sb_item_prices');
+                $this->db->where('item_price_itemid', $item_id);
+                $priceres=$this->db->get()->row_array();
+                if (!isset($priceres['item_price_itemid'])) {
+                    $price=0;
                 } else {
-                    $price=$priceres['sale'];
+                    if ($priceres['sale']=='') {
+                        $price=$priceres['price'];
+                    } else {
+                        $price=$priceres['sale'];
+                    }
                 }
             }
         } else {
@@ -5063,7 +5157,7 @@ Class Leadorder_model extends My_Model {
             $this->db->from('sb_promo_price');
             $this->db->where('item_id', $item_id);
             $this->db->order_by('item_qty');
-            $priceres = $this->db->get()->result_array();
+            $priceres=  $this->db->get()->result_array();
 
             $price=(intval($priceres[0]['sale_price'])==0 ? $priceres[0]['price'] : $priceres[0]['sale_price']);
             foreach ($priceres as $row) {
@@ -5146,15 +5240,35 @@ Class Leadorder_model extends My_Model {
                 'charge_peritem'=>0,
                 'charge_pereach'=>0,
                 'imprint_locations'=>array(),
+                // 'qtyinput_class' => 'normal',
+                'base_price' => $row['base_price'],
             );
+            $qty_class='normal';
             if ($item_id<0) {
                 $itemdata=$this->orders_model->get_newitemdat($item_id);
                 $newitem['item_number']=$itemdata['item_number'];
                 $newitem['item_name']=$itemdata['item_name'];
+                $item_price = $newitem['base_price'];
             } else {
                 $itemdata=$this->_get_itemdata($item_id);
-                $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
-                $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
+                if (empty($newitem['setup_price'])) {
+                    $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
+                    $newitem['setup_price']=$setupprice;
+                } else {
+                    $setupprice=$newitem['setup_price'];
+                }
+                if (empty($newitem['print_price'])) {
+                    $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
+                    $newitem['print_price']=$printprice;
+                } else {
+                    $printprice=$newitem['print_price'];
+                }
+                if (empty($newitem['base_price'])) {
+                    $item_price = $this->_get_item_priceqty($item_id, $itemdata['item_template'], $row['item_qty']);
+                    $newitem['base_price'] = $item_price;
+                } else {
+                    $item_price = $newitem['base_price'];
+                }
                 $newitem['item_number']=$itemdata['item_number'];
                 $newitem['item_name']=$itemdata['item_name'];
                 $newitem['item_template']=$itemdata['item_template'];
@@ -5164,8 +5278,6 @@ Class Leadorder_model extends My_Model {
                 $newitem['cartoon_heigh']=$itemdata['cartoon_heigh'];
                 $newitem['cartoon_depth']=$itemdata['cartoon_depth'];
                 $newitem['boxqty']=$itemdata['boxqty'];
-                $newitem['setup_price']=$setupprice;
-                $newitem['print_price']=$printprice;
                 $newitem['imprint_locations']=$itemdata['imprints'];
                 $newitem['vendor_zipcode']=$itemdata['vendor_zipcode'];
                 $newitem['charge_perorder']=$itemdata['charge_perorder'];
@@ -5200,6 +5312,12 @@ Class Leadorder_model extends My_Model {
                 } else {
                     $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                 }
+                $qty_class = 'normal';
+                $qty_title = '';
+                if ($row['item_id']>0 && floatval(round($item_price,2))!==floatval(round($irow['item_price'],2))) {
+                    $qty_class=$newitem['qtyinput_class']='warningprice';
+                    $qty_title = 'Base Price '.MoneyOutput($item_price);
+                }
                 $items[]=array(
                     'order_item_id' =>$irow['order_item_id'],
                     'item_id' =>$irow['item_id'],
@@ -5215,6 +5333,8 @@ Class Leadorder_model extends My_Model {
                     'item_price'=>$irow['item_price'],
                     'item_subtotal'=>MoneyOutput($subtotal),
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
+                    'qtyinput_class' => $qty_class,
+                    'qtyinput_title' => $qty_title,
                 );
                 $numpp++;
             }
@@ -5222,9 +5342,26 @@ Class Leadorder_model extends My_Model {
             // Get Imprints
             $item_imprints=$this->_get_itemorder_imprints($row['order_item_id']);
             $imprints=array();
+            $numpp=1;
             foreach ($item_imprints as $irow) {
                 $subtotal=$irow['imprint_price']*$irow['imprint_qty'];
                 $newitem['imprint_subtotal']+=$subtotal;
+                $iprint_price_title = '';
+                $iprint_price_class = 'normal';
+                if ($item_id>0) {
+                    if ($irow['imprint_item']==1) {
+                        if ($numpp>1 && floatval(round($irow['imprint_price'],2))!==floatval(round($printprice,2))) {
+                            $iprint_price_class = 'warningprice';
+                            $iprint_price_title = 'Print price '.MoneyOutput($printprice);
+                        }
+                        $numpp++;
+                    } else {
+                        if (substr($irow['imprint_description'],0,12)!=='Repeat Setup' &&  floatval(round($irow['imprint_price'],2))!==floatval(round($setupprice,2))) {
+                            $iprint_price_class = 'warningprice';
+                            $iprint_price_title = 'Setup price '.MoneyOutput($setupprice);
+                        }
+                    }
+                }
                 $imprints[]=array(
                     'order_imprint_id'=>$irow['order_imprint_id'],
                     'imprint_description' =>$irow['imprint_description'],
@@ -5232,6 +5369,8 @@ Class Leadorder_model extends My_Model {
                     'imprint_price' =>$irow['imprint_price'],
                     'imprint_item' =>$irow['imprint_item'],
                     'imprint_subtotal' =>MoneyOutput($subtotal),
+                    'imprint_price_class' => $iprint_price_class,
+                    'imprint_price_title' => $iprint_price_title,
                     'delflag'=>0,
                 );
             }
@@ -6298,6 +6437,8 @@ Class Leadorder_model extends My_Model {
                         'item_qty' =>$pitem['item_qty'],
                         'item_price' =>$pitem['item_price'],
                         'item_subtotal' =>$pitem['item_subtotal'],
+                        'qtyinput_class' => $pitem['qtyinput_class'],
+                        'qtyinput_title' => $pitem['qtyinput_title'],
                         'printshop_item_id'=>$pitem['printshop_item_id'],
                     );
                     $itmid++;
@@ -6313,7 +6454,9 @@ Class Leadorder_model extends My_Model {
                         'imprint_price' =>($imprrow['imprint_item']==0 ? 0 : $imprrow['imprint_price']),
                         'imprint_item' =>$imprrow['imprint_item'],
                         'imprint_subtotal' =>($imprrow['imprint_item']==0 ? 0 : $imprrow['imprint_subtotal']),
-                        'delflag' =>0
+                        'imprint_price_class' => $imprrow['imprint_price_class'],
+                        'imprint_price_title' => $imprrow['imprint_price_title'],
+                        'delflag' =>0,
                     );
                     $itmid++;
                 }
@@ -6361,6 +6504,7 @@ Class Leadorder_model extends My_Model {
                     'boxqty' =>$irow['boxqty'],
                     'setup_price' => $irow['setup_price'],
                     'print_price' =>$irow['print_price'],
+                    'base_price' => $irow['base_price'],
                     'item_subtotal' =>$irow['item_subtotal'],
                     'imprint_subtotal' =>$irow['imprint_subtotal'],
                     'vendor_zipcode' =>$irow['vendor_zipcode'],
@@ -6371,6 +6515,7 @@ Class Leadorder_model extends My_Model {
                     'imprints'=>$newimpr,
                     'imprint_details'=>$newdetais,
                     'imprint_locations'=>$irow['imprint_locations'],
+                    // 'qtyinput_class' => $irow['qtyinput_class'],
                 );
             }
         } else {

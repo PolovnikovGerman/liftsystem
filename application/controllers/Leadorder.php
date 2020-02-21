@@ -599,6 +599,85 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
+
+    public function change_leadorder_discount() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error=$this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=$this->func->session($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->func->ajaxResponse($mdata, $error);
+                }
+                $error='Changes parameter is not full';
+                if (isset($postdata['entity']) && isset($postdata['fldname']) && isset($postdata['newval'])) {
+                    $entity=$postdata['entity'];
+                    $fldname=$postdata['fldname'];
+                    $newval=$postdata['newval'];
+                    $res=$this->leadorder_model->change_order_input($leadorder, $entity, $fldname, $newval, $ordersession);
+                    $error=$res['msg'];
+                    if (isset($res['old_value'])) {
+                        $mdata['old_value']=$res['old_value'];
+                    }
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mischrg1_class=$mischrg2_class='input_border_gray';
+                        $discnt_class='empty_icon_file';
+                        $discnt_title = '';
+                        $leadorder=usersession($ordersession);
+                        $ord_data=$leadorder['order'];
+                        if (abs($ord_data['mischrg_val1'])>0 && empty($ord_data['mischrg_label1'])) {
+                            $mischrg1_class='input_border_red';
+                        }
+                        if (abs($ord_data['mischrg_val2'])>0 && empty($ord_data['mischrg_label2'])) {
+                            $mischrg2_class='input_border_red';
+                        }
+                        if (abs($ord_data['discount_val'])>0 && empty($ord_data['discount_descript'])) {
+                            $discnt_class = 'discountdescription_red';
+                            $discnt_title = 'All Discounts Must Have Valid Reason Explaining Why';
+                        } elseif (!empty($ord_data['discount_descript'])) {
+                            $discnt_class = 'icon_file';
+                            $discnt_title = $ord_data['discount_descript'];
+                        }
+                        $mdata['mischrg1_class']=$mischrg1_class;
+                        $mdata['mischrg2_class']=$mischrg2_class;
+                        $mdata['discnt_class']=$discnt_class;
+                        $mdata['discnt_title'] = $discnt_title;
+                        $mdata['order_revenue']=MoneyOutput($ord_data['revenue']);
+                        $subtotal=$ord_data['item_cost']+$ord_data['item_imprint']+floatval($ord_data['mischrg_val1'])+floatval($ord_data['mischrg_val2'])-floatval($ord_data['discount_val']);
+                        $mdata['item_subtotal']=MoneyOutput($subtotal);
+                        $total_due=$ord_data['revenue']-$ord_data['payment_total'];
+                        $dueoptions=array(
+                            'totaldue'=>$total_due,
+                        );
+                        $mdata['ordersystem']=$leadorder['order_system'];
+                        $mdata['balanceopen']=1;
+                        if ($total_due==0 && $ord_data['payment_total']>0) {
+                            $dueoptions['class']='closed';
+                            $mdata['balanceopen']=0;
+                        } else {
+                            $dueoptions['class']='open';
+                            if ($total_due<0) {
+                                $dueoptions['class']='overflow';
+                            }
+                        }
+                        $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+                        $mdata['profit_content']=$this->_profit_data_view($ord_data);
+                    }
+                }
+            }
+            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function orderdiscount_preview() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -657,11 +736,21 @@ class Leadorder extends MY_Controller
                 }
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    $mdata['newclass']='empty_icon_file';
-                    if (!empty($newval)) {
-                        $mdata['newclass']='icon_file';
+                    $leadorder=usersession($ordersession);
+                    $discnt_class ='empty_icon_file';
+                    $discnt_title = '';
+                    // if (!empty($newval)) {
+                    //     $mdata['newclass']='icon_file';
+                    // }
+                    if (abs($leadorder['order']['discount_val'])>0 && empty($leadorder['order']['discount_descript'])) {
+                        $discnt_class = 'discountdescription_red';
+                        $discnt_title = 'All Discounts Must Have Valid Reason Explaining Why';
+                    } elseif (!empty($leadorder['order']['discount_descript'])) {
+                        $discnt_class = 'icon_file';
+                        $discnt_title = $leadorder['order']['discount_descript'];
                     }
-                }
+                    $mdata['newclass'] = $discnt_class;
+                    $mdata['newtitle'] = $discnt_title;                }
             }
             // Calc new period for lock
             $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
@@ -1695,6 +1784,11 @@ class Leadorder extends MY_Controller
                     $error=$res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error='';
+                        $mdata['price_class']=$res['price_class'];
+                        $mdata['price_title']='';
+                        if ($res['price_class']=='warningprice') {
+                            $mdata['price_title']=(empty($res['price_title']) ? '' : 'Base price '.MoneyOutput($res['price_title']));
+                        }
                         $leadorder=usersession($ordersession);
                         $order=$leadorder['order'];
                         $mdata['order_revenue']=MoneyOutput($order['revenue']);

@@ -19,7 +19,7 @@
             <input type="text" class="orderitem_qty input_text_right orderitem_input input_border_hidden" readonly="readonly"  value="<?=$row['item_qty']?>" />
         </div>
         <div class="items_content_each2 bord_l">
-            <input type="text" class="orderitem_price input_text_right orderitem_input input_border_hidden" readonly="readonly" value="<?=$row['item_price']?>" />
+            <input type="text" class="orderitem_price input_text_right orderitem_input input_border_hidden <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>" readonly="readonly" value="<?=$row['item_price']?>" />
         </div>
         <div class="items_content_sub_total2 bord_l"><?=$row['item_subtotal']?></div>
         <div class="items_content_trash2">&nbsp;</div>

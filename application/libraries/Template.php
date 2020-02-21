@@ -423,11 +423,29 @@ class Template
             }
 
             // Miscs value
-            if ($edit==1) {
-                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_edit', $ord_data, TRUE);
-            } else {
-                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_view', $ord_data, TRUE);
+            $discount_options = $ord_data;
+            $discount_options['mischrg1_class']=$discount_options['mischrg2_class']='input_border_gray';
+            $discount_options['discnt_class']='empty_icon_file';
+            $discount_options['discnt_title']='';
+            if (abs($ord_data['mischrg_val1'])>0 && empty($ord_data['mischrg_label1'])) {
+                $discount_options['mischrg1_class']='input_border_red';
             }
+            if (abs($ord_data['mischrg_val2'])>0 && empty($ord_data['mischrg_label2'])) {
+                $discount_options['mischrg2_class']='input_border_red';
+            }
+            if (abs($ord_data['discount_val'])>0 && empty($ord_data['discount_descript'])) {
+                $discount_options['discnt_class']='discountdescription_red';
+                $discount_options['discnt_title']='All Discounts Must Have Valid Reason Explaining Why';
+            } elseif (abs($ord_data['discount_val'])>0 && !empty($ord_data['discount_descript'])) {
+                $discount_options['discnt_class']='icon_file';
+                $discount_options['discnt_title']=$ord_data['discount_descript'];
+            }
+            if ($edit==1) {
+                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_edit', $discount_options, TRUE);
+            } else {
+                $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_view', $discount_options, TRUE);
+            }
+
             $orddata['chargeattemptview']='&nbsp;';
             if ($usrdat['finuser']) {
                 $numatempt=$this->CI->leadorder_model->count_charges_attempts($ord_data['order_id']);
