@@ -202,6 +202,7 @@ select.leadord_filterselect {
     clear: both;
     float: left;
     height: 538px;
+    margin-bottom: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 1005px;
@@ -755,4 +756,14 @@ select.selectorderitem {
 }
 .leadorder_sendarea textarea.messagetext {
     height: 200px;
+}
+.itemcolor_tooltip {
+    background: #ffffff;
+    border: 2px solid #000000;
+    width: 200px;
+    color: #000000;
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 18px;
 }

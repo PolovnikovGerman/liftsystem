@@ -115,18 +115,16 @@ function init_leadorder_content() {
         edit_leadorder(order);
     });
     // View full item Color
-    // $("div.itemcolor.wide").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 200,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {textAlign: 'center'}
-    // });
+    $("div.itemcolor.wide").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'center right',
+            at: 'center left',
+        },
+        style: 'itemcolor_tooltip'
+    })
 }
 
 
@@ -149,37 +147,37 @@ function search_leadorders() {
 }
 
 // Edit Order
-function edit_leadorder(order) {
-    var url="/orders/leadorder_edit";
-    $.post(url, {'order_id': order}, function(response){
-        if (response.errors=='') {
-            show_popup('leadorderdetailspopup');
-            $("#pop_content").empty().html(response.data.content);
-            $("#popupContactClose").unbind('click').click(function(){
-                clearTimeout(timerId);
-                // Check - may be we close edit content
-                if ($("input#locrecid").length>0) {
-                    // Clean locked record
-                    var locrecid=$("input#locrecid").val();
-                    var url="/leadorder/cleanlockedorder";
-                    var params=new Array();
-                    params.push({name: 'locrecid', value: locrecid});
-                    $.post(url, params, function(response){
-                    },'json');
-                }
-                $("#pop_content").empty();
-                disablePopup();
-                var curpage=$("input#leadorderpage").val();
-                pageLeadorderCallback(curpage);
-            });
-            if (parseInt(order)===0) {
-                init_onlineleadorder_edit();
-            } else {
-                timerId = setTimeout('chklockedorder()', timeout);
-                navigation_init();
-            }
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
+// function edit_leadorder(order) {
+//     var url="/orders/leadorder_edit";
+//     $.post(url, {'order_id': order}, function(response){
+//         if (response.errors=='') {
+//             show_popup('leadorderdetailspopup');
+//             $("#pop_content").empty().html(response.data.content);
+//             $("#popupContactClose").unbind('click').click(function(){
+//                 clearTimeout(timerId);
+//                 // Check - may be we close edit content
+//                 if ($("input#locrecid").length>0) {
+//                     // Clean locked record
+//                     var locrecid=$("input#locrecid").val();
+//                     var url="/leadorder/cleanlockedorder";
+//                     var params=new Array();
+//                     params.push({name: 'locrecid', value: locrecid});
+//                     $.post(url, params, function(response){
+//                     },'json');
+//                 }
+//                 $("#pop_content").empty();
+//                 disablePopup();
+//                 var curpage=$("input#leadorderpage").val();
+//                 pageLeadorderCallback(curpage);
+//             });
+//             if (parseInt(order)===0) {
+//                 init_onlineleadorder_edit();
+//             } else {
+//                 timerId = setTimeout('chklockedorder()', timeout);
+//                 navigation_init();
+//             }
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
