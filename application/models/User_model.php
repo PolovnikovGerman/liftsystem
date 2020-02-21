@@ -340,6 +340,20 @@ Class User_model extends MY_Model
 
     }
 
+    public function get_user_leadreplicas($active=1) {
+        $this->db->select('*');
+        $this->db->from('users');
+        $this->db->where('user_leadrep',1);
+        if ($active==1) {
+            // $this->db->where('user_status <',3);
+            $this->db->where('user_status ',1);
+        }
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+
+
 
 
 }

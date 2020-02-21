@@ -1,7 +1,7 @@
 var timerId;
 var timeout=10000;
 var timeoutlock=60000;
-function init_leadorderdata() {
+function init_ordersviewdata() {
     initLeadOrderPagination();
     $('select.usrreplica').unbind('change').change(function(){
         search_leadorders();
@@ -9,9 +9,9 @@ function init_leadorderdata() {
     $('select#leadorderperpage').unbind('change').change(function(){
         search_leadorders();
     })
-    $("div.lead_neworder").unbind('click').click(function(){
-        edit_leadorder(0);
-    });
+    // $("div.lead_neworder").unbind('click').click(function(){
+    //     edit_leadorder(0);
+    // });
     // Search
     $("input.leadord_searchdata").keypress(function(event){
         if (event.which == 13) {
@@ -24,7 +24,24 @@ function init_leadorderdata() {
     $("div.leadorder_clear").unbind('click').click(function(){
         $("input.leadord_searchdata").val('');
         search_leadorders();
-    })
+    });
+    // Change Brand
+    $("#ordersviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#ordersviewbrand").val(brand);
+        $("#ordersviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#ordersviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#ordersviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_leadorders();
+    });
+
 }
 
 function initLeadOrderPagination() {
@@ -57,6 +74,7 @@ function pageLeadorderCallback(page_index) {
     params.push({name:'offset', value: page_index});
     params.push({name:'user_replic', value: $("select.usrreplica").val()});
     params.push({name:'search', value: $("input.leadord_searchdata").val()});
+    params.push({name: 'brand', value: $("input#ordersviewbrand").val()});
     var url="/orders/leadorder_data";
     $("#loader").show();
     $.post(url, params, function(response){
@@ -81,34 +99,34 @@ function init_leadorder_content() {
         $("input#leadorderactivate").val('');
         edit_leadorder(activesearch);
     }
-    $("select.selectreplic").unbind('change').change(function(){
-        var repl=$(this).val();
-        var order=$(this).data('order');
-        var url="/orders/leadorder_apply";
-        $.post(url,{'replic': repl,'order_id':order}, function(response){
-            if (response.errors!='') {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("select.selectreplic").unbind('change').change(function(){
+    //     var repl=$(this).val();
+    //     var order=$(this).data('order');
+    //     var url="/orders/leadorder_apply";
+    //     $.post(url,{'replic': repl,'order_id':order}, function(response){
+    //         if (response.errors!='') {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
     // Edit Order
     $("div.ordernum").unbind('click').click(function(){
         var order=$(this).parent('div').data('order');
         edit_leadorder(order);
     });
     // View full item Color
-    $("div.itemcolor.wide").bt({
-        fill : '#FFFFFF',
-        cornerRadius: 10,
-        width: 200,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle : '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {textAlign: 'center'}
-    });
+    // $("div.itemcolor.wide").bt({
+    //     fill : '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 200,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle : '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {textAlign: 'center'}
+    // });
 }
 
 
@@ -117,6 +135,7 @@ function search_leadorders() {
     var params=new Array();
     params.push({name:'user_replic', value: $("select.usrreplica").val()});
     params.push({name:'search', value: $("input.leadord_searchdata").val()});
+    params.push({name: 'brand', value: $("input#ordersviewbrand").val()});
     var url="/orders/leadorder_count";
     $.post(url, params, function(response){
         if (response.errors=='') {

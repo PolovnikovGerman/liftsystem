@@ -59,7 +59,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.is_canceled',0);
             }
         }
-
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('o.brand', $filtr['brand']);
+        }
         /*  */
         if (count($filtr)>0) {
             if (isset($filtr['hideart']) && $filtr['hideart']==1) {
@@ -503,6 +505,30 @@ Class Orders_model extends MY_Model
         } else {
             return 'No User Messages';
         }
+    }
+
+    // Get Order by num (template)
+    public function get_orderbynum($ordernum) {
+        $this->db->select('count(o.order_id) as cnt');
+        $this->db->from('ts_orders o');
+        $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==1) {
+            $this->db->select('order_id');
+            $this->db->from('ts_orders o');
+            $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+            $detail=$this->db->get()->row_array();
+            $out=array(
+                'numrec'=>1,
+                'detail'=>$detail['order_id'],
+            );
+        } else {
+            $out=array(
+                'numrec'=>$res['cnt'],
+                'detail'=>0,
+            );
+        }
+        return $out;
     }
 
 }

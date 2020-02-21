@@ -1,0 +1,758 @@
+/*
+    Document   : style
+    Created on : Jan 26, 2015, 9:02:08 PM
+    Author     : polovnikov-go
+    Description: Sales page, Orders list
+        Purpose of the stylesheet follows.
+*/
+.leadord_headarea {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    margin-top: 22px;
+    width: 1006px;
+}
+.leadord_headrow {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-family: Arial,Helvetica;
+    font-size: 12px;
+    height: 26px;
+    line-height: 26px;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.leadord_search {
+    float: left;
+    width: 42%;
+}
+.leadord_search img {
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 24px;
+}
+input.leadord_searchdata {
+    float: left;
+    font-size: 13px;
+    height: 24px;
+    line-height: 24px;
+    width: 175px;
+}
+.leadorder_findall {
+    background: url('/img/leads/searchall_btn.png') no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 87px;
+}
+.leadorder_clear {
+    background: url('/img/leads/clean_btn.png') no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 51px;
+}
+.leadord_emptyspace {
+    float: left;
+    width: 5%;
+}
+.leadord_filters {
+    float: right!important;
+    width: 42%;
+}
+.leadord_filters > div {
+    width: 10%;
+    text-align: right;
+    height: 22px;
+    line-height: 22px;
+}
+select.leadord_filterselect {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid;
+    float: right;
+    height: 24px;
+    line-height: 18px;
+    margin-left: 8px;
+    width: 42%;
+}
+.lead_neworder {
+    float: left;
+    width: 12%;
+}
+.lead_neworder img:hover {
+    cursor: pointer;
+}
+.lead_orderlegendarea {
+    float: left;
+    margin-left: 123px;
+    width: 532px;
+}
+.lead_orderlegend {
+    float: left;
+    margin-left: 5px;
+    width: 61px;
+}
+.lead_orderlegend.long {
+    width: 84px;
+}
+.lead_orderlegend img {
+    float: left;
+    margin-top: 5px;
+    width: 18px;
+}
+.lead_orderlegendlabel {
+    color: #3a3a3a;
+    font-size: 12px;
+    width: 43px;
+    height: 26px;
+    line-height: 26px!important;
+}
+.lead_orderlegendlabel.long {
+    width: 65px;
+}
+.leadorder_pagination {
+    float: right!important;
+    margin-top: -17px;
+}
+/* Table Head */
+.leadorder_datahead {
+    background: none #0808ff;
+    border: 1px solid #979797;
+    clear: both;
+    color: #FFFFFF;
+    width: 1003px;
+}
+.leadorder_datahead > div {
+    height: 21px;
+    line-height: 21px!important;
+    text-align: center;
+    font-size: 12px;
+}
+.leadorder_datahead > .date {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 54px;
+}
+.leadorder_datahead > .ordernum {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 49px;
+}
+.leadorder_datahead > .confirmnum {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 64px;
+}
+.leadorder_datahead > .customer {
+    border-right: 1px solid #000000;
+    float: left;
+    /* width: 158px; */
+    width: 144px;
+}
+.leadorder_datahead > .qty {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 50px;
+}
+.leadorder_datahead > .itemcolor {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 83px;
+}
+.leadorder_datahead > .item {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 163px;
+}
+.leadorder_datahead > .revenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 65px;
+}
+.leadorder_datahead > .usrrepl {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 61px;
+}
+.leadorder_datahead > .repeatart {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 46px;
+}
+.leadorder_datahead > .ordclass {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 84px;
+}
+.leadorder_datahead > .points {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 55px;
+}
+.leadorder_datahead > .ordstatus {
+    float: left;
+    width: 107px;
+}
+.leadorder_dataarea {
+    border-bottom: 1px solid #000000;
+    border-left: 1px solid #000000;
+    clear: both;
+    float: left;
+    height: 538px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 1005px;
+}
+.leadorder_datarow {
+    clear: both;
+    float: left;
+    overflow-x: hidden;
+    width: 1004px;
+}
+.leadorder_datarow.error {
+    text-align: center;
+    font-size: 13px;
+    color: #990000;
+}
+.leadorder_datarow.underline {
+    border-top: 2px solid #000000;
+}
+.leadorder_datarow > div {
+    font-size: 12px;
+    height: 21px;
+    line-height: 21px!important;
+    text-align: left;
+}
+.leadorder_datarow > .date {
+    text-align: center;
+    border-right: 1px solid;
+    width: 22px;
+    float: left;
+    width: 54px;
+}
+.leadorder_datarow > .ordernum {
+    border-right: 2px solid #000000;
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-weight: bold;
+    text-align: center;
+    width: 49px;
+}
+.leadorder_datarow > .ordernum.quckbook {
+    color: #038100;
+}
+.leadorder_datarow > .confirmnum {
+    text-align: center;
+    border-right: 1px solid;
+    width: 22px;
+    float: left;
+    width: 64px;
+}
+.leadorder_datarow > .confirmnum.historical {
+    color: #646464;
+}
+.leadorder_datarow > .customer {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 144px;
+}
+.leadorder_datarow > .qty {
+    border-right: 1px solid #000000;
+    float: left;
+    text-align: center;
+    width: 50px;
+}
+.leadorder_datarow > .itemcolor {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 83px;
+}
+.leadorder_datarow > .item {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-right: 5px;
+    padding-left: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 163px;
+}
+.leadorder_datarow > .item.customorder {
+    font-weight: bold;
+}
+.leadorder_datarow > .revenue {
+    border-right: 1px solid #000000;
+    text-align: center;
+    float: left;
+    width: 65px;
+}
+.leadorder_datarow > .usrrepl {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 62px;
+}
+.leadorder_datarow > .usrrepl.website {
+    color: #7700cb;
+    font-weight: bold;
+}
+.leadorder_datarow > .usrrepl select.selectreplic {
+    float: left;
+    background: none #FFFFFF;
+    height: 21px;
+    font-size: 12px;
+    width: 89px;
+}
+.leadorder_datarow > .repeatart {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 46px;
+}
+.leadorder_datarow > .ordclass {
+    border-right: 1px solid #000000;
+    float: left;
+    font-size: 11px;
+    overflow: hidden;
+    padding-left: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 84px;
+}
+.leadorder_datarow > .points {
+    border-right: 1px solid #000000;
+    float: left;
+    text-align: right;
+    padding-right: 3px;
+    width: 54px;
+}
+.leadorder_datarow > .pointsdevider {
+    float: left;
+    border-right: 1px solid #000000;
+    width: 3px;
+}
+.leadorder_datarow > .ordstatus {
+    float: left;
+    font-size: 11px;
+    color: #252525;
+    overflow: hidden;
+    padding-left: 4px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 117px;
+}
+.leadorder_datarow > .ordstatus.art {
+    background-color: #005d0b;
+    color: #FFFFFF;
+}
+.leadorder_datarow > .ordstatus.fulfillment {
+    background-color: #09007F;
+    color: #FFFFFF;
+}
+.leadorder_datarow > .ordstatus.late {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+.leadorder_datarow > .ordstatus.done {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+/* Profit class */
+.points.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.points.green {
+    background-color: #00e947;
+}
+.points.red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.points.black {
+    background-color: #000000;
+    color: #ffffff;
+}
+.points.orange {
+    background-color: #ea8a0e;
+}
+.points.moroon {
+    background-color: #6d0303;
+    color: #ffffff;
+}
+.points.green {
+    background-color: #00e947;
+}
+.points.white {
+    background: none repeat scroll 0 0 #fff;
+}
+/* Input form */
+.leadorder_datarow form input {
+    float: left;
+    background: none #fff;
+    font-size: 11px;
+    color: #000;
+}
+.leadorderform_edit {
+    border-right: 1px solid;
+    cursor: pointer;
+    float: left;
+    height: 21px;
+    text-align: center;
+    width: 22px;
+}
+.leadorderform_save, .leadorderform_cancel {
+    cursor: pointer;
+    float: left;
+    margin-left: 3px;
+    margin-top: 2px;
+    width: 16px;
+}
+.leadorderform_save img {
+    width: 100%;
+}
+.leadorderform_cancel img {
+    width: 100%;
+}
+.leadorderform_date {
+    text-align: center;
+    border-right: 1px solid;
+    width: 22px;
+    float: left;
+    width: 54px;
+}
+input.leadorder_dateinpt {
+    width: 47px;
+}
+.leadorderform_ordernum {
+    border-right: 1px solid #000000;
+    color: #000000;
+    float: left;
+    text-align: center;
+    width: 45px;
+}
+.leadorderform_customeremail {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 219px;
+}
+input.leadorder_customnameinpt {
+    width: 120px;
+}
+input.leadorder_customemailinpt {
+    width: 86px;
+}
+.leadorderform_orderqty {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 35px;
+}
+input.leadorder_ordeqtyinpt {
+    width: 33px;
+}
+.leadorderform_item {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 199px;
+}
+select.leadorder_itemnameinpt {
+    float: left;
+    background: none #FFFFFF;
+    height: 21px;
+    font-size: 12px;
+    width: 198px;
+}
+.leadorderform_shipdate {
+    border-right: 2px solid #000000;
+    float: left;
+    width: 34px;
+}
+.leadorderform_revenue {
+    border-right: 1px solid #000000;
+    text-align: center;
+    float: left;
+    width: 70px;
+}
+input.leadorder_revenueinpt {
+    width: 63px;
+}
+.leadorderform_shipping {
+    border-right: 1px solid #000000;
+    float: left;
+    text-align: right;
+    width: 57px;
+}
+input.leadorder_shipinpt {
+    width: 30px;
+}
+.leadorderform_salestax {
+    border-right: 1px solid #000000;
+    float: left;
+    text-align: right;
+    padding-right: 5px;
+    width: 33px;
+}
+input.leadorder_taxinpt {
+    width: 31px;
+}
+.leadorderform_ccfee {
+    border-right: 1px solid #000000;
+    float: left;
+    text-align: center;
+    width: 30px;
+}
+.leadorderform_replica {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-left: 4px;
+    width: 51px;
+}
+select.leadorder_selectreplic {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 21px;
+    width: 77px;
+}
+/* Popup Item Details */
+.order_itemedit_area {
+    background: none repeat scroll 0 0 #fff;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    min-height: 150px;
+    padding: 15px;
+    width: 391px;
+}
+.order_itemedit_title {
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.order_itemedit {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+}
+.order_itemedit_text {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    height: 58px;
+    width: 100%;
+    text-align: left;
+}
+.order_itemedit_text label {
+    clear: both;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    width: 80%;
+}
+textarea.orderitemsvalue {
+    float: left;
+    height: 47px;
+    overflow-y: auto;
+    resize: none;
+    width: 96%;
+}
+select.selectorderitem {
+    font-size: 12px;
+    width: 393px;
+}
+.order_itemedit_save {
+    clear: both;
+    float: left;
+    margin-left: 291px;
+    margin-top: 15px;
+    width: 90px;
+}
+.order_itemedit_save:hover {
+    cursor: pointer;
+}
+/* Upload Order Invoice POP Up */
+.uploadinvoicedocarea {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 10px;
+    float: left;
+    min-height: 128px;
+    padding: 20px;
+    width: 581px;
+}
+.uploadinvoicedocarea > .title {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    width: 100%;
+}
+.uploadinvoicedocarea > .uploadlist {
+    clear: both;
+    float: left;
+    font-size: 13px;
+    height: 31px;
+    line-height: 22px;
+    text-align: center;
+    width: 100%;
+}
+.uploadinvoicedocarea > .uploadlist > .invoicefilesrcname {
+    /* cursor: pointer; */
+    float: left;
+    text-align: left;
+    width: 95%;
+}
+.uploadinvoicedocarea > .uploadlist > .invoicefilesrcnameremove {
+    cursor: pointer;
+    float: left;
+    text-align: center;
+    width: 3%;
+}
+.uploadinvoicedocarea > .uploadlist > .invoicefilesrcnameremove img {
+    width: 22px;
+}
+.uploadinvoicedocarea > .invdocumentsave {
+    clear: both;
+    cursor: pointer;
+    display: none;
+    float: left;
+    margin-left: 480px;
+    width: 80px;
+}
+/* Send Invoice Popup */
+.leadorder_sendarea {
+    background: transparent url("/img/saleorder/email_popup_bg.png") repeat-y scroll 0 0;
+    float: left;
+    font-size: 12px;
+    min-height: 471px;
+    padding-left: 10px;
+    padding-top: 10px;
+    width: 312px;
+}
+.leadorder_sendarea input {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 12px;
+    height: 21px;
+    width: 95%;
+}
+.leadorder_sendarea textarea {
+    border: 1px solid #000000;
+    background: none #FFF;
+    color: #000000;
+    font-size: 12px;
+    resize: none;
+    overflow-y: auto;
+    width: 95%;
+}
+.leadorder_sendarea > .addressrow {
+    clear: both;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    width: 301px;
+}
+.leadorder_sendarea > .addressrow.bccdata {
+    display: none;
+}
+.leadorder_sendarea > .addressrow.textdata {
+    height: auto;
+}
+.leadorder_sendarea > .addressrow > .label {
+    float: left;
+    color: #5d5d5d;
+    width: 35px;
+}
+.leadorder_sendarea > .addressrow > .datainput {
+    float: left;
+    width: 265px;
+}
+.leadorder_sendarea > .addressrow > .bccadd {
+    font-style: italic;
+    color: #2c2cff;
+    cursor: pointer;
+    width: 48px;
+}
+.leadorder_sendarea > .addressrow > .subjectlabel {
+    float: left;
+    color: #5d5d5d;
+    width: 50px;
+}
+.leadorder_sendarea > .addressrow > .subjectdata {
+    float: left;
+    width: 249px;
+}
+.leadorder_sendarea > .attachmentdataarea {
+    clear: both;
+    margin-top: 10px;
+    float: left;
+    width: 301px;
+}
+.leadorder_sendarea > .attachmentdataarea > .attachmrow {
+    clear: both;
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    width: 100%;
+}
+.leadorder_sendarea > .attachmentdataarea > .attachmrow > .label {
+    float: left;
+    color: #5d5d5d;
+    width: 73px;
+}
+.leadorder_sendarea > .attachmentdataarea > .attachmrow > .attachmarkdata {
+    float: left;
+    padding-top: 3px;
+    width: 20px;
+}
+.leadorder_sendarea > .attachmentdataarea > .attachmrow > .attachmarklabel {
+    color: #2c2cff;
+    float: left;
+    width: 49px;
+}
+.leadorder_sendarea > .sendinvoiceaction {
+    clear: both;
+    cursor: pointer;
+    float: right;
+    margin-top: 10px;
+    padding-right: 17px;
+    width: 101px;
+}
+/*Popup Inputs */
+.leadorder_sendarea input.attachcheck {
+    height: auto;
+    width: 15px;
+}
+.leadorder_sendarea textarea.addresto {
+    height: 37px;
+}
+.leadorder_sendarea textarea.messagetext {
+    height: 200px;
+}

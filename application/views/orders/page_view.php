@@ -7,6 +7,9 @@
         </div>
     </div>
     <div class="maincontent_view">
+        <?php if (isset($ordersview)) { ?>
+            <div class="orderscontentarea" id="ordersview" style="display: none;"><?=$ordersview?></div>
+        <?php } ?>
     </div>
 </div>
 
@@ -15,7 +18,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="artModalLabel">New message</h4>
+                <h4 class="modal-title" id="pageModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>
