@@ -3,7 +3,7 @@
 Class Orders_model extends MY_Model
 {
     const START_ORDNUM=22000;
-    const INIT_ERRMSG='Unknown error. Try later';
+    private $INIT_ERRMSG='Unknown error. Try later';
     protected $project_name='PROJ';
 
     protected $NO_ART = '06_noart';
@@ -128,6 +128,7 @@ Class Orders_model extends MY_Model
         }
         if (isset($filtr['order_qty'])) {
             $this->db->where('o.order_qty',$filtr['order_qty']);
+            $this->db->where('o.is_canceled',0);
         }
         if (isset($filtr['shipping_country'])) {
             $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -528,6 +529,46 @@ Class Orders_model extends MY_Model
                 'detail'=>0,
             );
         }
+        return $out;
+    }
+
+    public function get_missed_orders($brand) {
+        $this->db->select("date_format(from_unixtime(order_date), '%Y') as year, count(order_id) as total",FALSE);
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $this->db->where('order_qty',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('year');
+        $this->db->order_by('year','desc');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function update_order($options) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->init_error_msg);
+        if (!isset($options['order_id']) || !isset($options['user_id'])) {
+            $out['msg']='Lost Parameter for Update';
+            return $out;
+        }
+        $this->db->where('order_id', $options['order_id']);
+        $this->db->set('update_date', time());
+        $this->db->set('update_usr', $options['user_id']);
+        if (isset($options['order_usr_repic'])) {
+            $this->db->set('order_usr_repic', $options['order_usr_repic']);
+        }
+        if (isset($options['weborder'])) {
+            $this->db->set('weborder', $options['weborder']);
+        }
+        if (isset($options['unassigned'])) {
+            $this->db->set('order_usr_repic', NULL);
+        }
+        if (isset($options['order_qty'])) {
+            $this->db->set('order_qty', $options['order_qty']);
+        }
+        $this->db->update('ts_orders');
+        $out['result'] = $this->success_result;
         return $out;
     }
 

@@ -17,9 +17,9 @@ function init_page(objid) {
             $("#ordersview").show();
             init_ordersviewdata();
             break;
-        case 'requestlist':
-            $("#requestlist").show();
-            init_proofdata();
+        case 'orderlistsview':
+            $("#orderlistsview").show();
+            init_leadorderlist();
             break;
         case 'taskview':
             $("#taskview").show();

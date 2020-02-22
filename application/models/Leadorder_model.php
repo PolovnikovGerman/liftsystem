@@ -111,6 +111,7 @@ Class Leadorder_model extends My_Model {
         }
         if (isset($options['order_qty'])) {
             $this->db->where('o.order_qty',$options['order_qty']);
+            $this->db->where('o.is_canceled',0);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('o.brand', $options['brand']);

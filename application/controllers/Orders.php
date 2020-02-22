@@ -49,10 +49,10 @@ class Orders extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/orders/ordersview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/ordersview.js');
                 $content_options['ordersview'] = $this->_prepare_orders_view($brand, $top_menu);
-            } elseif ($row['item_link']=='#orderlist') {
-                $head['styles'][]=array('style'=>'/css/art/orderslist.css');
-                $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
-                $content_options['orderlist'] = $this->_prepare_orderlist_view();
+            } elseif ($row['item_link']=='#orderlistsview') {
+                $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
+                $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
+                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand, $top_menu);
             } elseif ($row['item_link']=='#requestlist') {
                 $head['styles'][]=array('style'=>'/css/art/requestlist.css');
                 $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
@@ -91,6 +91,7 @@ class Orders extends MY_Controller
             $this->load->model('orders_model');
             $postdata=$this->input->post();
             $options=array();
+            $show_totals = 0;
             if (isset($postdata['user_replic'])) {
                 if ($postdata['user_replic']<0) {
                     if ($postdata['user_replic']==-2) {
@@ -109,11 +110,17 @@ class Orders extends MY_Controller
             }
             if (isset($postdata['order_qty']) && $postdata['order_qty']==0) {
                 $options['order_qty']=0;
+                $show_totals = 1;
             }
             if (isset($postdata['brand'])) {
                 $options['brand']=$postdata['brand'];
             }
             $mdata['total']=$this->orders_model->get_count_orders($options);
+            if ($show_totals==1 && isset($options['brand'])) {
+                $mdata['show_totals']=1;
+                $totals=$this->orders_model->get_missed_orders($options['brand']);
+                $mdata['total_view']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -177,7 +184,7 @@ class Orders extends MY_Controller
                     $options=array(
                         'data'=>$ordersdat,
                     );
-                    $content = $this->load->view('orders/orders_datalist_view', $options, TRUE);
+                    $content = $this->load->view('orders/orderslist_datalist_view', $options, TRUE);
                 } else {
                     $data=array(
                         'data'=>$ordersdat,
@@ -187,6 +194,65 @@ class Orders extends MY_Controller
                 }
             }
             $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadorder_qtysave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Unknown Order #';
+            $postdata=$this->input->post();
+            $order_id = ifset($postdata,'order_id',0);
+            if ($order_id>0) {
+                $options=array(
+                    'user_id'=>$this->USR_ID,
+                    'order_id'=>$postdata['order_id'],
+                    'order_qty'=>intval($postdata['order_qty']),
+                );
+                $this->load->model('orders_model');
+                $res=$this->orders_model->update_order($options);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $totals=$this->orders_model->get_missed_orders($postdata['brand']);
+                    $mdata['totals']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadorder_qtysaveall() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Parameter';
+            $postdata=$this->input->post();
+            $brand = ifset($postdata,'brand');
+            $saverow = ifset($postdata,'saverow');
+            if (!empty($brand) && !empty($saverow)) {
+                $error = '';
+                $ordarray=  explode('|', $saverow);
+                $this->load->model('orders_model');
+                foreach ($ordarray as $row) {
+                    if (!empty($row)) {
+                        // Devide
+                        $dat=  explode('-', $row);
+                        $order_id=$dat[0];
+                        $order_qty=intval($dat[1]);
+                        $options=array(
+                            'user_id'=>$this->USR_ID,
+                            'order_id'=>$order_id,
+                            'order_qty'=>$order_qty,
+                        );
+                        $res=$this->orders_model->update_order($options);
+                    }
+                }
+                $totals=$this->orders_model->get_missed_orders($brand);
+                $mdata['totals']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -226,5 +292,26 @@ class Orders extends MY_Controller
         $datqs['direction']='desc';
         $datqs['cur_page']=0;
         return  $this->load->view('orders/orders_head_view',$datqs,TRUE);
+    }
+
+    private function _prepare_orderlist_view($brand, $top_menu) {
+        $datqs=[
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+            'perpage' => [30, 60, 90, 120],
+            'order_by' => 'order_id',
+            'direction' => 'desc',
+            'cur_page' => 0,
+        ];
+        $options=array(
+            'order_qty'=>0,
+            'brand' => $brand,
+        );
+        $this->load->model('orders_model');
+        $datqs['total']=$this->orders_model->get_count_orders($options);
+        // Get totals by years
+        $totals=$this->orders_model->get_missed_orders($brand);
+        $datqs['total_view']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
+        return $this->load->view('orders/orderlist_head_view',$datqs,TRUE);
     }
 }

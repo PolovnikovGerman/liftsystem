@@ -1,7 +1,5 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 21.02.20
- * Time: 23:30
- */
+<div class="labeltxt">Total Missing Orders:</div>
+<?php foreach ($totals as $row) { ?>
+    <div class="year"><?=$row['year']?></div>
+    <div class="yeardata"><?=$row['total']?></div>
+<?php } ?>
