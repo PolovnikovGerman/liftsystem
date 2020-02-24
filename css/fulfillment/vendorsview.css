@@ -125,7 +125,7 @@
     margin-bottom: 7px;
     width: 541px;
 }
-.input_row .label {
+.input_row .labeltxt {
     clear: both;
     float: left;
     font-weight: bold;
@@ -155,12 +155,13 @@
 .savevendor {
     float: left;
     margin-left: 350px;
-    margin-top:10px;
-    background:url('/img/icons/addnew.png') no-repeat;
+    margin-top: 10px;
+    background: url(/img/icons/addnew.png) no-repeat;
     width: 89px;
-    height: 24px;
-    padding-top: 2px;
+    height: 28px;
+    /* padding-top: 2px; */
     text-align: center;
+    line-height: 25px!important;
 }
 .savevendor a {
     color:#FFFFFF;

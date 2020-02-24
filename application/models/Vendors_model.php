@@ -229,24 +229,28 @@ Class Vendors_model extends My_Model
         return $res;
     }
 
-    public function get_vendor($vendor_id) {
-        if ($vendor_id==0) {
-            $vendor=array(
-                'vendor_id'=>$vendor_id,
-                'vendor_name'=>'',
-                'vendor_zipcode'=>'',
-                'calendar_id'=>'',
-            );
-        } else {
-            $this->db->select('*');
-            $this->db->from('vendors');
-            $this->db->where('vendor_id',$vendor_id);
-            $vendor=$this->db->get()->row_array();
-            if (!isset($vendor['vendor_id'])) {
-                $vendor=array();
-            }
-        }
+    public function add_vendor() {
+        $vendor=array(
+            'vendor_id'=>0,
+            'vendor_name'=>'',
+            'vendor_zipcode'=>'',
+            'calendar_id'=>'',
+        );
         return $vendor;
+    }
+
+    public function get_vendor($vendor_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor not fpund'];
+        $this->db->select('*');
+        $this->db->from('vendors');
+        $this->db->where('vendor_id', $vendor_id);
+        $vendor = $this->db->get()->row_array();
+        if (isset($vendor['vendor_id'])) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $vendor;
+        }
+        return $out;
     }
 
     function save_vendor($vendor_id, $vendor_name, $vendor_zipcode, $calendar_id) {

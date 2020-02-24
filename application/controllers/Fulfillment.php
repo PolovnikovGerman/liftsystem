@@ -118,6 +118,37 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    public function vendor_edit() {
+        if ($this->isAjax()) {
+            $error = 'Vendor not found';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $vendor_id = ifset($postdata, 'vendor_id');
+            if (!empty($vendor_id)) {
+                $this->load->model('vendors_model');
+                $calendars = [];
+                if ($vendor_id==0) {
+                    $data = $this->vendors_model->add_vendor();
+                    $mdata['content'] =
+                    $calendars=$this->mcalend->get_calendars();
+                    $mdata['content']=$this->load->view('fulfillment/vendor_formdata_view',array('vendor'=>$data,'calendars'=>$calendars),TRUE);
+                    $mdata['title'] = 'New Vendor';
+                } else {
+                    $res = $this->vendors_model->get_vendor($vendor_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = $res['data'];
+                        $mdata['title'] = 'Change Vendor '.$data['vendor_name'];
+                        $mdata['content']=$this->load->view('fulfillment/vendor_formdata_view',array('vendor'=>$data,'calendars'=>$calendars),TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
         $totals=$this->vendors_model->get_count_vendors();

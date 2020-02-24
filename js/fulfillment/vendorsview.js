@@ -98,27 +98,27 @@ function add_vendor() {
     },'json');
 }
 
-function edit_vendor(obj) {
-    var vendor_id=obj.id.substr(4);
-    var url="/vendors/edit_vendor";
-    $.post(url,{'vendor_id':vendor_id},function(data){
-        if (data.error=='') {
-            // show_popup('vendordata');
-            // $("#pop_content").empty().html(data.content);
-
+function edit_vendor(vendor_id) {
+    var url="/fulfillment/vendor_edit";
+    $.post(url,{'vendor_id':vendor_id},function(response){
+        if (response.errors=='') {
+            $("#pageModal").find('div.modal-dialog').css('width','625px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             /* Init save button */
             $("#savevendor").click(function(){
                 save_vendor();
             });
         } else {
-            alert(data.error);
+            show_error(response);
         }
     },'json');
 }
 
 function save_vendor() {
     var dat=$("#vendordat").serializeArray();
-    var url="/vendors/save_vendor";
+    var url="/fulfillment/save_vendor";
     $.post(url, dat, function(data){
         if (data.error=='') {
             alert('Vendor data saved successfully');
