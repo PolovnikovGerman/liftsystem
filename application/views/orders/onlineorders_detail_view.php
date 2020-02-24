@@ -1,6 +1,6 @@
 <input type='hidden' id="order_id" name="order_id" value="<?= $order['order_id'] ?>"/>
 <input type='hidden' id="order_status" name="order_status" value="<?= $order['order_status'] ?>"/>
-<div class="grey-fon">
+<div class="onlinedetailsview">
     <div class="upper-block">
         <div class="number">
             <?= $order['order_id'] ?>
@@ -20,12 +20,12 @@
         </div>
         <div class="or-close">
             <a href="javascript:void(0);" class="closeorderdetails">
-                <img src="/img/orderdetail-close.png" alt='close'/>
+                <img src="/img/orders/orderdetail-close.png" alt='close'/>
             </a>
         </div>
         <div class="entered">
             <div class="entered-title" <?= ($order['order_status'] == 'NEW' ? "style='display:none;'" : '') ?>>
-                <img src="/img/entered.png"/>
+                <img src="/img/orders/entered.png"/>
             </div>
             <div class="entered-input" id="entered-input">
                 <input type="text"
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="contact">
-            <img src="/img/ordertitle-contact.png"/>
+            <img src="/img/orders/ordertitle-contact.png"/>
             <div class="contact-info">
                 <div class="contact-name">
                     <div class="contact-name-title">Name:</div>
@@ -74,7 +74,7 @@
         </div> <!-- contact -->
 
         <div class="shipping-info">
-            <img src="/img/orderdetail-shipping-info.png"/>
+            <img src="/img/orders/orderdetail-shipping-info.png"/>
             <div class="shipping-info-orders-blok">
                 <textarea name="shipping-info" style="height: 82px;width: 249px;resize: none;"
                           readonly><?= $order['shipping_address'] ?></textarea>
@@ -82,21 +82,21 @@
 
             <div class="order-ships-blind">
                 <?php if ($order['shipping_blink'] == 1) { ?>
-                    <img src="/img/order-ships-blind.png"/>
+                    <img src="/img/orders/order-ships-blind.png"/>
                 <?php } ?>
             </div>
 
         </div> <!-- shipping-info -->
 
         <div class="billing-info">
-            <img src="/img/orderdetail-billing-info.png"/>
+            <img src="/img/orders/orderdetail-billing-info.png"/>
             <div class="shipping-info-orders-blok">
                 <textarea name="shipping-info" style="height: 79px;width: 251px;resize: none;"
                           readonly><?= $order['billing_address'] ?></textarea>
             </div>
         </div> <!-- billing-info -->
         <div class="payment-info">
-            <img src="/img/order-payment-info.png"/>
+            <img src="/img/orders/order-payment-info.png"/>
             <div class="paymentinfo-ccname">
                 <div class="paymentinfo-ccname-title">Trans. Id:</div>
                 <div class="paymentinfo-ccname-input">
@@ -168,7 +168,7 @@
             </div>
         </div> <!-- details-blok -->
         <div class="order-info">
-            <img src="/img/order-title-info.png"/>
+            <img src="/img/orders/order-title-info.png"/>
             <div class="order-info1">
                 <div class="qty">
                     <div class="order-info-title1" style="margin-left:11px;">Qty:</div>
@@ -193,7 +193,7 @@
                 </div>
             </div>
             <div class="order-info2">
-                <div class="prod-ship-coupon" style="width: 167px;padding-top: 4px;">
+                <div class="prod-ship-coupon" style="width: 161px;padding-top: 4px;">
                     <div class="order-info-title1" style="margin-left:11px;float: left;margin-right: 5px;">Item #</div>
                     <div class="order-itemnum-val" style="float:left; width:92px;">
                         <input id="item_number" type="text" style="width: 68px;" name="item_number"
@@ -272,7 +272,7 @@
                 </div>
                 <div class="nj-discount-total">
                     <div class="nj">
-                        <div class="order-info-title2" style="margin-left:34px;">NJ Tax:</div>
+                        <div class="order-info-title2" style="margin-left:33px;">NJ Tax:</div>
                         <div class="details-input" style="margin-left:15px;float: left">
                             <input type="text" style="text-align: right;width:67px;" readonly="readonly" id="tax"
                                    name="tax" value="<?= $order['tax'] ?>"/>
@@ -296,7 +296,7 @@
             </div>
         </div>
         <div class="comments-orders">
-            <img src="/img/order-comments-info.png"/>
+            <img src="/img/orders/order-comments-info.png"/>
             <div class="customer-comments">
                 <div class="customer-comments-name"><b>Customer’s Comments:</b></div>
                 <textarea name="order_customer_comment" cols="37" rows="3" readonly="readonly"
@@ -311,8 +311,7 @@
     </div>
     <div class="right-blok">
         <div class="order-imprint"><?= $imprint ?></div>
-        <img src="/img/order-artwork-info.png"/>
+        <img src="/img/orders/order-artwork-info.png"/>
         <?= $artwork ?>
     </div>
-
 </div>

@@ -346,7 +346,7 @@ class Orders extends MY_Controller
                 }
                 $datart = array();
                 $datart['art'] = $this->orders_model->get_online_artwork($order_id);
-                $art_disp = $this->load->view('orders/order_artwork_view', $datart, TRUE);
+                $art_disp = $this->load->view('orders/onlineorders_artwork_view', $datart, TRUE);
                 $options = array(
                     'order' => $order_data,
                     'artwork' => $art_disp,
@@ -354,6 +354,7 @@ class Orders extends MY_Controller
                 );
                 $mdata['content'] = $this->load->view('orders/onlineorders_detail_view', $options, TRUE);
                 $mdata['footer'] = $this->load->view('orders/onlineorders_footer_view',[], TRUE);
+                $mdata['title'] = 'Order '.$order_data['order_confirmation'];
             }
             $this->ajaxResponse($mdata, $error);
         }

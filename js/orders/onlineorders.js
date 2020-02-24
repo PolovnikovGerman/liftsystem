@@ -109,16 +109,17 @@ function showorderdetails(objid) {
     $.post(url, {'order_id':objid}, function(response){
         if (response.errors=='') {
             /* Fill data into Dialog */
-            show_popup('order_details_dialog');
-            $("#popupContactClose").hide();
-            $("#pop_content").empty().html(response.data.content);
+            // show_popup('order_details_dialog');
+            $("#pageModal").find('div.modal-dialog').css('width','1025px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#pageModal").modal('show');
+
             $("a.uplattach").click(function(){
                 var linkHref = $(this).attr('href');
                 $.fileDownload('/orders/upload_attach', {httpMethod : "POST", data: {url : linkHref}});
                 return false; //this is critical to stop the click event which will trigger a normal file download!
-            });
-            $("a.closeorderdetails").click(function(){
-                close_orderdetails();
             });
             $("div.orderdat_button-save").click(function(){
                 save_orderdetails();

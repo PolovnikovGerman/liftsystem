@@ -11,7 +11,7 @@
             <div class="order_number <?= $row['order_status_class'] ?>"><?= $row['order_num'] ?></div>
             <div class="order_replica <?= $row['order_status_class'] ?>"><?= $row['order_rep'] ?></div>
             <div class="order_date <?= $row['order_status_class'] ?>"><?= $row['order_date_show'] ?></div>
-            <div class="order_confirm <?= $row['order_status_class'] ?>" data-order="<?=$row['order_id']?>"><?= $row['order_confirmation'] ?></div>
+            <div class="order_confirm orderdetailslnk <?= $row['order_status_class'] ?>" data-order="<?=$row['order_id']?>"><?= $row['order_confirmation'] ?></div>
             <div class="customer_name <?= $row['order_status_class'] ?>"><?= $row['customer_name'] ?></div>
             <div class="customer_company <?= $row['order_status_class'] ?>"><?= $row['customer_company'] ?></div>
             <div class="order_item <?= $row['order_status_class'] ?>"><?= $row['item_name'] ?></div>
