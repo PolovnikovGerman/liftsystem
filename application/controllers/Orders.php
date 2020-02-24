@@ -41,6 +41,7 @@ class Orders extends MY_Controller
             'brands' => $brands,
             'active' => $brand,
         ];
+
         $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
 
         foreach ($menu as $row) {
@@ -53,10 +54,10 @@ class Orders extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
                 $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand, $top_menu);
-            } elseif ($row['item_link']=='#requestlist') {
-                $head['styles'][]=array('style'=>'/css/art/requestlist.css');
-                $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
-                $content_options['requestlist'] = $this->_prepare_requestlist_view();
+            } elseif ($row['item_link']=='#onlineordersview') {
+                $head['styles'][]=array('style'=>'/css/orders/onlineorders.css');
+                $head['scripts'][]=array('src'=>'/js/orders/onlineorders.js');
+                $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand, $top_menu);
             }
         }
 
@@ -258,6 +259,118 @@ class Orders extends MY_Controller
         show_404();
     }
 
+    public function onlinesearch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $replica=$this->input->post('replica');
+            $confirm=$this->input->post('confirm');
+            $customer=$this->input->post('customer');
+            $brand = $this->input->post('brand');
+            $options = [];
+            if (!empty($replica)) {
+                $options['replica']=$replica;
+            }
+            if (!empty($confirm)) {
+                $options['confirm'] = $confirm;
+            }
+            if (!empty($customer)) {
+                $options['customer'] = $customer;
+            }
+            $this->load->model('orders_model');
+            $mdata['total_rec']=$this->orders_model->count_onlineorders($brand, $options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function onlineorderdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+
+            $offset = $this->input->post('offset', 0);
+            $limit = $this->input->post('limit', 10);
+            $order_by = $this->input->post('order_by', 'order_id');
+            $direct = $this->input->post('direction', 'desc');
+            $replica = $this->input->post('replica');
+            $confirm = $this->input->post('confirm');
+            $customer = $this->input->post('customer');
+            $brand = $this->input->post('brand');
+            $offset = $offset * $limit;
+
+            $search = array();
+            if ($replica != '') {
+                $search['replica'] = $replica;
+            }
+            if ($confirm != '') {
+                $search['confirm'] = $confirm;
+            }
+            if ($customer != '') {
+                $search['customer'] = $customer;
+            }
+            $search['brand'] = $brand;
+            /* Get data  */
+            $this->load->model('orders_model');
+            $orders_dat = $this->orders_model->get_online_orders(array(), $order_by, $direct, $limit, $offset, $search);
+
+            $data = array('orders_dat' => $orders_dat);
+
+            $mdata['content']=$this->load->view('orders/onlineorders_data_view', $data, TRUE);
+
+
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function online_details() {
+        if ($this->isAjax()) {
+            $order_id=$this->input->post('order_id');
+            $mdata=array();
+            /* Get Data about order */
+            $options=array(
+                'order_id'=>$order_id,
+            );
+            $this->load->model('orders_model');
+            $data=$this->orders_model->order_details($options);
+            $error = $data['msg'];
+            if ($data['result']==$this->success_result) {
+                $error = '';
+                $order_data = $data['data'];
+                if ($order_data['order_status']=='NEW') {
+                    // Change Order Num input
+                    $ordnums=$this->orders_model->finorder($order_data['order_date']);
+                    $order_data['order_num_view']=$this->load->view('orders/ordernum_select_view',array('orders'=>$ordnums),TRUE);
+                } else {
+                    $order_data['order_num_view']=$this->load->view('orders/ordernum_input_view',$order_data,TRUE);
+                }
+                $datart = array();
+                $datart['art'] = $this->orders_model->get_online_artwork($order_id);
+                $art_disp = $this->load->view('orders/order_artwork_view', $datart, TRUE);
+                $options = array(
+                    'order' => $order_data,
+                    'artwork' => $art_disp,
+                    'imprint' => $this->online_imprintval($order_data['imprinting'])
+                );
+                $mdata['content'] = $this->load->view('orders/onlineorders_detail_view', $options, TRUE);
+                $mdata['footer'] = $this->load->view('orders/onlineorders_footer_view',[], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    private function online_imprintval($typeimprint) {
+        $out='';
+        if ($typeimprint==0) {
+            $out='Blank, no imprinting';
+        } elseif($typeimprint==1) {
+            $out='Imprinting in one color';
+        } elseif ($typeimprint==2) {
+            $out='Imprinting in two colors';
+        }
+        return $out;
+    }
+
     private function _prepare_orders_view($brand, $top_menu) {
         $datqs=[
             'brand' => $brand,
@@ -313,5 +426,22 @@ class Orders extends MY_Controller
         $totals=$this->orders_model->get_missed_orders($brand);
         $datqs['total_view']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
         return $this->load->view('orders/orderlist_head_view',$datqs,TRUE);
+    }
+
+    private function _prepare_onlineorders($brand, $top_menu) {
+        $datl=[
+            'order_by' => 'order_id',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'perpage' => 250,
+
+        ];
+        $this->load->model('orders_model');
+        $datl['total_rec']=$this->orders_model->count_onlineorders($brand);
+        $datl['last_order']=$this->orders_model->last_order($brand);
+        $datl['last_cart']=$this->orders_model->last_attempt($brand);
+        // $content=$this->load->view('orders/orders_list_view',$datl,TRUE);
+        return $this->load->view('orders/onlineorders_head_view',$datl,TRUE);
+
     }
 }

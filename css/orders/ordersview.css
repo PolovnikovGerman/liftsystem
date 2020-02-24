@@ -113,10 +113,6 @@ select.leadord_filterselect {
 .lead_orderlegendlabel.long {
     width: 65px;
 }
-.leadorder_pagination {
-    float: right!important;
-    margin-top: -17px;
-}
 /* Table Head */
 .leadorder_datahead {
     background: none #0808ff;

@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 24.02.20
- * Time: 10:45
- */
+<input type="text" class="ordernum_input" readonly title="Our #" value="<?=$order_num?>" id="order_num" name="order_num"/>

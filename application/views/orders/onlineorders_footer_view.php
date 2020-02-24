@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 24.02.20
- * Time: 10:56
- */
+<div class="orderdat_button-save"><img src="/img/save_order.png"/></div>

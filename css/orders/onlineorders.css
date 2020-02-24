@@ -1,0 +1,214 @@
+.onlineorders_content {
+    clear: both;
+    width: 982px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.onlineorders_content input {
+    padding-left: 2px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 13px;
+    border: 1px solid #868686;
+}
+.onlineorders_content > .searchbox {
+    clear: both;
+}
+.onlineorders_content > .searchbox > div {
+    height: 24px;
+    line-height: 24px!important;
+}
+.onlineorders_content > .searchbox > .srchtitle_replica {
+    width: 75px;
+}
+.onlineorders_content > .searchbox > .srchinpt_replica {
+    width: 100px;
+}
+input.onlinereplica {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .srchtitle_confirm {
+    width: 90px;
+}
+.onlineorders_content > .searchbox > .srchinpt_confirm {
+    width: 100px;
+}
+input.onlineconfirm {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .srchtitle_customer {
+    width:67px;
+}
+.onlineorders_content > .searchbox > .srchinpt_customer {
+    width: 100px;
+}
+input.onlinecustomer {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .find_online {
+    background: url(/img/orders/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 29px!important;
+    margin: 0px 0 0 8px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    cursor: pointer;
+}
+
+.online-orders-head {
+    clear: both;
+    width: 982px;
+}
+.online-orders-head > div {
+    height: 33px;
+    line-height: 33px!important;
+    background: url(/img/orders/headordertable-center.png) repeat-x;
+    border-bottom: 2px solid #2f2f2f;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+}
+.online-orders-head > .status {
+    background: url(/img/orders/headordertable-left.png) no-repeat;
+    width: 111px;
+    border-right: 2px solid #2F2F2F;
+}
+.online-orders-head > .order_number {
+    width: 63px;
+    border-right: 2px solid #2F2F2F;
+}
+.online-orders-head > .order_replica {
+    border-right: 2px solid #2F2F2F;
+    width: 52px;
+}
+.online-orders-head > .order_date {
+    border-right: 2px solid #2F2F2F;
+    width: 65px;
+}
+.online-orders-head > .order_confirm {
+    border-right: 2px solid #2F2F2F;
+    width: 94px;
+}
+.online-orders-head > .customer_name {
+    border-right: 2px solid #2F2F2F;
+    width: 117px;
+}
+.online-orders-head > .customer_company {
+    border-right: 2px solid #2F2F2F;
+    width: 136px;
+}
+.online-orders-head > .order_item {
+    border-right: 2px solid #2F2F2F;
+    width: 187px;
+}
+.online-orders-head > .order_amount {
+    border-right: 2px solid #2F2F2F;
+    width: 88px;
+}
+.online-orders-head > .order_export {
+    background: url(/img/orders/headordertable-right.png) no-repeat;
+    width: 62px;
+}
+.onlineorderslist {
+    clear: both;
+    max-height: 546px;
+    overflow-y: auto;
+    width: 974px;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+}
+.online-data-row {
+    clear: both;
+    width: 100%;
+}
+.online-data-row.emptyvalue {
+    height: 22px;
+    line-height: 22px!important;
+    color: #ff0000;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+.online-data-row > div {
+    height: 21px;
+    line-height: 21px!important;
+    color: #868686;
+    font-size: 12px;
+    text-align: center;
+}
+.online-data-row > div.neworder {
+    color:#2f2f2f;
+}
+.online-data-row > .order_numpp {
+    border-right: 2px solid #2F2F2F;
+    width: 42px;
+}
+.online-data-row > .status {
+    border-right: 2px solid #2F2F2F;
+    width: 67px;
+}
+.online-data-row > .order_number {
+    border-right: 2px solid #2F2F2F;
+    background: url(/img/orders/ordernum_listbg.png) no-repeat 4px 1px;
+    width: 63px;
+}
+.online-data-row > .order_replica {
+    border-right: 2px solid #2F2F2F;
+    background: url(/img/orders/orderrep_listbg.png) no-repeat 2px 1px;
+    width: 52px;
+}
+.online-data-row > .order_date {
+    border-right: 2px solid #2F2F2F;
+    width: 65px;
+}
+.online-data-row > .order_confirm {
+    border-right: 2px solid #2F2F2F;
+    color: #0000ff;
+    cursor: pointer;
+    width: 94px;
+}
+.online-data-row > .customer_name {
+    border-right: 2px solid #2F2F2F;
+    width: 117px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .customer_company {
+    border-right: 2px solid #2F2F2F;
+    width: 136px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .order_item {
+    border-right: 2px solid #2F2F2F;
+    width: 187px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .order_amount {
+    border-right: 2px solid #2F2F2F;
+    width: 88px;
+    padding-right: 5px;
+    text-align: right;
+}
+.online-data-row > .order_export {
+    width: 44px;
+}

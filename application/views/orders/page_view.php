@@ -13,6 +13,9 @@
         <?php if (isset($orderlistsview)) { ?>
             <div class="orderscontentarea" id="orderlistsview" style="display: none;"><?=$orderlistsview?></div>
         <?php } ?>
+        <?php if (isset($onlineordersview)) { ?>
+            <div class="orderscontentarea" id="onlineordersview" style="display: none;"><?=$onlineordersview?></div>
+        <?php } ?>
     </div>
 </div>
 

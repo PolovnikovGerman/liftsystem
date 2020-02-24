@@ -41,7 +41,6 @@ function init_ordersviewdata() {
         });
         search_leadorders();
     });
-
 }
 
 function initLeadOrderPagination() {
