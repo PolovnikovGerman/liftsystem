@@ -39,6 +39,7 @@ if (!defined('BASEPATH'))
  * @property Balances_model balances_model
  * @property Tickets_model tickets_model
  * @property Batches_model batches_model
+ * @property Calendars_model calendars_model
  * @property Permissions_model permissions_model
  * @property Reports_model reports_model
  * @property Searchresults_model searchresults_model
