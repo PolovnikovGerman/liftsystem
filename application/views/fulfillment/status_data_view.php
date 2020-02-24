@@ -1,7 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 25.02.20
- * Time: 1:39
- */
+<?php foreach ($orders as $row) {?>
+    <?=$row?>
+<?php } ?>

@@ -10,6 +10,9 @@
         <?php if (isset($vendorsview)) { ?>
             <div class="fulfillcontentarea" id="vendorsview" style="display: none;"><?=$vendorsview?></div>
         <?php } ?>
+        <?php if (isset($fullfilstatusview)) { ?>
+            <div class="fulfillcontentarea" id="fullfilstatusview" style="display: none;"><?=$fullfilstatusview?></div>
+        <?php } ?>
     </div>
 </div>
 

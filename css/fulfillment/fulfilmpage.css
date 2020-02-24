@@ -1,0 +1,63 @@
+.monitor-head {
+    clear: both;
+    width: 998px;
+    margin-bottom: 5px;
+}
+.monitor-head.inner {
+    margin-bottom: 2px;
+}
+.adminsearchform {
+    clear: both;
+    float: left;
+    margin-left: 18px;
+    width: 958px;
+}
+.monitorsearch_form {
+    float: left;
+    width : 380px;
+}
+.monitor_pagesviews {
+    float: left;
+    width: 578px;
+}
+.monitor_pagesviews .Pagination {
+    float: right!important;
+}
+.monitorsearch_input {
+    width: 160px;
+}
+input.monitorsearch_input {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 161px;
+    color: #4c4c4c;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    height: 22px;
+    padding-left: 3px;
+}
+.search_action a.find_it {
+    background: url(/img/fulfillment/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 25px;
+    margin: 0px 0 0 8px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    line-height: 22px;
+}
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+    height: 22px;
+}
+.sorting_select {
+    float: left;
+    margin-left: 5px;
+    width: 160px;
+}

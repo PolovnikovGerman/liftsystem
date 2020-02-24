@@ -505,4 +505,149 @@ Class Orders_model extends MY_Model
         }
     }
 
+    /* Status functions */
+    function get_count_orderslimits($options=array()) {
+        $this->db->select('count(order_id) as cnt');
+        $this->db->from('v_order_statuses');
+        if (isset($options['min_time'])) {
+            $this->db->where('order_date >= ',$options['min_time']);
+        }
+        if (isset($options['search'])) {
+            $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($options['search']));
+        }
+        if (isset($options['order_status'])) {
+            $this->db->where('substr(order_proj_status,4)',$options['order_status']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    function get_orderslimits($options,$order_by,$addsort,$direct,$limit,$offset) {
+        $this->db->select('*');
+        $this->db->from('v_order_statuses');
+        $this->db->where('order_proj_status != ','99_unknown');
+        if (isset($options['min_time'])) {
+            $this->db->where('order_date >= ',$options['min_time']);
+        }
+        if (isset($options['search'])) {
+            $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($options['search']));
+        }
+        if (isset($options['order_status'])) {
+            $this->db->where('substr(order_proj_status,4) ', $options['order_status']);
+        }
+        if (isset($options['status_type'])) {
+            $this->db->where('status_type',$options['status_type']);
+        }
+        $this->db->where('order_cog',NULL);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
+        $this->db->order_by($order_by, $direct);
+        if ($addsort==1) {
+            $this->db->order_by('specialdiff , commondiff','asc');
+        } elseif ($addsort==2) {
+            $this->db->order_by('order_num','asc');
+        } elseif ($addsort==3) {
+            $this->db->order_by('order_date','asc');
+        } elseif ($addsort==4) {
+            $this->db->order_by('revenue','asc');
+        }
+        $this->db->limit($limit,$offset);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        $curr_status='test';
+        $i=0;
+        foreach ($res as $row) {
+            $order_out_status='';
+            switch (substr($row['order_proj_status'],3)) {
+                case 'notplaced':
+                    $order_out_status=$this->_notplaced;
+                    if ($row['update_date']==0) {
+                        $diff='';
+                    } else {
+                        $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                    }
+                    break;
+                case 'notredr':
+                    $order_out_status=$this->_notredr;
+                    if ($row['order_art_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['art_day_diff']==0 ? $row['art_hour_diff'].' h' : $row['art_day_diff'].' d '.($row['art_hour_diff']-($row['art_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'notapprov':
+                    $order_out_status=$this->_notapprov;
+                    if ($row['order_proofed_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['proofed_day_diff']==0 ? $row['proofed_hour_diff'].' h' : $row['proofed_day_diff'].' d '.($row['proofed_hour_diff']-($row['proofed_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'notprof':
+                    $order_out_status=$this->_notprof;
+                    if ($row['order_vectorized_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['vectorized_day_diff']==0 ? $row['vectorized_hour_diff'].' h' : $row['vectorized_day_diff'].' d '.($row['vectorized_hour_diff']-($row['vectorized_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'notvector':
+                    $order_out_status=$this->_notvector;
+                    if ($row['order_redrawn_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['redrawn_day_diff']==0 ? $row['redrawn_hour_diff'].' h' : $row['redrawn_day_diff'].' d '.($row['redrawn_hour_diff']-($row['redrawn_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'noart':
+                    $order_out_status=$this->_noart;
+                    if ($row['update_date']==0) {
+                        $diff='';
+                    } else {
+                        $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                    }
+                    break;
+            }
+
+            if ($order_out_status!='') {
+                if ($curr_status!=substr($row['order_proj_status'],3)) {
+                    $content=$this->load->view('fulfillment/statut_head_view',array(),TRUE);
+                    $out[]=$content;
+                    $curr_status=substr($row['order_proj_status'],3);
+                }
+                $row['order_out_status']=$order_out_status;
+                $row['order_out_date']=($row['order_date']==0 ? '&nbsp;' : date('m/d/Y',$row['order_date']));
+                $row['order_out_upd']=($diff=='' ? '&nbsp;' : $diff);
+                $row['out_revenue']=(floatval($row['revenue'])==0 ? '&nbsp;' : '$'.number_format($row['revenue'],2,'.',','));
+                $row['order_class']=($row['order_rush']==0 ? '' :'orderstatus_rush');
+                $content=$this->load->view('fulfillment/statut_row_view',array('row'=>$row,'i'=>$i),TRUE);
+                $out[]=$content;
+                $i++;
+            }
+        }
+        return $out;
+
+    }
+
 }

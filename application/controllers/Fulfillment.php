@@ -47,6 +47,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/vendorsview.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
+            } elseif ($row['item_link']=='#fullfilstatusview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/postatus.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
+                $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -181,17 +185,118 @@ class Fulfillment extends MY_Controller
         }
     }
 
+    // STATUS page
+    // Status data
+    public function statusdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $pagenum=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','asc');
+            $search=$this->input->post('search');
+            $date_filter=$this->input->post('date_filter');
+            $options_filter=$this->input->post('options_filter');
+            $addsort=$this->input->post('addsort');
+            $brand = $this->input->post('brand');
+            $offset=$pagenum*$limit;
+
+            /* Get data about orders */
+            $options=array(
+                'profit_perc'=>NULL,
+                'is_canceled'=>0,
+                'status_type'=>'O',
+                'brand' => $brand,
+            );
+            if ($date_filter==1) {
+                $dat=strtotime(date('m/d/Y',time())." -6 months");
+                $options['min_time']=$dat;
+            }
+            if ($options_filter!='') {
+                $options['order_status']=$options_filter;
+            }
+            if ($search!='') {
+                $options['search']=$search;
+            }
+            $this->load->model('orders_model');
+            $orders=$this->orders_model->get_orderslimits($options,$order_by,$addsort,$direct,$limit,$offset);
+            if (count($orders)>0) {
+                $mdata['content']=$this->load->view('fulfillment/status_data_view',array('orders'=>$orders),TRUE);
+            } else {
+                $mdata['content']=$this->load->view('fulfillment/status_emptydata_view',array('orders'=>$orders),TRUE);
+            }
+
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    /* Count # of records for new status of filter */
+    function statussearchdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            /* Post params */
+            $search=$this->input->post('search');
+            $date_filter=$this->input->post('date_filter');
+            $options_filter=$this->input->post('options_filter');
+            $options=array(
+                'profit_perc'=>NULL,
+                'is_canceled'=>0,
+            );
+            if ($date_filter==1) {
+                $dat=strtotime(date('m/d/Y',time())." -6 months");
+                $options['min_time']=$dat;
+            }
+            if ($options_filter!='') {
+                $options['order_status']=$options_filter;
+            }
+            if ($search!='') {
+                $options['search']=$search;
+            }
+            /* Get New Total recors */
+            $this->load->model('orders_model');
+            $mdata['totalrec']=$this->orders_model->get_count_orderslimits($options);
+
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
         $totals=$this->vendors_model->get_count_vendors();
         $options=array(
-            'perpage'=> 50,
+            'perpage'=> 250,
             'order'=>'vendor_name',
             'direc'=>'asc',
             'total'=>$totals,
             'curpage'=>0,
         );
         $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_status_view($brand, $top_menu) {
+        $dat=strtotime(date('m/d/Y',time())." -6 months");
+        $def_options=array(
+            'profit_perc'=>NULL,
+            'is_canceled'=>0,
+            'min_time'=>$dat,
+            'brand' => $brand,
+        );
+        $this->load->model('orders_model');
+        $totals=$this->orders_model->get_count_orderslimits($def_options);
+        $options=array(
+            'perpage'=> 250,
+            'order'=>'order_proj_status',
+            'direc'=>'asc',
+            'total'=>$totals,
+            'curpage'=>0,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
+        $content=$this->load->view('fulfillment/status_view',$options,TRUE);
         return $content;
     }
 

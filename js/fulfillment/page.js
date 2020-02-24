@@ -17,6 +17,10 @@ function init_page(objid) {
             $("#vendorsview").show();
             init_vendorpage();
             break;
+        case 'fullfilstatusview':
+            $("#fullfilstatusview").show();
+            init_statuspage();
+            break;
     }
 
 }

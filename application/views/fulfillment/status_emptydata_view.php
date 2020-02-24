@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 25.02.20
- * Time: 1:40
- */
+<div class="status_data_row empty_statusdata">No Data for this Selection</div>
