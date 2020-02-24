@@ -254,9 +254,8 @@ Class Vendors_model extends My_Model
     }
 
     function save_vendor($vendor_id, $vendor_name, $vendor_zipcode, $calendar_id) {
-        $out=array('res'=>'','msg'=>'');
+        $out=array('result'=>$this->error_result,'msg'=>'Error during save Vendor');
         if (trim($vendor_name)=='') {
-            $out['error']=Vendors_model::ERR_FLAG;
             $out['msg']='Vendor name required parameter';
         } else {
             $this->db->select('count(*) as cnt');
@@ -265,7 +264,6 @@ Class Vendors_model extends My_Model
             $this->db->where('vendor_id !=',$vendor_id);
             $res=$this->db->get()->row_array();
             if ($res['cnt']>0) {
-                $out['error']=Vendors_model::ERR_FLAG;
                 $out['msg']='Vendor name non unique';
             } else {
                 $this->db->set('vendor_name',$vendor_name);
@@ -279,10 +277,9 @@ Class Vendors_model extends My_Model
                     $this->db->update('vendors');
                 }
                 if ($vendor_id==0) {
-                    $out['error']=Vendors_model::ERR_FLAG;
                     $out['msg']='Vendors data wasn\'t saved. Please, try later';
                 } else {
-                    $out['error']=Vendors_model::SUCCESS_RESULT;
+                    $out['result'] = $this->success_result;
                 }
             }
         }
@@ -301,6 +298,13 @@ Class Vendors_model extends My_Model
             $out['result'] = $this->success_result;
         }
         return $out;
+    }
+
+    public function vendor_includerep($vendor_id, $payinclude) {
+        $this->db->set('payinclude', $payinclude);
+        $this->db->where('vendor_id', $vendor_id);
+        $this->db->update('vendors');
+        return TRUE;
     }
 
 }
