@@ -39,27 +39,30 @@ Class Payments_model extends MY_Model {
 //        $res['unbilled']=($sumall==0 ? '-' : '$'.number_format($sumall,2,'.',','));
 //        return $res;
 //    }
-//
-//    function get_count_purchorders($options) {
-//        $this->db->select('count(oa.amount_id) as cnt_rec');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->where("o.is_canceled",0);
-//        if (isset($options['status'])) {
-//            if ($options['status']=='showclosed') {
-//                $this->db->where('o.is_closed',0);
-//            }
-//        }
-//        if (isset($options['vendor_id'])) {
-//            $this->db->where('oa.vendor_id',$options['vendor_id']);
-//        }
-//        if (isset($options['searchpo'])) {
-//            $this->db->where('o.order_num', $options['searchpo']);
-//        }
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt_rec'];
-//    }
-//
+
+    public function get_count_purchorders($options) {
+        $this->db->select('count(oa.amount_id) as cnt_rec');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where("o.is_canceled",0);
+        if (isset($options['status'])) {
+            if ($options['status']=='showclosed') {
+                $this->db->where('o.is_closed',0);
+            }
+        }
+        if (isset($options['vendor_id'])) {
+            $this->db->where('oa.vendor_id',$options['vendor_id']);
+        }
+        if (isset($options['searchpo'])) {
+            $this->db->where('o.order_num', $options['searchpo']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt_rec'];
+    }
+
 //    public function get_amountrow($amount_id) {
 //        $this->db->select('oa.amount_id, oa.amount_date, oa.amount_sum, oa.order_id, o.order_num, o.profit_perc, o.profit, o.order_cog');
 //        $this->db->select('v.vendor_name, m.method_name, oa.date_charge, coalesce(pay.numchr,0) as numchr, pay.sumchr',FALSE);

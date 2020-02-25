@@ -1,0 +1,291 @@
+.purchaseorder-head {
+    clear: both;
+    margin-left: 20px;
+    margin-top: 13px;
+    width: 998px;
+}
+.purchaseorder-head-left {
+    width: 515px;
+}
+select.showtoplacedpo {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 13px;
+    padding-left: 3px;
+    width: 155px;
+    height: 22px;
+}
+.searchpurcaheorders {
+    margin-left: 5px;
+    width: 334px;
+}
+input.searchpoinput {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 22px;
+    margin-left: 5px;
+    width: 120px;
+}
+.pofindit {
+    background: url("/img/fulfillment/search_button_bg.png") no-repeat scroll 0 0 transparent;
+    color: #000000;
+    cursor: pointer;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px!important;
+    margin: -1px 0 0 8px;
+    text-align: center;
+    width: 92px;
+}
+.purchaseorder_selectperpage {
+    width: 164px;
+}
+select.selectrecords {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    width: 156px;
+    height: 22px;
+}
+.purchorder_paginator {
+    float: right!important;
+    margin-top: -19px;
+    margin-bottom: -20px;
+}
+.paymethods {
+    clear: both;
+    float: left;
+    min-width: 640px;
+}
+.showhideclosed {
+    color: #5042FF;
+    float: left;
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 13px;
+}
+.showhideclosed:hover {
+    cursor: pointer;
+}
+.pototals-legend {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 17px;
+    position: relative;
+    width: 626px;
+    /* z-index: 100; */
+    z-index: 12;
+}
+.pototals-legend ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.pototals-legend ul li {
+    display: inline;
+    float: left;
+    padding-left: 10px;
+    height: 21px;
+    line-height: 21px;
+}
+/* Sort */
+.sort_purchase {
+    float: left;
+    width: 380px;
+    font-family: arial, verdana, sans-serif;
+    font-size: 13px;
+}
+.sort_purchase_val {
+    float: left;
+    width: 110px;
+    font-size: 12px;
+}
+select.sortpurch {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    font-size: 12px;
+    width: 107px;
+    height: 21px;
+}
+.viewing-page2 {
+    float: right;
+    font-size: 13px;
+    margin-top: 5px;
+    text-align: right;
+    width: 273px;
+}
+.purchase-order-table {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+}
+.purchase-order-title {
+    clear: both;
+    background-color: #BCBCBC;
+    border: 1px solid #919191;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    height: 30px;
+    text-align: center;
+    width: 997px;
+}
+.purchase-order-title div {
+    padding-top: 7px;
+}
+.purchase-order-profit {
+    float: left;
+    width: 78px;
+}
+.purchase-order-profit:hover {
+    cursor: pointer;
+}
+.purchase-order-profit-data {
+    float: left;
+    /* height: 21px; */
+    /* padding-top: 3px; */
+    text-align: center;
+    width: 78px;
+}
+.purchase-order-profitperc {
+    float: left;
+    width: 53px;
+}
+.purchase-order-profitperc:hover {
+    cursor: pointer;
+}
+.purchase-order-profitperc-data {
+    float: left;
+    text-align: center;
+    /* height: 21px; */
+    /* padding-top: 3px; */
+    width: 53px;
+}
+.purchase-order-actions {
+    float: left;
+    font-size: 15px;
+    text-align: center;
+    width: 46px;
+}
+.purchase-order-actions i {
+    cursor: pointer;
+    color: #5b401a;
+}
+.purchase-order-actions-data {
+    float: left;
+    width: 46px;
+    text-align: center;
+}
+.purchase-order-actions-data > .subaction {
+    float: left;
+    font-size: 15px;
+    padding-top: 4px;
+    width: 22px;
+}
+.purchase-order-actions-data > .subaction.editpodata {
+    color: #5b401a;
+}
+.purchase-order-actions-data > .subaction.delpodata {
+    color: #010101;
+}
+.purchase-order-actions-data img {
+    width: 18px;
+    height: 18px;
+    margin-top: auto;
+}
+.purchase-order-date {
+    float: left;
+    width: 68px;
+}
+.purchase-order-date:hover {
+    cursor:pointer;
+}
+.purchase-order-date-data {
+    float: left;
+    width: 55px;
+}
+.purchase-order-attach-data {
+    float: left;
+    width: 13px;
+}
+.purchase-order-attach-data img {
+    /* float: left; */
+    height: 16px;
+    width: 12px;
+}
+
+.purchase-order-ordnum {
+    float: left;
+    width: 53px;
+}
+.purchase-order-ordnum:hover {
+    cursor: pointer;
+}
+.purchase-order-ordnum-data {
+    float: left;
+    /* height: 21px; */
+    /* padding-top: 3px; */
+    width: 53px;
+}
+.purchase-order-ordnum-data:hove {
+    cursor: pointer;
+}
+.purchase-order-amount {
+    float: left;
+    width: 80px;
+}
+.purchase-order-amount:hover {
+    cursor: pointer;
+}
+.purchase-order-amount-data {
+    float: left;
+    padding-right: 13px;
+    /* height: 21px;
+    padding-top: 3px; */
+    text-align: right;
+    width: 67px;
+}
+.purchase-order-vendor {
+    float: left;
+    width: 93px;
+}
+.purchase-order-vendor:hover {
+    cursor: pointer;
+}
+.purchase-order-vendor-data {
+    float: left;
+    overflow: hidden;
+    /* padding-top: 3px;
+    text-align: left; */
+    white-space: nowrap;
+    width: 93px
+}
+.purchase-order-method {
+    float: left;
+    width: 100px;
+}
+.purchase-order-method:hover {
+    cursor: pointer;
+}
+.purchase-order-method-data {
+    float: left;
+    /* padding-top: 3px; */
+    width: 100px;
+}
+.purchase-order-divider {
+    float: left;
+    width: 8px;
+}
+.purchase-order-divider.lines {
+    border-left: 1px solid #616161;
+    border-right: 1px solid #616161;
+    height: 24px;
+}

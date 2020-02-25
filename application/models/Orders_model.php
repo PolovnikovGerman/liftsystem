@@ -647,7 +647,21 @@ Class Orders_model extends MY_Model
             }
         }
         return $out;
-
     }
+
+    public function count_notplaced_orders($search=array()) {
+        $this->db->select('count(order_id) as cnt');
+        $this->db->from('ts_orders o');
+        $this->db->where('order_placedflag(o.order_id)',0);
+        if (isset($search['searchpo'])) {
+            $this->db->where('o.order_num', $search['searchpo']);
+        }
+        if (isset($search['brand']) && $search['brand']!=='ALL') {
+            $this->db->where('o.brand', $search['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
 
 }

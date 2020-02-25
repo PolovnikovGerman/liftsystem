@@ -21,6 +21,9 @@ function init_page(objid) {
             $("#fullfilstatusview").show();
             init_statuspage();
             break;
+        case 'pototalsview':
+            $("#pototalsview").show();
+            break;
     }
 
 }

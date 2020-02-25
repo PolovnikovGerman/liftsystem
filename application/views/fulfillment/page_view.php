@@ -13,6 +13,9 @@
         <?php if (isset($fullfilstatusview)) { ?>
             <div class="fulfillcontentarea" id="fullfilstatusview" style="display: none;"><?=$fullfilstatusview?></div>
         <?php } ?>
+        <?php if (isset($pototalsview)) { ?>
+            <div class="fulfillcontentarea" id="pototalsview" style="display: none;"><?=$pototalsview?></div>
+        <?php } ?>
     </div>
 </div>
 

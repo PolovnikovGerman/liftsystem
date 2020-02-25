@@ -218,3 +218,5 @@ $config['cardflds'] = array(
 $config['normal_price_base']=array(
     25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
 );
+
+$config['orders_perpage'] = [100, 250, 500, ];
