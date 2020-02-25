@@ -44,6 +44,7 @@ if (!defined('BASEPATH'))
  * @property Reports_model reports_model
  * @property Searchresults_model searchresults_model
  * @property Coupons_model coupons_model
+ * @property Payments_model payments_model
 */
 
 
