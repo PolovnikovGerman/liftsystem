@@ -119,81 +119,83 @@ Class Payments_model extends MY_Model {
 //        }
 //        return $res;
 //    }
-//
-//    function get_purchorders($options,$order_by,$direct,$limit,$offset, $user_id) {
-//        $this->load->model('user_model');
-//        $usrdata=$this->user_model->get_user_data($user_id);
-//        $this->db->select('oa.amount_id, oa.amount_date, oa.amount_sum, oa.order_id, o.order_num, o.profit_perc, o.profit, o.order_cog, o.order_items, o.order_itemnumber');
-//        $this->db->select('v.vendor_name, m.method_name, oa.date_charge',FALSE);
-//        $this->db->select("oa.is_closed, oa.order_replica, purchase_attachs(oa.amount_id) as cnt_att",FALSE);
-//        $this->db->select('o.reason as lowprofit, oa.reason, oa.printshop');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->join('purchase_methods m','m.method_id=oa.method_id');
-//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//        $this->db->where("o.is_canceled",0);
-//        if (isset($options['status'])) {
-//            if ($options['status']=='showclosed') {
-//                $this->db->where('oa.is_closed',0);
-//            }
-//        }
-//        if (isset($options['vendor_id'])) {
-//            $this->db->where('oa.vendor_id',$options['vendor_id']);
-//        }
-//        if (isset($options['searchpo'])) {
-//            $this->db->where('o.order_num', $options['searchpo']);
-//        }
-//        if ($order_by=='oa.amount_date') {
-//            $order_by='oa.amount_date, oa.amount_id';
-//        } else {
-//            $this->db->order_by($order_by,$direct);
-//        }
-//        $this->db->limit($limit,$offset);
-//        $data=$this->db->get()->result_array();
-//        $out_array=array();
-//        foreach ($data as $row) {
-//            $row['amount_date']=date('m/d/y',$row['amount_date']);
-//            $row['potitle']=$row['order_itemnumber'].' - '.htmlspecialchars($row['order_items']).($row['printshop']==1 ? '<br/>PRINT SHOP ORDER - Not Editable Here' : '');
-//
-//            $row['amount_sum']=($row['amount_sum']=='' ? '-' : '$'.number_format($row['amount_sum'],2,'.',','));
-//            if (floatval($row['profit'])==0) {
-//                $row['profit']='-';
-//            } else {
-//                if ($usrdata['profit_view']=='Points') {
-//                    $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
-//                } else {
-//                    $row['profit']=MoneyOutput($row['profit'],2);
-//                }
-//                // $row['profit']='$'.number_format($row['profit'],2,'.',',');
-//            }
-//            if ($row['order_cog']=='') {
-//                $row['order_cog']='-';
-//                $row['profit_class']='projprof';
-//                $row['profit_perc']='PROJ';
-//            } else {
-//                // $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
-//                $row['profit_class']=$this->profit_class($row['profit_perc']);
-//                $row['profit_perc']=($row['profit_perc']=='' ? '' :  number_format($row['profit_perc'],1,'.',',').'%');
-//            }
-//            $row['vendor_name']=($row['vendor_name']=='' ? '&nbsp;' : $row['vendor_name']);
-//            $row['method_name']=($row['method_name']=='' ? '&nbsp;' : $row['method_name']);
-//            $row['out_lowprofit']=($row['lowprofit']=='' ? '&nbsp;' : $row['lowprofit']);
-//            $row['out_reason']=($row['reason']=='' ? '&nbsp;' : $row['reason']);
-//            // $row['rowclass']=($row['is_closed']==1 ? 'closedorder' : '');
-//            $row['rowclass']=($row['printshop']==1 ? 'printshoporder' : '');
-//            $row['out_attach']='<img src="/img/empty_square.png" alt="Empty"/>';
-//            $row['attclass']='';
-//            $row['atttitle']='';
-//            if (intval($row['cnt_att'])!=0) {
-//                $row['out_attach']='<img src="/img/red_square.png" alt="Exist"/>';
-//                $row['attclass']='allowattach';
-//                $row['atttitle']='title="'.$row['cnt_att'].'" Attachments"';
-//            }
-//            $out_array[]=$row;
-//        }
-//        return $out_array;
-//    }
-//
+
+    public function get_purchorders($options,$order_by,$direct,$limit,$offset, $user_id) {
+        $usrdata=$this->user_model->get_user_data($user_id);
+        $this->db->select('oa.amount_id, oa.amount_date, oa.amount_sum, oa.order_id, o.order_num, o.profit_perc, o.profit, o.order_cog, o.order_items, o.order_itemnumber');
+        $this->db->select('v.vendor_name, m.method_name, oa.date_charge',FALSE);
+        $this->db->select("oa.is_closed, oa.order_replica, purchase_attachs(oa.amount_id) as cnt_att",FALSE);
+        $this->db->select('o.reason as lowprofit, oa.reason, oa.printshop');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->join('purchase_methods m','m.method_id=oa.method_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where("o.is_canceled",0);
+        if (isset($options['status'])) {
+            if ($options['status']=='showclosed') {
+                $this->db->where('oa.is_closed',0);
+            }
+        }
+        if (isset($options['vendor_id'])) {
+            $this->db->where('oa.vendor_id',$options['vendor_id']);
+        }
+        if (isset($options['searchpo'])) {
+            $this->db->where('o.order_num', $options['searchpo']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
+        if ($order_by=='oa.amount_date') {
+            $order_by='oa.amount_date, oa.amount_id';
+        } else {
+            $this->db->order_by($order_by,$direct);
+        }
+        $this->db->limit($limit,$offset);
+        $data=$this->db->get()->result_array();
+        $out_array=array();
+        foreach ($data as $row) {
+            $row['amount_date']=date('m/d/y',$row['amount_date']);
+            $row['potitle']=$row['order_itemnumber'].' - '.htmlspecialchars($row['order_items']).($row['printshop']==1 ? '<br/>PRINT SHOP ORDER - Not Editable Here' : '');
+
+            $row['amount_sum']=($row['amount_sum']=='' ? '-' : '$'.number_format($row['amount_sum'],2,'.',','));
+            if (floatval($row['profit'])==0) {
+                $row['profit']='-';
+            } else {
+                if ($usrdata['profit_view']=='Points') {
+                    $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+                } else {
+                    $row['profit']=MoneyOutput($row['profit'],2);
+                }
+                // $row['profit']='$'.number_format($row['profit'],2,'.',',');
+            }
+            if ($row['order_cog']=='') {
+                $row['order_cog']='-';
+                $row['profit_class']='projprof';
+                $row['profit_perc']='PROJ';
+            } else {
+                // $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+                $row['profit_class']=profitClass($row['profit_perc']);
+                $row['profit_perc']=($row['profit_perc']=='' ? '' :  number_format($row['profit_perc'],1,'.',',').'%');
+            }
+            $row['vendor_name']=($row['vendor_name']=='' ? '&nbsp;' : $row['vendor_name']);
+            $row['method_name']=($row['method_name']=='' ? '&nbsp;' : $row['method_name']);
+            $row['out_lowprofit']=($row['lowprofit']=='' ? '&nbsp;' : $row['lowprofit']);
+            $row['out_reason']=($row['reason']=='' ? '&nbsp;' : $row['reason']);
+            // $row['rowclass']=($row['is_closed']==1 ? 'closedorder' : '');
+            $row['rowclass']=($row['printshop']==1 ? 'printshoporder' : '');
+            $row['out_attach']='<img src="/img/fulfillment/empty_square.png" alt="Empty"/>';
+            $row['attclass']='';
+            $row['atttitle']='';
+            if (intval($row['cnt_att'])!=0) {
+                $row['out_attach']='<img src="/img/fulfillment/red_square.png" alt="Exist"/>';
+                $row['attclass']='allowattach';
+                $row['atttitle']='title="'.$row['cnt_att'].'" Attachments"';
+            }
+            $out_array[]=$row;
+        }
+        return $out_array;
+    }
+
 //    function get_purchase_order($amount_id) {
 //        $this->db->select('oa.*,o.order_num, oa.is_closed, o.profit, o.profit_perc, o.order_cog, o.is_shipping, pay.sumchr, coalesce(oa.amount_sum,0)-coalesce(pay.sumchr,0) as rest',FALSE);
 //        $this->db->from('ts_order_amounts oa');

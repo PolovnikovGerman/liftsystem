@@ -1,7 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.02.20
- * Time: 0:44
- */
+<div class="tr greydatarow" id="purchaseord0" style="padding-top: 3px;">No records</div>

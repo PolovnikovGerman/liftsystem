@@ -294,7 +294,121 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+    // Count purchase orders
+    public function purchaseorder_search() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $status=$this->input->post('showtype');
+            $vendor_id=$this->input->post('vendor_id');
+            $placedshow=$this->input->post('placedpo');
+            $searchpo=$this->input->post('searchpo');
+            $brand = $this->input->post('brand');
+            $options=array();
+            if ($status) {
+                $options['status']=$status;
+            }
+            if ($vendor_id) {
+                $options['vendor_id']=$vendor_id;
+            }
+            $options['placedpo']=$placedshow;
+            if ($searchpo) {
+                $options['searchpo']=$searchpo;
+            }
+            if (!empty($brand)) {
+                $options['brand'] = $brand;
+            }
+            $this->load->model('payments_model');
+            $mdata['total']=$this->payments_model->get_count_purchorders($options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Purchase orders data
+    public function purchaseorderdat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $this->load->model('orders_model');
+            $this->load->model('payments_model');
+            $postdata=$this->input->post();
+            // Build Options for form
+            $page = ifset($postdata,'offset',0);
+            $limit = ifset($postdata, 'limit', 30);
+            $order_by = ifset($postdata, 'order_by','order_id');
+            $direct = ifset($postdata, 'direction', 'asc');
+            $search=array();
+            if (isset($postdata['status']) && !empty($postdata['status'])) {
+                $search['status']=$postdata['status'];
+            }
+            if (isset($postdata['vendor_id']) && !empty($postdata['vendor_id'])) {
+                $search['vendor_id']=$postdata['vendor_id'];
+            }
+            if (isset($postdata['searchpo']) && !empty($postdata['searchpo'])) {
+                $search['searchpo']=$postdata['searchpo'];
+            }
+            $brand = ifset($postdata, 'brand');
+            $search['brand'] = $brand;
+            // $year_pay=((isset($postdata['year_pay']) && !empty($postdata['year_pay'])) ? $postdata['year_pay'] : date('Y'));
 
+            $placedshow = ifset($postdata, 'placedpo', 'show');
+
+            // $totalnotplaced=(isset($postdata['totalnotplaced']) ? $postdata['totalnotplaced'] : 0);
+            $viewnonplace=0;
+
+            if ($page==0 && $placedshow=='show') {
+                $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
+                if ($total_notplaced>0) {
+                    $viewnonplace=1;
+                    // Get content of NOT Placed orders
+                    $data=$this->orders_model->get_notplaced_orders($this->USR_ID, $search);
+                    $maxdata=count($data['stock']);
+                    $maxview='stock';
+                    $stok_options=array(
+                        'label'=>'stock',
+                        'data'=>$data['stock'],
+                    );
+                    $nonplace_content=$this->load->view('fulfillment/ordernotplaced_section_view', $stok_options, TRUE);
+                    if (count($data['domestic'])>$maxdata) {
+                        $maxdata=count($data['domestic']);
+                        $maxview='domestic';
+                    }
+                    $domestic_options=array(
+                        'label'=>'domestic',
+                        'data'=>$data['domestic'],
+                    );
+                    $nonplace_content.=$this->load->view('fulfillment/ordernotplaced_section_view', $domestic_options, TRUE);
+                    if (count($data['chinese'])>$maxdata) {
+                        $maxview='chinese';
+                    }
+                    $chinese_options=array(
+                        'data'=>$data['chinese'],
+                    );
+                    $nonplace_content.=$this->load->view('fulfillment/ordernotplaced_section_view', $chinese_options, TRUE);
+                    $mdata['nonplace_content']=$nonplace_content;
+                    $mdata['maxview']=$maxview;
+                }
+            }
+            $mdata['viewnonplace']=$viewnonplace;
+            $offset=$page*$limit;
+            /* Fetch data about prices */
+            $ordersdat=$this->payments_model->get_purchorders($search,$order_by,$direct,$limit,$offset, $this->USR_ID);
+
+            if (count($ordersdat)==0) {
+                $content=$this->load->view('fulfillment/purchaseorders_empty_view',array(),TRUE);
+            } else {
+                $data=array(
+                    'orders'=>$ordersdat,
+                );
+                $content = $this->load->view('fulfillment/purchaseorders_data_view',$data, TRUE);
+            }
+            $mdata['content']=$content;
+            // $mdata['paym']=$paymview;
+            // $mdata['unbil']=$unbilled;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     private function _prepare_vendors_view() {

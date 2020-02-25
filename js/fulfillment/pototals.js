@@ -1,7 +1,7 @@
 /* General view Init */
 function init_purchase_orders() {
     change_totalvendors(0);
-    // initPurchaseOrderPagination();
+    initPurchaseOrderPagination();
     $("#curstatus").unbind('change').change(function(){
         search_purchase();
     });
@@ -96,8 +96,9 @@ function pagePurchaseOrederCallback(page_index) {
     data.push({name:'placedpo', value: $("select#showtoplaced").val()});
     data.push({name:'searchpo', value: $("input#searchpoinput").val()});
     data.push({name:'totalnotplaced', value: $("input#totalnotplacedorders").val()});
+    data.push({name:'brand', value: $("#purchaseordersbrand").val()});
     $("#loader").show();
-    $.post('/finance/adminpurchaseorderdat',data,function(response){
+    $.post('/fulfillment/purchaseorderdat',data,function(response){
         if (response.errors=='') {
             /* Show non placed */
             if (parseInt(response.data.viewnonplace)===1) {
@@ -111,7 +112,7 @@ function pagePurchaseOrederCallback(page_index) {
                 $("div#tableinfotab3").css('max-height','510px');
             }
             $('#tableinfotab3').empty().html(response.data.content);
-            $("div.paymethods").empty().html(response.data.paym);
+            // $("div.paymethods").empty().html(response.data.paym);
             // $("div.totalunbilled").empty().html(response.data.unbil);
             $("#pototal_curpage").val(page_index);
             $("div.trpo").each(function(e){
@@ -149,37 +150,25 @@ function init_pototalbutons() {
         var amount_id=$(this).data('amountid');
         edit_purchorder(amount_id);
     })
-    /*
-    $("a.edtpaylnk").unbind('click').click(function(){
-        edit_charge(this);
-    });
-    */
     $("div.subaction.delpodata").unbind('click').click(function(){
         var amount_id=$(this).data('amountid');
         delete_charge(amount_id);
     });
-    /*
-    $("div.allowattach").unbind('click').click(function(){
-        var amountdata=$(this).parent().prop('id');
-        var amount_id=amountdata.substr(11);
-        show_amountattach(amount_id);
-    });
-    */
-    $("div.purchase-order-ordnum-data").bt({
-        fill: '#FFFFFF',
-        positions: ['right'],
-        cornerRadius: 10,
-        width: 300,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {
-            color: '#000000'
-        }
-    });
+    // $("div.purchase-order-ordnum-data").bt({
+    //     fill: '#FFFFFF',
+    //     positions: ['right'],
+    //     cornerRadius: 10,
+    //     width: 300,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle: '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {
+    //         color: '#000000'
+    //     }
+    // });
 }
 
 /* Add NOT PLACED Order PO */
@@ -407,7 +396,8 @@ function search_purchase() {
     data.push({name:'vendor_id', value:$("select#vendorfilter").val()});
     data.push({name:'placedpo', value: $("select#showtoplaced").val()});
     data.push({name:'searchpo', value: $("input#searchpoinput").val()});
-    var url="/finance/purchaseorder_search";
+    data.push({name:'brand', value: $("#purchaseordersbrand").val()});
+    var url="/fulfillment/purchaseorder_search";
     $.post(url, data, function(response){
         if (response.errors=='') {
             $("input#pototal_total").val(response.data.total);

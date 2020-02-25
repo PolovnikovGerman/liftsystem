@@ -663,5 +663,69 @@ Class Orders_model extends MY_Model
         return $res['cnt'];
     }
 
+    public function get_notplaced_orders($user_id, $search=array()) {
+        $this->load->model('user_model');
+        $usrdata=$this->user_model->get_user_data($user_id);
+        $item_table='sb_items';
+
+        // 'Stock','Domestic','Chinese'
+        $this->db->select('o.order_id, o.order_num, o.order_itemnumber, o.order_items, o.profit, i.item_source, i.item_id, o.order_system');
+        $this->db->from('ts_orders o');
+        $this->db->join("{$item_table} i",'i.item_id=o.item_id','left');
+        $this->db->where('order_placedflag(o.order_id)',0);
+        if (isset($search['searchpo'])) {
+            $this->db->where('o.order_num', $search['searchpo']);
+        }
+        if (isset($search['brand']) && $search['brand']!=='ALL') {
+            $this->db->where('o.brand', $search['brand']);
+        }
+        $res=$this->db->get()->result_array();
+        $stoks=$domastic=$chinese=array();
+        foreach ($res as $row) {
+            if (floatval($row['profit'])==0) {
+                $row['profit']='-';
+            } else {
+                if ($usrdata['profit_view']=='Points') {
+                    $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+                } else {
+                    $row['profit']=MoneyOutput($row['profit'],2);
+                }
+            }
+            $row['profit_perc']='TO PLACE';
+            $row['potitle']=$row['order_itemnumber'].' - '.htmlspecialchars($row['order_items']);
+            $row['addord']='<a class="searchbtn" href="javascript:void(0);" data-orderid="'.$row['order_id'].'"><em></em><span>Add</span><b></b></a>';
+            if ($row['item_source']=='') {
+                $domastic[]=$row;
+            } else {
+                if ($row['item_source']=='Stock') {
+                    if ($row['order_system']=='new') {
+                        $this->db->select('itmc.printshop_item_id');
+                        $this->db->from('ts_order_itemcolors itmc');
+                        $this->db->join('ts_order_items i','i.order_item_id=itmc.order_item_id');
+                        $this->db->where('order_id', $row['order_id']);
+                        $this->db->where('i.item_id', $row['item_id']);
+                        $chkres=$this->db->get()->row_array();
+                        if (!empty($chkres['printshop_item_id'])) {
+                            $stoks[]=$row;
+                        } else {
+                            $domastic[]=$row;
+                        }
+                    } else {
+                        $domastic[]=$row;
+                    }
+                } elseif($row['item_source']=='Domestic') {
+                    $domastic[]=$row;
+                } else {
+                    $chinese[]=$row;
+                }
+            }
+        }
+        $out_array=array(
+            'stock'=>$stoks,
+            'domestic'=>$domastic,
+            'chinese'=>$chinese,
+        );
+        return $out_array;
+    }
 
 }
