@@ -51,6 +51,11 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/postatus.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#pototalsview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+                $content_options['fullfilstatusview'] = $this->_prepare_pototals_view($brand, $top_menu);
+
             }
         }
         $content_options['menu'] = $menu;
@@ -299,5 +304,66 @@ class Fulfillment extends MY_Controller
         $content=$this->load->view('fulfillment/status_view',$options,TRUE);
         return $content;
     }
+
+    private function _prepare_pototals_view($brand, $top_menu) {
+        $this->load->model('orders_model');
+        // $this->pa
+        // $search_form
+        $optionstotal=array(
+            'status'=>'showclosed',
+        );
+        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
+        $total_notplaced=$this->order_model->count_notplaced_orders();
+        $legend=$this->load->view('finance/profit_legend_view',array(),TRUE);
+
+
+        $sort_array=array(
+            'oa.amount_date-desc'=>'Date &#9660;',
+            'oa.amount_date-asc'=>'Date &#9650;',
+            'o.order_num-desc'=>'PO# &#9660;',
+            'o.order_num-asc'=>'PO# &#9650;',
+            'v.vendor_name-desc'=>'Vendor &#9660;',
+            'v.vendor_name-asc'=>'Vendor &#9650;',
+            'oa.amount_sum-desc'=>'Amount &#9660;',
+            'oa.amount_sum-asc'=>'Amount &#9650;',
+        );
+        $sort_view1=$this->load->view('finance/sort_purcase_view',array('sort'=>$sort_array,'id'=>1,'current'=>'oa.amount_date-desc'),TRUE);
+        $vsort='v.vendor_name';
+        $vendors=$this->vendors_model->get_vendors_list($vsort);
+        $sortopt=array(
+            'vendors'=>$vendors,
+        );
+        $sort_view2=$this->load->view('finance/vendors_filter_view',$sortopt,TRUE);
+
+        $perpage_data=array(
+            'fieldname'=>'perpagetab3',
+            'default_value'=>$this->order_profit_perpage,
+            'numrecs'=>$this->perpage_options,
+        );
+        $perpage_view=$this->load->view('html/number_records', $perpage_data, TRUE);
+        $nonplaceview='';
+        if ($total_notplaced!=0) {
+            // Non placed
+            $nonplaceview=$this->load->view('purchase_orders/nonplace_head_view', array(), TRUE);
+        }
+        $options=array(
+            'total'=>$total_rec,
+            'total_nonplaced'=>$total_notplaced,
+            'nonplacedview'=>$nonplaceview,
+            'order'=>'oa.amount_date desc',
+            'direc'=>'',
+            'perpage_view'=>$perpage_view,
+            'curpage'=>0,
+            'searchform'=>$search_form,
+            'legend'=>$legend,
+            'curstatus'=>'showclosed',
+            'showplace'=>'show',
+            'sort1'=>$sort_view1,
+            'sort2'=>$sort_view2,
+        );
+        $content=$this->load->view('purchase_orders/head_table_view',$options,TRUE);
+        return $content;
+    }
+
 
 }
