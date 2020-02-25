@@ -307,4 +307,12 @@ Class Vendors_model extends My_Model
         return TRUE;
     }
 
+    public function vendors_included() {
+        $this->db->select('vendor_id, vendor_name');
+        $this->db->from('vendors');
+        $this->db->where('payinclude', 1);
+        $this->db->order_by('payinclorder, vendor_name');
+        $list=$this->db->get()->result_array();
+        return $list;
+    }
 }

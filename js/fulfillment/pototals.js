@@ -1,6 +1,7 @@
 /* General view Init */
 function init_purchase_orders() {
-    initPurchaseOrderPagination();
+    change_totalvendors(0);
+    // initPurchaseOrderPagination();
     $("#curstatus").unbind('change').change(function(){
         search_purchase();
     });
@@ -30,8 +31,28 @@ function init_purchase_orders() {
             search_purchase();
         }
     });
-
+    // Change Brand
+    $("#purchaseordersbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#purchaseordersbrand").val(brand);
+        $("#purchaseordersbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#purchaseordersbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#purchaseordersbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_purchase();
+        // Vendors totals
+        var yearval = $("select.vendpayyear").val();
+        change_totalvendors(yearval);
+    });
 }
+
+
 /* PO Pagination */
 function initPurchaseOrderPagination() {
     // count entries inside the hidden content
@@ -418,8 +439,11 @@ function init_vendorpayments() {
 
 /* Show Vendors payments Totals */
 function change_totalvendors(year) {
-    var url="/finance/vendors_totals";
-    $.post(url, {'year': year}, function(response){
+    var url="/fulfillment/purchase_vendortotals";
+    var params = new Array();
+    params.push({name: 'year', value: year});
+    params.push({name: 'brand', value: $("#purchaseordersbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.paymethods").empty().html(response.data.content);
             init_vendorpayments();

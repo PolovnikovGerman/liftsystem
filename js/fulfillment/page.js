@@ -23,6 +23,7 @@ function init_page(objid) {
             break;
         case 'pototalsview':
             $("#pototalsview").show();
+            init_purchase_orders();
             break;
     }
 

@@ -977,86 +977,77 @@ Class Payments_model extends MY_Model {
 //        $res=$this->db->get()->result_array();
 //        return $res;
 //    }
-//
-//    function get_vendorpayment($year=2014) {
-//        $start=strtotime($year.'-01-01');
-//        $finish=strtotime($year.'-12-31 23:59:59');
-//        // Get PO by checked Vendors
-//        $this->load->model('vendors_model');
-//        $vendlist=$this->vendors_model->vendors_included();
-//        $paym=array();
-//        if (count($vendlist)!=0) {
-//            $this->db->select('oa.vendor_id, sum(oa.amount_sum) as paysum ');
-//            $this->db->from('ts_order_amounts oa');
-//            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//            $this->db->where('oa.amount_date >=', $start);
-//            $this->db->where('oa.amount_date < ', $finish);
-//            $this->db->where('o.is_canceled',0);
-//            $this->db->where('v.payinclude',1);
-//            $this->db->group_by('oa.vendor_id');
-//            $vpays=$this->db->get()->result_array();
-//            foreach ($vendlist as $row) {
-//                $sum=0;
-//                foreach ($vpays as $prow) {
-//                    if ($prow['vendor_id']==$row['vendor_id']) {
-//                        $sum=$prow['paysum'];
-//                        break;
-//                    }
-//                }
-//                $paym[]=array(
-//                    'vendor'=>($row['vendor_name']=='BLUETRACK Warehouse' ? 'BT Warehouse' : $row['vendor_name']),
-//                    'pay'=>($sum==0 ? '---' : MoneyOutput($sum,2)),
-//                );
-//            }
-//        }
-//        // Other vendors payment
-//        /* $this->db->select('sum(oa.amount_sum) as paysum ');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//        $this->db->where('oa.amount_date >=', $start);
-//        $this->db->where('oa.amount_date < ', $finish);
-//        $this->db->where('o.is_canceled',0);
-//        $this->db->where('v.payinclude',0);
-//        $res=$this->db->get()->row_array();
-//        $sum=floatval($res['paysum']);
-//        $paym[]=array(
-//            'vendor'=>'Other',
-//            'pay'=>($sum==0 ? '---' : '$'.number_format($sum,2,'.',',')),
-//        );
-//         *
-//         */
-//        $this->db->select('sum(revenue) as paysum');
-//        $this->db->from('ts_orders o');
-//        $this->db->where('o.order_date >=', $start);
-//        $this->db->where('o.order_date < ', $finish);
-//        $this->db->where('order_placedflag(o.order_id)',0);
-//        $resplace=$this->db->get()->row_array();
-//        $sum=floatval($resplace['paysum']);
-//        $paym[]=array(
-//            'vendor'=>'TO PLACE',
-//            'pay'=>($sum==0 ? '---' : MoneyOutput($sum,2)),
-//        );
-//
-//        return $paym;
-//    }
-//
-//    public function get_years() {
-//        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as pay_year, count(oa.amount_id) as cnt",FALSE);
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->group_by('pay_year');
-//        $this->db->order_by('pay_year','desc');
-//        $list=$this->db->get()->result_array();
-//        $years=array();
-//        foreach ($list as $row) {
-//            array_push($years, $row['pay_year']);
-//        }
-//        if (count($years)==0) {
-//            array_push(date('Y'));
-//        }
-//        return $years;
-//    }
+
+    public function get_vendorpayment($brand, $year=2014) {
+        $start=strtotime($year.'-01-01');
+        $finish=strtotime($year.'-12-31 23:59:59');
+        // Get PO by checked Vendors
+        $this->load->model('vendors_model');
+        $vendlist=$this->vendors_model->vendors_included();
+        $paym=array();
+        if (count($vendlist)!=0) {
+            $this->db->select('oa.vendor_id, sum(oa.amount_sum) as paysum ');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+            $this->db->where('oa.amount_date >=', $start);
+            $this->db->where('oa.amount_date < ', $finish);
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('v.payinclude',1);
+            if ($brand!=='ALL') {
+                $this->db->where('o.brand', $brand);
+            }
+            $this->db->group_by('oa.vendor_id');
+            $vpays=$this->db->get()->result_array();
+            foreach ($vendlist as $row) {
+                $sum=0;
+                foreach ($vpays as $prow) {
+                    if ($prow['vendor_id']==$row['vendor_id']) {
+                        $sum=$prow['paysum'];
+                        break;
+                    }
+                }
+                $paym[]=array(
+                    'vendor'=>($row['vendor_name']=='BLUETRACK Warehouse' ? 'BT Warehouse' : $row['vendor_name']),
+                    'pay'=>($sum==0 ? '---' : MoneyOutput($sum,2)),
+                );
+            }
+        }
+        // Other vendors payment
+        $this->db->select('sum(revenue) as paysum');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >=', $start);
+        $this->db->where('o.order_date < ', $finish);
+        $this->db->where('order_placedflag(o.order_id)',0);
+        $resplace=$this->db->get()->row_array();
+        $sum=floatval($resplace['paysum']);
+        $paym[]=array(
+            'vendor'=>'TO PLACE',
+            'pay'=>($sum==0 ? '---' : MoneyOutput($sum,2)),
+        );
+        return $paym;
+    }
+
+    public function get_years($brand) {
+        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as pay_year, count(oa.amount_id) as cnt",FALSE);
+        $this->db->from('ts_order_amounts oa');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->group_by('pay_year');
+        $this->db->order_by('pay_year','desc');
+        $list=$this->db->get()->result_array();
+        $years=array();
+        foreach ($list as $row) {
+            array_push($years, $row['pay_year']);
+        }
+        if (count($years)==0) {
+            array_push(date('Y'));
+        }
+        return $years;
+    }
+
 //    // Change session saved data of amount
 //    public function change_amount($data, $fld, $value) {
 //        $out=array('result'=>  Payments_model::ERR_FLAG, 'msg'=> 'Unknown Error');

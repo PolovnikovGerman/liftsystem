@@ -266,6 +266,36 @@ class Fulfillment extends MY_Controller
         }
     }
 
+    // Purchase Orders
+    // Vendors totasl
+    public function purchase_vendortotals() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $year = ifset($postdata,'year',0);
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error='';
+                $this->load->model('payments_model');
+                $years=$this->payments_model->get_years($brand);
+                if ($year==0) {
+                    $year = $years[0];
+                }
+                $payvend=$this->payments_model->get_vendorpayment($brand, $year);
+                $payoptions=array(
+                    'payments'=>$payvend,
+                    'year'=>$year,
+                    'years'=>$years,
+                );
+                $mdata['content']=$this->load->view('fulfillment/purchase_vendortotals_view',$payoptions,TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+
+    }
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
