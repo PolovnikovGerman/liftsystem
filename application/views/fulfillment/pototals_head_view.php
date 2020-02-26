@@ -76,7 +76,7 @@
             <div class="purchase-order-actions">
                 <!-- <i class="fa fa-plus-circle" aria-hidden="true" id="addnewamount"></i> -->
                 <!-- <a id="addnewamount" href="javascript:void(0);" class="searchbtn"><em></em><span>Add</span><b></b></a> -->
-                <i class="fa fa-plus" aria-hidden="true" title="Add New Purchase    "></i>
+                <i class="fa fa-plus" aria-hidden="true" title="Add New Purchase" id="addnewamount"></i>
             </div>
             <div class="purchase-order-date">Date</div>
             <div class="purchase-order-ordnum">PO #</div>

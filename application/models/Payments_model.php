@@ -196,76 +196,80 @@ Class Payments_model extends MY_Model {
         return $out_array;
     }
 
-//    function get_purchase_order($amount_id) {
-//        $this->db->select('oa.*,o.order_num, oa.is_closed, o.profit, o.profit_perc, o.order_cog, o.is_shipping, pay.sumchr, coalesce(oa.amount_sum,0)-coalesce(pay.sumchr,0) as rest',FALSE);
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->join('(select amount_id, count(charge_id) as numchr, sum(charge_sum) sumchr from ts_order_charges group by amount_id) pay','pay.amount_id=oa.amount_id','left');
-//        $this->db->where("o.is_canceled",0);
-//        $this->db->where('oa.amount_id',$amount_id);
-//        $res=$this->db->get()->row_array();
-//        if (isset($res['order_id'])) {
-//            /* Import cog */
-//            $this->db->select('sum(amount_sum) as sum_amt',FALSE);
-//            $this->db->from('ts_order_amounts');
-//            $this->db->where('order_id',$res['order_id']);
-//            $amt=$this->db->get()->row_array();
-//            $amounts=floatval($amt['sum_amt']);
-//            $import_cog=floatval($res['order_cog'])-$amounts;
-//            $res['import_cog']=($import_cog==0 ? '' : '$'.number_format($import_cog,2,'.',','));
-//            $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
-//            $res['closed_view']='/img/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png';
-//            if (floatval($res['profit'])==0) {
-//                $res['profit']='-';
-//            } else {
-//                $res['profit']='$'.number_format($res['profit'],2,'.',',');
-//            }
-//            if ($res['order_cog']=='') {
-//                $res['order_cog']='-';
-//                $res['profit_class']='projprof';
-//                $res['profit_perc']='PROJ';
-//            } else {
-//                $res['profit_class']=$this->profit_class($res['profit_perc']);
-//                $res['profit_perc']=($res['profit_perc']=='' ? '' :  number_format($res['profit_perc'],1,'.',',').'%');
-//            }
-//
-//        }
-//
-//        return $res;
-//    }
-//
-//    function get_order_bynum($order_num) {
-//        $this->db->select('o.order_num, o.order_id, o.is_closed, o.order_cog, o.profit, o.profit_perc, o.is_shipping');
-//        $this->db->from('ts_orders o');
-//        $this->db->where("o.is_canceled",0);
-//        $this->db->where('o.order_num',$order_num);
-//        $res=$this->db->get()->row_array();
-//        if (isset($res['order_id'])) {
-//            $this->db->select('sum(amount_sum) as sum_amt',FALSE);
-//            $this->db->from('ts_order_amounts');
-//            $this->db->where('order_id',$res['order_id']);
-//            $amt=$this->db->get()->row_array();
-//            $amounts=floatval($amt['sum_amt']);
-//            $import_cog=floatval($res['order_cog'])-$amounts;
-//            $res['import_cog']=($import_cog==0 ? '' : '$'.number_format($import_cog,2,'.',','));
-//            $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
-//            $res['closed_view']='<img src="/img/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png"/>';
-//            if (floatval($res['profit'])==0) {
-//                $res['profit']='-';
-//            } else {
-//                $res['profit']='$'.number_format($res['profit'],2,'.',',');
-//            }
-//            if ($res['order_cog']=='') {
-//                $res['profit_class']='projprof';
-//                $res['profit_perc']='PROJ';
-//            } else {
-//                $res['profit_class']=$this->profit_class($res['profit_perc']);
-//                $res['profit_perc']=($res['profit_perc']=='' ? '' :  number_format($res['profit_perc'],1,'.',',').'%');
-//            }
-//        }
-//
-//        return $res;
-//    }
+    function get_purchase_order($amount_id) {
+        $out = ['result'=>$this->error_result, 'msg' => 'Order not found'];
+        $this->db->select('oa.*,o.order_num, oa.is_closed, o.profit, o.profit_perc, o.order_cog, o.is_shipping, pay.sumchr, coalesce(oa.amount_sum,0)-coalesce(pay.sumchr,0) as rest',FALSE);
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->join('(select amount_id, count(charge_id) as numchr, sum(charge_sum) sumchr from ts_order_charges group by amount_id) pay','pay.amount_id=oa.amount_id','left');
+        $this->db->where("o.is_canceled",0);
+        $this->db->where('oa.amount_id',$amount_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['order_id'])) {
+            /* Import cog */
+            $out['result'] = $this->success_result;
+            $this->db->select('sum(amount_sum) as sum_amt',FALSE);
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id',$res['order_id']);
+            $amt=$this->db->get()->row_array();
+            $amounts=floatval($amt['sum_amt']);
+            $import_cog=floatval($res['order_cog'])-$amounts;
+            $res['import_cog']=($import_cog==0 ? '' : '$'.number_format($import_cog,2,'.',','));
+            $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
+            $res['closed_view']='/img/fulfillment/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png';
+            if (floatval($res['profit'])==0) {
+                $res['profit']='-';
+            } else {
+                $res['profit']='$'.number_format($res['profit'],2,'.',',');
+            }
+            if ($res['order_cog']=='') {
+                $res['order_cog']='-';
+                $res['profit_class']='projprof';
+                $res['profit_perc']='PROJ';
+            } else {
+                $res['profit_class']=profit_bgclass($res['profit_perc']);
+                $res['profit_perc']=($res['profit_perc']=='' ? '' :  number_format($res['profit_perc'],1,'.',',').'%');
+            }
+            $out['data']=$res;
+        }
+
+        return $out;
+    }
+
+    public function get_order_bynum($order_num) {
+        $out = ['result'=>$this->error_result, 'msg'=>'Order not Found'];
+        $this->db->select('o.order_num, o.order_id, o.is_closed, o.order_cog, o.profit, o.profit_perc, o.is_shipping');
+        $this->db->from('ts_orders o');
+        $this->db->where("o.is_canceled",0);
+        $this->db->where('o.order_num',$order_num);
+        $res=$this->db->get()->row_array();
+        if (isset($res['order_id'])) {
+            $out['result'] = $this->success_result;
+            $this->db->select('sum(amount_sum) as sum_amt');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id',$res['order_id']);
+            $amt=$this->db->get()->row_array();
+            $amounts=floatval($amt['sum_amt']);
+            $import_cog=floatval($res['order_cog'])-$amounts;
+            $res['import_cog']=($import_cog==0 ? '' : MoneyOutput($import_cog));
+            $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
+            $res['closed_view']='<img src="/img/fullfilment/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png"/>';
+            if (floatval($res['profit'])==0) {
+                $res['profit']='-';
+            } else {
+                $res['profit']=MoneyOutput($res['profit']);
+            }
+            if ($res['order_cog']=='') {
+                $res['profit_class']='projprof';
+                $res['profit_perc']='PROJ';
+            } else {
+                $res['profit_class']=profit_bgclass($res['profit_perc']);
+                $res['profit_perc']=($res['profit_perc']=='' ? '' :  number_format($res['profit_perc'],1,'.',',').'%');
+            }
+            $out['data'] = $res;
+        }
+        return $out;
+    }
 
     public function save_poamount($amtdata) {
         $res=array('result'=>$this->error_result,'msg'=>'Unknown error');
@@ -660,166 +664,166 @@ Class Payments_model extends MY_Model {
 //        $res=$this->db->get()->row_array();
 //        return $res;
 //    }
-//
-//    function delete_amount($amount_id, $user_id) {
-//        $outres=0;
-//        $def_profit=$this->config->item('default_profit');
-//        $this->db->select('o.*, oa.amount_sum');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->where('amount_id',$amount_id);
-//        $res=$this->db->get()->row_array();
-//        if (isset($res['order_id'])) {
-//            $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
-//            $this->db->from('netprofit np');
-//            $this->db->where('np.profit_month',NULL);
-//            $this->db->where('np.datebgn <= ',$res['order_date']);
-//            $this->db->where('np.dateend > ',$res['order_date']);
-//            $netdat=$this->db->get()->row_array();
-//            $flag_note=0;
-//            if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
-//                $flag_note=1;
-//                // Get Old Running
-//                $this->load->model('balances_model');
-//                $total_options=array(
-//                    'type'=>'week',
-//                    'start'=>$this->config->item('netprofit_start'),
-//                );
-//                $rundat=$this->balances_model->get_netprofit_runs($total_options);
-//                $oldtotalrun=$rundat['out_debtval'];
-//                $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
-//                $netprofit=floatval($netdat['gross_profit'])-$totalcost;
-//                $olddebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
-//                $netdat_id=$netdat['profit_id'];
-//            }
-//            /* Get Old data about Running Totals */
-//            $order_id=$res['order_id'];
-//            $revenue=$res['revenue'];
-//            $shipping=$res['shipping'];
-//            $is_shipping=$res['is_shipping'];
-//            $tax=$res['tax'];
-//            $cc_fee=$res['cc_fee'];
-//            $order_cog=$res['order_cog'];
-//            $amount_sum=$res['amount_sum'];
-//            $order_num='BT'.$res['order_num'];
-//            if ($order_cog!='') {
-//                $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
-//                $this->db->from('ts_orders');
-//                $this->db->where('order_id',$order_id);
-//                $statres=$this->db->get()->row_array();
-//                if ($order_cog==$amount_sum) {
-//                    $new_cog=null;
-//                    /* Calc profit as project */
-//                    $profit=round($revenue*$def_profit/100,2);
-//                    $profit_perc=null;
-//                    $this->db->set('order_cog',$new_cog);
-//                    $this->db->set('profit',$profit);
-//                    $this->db->set('profit_perc',$profit_perc);
-//                    $this->db->set('order_artview', $statres['aprrovview']);
-//                    $this->db->set('order_placed', $statres['placeord']);
-//                    $this->db->where('order_id',$order_id);
-//                    $this->db->update('ts_orders');
-//                    $this->db->where('amount_id',$amount_id);
-//                    $this->db->delete('ts_order_amounts');
-//                    $outres=$this->db->affected_rows();
-//                } elseif($order_cog>$amount_sum) {
-//                    $new_cog=$order_cog-$amount_sum;
-//                    $cost=floatval($shipping)*$is_shipping+floatval($tax)+floatval($cc_fee)+floatval($new_cog);
-//                    $profit=round($revenue-$cost,2);
-//                    $profit_perc=round($profit/$revenue*100,1);
-//                    $this->db->set('order_cog',$new_cog);
-//                    $this->db->set('profit',$profit);
-//                    $this->db->set('profit_perc',$profit_perc);
-//                    $this->db->set('order_artview', $statres['aprrovview']);
-//                    $this->db->set('order_placed', $statres['placeord']);
-//                    $this->db->where('order_id',$order_id);
-//                    $this->db->update('ts_orders');
-//                    $this->db->where('amount_id',$amount_id);
-//                    $this->db->delete('ts_order_amounts');
-//                    $outres=$this->db->affected_rows();
-//                }
-//                if ($outres) {
-//                    $notifoptions=array(
-//                        'order_num'=>$order_num,
-//                        'old_amount_sum'=>$amount_sum,
-//                        'amount_sum'=>0,
-//                        'user_id'=>$user_id,
-//                        'amount_delete'=>1,
-//                    );
-//                    $this->notification_pochange_email($notifoptions);
-//                    if ($flag_note==1) {
-//                        // Get new Run value, etc
-//                        $total_options=array(
-//                            'type'=>'week',
-//                            'start'=>$this->config->item('netprofit_start'),
-//                        );
-//                        $rundat=$this->balances_model->get_netprofit_runs($total_options);
-//                        $newtotalrun=$rundat['out_debtval'];
-//                        /* Prepare to notification Email */
-//                        $start_month=date('M',$netdat['datebgn']);
-//                        $start_year=date('Y',$netdat['datebgn']);
-//                        $end_month=date('M',$netdat['dateend']);
-//                        $end_year=date('Y',$netdat['dateend']);
-//                        if ($start_month!=$end_month) {
-//                            $weekname=$start_month.'/'.$end_month;
-//                        } else {
-//                            $weekname=$start_month;
-//                        }
-//                        $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
-//                        if ($start_year!=$end_year) {
-//                            $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
-//                        } else {
-//                            $weekname.=', '.$start_year;
-//                        }
-//                        if ($oldtotalrun<0) {
-//                            $outoldrundebt='($'.number_format(abs($oldtotalrun),0,'.',',').')';
-//                        } else {
-//                            $outoldrundebt='$'.number_format($oldtotalrun,0,'.',',');
-//                        }
-//                        if ($newtotalrun<0) {
-//                            $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
-//                        } else {
-//                            $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
-//                        }
-//                        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
-//                        $this->db->from('netprofit np');
-//                        $this->db->where('np.profit_id',$netdat_id);
-//                        $netdata=$this->db->get()->row_array();
-//                        $totalcost=floatval($netdata['profit_operating'])+floatval($netdata['profit_payroll'])+floatval($netdata['profit_advertising'])+floatval($netdata['profit_projects'])+floatval($netdata['profit_purchases']);
-//                        $netprofit=floatval($netdata['gross_profit'])-$totalcost;
-//                        $newdebt=floatval($netprofit)-floatval($netdata['profit_owners'])-floatval($netdata['profit_saved'])-floatval($netdata['od2']);
-//                        if ($newdebt<0) {
-//                            $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
-//                        } else {
-//                            $outnewdebt='$'.number_format($newdebt,0,'.',',');
-//                        }
-//                        if ($olddebt<0) {
-//                            $outolddebt='($'.number_format(abs($olddebt),0,'.',',').')';
-//                        } else {
-//                            $outolddebt='$'.number_format(abs($olddebt),0,'.',',');
-//                        }
-//
-//                        $notifoptions=array(
-//                            'podelete'=>1,
-//                            'order_num'=>$order_num,
-//                            'old_amount_sum'=>$amount_sum,
-//                            'weeknum'=>$weekname,
-//                            'user_id'=>$user_id,
-//                            'oldtotalrun'=>$outoldrundebt,
-//                            'newtotalrun'=>$outnewrundebt,
-//                            'olddebt'=>$outolddebt,
-//                            'newdebt'=>$outnewdebt,
-//                        );
-//                        $this->load->model('order_model');
-//                        $this->order_model->notify_netdebtchanged($notifoptions);
-//
-//                    }
-//                }
-//            }
-//        }
-//        return $outres;
-//    }
-//
+
+    public function delete_amount($amount_id, $user_id) {
+        $outres=0;
+        $def_profit=$this->config->item('default_profit');
+        $this->db->select('o.*, oa.amount_sum');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('amount_id',$amount_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['order_id'])) {
+            $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+            $this->db->from('netprofit np');
+            $this->db->where('np.profit_month',NULL);
+            $this->db->where('np.datebgn <= ',$res['order_date']);
+            $this->db->where('np.dateend > ',$res['order_date']);
+            $netdat=$this->db->get()->row_array();
+            $flag_note=0;
+            if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
+                $flag_note=1;
+                // Get Old Running
+                $this->load->model('balances_model');
+                $total_options=array(
+                    'type'=>'week',
+                    'start'=>$this->config->item('netprofit_start'),
+                );
+                $rundat=$this->balances_model->get_netprofit_runs($total_options);
+                $oldtotalrun=$rundat['out_debtval'];
+                $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
+                $netprofit=floatval($netdat['gross_profit'])-$totalcost;
+                $olddebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
+                $netdat_id=$netdat['profit_id'];
+            }
+            /* Get Old data about Running Totals */
+            $order_id=$res['order_id'];
+            $revenue=$res['revenue'];
+            $shipping=$res['shipping'];
+            $is_shipping=$res['is_shipping'];
+            $tax=$res['tax'];
+            $cc_fee=$res['cc_fee'];
+            $order_cog=$res['order_cog'];
+            $amount_sum=$res['amount_sum'];
+            $order_num='BT'.$res['order_num'];
+            if ($order_cog!='') {
+                $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id',$order_id);
+                $statres=$this->db->get()->row_array();
+                if ($order_cog==$amount_sum) {
+                    $new_cog=null;
+                    /* Calc profit as project */
+                    $profit=round($revenue*$def_profit/100,2);
+                    $profit_perc=null;
+                    $this->db->set('order_cog',$new_cog);
+                    $this->db->set('profit',$profit);
+                    $this->db->set('profit_perc',$profit_perc);
+                    $this->db->set('order_artview', $statres['aprrovview']);
+                    $this->db->set('order_placed', $statres['placeord']);
+                    $this->db->where('order_id',$order_id);
+                    $this->db->update('ts_orders');
+                    $this->db->where('amount_id',$amount_id);
+                    $this->db->delete('ts_order_amounts');
+                    $outres=$this->db->affected_rows();
+                } elseif($order_cog>$amount_sum) {
+                    $new_cog=$order_cog-$amount_sum;
+                    $cost=floatval($shipping)*$is_shipping+floatval($tax)+floatval($cc_fee)+floatval($new_cog);
+                    $profit=round($revenue-$cost,2);
+                    $profit_perc=round($profit/$revenue*100,1);
+                    $this->db->set('order_cog',$new_cog);
+                    $this->db->set('profit',$profit);
+                    $this->db->set('profit_perc',$profit_perc);
+                    $this->db->set('order_artview', $statres['aprrovview']);
+                    $this->db->set('order_placed', $statres['placeord']);
+                    $this->db->where('order_id',$order_id);
+                    $this->db->update('ts_orders');
+                    $this->db->where('amount_id',$amount_id);
+                    $this->db->delete('ts_order_amounts');
+                    $outres=$this->db->affected_rows();
+                }
+                if ($outres) {
+                    $notifoptions=array(
+                        'order_num'=>$order_num,
+                        'old_amount_sum'=>$amount_sum,
+                        'amount_sum'=>0,
+                        'user_id'=>$user_id,
+                        'amount_delete'=>1,
+                    );
+                    $this->notification_pochange_email($notifoptions);
+                    if ($flag_note==1) {
+                        // Get new Run value, etc
+                        $total_options=array(
+                            'type'=>'week',
+                            'start'=>$this->config->item('netprofit_start'),
+                        );
+                        $rundat=$this->balances_model->get_netprofit_runs($total_options);
+                        $newtotalrun=$rundat['out_debtval'];
+                        /* Prepare to notification Email */
+                        $start_month=date('M',$netdat['datebgn']);
+                        $start_year=date('Y',$netdat['datebgn']);
+                        $end_month=date('M',$netdat['dateend']);
+                        $end_year=date('Y',$netdat['dateend']);
+                        if ($start_month!=$end_month) {
+                            $weekname=$start_month.'/'.$end_month;
+                        } else {
+                            $weekname=$start_month;
+                        }
+                        $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
+                        if ($start_year!=$end_year) {
+                            $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
+                        } else {
+                            $weekname.=', '.$start_year;
+                        }
+                        if ($oldtotalrun<0) {
+                            $outoldrundebt='($'.number_format(abs($oldtotalrun),0,'.',',').')';
+                        } else {
+                            $outoldrundebt='$'.number_format($oldtotalrun,0,'.',',');
+                        }
+                        if ($newtotalrun<0) {
+                            $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
+                        } else {
+                            $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
+                        }
+                        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+                        $this->db->from('netprofit np');
+                        $this->db->where('np.profit_id',$netdat_id);
+                        $netdata=$this->db->get()->row_array();
+                        $totalcost=floatval($netdata['profit_operating'])+floatval($netdata['profit_payroll'])+floatval($netdata['profit_advertising'])+floatval($netdata['profit_projects'])+floatval($netdata['profit_purchases']);
+                        $netprofit=floatval($netdata['gross_profit'])-$totalcost;
+                        $newdebt=floatval($netprofit)-floatval($netdata['profit_owners'])-floatval($netdata['profit_saved'])-floatval($netdata['od2']);
+                        if ($newdebt<0) {
+                            $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
+                        } else {
+                            $outnewdebt='$'.number_format($newdebt,0,'.',',');
+                        }
+                        if ($olddebt<0) {
+                            $outolddebt='($'.number_format(abs($olddebt),0,'.',',').')';
+                        } else {
+                            $outolddebt='$'.number_format(abs($olddebt),0,'.',',');
+                        }
+
+                        $notifoptions=array(
+                            'podelete'=>1,
+                            'order_num'=>$order_num,
+                            'old_amount_sum'=>$amount_sum,
+                            'weeknum'=>$weekname,
+                            'user_id'=>$user_id,
+                            'oldtotalrun'=>$outoldrundebt,
+                            'newtotalrun'=>$outnewrundebt,
+                            'olddebt'=>$outolddebt,
+                            'newdebt'=>$outnewdebt,
+                        );
+                        $this->load->model('orders_model');
+                        $this->orders_model->notify_netdebtchanged($notifoptions);
+
+                    }
+                }
+            }
+        }
+        return $outres;
+    }
+
 //    function delete_payment($charge_id,$amount_id) {
 //        $this->db->where('charge_id',$charge_id);
 //        $this->db->delete('ts_order_charges');
@@ -968,14 +972,14 @@ Class Payments_model extends MY_Model {
 //    function get_batches() {
 //        return array();
 //    }
-//
-//    function get_amount_attachments($amount_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_amount_docs');
-//        $this->db->where('amount_id',$amount_id);
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
+
+    function get_amount_attachments($amount_id) {
+        $this->db->select('*');
+        $this->db->from('ts_amount_docs');
+        $this->db->where('amount_id',$amount_id);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
     public function get_vendorpayment($brand, $year=2014) {
         $start=strtotime($year.'-01-01');

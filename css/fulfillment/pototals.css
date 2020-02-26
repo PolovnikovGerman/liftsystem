@@ -7,7 +7,7 @@
     clear: both;
     margin-left: 20px;
     margin-top: 13px;
-    width: 998px;
+    width: 975px;
 }
 .purchaseorder-head-left {
     width: 515px;
@@ -464,7 +464,7 @@ select.vendpayyear {
     width: 15%;
 }
 input.poamount_date {
-    width: 82%;
+    width: 87%;
 }
 .poamount-amntinput {
     float: left;

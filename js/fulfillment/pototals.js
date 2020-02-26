@@ -186,10 +186,13 @@ function add_notplacedpo(order_id) {
 /* Add NEW PO */
 function add_newamount() {
     var amountid=0;
-    var url="/finance/edit_purchaseorder";
+    var url="/fulfillment/purchaseorder_edit";
     $.post(url, {'amount_id': amountid}, function(response){
         if (response.errors=='') {
-            show_popup('edit_area');
+            $("#pageModal").find('div.modal-dialog').css('width','625px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             $("div#pop_content").empty().html(response.data.content);
             init_poedit();
         } else {
@@ -200,10 +203,13 @@ function add_newamount() {
 
 /* Edit exist PO */
 function edit_purchorder(amount_id) {
-    var url="/finance/edit_purchaseorder";
+    var url="/fulfillment/purchaseorder_edit";
     $.post(url, {'amount_id':amount_id}, function(response){
         if (response.errors=='') {
-            show_popup('edit_area');
+            $("#pageModal").find('div.modal-dialog').css('width','625px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             $("div#pop_content").empty().html(response.data.content);
             init_poedit();
         } else {
@@ -291,20 +297,12 @@ function lock_poeditflds(type) {
             show_amountsave();
             save_amntdetails('amount_date', $(this).val());
         });
-        /*
-        $("#input#amount_date").onchange({
-            onSelect: function(selectedDate) {
-                show_amountsave();
-                save_amntdetails('amount_date', selectedDate);
-            }
-
-        })*/
     }
 }
 
 /* Check Order # in mode ADD PO */
 function order_purchase_details(order_num) {
-    var url="/finance/order_purchase_details";
+    var url="/fulfillment/purchaseorder_details";
     $.post(url, {'order_num':order_num}, function(response){
         if (response.errors=='') {
             $("div#orderdataarea").empty().html(response.data.content);
@@ -379,9 +377,12 @@ function delete_charge(amount_id) {
     var ordernum=$("#purchaseord"+amount_id+" div.purchase-order-ordnum-data").text();
     var amountsum=$("#purchaseord"+amount_id+" div.purchase-order-amount-data").text();
     if (confirm('Are you sure you want to delete amount '+amountsum+' PO '+ordernum+' ?')) {
-        var url="/finance/delete_amount";
+        var url="/fulfillment/purchaseorder_delete";
+        var params = new Array();
+        params.push({name: 'amount_id', value: amount_id});
+        params.push({name:'brand', value: $("#purchaseordersbrand").val()});
         $("#loader").show();
-        $.post(url, {'amount_id':amount_id}, function(response){
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 $("input#pototal_total").val(response.data.totals);
                 initPurchaseOrderPagination();

@@ -1,7 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 26.02.20
- * Time: 15:25
- */
+<div class="purchaseorder-row">
+    <div class="poorder_reasonlabel">Enter Reason for Change PO Amount:</div>
+    <textarea id="change_comment" class="poreasondata"><?=$reason?></textarea>
+</div>

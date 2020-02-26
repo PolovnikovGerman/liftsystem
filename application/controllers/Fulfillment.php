@@ -456,6 +456,119 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    public function purchaseorder_edit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $amount_id=$this->input->post('amount_id');
+            $this->load->model('vendors_model');
+            $this->load->model('orders_model');
+            $this->load->model('payments_model');
+            $vendors=$this->vendors_model->get_vendors_list('v.vendor_name');
+            $methods=$this->orders_model->get_methods_edit();
+            $lowprofit_view='';
+            $editpo_view='';
+            $attach=array();
+            if ($amount_id==0) {
+                /* New Order */
+                $amount=array(
+                    'amount_id'=>0,
+                    'order_id'=>'',
+                    'amount_date'=>time(),
+                    'order_num'=>'',
+                    'amount_sum'=>'',
+                    'vendor_id'=>'',
+                    'method_id'=>'',
+                    'is_shipping'=>1,
+                    'oldamount_sum'=>0,
+                    'lowprofit'=>'',
+                    'reason'=>'',
+                );
+                $order_data=array();
+                $order_view=$this->load->view('fulfillment/purchase_orderinput_view', array(), TRUE);
+            } else {
+                $res=$this->payments_model->get_purchase_order($amount_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $amount = $res['data'];
+                    $amount['oldamount_sum']=$amount['amount_sum'];
+                    $amount['reason']='';
+                    $order_data=$this->orders_model->get_order_detail($amount['order_id']);
+                    $amount['lowprofit']=$order_data['reason'];
+                    if (floatval($order_data['profit_perc'])<$this->config->item('minimal_profitperc')) {
+                        $lowprofit_view=$this->load->view('fulfillment/lowprofit_reason_view',array('reason'=>$order_data['reason']),TRUE);
+                    }
+                    $order_view=$this->load->view('fulfillment/purchase_orderdata_view', $order_data, TRUE);
+                    $editpo_view=$this->load->view('fulfillment/pochange_reason_view', array('reason'=>''),TRUE);
+                    $attach=$this->payments_model->get_amount_attachments($amount_id);
+                }
+                // Save data to Session
+            }
+            if (empty($error)) {
+                $data=array(
+                    'amount'=>$amount,
+                    'order'=>$order_data,
+                    'attach'=>$attach,
+                );
+                // Save Data to Session
+                usersession('editpurchase', $data);
+                // Content
+                $options=array(
+                    'order'=>$order_data,
+                    'amount'=>$amount,
+                    'attach'=>'',
+                    'vendors'=>$vendors,
+                    'methods'=>$methods,
+                    'order_view'=>$order_view,
+                    'lowprofit_view'=>$lowprofit_view,
+                    'editpo_view'=>$editpo_view,
+                );
+                // $content=$this->load->view('finance/edit_purchasenotplaced_view',$options,TRUE);
+                $content=$this->load->view('fulfillment/purchase_orderedit_view',$options,TRUE);
+                $mdata['content']=$content;
+                $mdata['title'] = 'Purchase for NOT Placed Order';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchaseorder_details() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty PO#';
+            /* Order Num */
+            $order_num=$this->input->post('order_num');
+            if ($order_num) {
+                $this->load->model('payments_model');
+                $data=$this->payments_model->get_order_bynum($order_num);
+                $error = $data['msg'];
+                if ($data['result']==$this->success_result) {
+                    // Save Data to Session
+                    $error = '';
+                    $res = $data['data'];
+                    $this->load->model('orders_model');
+                    $amtdata=usersession('editpurchase');
+                    $amount=$amtdata['amount'];
+                    $order_data=$this->orders_model->get_order_detail($res['order_id']);
+                    $amount['order_id']=$res['order_id'];
+                    $amount['order_num']=$order_data['order_num'];
+                    $mdata['content']=$this->load->view('fulfillment/purchase_orderdata_view', $order_data, TRUE);
+                    // Save new Data To session
+                    $newdata=array(
+                        'amount'=>$amount,
+                        'order'=>$order_data,
+                        'attach'=>$amtdata['attach'],
+                    );
+                    usersession('editpurchase', $newdata);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function purchaseorder_amountchange() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -505,6 +618,27 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function purchaseorder_delete() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='You have no permissions for this function';
+            if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin' || $this->USR_ROLE=='PO Placer') {
+                $amount_id=$this->input->post('amount_id');
+                $brand = $this->input->post('brand');
+                $this->load->model('payments_model');
+                $res=$this->payments_model->delete_amount($amount_id, $this->USR_ID);
+                if ($res==0) {
+                    $error='Amount was not deleted';
+                } else {
+                    $error='';
+                    $options =['brand' => $brand];
+                    $mdata['totals']=$this->payments_model->get_count_purchorders($options);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 
     private function _prepare_vendors_view() {
