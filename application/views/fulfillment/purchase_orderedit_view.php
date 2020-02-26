@@ -1,5 +1,4 @@
 <div class="purchaseorder_popuparea">
-    <div class="purchaseorder-title"><?=$title?></div>
     <!-- Common Data -->
     <div id="orderdataarea"><?=$order_view?></div>
     <div class="purchaseorder-row">

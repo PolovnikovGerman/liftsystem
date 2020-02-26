@@ -464,25 +464,50 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    public function purchaseorder_amountchange() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Time for change expired';
+            $fld=$this->input->post('fld');
+            $value=$this->input->post('value');
+            $amntdata=usersession('editpurchase');
+            if (!empty($amntdata)) {
+                $this->load->model('payments_model');
+                $res=$this->payments_model->change_amount($amntdata, $fld, $value);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['profit_class']=$res['profit_class'];
+                    $mdata['profit_perc']=$res['profit_perc'];
+                    $mdata['profit']=$res['profit'];
+                    $mdata['reason']=$res['reason'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function purchaseorder_amountsave() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='Time for change expired';
-            $amntdata=$this->func->session('editpurchase');
+            $amntdata=usersession('editpurchase');
+            $brand = $this->input->post('brand');
             if (!empty($amntdata)) {
                 $amntdata['user_id']=$this->USR_ID;
                 $this->load->model('payments_model');
                 $res=$this->payments_model->save_poamount($amntdata);
-                if ($res['result']==Finance::ERR_FLAG) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
                     $options=array(
                         'status'=>'showclosed',
+                        'brand' => $brand,
                     );
-                    $total_rec=$this->mpayments->get_count_purchorders($options);
+                    $total_rec=$this->payments_model->get_count_purchorders($options);
                     $mdata['totals']=$total_rec;
                     // Clean Session
-                    $this->func->session('editpurchase', NULL);
+                    usersession('editpurchase', NULL);
                 }
             }
             $this->ajaxResponse($mdata, $error);

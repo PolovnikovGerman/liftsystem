@@ -283,7 +283,7 @@ function lock_poeditflds(type) {
         $("textarea#po_comment").prop('readonly',false);
         $("textarea#po_comment").prop('readonly',false);
         // $("div.poamount-shippinginput").jqTransform();
-        $("input#po_shipping").ezMark();
+        // $("input#po_shipping").ezMark();
         $("input#amount_date").datepicker({
             onSelect: function(selectedDate) {
                 show_amountsave();
@@ -315,7 +315,7 @@ function show_amountsave() {
 /* Save in session AMOUNT DETAILS */
 function save_amntdetails(fldname, newval) {
     // STOPED THEIR
-    var url="/finance/change_amountdata";
+    var url="/fulfillment/purchaseorder_amountchange";
     $.post(url, {'fld': fldname, 'value':newval}, function(response){
         if (response.errors=='') {
             if (response.data.profit_class) {
@@ -350,10 +350,12 @@ function save_amntdetails(fldname, newval) {
 function save_amount() {
     var url="/fulfillment/purchaseorder_amountsave";
     $("#loader").show();
-    $.post(url, {}, function(response){
+    var data = new Array();
+    data.push({name:'brand', value: $("#purchaseordersbrand").val()});
+    $.post(url, data, function(response){
         if (response.errors=='') {
             $("input#pototal_total").val(response.data.totals);
-            disablePopup();
+            $("#pageModal").modal('hide');
             initPurchaseOrderPagination();
         } else {
             $("#loader").hide();

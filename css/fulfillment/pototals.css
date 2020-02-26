@@ -403,3 +403,114 @@ select.vendpayyear {
     text-align: justify;
     line-height: 20px;
 }
+/* Popup - Edit Amount */
+/* Edit order POPUP */
+.purchaseorder_popuparea {
+    -moz-border-radius: 10px;  /* для firefox */
+    -webkit-border-radius: 10px;  /* для Safari и Chrome */
+    background-color: #ffffff;
+    border-radius: 5px;
+    color: #000;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    min-height: 182px;
+    margin-top: 4px;
+    padding: 15px;
+    width: 561px;
+}
+.purchaseorder_popuparea input {
+    font-size: 13px;
+    line-height: 16px;
+}
+.purchaseorder-title {
+    border-bottom: medium solid #000000;
+    clear: both;
+    float: left;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    width: 100%;
+}
+.purchaseorder-row {
+    clear: both;
+    float: left;
+    line-height: 23px;
+    margin-bottom: 7px;
+    margin-top: 7px;
+    width: 100%;
+}
+.poorder_label {
+    float: left;
+    width: 12%;
+}
+.poprofit-data {
+    float: left;
+    text-align: center;
+    margin-right: 10px;
+    width: 10%;
+}
+.poprofitperc {
+    float: left;
+    text-align: center;
+    width: 67px;
+}
+.poamount_label {
+    float: left;
+    width: 17%;
+}
+.poamount-dateinput {
+    float: left;
+    width: 15%;
+}
+input.poamount_date {
+    width: 82%;
+}
+.poamount-amntinput {
+    float: left;
+    width: 12%;
+}
+input.poamount_sum {
+    width: 80%;
+}
+.poamount-shippinginput {
+    float: left;
+    text-align: center;
+    width: 5%;
+}
+.poamount-vendorinput {
+    float: left;
+    width: 26%;
+}
+select.poamount_vendor {
+    /* font-size: 12px; */
+    width: 90%;
+}
+.poamount_actions {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    border-top: 2px solid #000000;
+    line-height: 22px;
+    width: 100%;
+}
+.poamount-save {
+    float: right;
+    display: none;
+    margin-top: 5px;
+    margin-right: 15px;
+    width: 15%;
+    cursor: pointer;
+}
+.poorder_reasonlabel {
+    float: left;
+    width: 46%;
+}
+textarea.poreasondata {
+    font-size: 13px;
+    height: 59px;
+    margin-left: 18%;
+    overflow-y: auto;
+    resize: none;
+    width: 446px;
+}

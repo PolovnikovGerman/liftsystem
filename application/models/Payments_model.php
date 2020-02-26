@@ -1047,111 +1047,111 @@ Class Payments_model extends MY_Model {
         return $years;
     }
 
-//    // Change session saved data of amount
-//    public function change_amount($data, $fld, $value) {
-//        $out=array('result'=>  Payments_model::ERR_FLAG, 'msg'=> 'Unknown Error');
-//        $this->load->model('order_model');
-//        $amount_data=$data['amount'];
-//
-//        $order_id=$amount_data['order_id'];
-//        $order_data=$this->order_model->get_order_detail($order_id);
-//        // Make changes
-//        $edit=0;
-//        $reason_view='';
-//        $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
-//        $profval=$rescalc['profval'];
-//        $profperc=$rescalc['profperc'];
-//        $profclass=$rescalc['profclass'];
-//        switch ($fld) {
-//            case 'amount_date':
-//                $amount_data['amount_date']=  strtotime($value);
-//                $edit=1;
-//                break;
-//            case 'amount_sum':
-//                $edit=1;
-//                $newamount=floatval($value);
-//                $amount_data['amount_sum']=$newamount;
-//                // Recalc Order Profit,
-//                $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
-//                $profval=$rescalc['profval'];
-//                $profperc=$rescalc['profperc'];
-//                $profclass=$rescalc['profclass'];
-//                break;
-//            case 'reason':
-//                $edit=1;
-//                $amount_data['lowprofit']=$value;
-//                break;
-//            case 'is_shipping':
-//                $edit=1;
-//                $amount_data['is_shipping']=$value;
-//                // Recalc Order Profit,
-//                $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
-//                $profval=$rescalc['profval'];
-//                $profperc=$rescalc['profperc'];
-//                $profclass=$rescalc['profclass'];
-//                break;
-//            case 'vendor_id':
-//                $edit=1;
-//                $amount_data['vendor_id']=$value;
-//                break;
-//            case 'method_id':
-//                $edit=1;
-//                $amount_data['method_id']=$value;
-//                break;
-//            case 'comment':
-//                $edit=1;
-//                $amount_data['reason']=$value;
-//                break;
-//            case 'low_profit':
-//                $edit=1;
-//                $amount_data['lowprofit']=$value;
-//                break;
-//            default :
-//                break;
-//        }
-//        if ($edit==0) {
-//            $out['msg']='Field Not Found';
-//        } else {
-//            if (is_numeric($profperc) && $profperc<$this->config->item('minimal_profitperc')) {
-//                $options=array(
-//                    'reason'=>$amount_data['lowprofit'],
-//                );
-//                $reason_view=$this->load->view('purchase_orders/lowprofit_reason_view', $options,TRUE);
-//            }
-//            // Save in temporary array
-//            $order_data['profit_class']=$profclass;
-//            $order_data['profit_perc']=$profperc;
-//            $order_data['profit']=$profval;
-//            $newdata=array(
-//                'amount'=>$amount_data,
-//                'order'=>$order_data,
-//                'attach'=>$data['attach'],
-//            );
-//            $this->func->session('editpurchase', $newdata);
-//            $out['result']=  Payments_model::SUCCESS_RESULT;
-//            $out['msg']='';
-//            $out['profit_class']=$profclass;
-//            $out['profit_perc']=($profperc=='' ? 'Proj' : $profperc.' %');
-//            $out['profit']=$profval;
-//            $out['reason']=$reason_view;
-//        }
-//        return $out;
-//    }
-//
-//    private function recalc_orderprofit($order_data, $amount_data) {
-//        $out=array();
-//        $out['profval']=$order_data['profit'];
-//        $out['profperc']='';
-//        $out['profclass']='projprof';
-//        if ($order_data['order_cog']==0 && $amount_data['amount_sum']==0) {
-//        } else {
-//            $costs=floatval($amount_data['is_shipping'])*$order_data['shipping']+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
-//                floatval($amount_data['amount_sum']-$amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
-//            $out['profval']=round(floatval($order_data['revenue'])-$costs,2);
-//            $out['profperc']=round(($out['profval']/$order_data['revenue'])*100,1);
-//            $out['profclass']=$this->profit_class($out['profperc']);
-//        }
-//        return $out;
-//    }
+    // Change session saved data of amount
+    public function change_amount($data, $fld, $value) {
+        $out=array('result'=>  $this->error_result, 'msg'=> 'Unknown Error');
+        $this->load->model('orders_model');
+        $amount_data=$data['amount'];
+
+        $order_id=$amount_data['order_id'];
+        $order_data=$this->orders_model->get_order_detail($order_id);
+        // Make changes
+        $edit=0;
+        $reason_view='';
+        $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+        $profval=$rescalc['profval'];
+        $profperc=$rescalc['profperc'];
+        $profclass=$rescalc['profclass'];
+        switch ($fld) {
+            case 'amount_date':
+                $amount_data['amount_date']=  strtotime($value);
+                $edit=1;
+                break;
+            case 'amount_sum':
+                $edit=1;
+                $newamount=floatval($value);
+                $amount_data['amount_sum']=$newamount;
+                // Recalc Order Profit,
+                $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+                $profval=$rescalc['profval'];
+                $profperc=$rescalc['profperc'];
+                $profclass=$rescalc['profclass'];
+                break;
+            case 'reason':
+                $edit=1;
+                $amount_data['lowprofit']=$value;
+                break;
+            case 'is_shipping':
+                $edit=1;
+                $amount_data['is_shipping']=$value;
+                // Recalc Order Profit,
+                $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+                $profval=$rescalc['profval'];
+                $profperc=$rescalc['profperc'];
+                $profclass=$rescalc['profclass'];
+                break;
+            case 'vendor_id':
+                $edit=1;
+                $amount_data['vendor_id']=$value;
+                break;
+            case 'method_id':
+                $edit=1;
+                $amount_data['method_id']=$value;
+                break;
+            case 'comment':
+                $edit=1;
+                $amount_data['reason']=$value;
+                break;
+            case 'low_profit':
+                $edit=1;
+                $amount_data['lowprofit']=$value;
+                break;
+            default :
+                break;
+        }
+        if ($edit==0) {
+            $out['msg']='Field Not Found';
+        } else {
+            if (is_numeric($profperc) && $profperc<$this->config->item('minimal_profitperc')) {
+                $options=array(
+                    'reason'=>$amount_data['lowprofit'],
+                );
+                $reason_view=$this->load->view('fulfillment/lowprofit_reason_view', $options,TRUE);
+            }
+            // Save in temporary array
+            $order_data['profit_class']=$profclass;
+            $order_data['profit_perc']=$profperc;
+            $order_data['profit']=$profval;
+            $newdata=array(
+                'amount'=>$amount_data,
+                'order'=>$order_data,
+                'attach'=>$data['attach'],
+            );
+            usersession('editpurchase', $newdata);
+            $out['result']= $this->success_result;
+            $out['msg']='';
+            $out['profit_class']=$profclass;
+            $out['profit_perc']=($profperc=='' ? 'Proj' : $profperc.' %');
+            $out['profit']=$profval;
+            $out['reason']=$reason_view;
+        }
+        return $out;
+    }
+
+    private function recalc_orderprofit($order_data, $amount_data) {
+        $out=array();
+        $out['profval']=$order_data['profit'];
+        $out['profperc']='';
+        $out['profclass']='projprof';
+        if ($order_data['order_cog']==0 && $amount_data['amount_sum']==0) {
+        } else {
+            $costs=floatval($amount_data['is_shipping'])*$order_data['shipping']+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
+                floatval($amount_data['amount_sum']-$amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
+            $out['profval']=round(floatval($order_data['revenue'])-$costs,2);
+            $out['profperc']=round(($out['profval']/$order_data['revenue'])*100,1);
+            $out['profclass']=$this->profit_class($out['profperc']);
+        }
+        return $out;
+    }
 
 }
