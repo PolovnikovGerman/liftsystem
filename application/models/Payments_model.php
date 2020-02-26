@@ -174,7 +174,7 @@ Class Payments_model extends MY_Model {
                 $row['profit_perc']='PROJ';
             } else {
                 // $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
-                $row['profit_class']=profitClass($row['profit_perc']);
+                $row['profit_class']=profit_bgclass($row['profit_perc']);
                 $row['profit_perc']=($row['profit_perc']=='' ? '' :  number_format($row['profit_perc'],1,'.',',').'%');
             }
             $row['vendor_name']=($row['vendor_name']=='' ? '&nbsp;' : $row['vendor_name']);

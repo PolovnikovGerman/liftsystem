@@ -154,21 +154,18 @@ function init_pototalbutons() {
         var amount_id=$(this).data('amountid');
         delete_charge(amount_id);
     });
-    // $("div.purchase-order-ordnum-data").bt({
-    //     fill: '#FFFFFF',
-    //     positions: ['right'],
-    //     cornerRadius: 10,
-    //     width: 300,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle: '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {
-    //         color: '#000000'
-    //     }
-    // });
+    $("div.purchase-order-ordnum-data").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'left center',
+            at: 'center right',
+        },
+        style: {
+            classes: 'orderdata_tooltip'
+        }
+    });
 }
 
 /* Add NOT PLACED Order PO */

@@ -1,6 +1,7 @@
-.purchase-order-content {
+.purchaseordercontent {
     clear: both;
-    width: 1003px;
+    margin-left: 10px;
+    width: 1013px;
 }
 .purchaseorder-head {
     clear: both;
@@ -132,158 +133,52 @@ select.sortpurch {
     background-color: #BCBCBC;
     border: 1px solid #919191;
     color: #000000;
-    float: left;
-    font-size: 13px;
-    height: 30px;
-    text-align: center;
     width: 997px;
 }
-.purchase-order-title div {
-    padding-top: 7px;
+.purchase-order-title > div {
+    font-size: 13px;
+    height: 30px;
+    line-height: 30px!important;
+    text-align: center;
 }
-.purchase-order-profit {
-    float: left;
+.purchase-order-title > .purchase-order-profit {
     width: 78px;
-}
-.purchase-order-profit:hover {
     cursor: pointer;
 }
-.purchase-order-profit-data {
-    float: left;
-    /* height: 21px; */
-    /* padding-top: 3px; */
-    text-align: center;
-    width: 78px;
-}
-.purchase-order-profitperc {
-    float: left;
+.purchase-order-title > .purchase-order-profitperc {
     width: 53px;
-}
-.purchase-order-profitperc:hover {
     cursor: pointer;
 }
-.purchase-order-profitperc-data {
-    float: left;
-    text-align: center;
-    /* height: 21px; */
-    /* padding-top: 3px; */
-    width: 53px;
-}
-.purchase-order-actions {
-    float: left;
+.purchase-order-title > .purchase-order-actions {
     font-size: 15px;
-    text-align: center;
     width: 46px;
 }
-.purchase-order-actions i {
+.purchase-order-title > .purchase-order-actions i {
     cursor: pointer;
     color: #5b401a;
 }
-.purchase-order-actions-data {
-    float: left;
-    width: 46px;
-    text-align: center;
-}
-.purchase-order-actions-data > .subaction {
-    float: left;
-    font-size: 15px;
-    padding-top: 4px;
-    width: 22px;
-}
-.purchase-order-actions-data > .subaction.editpodata {
-    color: #5b401a;
-}
-.purchase-order-actions-data > .subaction.delpodata {
-    color: #010101;
-}
-.purchase-order-actions-data img {
-    width: 18px;
-    height: 18px;
-    margin-top: auto;
-}
-.purchase-order-date {
-    float: left;
+.purchase-order-title > .purchase-order-date {
     width: 68px;
-}
-.purchase-order-date:hover {
     cursor:pointer;
 }
-.purchase-order-date-data {
-    float: left;
-    width: 55px;
-}
-.purchase-order-attach-data {
-    float: left;
-    width: 13px;
-}
-.purchase-order-attach-data img {
-    /* float: left; */
-    height: 16px;
-    width: 12px;
-}
-
-.purchase-order-ordnum {
-    float: left;
+.purchase-order-title > .purchase-order-ordnum {
     width: 53px;
-}
-.purchase-order-ordnum:hover {
     cursor: pointer;
 }
-.purchase-order-ordnum-data {
-    float: left;
-    /* height: 21px; */
-    /* padding-top: 3px; */
-    width: 53px;
-}
-.purchase-order-ordnum-data:hover {
-    cursor: pointer;
-}
-.purchase-order-amount {
-    float: left;
+.purchase-order-title > .purchase-order-amount {
     width: 80px;
-}
-.purchase-order-amount:hover {
     cursor: pointer;
 }
-.purchase-order-amount-data {
-    float: left;
-    padding-right: 13px;
-    text-align: right;
-    width: 67px;
-}
-.purchase-order-vendor {
-    float: left;
+.purchase-order-title > .purchase-order-vendor {
     width: 93px;
-}
-.purchase-order-vendor:hover {
     cursor: pointer;
 }
-.purchase-order-vendor-data {
-    float: left;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 93px
-}
-.purchase-order-method {
-    float: left;
+.purchase-order-title > .purchase-order-method {
     width: 100px;
-}
-.purchase-order-method:hover {
     cursor: pointer;
 }
-.purchase-order-method-data {
-    float: left;
-    /* padding-top: 3px; */
-    width: 100px;
-}
-.purchase-order-divider {
-    float: left;
-    width: 8px;
-}
-.purchase-order-divider.lines {
-    border-left: 1px solid #616161;
-    border-right: 1px solid #616161;
-    height: 24px;
+.purchase-order-title > .purchase-order-reason {
+    width: 183px;
 }
 /* NON PLACED Orders*/
 .nonplacetablehead {
@@ -333,6 +228,103 @@ select.sortpurch {
 .nonplacetablebody > .section > .nonplacedrow > .purchase-order-profitperc-data {
     font-size: 10px;
     width: 61px;
+}
+.purchase-order-content {
+    border-bottom: 1px solid #919191;
+    float: left;
+    /* height: 349px; */
+    max-height: 349px;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 1000px;
+}
+.tr {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    width: 1022px;
+}
+.tr.placedorders {
+    background-color: #000066;
+    color: #FFFFFF !important;
+    width: 982px;
+}
+.trpo {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    width: 987px;
+}
+.trpo.printshoporder {
+    color: #0000FF;
+}
+.cancelord {
+    color: #BCBCBC !important;
+}
+.trpo > div {
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px!important;
+    text-align: center;
+}
+.trpo > .purchase-order-profit-data {
+    width: 78px;
+}
+.trpo > .purchase-order-profitperc-data {
+    width: 53px;
+}
+.trpo > .purchase-order-actions-data {
+    width: 46px;
+}
+.trpo > .purchase-order-actions-data > .subaction {
+    font-size: 15px;
+    width: 22px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+}
+.trpo > .purchase-order-actions-data > .subaction.editpodata {
+    color: #5b401a;
+}
+.trpo > .purchase-order-actions-data > .subaction.delpodata {
+    color: #010101;
+}
+
+.trpo > .purchase-order-date-data {
+    width: 55px;
+}
+.trpo > .purchase-order-attach-data {
+    width: 13px;
+}
+.trpo > .purchase-order-ordnum-data {
+    width: 53px;
+}
+.trpo > .purchase-order-amount-data {
+    padding-right: 13px;
+    text-align: right!important;
+    width: 67px;
+}
+.trpo > .purchase-order-vendor-data {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 93px;
+}
+.trpo > .purchase-order-method-data {
+    width: 100px;
+}
+.trpo > .purchase-order-reason-data {
+    text-align: left;
+    width: 195px;
 }
 /* Vendors Purchase per year */
 .billingbymethods {
@@ -391,4 +383,15 @@ select.vendpayyear {
 .methodcharge {
     color: #3E3E3E;
     font-size: 11px;
+}
+.orderdata_tooltip {
+    width: 315px;
+    max-width: 315px!important;
+    padding: 10px;
+    color: #000000;
+    background: #ffffff;
+    border: 1px solid #000000;
+    font-size: 14px;
+    text-align: justify;
+    line-height: 20px;
 }

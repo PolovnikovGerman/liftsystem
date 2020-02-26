@@ -24,7 +24,7 @@
         <div class="purchase-order-attach-data <?=$row['attclass']?>" <?=$row['atttitle']?> >
             <a href="javascript:void(0)" class="showpodoc"><?=$row['out_attach']?></a>
         </div>
-        <div class="purchase-order-ordnum-data" title="<?=$row['potitle']?>"><?=$row['order_num']?></div>
+        <div class="purchase-order-ordnum-data" data-content="<?=$row['potitle']?>"><?=$row['order_num']?></div>
         <div class="purchase-order-amount-data"><?=$row['amount_sum']?></div>
         <div class="purchase-order-vendor-data"><?=$row['vendor_name']?></div>
         <div class="purchase-order-method-data"><?=$row['method_name']?></div>

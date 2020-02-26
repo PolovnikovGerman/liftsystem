@@ -3,7 +3,7 @@
 <input type="hidden" id="pototal_total" value="<?= $total ?>"/>
 <input type="hidden" id="totalnotplacedorders" value="<?=$total_nonplaced?>"/>
 <input type="hidden" id="pototal_curpage" value="<?= $curpage; ?>"/>
-<div class="purchase-order-content">
+<div class="purchaseordercontent">
     <div class="purchaseorder-head">
         <div class="purchaseorder-head-left">
             <select id="showtoplaced" class="showtoplacedpo">

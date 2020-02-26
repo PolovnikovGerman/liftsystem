@@ -14,7 +14,7 @@
                         <?=$row['addord'];?>
                     <?php } ?>
                 </div>
-                <div class="purchase-order-ordnum-data" title="<?=$row['potitle']?>"><?=$row['order_num']?></div>
+                <div class="purchase-order-ordnum-data" data-content="<?=$row['potitle']?>"><?=$row['order_num']?></div>
             </div>
         <?php }?>
     <?php } ?>
