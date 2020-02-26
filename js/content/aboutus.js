@@ -40,7 +40,9 @@ function display_content() {
 
 function init_aboutpage_edit() {
     var url = "/content/edit_aboutcontent";
-    $.post(url, {}, function (response) {
+    var params = new Array();
+    params.push({name:'brand', value: $("#contentbrand").val()});
+    $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#aboutusview").empty().html(response.data.content);
             $(".content_preview").on('click',function () {
@@ -78,6 +80,7 @@ function init_aboutpage_editcontent() {
     $(".save_button[data-page='about']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#about_session").val()});
+        params.push({name:'brand', value: $("#contentbrand").val()});
         var url="/content/save_aboutpagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
@@ -226,35 +229,6 @@ function init_aboutpage_editcontent() {
     // Main image remove
     $(".about_mainimageremove").unbind('click').click(function () {
         if (confirm('Delete Main Image?')) {
-            $("#about_mainimagearea").empty().html('<div class="about_mainimageempty"><div class="about_mainimageupload" id="mainimageupload"></div></div>');
-            // Add main image
-            var uploader = new qq.FileUploader({
-                element: document.getElementById('mainimageupload'),
-                action: '/utils/save_itemimg',
-                uploadButtonText: '',
-                multiple: false,
-                debug: false,
-                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-                onComplete: function(id, fileName, responseJSON){
-                    if (responseJSON.success==true) {
-                        $("li.qq-upload-success").hide();
-                        var params=new Array();
-                        params.push({name: 'session', value: $("#about_session").val()});
-                        params.push({name: 'type', value: 'main_image'});
-                        params.push({name: 'field', value: 'about_mainimage'});
-                        params.push({name: 'newval', value: responseJSON.filename});
-                        var url="/content/save_aboutimage";
-                        $.post(url, params, function (response) {
-                            if (response.errors=='') {
-                                $("#about_mainimagearea").empty().html(response.data.content);
-                                init_aboutpage_editcontent();
-                            } else {
-                                show_error(response);
-                            }
-                        },'json');
-                    }
-                }
-            });
             var params=new Array();
             params.push({name: 'session', value: $("#about_session").val()});
             params.push({name: 'type', value: 'data'});
@@ -263,6 +237,7 @@ function init_aboutpage_editcontent() {
             var url="/content/change_customparam";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
+                    $("#about_mainimagearea").empty().html('<div class="about_mainimageempty"><div class="about_mainimageupload" id="mainimageupload"></div></div>');
                     init_aboutpage_editcontent();
                 } else {
                     show_error(response);
@@ -270,6 +245,36 @@ function init_aboutpage_editcontent() {
             },'json');
         }
     });
+    if ($("#mainimageupload").length>0) {
+        // Add main image
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('mainimageupload'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#about_session").val()});
+                    params.push({name: 'type', value: 'main_image'});
+                    params.push({name: 'field', value: 'about_mainimage'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/save_aboutimage";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#about_mainimagearea").empty().html(response.data.content);
+                            init_aboutpage_editcontent();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
     $(".about_mainimagesrc").unbind('click').click(function(){
         var imgsrc = $(this).find('img').prop('src');
         $.fancybox.open({

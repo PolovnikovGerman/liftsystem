@@ -1,7 +1,7 @@
 .statcipage_content .termsinfotitle {
     width: 100%;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     background: #595959;
     color: #ffffff;
     font-size: 17px;
@@ -34,7 +34,10 @@ textarea.term_smalltext {
 .termsdata-area {
     margin-top: 16px;
     padding-left: 20px;
-    margin-bottom: 52px;
+    margin-bottom: 18px;
+}
+.addnewtermrule {
+    margin-bottom: 42px!important;
 }
 .termsdatarow {
     margin-bottom: 10px;
@@ -60,7 +63,7 @@ textarea.termtext {
     font-size: 17px;
     text-align: center;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     width: 80px;
     cursor: pointer;
 }
@@ -74,7 +77,7 @@ textarea.termtext {
     height: 28px;
     font-size: 24px;
     color: #ff0000;
-    line-height: 28px;
+    line-height: 28px!important;
     cursor: pointer;
 }
 .termssave_params {
@@ -83,7 +86,7 @@ textarea.termtext {
     font-size: 17px;
     text-align: center;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     width: 80px;
     cursor: pointer;
 }
@@ -93,7 +96,7 @@ textarea.termtext {
     font-size: 17px;
     text-align: center;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     width: 80px;
     cursor: pointer;
     margin-left: 10px;
@@ -106,6 +109,6 @@ textarea.termtext {
     border-radius: 3px;
     cursor: pointer;
     padding: 0 10px;
-    line-height: 24px;
+    line-height: 24px!important;
     font-weight: bold;
 }

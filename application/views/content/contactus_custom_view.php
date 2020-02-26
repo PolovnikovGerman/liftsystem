@@ -25,29 +25,29 @@
         <div class="address-left">
             <div class="content-row">
                 <div class="label contact_bigphone">Big Phone:</div>
-                <input class="contact_bigphone" readonly="readonly" value="<?=$address['address_phone']?>">
+                <input class="contact_bigphone" readonly="readonly" value="<?=ifset($address,'address_phone')?>">
             </div>
             <div class="content-row">
                 <div class="label contact_smallphone">Small Phone:</div>
-                <input class="contact_smallphone" readonly="readonly" value="<?=$address['address_phonelocal']?>"><span class="contact_smallphone"> (Local)</span>
+                <input class="contact_smallphone" readonly="readonly" value="<?=ifset($address,'address_phonelocal')?>"><span class="contact_smallphone"> (Local)</span>
             </div>
             <div class="content-row">
                 <div class="label contact_address">Address:</div>
-                <textarea class="contact_address" readonly="readonly"><?=$address['address_visit']?></textarea>
+                <textarea class="contact_address" readonly="readonly"><?=ifset($address,'address_visit')?></textarea>
             </div>
         </div>
         <div class="address-right">
             <div class="content-row">
                 <div class="label contact_email">Email:</div>
-                <input class="contact_email" readonly="readonly" value="<?=$address['address_email']?>">
+                <input class="contact_email" readonly="readonly" value="<?=ifset($address,'address_email')?>">
             </div>
             <div class="content-row">
                 <div class="label contact_hours">Our Hours:</div>
-                <input class="contact_hours" readonly="readonly" value="<?=$address['address_hours']?>">
+                <input class="contact_hours" readonly="readonly" value="<?=ifset($address,'address_hours')?>">
             </div>
             <div class="content-row">
                 <div class="label contact_hours">&nbsp;</div>
-                <input class="contact_days" readonly="readonly" value="<?=$address['address_days']?>">
+                <input class="contact_days" readonly="readonly" value="<?=ifset($address,'address_days')?>">
             </div>
         </div>
     </div>
