@@ -55,6 +55,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
                 $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#printshopinventview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+                $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -728,6 +732,56 @@ class Fulfillment extends MY_Controller
             'vendors' => $vendors,
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+    }
+
+    private function _prepare_printshop_inventory() {
+        $this->load->model('printshop_model');
+        $addcost=$this->printshop_model->invaddcost();
+        $totals=$this->printshop_model->count_prinshop_items();
+        $totalinv=$this->printshop_model->get_inventory_totals();
+        $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+        $data = $this->printshop_model->get_data_onboat();
+        $boathead_view='';
+        foreach ($data as $drow) {
+            $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+        }
+        // Build head content
+        $slider_width=60*count($data);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        $width_edit = 58;
+        $boatoptions=array(
+            'data'=>$data,
+            'container_view'=>$boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content=$this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
+
+        $permission=$this->user_model->get_user_data($this->USR_ID);
+        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+        $headoptions=array(
+            'permission' => $permission['profit_view'],
+            'addcost'=>$addcost,
+            'data' => $data,
+            'width' => $slider_width,
+            'margin' => $margin,
+            'onboathead'=>$onboat_content,
+            'invetorytotal'=>$totalinvview,
+            'download_view'=>$download_view,
+        );
+        $headview=$this->load->view('printshopinventory/fullview_head_view', $headoptions,TRUE);
+
+        /*$specs_disc = $this->printshop_model->get_color_disc();*/
+
+        $invoption=array(
+            'totals'=>$totals,
+            'fullview'=>$headview,
+            'maxsum'=>$totalinv['maxsum'],
+        );
+
+        $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
+        return $content;
     }
 
 }
