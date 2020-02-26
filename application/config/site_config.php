@@ -58,8 +58,7 @@ switch($_SERVER['SERVER_NAME']){
         break;
 }
 switch($_SERVER['SERVER_NAME']){
-    case 'tempsys.net':
-
+    case 'lift_stressballs.local':
         $config['email_setup']=array(
             'protocol' => 'smtp',
             'smtp_host' => 'ssl://smtp.gmail.com',
@@ -72,13 +71,6 @@ switch($_SERVER['SERVER_NAME']){
             'wordwrap'=> TRUE,
             'newline'=>'\r\n',
         );
-        /*
-        $config['email_setup']=array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf8',
-            'wordwrap'=> TRUE,
-        );
-        */
         $config['artorderdaily_to']='polovnikov.g@gmail.com';
         $config['artorderdaily_cc']=array(
             'polovnikov.german@gmail.com',

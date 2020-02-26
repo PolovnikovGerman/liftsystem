@@ -127,7 +127,6 @@ function pagePurchaseOrederCallback(page_index) {
             })
             /* Init buttons */
             init_pototalbutons();
-            init_vendorpayments();
             $("#loader").hide();
         } else {
             show_error(response);
@@ -170,11 +169,13 @@ function init_pototalbutons() {
 
 /* Add NOT PLACED Order PO */
 function add_notplacedpo(order_id) {
-    var url="/finance/add_purchasenotplaced";
+    var url="/fulfillment/purchasenotplaced_add";
     $.post(url, {'order_id': order_id}, function(response){
         if (response.errors=='') {
-            show_popup('edit_area');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','625px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             init_poedit();
         } else {
             show_error(response);
@@ -347,7 +348,7 @@ function save_amntdetails(fldname, newval) {
 }
 /* Save Amount DATA to DB */
 function save_amount() {
-    var url="/finance/save_amount";
+    var url="/fulfillment/purchaseorder_amountsave";
     $("#loader").show();
     $.post(url, {}, function(response){
         if (response.errors=='') {

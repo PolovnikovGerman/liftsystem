@@ -411,6 +411,85 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    public function purchasenotplaced_add() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('orders_model');
+            $this->load->model('vendors_model');
+
+            $vendors=$this->vendors_model->get_vendors_list('v.vendor_name');
+            $methods=$this->orders_model->get_methods_edit();
+            $order_id=$this->input->post('order_id');
+            // Get data about order
+            $order_data=$this->orders_model->get_order_detail($order_id);
+            $amount_data=array(
+                'amount_id'=>0,
+                'amount_date'=>time(),
+                'order_id'=>$order_id,
+                'amount_sum'=>0,
+                'oldamount_sum'=>0,
+                'vendor_id'=>'',
+                'method_id'=>'',
+                'is_shipping'=>$order_data['is_shipping'],
+                'lowprofit'=>'',
+                'reason'=>'',
+            );
+
+            $data=array(
+                'amount'=>$amount_data,
+                'order'=>$order_data,
+                'attach'=>array(),
+            );
+            // Save Data to Session
+            usersession('editpurchase', $data);
+
+            $order_view=$this->load->view('fulfillment/purchase_orderdata_view', $order_data,TRUE);
+            $options=array(
+                'order'=>$order_data,
+                'amount'=>$amount_data,
+                'attach'=>'',
+                'vendors'=>$vendors,
+                'methods'=>$methods,
+                'order_view'=>$order_view,
+                'lowprofit_view'=>'',
+                'editpo_view'=>'',
+            );
+            // $content=$this->load->view('finance/edit_purchasenotplaced_view',$options,TRUE);
+            $content=$this->load->view('fulfillment/purchase_orderedit_view',$options,TRUE);
+            $mdata['content']=$content;
+            $mdata['title'] = 'Purchase for NOT Placed Order';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchaseorder_amountsave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Time for change expired';
+            $amntdata=$this->func->session('editpurchase');
+            if (!empty($amntdata)) {
+                $amntdata['user_id']=$this->USR_ID;
+                $this->load->model('payments_model');
+                $res=$this->payments_model->save_poamount($amntdata);
+                if ($res['result']==Finance::ERR_FLAG) {
+                    $error=$res['msg'];
+                } else {
+                    $options=array(
+                        'status'=>'showclosed',
+                    );
+                    $total_rec=$this->mpayments->get_count_purchorders($options);
+                    $mdata['totals']=$total_rec;
+                    // Clean Session
+                    $this->func->session('editpurchase', NULL);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
         $totals=$this->vendors_model->get_count_vendors();

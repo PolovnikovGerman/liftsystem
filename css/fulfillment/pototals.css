@@ -215,9 +215,18 @@ select.sortpurch {
 .nonplacetablebody > .section > .nonplacedrow {
     clear: both;
     float: left;
+    width: 323px;
+}
+.nonplacetablebody > .section > .nonplacedrow > div {
     height: 22px;
     line-height: 22px!important;
-    width: 323px;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-profit-data {
+    width: 78px;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-profitperc-data {
+    font-size: 10px;
+    width: 61px;
 }
 .nonplacetablebody > .section > .nonplacedrow > .purchase-order-actions-data {
     cursor: pointer;
@@ -225,9 +234,8 @@ select.sortpurch {
     padding-top: 3px;
     width: 34px;
 }
-.nonplacetablebody > .section > .nonplacedrow > .purchase-order-profitperc-data {
-    font-size: 10px;
-    width: 61px;
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-ordnum-data {
+    width: 53px;
 }
 .purchase-order-content {
     border-bottom: 1px solid #919191;

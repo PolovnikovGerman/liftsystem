@@ -266,261 +266,258 @@ Class Payments_model extends MY_Model {
 //
 //        return $res;
 //    }
-//
-//    public function save_poamount($amtdata) {
-//        /* $amount_id,$order_id,$amount_date,$amount_sum,$vendor_id, $method_id,$user_id,$is_shipping,$attach */
-//        $res=array('result'=>0,'msg'=>'Unknown error');
-//        $data=$amtdata['amount'];
-//        $attach=$amtdata['attach'];
-//        $amount_id=$data['amount_id'];
-//        $order_id=$data['order_id'];
-//        $amount_date=$data['amount_date'];
-//        $amount_sum=floatval($data['amount_sum']);
-//        $vendor_id=$data['vendor_id'];
-//        $method_id=$data['method_id'];
-//        $user_id=$amtdata['user_id'];
-//        $is_shipping=(isset($data['is_shipping']) ? $data['is_shipping'] : 0);
-//        $old_amount_sum=$data['oldamount_sum'];
-//        $profperc=floatval($amtdata['order']['profit_perc']);
-//
-//        if (!$order_id) {
-//            $res['msg']='Non-exist PO#';
-//            return $res;
-//        }
-//        if (floatval($amount_sum)==0) {
-//            $res['msg']='Amount sum not entered';
-//            return $res;
-//        }
-//        if(intval($vendor_id)==0) {
-//            $res['msg']='Select Vendor';
-//            return $res;
-//        }
-//        if (intval($method_id)==0) {
-//            $res['msg']='Select Purchase Method';
-//            return $res;
-//        }
-//        // Special data
-//        if ($amount_id && ($old_amount_sum!=$amount_sum) && empty($data['reason'])) {
-//            $res['msg']='Enter Reason for Change PO Amount';
-//            return $res;
-//        }
-//        if ($profperc<$this->config->item('minimal_profitperc') && empty($data['lowprofit'])) {
-//            $res['msg']='Enter Reason for Low Profit';
-//            return $res;
-//        }
-//        $this->db->select('order_cog, revenue, profit, shipping, tax, cc_fee, order_num, order_date');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_id',$order_id);
-//        $cog=$this->db->get()->row_array();
-//        $order_cog=floatval($cog['order_cog']);
-//        $revenue=floatval($cog['revenue']);
-//        $shipping=floatval($cog['shipping']);
-//        $tax=floatval($cog['tax']);
-//        $cc_fee=floatval($cog['cc_fee']);
-//        $order_num='BT'.$cog['order_num'];
-//        $order_date=$cog['order_date'];
-//        $profit=floatval($cog['profit']);
-//        /* Insert update Amount */
-//        // $this->db->set('amount_date', strtotime($amount_date));
-//        $this->db->set('amount_date', $amount_date);
-//        $this->db->set('vendor_id',$vendor_id);
-//        $this->db->set('method_id',$method_id);
-//        $this->db->set('amount_sum', $amount_sum);
-//        if (isset($data['reason'])) {
-//            $this->db->set('reason', $data['reason']);
-//        }
-//        if ($amount_id==0) {
-//            $this->db->set('order_id',$order_id);
-//            $this->db->set('create_date', time());
-//            $this->db->set('create_user',$user_id);
-//            $this->db->set('update_date',time());
-//            $this->db->set('update_user',$user_id);
-//            $this->db->insert('ts_order_amounts');
-//            $resins=$this->db->insert_id();
-//            $amount_id=$resins;
-//        } else {
-//            $this->db->set('update_date',time());
-//            $this->db->set('update_user',$user_id);
-//            $this->db->where('amount_id',$amount_id);
-//            $this->db->update('ts_order_amounts');
-//            $resins=1;
-//        }
-//        if ($resins) {
-//            $res['msg']='';
-//            $res['result']=1;
-//            /* Update order */
-//            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
-//            $this->db->from('ts_orders');
-//            $this->db->where('order_id',$order_id);
-//            $statres=$this->db->get()->row_array();
-//            $new_order_cog=$order_cog-$old_amount_sum+$amount_sum;
-//            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-//            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
-//            $this->db->set('order_cog',$new_order_cog);
-//            $this->db->set('is_shipping',$is_shipping);
-//            $this->db->set('profit',$new_profit);
-//            $this->db->set('profit_perc',$new_profit_pc);
-//            $this->db->set('order_artview', $statres['aprrovview']);
-//            $this->db->set('order_placed', $statres['placeord']);
-//            if ($new_profit_pc<$this->config->item('minimal_profitperc') && isset($data['lowprofit'])) {
-//                $this->db->set('reason', $data['lowprofit']);
-//            }
-//            $this->db->where('order_id',$order_id);
-//            $this->db->update('ts_orders');
-//            /* Insert attachments */
-//            $this->db->where('amount_id',$amount_id);
-//            $this->db->delete('ts_amount_docs');
-//            /* Insert new/old data */
-//            foreach ($attach as $row) {
-//                $fl_avail=0;
-//                if (stripos($this->config->item('pathpreload'),$row['doc_link'])) {
-//                    /* new file */
-//                    $filename=str_replace($this->config->item('pathpreload'), '', $row['doc_link']);
-//                    $dest=$this->config->item('amountattach');
-//                    $src=$this->config->item('upload_path_preload');
-//                    $res=$this->func->move_docfile($filename, $src, $dest);
-//                    if ($res) {
-//                        $fl_avail=1;
-//                        $row['doc_link']=$this->config->item('amountattach_path').$filename;
-//                    }
-//                } else {
-//                    $fl_avail=1;
-//                }
-//                if ($fl_avail) {
-//                    $dat=date('Y-m-d H:i:s',strtotime($row['upd_time']));
-//                    $this->db->set('upd_time',$dat);
-//                    $this->db->set('amount_id',$amount_id);
-//                    $this->db->set('doc_link',$row['doc_link']);
-//                    $this->db->set('doc_name',$row['doc_name']);
-//                    $this->db->insert('ts_amount_docs');
-//                }
-//            }
-//            if ($old_amount_sum!=0 && $old_amount_sum!=$amount_sum) {
-//                $notifoptions=array(
-//                    'order_num'=>$order_num,
-//                    'old_amount_sum'=>$old_amount_sum,
-//                    'amount_sum'=>$amount_sum,
-//                    'comment'=>(isset($data['comment']) ? $data['comment'] : ''),
-//                    'user_id'=>$user_id,
-//                );
-//                $this->notification_pochange_email($notifoptions);
-//            }
-//            if ($old_amount_sum!=$amount_sum) {
-//                $this->load->model('order_model');
-//
-//                /* get netprofit */
-//                $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
-//                $this->db->from('netprofit np');
-//                $this->db->where('np.profit_month',NULL);
-//                $this->db->where('np.datebgn <= ',$order_date);
-//                $this->db->where('np.dateend > ',$order_date);
-//                $netdat=$this->db->get()->row_array();
-//                if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
-//                    $this->load->model('balances_model');
-//                    $total_options=array(
-//                        'type'=>'week',
-//                        'start'=>$this->config->item('netprofit_start'),
-//                    );
-//                    $rundat=$this->balances_model->get_netprofit_runs($total_options);
-//                    $newtotalrun=$rundat['out_debtval'];
-//                    $oldtotalrun=$newtotalrun-($new_profit-$profit);
-//                    if ($oldtotalrun<0) {
-//                        $outoldrundebt='($'.number_format(abs($oldtotalrun),0,'.',',').')';
-//                    } else {
-//                        $outoldrundebt='$'.number_format($oldtotalrun,0,'.',',');
-//                    }
-//                    if ($newtotalrun<0) {
-//                        $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
-//                    } else {
-//                        $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
-//                    }
-//
-//                    $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
-//                    $netprofit=floatval($netdat['gross_profit'])-$totalcost;
-//                    $newdebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
-//                    if ($newdebt<0) {
-//                        $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
-//                    } else {
-//                        $outnewdebt='$'.number_format($newdebt,0,'.',',');
-//                    }
-//                    $olddebt=$newdebt-($new_profit-$profit);
-//                    if ($olddebt<0) {
-//                        $outolddebt='($'.number_format(abs($olddebt),0,'.',',').')';
-//                    } else {
-//                        $outolddebt='$'.number_format(abs($olddebt),0,'.',',');
-//                    }
-//                    $start_month=date('M',$netdat['datebgn']);
-//                    $start_year=date('Y',$netdat['datebgn']);
-//                    $end_month=date('M',$netdat['dateend']);
-//                    $end_year=date('Y',$netdat['dateend']);
-//                    if ($start_month!=$end_month) {
-//                        $weekname=$start_month.'/'.$end_month;
-//                    } else {
-//                        $weekname=$start_month;
-//                    }
-//                    $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
-//                    if ($start_year!=$end_year) {
-//                        $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
-//                    } else {
-//                        $weekname.=', '.$start_year;
-//                    }
-//                    $notifoptions=array(
-//                        'pochange'=>1,
-//                        'order_num'=>$order_num,
-//                        'old_amount_sum'=>$old_amount_sum,
-//                        'amount_sum'=>$amount_sum,
-//                        'olddebt'=>$outolddebt,
-//                        'newdebt'=>$outnewdebt,
-//                        'weeknum'=>$weekname,
-//                        'user_id'=>$user_id,
-//                        'comment'=>(isset($data['comment']) ? $data['comment'] : ''),
-//                        'oldtotalrun'=>$outoldrundebt,
-//                        'newtotalrun'=>$outnewrundebt,
-//                    );
-//                    $this->order_model->notify_netdebtchanged($notifoptions);
-//                }
-//            }
-//        } else {
-//            $res['msg']='New amount not inserted';
-//        }
-//        return $res;
-//    }
-//
-//    function notification_pochange_email($options) {
-//        $this->load->model('user_model');
-//        if (isset($options['amount_delete'])) {
-//            $msg_subj='PO '.$options['order_num'].' removed';
-//        } else {
-//            $msg_subj='PO '.$options['order_num'].' changed';
-//        }
-//
-//        $email_body='At '.date('h:i a').' on '.date('m/d/y');
-//        $usrdat=$this->user_model->get_user_data($options['user_id']);
-//        $email_body.=' '.$usrdat['user_name'].' changed PO '.$options['order_num'].' from $'.number_format($options['old_amount_sum'],2,'.','');
-//        $email_body.=' to $'.number_format($options['amount_sum'],2,'.','');
-//        if (isset($options['amount_delete'])) {
-//            $email_body.=' and delete amount';
-//        }
-//        if (isset($options['comment']) && $options['comment']) {
-//            $email_body.=PHP_EOL.'Reason '.$options['comment'];
-//        }
-//        $this->load->library('email');
-//        $config = $this->config->item('email_setup');
-//        $config['mailtype'] = 'text';
-//        $this->email->initialize($config);
-//        $this->email->set_newline("\r\n");
-//        $this->email->to($this->config->item('sean_email'));
-//        $from = $this->config->item('email_notification_sender');
-//        $this->email->from($from);
-//        $this->email->subject($msg_subj);
-//        $this->email->message($email_body);
-//        if (isset($options['amount_delete'])) {
-//            $this->email->send();
-//        }
-//        $this->email->clear(TRUE);
-//        return TRUE;
-//    }
-//
+
+    public function save_poamount($amtdata) {
+        $res=array('result'=>$this->error_result,'msg'=>'Unknown error');
+        $data=$amtdata['amount'];
+        $attach=$amtdata['attach'];
+        $amount_id=$data['amount_id'];
+        $order_id=$data['order_id'];
+        $amount_date=$data['amount_date'];
+        $amount_sum=floatval($data['amount_sum']);
+        $vendor_id=$data['vendor_id'];
+        $method_id=$data['method_id'];
+        $user_id=$amtdata['user_id'];
+        $is_shipping=(isset($data['is_shipping']) ? $data['is_shipping'] : 0);
+        $old_amount_sum=$data['oldamount_sum'];
+        $profperc=floatval($amtdata['order']['profit_perc']);
+
+        if (!$order_id) {
+            $res['msg']='Non-exist PO#';
+            return $res;
+        }
+        if (floatval($amount_sum)==0) {
+            $res['msg']='Amount sum not entered';
+            return $res;
+        }
+        if(intval($vendor_id)==0) {
+            $res['msg']='Select Vendor';
+            return $res;
+        }
+        if (intval($method_id)==0) {
+            $res['msg']='Select Purchase Method';
+            return $res;
+        }
+        // Special data
+        if ($amount_id && ($old_amount_sum!=$amount_sum) && empty($data['reason'])) {
+            $res['msg']='Enter Reason for Change PO Amount';
+            return $res;
+        }
+        if ($profperc<$this->config->item('minimal_profitperc') && empty($data['lowprofit'])) {
+            $res['msg']='Enter Reason for Low Profit';
+            return $res;
+        }
+        $this->db->select('order_cog, revenue, profit, shipping, tax, cc_fee, order_num, order_date');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id',$order_id);
+        $cog=$this->db->get()->row_array();
+        $order_cog=floatval($cog['order_cog']);
+        $revenue=floatval($cog['revenue']);
+        $shipping=floatval($cog['shipping']);
+        $tax=floatval($cog['tax']);
+        $cc_fee=floatval($cog['cc_fee']);
+        $order_num='BT'.$cog['order_num'];
+        $order_date=$cog['order_date'];
+        $profit=floatval($cog['profit']);
+        /* Insert update Amount */
+        $this->db->set('amount_date', $amount_date);
+        $this->db->set('vendor_id',$vendor_id);
+        $this->db->set('method_id',$method_id);
+        $this->db->set('amount_sum', $amount_sum);
+        if (isset($data['reason'])) {
+            $this->db->set('reason', $data['reason']);
+        }
+        if ($amount_id==0) {
+            $this->db->set('order_id',$order_id);
+            $this->db->set('create_date', time());
+            $this->db->set('create_user',$user_id);
+            $this->db->set('update_date',time());
+            $this->db->set('update_user',$user_id);
+            $this->db->insert('ts_order_amounts');
+            $resins=$this->db->insert_id();
+            $amount_id=$resins;
+        } else {
+            $this->db->set('update_date',time());
+            $this->db->set('update_user',$user_id);
+            $this->db->where('amount_id',$amount_id);
+            $this->db->update('ts_order_amounts');
+            $resins=1;
+        }
+        if ($resins) {
+            $res['msg']='';
+            $res['result']=$this->success_result;
+            /* Update order */
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id',$order_id);
+            $statres=$this->db->get()->row_array();
+            $new_order_cog=$order_cog-$old_amount_sum+$amount_sum;
+            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            $this->db->set('order_cog',$new_order_cog);
+            $this->db->set('is_shipping',$is_shipping);
+            $this->db->set('profit',$new_profit);
+            $this->db->set('profit_perc',$new_profit_pc);
+            $this->db->set('order_artview', $statres['aprrovview']);
+            $this->db->set('order_placed', $statres['placeord']);
+            if ($new_profit_pc<$this->config->item('minimal_profitperc') && isset($data['lowprofit'])) {
+                $this->db->set('reason', $data['lowprofit']);
+            }
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            /* Insert attachments */
+            $this->db->where('amount_id',$amount_id);
+            $this->db->delete('ts_amount_docs');
+            /* Insert new/old data */
+            foreach ($attach as $row) {
+                $fl_avail=0;
+                if (stripos($this->config->item('pathpreload'),$row['doc_link'])) {
+                    /* new file */
+                    $filename=str_replace($this->config->item('pathpreload'), '', $row['doc_link']);
+                    $dest=$this->config->item('amountattach');
+                    $src=$this->config->item('upload_path_preload');
+                    $res=$this->func->move_docfile($filename, $src, $dest);
+                    if ($res) {
+                        $fl_avail=1;
+                        $row['doc_link']=$this->config->item('amountattach_path').$filename;
+                    }
+                } else {
+                    $fl_avail=1;
+                }
+                if ($fl_avail) {
+                    $dat=date('Y-m-d H:i:s',strtotime($row['upd_time']));
+                    $this->db->set('upd_time',$dat);
+                    $this->db->set('amount_id',$amount_id);
+                    $this->db->set('doc_link',$row['doc_link']);
+                    $this->db->set('doc_name',$row['doc_name']);
+                    $this->db->insert('ts_amount_docs');
+                }
+            }
+            if ($old_amount_sum!=0 && $old_amount_sum!=$amount_sum) {
+                $notifoptions=array(
+                    'order_num'=>$order_num,
+                    'old_amount_sum'=>$old_amount_sum,
+                    'amount_sum'=>$amount_sum,
+                    'comment'=>(isset($data['comment']) ? $data['comment'] : ''),
+                    'user_id'=>$user_id,
+                );
+                $this->notification_pochange_email($notifoptions);
+            }
+            if ($old_amount_sum!=$amount_sum) {
+                $this->load->model('orders_model');
+                /* get netprofit */
+                $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+                $this->db->from('netprofit np');
+                $this->db->where('np.profit_month',NULL);
+                $this->db->where('np.datebgn <= ',$order_date);
+                $this->db->where('np.dateend > ',$order_date);
+                $netdat=$this->db->get()->row_array();
+                if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
+                    $this->load->model('balances_model');
+                    $total_options=array(
+                        'type'=>'week',
+                        'start'=>$this->config->item('netprofit_start'),
+                    );
+                    $rundat=$this->balances_model->get_netprofit_runs($total_options);
+                    $newtotalrun=$rundat['out_debtval'];
+                    $oldtotalrun=$newtotalrun-($new_profit-$profit);
+                    if ($oldtotalrun<0) {
+                        $outoldrundebt='($'.number_format(abs($oldtotalrun),0,'.',',').')';
+                    } else {
+                        $outoldrundebt='$'.number_format($oldtotalrun,0,'.',',');
+                    }
+                    if ($newtotalrun<0) {
+                        $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
+                    } else {
+                        $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
+                    }
+
+                    $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
+                    $netprofit=floatval($netdat['gross_profit'])-$totalcost;
+                    $newdebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
+                    if ($newdebt<0) {
+                        $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
+                    } else {
+                        $outnewdebt='$'.number_format($newdebt,0,'.',',');
+                    }
+                    $olddebt=$newdebt-($new_profit-$profit);
+                    if ($olddebt<0) {
+                        $outolddebt='($'.number_format(abs($olddebt),0,'.',',').')';
+                    } else {
+                        $outolddebt='$'.number_format(abs($olddebt),0,'.',',');
+                    }
+                    $start_month=date('M',$netdat['datebgn']);
+                    $start_year=date('Y',$netdat['datebgn']);
+                    $end_month=date('M',$netdat['dateend']);
+                    $end_year=date('Y',$netdat['dateend']);
+                    if ($start_month!=$end_month) {
+                        $weekname=$start_month.'/'.$end_month;
+                    } else {
+                        $weekname=$start_month;
+                    }
+                    $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
+                    if ($start_year!=$end_year) {
+                        $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
+                    } else {
+                        $weekname.=', '.$start_year;
+                    }
+                    $notifoptions=array(
+                        'pochange'=>1,
+                        'order_num'=>$order_num,
+                        'old_amount_sum'=>$old_amount_sum,
+                        'amount_sum'=>$amount_sum,
+                        'olddebt'=>$outolddebt,
+                        'newdebt'=>$outnewdebt,
+                        'weeknum'=>$weekname,
+                        'user_id'=>$user_id,
+                        'comment'=>(isset($data['comment']) ? $data['comment'] : ''),
+                        'oldtotalrun'=>$outoldrundebt,
+                        'newtotalrun'=>$outnewrundebt,
+                    );
+                    $this->orders_model->notify_netdebtchanged($notifoptions);
+                }
+            }
+        } else {
+            $res['msg']='New amount not inserted';
+        }
+        return $res;
+    }
+
+    public function notification_pochange_email($options) {
+
+        if (isset($options['amount_delete'])) {
+            $msg_subj='PO '.$options['order_num'].' removed';
+        } else {
+            $msg_subj='PO '.$options['order_num'].' changed';
+        }
+
+        $email_body='At '.date('h:i a').' on '.date('m/d/y');
+        $usrdat=$this->user_model->get_user_data($options['user_id']);
+        $email_body.=' '.$usrdat['user_name'].' changed PO '.$options['order_num'].' from $'.number_format($options['old_amount_sum'],2,'.','');
+        $email_body.=' to $'.number_format($options['amount_sum'],2,'.','');
+        if (isset($options['amount_delete'])) {
+            $email_body.=' and delete amount';
+        }
+        if (isset($options['comment']) && $options['comment']) {
+            $email_body.=PHP_EOL.'Reason '.$options['comment'];
+        }
+        $this->load->library('email');
+        $config = $this->config->item('email_setup');
+        $config['mailtype'] = 'text';
+        $this->email->initialize($config);
+        $this->email->set_newline("\r\n");
+        $this->email->to($this->config->item('sean_email'));
+        $from = $this->config->item('email_notification_sender');
+        $this->email->from($from);
+        $this->email->subject($msg_subj);
+        $this->email->message($email_body);
+        if (isset($options['amount_delete'])) {
+            $this->email->send();
+        }
+        $this->email->clear(TRUE);
+        return TRUE;
+    }
+
 //    function save_amount($amount_id,$order_id,$amount_date,$amount_sum,$vendor_id, $method_id,$user_id,$is_shipping,$attach) {
 //        $res=array('result'=>0,'msg'=>'Unknown error');
 //        /* Check Incoming Data */
