@@ -4,7 +4,7 @@
     <div class="purchaseorder-row">
         <div class="poamount_label">Amount Date:</div>
         <div class="poamount-dateinput">
-            <input type="text" class="poamount_date" name="amount_date" id="amount_date"  value="<?=date('m/d/y',$amount['amount_date'])?>"/>
+            <input type="text" class="poamount_date" name="amount_date" id="amount_date"  value="<?=date('m/d/Y',$amount['amount_date'])?>"/>
         </div>
         <div class="poamount_label">PO Amount:</div>
         <div class="poamount-amntinput">

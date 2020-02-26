@@ -1149,7 +1149,7 @@ Class Payments_model extends MY_Model {
                 floatval($amount_data['amount_sum']-$amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
             $out['profval']=round(floatval($order_data['revenue'])-$costs,2);
             $out['profperc']=round(($out['profval']/$order_data['revenue'])*100,1);
-            $out['profclass']=$this->profit_class($out['profperc']);
+            $out['profclass']=profit_bgclass($out['profperc']);
         }
         return $out;
     }

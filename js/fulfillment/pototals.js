@@ -285,11 +285,20 @@ function lock_poeditflds(type) {
         // $("div.poamount-shippinginput").jqTransform();
         // $("input#po_shipping").ezMark();
         $("input#amount_date").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+        }).on("change", function() {
+            show_amountsave();
+            save_amntdetails('amount_date', $(this).val());
+        });
+        /*
+        $("#input#amount_date").onchange({
             onSelect: function(selectedDate) {
                 show_amountsave();
                 save_amntdetails('amount_date', selectedDate);
             }
-        });
+
+        })*/
     }
 }
 
