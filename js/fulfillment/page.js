@@ -25,6 +25,10 @@ function init_page(objid) {
             $("#pototalsview").show();
             init_purchase_orders();
             break;
+        case 'printshopinventview':
+            $("#printshopinventview").show();
+            // init_inventory_data();
+            break;
     }
 
 }

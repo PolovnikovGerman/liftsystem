@@ -16,6 +16,9 @@
         <?php if (isset($pototalsview)) { ?>
             <div class="fulfillcontentarea" id="pototalsview" style="display: none;"><?=$pototalsview?></div>
         <?php } ?>
+        <?php if (isset($printshopinventview)) { ?>
+            <div class="fulfillcontentarea" id="printshopinventview" style="display: none;"><?=$printshopinventview?></div>
+        <?php } ?>
     </div>
 </div>
 

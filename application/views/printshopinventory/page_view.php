@@ -3,11 +3,11 @@
     <input type="hidden" id="showonlinemaxvalue" value="0"/>
     <div class="maxinventsum">
         <div class="datarow">
-            <div class="label">Current Inventory Value:</div>
+            <div class="labeltxt">Current Inventory Value:</div>
             <div class="valuedata" id="curinvtotal">&nbsp;</div>            
         </div>
         <div class="datarow">
-            <div class="label">Max Inventory Value:</div>
+            <div class="labeltxt">Max Inventory Value:</div>
             <div class="valuedata"><?=MoneyOutput($maxsum)?></div>            
         </div>        
     </div>
@@ -33,7 +33,7 @@
     <div id="stockdataarea" style="display: none; width: 366px; height: 346px;"></div>
     <div id="onboatarea" style="display: none; width: 366px; height: 346px;"></div>
 </div>
-<input type="hidden" id="purchaseordersbrand" value="<?=$brand?>"/>
-<div id="purchaseordersbrandmenu">
+<input type="hidden" id="printshopinventbrand" value="<?=$brand?>"/>
+<div id="printshopinventbrandmenu">
     <?=$top_menu?>
 </div>

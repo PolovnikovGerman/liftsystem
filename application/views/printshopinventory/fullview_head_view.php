@@ -7,7 +7,7 @@
     <!-- #ff9c00 - Getting Low -->
     <?php if($permission == "Profit") { ?>
         <div class="additcost">
-            <div class="label">Add’l:</div>
+            <div class="labeltxt">Add’l:</div>
             <div class="value">
                 <input type="text" class="addlcostinpt" id="invaddvcost" value="$<?= $addcost ?>"/>
             </div>

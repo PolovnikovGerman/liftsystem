@@ -6,6 +6,11 @@ class Fulfillment extends MY_Controller
 
     private $pagelink = '/fulfillment';
 
+    private $container_with=60;
+    private $maxlength=240;
+    private $needlistlength=180;
+    private $salesreplength=300;
+
     public function __construct()
     {
         parent::__construct();
@@ -56,9 +61,9 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
                 $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
             } elseif ($row['item_link']=='#printshopinventview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
-                $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
+                $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
+                $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -644,6 +649,77 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+    // Inventory
+    // Inventory Data
+    public function inventory_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('printshop_model');
+            $postdata=$this->input->post();
+            $options=array(
+                'orderby'=>'item_num',
+                'direct'=>'asc',
+            );
+
+            $data=$this->printshop_model->get_printshopitems($options);
+
+            $permission=$this->user_model->get_user_data($this->USR_ID);
+            // Make Total Inv content
+            $totaloptions=array(
+                'data'=>$data['inventory'],
+            );
+            if (isset($postdata['salesreport']) && $postdata['salesreport']==1) {
+                $mdata['totalinvcontent']=$this->load->view('invsalesrep/totalinventory_data_view', $totaloptions, TRUE);
+                $specopt=array(
+                    'data'=>$data['inventory'],
+                    'permission'=>$permission['profit_view'],
+                );
+
+                $mdata['speccontent']=$this->load->view('invsalesrep/specinventory_data_view', $specopt, TRUE);
+            } else {
+                $mdata['totalinvcontent']=$this->load->view('printshopinventory/totalinventory_data_view', $totaloptions, TRUE);
+                $specopt=array(
+                    'data'=>$data['inventory'],
+                    'permission'=>$permission['profit_view'],
+                );
+
+                $mdata['speccontent']=$this->load->view('printshopinventory/specinventory_data_view', $specopt, TRUE);
+            }
+            $mdata['total_inventory']=MoneyOutput($data['inventtotal']);
+            // Get OnBoat Data
+            $colors=$data['colors'];
+            $boatdata = $this->printshop_model->get_data_onboat();
+            $containers_view='';
+            foreach ($boatdata as $drow) {
+                $boatcontndata=$this->printshop_model->get_container_view($drow['onboat_container'], $colors);
+                $boptions=array(
+                    'data'=>$boatcontndata,
+                    'onboat_container'=>$drow['onboat_container'],
+                    'onboat_status'=>$drow['onboat_status'],
+                );
+                $containers_view.=$this->load->view('printshopinventory/container_data_view', $boptions, TRUE);
+            }
+            // foreach ($data)
+            $slider_width=60*(count($boatdata));
+            if (isset($postdata['salesreport']) && $postdata['salesreport']==1) {
+                $margin=$this->salesreplength-$slider_width;
+            } else {
+                $margin=$this->maxlength-$slider_width;
+            }
+            $boatoptions=array(
+                'width'=>$slider_width,
+                'margin'=>($margin>0 ? 0 : $margin),
+                'boatcontent'=>$containers_view,
+            );
+            $mdata['onboatcontent']=$this->load->view('printshopinventory/onboatdata_view', $boatoptions, TRUE);
+            // $mdata['width'] = $slider_width-240;
+            $mdata['margin']=$margin;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
@@ -734,13 +810,13 @@ class Fulfillment extends MY_Controller
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
     }
 
-    private function _prepare_printshop_inventory() {
+    private function _prepare_printshop_inventory($brand, $top_menu) {
         $this->load->model('printshop_model');
         $addcost=$this->printshop_model->invaddcost();
         $totals=$this->printshop_model->count_prinshop_items();
-        $totalinv=$this->printshop_model->get_inventory_totals();
+        $totalinv=$this->printshop_model->get_inventory_totals($brand);
         $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-        $data = $this->printshop_model->get_data_onboat();
+        $data = $this->printshop_model->get_data_onboat($brand);
         $boathead_view='';
         foreach ($data as $drow) {
             $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
@@ -778,8 +854,9 @@ class Fulfillment extends MY_Controller
             'totals'=>$totals,
             'fullview'=>$headview,
             'maxsum'=>$totalinv['maxsum'],
+            'brand' => $brand,
+            'top_menu' => $top_menu,
         );
-
         $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
         return $content;
     }
