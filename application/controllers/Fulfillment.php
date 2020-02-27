@@ -650,6 +650,43 @@ class Fulfillment extends MY_Controller
         }
     }
     // Inventory
+    public function inventory_brand() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('printshop_model');
+                $addcost=$this->printshop_model->invaddcost();
+                $totalinv=$this->printshop_model->get_inventory_totals($brand);
+                $mdata['maxsum'] = MoneyOutput($totalinv['maxsum']);
+                $mdata['invetorytotal'] = $this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+                $data = $this->printshop_model->get_data_onboat($brand);
+                $boathead_view='';
+                foreach ($data as $drow) {
+                    $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+                }
+                // Build head content
+                $slider_width=60*count($data);
+                $margin = $this->maxlength-$slider_width;
+                $margin=($margin>0 ? 0 : $margin);
+                $boatoptions=array(
+                    'data'=>$data,
+                    'container_view'=>$boathead_view,
+                    'width' => $slider_width,
+                    'margin' => $margin,
+                );
+                $mdata['onboathead'] = $this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
+                $mdata['width']=$slider_width.'px';
+                $mdata['margin'] = $margin.'px';
+                $mdata['download_view'] =$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     // Inventory Data
     public function inventory_data() {
         if ($this->isAjax()) {
@@ -657,9 +694,11 @@ class Fulfillment extends MY_Controller
             $error='';
             $this->load->model('printshop_model');
             $postdata=$this->input->post();
+            $brand = ifset($postdata,'brand');
             $options=array(
                 'orderby'=>'item_num',
                 'direct'=>'asc',
+                'brand' => $brand,
             );
 
             $data=$this->printshop_model->get_printshopitems($options);
@@ -689,7 +728,7 @@ class Fulfillment extends MY_Controller
             $mdata['total_inventory']=MoneyOutput($data['inventtotal']);
             // Get OnBoat Data
             $colors=$data['colors'];
-            $boatdata = $this->printshop_model->get_data_onboat();
+            $boatdata = $this->printshop_model->get_data_onboat($brand);
             $containers_view='';
             foreach ($boatdata as $drow) {
                 $boatcontndata=$this->printshop_model->get_container_view($drow['onboat_container'], $colors);
@@ -822,6 +861,7 @@ class Fulfillment extends MY_Controller
             $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
         }
         // Build head content
+        // $slider_width=60*count($data);
         $slider_width=60*count($data);
         $margin = $this->maxlength-$slider_width;
         $margin=($margin>0 ? 0 : $margin);

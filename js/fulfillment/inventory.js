@@ -7,6 +7,43 @@ $(document).ready(function(){
     slidermargin=parseInt($("div.after_head").css('margin-left'));
 });
 
+function init_inventory_content() {
+    // init_inventory_data();
+    // Change Brand
+    $("#printshopinventbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#printshopinventbrand").val(brand);
+        $("#printshopinventbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#printshopinventbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#printshopinventbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_printinventory_brand();
+    });
+}
+
+function search_printinventory_brand() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+    var url = '/fulfillment/inventory_brand';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#maximuminvent").empty().html(response.data.maxsum);
+            $("#inventonboatheah").empty().html(response.data.onboathead);
+            $("#inventtotal").empty().html(response.data.invetorytotal);
+            $("#inventdownloadarea").css('width',response.data.width).css('margin-left',response.data.margin).empty().html(response.data.download_view);
+            init_inventory_data();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
 function init_inventory_data() {
     var viewtype=$("input#invpageview").val();
     var url = "/fulfillment/inventory_data";
@@ -286,7 +323,7 @@ function init_inventory_view() {
     });
     // Show Pantone Color
     $("#printshopinventor").find("div.specsdata.full").each(function(){
-        $(this).bt({
+    /*    $(this).bt({
             fill: '#ffffff',
             trigger: 'hover',
             width: '200px',
@@ -294,18 +331,8 @@ function init_inventory_view() {
             positions: ['left'],
             ajaxPath: ["$(this).attr('href')"]
         });
+    */
     });
-    // Show Max parameter per item
-//    $("div.itempercent").each(function(){
-//        $(this).bt({
-//            fill: '#ffffff',
-//            trigger: 'hover',
-//            width: '300px',
-//            ajaxCache: false,
-//            positions: ['top'],
-//            ajaxPath: ["$(this).attr('href')"]
-//        });
-//    });
 
     // Download Excell file of OnBoat container
     $("#printshopinventor").find("div.download_link").unbind('click').click(function(){

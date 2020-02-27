@@ -3,6 +3,10 @@
 Class Printshop_model extends MY_Model
 {
 
+    const ROW_UNCHANGED = 0;
+    const ROW_INSERT = 1;
+    const ROW_DELETE = 2;
+
     private $error_message='Unknown error. Try later';
     private $empty_html_content='&nbsp;';
     private $outstockclass='outstock';
@@ -149,199 +153,182 @@ Class Printshop_model extends MY_Model
 //        }
 //
 //    }
-//
-//
-//    public function get_printshopitems($options=array()) {
-//        $addlcost=$this->invaddcost();
-//        $this->db->select('*');
-//        $this->db->from('ts_printshop_items');
-//        // Options where
-//        if (isset($options['orderby'])) {
-//            if (isset($options['direct'])) {
-//                $this->db->order_by($options['orderby'], $options['direct']);
-//            } else {
-//                $this->db->order_by($options['orderby']);
-//            }
-//        } else {
-//            $this->db->order_by('printshop_item_id', 'desc');
-//        }
-//        $res=$this->db->get()->result_array();
-//        $numpp=1;
-//        $total_invent=0;
-//        $inventory = array();
-//        $colorsdata=array();
-//        foreach ($res as $row) {
-//            // Add to colorsdat
-//            $colorsdata[]=array(
-//                'printshop_item_id'=>$row['printshop_item_id'],
-//                'printshop_color_id'=>0,
-//                'type'=>'item',
-//                'numpp'=>$this->empty_html_content,
-//                'item_num'=>$row['item_num'],
-//                'item_name'=>$row['item_name'],
-//            );
-//            $itemkey=count($colorsdata)-1;
-//            $inventory[]=array(
-//                'printshop_item_id'=>$row['printshop_item_id'],
-//                'printshop_color_id'=>0,
-//                'type'=>'item',
-//                'item_num'=>$row['item_num'],
-//                'item_name'=>$row['item_name'],
-//                'percenturl' => 'href="/fulfillment/max_item_percent/?id='.$row['printshop_item_id'].'"',
-//                'plate_temp'=>$row['plate_temp'],
-//                'proof_temp'=>$row['proof_temp'],
-//                'item_label'=>$row['item_label'],
-//                'platetemp'=>(empty($row['plate_temp']) ? 'empty' : 'full'),
-//                'prooftemp'=>(empty($row['proof_temp']) ? 'empty' : 'full'),
-//                'itemlabel'=>(empty($row['item_label']) ? 'empty' : 'full'),
-//            );
-//            // Get data by colors
-//            $colors=$this->get_item_colors($row['printshop_item_id']);
-//            $sum_available = 0;
-//            $sum_instock = 0;
-//            $sum_reserved = 0;
-//            $sum_max=0;
-//            foreach ($colors as $crow) {
-//                // Get data
-//                $income=$this->printcolor_income($crow['printshop_color_id']);
-//                $outcome=$this->printcolor_outcome($crow['printshop_color_id']);
-//                $reserved=$this->printcolor_reserved($crow['printshop_item_id'], $crow['color']);
-//                $crow['specfile'] = $crow['color_descript'];
-//                // -------------------------------------------------------------------
-//                $instock=$income-$outcome;
-//                $sum_instock = $sum_instock + $instock;
-//                $available=$instock-$reserved;
-//                $total_invent+=($available*$crow['price']);
-//                $sum_available = $sum_available + $available;
-//                $sum_reserved = $sum_reserved + $reserved;
-//                $max=$crow['suggeststock'];
-//                $sum_max = $sum_max + $crow['suggeststock'];
-//                $stockperc=$this->empty_html_content;
-//                $outpics = $this->empty_html_content;
-//                $picsclass = '';
-//                $stockperc=$this->empty_html_content;
-//                $stockclass='';
-//                if ($max!=0) {
-//                    $stockperc=round($instock/$max*100,0);
-//                    /*
-//                    if ($instock<=0 || $available<=0) {
-//                        $stockclass=$this->outstockclass;
-//                    }
-//                    if ($stockperc>0 && $stockperc<$this->config->item('min_stockperc')) {
-//                        $stockclass='lowstock';
-//                    }
-//                     *
-//                     */
-//                    if ($stockperc <= $this->config->item('invoutstock')) {
-//                        $stockclass = $this->outstockclass;
-//                    } elseif ($stockperc <= $this->config->item('invlowstock')) {
-//                        $stockclass = $this->lowstockclass;
-//                    }
-//                }
-//                $totalea=($crow['price']!=0 ? $crow['price']+$addlcost : '-');
-//                $ndecim=2;
-//                $whole = floor($crow['price']*100);
-//                $fraction = $crow['price']*100 - $whole;
-//                if (intval($fraction*10)>0) {
-//                    $ndecim=3;
-//                }
-//
-//                $pics = $this->get_picsattachments($crow['printshop_color_id']);
-//                $colorsdata[]=array(
-//                    'printshop_item_id'=>$row['printshop_item_id'],
-//                    'printshop_color_id'=>$crow['printshop_color_id'],
-//                    'type'=>'color',
-//                    'item_num'=>$this->empty_html_content,
-//                    'item_name'=>$crow['color'],
-//                    'notreorder'=>$crow['notreorder'],
-//                );
-//                $inventory[]=array(
-//                    'printshop_item_id'=>$row['printshop_item_id'],
-//                    'printshop_color_id'=>$crow['printshop_color_id'],
-//                    'type'=>'color',
-//                    'numpp'=>$numpp,
-//                    'item_num'=>$this->empty_html_content,
-//                    'item_name'=>$crow['color'],
-//                    'percent'=>$stockperc.'%',
-//                    'instock'=>($instock<=0 ? $this->outstoklabel : QTYOutput($instock)),
-//                    'reserved'=>($reserved==0 ? $this->empty_html_content : $reserved),
-//                    'availabled'=>($available==0 ? $this->empty_html_content : $available),
-//                    'max'=>($max==0 ? $this->empty_html_content : QTYOutput($max)),
-//                    'price'=>MoneyOutput($crow['price'],$ndecim),
-//                    'total'=>MoneyOutput($totalea,3),
-//                    'platetemp'=>(empty($crow['plate_temp']) ? 'empty' : ''),
-//                    'prooftemp'=>(empty($crow['proof_temp']) ? 'empty' : ''),
-//                    'pics'=>$outpics,
-//                    'color_descript'=>$crow['color_descript'],
-//                    'color_order'=>$crow['color_order'],
-//                    'stockclass'=>$stockclass,
-//                    'specs_desc' => $crow['specfile'],
-//                    'specsclass'=>(empty($crow['specfile']) ? 'empty' : 'full'),
-//                    'picsclass'=>(count($pics) >0 ? '' : 'empty'),
-//                    'specsurl' => (empty($crow['specfile']) ? '' : 'href="/fulfillment/inventory_specs_bt/?id='.$crow['printshop_color_id'].'"'),
-//                    'percenturl' => 'href="/fulfillment/max_color_percent/?id='.$crow['printshop_color_id'].'"',
-//                    'notreorder'=>$crow['notreorder'],
-//                    'price_int'=>$crow['price'],
-//                    'total_int'=>round($totalea,3),
-//                    'instock_int'=>$instock,
-//                    'reserved_int'=>$reserved,
-//                    'availabled_int'=>$available,
-//                );
-//                $numpp++;
-//            }
-//            // Change parameters of item
-//            $picsclass = '';
-//            $stockclass='';
-//            $stockperc=$this->empty_html_content;
-//            $outpics = $this->empty_html_content;
-//            $stockperc=$this->empty_html_content;
-//            if ($sum_max!=0) {
-//                $stockperc=round($sum_instock/$sum_max*100,0);
-////                if ($sum_instock<=0 || $sum_available<=0) {
-////                    $stockclass=$this->outstockclass;
-////                }
-////                if ($stockperc>0 && $stockperc<$this->config->item('min_stockperc')) {
-////                    $stockclass='lowstock';
-////                }
-//                if ($stockperc<=$this->config->item('invoutstock')) {
-//                    $stockclass=$this->outstockclass;
-//                } elseif ($stockperc<=$this->config->item('invlowstock')) {
-//                    $stockclass=$this->lowstockclass;
-//                }
-//
-//            }
-//
-//            $inventory[$itemkey]['percent']=$stockperc.'%';
-//            $inventory[$itemkey]['instock']=($sum_instock==0 ? $this->empty_html_content : QTYOutput($sum_instock));
-//            $inventory[$itemkey]['reserved']=($sum_reserved==0 ? $this->empty_html_content : QTYOutput($sum_reserved));
-//            $inventory[$itemkey]['availabled']=($sum_available==0 ? $this->empty_html_content : QTYOutput($sum_available));
-//            $inventory[$itemkey]['max']=($sum_max==0 ? $this->empty_html_content : QTYOutput($sum_max));
-//            $inventory[$itemkey]['price']=$this->empty_html_content;
-//            $inventory[$itemkey]['total']=$this->empty_html_content;
-//            $inventory[$itemkey]['platetemp']=(empty($row['plate_temp']) ? 'empty' : '');
-//            $inventory[$itemkey]['prooftemp']=(empty($row['proof_temp']) ? 'empty' : '');;
-//            $inventory[$itemkey]['pics']=$this->empty_html_content;
-//            $inventory[$itemkey]['color_descript']=$this->empty_html_content;
-//            $inventory[$itemkey]['color_order']='';
-//            $inventory[$itemkey]['stockclass']=$stockclass;
-//            $inventory[$itemkey]['specs_desc']=$this->empty_html_content;
-//            $inventory[$itemkey]['specsclass']='';
-//            $inventory[$itemkey]['picsclass']='';
-//            $inventory[$itemkey]['specsurl']='';
-//            $inventory[$itemkey]['price_int']='';
-//            $inventory[$itemkey]['total_int']='';
-//            $inventory[$itemkey]['instock_int']=$sum_instock;
-//            $inventory[$itemkey]['reserved_int']=$sum_reserved;
-//            $inventory[$itemkey]['availabled_int']=$sum_available;
-//        }
-//        $out=array(
-//            'inventory'=>$inventory,
-//            'colors'=>$colorsdata,
-//            'inventtotal'=>round(floatval($total_invent),2),
-//        );
-//        return $out;
-//    }
-//
+
+
+    public function get_printshopitems($options=array()) {
+        $addlcost=$this->invaddcost();
+        $this->db->select('*');
+        $this->db->from('ts_printshop_items');
+        // Options where
+        if (isset($options['orderby'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['orderby'], $options['direct']);
+            } else {
+                $this->db->order_by($options['orderby']);
+            }
+        } else {
+            $this->db->order_by('printshop_item_id', 'desc');
+        }
+        $res=$this->db->get()->result_array();
+        $numpp=1;
+        $total_invent=0;
+        $inventory = array();
+        $colorsdata=array();
+        foreach ($res as $row) {
+            // Add to colorsdat
+            $colorsdata[]=array(
+                'printshop_item_id'=>$row['printshop_item_id'],
+                'printshop_color_id'=>0,
+                'type'=>'item',
+                'numpp'=>$this->empty_html_content,
+                'item_num'=>$row['item_num'],
+                'item_name'=>$row['item_name'],
+            );
+            $itemkey=count($colorsdata)-1;
+            $inventory[]=array(
+                'printshop_item_id'=>$row['printshop_item_id'],
+                'printshop_color_id'=>0,
+                'type'=>'item',
+                'item_num'=>$row['item_num'],
+                'item_name'=>$row['item_name'],
+                'percenturl' => 'href="/fulfillment/max_item_percent/?id='.$row['printshop_item_id'].'"',
+                'plate_temp'=>$row['plate_temp'],
+                'proof_temp'=>$row['proof_temp'],
+                'item_label'=>$row['item_label'],
+                'platetemp'=>(empty($row['plate_temp']) ? 'empty' : 'full'),
+                'prooftemp'=>(empty($row['proof_temp']) ? 'empty' : 'full'),
+                'itemlabel'=>(empty($row['item_label']) ? 'empty' : 'full'),
+            );
+            // Get data by colors
+            $colors=$this->get_item_colors($row['printshop_item_id']);
+            $sum_available = 0;
+            $sum_instock = 0;
+            $sum_reserved = 0;
+            $sum_max=0;
+            foreach ($colors as $crow) {
+                // Get data
+                $income=$this->printcolor_income($crow['printshop_color_id'], $options['brand']);
+                $outcome=$this->printcolor_outcome($crow['printshop_color_id'], $options['brand']);
+                $reserved=$this->printcolor_reserved($crow['printshop_item_id'], $crow['color'], $options['brand']);
+                $crow['specfile'] = $crow['color_descript'];
+                // -------------------------------------------------------------------
+                $instock=$income-$outcome;
+                $sum_instock = $sum_instock + $instock;
+                $available=$instock-$reserved;
+                $total_invent+=($available*$crow['price']);
+                $sum_available = $sum_available + $available;
+                $sum_reserved = $sum_reserved + $reserved;
+                $max=$crow['suggeststock'];
+                $sum_max = $sum_max + $crow['suggeststock'];
+                $stockperc=$this->empty_html_content;
+                $outpics = $this->empty_html_content;
+                $picsclass = '';
+                $stockperc=$this->empty_html_content;
+                $stockclass='';
+                if ($max!=0) {
+                    $stockperc=round($instock/$max*100,0);
+                    if ($stockperc <= $this->config->item('invoutstock')) {
+                        $stockclass = $this->outstockclass;
+                    } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                        $stockclass = $this->lowstockclass;
+                    }
+                }
+                $totalea=($crow['price']!=0 ? $crow['price']+$addlcost : '-');
+                $ndecim=2;
+                $whole = floor($crow['price']*100);
+                $fraction = $crow['price']*100 - $whole;
+                if (intval($fraction*10)>0) {
+                    $ndecim=3;
+                }
+
+                $pics = $this->get_picsattachments($crow['printshop_color_id']);
+                $colorsdata[]=array(
+                    'printshop_item_id'=>$row['printshop_item_id'],
+                    'printshop_color_id'=>$crow['printshop_color_id'],
+                    'type'=>'color',
+                    'item_num'=>$this->empty_html_content,
+                    'item_name'=>$crow['color'],
+                    'notreorder'=>$crow['notreorder'],
+                );
+                $inventory[]=array(
+                    'printshop_item_id'=>$row['printshop_item_id'],
+                    'printshop_color_id'=>$crow['printshop_color_id'],
+                    'type'=>'color',
+                    'numpp'=>$numpp,
+                    'item_num'=>$this->empty_html_content,
+                    'item_name'=>$crow['color'],
+                    'percent'=>$stockperc.'%',
+                    'instock'=>($instock<=0 ? $this->outstoklabel : QTYOutput($instock)),
+                    'reserved'=>($reserved==0 ? $this->empty_html_content : $reserved),
+                    'availabled'=>($available==0 ? $this->empty_html_content : $available),
+                    'max'=>($max==0 ? $this->empty_html_content : QTYOutput($max)),
+                    'price'=>MoneyOutput($crow['price'],$ndecim),
+                    'total'=>MoneyOutput($totalea,3),
+                    'platetemp'=>(empty($crow['plate_temp']) ? 'empty' : ''),
+                    'prooftemp'=>(empty($crow['proof_temp']) ? 'empty' : ''),
+                    'pics'=>$outpics,
+                    'color_descript'=>$crow['color_descript'],
+                    'color_order'=>$crow['color_order'],
+                    'stockclass'=>$stockclass,
+                    'specs_desc' => $crow['specfile'],
+                    'specsclass'=>(empty($crow['specfile']) ? 'empty' : 'full'),
+                    'picsclass'=>(count($pics) >0 ? '' : 'empty'),
+                    'specsurl' => (empty($crow['specfile']) ? '' : 'href="/fulfillment/inventory_specs_bt/?id='.$crow['printshop_color_id'].'"'),
+                    'percenturl' => 'href="/fulfillment/max_color_percent/?id='.$crow['printshop_color_id'].'"',
+                    'notreorder'=>$crow['notreorder'],
+                    'price_int'=>$crow['price'],
+                    'total_int'=>round($totalea,3),
+                    'instock_int'=>$instock,
+                    'reserved_int'=>$reserved,
+                    'availabled_int'=>$available,
+                );
+                $numpp++;
+            }
+            // Change parameters of item
+            $picsclass = '';
+            $stockclass='';
+            $stockperc=$this->empty_html_content;
+            $outpics = $this->empty_html_content;
+            $stockperc=$this->empty_html_content;
+            if ($sum_max!=0) {
+                $stockperc=round($sum_instock/$sum_max*100,0);
+                if ($stockperc<=$this->config->item('invoutstock')) {
+                    $stockclass=$this->outstockclass;
+                } elseif ($stockperc<=$this->config->item('invlowstock')) {
+                    $stockclass=$this->lowstockclass;
+                }
+            }
+            $inventory[$itemkey]['percent']=$stockperc.'%';
+            $inventory[$itemkey]['instock']=($sum_instock==0 ? $this->empty_html_content : QTYOutput($sum_instock));
+            $inventory[$itemkey]['reserved']=($sum_reserved==0 ? $this->empty_html_content : QTYOutput($sum_reserved));
+            $inventory[$itemkey]['availabled']=($sum_available==0 ? $this->empty_html_content : QTYOutput($sum_available));
+            $inventory[$itemkey]['max']=($sum_max==0 ? $this->empty_html_content : QTYOutput($sum_max));
+            $inventory[$itemkey]['price']=$this->empty_html_content;
+            $inventory[$itemkey]['total']=$this->empty_html_content;
+            $inventory[$itemkey]['platetemp']=(empty($row['plate_temp']) ? 'empty' : '');
+            $inventory[$itemkey]['prooftemp']=(empty($row['proof_temp']) ? 'empty' : '');;
+            $inventory[$itemkey]['pics']=$this->empty_html_content;
+            $inventory[$itemkey]['color_descript']=$this->empty_html_content;
+            $inventory[$itemkey]['color_order']='';
+            $inventory[$itemkey]['stockclass']=$stockclass;
+            $inventory[$itemkey]['specs_desc']=$this->empty_html_content;
+            $inventory[$itemkey]['specsclass']='';
+            $inventory[$itemkey]['picsclass']='';
+            $inventory[$itemkey]['specsurl']='';
+            $inventory[$itemkey]['price_int']='';
+            $inventory[$itemkey]['total_int']='';
+            $inventory[$itemkey]['instock_int']=$sum_instock;
+            $inventory[$itemkey]['reserved_int']=$sum_reserved;
+            $inventory[$itemkey]['availabled_int']=$sum_available;
+        }
+        $out=array(
+            'inventory'=>$inventory,
+            'colors'=>$colorsdata,
+            'inventtotal'=>round(floatval($total_invent),2),
+        );
+        return $out;
+    }
+
 //    public function get_printshop_items($options=array()) {
 //        $addlcost=$this->invaddcost();
 //        $this->db->select('*');
@@ -753,14 +740,15 @@ Class Printshop_model extends MY_Model
     }
 
     public function printcolor_outcome($printshop_color_id, $brand) {
-        $this->db->select('sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
-        $this->db->from('ts_order_amounts');
+        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
+        $this->db->from('ts_order_amounts oa');
         $this->db->where('printshop',1);
         if ($printshop_color_id>0) {
             $this->db->where('printshop_color_id', $printshop_color_id);
         }
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            $this->db->join('ts_orders o','oa.order_id=o.order_id');
+            $this->db->where('o.brand', $brand);
         }
         $data=$this->db->get()->row_array();
         $outcome=intval($data['shipped'])+intval($data['kepted'])+intval($data['misprint']);
@@ -781,33 +769,33 @@ Class Printshop_model extends MY_Model
 
     }
 
-//    public function get_item_colors($printshop_item_id) {
-//        $this->db->select('tspc.*');
-//        $this->db->from('ts_printshop_colors tspc');
-//        /*$this->db->join('ts_printshop_instock tspi', 'tspi.printshop_color_id = tspc.printshop_color_id');*/
-//        $this->db->where('tspc.printshop_item_id', $printshop_item_id);
-//        /*$this->db->group_by('tspi.instock_date');*/
-//        // $this->db->order_by('printshop_color_id','desc');
-//        $this->db->order_by('tspc.color');
-//        $res=$this->db->get()->result_array();
-//        $str = $this->db->last_query();
-//        return $res;
-//    }
-//
-//    function get_picsattachments($printshop_color_id) {
-//        $data = $this->db->select('*')
-//            ->from('ts_printshop_pics')
-//            ->where("printshop_color_id", $printshop_color_id)
-//            ->get();
-//        $data = $data->result_array();
-//
-//        foreach($data as &$row) {
-//            $row["status"] = self::ROW_UNCHANGED;
-//        }
-//
-//        return $data;
-//    }
-//
+    public function get_item_colors($printshop_item_id) {
+        $this->db->select('tspc.*');
+        $this->db->from('ts_printshop_colors tspc');
+        /*$this->db->join('ts_printshop_instock tspi', 'tspi.printshop_color_id = tspc.printshop_color_id');*/
+        $this->db->where('tspc.printshop_item_id', $printshop_item_id);
+        /*$this->db->group_by('tspi.instock_date');*/
+        // $this->db->order_by('printshop_color_id','desc');
+        $this->db->order_by('tspc.color');
+        $res=$this->db->get()->result_array();
+        $str = $this->db->last_query();
+        return $res;
+    }
+
+    public function get_picsattachments($printshop_color_id) {
+        $data = $this->db->select('*')
+            ->from('ts_printshop_pics')
+            ->where("printshop_color_id", $printshop_color_id)
+            ->get();
+        $data = $data->result_array();
+
+        foreach($data as &$row) {
+            $row["status"] = self::ROW_UNCHANGED;
+        }
+
+        return $data;
+    }
+
 //    function save_uploadpicsattach($filename, $printshop_color_id) {
 //        $this->db->set('pics',$filename);
 //        $this->db->set('printshop_color_id',$printshop_color_id);
@@ -2308,247 +2296,247 @@ Class Printshop_model extends MY_Model
         return $out;
     }
 
-//    public function get_container_view($onboat_container, $colors) {
-//        $this->db->select('b.*');
-//        $this->db->from('ts_printshop_onboats b');
-//        $this->db->where('b.onboat_container', $onboat_container);
-//        $contdata=$this->db->get()->result_array();
-//        $out=array();
-//        foreach ($colors as $crow) {
-//            $cellval=$this->empty_html_content;
-//            if ($crow['type']=='item') {
-//                $this->db->select('count(b.printshop_onboat_id) as cnt, sum(b.onroutestock) as total');
-//                $this->db->from('ts_printshop_onboats b');
-//                $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
-//                $this->db->where('b.onboat_container', $onboat_container);
-//                $this->db->where('c.printshop_item_id', $crow['printshop_item_id']);
-//                $totres=$this->db->get()->row_array();
-//                if ($totres['cnt']>0) {
-//                    $cellval=  QTYOutput($totres['total']);
-//                }
-//            } else {
-//                foreach ($contdata as $brow) {
-//                    if ($brow['printshop_color_id']==$crow['printshop_color_id']) {
-//                        $cellval=QTYOutput($brow['onroutestock']);
-//                        break;
-//                    }
-//                }
-//            }
-//            $out[]=array(
-//                'printshop_item_id'=>$crow['printshop_item_id'],
-//                'printshop_color_id'=>$crow['printshop_color_id'],
-//                'type'=>$crow['type'],
-//                'onroutestock'=>$cellval,
-//            );
-//        }
-//        return $out;
-//    }
-//
-//    public function get_container_edit($onboat_container) {
-//        $out=array('res'=>$this->error_result, 'msg'=>'Container Not Found');
-//        // Collect data from Inventory Items and Colors
-//        if ($onboat_container==0) {
-//            return $this->_new_container();
-//        } else {
-//            $colordata=$this->get_printshop_itemcolors();
-//            // Get data from container
-//            $this->db->select('b.*');
-//            $this->db->from('ts_printshop_onboats b');
-//            $this->db->where('b.onboat_container', $onboat_container);
-//            $contdata=$this->db->get()->result_array();
-//            if (count($contdata)>0) {
-//                $data=array();
-//                $details=array(
-//                    'onboat_container'=>$onboat_container,
-//                    'onboat_date'=>$contdata[0]['onboat_date'],
-//                    'onboat_status'=>$contdata[0]['onboat_status'],
-//                );
-//                $total=0;
-//                foreach ($colordata as $drow) {
-//                    $cellval=$this->empty_html_content;
-//                    $cellnval=0;
-//                    if ($drow['type']=='item') {
-//                        $onboatid=0;
-//                        $this->db->select('count(b.printshop_onboat_id) as cnt, sum(b.onroutestock) as total');
-//                        $this->db->from('ts_printshop_onboats b');
-//                        $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
-//                        $this->db->where('b.onboat_container', $onboat_container);
-//                        $this->db->where('c.printshop_item_id', $drow['printshop_item_id']);
-//                        $totres=$this->db->get()->row_array();
-//                        if ($totres['cnt']>0) {
-//                            $cellnval=$totres['total'];
-//                            $cellval=QTYOutput($totres['total']);
-//                        }
-//                    } else {
-//                        $onboatid=-1;
-//                        foreach ($contdata as $crow) {
-//                            if ($crow['printshop_color_id']==$drow['printshop_color_id']) {
-//                                $cellnval=$cellnval=$crow['onroutestock'];
-//                                $onboatid=$crow['printshop_onboat_id'];
-//                                $total+=$crow['onroutestock'];
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    $data[] = array(
-//                        'printshop_item_id' => $drow['printshop_item_id'],
-//                        'printshop_color_id' => $drow['printshop_color_id'],
-//                        'printshop_onboat_id' => $onboatid,
-//                        'type' => $drow['type'],
-//                        'numval' => $cellnval,
-//                        'onroutestock' => $cellval,
-//                    );
-//                }
-//            }
-//            $out['data']=$data;
-//            $out['total']=$total;
-//            $out['details']=$details;
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
-//    private function _new_container() {
-//        $colordata=$this->get_printshop_itemcolors();
-//        foreach ($colordata as $drow) {
-//            $cellval=$this->empty_html_content;
-//            $cellnval=0;
-//            if ($drow['type']=='item') {
-//                $onboatid=0;
-//            } else {
-//                $onboatid=-1;
-//            }
-//            $data[] = array(
-//                'printshop_item_id' => $drow['printshop_item_id'],
-//                'printshop_color_id' => $drow['printshop_color_id'],
-//                'printshop_onboat_id' => $onboatid,
-//                'type' => $drow['type'],
-//                'numval' => $cellnval,
-//                'onroutestock' => $cellval,
-//            );
-//        }
-//        $details=array(
-//            'onboat_container'=>-1,
-//            'onboat_date'=>time(),
-//            'onboat_status'=>0,
-//        );
-//        $out['data']=$data;
-//        $out['total']=0;
-//        $out['details']=$details;
-//        $out['result']=$this->success_result;
-//        $out['msg']='';
-//        return $out;
-//    }
-//
-//    public function inventory_editcontainer($sessdata, $postdata) {
-//        $out=array('result'=>$this->error_result,'msg'=>'Unknown Parameter');
-//        if ($postdata['entity']=='color') {
-//            $out['msg']='Color Not Found';
-//            $data=$sessdata['data'];
-//            $total=$sessdata['total'];
-//            $found=0;
-//            $idx=0;
-//            foreach ($data as $row) {
-//                if ($row['printshop_color_id']==$postdata['color']) {
-//                    $found=1;
-//                    break;
-//                } else {
-//                    $idx++;
-//                }
-//            }
-//            // Color found
-//            if ($found==1) {
-//                $out['result']=$this->success_result;
-//                $oldval=$data[$idx]['numval'];
-//                $newval=intval($postdata['newval']);
-//                $data[$idx]['numval']=$newval;
-//                $newtotal=$total-$oldval+$newval;
-//                $sessdata['total']=$newtotal;
-//                $out['total']=$newtotal;
-//                $out['item']=$data[$idx]['printshop_item_id'];
-//                $itemtotal=0;
-//                for ($i=0; $i<=$idx; $i++) {
-//                    if ($data[$i]['printshop_item_id']==$out['item'] && $data[$i]['printshop_color_id']==0) {
-//                        $itemtotal=intval($data[$i]['numval']);
-//                        $newtotal=$itemtotal-$oldval+$newval;
-//                        $out['totalitem']=$newtotal;
-//                        $data[$i]['numval']=$newtotal;
-//                        $data[$i]['onroutestock']=QTYOutput($newtotal);
-//                        break;
-//                    }
-//                }
-//                $sessdata['data']=$data;
-//                $sessdata=$this->func->session($postdata['session'], $sessdata);
-//                // Item
-//            }
-//        } elseif ($postdata['entity']=='boatcontainerdate') {
-//            $details=$sessdata['details'];
-//            $details['onboat_date']=  strtotime($postdata['newval']);
-//            $sessdata['details']=$details;
-//            $this->func->session($postdata['session'], $sessdata);
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
-//    function inventory_savecontainer($sessdata, $session_id) {
-//        $out=array('result'=>$this->error_result,'msg'=>'Color Not Found');
-//        $data=$sessdata['data'];
-//        $total=$sessdata['total'];
-//        $details=$sessdata['details'];
-//        $onboat_container=$details['onboat_container'];
-//        if ($onboat_container<0) {
-//            // New Container
-//            $this->db->select('max(onboat_container) as maxval');
-//            $this->db->from('ts_printshop_onboats');
-//            $res=$this->db->get()->row_array();
-//            if (!isset($res['maxval'])) {
-//                $onboat_container=1;
-//            } else {
-//                $onboat_container=$res['maxval']+1;
-//            }
-//        }
-//        foreach ($data as $drow) {
-//            if ($drow['printshop_color_id']>0) {
-//                $newval=intval($drow['numval']);
-//                if ($newval==0)  {
-//                    if ($drow['printshop_onboat_id']>0) {
-//                        $this->db->where('printshop_onboat_id', $drow['printshop_onboat_id']);
-//                        $this->db->delete('ts_printshop_onboats');
-//                    }
-//                } else {
-//                    $this->db->set('onroutestock', $newval);
-//                    $this->db->set('onboat_date', $details['onboat_date']);
-//                    if ($drow['printshop_onboat_id']>0) {
-//                        $this->db->where('printshop_onboat_id', $drow['printshop_onboat_id']);
-//                        $this->db->update('ts_printshop_onboats');
-//                    } else {
-//                        $this->db->set('printshop_color_id', $drow['printshop_color_id']);
-//                        $this->db->set('onboat_container', $onboat_container);
-//                        $this->db->insert('ts_printshop_onboats');
-//                    }
-//                }
-//            }
-//        }
-//        // All saved
-//        $this->func->session($session_id, NULL);
-//        // Prepare colors
-//        $colordata=$this->get_printshop_itemcolors();
-//        $out['result']=$this->success_result;
-//        $out['onboat_container']=$onboat_container;
-//        $out['data']=$this->get_container_view($onboat_container, $colordata);
-//        return $out;
-//    }
-//
-//    public function get_container_details($onboat_container) {
-//        $this->db->select('onboat_container, onboat_date, onboat_status, count(printshop_onboat_id) as cnt, sum(onroutestock) as onboat_total');
-//        $this->db->from('ts_printshop_onboats');
-//        $this->db->where('onboat_container', $onboat_container);
-//        $this->db->group_by('onboat_container, onboat_date, onboat_status');
-//        $res=$this->db->get()->row_array();
-//        return $res;
-//    }
-//
+    public function get_container_view($onboat_container, $colors) {
+        $this->db->select('b.*');
+        $this->db->from('ts_printshop_onboats b');
+        $this->db->where('b.onboat_container', $onboat_container);
+        $contdata=$this->db->get()->result_array();
+        $out=array();
+        foreach ($colors as $crow) {
+            $cellval=$this->empty_html_content;
+            if ($crow['type']=='item') {
+                $this->db->select('count(b.printshop_onboat_id) as cnt, sum(b.onroutestock) as total');
+                $this->db->from('ts_printshop_onboats b');
+                $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
+                $this->db->where('b.onboat_container', $onboat_container);
+                $this->db->where('c.printshop_item_id', $crow['printshop_item_id']);
+                $totres=$this->db->get()->row_array();
+                if ($totres['cnt']>0) {
+                    $cellval=  QTYOutput($totres['total']);
+                }
+            } else {
+                foreach ($contdata as $brow) {
+                    if ($brow['printshop_color_id']==$crow['printshop_color_id']) {
+                        $cellval=QTYOutput($brow['onroutestock']);
+                        break;
+                    }
+                }
+            }
+            $out[]=array(
+                'printshop_item_id'=>$crow['printshop_item_id'],
+                'printshop_color_id'=>$crow['printshop_color_id'],
+                'type'=>$crow['type'],
+                'onroutestock'=>$cellval,
+            );
+        }
+        return $out;
+    }
+
+    public function get_container_edit($onboat_container) {
+        $out=array('res'=>$this->error_result, 'msg'=>'Container Not Found');
+        // Collect data from Inventory Items and Colors
+        if ($onboat_container==0) {
+            return $this->_new_container();
+        } else {
+            $colordata=$this->get_printshop_itemcolors();
+            // Get data from container
+            $this->db->select('b.*');
+            $this->db->from('ts_printshop_onboats b');
+            $this->db->where('b.onboat_container', $onboat_container);
+            $contdata=$this->db->get()->result_array();
+            if (count($contdata)>0) {
+                $data=array();
+                $details=array(
+                    'onboat_container'=>$onboat_container,
+                    'onboat_date'=>$contdata[0]['onboat_date'],
+                    'onboat_status'=>$contdata[0]['onboat_status'],
+                );
+                $total=0;
+                foreach ($colordata as $drow) {
+                    $cellval=$this->empty_html_content;
+                    $cellnval=0;
+                    if ($drow['type']=='item') {
+                        $onboatid=0;
+                        $this->db->select('count(b.printshop_onboat_id) as cnt, sum(b.onroutestock) as total');
+                        $this->db->from('ts_printshop_onboats b');
+                        $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
+                        $this->db->where('b.onboat_container', $onboat_container);
+                        $this->db->where('c.printshop_item_id', $drow['printshop_item_id']);
+                        $totres=$this->db->get()->row_array();
+                        if ($totres['cnt']>0) {
+                            $cellnval=$totres['total'];
+                            $cellval=QTYOutput($totres['total']);
+                        }
+                    } else {
+                        $onboatid=-1;
+                        foreach ($contdata as $crow) {
+                            if ($crow['printshop_color_id']==$drow['printshop_color_id']) {
+                                $cellnval=$cellnval=$crow['onroutestock'];
+                                $onboatid=$crow['printshop_onboat_id'];
+                                $total+=$crow['onroutestock'];
+                                break;
+                            }
+                        }
+                    }
+                    $data[] = array(
+                        'printshop_item_id' => $drow['printshop_item_id'],
+                        'printshop_color_id' => $drow['printshop_color_id'],
+                        'printshop_onboat_id' => $onboatid,
+                        'type' => $drow['type'],
+                        'numval' => $cellnval,
+                        'onroutestock' => $cellval,
+                    );
+                }
+            }
+            $out['data']=$data;
+            $out['total']=$total;
+            $out['details']=$details;
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    private function _new_container() {
+        $colordata=$this->get_printshop_itemcolors();
+        foreach ($colordata as $drow) {
+            $cellval=$this->empty_html_content;
+            $cellnval=0;
+            if ($drow['type']=='item') {
+                $onboatid=0;
+            } else {
+                $onboatid=-1;
+            }
+            $data[] = array(
+                'printshop_item_id' => $drow['printshop_item_id'],
+                'printshop_color_id' => $drow['printshop_color_id'],
+                'printshop_onboat_id' => $onboatid,
+                'type' => $drow['type'],
+                'numval' => $cellnval,
+                'onroutestock' => $cellval,
+            );
+        }
+        $details=array(
+            'onboat_container'=>-1,
+            'onboat_date'=>time(),
+            'onboat_status'=>0,
+        );
+        $out['data']=$data;
+        $out['total']=0;
+        $out['details']=$details;
+        $out['result']=$this->success_result;
+        $out['msg']='';
+        return $out;
+    }
+
+    public function inventory_editcontainer($sessdata, $postdata) {
+        $out=array('result'=>$this->error_result,'msg'=>'Unknown Parameter');
+        if ($postdata['entity']=='color') {
+            $out['msg']='Color Not Found';
+            $data=$sessdata['data'];
+            $total=$sessdata['total'];
+            $found=0;
+            $idx=0;
+            foreach ($data as $row) {
+                if ($row['printshop_color_id']==$postdata['color']) {
+                    $found=1;
+                    break;
+                } else {
+                    $idx++;
+                }
+            }
+            // Color found
+            if ($found==1) {
+                $out['result']=$this->success_result;
+                $oldval=$data[$idx]['numval'];
+                $newval=intval($postdata['newval']);
+                $data[$idx]['numval']=$newval;
+                $newtotal=$total-$oldval+$newval;
+                $sessdata['total']=$newtotal;
+                $out['total']=$newtotal;
+                $out['item']=$data[$idx]['printshop_item_id'];
+                $itemtotal=0;
+                for ($i=0; $i<=$idx; $i++) {
+                    if ($data[$i]['printshop_item_id']==$out['item'] && $data[$i]['printshop_color_id']==0) {
+                        $itemtotal=intval($data[$i]['numval']);
+                        $newtotal=$itemtotal-$oldval+$newval;
+                        $out['totalitem']=$newtotal;
+                        $data[$i]['numval']=$newtotal;
+                        $data[$i]['onroutestock']=QTYOutput($newtotal);
+                        break;
+                    }
+                }
+                $sessdata['data']=$data;
+                $sessdata=$this->func->session($postdata['session'], $sessdata);
+                // Item
+            }
+        } elseif ($postdata['entity']=='boatcontainerdate') {
+            $details=$sessdata['details'];
+            $details['onboat_date']=  strtotime($postdata['newval']);
+            $sessdata['details']=$details;
+            $this->func->session($postdata['session'], $sessdata);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    function inventory_savecontainer($sessdata, $session_id) {
+        $out=array('result'=>$this->error_result,'msg'=>'Color Not Found');
+        $data=$sessdata['data'];
+        $total=$sessdata['total'];
+        $details=$sessdata['details'];
+        $onboat_container=$details['onboat_container'];
+        if ($onboat_container<0) {
+            // New Container
+            $this->db->select('max(onboat_container) as maxval');
+            $this->db->from('ts_printshop_onboats');
+            $res=$this->db->get()->row_array();
+            if (!isset($res['maxval'])) {
+                $onboat_container=1;
+            } else {
+                $onboat_container=$res['maxval']+1;
+            }
+        }
+        foreach ($data as $drow) {
+            if ($drow['printshop_color_id']>0) {
+                $newval=intval($drow['numval']);
+                if ($newval==0)  {
+                    if ($drow['printshop_onboat_id']>0) {
+                        $this->db->where('printshop_onboat_id', $drow['printshop_onboat_id']);
+                        $this->db->delete('ts_printshop_onboats');
+                    }
+                } else {
+                    $this->db->set('onroutestock', $newval);
+                    $this->db->set('onboat_date', $details['onboat_date']);
+                    if ($drow['printshop_onboat_id']>0) {
+                        $this->db->where('printshop_onboat_id', $drow['printshop_onboat_id']);
+                        $this->db->update('ts_printshop_onboats');
+                    } else {
+                        $this->db->set('printshop_color_id', $drow['printshop_color_id']);
+                        $this->db->set('onboat_container', $onboat_container);
+                        $this->db->insert('ts_printshop_onboats');
+                    }
+                }
+            }
+        }
+        // All saved
+        $this->func->session($session_id, NULL);
+        // Prepare colors
+        $colordata=$this->get_printshop_itemcolors();
+        $out['result']=$this->success_result;
+        $out['onboat_container']=$onboat_container;
+        $out['data']=$this->get_container_view($onboat_container, $colordata);
+        return $out;
+    }
+
+    public function get_container_details($onboat_container) {
+        $this->db->select('onboat_container, onboat_date, onboat_status, count(printshop_onboat_id) as cnt, sum(onroutestock) as onboat_total');
+        $this->db->from('ts_printshop_onboats');
+        $this->db->where('onboat_container', $onboat_container);
+        $this->db->group_by('onboat_container, onboat_date, onboat_status');
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
 //    public function get_printshop_itemcolors() {
 //        $colordata=array();
 //        $this->db->select('printshop_item_id');

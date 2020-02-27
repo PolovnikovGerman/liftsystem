@@ -26,7 +26,7 @@
         <div class="reserved">Reserved</div>
         <div class="available">Available</div>
     </div>
-    <div class="headonboat">
+    <div class="headonboat" id="inventonboatheah">
         <?=$onboathead?>
     </div>    
     <!-- % After Containers width 34px -->
@@ -68,7 +68,7 @@
         <div class="left_block">&nbsp;</div>
 
         <div class="onboatarea">
-            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px">
+            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px" id="#inventdownloadarea">
                 <?=$download_view?>
             </div>
         </div>

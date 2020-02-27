@@ -1,6 +1,6 @@
 <?php $numpp=0;?>
 <?php foreach ($data as $row) { ?>
-    <div class="inventorydatarow <?= $row['type'] == 'item' ? 'itemdata' : ($numpp % 2 == 0 ? 'white' : 'grey') ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
+    <div class="inventorydatarow <?= $row['type'] == 'item' ? 'itemdata' : ($numpp % 2 == 0 ? 'whitedatarow' : 'greydatarow') ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
         <div class="numpp">
             <?php if ($row['type']=='item') { ?>
                 <div class="edititem" data-item="<?= $row['printshop_item_id'] ?>">
@@ -38,7 +38,7 @@
         <div class="reserved <?=($row['type'] == 'item' ? 'border_b' : '') ?>">
             <?= $row['reserved'] ?>
         </div>
-        <div class="available <?=$row['stockclass']?> <?= ($row['type'] == 'item' ? 'border_b' : '') ?>">
+        <div class="available <?=$row['stockclass']?> <?= ($row['type'] == 'item' ? '' : '') ?>">
             <?=$row['availabled']?>
         </div>
     </div>

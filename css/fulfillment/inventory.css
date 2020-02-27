@@ -579,11 +579,13 @@ div.add_boat {
     border-right: 1px solid #f0f0f0;
     word-wrap: break-word;
     width: 30px;
+    line-height: 13px!important;
 }
 .printshopinventor  .inventorytablehead > .proofstab > .prooftemp {
     border-right: 1px solid #f0f0f0;
     word-wrap: break-word;
     width: 30px;
+    line-height: 13px!important;
 }
 .printshopinventor  .inventorytablehead > .proofstab > .draw {
     border-right: 1px solid #f0f0f0;
@@ -606,12 +608,10 @@ div.add_boat {
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     clear: both;
-    /* height: 535px; */
     height: 525px;
     overflow-x: hidden;
     overflow-y: auto;
-    width: 1005px;
-    /* margin-top: 3px; */
+    width: 999px;
 }
 .printshopinventor  .inventorytablebody.short {
     width: 890px;
@@ -1750,17 +1750,19 @@ input.addlcostinpt {
     border-right: 2px solid #000000;
     border-bottom: 1px solid #FFFFFF;
     background-color: #FFFFFF;
-    width: 3px;
+    width: 5px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft {
     width: 439px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow {
     clear: both;
-    height: 23px;
-    line-height: 26px!important;
     text-align: center;
     width: 439px;
+}
+.printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > div {
+    height: 26px;
+    line-height: 26px!important;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata {
     background-color: #6c6c6c;
@@ -1774,9 +1776,9 @@ input.addlcostinpt {
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .numpp > .edititem {
     height: 20px;
-    padding-top: 6px;
     text-align: center;
     width: 18px;
+    line-height: 20px!important;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .numpp > .edititem i {
     color: #5a3f1a;
@@ -1819,14 +1821,14 @@ input.addlcostinpt {
     font-size: 14px;
     font-weight: bold;
     padding-left: 3px;
-    width: 147px;
+    width: 150px;
     color: #FFFFFF;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .additemcolor {
-    background: transparent url("/img/printshop/additem_color_btn.png") no-repeat scroll 1px 11px;
+    background: transparent url("/img/printshop/additem_color_btn.png") no-repeat scroll 1px 14px;
     border-right: 2px solid #000000;
     cursor: pointer;
     width: 12px;
@@ -1859,7 +1861,7 @@ input.addlcostinpt {
     cursor: pointer;
     padding-right: 5px;
     text-align: right;
-    width: 113px;
+    width: 120px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .coloritemname.active {
     color: #828181;
@@ -1870,7 +1872,7 @@ input.addlcostinpt {
     width: 32px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .itempercent {
-    width: 31px;
+    width: 33px;
 }
 /* inventorymanage */
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent > .inventorymanage {
@@ -1943,10 +1945,10 @@ input.addlcostinpt {
     text-align: center;
     font-weight: bold;
     font-size: 13px;
-    width: 59px;
+    width: 66px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available {
-    width: 58px;
+    width: 65px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available,
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .instock,
@@ -1978,18 +1980,21 @@ input.addlcostinpt {
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata {
     border: 1px solid #000000;
     height: auto;
-    margin-left: 2px;
-    width: 56px;
+    margin-left: 1.6px;
+    width: 58px;
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata.arrived {
     opacity: 0.3;
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata > .contanerdataval {
-    color: #0000ff;
-    height: 23px;
-    line-height: 24px!important;
+    height: 26px;
+    line-height: 26px!important;
     text-align: center;
     width: 56px;
+}
+.printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata > .contanerdataval.itemdata {
+    height: 28px;
+    line-height: 28px!important;
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata > .contanerdataval.itemdata {
     background-color: #6c6c6c;
@@ -2006,17 +2011,18 @@ input.onboatelementinput {
 }
 /* Spec Content */
 .printshopinventor .inventorytablebody > .inventorytableright {
-    width: 263px;
+    width: 262px;
 }
 .printshopinventor .inventorytablebody.short > .inventorytableright {
     width: 153px;
 }
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow {
     clear: both;
-    height: 23px;
+}
+.printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow > div {
+    height: 26px;
     line-height: 26px!important;
     text-align: center;
-    /* width: 265px; */
 }
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow.itemdata {
     background-color: #6c6c6c;
@@ -2043,8 +2049,9 @@ input.onboatelementinput {
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow > .proof_temp > .prooftempdata,
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow > .draw > .itemlabel,
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow > .pics > .picsdata {
-    height: 19px;
-    margin-top: 5px;
+    height: 26px;
+    /* margin-top: 5px; */
+    line-height: 26px!important;
     text-align: center;
     width: 100%;
 }

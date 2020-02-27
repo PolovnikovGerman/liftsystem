@@ -27,7 +27,7 @@ function init_page(objid) {
             break;
         case 'printshopinventview':
             $("#printshopinventview").show();
-            // init_inventory_data();
+            init_inventory_content();
             break;
     }
 

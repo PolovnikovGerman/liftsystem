@@ -1,4 +1,4 @@
-<div class="printshopinventor">
+<div class="printshopinventor" id="printshopinventor">
     <input type="hidden" id="inventorytotals" value="<?= $totals ?>"/>
     <input type="hidden" id="showonlinemaxvalue" value="0"/>
     <div class="maxinventsum">
@@ -8,7 +8,7 @@
         </div>
         <div class="datarow">
             <div class="labeltxt">Max Inventory Value:</div>
-            <div class="valuedata"><?=MoneyOutput($maxsum)?></div>            
+            <div class="valuedata" id="maximuminvent"><?=MoneyOutput($maxsum)?></div>
         </div>        
     </div>
     <div class="head_title">
@@ -25,7 +25,7 @@
         </div>
         <div class="exportdataarea">
             <div class="printshopexporttoexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Inventory</div>
-        </div>        
+        </div>
     </div>
     <div id="pageviewarea">
         <?=$fullview?>

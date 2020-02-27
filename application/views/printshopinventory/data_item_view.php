@@ -1,5 +1,5 @@
 <?php $numpp = 0 ?>
-<div class="inventorydatarow <?= $numpp % 2 == 0 ? 'white' : 'grey' ?> <?= $row['type'] == 'item' ? 'itemdata' : '' ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
+<div class="inventorydatarow <?= $numpp % 2 == 0 ? 'whitedatarow' : 'greydatarow' ?> <?= $row['type'] == 'item' ? 'itemdata' : '' ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
     <div class="numpp">
         <?php if ($row['type']=='item') { ?>
             <div class="edititem" data-item="<?= $row['printshop_item_id'] ?>">

@@ -1,6 +1,6 @@
 <?php $numpp = 0 ?>
 <?php foreach ($data as $row) { ?>
-    <div class="inventorydatarow <?= $numpp % 2 == 0 ? 'white' : 'grey' ?> <?= $row['type'] == 'item' ? 'itemdata' : '' ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
+    <div class="inventorydatarow <?= $numpp % 2 == 0 ? 'whitedatarow' : 'greydatarow' ?> <?= $row['type'] == 'item' ? 'itemdata' : '' ?>" data-item="<?= $row['printshop_item_id'] ?>" data-color="<?=$row['printshop_color_id']?>">
         <?php if($permission == "Profit") { ?>
             <div class="costea <?= ($row['type'] == 'item' ? 'border_b' : '') ?>"><?= $row['price'] ?></div>
             <div class="totalea <?= ($row['type'] == 'item' ? 'border_b' : '') ?>"><?= $row['total'] ?></div>
