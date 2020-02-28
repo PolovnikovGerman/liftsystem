@@ -1560,7 +1560,7 @@ input.invitemcolordata.colordescript {
 }
 /* Item Form */
 input.invitemdataval.itemnum {
-    margin-left: 3px;
+    /* margin-left: 3px; */
     width: 33px;
 }
 input.invitemdataval.itemname {
@@ -1809,7 +1809,7 @@ input.addlcostinpt {
     margin-left: 2px;
     padding-top: 3px;
     text-align: center;
-    width: 15px;
+    width: 14px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .inventorymanage.save i {
     color: #359045;
@@ -1980,7 +1980,7 @@ input.addlcostinpt {
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata {
     border: 1px solid #000000;
     height: auto;
-    margin-left: 1.6px;
+    margin-left: 2px;
     width: 58px;
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata.arrived {
@@ -2090,4 +2090,17 @@ input.onboatelementinput {
 .printshopinventor .inventorytablebody > .inventorytableright > .inventorydatarow > .pics {
     text-align: center;
     width: 23px;
+}
+/* Tooltip for Color details */
+.colordata_tooltip {
+    width: 225px;
+    max-width: 225px!important;
+    padding: 10px;
+    color: #000000;
+    background: #ffffff;
+    border: 1px solid #000000;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: justify;
+    line-height: 18px;
 }

@@ -26,13 +26,13 @@ Class Printshop_model extends MY_Model
         return $res['cnt'];
     }
 
-//    public function count_inventory_pics($printshop_color_id) {
-//        $this->db->select('count(printshop_pics_id) as cnt');
-//        $this->db->from('ts_printshop_pics');
-//        $this->db->where('printshop_color_id', $printshop_color_id);
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
+    public function count_inventory_pics($printshop_color_id) {
+        $this->db->select('count(printshop_pics_id) as cnt');
+        $this->db->from('ts_printshop_pics');
+        $this->db->where('printshop_color_id', $printshop_color_id);
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
 
     public function invaddcost() {
         $this->db->select('inv_addcost');
@@ -41,13 +41,13 @@ Class Printshop_model extends MY_Model
         return floatval($costres['inv_addcost']);
     }
 
-//    // Update Addcost
-//    public function inventory_addcost_upd($addcost) {
-//        $cost=floatval(str_replace('$','',$addcost));
-//        $this->db->set('inv_addcost', $cost);
-//        $this->db->update('ts_configs');
-//        return TRUE;
-//    }
+    // Update Addcost
+    public function inventory_addcost_upd($addcost) {
+        $cost=floatval(str_replace('$','',$addcost));
+        $this->db->set('inv_addcost', $cost);
+        $this->db->update('ts_configs');
+        return TRUE;
+    }
 //    // OldPrintshop Colors
 //    private function _oldgetprintshop_items() {
 //        // Get Stock Data
@@ -803,122 +803,112 @@ Class Printshop_model extends MY_Model
 //
 //        return $this->db->insert_id();
 //    }
-//
-//    // New Item
-//    public function new_invent_item() {
-//        $fields = $this->db->list_fields('ts_printshop_items');
-//        $item=array();
-//
-//        foreach ($fields as $field) {
-//            if ($field=='printshop_item_id') {
-//                $item[$field]=-1;
-//            } else {
-//                $item[$field]='';
-//            }
-//        }
-//
-//        return $item;
-//    }
-//
-//    // Edit Item
-//    public function get_invent_item($printshop_item_id) {
-//        $out=array('result'=>$this->error_result);
-//        $out['msg']='Item Not Found';
-//        $this->db->select('*');
-//        $this->db->from('ts_printshop_items');
-//        $this->db->where('printshop_item_id', $printshop_item_id);
-//        $res=$this->db->get()->row_array();
-//
-//        if (isset($res['printshop_item_id'])) {
-//            $out['result']=$this->success_result;
-//            $out['item']=$res;
-//        }
-//
-//        return $out;
-//    }
-//
-//    // Change Item details
-//    public function invitem_item_change($item, $postdata) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//
-//        if (!array_key_exists('fldname', $postdata) || !array_key_exists('newval', $postdata)) {
-//            $out['msg']='Empty Changed Parameter';
-//            return $out;
-//        }
-//
-//        $fldname=$postdata['fldname'];
-//        $newval=$postdata['newval'];
-//
-//        if (!array_key_exists($fldname, $item)) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//
-//        $item[$fldname]=$newval;
-//        $out['result']=$this->success_result;
-//        $this->func->session('invitemdata', $item);
-//
-//        return $out;
-//    }
-//
-//    // Save changes
-//    public function invitem_item_save($item) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (empty($item['item_num'])) {
-//            $out['msg']='Enter Shape #';
-//            return $out;
-//        }
-//        if (empty($item['item_name'])) {
-//            $out['msg']='Enter Shape Name';
-//            return $out;
-//        }
-//        if (!$this->_check_invitem($item['printshop_item_id'], $item['item_num'])) {
-//            $out['msg']='Enter Unique Shape #';
-//            return $out;
-//        }
-//        $this->db->set('item_num', $item['item_num']);
-//        $this->db->set('item_name', $item['item_name']);
-//        $this->db->set('plate_temp', $item['plate_temp']);
-//        $this->db->set('plate_temp_source', $item['plate_temp_source']);
-//        $this->db->set('proof_temp', $item['proof_temp']);
-//        $this->db->set('proof_temp_source', $item['proof_temp_source']);
-//        $this->db->set('item_label', $item['item_label']);
-//        $this->db->set('item_label_source', $item['item_label_source']);
-//        if ($item['printshop_item_id']<=0) {
-//            $this->db->insert('ts_printshop_items');
-//        } else {
-//            $this->db->where('printshop_item_id', $item['printshop_item_id']);
-//            $this->db->update('ts_printshop_items');
-//        }
-//
-//        $path_preload = $this->config->item('upload_path_preload');
-//        $route=$this->func->extract_filename($item['plate_temp']);
-//        $text = substr(strrchr($route['name'], '/'), 1 );
-//        $filename = $text.'.'.$route['ext'];
-//
-//        $path_full_plate=$this->config->item('invplatetemp');
-//        $result = @copy($path_preload.$filename, $path_full_plate.$filename);
-//        if($item['proof_temp'] != NULL) {
-//            $route=$this->func->extract_filename($item['proof_temp']);
-//            $text = substr(strrchr($route['name'], '/'), 1 );
-//            $filename = $text.'.'.$route['ext'];
-//            $path_full_proof=$this->config->item('invprooftemp');
-//            $result = @copy($path_preload.$filename, $path_full_proof.$filename);
-//        }
-//
-//        if($item['item_label'] != NULL) {
-//            $route=$this->func->extract_filename($item['item_label']);
-//            $text = substr(strrchr($route['name'], '/'), 1 );
-//            $filename = $text.'.'.$route['ext'];
-//            $path_full=$this->config->item('invitemlabel');
-//            $result = @copy($path_preload.$filename, $path_full.$filename);
-//        }
-//
-//        $out['result']=$this->success_result;
-//        $this->func->session('invitemdata', NULL);
-//        return $out;
-//    }
-//
+
+    // New Item
+    public function new_invent_item() {
+        $fields = $this->db->list_fields('ts_printshop_items');
+        $item=array();
+        foreach ($fields as $field) {
+            if ($field=='printshop_item_id') {
+                $item[$field]=-1;
+            } else {
+                $item[$field]='';
+            }
+        }
+        return $item;
+    }
+
+    // Edit Item
+    public function get_invent_item($printshop_item_id) {
+        $out=array('result'=>$this->error_result, 'msg' => 'Item Not Found');
+        $this->db->select('*');
+        $this->db->from('ts_printshop_items');
+        $this->db->where('printshop_item_id', $printshop_item_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['printshop_item_id'])) {
+            $out['result']=$this->success_result;
+            $out['item']=$res;
+        }
+        return $out;
+    }
+
+    // Change Item details
+    public function invitem_item_change($item, $postdata) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists('fldname', $postdata) || !array_key_exists('newval', $postdata)) {
+            $out['msg']='Empty Changed Parameter';
+            return $out;
+        }
+        $fldname=$postdata['fldname'];
+        $newval=$postdata['newval'];
+        if (!array_key_exists($fldname, $item)) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        $item[$fldname]=$newval;
+        $out['result']=$this->success_result;
+        usersession('invitemdata', $item);
+        return $out;
+    }
+
+    // Save changes
+    public function invitem_item_save($item) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (empty($item['item_num'])) {
+            $out['msg']='Enter Shape #';
+            return $out;
+        }
+        if (empty($item['item_name'])) {
+            $out['msg']='Enter Shape Name';
+            return $out;
+        }
+        if (!$this->_check_invitem($item['printshop_item_id'], $item['item_num'])) {
+            $out['msg']='Enter Unique Shape #';
+            return $out;
+        }
+        $this->db->set('item_num', $item['item_num']);
+        $this->db->set('item_name', $item['item_name']);
+        $this->db->set('plate_temp', $item['plate_temp']);
+        $this->db->set('plate_temp_source', $item['plate_temp_source']);
+        $this->db->set('proof_temp', $item['proof_temp']);
+        $this->db->set('proof_temp_source', $item['proof_temp_source']);
+        $this->db->set('item_label', $item['item_label']);
+        $this->db->set('item_label_source', $item['item_label_source']);
+        if ($item['printshop_item_id']<=0) {
+            $this->db->insert('ts_printshop_items');
+        } else {
+            $this->db->where('printshop_item_id', $item['printshop_item_id']);
+            $this->db->update('ts_printshop_items');
+        }
+
+        $path_preload = $this->config->item('upload_path_preload');
+        $route=extract_filename($item['plate_temp']);
+        $text = substr(strrchr($route['name'], '/'), 1 );
+        $filename = $text.'.'.$route['ext'];
+
+        $path_full_plate=$this->config->item('invplatetemp');
+        $result = @copy($path_preload.$filename, $path_full_plate.$filename);
+        if($item['proof_temp'] != NULL) {
+            $route=extract_filename($item['proof_temp']);
+            $text = substr(strrchr($route['name'], '/'), 1 );
+            $filename = $text.'.'.$route['ext'];
+            $path_full_proof=$this->config->item('invprooftemp');
+            $result = @copy($path_preload.$filename, $path_full_proof.$filename);
+        }
+
+        if($item['item_label'] != NULL) {
+            $route=extract_filename($item['item_label']);
+            $text = substr(strrchr($route['name'], '/'), 1 );
+            $filename = $text.'.'.$route['ext'];
+            $path_full=$this->config->item('invitemlabel');
+            $result = @copy($path_preload.$filename, $path_full.$filename);
+        }
+
+        $out['result']=$this->success_result;
+        usersession('invitemdata', NULL);
+        return $out;
+    }
+
 //    //Add Pics
 //    public function get_invent_pics($printshop_color_id) {
 //        $out=array('result'=>$this->error_result);
@@ -946,233 +936,219 @@ Class Printshop_model extends MY_Model
 //        }
 //
 //    }
-//
-//    // New Inventory Item Color
-//    public function invitem_newcolor($printshop_item_id) {
-//        $fields = $this->db->list_fields('ts_printshop_colors');
-//        $colors=array();
-//        foreach ($fields as $field) {
-//            if ($field=='printshop_item_id') {
-//                $colors[$field]=$printshop_item_id;
-//            } elseif ($field=='printshop_color_id') {
-//                $colors[$field]=-1;
-//            } else {
-//                $colors[$field]='';
-//            }
-//            $colors['availabled']='';
-//            $colors['instock']='';
-//        }
-//        $colors=array(
-//            'printshop_item_id'=>$printshop_item_id,
-//            'printshop_color_id'=>-1,
-//            'type'=>'color',
-//            'item_num'=>$this->empty_html_content,
-//            'color'=>'',
-//            'percent'=>$this->empty_html_content,
-//            'instock'=>$this->empty_html_content,
-//            'reserved'=>$this->empty_html_content,
-//            'availabled'=>$this->empty_html_content,
-//            'backup'=>$this->empty_html_content,
-//            'have'=>$this->empty_html_content,
-//            'suggeststock'=>0,
-//            'toget'=>$this->empty_html_content,
-//            'onroutestock'=>0,
-//            'price'=>0,
-//            'total'=>$this->empty_html_content,
-//            'color_descript'=>'',
-//            'color_order'=>1,
-//            'specfile' => '',
-//            'specsclass'=>(empty($crow['specfile']) ? 'empty' : 'full'),
-//            'picsclass'=>'empty',
-//            'notreorder'=>0,
-//        );
-//        $this->db->select('count(printshop_color_id) as cnt');
-//        $this->db->from('ts_printshop_colors');
-//        $this->db->where('printshop_item_id', $printshop_item_id);
-//        $res=$this->db->get()->row_array();
-//        $colors['color_order']=$res['cnt']+1;
-//
-//        return $colors;
-//    }
-//
-//    // Inv Item Color data
-//    public function invitem_colordata($printshop_color_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->select('c.*, i.item_name, i.item_num, c.color_descript');
-//        $this->db->from('ts_printshop_colors c');
-//        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//        $this->db->where('c.printshop_color_id', $printshop_color_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['printshop_color_id'])) {
-//            $out['msg']='Color Not Found';
-//        } else {
-//            $out['result']=$this->success_result;
-//            $addlcost=$this->invaddcost();
-//            // Get Stock Data
-////            $res['instock']=$this->printcolor_instock($printshop_color_id);
-////            $avail=intval($res['instock'])-intval($res['reserved']);
-////            $res['availabled']=QTYOutput($avail);
-////            $out['result']=$this->success_result;
-////            $out['color']=$res;
-//            $income=$this->printcolor_income($printshop_color_id);
-//            $outcome=$this->printcolor_outcome($printshop_color_id);
-//            $innermove=$this->printcolor_innermove($printshop_color_id);
-//            $reserved=$this->printcolor_reserved($res['printshop_item_id'], $res['color']);
-//            $backup=$income-$innermove;
-//            $have=$innermove-$outcome;
-//            $instock=$income-$outcome;
-//            $available=$instock-$reserved;
-//            $max=$res['suggeststock'];
-//            $toget=($max - $have) + $reserved;
-//            $onroute=$res['onroutestock'];
-//            // Special cols
-//            $stockperc=$this->empty_html_content;
-//            $stockclass='';
-//            if ($max!=0) {
-//                $stockperc=round($instock/$max*100,0).'%';
-//                if ($stockperc <= $this->config->item('invoutstock')) {
-//                    $stockclass = $this->outstockclass;
-//                } elseif ($stockperc <= $this->config->item('invlowstock')) {
-//                    $stockclass = $this->lowstockclass;
-//                }
-//            }
-////                if ($instock<=0 || $available<=0) {
-////                    $stockclass=$this->outstockclass;
-////                }
-////                if ($stockperc>0 && $stockperc<$this->config->item('min_stockperc')) {
-////                    $stockclass='lowstock';
-////                }
-//            $haveclass='';
-//            if ($have<0) {
-//                $haveclass='red_text';
-//                $outhave='('.QTYOutput(abs($have)).')';
-//            } else {
-//                $outhave=$have==0 ? $this->empty_html_content : QTYOutput($have);
-//            }
-//            $totalea=($res['price']!=0 ? $res['price']+$addlcost : '-');
-//            $ndecim=2;
-//            $whole = floor($res['price']*100);
-//            $fraction = $res['price']*100 - $whole;
-//            if (intval($fraction*10)>0) {
-//                $ndecim=3;
-//            }
-//
-//            $pics = $this->count_inventory_pics($printshop_color_id);
-//
-//            $data=array(
-//                'printshop_item_id'=>$res['printshop_item_id'],
-//                'printshop_color_id'=>$printshop_color_id,
-//                'type'=>'color',
-//                'item_num'=>$this->empty_html_content,
-//                'color'=>$res['color'],
-//                'percent'=>$stockperc,
-//                'instock'=>($instock<=0 ? $this->outstoklabel : QTYOutput($instock)),
-//                'reserved'=>($reserved==0 ? $this->empty_html_content : QTYOutput($reserved)),
-//                'availabled'=>($available==0 ? $this->empty_html_content : QTYOutput($available)),
-//                'backup'=>($backup==0 ? $this->empty_html_content : QTYOutput($backup)),
-//                'have'=>$outhave,
-//                'suggeststock'=>$max,
-//                'toget'=>($toget==0 ? $this->empty_html_content : QTYOutput($toget)),
-//                'onroutestock'=>$onroute,
-//                'price'=>number_format($res['price'],$ndecim),
-//                'total'=>MoneyOutput($totalea,3),
-//                'color_descript'=>$res['color_descript'],
-//                'color_order'=>$res['color_order'],
-//                'stockclass'=>$stockclass,
-//                'haveclass'=>$haveclass,
-//                'specfile' => $res['color_descript'],
-//                'specsclass'=>(empty($res['specfile']) ? 'empty' : 'full'),
-//                'picsclass'=>(empty($pics['cnt']) ? 'empty' : ''),
-//                'notreorder'=>$res['notreorder'],
-//            );
-//            $out['data']=$data;
-//        }
-//        return $out;
-//    }
-//
-//
-//    // Change Inv Color Value
-//    public function invitem_color_change($color, $postdata) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (!array_key_exists('fldname', $postdata) || !array_key_exists('newval', $postdata)) {
-//            $out['msg']='Empty Changed Parameter';
-//            return $out;
-//        }
-//        $fldname=$postdata['fldname'];
-//        $newval=$postdata['newval'];
-//        if (!array_key_exists($fldname, $color)) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//        if ($fldname=='notreorder') {
-//            $newval=0;
-//            if ($color['notreorder']==0) {
-//                $newval=1;
-//            }
-//        }
-//        $color[$fldname]=$newval;
-//        $out['result']=$this->success_result;
-//        $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
-//        $this->func->session($uploadsession, $color);
-//        // Calc available
-//        $out['availabled']=intval($color['instock'])-intval($color['reserved']);
-//        $out['notreorder']=intval($newval);
-//        return $out;
-//    }
-//
-//    // Save Changes in Item Color
-//    public function invitem_color_save($color) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (empty($color['color'])) {
-//            $out['msg']='Enter Color Name';
-//            return $out;
-//        }
-//        if (!$this->_check_invitemcolor($color['printshop_item_id'], $color['printshop_color_id'], $color['color'])) {
-//            $out['msg']='Enter Unique Color';
-//            return $out;
-//        }
-//        $this->db->set('color', $color['color']);
-//        $this->db->set('suggeststock', intval($color['suggeststock']));
-//        // $this->db->set('instock', intval($color['instock']));
-//        $this->db->set('reserved', intval($color['reserved']));
-//        $this->db->set('onroutestock',  intval($color['onroutestock']));
-//        $this->db->set('price', floatval($color['price']));
-//        $this->db->set('color_descript', $color['specfile']);
-//        $this->db->set('color_order', $color['color_order']);
-//        $this->db->set('notreorder', $color['notreorder']);
-//        // $this->db->set('specfile', $color['specfile']);
-//        if ($color['printshop_color_id']<=0) {
-//            $this->db->set('printshop_item_id', $color['printshop_item_id']);
-//            $this->db->insert('ts_printshop_colors');
-//            $color['printshop_color_id']=$this->db->insert_id();
-//        } else {
-//            $this->db->where('printshop_color_id', $color['printshop_color_id']);
-//            $this->db->update('ts_printshop_colors');
-//        }
-//        // Rebuild color order
-//        $this->db->select('printshop_color_id, color');
-//        $this->db->from('ts_printshop_colors');
-//        $this->db->where('printshop_item_id', $color['printshop_item_id']);
-//        $this->db->where('printshop_color_id != ', $color['printshop_color_id']);
-//        $this->db->order_by('color_order');
-//        $colordat=$this->db->get()->result_array();
-//        if (count($colordat)>1) {
-//            $i=1;
-//            foreach ($colordat as $crow) {
-//                if ($i==$color['color_order']) {
-//                    $i++;
-//                }
-//                $this->db->set('color_order', $i);
-//                $this->db->where('printshop_color_id', $crow['printshop_color_id']);
-//                $this->db->update('ts_printshop_colors');
-//                $i++;
-//            }
-//        }
-//        $out['printshop_color_id'] = $color['printshop_color_id'];
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
+
+    // New Inventory Item Color
+    public function invitem_newcolor($printshop_item_id) {
+        $fields = $this->db->list_fields('ts_printshop_colors');
+        $colors=array();
+        foreach ($fields as $field) {
+            if ($field=='printshop_item_id') {
+                $colors[$field]=$printshop_item_id;
+            } elseif ($field=='printshop_color_id') {
+                $colors[$field]=-1;
+            } else {
+                $colors[$field]='';
+            }
+            $colors['availabled']='';
+            $colors['instock']='';
+        }
+        $colors=array(
+            'printshop_item_id'=>$printshop_item_id,
+            'printshop_color_id'=>-1,
+            'type'=>'color',
+            'item_num'=>$this->empty_html_content,
+            'color'=>'',
+            'percent'=>$this->empty_html_content,
+            'instock'=>$this->empty_html_content,
+            'reserved'=>$this->empty_html_content,
+            'availabled'=>$this->empty_html_content,
+            'backup'=>$this->empty_html_content,
+            'have'=>$this->empty_html_content,
+            'suggeststock'=>0,
+            'toget'=>$this->empty_html_content,
+            'onroutestock'=>0,
+            'price'=>0,
+            'total'=>$this->empty_html_content,
+            'color_descript'=>'',
+            'color_order'=>1,
+            'specfile' => '',
+            'specsclass'=>(empty($crow['specfile']) ? 'empty' : 'full'),
+            'picsclass'=>'empty',
+            'notreorder'=>0,
+        );
+        $this->db->select('count(printshop_color_id) as cnt');
+        $this->db->from('ts_printshop_colors');
+        $this->db->where('printshop_item_id', $printshop_item_id);
+        $res=$this->db->get()->row_array();
+        $colors['color_order']=$res['cnt']+1;
+        return $colors;
+    }
+
+    // Inv Item Color data
+    public function invitem_colordata($printshop_color_id, $brand) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('c.*, i.item_name, i.item_num, c.color_descript');
+        $this->db->from('ts_printshop_colors c');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->where('c.printshop_color_id', $printshop_color_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['printshop_color_id'])) {
+            $out['msg']='Color Not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $addlcost=$this->invaddcost();
+            // Get Stock Data
+            $income=$this->printcolor_income($printshop_color_id, $brand);
+            $outcome=$this->printcolor_outcome($printshop_color_id,$brand);
+            $innermove=$this->printcolor_innermove($printshop_color_id,$brand);
+            $reserved=$this->printcolor_reserved($res['printshop_item_id'], $res['color'], $brand);
+            $backup=$income-$innermove;
+            $have=$innermove-$outcome;
+            $instock=$income-$outcome;
+            $available=$instock-$reserved;
+            $max=$res['suggeststock'];
+            $toget=($max - $have) + $reserved;
+            $onroute=$res['onroutestock'];
+            // Special cols
+            $stockperc=$this->empty_html_content;
+            $stockclass='';
+            if ($max!=0) {
+                $stockperc=round($instock/$max*100,0).'%';
+                if ($stockperc <= $this->config->item('invoutstock')) {
+                    $stockclass = $this->outstockclass;
+                } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                    $stockclass = $this->lowstockclass;
+                }
+            }
+            $haveclass='';
+            if ($have<0) {
+                $haveclass='red_text';
+                $outhave='('.QTYOutput(abs($have)).')';
+            } else {
+                $outhave=$have==0 ? $this->empty_html_content : QTYOutput($have);
+            }
+            $totalea=($res['price']!=0 ? $res['price']+$addlcost : '-');
+            $ndecim=2;
+            $whole = floor($res['price']*100);
+            $fraction = $res['price']*100 - $whole;
+            if (intval($fraction*10)>0) {
+                $ndecim=3;
+            }
+
+            $pics = $this->count_inventory_pics($printshop_color_id);
+
+            $data=array(
+                'printshop_item_id'=>$res['printshop_item_id'],
+                'printshop_color_id'=>$printshop_color_id,
+                'type'=>'color',
+                'item_num'=>$this->empty_html_content,
+                'color'=>$res['color'],
+                'percent'=>$stockperc,
+                'instock'=>($instock<=0 ? $this->outstoklabel : QTYOutput($instock)),
+                'reserved'=>($reserved==0 ? $this->empty_html_content : QTYOutput($reserved)),
+                'availabled'=>($available==0 ? $this->empty_html_content : QTYOutput($available)),
+                'backup'=>($backup==0 ? $this->empty_html_content : QTYOutput($backup)),
+                'have'=>$outhave,
+                'suggeststock'=>$max,
+                'toget'=>($toget==0 ? $this->empty_html_content : QTYOutput($toget)),
+                'onroutestock'=>$onroute,
+                'price'=>number_format($res['price'],$ndecim),
+                'total'=>MoneyOutput($totalea,3),
+                'color_descript'=>$res['color_descript'],
+                'color_order'=>$res['color_order'],
+                'stockclass'=>$stockclass,
+                'haveclass'=>$haveclass,
+                'specfile' => $res['color_descript'],
+                'specsclass'=>(empty($res['specfile']) ? 'empty' : 'full'),
+                'picsclass'=>(empty($pics['cnt']) ? 'empty' : ''),
+                'notreorder'=>$res['notreorder'],
+            );
+            $out['data']=$data;
+        }
+        return $out;
+    }
+
+
+    // Change Inv Color Value
+    public function invitem_color_change($color, $postdata) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists('fldname', $postdata) || !array_key_exists('newval', $postdata)) {
+            $out['msg']='Empty Changed Parameter';
+            return $out;
+        }
+        $fldname=$postdata['fldname'];
+        $newval=$postdata['newval'];
+        if (!array_key_exists($fldname, $color)) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        if ($fldname=='notreorder') {
+            $newval=0;
+            if ($color['notreorder']==0) {
+                $newval=1;
+            }
+        }
+        $color[$fldname]=$newval;
+        $out['result']=$this->success_result;
+        $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+        usersession($uploadsession, $color);
+        // Calc available
+        $out['availabled']=intval($color['instock'])-intval($color['reserved']);
+        $out['notreorder']=intval($newval);
+        return $out;
+    }
+
+    // Save Changes in Item Color
+    public function invitem_color_save($color) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (empty($color['color'])) {
+            $out['msg']='Enter Color Name';
+            return $out;
+        }
+        if (!$this->_check_invitemcolor($color['printshop_item_id'], $color['printshop_color_id'], $color['color'])) {
+            $out['msg']='Enter Unique Color';
+            return $out;
+        }
+        $this->db->set('color', $color['color']);
+        $this->db->set('suggeststock', intval($color['suggeststock']));
+        $this->db->set('reserved', intval($color['reserved']));
+        $this->db->set('onroutestock',  intval($color['onroutestock']));
+        $this->db->set('price', floatval($color['price']));
+        $this->db->set('color_descript', $color['specfile']);
+        $this->db->set('color_order', $color['color_order']);
+        $this->db->set('notreorder', $color['notreorder']);
+        if ($color['printshop_color_id']<=0) {
+            $this->db->set('printshop_item_id', $color['printshop_item_id']);
+            $this->db->insert('ts_printshop_colors');
+            $color['printshop_color_id']=$this->db->insert_id();
+        } else {
+            $this->db->where('printshop_color_id', $color['printshop_color_id']);
+            $this->db->update('ts_printshop_colors');
+        }
+        // Rebuild color order
+        $this->db->select('printshop_color_id, color');
+        $this->db->from('ts_printshop_colors');
+        $this->db->where('printshop_item_id', $color['printshop_item_id']);
+        $this->db->where('printshop_color_id != ', $color['printshop_color_id']);
+        $this->db->order_by('color_order');
+        $colordat=$this->db->get()->result_array();
+        if (count($colordat)>1) {
+            $i=1;
+            foreach ($colordat as $crow) {
+                if ($i==$color['color_order']) {
+                    $i++;
+                }
+                $this->db->set('color_order', $i);
+                $this->db->where('printshop_color_id', $crow['printshop_color_id']);
+                $this->db->update('ts_printshop_colors');
+                $i++;
+            }
+        }
+        $out['printshop_color_id'] = $color['printshop_color_id'];
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
 //    public function get_invitem_colordata($printshop_color_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
 //        $this->db->select('c.*, i.item_name, i.item_num');
@@ -1326,60 +1302,60 @@ Class Printshop_model extends MY_Model
 //        $out['printshop_color_id']=$stockdata['printshop_color_id'];
 //        return $out;
 //    }
-//
-//    // Check Unique Item #
-//    private function _check_invitem($printshop_item_id, $item_num) {
-//        $outres=FALSE;
-//        $this->db->select('count(printshop_item_id) as cnt');
-//        $this->db->from('ts_printshop_items');
-//        $this->db->where('printshop_item_id != ', $printshop_item_id);
-//        $this->db->where('upper(item_num)', strtoupper($item_num));
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            $outres=TRUE;
-//        }
-//        return $outres;
-//    }
-//
-//
-//    // Check unique item color
-//    private function _check_invitemcolor($printshop_item_id, $printshop_color_id, $color) {
-//        $outres=FALSE;
-//        $this->db->select('count(printshop_color_id) as cnt');
-//        $this->db->from('ts_printshop_colors');
-//        $this->db->where('printshop_item_id', $printshop_item_id);
-//        $this->db->where('printshop_color_id != ', $printshop_color_id);
-//        $this->db->where('upper(color)', strtoupper($color));
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            $outres=TRUE;
-//        }
-//        return $outres;
-//    }
-//
-//    // Calc a number of Order Reports
-//    public function get_orderreport_counts($options=array()) {
-//        $this->db->select('count(oa.amount_id) as cnt');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->where('oa.printshop',1);
-//        // Additional Options
-//        if (isset($options['search'])) {
-//            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//            $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
-//            $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
-//        }
-//        if (isset($options['report_year'])) {
-//            $start=strtotime($options['report_year'].'-01-01');
-//            $year_finish=intval($options['report_year']+1);
-//            $finish=strtotime($year_finish.'-01-01');
-//            $this->db->where('oa.printshop_date >= ', $start);
-//            $this->db->where('oa.printshop_date < ', $finish);
-//        }
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//
+
+    // Check Unique Item #
+    private function _check_invitem($printshop_item_id, $item_num) {
+        $outres=FALSE;
+        $this->db->select('count(printshop_item_id) as cnt');
+        $this->db->from('ts_printshop_items');
+        $this->db->where('printshop_item_id != ', $printshop_item_id);
+        $this->db->where('upper(item_num)', strtoupper($item_num));
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $outres=TRUE;
+        }
+        return $outres;
+    }
+
+
+    // Check unique item color
+    private function _check_invitemcolor($printshop_item_id, $printshop_color_id, $color) {
+        $outres=FALSE;
+        $this->db->select('count(printshop_color_id) as cnt');
+        $this->db->from('ts_printshop_colors');
+        $this->db->where('printshop_item_id', $printshop_item_id);
+        $this->db->where('printshop_color_id != ', $printshop_color_id);
+        $this->db->where('upper(color)', strtoupper($color));
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $outres=TRUE;
+        }
+        return $outres;
+    }
+
+    // Calc a number of Order Reports
+    public function get_orderreport_counts($options=array()) {
+        $this->db->select('count(oa.amount_id) as cnt');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1);
+        // Additional Options
+        if (isset($options['search'])) {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
+            $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
 //    // Totals
 //    public function get_orderreport_totals($options=array()) {
 //        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
@@ -2107,157 +2083,64 @@ Class Printshop_model extends MY_Model
 //        }
 //        return $out;
 //    }
-//
-//    public function save_printshop_pics($rows, $printshop_color_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>  "Can't save Pics");
-//        $path = $this->config->item('invpics_relative');
-//        foreach ($rows as $item) {
-//            switch ($item['status']) {
-//                case self::ROW_INSERT:
-//                    $this->db->set('pics', $path.$item['pics']);
-//                    $this->db->set('pics_source', $item['pics_source']);
-//                    $this->db->set('printshop_color_id', $printshop_color_id);
-//                    $this->db->insert('ts_printshop_pics');
-//
-//                    $path_preload = $this->config->item('upload_path_preload');
-//                    $path_pics = $this->config->item('invpics');
-//                    if (!file_exists($path_pics)) {
-//                        mkdir($path_pics, 0777);
-//                    }
-//
-//                    @copy($path_preload.$item['pics'], $path_pics.$item['pics']);
-//                    @unlink($path_preload.$item['pics']);
-//
-//                    break;
-//                case self::ROW_DELETE:
-//                    $this->db->where('printshop_pics_id', $item['printshop_pics_id']);
-//                    $this->db->delete('ts_printshop_pics');
-//                    $path_pics = $this->config->item('invpics');
-//                    @unlink($path_pics.$item['pics']);
-//                    break;
-//            }
-//        }
-//        return TRUE;
-//    }
-//
-//    // Download XLS file
-//    public function inventory_download($onboat_container) {
-//        $out=array('result'=>$this->error_result,'msg'=>'No Data Exist');
-//        $this->db->select('i.item_num, i.item_name, c.color, c.price, sum(b.onroutestock) as qty, c.color_descript, b.onboat_date');
-//        $this->db->from('ts_printshop_onboats b');
-//        $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
-//        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//        $this->db->where('b.onboat_container', $onboat_container);
-//        $this->db->group_by('i.item_num, i.item_name, c.color, c.price');
-//        $this->db->order_by('i.item_num, c.color');
-//        $res=$this->db->get()->result_array();
-//        if (count($res)>0) {
-//            $onboat_date=$res[0]['onboat_date'];
-//            $this->load->library('PHPExcel');
-//            $this->load->library('PHPExcel/IOFactory');
-//
-//            $objPHPExcel = new PHPExcel();
-//
-//            $objPHPExcel->getProperties()->setCreator("PHP");
-//            $i=0;
-//            $objPHPExcel->createSheet($i);
-//            $objPHPExcel->setActiveSheetIndex($i);
-//            $sheet = $objPHPExcel->getActiveSheet();
-//            $title='Container '.$onboat_container.' - Arriving in USA '.date('m/d/y', $onboat_date);
-//            // $objPHPExcel->setActiveSheetIndex($i)->setTitle($title);
-//            // Title
-//            $font= new PHPExcel_Style_Font;
-//            $font->setName('Arial');
-//            $font->setSize('10');
-//
-//
-//            $sheet->getStyle()->setFont($font);
-//
-//            $sheet->getColumnDimension('A')->setWidth(7);
-//            $sheet->getColumnDimension('B')->setWidth(40);
-//            $sheet->getColumnDimension('C')->setWidth(60);
-//            $sheet->getColumnDimension('D')->setWidth(60);
-//            $sheet->getColumnDimension('E')->setWidth(10);
-//            $sheet->getColumnDimension('F')->setWidth(10);
-//            $sheet->getColumnDimension('G')->setWidth(10);
-//            $objPHPExcel->setActiveSheetIndex($i)->setCellValue('A1', $title);
-//
-//            $sheet->getStyle('A2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('A2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('B2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('B2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('C2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('C2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('D2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('D2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('E2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('E2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('F2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('F2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//            $sheet->getStyle('G2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('6C6C6C');
-//            $sheet->getStyle('G2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//
-//
-//            $objPHPExcel->setActiveSheetIndex($i)
-//                ->setCellValue('A2', 'Item #')
-//                ->setCellValue('B2', 'Shape')
-//                ->setCellValue('C2', 'Color')
-//                ->setCellValue('D2', 'Pantone')
-//                ->setCellValue('E2', 'Quantity')
-//                ->setCellValue('F2', 'Cost Ea')
-//                ->setCellValue('G2', 'Total Cost');
-//            $j=3;
-//            $styleArray = array(
-//                'font'  => array(
-//                    'color' => array('rgb' => 'FFFFFF'),
-//                ));
-//            $sheet->getStyle('A2')->applyFromArray($styleArray);
-//            $sheet->getStyle('B2')->applyFromArray($styleArray);
-//            $sheet->getStyle('C2')->applyFromArray($styleArray);
-//            $sheet->getStyle('D2')->applyFromArray($styleArray);
-//            $sheet->getStyle('E2')->applyFromArray($styleArray);
-//            $sheet->getStyle('F2')->applyFromArray($styleArray);
-//            $sheet->getStyle('G2')->applyFromArray($styleArray);
-//            $addcost=$this->invaddcost();
-//
-//            foreach ($res as $row) {
-//                // $price=round($row['price']+$addcost,3);
-//                $price=round($row['price'],3);
-//                $total=round($row['qty']*$price,2);
-//                // Write Row
-//                // $sheet->getStyle('E'.$j)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-//                $sheet->getStyle('F'.$j)->getNumberFormat()->setFormatCode("$0#.###");
-//                $sheet->getStyle('G'.$j)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-//                $sheet->getStyle('A'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('B'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('C'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('D'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('E'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('F'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//                $sheet->getStyle('G'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-//
-//                $objPHPExcel->setActiveSheetIndex($i)
-//                    ->setCellValue('A'.$j, $row['item_num'])
-//                    ->setCellValue('B'.$j, $row['item_name'])
-//                    ->setCellValue('C'.$j, $row['color'])
-//                    ->setCellValue('D'.$j, $row['color_descript'])
-//                    ->setCellValue('E'.$j, $row['qty'])
-//                    ->setCellValue('F'.$j, $price)
-//                    ->setCellValue('G'.$j, $total);
-//                $j++;
-//            }
-//            // Write file
-//            $objWriter = IOFactory::createWriter($objPHPExcel, 'Excel5');
-//            $filename=$this->func->uniq_link(10).'.xls';
-//
-//            $filepath=$this->config->item('upload_path_preload').$filename;
-//            $objWriter->save($filepath);
-//            $url=$this->config->item('pathpreload').$filename;
-//            $out['url']=$url;
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
+
+    public function save_printshop_pics($rows, $printshop_color_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>  "Can't save Pics");
+        $path = $this->config->item('invpics_relative');
+        foreach ($rows as $item) {
+            switch ($item['status']) {
+                case self::ROW_INSERT:
+                    $this->db->set('pics', $path.$item['pics']);
+                    $this->db->set('pics_source', $item['pics_source']);
+                    $this->db->set('printshop_color_id', $printshop_color_id);
+                    $this->db->insert('ts_printshop_pics');
+
+                    $path_preload = $this->config->item('upload_path_preload');
+                    $path_pics = $this->config->item('invpics');
+                    if (!file_exists($path_pics)) {
+                        mkdir($path_pics, 0777);
+                    }
+                    @copy($path_preload.$item['pics'], $path_pics.$item['pics']);
+                    @unlink($path_preload.$item['pics']);
+                    break;
+                case self::ROW_DELETE:
+                    $this->db->where('printshop_pics_id', $item['printshop_pics_id']);
+                    $this->db->delete('ts_printshop_pics');
+                    $path_pics = $this->config->item('invpics');
+                    @unlink($path_pics.$item['pics']);
+                    break;
+            }
+        }
+        return TRUE;
+    }
+
+    // Download XLS file
+    public function inventory_download($onboat_container) {
+        $out=array('result'=>$this->error_result,'msg'=>'No Data Exist');
+        $this->db->select('i.item_num, i.item_name, c.color, c.price, sum(b.onroutestock) as qty, c.color_descript, b.onboat_date');
+        $this->db->from('ts_printshop_onboats b');
+        $this->db->join('ts_printshop_colors c','c.printshop_color_id=b.printshop_color_id');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->where('b.onboat_container', $onboat_container);
+        $this->db->group_by('i.item_num, i.item_name, c.color, c.price');
+        $this->db->order_by('i.item_num, c.color');
+        $res=$this->db->get()->result_array();
+        if (count($res)>0) {
+            $onboat_date=$res[0]['onboat_date'];
+            $title='Container '.$onboat_container.' - Arriving in USA '.date('m/d/y', $onboat_date);
+            $addcost=$this->invaddcost();
+            $options = [
+                'res' => $res,
+                'title' => $title,
+            ];
+            $this->load->model('exportexcell_model');
+            $filename = $this->exportexcell_model->export_onboatcontent($options);
+            $url=$this->config->item('pathpreload').$filename;
+            $out['url']=$url;
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
 
     function get_inventory_totals($brand) {
 

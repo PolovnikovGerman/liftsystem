@@ -650,6 +650,7 @@ class Fulfillment extends MY_Controller
         }
     }
     // Inventory
+    // Change Brand
     public function inventory_brand() {
         if ($this->isAjax()) {
             $mdata = [];
@@ -758,7 +759,291 @@ class Fulfillment extends MY_Controller
         }
         show_404();
     }
+    // Change cost
+    public function inventory_addcost() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $this->load->model('printshop_model');
+            $postdata = $this->input->post();
+            $addcost=ifset($postdata,'cost',0);
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->inventory_addcost_upd($addcost);
+                $options=array(
+                    'orderby'=>'item_num',
+                    'direct'=>'asc',
+                    'brand' => $brand,
+                );
+                $data=$this->printshop_model->get_printshopitems($options);
+                $permission=$this->user_model->get_user_data($this->USR_ID);
+                // Make Total Inv content
+                $mdata['total_inventory']=MoneyOutput($data['inventtotal']);
+                $specopt=array(
+                    'data'=>$data['inventory'],
+                    'permission'=>$permission['profit_view'],
+                );
+                $mdata['speccontent']=$this->load->view('printshopinventory/specinventory_data_view', $specopt, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+    // Item Data change
+    public function inventory_item() {
+        if ($this->isAjax()) {
+            $this->load->model('printshop_model');
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $printshop_item_id=$postdata['printshop_item_id'];
+            if ($printshop_item_id==0) {
+                $item=$this->printshop_model->new_invent_item();
+            } else {
+                $res=$this->printshop_model->get_invent_item($printshop_item_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+                $item=$res['item'];
+            }
+            if (empty($error)) {
+                $permission=$this->user_model->get_user_data($this->USR_ID);
+                // Make Total Inv content
+                $item['permission']=$permission['profit_view'];
+                usersession('invitemdata', $item);
+                $mdata['content']=$this->load->view('printshopinventory/invitem_itemdata_view', $item, TRUE);
+                $mdata['addcontent']=$this->load->view('printshopinventory/invitem_itemaddons_view', $item, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Item Detail Value
+    public function inventory_item_change() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error='Edit time expired. Recconect';
+            $item=usersession('invitemdata');
+            if (!empty($item)) {
+                $this->load->model('printshop_model');
+                $postdata = $this->input->post();
+                $res=$this->printshop_model->invitem_item_change($item, $postdata);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+    // Load data
+    // public function inventory_loaddata() {
 
+    // }
+    // Save Inventory item
+    public function inventory_item_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $item=usersession('invitemdata');
+                $error='Edit time expired. Reload';
+                if (!empty($item)) {
+                    $item_id=$item['printshop_item_id'];
+                    $this->load->model('printshop_model');
+                    $res=$this->printshop_model->invitem_item_save($item);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        if ($item_id>0) {
+                            $options=array(
+                                'orderby'=>'item_num',
+                                'direct'=>'asc',
+                                'brand' => $brand,
+                            );
+
+                            $data=$this->printshop_model->get_printshopitems($options);
+                            $permission=$this->user_model->get_user_data($this->USR_ID);
+                            // Make Total Inv content
+                            $totaloptions=array(
+                                'data'=>$data['inventory'],
+                            );
+                            $mdata['totalinvcontent']=$this->load->view('printshopinventory/totalinventory_data_view', $totaloptions, TRUE);
+                            $specopt=array(
+                                'data'=>$data['inventory'],
+                                'permission'=>$permission['profit_view'],
+                            );
+                            $mdata['speccontent']=$this->load->view('printshopinventory/specinventory_data_view', $specopt, TRUE);
+                            $mdata['newitem']=0;
+                        } else {
+                            $mdata['newitem']=1;
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Add Color for Inventory Item
+    public function inventory_color() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('printshop_model');
+            $postdata=$this->input->post();
+            $printshop_item_id=$postdata['printshop_item_id'];
+            $printshop_color_id=$postdata['printshop_color_id'];
+            $showmax=$postdata['showmax'];
+            $brand = ifset($postdata, 'brand', 'ALL');
+            if ($printshop_color_id==0) {
+                $color=$this->printshop_model->invitem_newcolor($printshop_item_id);
+                $colors=$this->printshop_model->get_item_colors($printshop_item_id);
+                $color['numcolors']=count($colors)+1;
+                $color["printshop_pics"] = array();
+            } else {
+                $res=$this->printshop_model->invitem_colordata($printshop_color_id, $brand);
+                // Get a number of colors
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $color=$res['data'];
+                    $color["printshop_pics"] = $this->printshop_model->get_picsattachments($printshop_color_id);
+                }
+            }
+            $uploadsess='picsupload'.uniq_link(15);
+
+            $color["uplsess"] = $uploadsess;
+            $color['showmax']=$showmax;
+            usersession($uploadsess, $color);
+            // Devide form on 2 parts
+            $mdata['commoncontent']=$this->load->view('printshopinventory/invitem_colordata_view', $color, TRUE);
+            // Permissions
+            $permission=$this->user_model->get_user_data($this->USR_ID);
+            $color['permission']=$permission['profit_view'];
+            $mdata['addcontent']=$this->load->view('printshopinventory/invitem_coloradddata_view', $color, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Change Item Color Value
+    public function inventory_color_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Edut time expired. Reconnect';
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $color=usersession($uploadsession);
+            if (!empty($color)) {
+                $this->load->model('printshop_model');
+                $postdata=$this->input->post();
+                $res=$this->printshop_model->invitem_color_change($color, $postdata);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $avail=$res['availabled'];
+                    $mdata['availabled']='';
+                    if ($avail!=0) {
+                        $mdata['availabled']=  number_format($avail,0,'.',',');
+                    }
+                    $mdata['notreorder']=$res['notreorder'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Spec for Inventory
+    public function inventory_specedit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $specfile = $this->input->get('specfile');
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $data=usersession($uploadsession);
+            $mdata['content']=$this->load->view('printshopinventory/specedit_view', $data,TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Save changes
+    public function inventory_color_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Edit time expired. Reconnect';
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $color=usersession($uploadsession);
+            $brand = ifset($postdata,'brand');
+            $printshop_color_id=$this->input->post('printshop_color_id');
+            $specfile=$this->input->post('specfile');
+            if (!empty($color)) {
+                $color_id=$color['printshop_color_id'];
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->invitem_color_save($color);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $printshop_pics = $color['printshop_pics'];
+                    $this->printshop_model->save_printshop_pics($printshop_pics, $res['printshop_color_id']);
+                    usersession($uploadsession, NULL);
+                    $mdata['new']=0;
+                    if ($color_id<=0) {
+                        $mdata['new']=1;
+                    }
+                    if ($mdata['new']==0) {
+                        $options=array(
+                            'orderby'=>'item_num',
+                            'direct'=>'asc',
+                            'brand' => $brand,
+                        );
+
+                        $data=$this->printshop_model->get_printshopitems($options);
+                        $permission=$this->user_model->get_user_data($this->USR_ID);
+                        // Make Total Inv content
+                        $totaloptions=array(
+                            'data'=>$data['inventory'],
+                        );
+                        $mdata['totalinvcontent']=$this->load->view('printshopinventory/totalinventory_data_view', $totaloptions, TRUE);
+                        $specopt=array(
+                            'data'=>$data['inventory'],
+                            'permission'=>$permission['profit_view'],
+                        );
+                        $mdata['speccontent']=$this->load->view('printshopinventory/specinventory_data_view', $specopt, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Download OnBoat
+    public function inventory_boat_download() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Date';
+            $postdate=$this->input->post();
+            if (isset($postdate['onboat_container'])) {
+                $onboat_container=$postdate['onboat_container'];
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->inventory_download($onboat_container);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['url']=$res['url'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');

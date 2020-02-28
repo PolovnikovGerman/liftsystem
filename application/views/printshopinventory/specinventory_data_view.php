@@ -10,7 +10,7 @@
             <?php if ($row['type']=='item') { ?>
                 &nbsp;
             <?php } else { ?>
-                <div class="specsdata <?=$row['specsclass']?>" <?=$row['specsurl']?> data-color="<?=$row['printshop_color_id']?>">
+                <div class="specsdata <?=$row['specsclass']?>" data-content="<?=$row['color_descript']?>" data-color="<?=$row['printshop_color_id']?>">
                     <i class="fa fa-file-text-o <?=$row['specsclass']?>" aria-hidden="true"></i>
                 </div>
             <?php } ?>

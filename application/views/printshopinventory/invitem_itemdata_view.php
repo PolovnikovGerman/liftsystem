@@ -2,7 +2,7 @@
 <div class="itemnum">
     <input type="text" class="invitemdataval itemnum" data-item="item_num" value="<?= $item_num ?>"/>
 </div>
-<div class="coloritemname" style="border-bottom: 1px solid #000000">
+<div class="coloritemname" style="border-bottom: 1px solid #000000; width: 162px;">
     <input type="text" class="invitemdataval itemname" data-item="item_name" value="<?= $item_name ?>"/>
 </div>
 <div class="itempercent border_b">

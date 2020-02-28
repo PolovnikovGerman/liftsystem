@@ -8,7 +8,7 @@ $(document).ready(function(){
 });
 
 function init_inventory_content() {
-    // init_inventory_data();
+    init_inventory_data();
     // Change Brand
     $("#printshopinventbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
@@ -82,19 +82,22 @@ function init_inventory_view() {
     // Show active Item / Color
     $("#printshopinventor").find("div.coloritemname").hover(
         function() {
-            $( this ).addClass('active');
+            $(this).addClass('active');
         }, function() {
-            $( this ).removeClass('active');
+            $(this).removeClass('active');
         });
     // Change Add'l cost
     $("#printshopinventor").find("input#invaddvcost").unbind('change').change(function(){
         var url="/fulfillment/inventory_addcost";
-        var cost=$(this).val();
-        $.post(url, {'cost': cost}, function(response){
+        var params = new Array();
+        params.push({name: 'cost', value: $("input#invaddvcost").val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+        $("#loader").show();
+        $.post(url, params, function(response){
             if (response.errors=='') {
-                // $("div.inventorytablebody").empty().html(response.data.content);
                 $("#printshopinventor").find("div.inventorytableright").empty().html(response.data.speccontent);
                 init_inventory_view();
+                $("#loader").hide();
             } else {
                 show_error(response);
             }
@@ -107,15 +110,13 @@ function init_inventory_view() {
         params.push({name: 'printshop_item_id', value: item});
         params.push({name: 'printshop_color_id', value: 0});
         params.push({name: 'showmax', value: $("input#showonlinemaxvalue").val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_color";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 // ??????
-                // $("div.inventorydatarow.itemdata[data-item='"+item+"']").after('<div class="inventorydatarow">'+response.data.content+'</div>');
-                $("#printshopinventor").find("div.inventorytableleft").find("div.inventorydatarow[data-color='0'][data-item='"+item+"']").after('<div class="inventorydatarow">'+response.data.commoncontent+'</div>');
-                //         .empty().html(response.data.commoncontent);
+                $("#printshopinventor").find("div.inventorytableleft").find("div.inventorydatarow[data-color='0'][data-item='"+item+"']").after('<div class="inventorydatarow">'+response.data.commoncontent+'</div>');                //
                 $("#printshopinventor").find("div.inventorytableright").find("div.inventorydatarow[data-color='0'][data-item='"+item+"']").after('<div class="inventorydatarow">'+response.data.addcontent+'</div>');
-                // .empty().html(response.data.addcontent);
                 $("#printshopinventor").find("div.inventorydatarow").find('div.additemcolor').unbind('click');
                 $("#printshopinventor").find("div.additem").unbind('click');
                 $("#printshopinventor").find("div.coloritemname").unbind('click');
@@ -132,12 +133,13 @@ function init_inventory_view() {
                     var url="/fulfillment/inventory_specedit";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
-                            show_popup('stockdataarea');
-                            $("div#pop_content").empty().html(response.data.content);
-                            //init_inventspec(color);
+                            $("#pageModal").find('div.modal-dialog').css('width','390px');
+                            $("#pageModalLabel").empty().html('Edit Color Description');
+                            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                            $("#pageModal").modal('show');
                             $('div.savedata').unbind('click').click(function(){
                                 specfile = $("textarea.specfile").val();
-                                disablePopup();
+                                $("#pageModal").modal('hide');
                             });
                         } else {
                             show_error(response);
@@ -247,14 +249,14 @@ function init_inventory_view() {
                     var url="/fulfillment/inventory_specedit";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
-                            show_popup('stockdataarea');
-                            $("div#pop_content").empty().html(response.data.content);
-                            //init_inventspec(color);
+                            $("#pageModal").find('div.modal-dialog').css('width','390px');
+                            $("#pageModalLabel").empty().html('Edit Color Description');
+                            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                            $("#pageModal").modal('show');
                             $('div.savedata').unbind('click').click(function(){
                                 var params = {
                                     'fldname' : 'specfile',
                                     'newval' : $("textarea.specfile").val(),
-                                    // 'uploadsession' : $(this).parents('.inventorydatarow').find('input#uploadsession').val()
                                     'uploadsession' : $('input#uploadsession').val()
                                 };
                                 var url="/fulfillment/inventory_color_change";
@@ -264,11 +266,11 @@ function init_inventory_view() {
                                         if(specfile == '') {
                                             $("#printshopinventor").find("div.specsdata[data-color='"+color+"']").find('i').addClass(response.data.specclass);
                                         }
+                                        $("#pageModal").modal('hide');
                                     } else {
                                         show_error(response);
                                     }
                                 },'json');
-                                disablePopup();
                             });
                         } else {
                             show_error(response);
@@ -318,20 +320,20 @@ function init_inventory_view() {
     // Download Pics
     $("#printshopinventor").find("div.picsdata").find('i').unbind('click').click(function(){
         var color=$(this).parent('div.picsdata').data('color');
-
         init_download_pics(color);
     });
     // Show Pantone Color
-    $("#printshopinventor").find("div.specsdata.full").each(function(){
-    /*    $(this).bt({
-            fill: '#ffffff',
-            trigger: 'hover',
-            width: '200px',
-            ajaxCache: false,
-            positions: ['left'],
-            ajaxPath: ["$(this).attr('href')"]
-        });
-    */
+    $("#printshopinventor").find("div.specsdata.full").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'right center',
+            at: 'center left',
+        },
+        style: {
+            classes: 'colordata_tooltip'
+        }
     });
 
     // Download Excell file of OnBoat container
@@ -776,9 +778,10 @@ function save_inventitem() {
     $("div.inventorymanage.cancel").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'uploadsession', value: $("input#uploadsession").val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_data";
         $("#loader").show();
-        $.post(url, {}, function(response){
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#printshopinventor").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
                 $("#printshopinventor").find("div.inventorytableright").empty().html(response.data.speccontent);
@@ -795,8 +798,10 @@ function save_inventitem() {
     $("div.inventorymanage.save").unbind('click').click(function(){
         var params=new Array();
         var url="/fulfillment/inventory_item_save";
+        var params=new Array();
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         $("#loader").show();
-        $.post(url, {}, function(response){
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 if (response.data.newitem=='1') {
                     $("#loader").hide();
@@ -830,9 +835,10 @@ function save_inventitem() {
 function save_inventitem_color() {
     $("div.inventorymanage.cancel").unbind('click').click(function(){
         var url="/fulfillment/inventory_data";
-        var params = {
-            'uploadsession' : $(this).parents('.inventorydatarow').find('input#uploadsession').val()
-        };
+        var params = new Array();
+        params.push({name: 'uploadsession', value: $(this).parents('.inventorydatarow').find('input#uploadsession').val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+        $("#loader").show();
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.inventorytableleft").empty().html(response.data.totalinvcontent);
@@ -841,19 +847,19 @@ function save_inventitem_color() {
                     showmaxevent_data();
                 }
                 init_inventory_view();
+                $("#loader").hide();
             } else {
+                $("#loader").hide();
                 show_error(response);
             }
         },'json');
     });
     $("div.inventorymanage.save").unbind('click').click(function(){
         var url="/fulfillment/inventory_color_save";
-        // var color=$(this).parents('.inventorydatarow').attr('data-color');
-        var params = {
-            'uploadsession' : $(this).parents('.inventorydatarow').find('input#uploadsession').val(),
-            /*'printshop_color_id': color,*/
-            /*'specfile': specfile*/
-        };
+        var params = new Array();
+        params.push({name: 'uploadsession', value: $(this).parents('.inventorydatarow').find('input#uploadsession').val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+        $("#loader").show();
         $.post(url, params, function(response){
             if (response.errors=='') {
                 if (response.data.new=='1') {
@@ -866,22 +872,19 @@ function save_inventitem_color() {
                     }
                     init_inventory_view();
                 }
+                $("#loader").hide();
             } else {
+                $("#loader").hide();
                 show_error(response);
             }
         },'json');
     });
     $("input.invitemcolordata").unbind('change').change(function(){
-        // var params=new Array();
-        // params.push({name: 'fldname', value: $(this).data('item')});
-        // params.push({name: 'newval', value:$(this).val()});
-
         var params = {
             'fldname' : $(this).data('item'),
             'newval' : $(this).val(),
             'uploadsession' : $('input#uploadsession').val()
         };
-
         var url="/fulfillment/inventory_color_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -897,7 +900,6 @@ function save_inventitem_color() {
             'newval' : 0,
             'uploadsession' : $('input#uploadsession').val()
         };
-
         var url="/fulfillment/inventory_color_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -911,9 +913,6 @@ function save_inventitem_color() {
         },'json');
     })
     $("select.colororderselect").unbind('change').change(function(){
-        // var params=new Array();
-        // params.push({name: 'fldname', value: 'color_order'});
-        // params.push({name: 'newval', value: $(this).val()});
         var params = {
             'fldname' : 'color_order',
             'newval' : $(this).val(),
@@ -1270,165 +1269,156 @@ function save_platetemp() {
     }, 'json');
 }
 
-function init_transferview() {
-    $("div.inventoryviewswitcher").find('label').unbind('click').click(function(){
-        var viewnew=$(this).data('viewtype');
-        var curviewtype=$("input#invpageview").val();
-        if (viewnew!=curviewtype) {
-            show_newinvetory(viewnew);
-        }
-    });
-    $("input#shotogetonly").unbind('change').change(function() {
-        init_inventory_data();
-    });
-    $("div.edittrasferval").unbind('click').click(function(){
-        var url="/fulfillment/inventory_transferedit";
-        $.post(url,{},function(response){
-            if (response.errors=='') {
-                $("input.transferval").removeClass('empty').val('');
-                $("div.transferdirect").removeClass('empty');
-                $("div.transferdirect.direct").addClass('active');
-                $("div.transferdirect.inverse").addClass('nonactive');
-                $("div.transferheadrow").find('div.transfered').empty().html('<div class="savetransferval">&nbsp;</div>');
-                init_tranferchange();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    })
-}
-
-function init_tranferchange() {
-    $("div.savetransferval").unbind('click').click(function(){
-        save_tranferdata();
-    });
-    $("input.transferval").unbind('change').change(function(){
-        var params=new Array();
-        var color=$(this).data('color');
-        params.push({name: 'printshop_color_id', value: color});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'fldname', value: 'move_amnt'});
-        var url="/fulfillment/inventory_transferchange";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
-                $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $("div.transferdirect.direct").unbind('click').click(function(){
-        var direc='direct';
-        if ($(this).hasClass('active')==true) {
-
-        } else {
-            var color=$(this).data('color');
-            var params=new Array();
-            params.push({name: 'printshop_color_id', value: color});
-            params.push({name: 'newval', value: direc});
-            params.push({name: 'fldname', value: 'direct'});
-            var url="/fulfillment/inventory_transferchange";
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    if (direc=='inverse') {
-                        $(".transferdirect.direct[data-color='"+color+"']").removeClass('active').addClass('nonactive');
-                        $(".transferdirect.inverse[data-color='"+color+"']").removeClass('nonactive').addClass('active');
-                        // $(this).removeClass('active').addClass('nonactive');
-                    } else {
-                        $(".transferdirect.inverse[data-color='"+color+"']").removeClass('active').addClass('nonactive');
-                        $(".transferdirect.direct[data-color='"+color+"']").removeClass('nonactive').addClass('active');
-                        // $(this).removeClass('nonactive').addClass('active');
-                    }
-                    $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
-                    $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
-                } else {
-                    show_error(response);
-                }
-            },'json');
-        }
-    });
-    $("div.transferdirect.inverse").unbind('click').click(function(){
-        var direc='inverse';
-        if ($(this).hasClass('active')==true) {
-            direc='direct';
-        } else {
-            var color=$(this).data('color');
-            var params=new Array();
-            params.push({name: 'printshop_color_id', value: color});
-            params.push({name: 'newval', value: direc});
-            params.push({name: 'fldname', value: 'direct'});
-            var url="/fulfillment/inventory_transferchange";
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    if (direc=='direct') {
-                        $(".transferdirect.inverse[data-color='"+color+"']").removeClass('active').addClass('nonactive');
-                        $(".transferdirect.direct[data-color='"+color+"']").removeClass('nonactive').addClass('active');
-                        // $(this).removeClass('active').addClass('nonactive');
-                    } else {
-                        $(".transferdirect.direct[data-color='"+color+"']").removeClass('active').addClass('nonactive');
-                        $(".transferdirect.inverse[data-color='"+color+"']").removeClass('nonactive').addClass('active');
-                        // $(this).removeClass('nonactive').addClass('active');
-                    }
-                    $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
-                    $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
-                } else {
-                    show_error(response);
-                }
-            },'json');
-
-        }
-    });
-}
-
-function save_tranferdata() {
-    var url="/fulfillment/inventory_transfersave";
-    $.post(url, {}, function(response){
-        if (response.errors=='') {
-            $("div.transferheadrow").find('div.transfered').empty().html('<div class="edittrasferval">&nbsp;</div>');
-            init_inventory_data();
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-// Show new view type
-function show_newinvetory(viewnew) {
-    $("input#invpageview").val(viewnew);
-    var params=new Array();
-    params.push({name: 'viewtype', value: viewnew});
-    var url="/fulfillment/inventory_pageview";
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            $("div#pageviewarea").empty().html(response.data.content);
-            $("div.inventoryviewswitcher").find('div.label').removeClass('active');
-            $("div.inventoryviewswitcher").find("div.label[data-viewtype='"+viewnew+"']").addClass('active');
-            if (viewnew=='full') {
-                $("div.inventoryfilterarea").css('visibility','hidden');
-            } else {
-                $("div.inventoryfilterarea").css('visibility','visible');
-            }
-            init_inventory_data();
-        } else {
-            show_error(response);
-        }
-    },'json');
-
-}
+// function init_transferview() {
+//     $("div.inventoryviewswitcher").find('label').unbind('click').click(function(){
+//         var viewnew=$(this).data('viewtype');
+//         var curviewtype=$("input#invpageview").val();
+//         if (viewnew!=curviewtype) {
+//             show_newinvetory(viewnew);
+//         }
+//     });
+//     $("input#shotogetonly").unbind('change').change(function() {
+//         init_inventory_data();
+//     });
+//     $("div.edittrasferval").unbind('click').click(function(){
+//         var url="/fulfillment/inventory_transferedit";
+//         $.post(url,{},function(response){
+//             if (response.errors=='') {
+//                 $("input.transferval").removeClass('empty').val('');
+//                 $("div.transferdirect").removeClass('empty');
+//                 $("div.transferdirect.direct").addClass('active');
+//                 $("div.transferdirect.inverse").addClass('nonactive');
+//                 $("div.transferheadrow").find('div.transfered').empty().html('<div class="savetransferval">&nbsp;</div>');
+//                 init_tranferchange();
+//             } else {
+//                 show_error(response);
+//             }
+//         },'json');
+//     })
+// }
+//
+// function init_tranferchange() {
+//     $("div.savetransferval").unbind('click').click(function(){
+//         save_tranferdata();
+//     });
+//     $("input.transferval").unbind('change').change(function(){
+//         var params=new Array();
+//         var color=$(this).data('color');
+//         params.push({name: 'printshop_color_id', value: color});
+//         params.push({name: 'newval', value: $(this).val()});
+//         params.push({name: 'fldname', value: 'move_amnt'});
+//         var url="/fulfillment/inventory_transferchange";
+//         $.post(url, params, function(response){
+//             if (response.errors=='') {
+//                 $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
+//                 $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
+//             } else {
+//                 show_error(response);
+//             }
+//         },'json');
+//     });
+//     $("div.transferdirect.direct").unbind('click').click(function(){
+//         var direc='direct';
+//         if ($(this).hasClass('active')==true) {
+//
+//         } else {
+//             var color=$(this).data('color');
+//             var params=new Array();
+//             params.push({name: 'printshop_color_id', value: color});
+//             params.push({name: 'newval', value: direc});
+//             params.push({name: 'fldname', value: 'direct'});
+//             var url="/fulfillment/inventory_transferchange";
+//             $.post(url, params, function(response){
+//                 if (response.errors=='') {
+//                     if (direc=='inverse') {
+//                         $(".transferdirect.direct[data-color='"+color+"']").removeClass('active').addClass('nonactive');
+//                         $(".transferdirect.inverse[data-color='"+color+"']").removeClass('nonactive').addClass('active');
+//                         // $(this).removeClass('active').addClass('nonactive');
+//                     } else {
+//                         $(".transferdirect.inverse[data-color='"+color+"']").removeClass('active').addClass('nonactive');
+//                         $(".transferdirect.direct[data-color='"+color+"']").removeClass('nonactive').addClass('active');
+//                         // $(this).removeClass('nonactive').addClass('active');
+//                     }
+//                     $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
+//                     $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
+//                 } else {
+//                     show_error(response);
+//                 }
+//             },'json');
+//         }
+//     });
+//     $("div.transferdirect.inverse").unbind('click').click(function(){
+//         var direc='inverse';
+//         if ($(this).hasClass('active')==true) {
+//             direc='direct';
+//         } else {
+//             var color=$(this).data('color');
+//             var params=new Array();
+//             params.push({name: 'printshop_color_id', value: color});
+//             params.push({name: 'newval', value: direc});
+//             params.push({name: 'fldname', value: 'direct'});
+//             var url="/fulfillment/inventory_transferchange";
+//             $.post(url, params, function(response){
+//                 if (response.errors=='') {
+//                     if (direc=='direct') {
+//                         $(".transferdirect.inverse[data-color='"+color+"']").removeClass('active').addClass('nonactive');
+//                         $(".transferdirect.direct[data-color='"+color+"']").removeClass('nonactive').addClass('active');
+//                         // $(this).removeClass('active').addClass('nonactive');
+//                     } else {
+//                         $(".transferdirect.direct[data-color='"+color+"']").removeClass('active').addClass('nonactive');
+//                         $(".transferdirect.inverse[data-color='"+color+"']").removeClass('nonactive').addClass('active');
+//                         // $(this).removeClass('nonactive').addClass('active');
+//                     }
+//                     $("div.inventorydatarow[data-color='"+color+"']").find('div.have').removeClass('changed').addClass('changed').empty().html(response.data.newhave);
+//                     $("div.inventorydatarow[data-color='"+color+"']").find('div.back_up').removeClass('changed').addClass('changed').empty().html(response.data.newbackup);
+//                 } else {
+//                     show_error(response);
+//                 }
+//             },'json');
+//
+//         }
+//     });
+// }
+//
+// function save_tranferdata() {
+//     var url="/fulfillment/inventory_transfersave";
+//     $.post(url, {}, function(response){
+//         if (response.errors=='') {
+//             $("div.transferheadrow").find('div.transfered').empty().html('<div class="edittrasferval">&nbsp;</div>');
+//             init_inventory_data();
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
+//
+// // Show new view type
+// function show_newinvetory(viewnew) {
+//     $("input#invpageview").val(viewnew);
+//     var params=new Array();
+//     params.push({name: 'viewtype', value: viewnew});
+//     var url="/fulfillment/inventory_pageview";
+//     $.post(url, params, function(response){
+//         if (response.errors=='') {
+//             $("div#pageviewarea").empty().html(response.data.content);
+//             $("div.inventoryviewswitcher").find('div.label').removeClass('active');
+//             $("div.inventoryviewswitcher").find("div.label[data-viewtype='"+viewnew+"']").addClass('active');
+//             if (viewnew=='full') {
+//                 $("div.inventoryfilterarea").css('visibility','hidden');
+//             } else {
+//                 $("div.inventoryfilterarea").css('visibility','visible');
+//             }
+//             init_inventory_data();
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+//
+// }
 
 function save_onboat(container) {
     var url = '/fulfillment/save_onboatedit';
     var input = $(".add_boat .edit_color").val();
-    // var params = new Array();
-    // params.push({name: 'data', value: $("input.add_data").val()});
-    // params.push({name: 'container_number', value: container})
-    // $("div.add_boat *[id]").each(function() {
-    //     if($(this).val() != "") {
-    //         /*alert($(this).val());*/
-    //         params.push({name: $(this)[0].id, value:$(this).val()});
-    //     }
-    // });
 
     var params = {
         date : $("input.add_data").val(),
