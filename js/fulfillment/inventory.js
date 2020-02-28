@@ -9,6 +9,10 @@ $(document).ready(function(){
 
 function init_inventory_content() {
     init_inventory_data();
+    var vendor = $("#printshopinventbrand").val();
+    if (vendor!=='ALL') {
+        $("#printshopinventor").find("span.add_onboat").css('visibility','visible');
+    }
     // Change Brand
     $("#printshopinventbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
@@ -37,6 +41,12 @@ function search_printinventory_brand() {
             $("#inventonboatheah").empty().html(response.data.onboathead);
             $("#inventtotal").empty().html(response.data.invetorytotal);
             $("#inventdownloadarea").css('width',response.data.width).css('margin-left',response.data.margin).empty().html(response.data.download_view);
+            var vendor = $("#printshopinventbrand").val();
+            if (vendor!=='ALL') {
+                $("#printshopinventor").find("span.add_onboat").css('visibility','visible');
+            } else {
+                $("#printshopinventor").find("span.add_onboat").css('visibility','hidden');
+            }
             init_inventory_data();
         } else {
             show_error(response);
@@ -371,6 +381,7 @@ function init_inventory_view() {
         var params=new Array();
         params.push({name: 'container', value: container});
         params.push({name: 'showmax', value: $("input#showonlinemaxvalue").val()});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_changecontainer";
         $.post(url, params, function(response){
             container=response.data.onboat_container;
@@ -544,6 +555,7 @@ function saveonboat_container(container) {
     params.push({name: 'container', value: container});
     params.push({name: 'action', value: 'save'});
     params.push({name: 'showmax', value: $("input#showonlinemaxvalue").val()});
+    params.push({name: 'brand', value: $("#printshopinventbrand").val()});
     var url="/fulfillment/inventory_savecontainer";
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -609,6 +621,7 @@ function cancelonboat_container(container) {
         params.push({name: 'session', value: $("input#onboatsession").val()});
         params.push({name: 'container', value: container});
         params.push({name: 'action', value: 'cancel'});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_savecontainer";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -620,7 +633,6 @@ function cancelonboat_container(container) {
                 show_error(response);
             }
         },'json');
-
     }
 }
 

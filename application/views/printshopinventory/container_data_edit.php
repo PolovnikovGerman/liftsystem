@@ -1,4 +1,5 @@
 <input type="hidden" id="onboatsession" value="<?=$session?>"/>
+<input type="hidden" id="containerbrand" value="<?=$brand?>"/>
 <div class="onboacontainerdata">
     <?php $numpp = 0; ?>
     <?php foreach ($data as $row) { ?>

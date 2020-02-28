@@ -91,6 +91,7 @@
 }
 span.add_onboat {
     cursor: pointer;
+    visibility: hidden;
 }
 .printshopinventor .exportdataarea .printshopexporttoexcel {
     cursor: pointer;
@@ -238,19 +239,21 @@ input.boatcontainerdate {
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement {
     font-size: 16px;
-    width: 27px;
+    width: 26px;
+    height: 21px;
+    line-height: 21px!important;
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement > i.saveboatcontainer {
     color: #359045;
     cursor: pointer;
     margin-left: 2px;
-    margin-top: 1px;
+    /* margin-top: 1px; */
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement > i.cancelboatcontainer {
     color: #FF0000;
     cursor: pointer;
     margin-left: 2px;
-    margin-top: 1px;
+    /* margin-top: 1px; */
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .arrived {
     background: url('/img/printshop/arrived_btn.png') no-repeat transparent;

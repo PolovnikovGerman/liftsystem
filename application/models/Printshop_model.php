@@ -778,7 +778,6 @@ Class Printshop_model extends MY_Model
         // $this->db->order_by('printshop_color_id','desc');
         $this->db->order_by('tspc.color');
         $res=$this->db->get()->result_array();
-        $str = $this->db->last_query();
         return $res;
     }
 
@@ -2215,11 +2214,11 @@ Class Printshop_model extends MY_Model
         return $out;
     }
 
-    public function get_container_edit($onboat_container) {
+    public function get_container_edit($onboat_container, $brand) {
         $out=array('res'=>$this->error_result, 'msg'=>'Container Not Found');
         // Collect data from Inventory Items and Colors
         if ($onboat_container==0) {
-            return $this->_new_container();
+            return $this->_new_container($brand);
         } else {
             $colordata=$this->get_printshop_itemcolors();
             // Get data from container
@@ -2233,6 +2232,7 @@ Class Printshop_model extends MY_Model
                     'onboat_container'=>$onboat_container,
                     'onboat_date'=>$contdata[0]['onboat_date'],
                     'onboat_status'=>$contdata[0]['onboat_status'],
+                    'brand' => $contdata[0]['brand'],
                 );
                 $total=0;
                 foreach ($colordata as $drow) {
@@ -2279,7 +2279,7 @@ Class Printshop_model extends MY_Model
         return $out;
     }
 
-    private function _new_container() {
+    private function _new_container($brand) {
         $colordata=$this->get_printshop_itemcolors();
         foreach ($colordata as $drow) {
             $cellval=$this->empty_html_content;
@@ -2302,6 +2302,7 @@ Class Printshop_model extends MY_Model
             'onboat_container'=>-1,
             'onboat_date'=>time(),
             'onboat_status'=>0,
+            'brand' => $brand,
         );
         $out['data']=$data;
         $out['total']=0;
@@ -2349,25 +2350,25 @@ Class Printshop_model extends MY_Model
                     }
                 }
                 $sessdata['data']=$data;
-                $sessdata=$this->func->session($postdata['session'], $sessdata);
-                // Item
+                usersession($postdata['session'], $sessdata);
             }
         } elseif ($postdata['entity']=='boatcontainerdate') {
             $details=$sessdata['details'];
             $details['onboat_date']=  strtotime($postdata['newval']);
             $sessdata['details']=$details;
-            $this->func->session($postdata['session'], $sessdata);
+            usersession($postdata['session'], $sessdata);
             $out['result']=$this->success_result;
         }
         return $out;
     }
 
-    function inventory_savecontainer($sessdata, $session_id) {
+    public function inventory_savecontainer($sessdata, $session_id) {
         $out=array('result'=>$this->error_result,'msg'=>'Color Not Found');
         $data=$sessdata['data'];
         $total=$sessdata['total'];
         $details=$sessdata['details'];
         $onboat_container=$details['onboat_container'];
+        $brand = $details['brand'];
         if ($onboat_container<0) {
             // New Container
             $this->db->select('max(onboat_container) as maxval');
@@ -2396,13 +2397,14 @@ Class Printshop_model extends MY_Model
                     } else {
                         $this->db->set('printshop_color_id', $drow['printshop_color_id']);
                         $this->db->set('onboat_container', $onboat_container);
+                        $this->db->set('brand', $brand);
                         $this->db->insert('ts_printshop_onboats');
                     }
                 }
             }
         }
         // All saved
-        $this->func->session($session_id, NULL);
+        usersession($session_id, NULL);
         // Prepare colors
         $colordata=$this->get_printshop_itemcolors();
         $out['result']=$this->success_result;
@@ -2420,30 +2422,30 @@ Class Printshop_model extends MY_Model
         return $res;
     }
 
-//    public function get_printshop_itemcolors() {
-//        $colordata=array();
-//        $this->db->select('printshop_item_id');
-//        $this->db->from('ts_printshop_items');
-//        $this->db->order_by('item_num');
-//        $items=$this->db->get()->result_array();
-//        foreach ($items as $irow) {
-//            $colordata[]=array(
-//                'printshop_item_id'=>$irow['printshop_item_id'],
-//                'printshop_color_id'=>0,
-//                'type'=>'item',
-//            );
-//            $colors=$this->get_item_colors($irow['printshop_item_id']);
-//            foreach ($colors as $crow) {
-//                $colordata[]=array(
-//                    'printshop_item_id'=>$irow['printshop_item_id'],
-//                    'printshop_color_id'=>$crow['printshop_color_id'],
-//                    'type'=>'color',
-//                );
-//            }
-//        }
-//        return $colordata;
-//    }
-//
+    public function get_printshop_itemcolors() {
+        $colordata=array();
+        $this->db->select('printshop_item_id');
+        $this->db->from('ts_printshop_items');
+        $this->db->order_by('item_num');
+        $items=$this->db->get()->result_array();
+        foreach ($items as $irow) {
+            $colordata[]=array(
+                'printshop_item_id'=>$irow['printshop_item_id'],
+                'printshop_color_id'=>0,
+                'type'=>'item',
+            );
+            $colors=$this->get_item_colors($irow['printshop_item_id']);
+            foreach ($colors as $crow) {
+                $colordata[]=array(
+                    'printshop_item_id'=>$irow['printshop_item_id'],
+                    'printshop_color_id'=>$crow['printshop_color_id'],
+                    'type'=>'color',
+                );
+            }
+        }
+        return $colordata;
+    }
+
 //    public function get_invenory_level($printshop_income_id) {
 //        $this->db->select('oa.printshop_color_id, oa.printshop_date, oa.shipped, oa.kepted, oa.misprint');
 //        $this->db->from('ts_order_amounts oa');
