@@ -1044,6 +1044,57 @@ class Fulfillment extends MY_Controller
         }
         show_404();
     }
+    // Add / change onboat container
+    public function inventory_changecontainer() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $onboat_container=$this->input->post('container');
+            $showmax=$this->input->post('showmax');
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->get_container_edit($onboat_container);
+            $error=$res['msg'];
+            if ($res['result']==Fulfillment::SUCCESS_RESULT) {
+                $error='';
+                $session_id=uniq_link(14);
+                $mdata['managecontent']=$this->load->view('printshopinventory/onboat_editmanage',array(), TRUE);
+                if ($onboat_container==0) {
+                    // Calc exist number of
+                    $containers=$this->printshop_model->get_data_onboat('ALL');
+                    $viewwidth=(count($containers)+1)*$this->container_with;
+                    $mdata['width']=$viewwidth;
+                    $marginleft=($viewwidth>$this->maxlength ? ($this->maxlength-$viewwidth) : 0);
+                    $mdata['marginleft']=($showmax==0 ? $marginleft : $marginleft-$this->container_with);
+                    $details=$res['details'];
+                    $headview='<div data-container="'.$details['onboat_container'].'" class="onboacontainer ">'.$this->load->view('printshopinventory/purecontainer_head_view', $details, TRUE)."</div>";
+                    $mdata['containerhead']=$headview;
+                    $boptions=array(
+                        'data'=>$res['data'],
+                        'onboat_container'=>$onboat_container,
+                        'session'=>$session_id,
+                    );
+                    $content='<div data-container="'.$details['onboat_container'].'" class="onboacontainerarea">'.$this->load->view('printshopinventory/container_data_edit', $boptions, TRUE).'</div>';
+                    $mdata['containercontent']=$content;
+                    $mdata['onboat_container']=$details['onboat_container'];
+                } else {
+                    $boptions=array(
+                        'data'=>$res['data'],
+                        'onboat_container'=>$onboat_container,
+                        'session'=>$session_id,
+                    );
+                    $mdata['containercontent']=$this->load->view('printshopinventory/container_data_edit', $boptions, TRUE);
+                }
+
+                $sessdata=array(
+                    'total'=>$res['total'],
+                    'data'=>$res['data'],
+                    'details'=>$res['details'],
+                );
+                usersession($session_id, $sessdata);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
