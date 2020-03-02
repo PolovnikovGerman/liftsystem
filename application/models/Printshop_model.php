@@ -1861,45 +1861,44 @@ Class Printshop_model extends MY_Model
 //
 //        return $out;
 //    }
-//
-//    function cut_link($data) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (isset($data['printshop_item_id'])) {
-//            $out['msg'] = "File not exist";
-//
-//
-//            $path_sh_plate=$this->config->item('invplatetemp_relative');
-//            $path_full_proof=$this->config->item('invprooftemp');
-//            $path_sh_proof=$this->config->item('invprooftemp_relative');
-//            $filename=$this->func->extract_filename($data['filesource']);
-//            if (file_exists($data["filesource"])) {
-//                /*$purefilesrc=$this->func->uniq_link(12).'.'.$filename['ext'];*/
-//                $text = substr(strrchr($filename['name'], '/'), 1 );
-//                $purefilesrc = $text.'.'.$filename['ext'];
-//                if ($data['uploadtype']=='proof_temp') {
-//                    $data['filesource']=$path_sh_proof.$purefilesrc;
-//                } elseif ($data['uploadtype']=='plate_temp') {
-//                    $data['filesource']=$path_sh_plate.$purefilesrc;
-//                } else {
-//                    $path_sh=$this->config->item('invitemlabel_relative');
-//                    $data['filesource']=$path_sh.$purefilesrc;
-//                }
-//                //}
-//            } else {
-//                /*$del = $data['filesource'];
-//                @unlink($del);*/
-//                $data['filesource']=NULL;
-//                $data['filename']=NULL;
-//            }
-//            //$this->save_printshop_platetemp($data['printshop_item_id'], $data['filesource'], $data['filename']);
-//            $out['result']=$this->success_result;
-//            $out['msg'] = "";
-//        } else {
-//            $out['msg']='Printshop not found';
-//        }
-//        return $data;
-//    }
-//
+
+    function cut_link($data) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (isset($data['printshop_item_id'])) {
+            $out['msg'] = "File not exist";
+
+            $path_sh_plate=$this->config->item('invplatetemp_relative');
+            $path_full_proof=$this->config->item('invprooftemp');
+            $path_sh_proof=$this->config->item('invprooftemp_relative');
+            $filename=$this->func->extract_filename($data['filesource']);
+            if (file_exists($data["filesource"])) {
+                /*$purefilesrc=$this->func->uniq_link(12).'.'.$filename['ext'];*/
+                $text = substr(strrchr($filename['name'], '/'), 1 );
+                $purefilesrc = $text.'.'.$filename['ext'];
+                if ($data['uploadtype']=='proof_temp') {
+                    $data['filesource']=$path_sh_proof.$purefilesrc;
+                } elseif ($data['uploadtype']=='plate_temp') {
+                    $data['filesource']=$path_sh_plate.$purefilesrc;
+                } else {
+                    $path_sh=$this->config->item('invitemlabel_relative');
+                    $data['filesource']=$path_sh.$purefilesrc;
+                }
+                //}
+            } else {
+                /*$del = $data['filesource'];
+                @unlink($del);*/
+                $data['filesource']=NULL;
+                $data['filename']=NULL;
+            }
+            //$this->save_printshop_platetemp($data['printshop_item_id'], $data['filesource'], $data['filename']);
+            $out['result']=$this->success_result;
+            $out['msg'] = "";
+        } else {
+            $out['msg']='Printshop not found';
+        }
+        return $data;
+    }
+
 //    // Transfer Data
 //    public function get_inventory_transfer($options) {
 //        $onlyget = 0;

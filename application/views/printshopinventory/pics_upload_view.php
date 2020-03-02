@@ -12,7 +12,7 @@
         <div class="clear"></div>
         <div id="file-uploader"></div>
         <div class="picssave_data">
-            <img src="/img/saveticket.png"/>
+            <img src="/img/fulfillment/saveticket.png"/>
         </div>
     </div>
 </div>

@@ -75,6 +75,8 @@ class Fulfillment extends MY_Controller
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
@@ -840,9 +842,164 @@ class Fulfillment extends MY_Controller
         }
     }
     // Load data
-    // public function inventory_loaddata() {
+    public function inventory_loaddata() {
+        if ($this->isAjax()) {
+            $error=$this->restore_invdata_error;
+            $mdata = [];
+            $newss = usersession('invitemdata');
+            if (!empty($newss)) {
+                $plate_temp=$this->input->post('plate_temp');
+                $proof_temp=$this->input->post('proof_temp');
+                $item_label=$this->input->post('item_label');
+                $error='Unknown Upload Parameter';
+                if (!empty($proof_temp)) {
+                    // $out=$this->printshop_model->get_invent_item($proof_temp);
+                    $error='';
+                    $id = $proof_temp;
+                    $filesource = $newss['proof_temp'];
+                    $filename=$newss['proof_temp_source'];
+                    $uploadsess='prooftempupload';
+                    $title='Upload Proof temp';
+                    $uploadtype='proof_temp';
+                } elseif (!empty($plate_temp)) {
+                    $error='';
+                    $id=$plate_temp;
+                    $filesource = $newss['plate_temp'];
+                    $filename=$newss['plate_temp_source'];
+                    $uploadsess='platetempupload';
+                    $title='Upload Plate temp';
+                    $uploadtype='plate_temp';
+                } elseif (!empty($item_label)) {
+                    $error='';
+                    $id=$item_label;
+                    $filesource = $newss['item_label'];
+                    $filename=$newss['item_label_source'];
+                    $uploadsess='itemlabelupload';
+                    $title='Upload Item Label';
+                    $uploadtype='item_label';
+                }
+            }
+            if ($error=='') {
+                $viewParams=array(
+                    'filename'=> $filename,
+                    'filesource'=>$filesource,
+                    'uplsess' => $uploadsess,
+                    'uploadtype'=>$uploadtype,
+                );
+                usersession($uploadsess, $newss);
+                $mdata['title'] = $title;
+                $mdata['content'] = $this->load->view('printshopinventory/plate_temp_view',$viewParams,TRUE);
+                $mdata['filename'] = $filename;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
-    // }
+    public function inventory_platetempattach() {
+        $this->load->helper('upload');
+        $postdata=$this->input->get();
+        $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+
+        $response = array('success' => false, 'msg'=>'Empty Upload Data');
+        $data=usersession($uploadsession);
+
+        if (!empty($data)) {
+            $response['error']= 'server-error file not passed';
+            $path = $this->config->item('upload_path_preload');
+            // Allowed Extensions
+            $uploadtype=$postdata['uploadtype'];
+            if ($uploadtype=='item_label') {
+                $arrayext=array('jpg','JPG','jpeg','JPEG');
+            } else {
+                $arrayext=array('ai','AI', 'pdf', 'PDF');
+            }
+
+            if (isset($_GET['qqfile'])) {
+                $file = new qqUploadedFileXhr();
+            } elseif (isset($_FILES['qqfile'])) {
+                $file = new qqUploadedFileForm();
+            } elseif (isset($_POST['qqfile'])) {
+                $file = new qqUploadedFileXhr();
+            }
+
+            if ($file) {
+                $response['error']= 'server-error file size is zero';
+                $filename = $file->getName();
+                $filesize = $file->getSize();
+
+                if ($filesize > 0) {
+                    $these = implode(', ', $arrayext);
+                    $response['error']= 'File has an invalid extension, it should be one of '. $these . '.';
+                    $pathinfo = pathinfo($filename);
+                    $newfilename=uniq_link(12);
+                    $ext = strtolower($pathinfo['extension']);
+
+                    if (in_array($ext, $arrayext )) {
+                        $filesource = $path . $newfilename . '.' . $ext;
+                        $file->save($filesource);
+
+                        $data['filesource'] = $filesource;
+                        $data['filename'] = $filename;
+                        usersession($uploadsession, $data);
+                        $response['success'] = true;
+                        $response['error'] = '';
+                    }
+                }
+            }
+        }
+        echo (json_encode($response));
+        exit();
+    }
+
+    public function inventory_deluplplatetempdocs() {
+        if ($this->isAjax()) {
+            $error='Session Expired. Please, recall form';
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $data=usersession($uploadsession);
+
+            if (!empty($data)) {
+                $data['filesource'] = NULL;
+                $data['filename'] = NULL;
+                usersession($uploadsession, $data);
+                $error ="";
+            }
+            $this->ajaxResponse(array('filename'=>$data['filesource']), $error);
+        }
+    }
+
+    public function save_platetempload() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_invdata_error;
+
+            // Restore from session
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $data=usersession($uploadsession);
+            $ss = usersession('invitemdata');
+
+            if (!empty($data) || !empty($ss)) {
+                $this->load->model('printshop_model');
+                $data['uploadtype']=$postdata['uploadtype'];
+                $cut = $this->printshop_model->cut_link($data);
+                if ($postdata['uploadtype']=='item_label') {
+                    $ss['item_label'] = $cut['filesource'];
+                    $ss['item_label_source'] = $cut['filename'];
+                } elseif ($postdata['uploadtype']=='proof_temp') {
+                    $ss['proof_temp'] = $cut['filesource'];
+                    $ss['proof_temp_source'] = $cut['filename'];
+                } else {
+                    $ss['plate_temp'] = $cut['filesource'];
+                    $ss['plate_temp_source'] = $cut['filename'];
+                }
+                usersession($uploadsession,NULL);
+                usersession('invitemdata', $ss);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
     // Save Inventory item
     public function inventory_item_save() {
         if ($this->isAjax()) {
@@ -960,6 +1117,126 @@ class Fulfillment extends MY_Controller
         }
         show_404();
     }
+    // Pics download - prepare
+    public function inventory_pics() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $uploadsess=$this->input->post('uplsess');
+            $data = usersession($uploadsess);
+            $data["state_".$uploadsess] = $data;
+            usersession($uploadsess, $data);
+            $data["html"] = "";
+            $mdata["numrec"] = 0;
+            if (isset($data['printshop_pics']) && count($data['printshop_pics']) > 0) {
+                $this->load->model('printshop_model');
+                foreach ($data['printshop_pics'] as $row) {
+                    if ($row["status"] != Printshop_model::ROW_DELETE) {
+                        $data["html"] .= $this->load->view('printshopinventory/picsfile_view', $row, TRUE);
+                        $mdata["numrec"]++;
+                    }
+                }
+            }
+            // Popup Options
+            $mdata['content']=$this->load->view('printshopinventory/pics_upload_view', $data, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+    // Save upload pictures
+    public function inventory_picsattach() {
+        $this->load->helper('upload');
+        $postdata=$this->input->get();
+        $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+
+        $response = array('success' => false, 'msg'=>'Empty Upload Data');
+        $data=usersession($uploadsession);
+
+        if (!empty($data)) {
+            $response['error']= 'server-error file not passed';
+
+            $path = $this->config->item('upload_path_preload');
+            // Allowed Extensions
+            $arrayext=array('jpg', 'jpeg', 'JPG', 'JPEG');
+            if (isset($_GET['qqfile'])) {
+                $file = new qqUploadedFileXhr();
+            } elseif (isset($_FILES['qqfile'])) {
+                $file = new qqUploadedFileForm();
+            } elseif (isset($_POST['qqfile'])) {
+                $file = new qqUploadedFileXhr();
+            }
+            if ($file) {
+                $response['error']= 'server-error file size is zero';
+                $pics_source = $file->getName();
+                $filesize = $file->getSize();
+
+                if ($filesize > 0) {
+                    $these = implode(', ', $arrayext);
+                    $response['error']= 'File has an invalid extension, it should be one of '. $these . '.';
+                    $pathinfo = pathinfo($pics_source);
+                    $newfilename=uniq_link(12);
+                    $ext = strtolower($pathinfo['extension']);
+
+                    if (in_array($ext, $arrayext )) {
+                        $pics = $path . $newfilename . '.' . $ext;
+                        $file->save($pics);
+
+                        $this->load->model('printshop_model');
+                        $data['printshop_pics'][] = array(
+                            'printshop_pics_id' => -1 * (count($data['printshop_pics']) + 1),
+                            'pics_source' => $pics_source,
+                            'pics' => $newfilename . '.' . $ext,
+                            'status' => Printshop_model::ROW_INSERT,
+                            'printshop_color_id' => $data["printshop_color_id"]
+                        );
+                        $content = "";
+                        $response['numrec'] = 0;
+                        foreach ($data['printshop_pics'] as &$row) {
+                            if ($row["status"] != Printshop_model::ROW_DELETE) {
+                                $response['numrec']++;
+                                $content .= $this->load->view('printshopinventory/picsfile_view',$row,TRUE);
+                            }
+                        }
+                        $response['content']=$content;
+                        $response['success'] = true;
+                        $response['error'] = '';
+                        usersession($uploadsession, $data);
+                    }
+                }
+            }
+        }
+        echo (json_encode($response));
+        exit();
+    }
+
+    public function inventory_deluplpics() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $uploadsession=(isset($postdata['uploadsession']) ? $postdata['uploadsession'] : 'failsession');
+            $data=usersession($uploadsession);
+            if (empty($data)) {
+                $error='Session Expired. Please, recall form';
+            } else {
+                $id = $this->input->post('id');
+                $content='';
+                $mdata['numrec'] = 0;
+                $this->load->model('printshop_model');
+                foreach ($data['printshop_pics'] as &$row) {
+                    if ($row["status"] != Printshop_model::ROW_DELETE && $row['printshop_pics_id'] != $id) {
+                        $mdata['numrec']++;
+                        $content .= $this->load->view('printshopinventory/picsfile_view',$row,TRUE);
+                    } else {
+                        $row["status"] = Printshop_model::ROW_DELETE;
+                    }
+                }
+                $mdata['content']=$content;
+                usersession($uploadsession, $data);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     // Change Spec for Inventory
     public function inventory_specedit() {
         if ($this->isAjax()) {

@@ -12,6 +12,7 @@
 </div>
 <div class="plate_temp">&nbsp;</div>
 <div class="proof_temp">&nbsp;</div>
+<div class="proof_temp">&nbsp;</div>
 <div class="pics">
     <div class="picsdata" data-color="<?=$printshop_color_id?>">
         <i class="fa fa-file-text-o <?= $picsclass ?>" aria-hidden="true"></i>

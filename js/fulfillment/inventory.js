@@ -348,7 +348,6 @@ function init_inventory_view() {
             classes: 'colordata_tooltip'
         }
     });
-
     // Download Excell file of OnBoat container
     $("#printshopinventor").find("div.download_link").unbind('click').click(function(){
         var date = $(this).data('download');
@@ -506,6 +505,136 @@ function init_inventory_view() {
     });
 }
 
+// Add Colors pictures
+function add_pics() {
+    var url="/fulfillment/inventory_pics";
+    var params = {
+        uplsess :  $("input#uploadsession").val()
+    };
+    $.post(url, params, function(response) {
+        if (response.errors=='') {
+            $("#pageModal").find('div.modal-dialog').css('width','390px');
+            $("#pageModalLabel").empty().html('Inventory Color Images');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
+            init_inventpics();
+            init_uploadpics_manage();
+            $("div.picssave_data").unbind('click').click(function(){
+                $("#pageModal").modal('hide');
+            });
+            if (response.data.numrec < 8) {
+                $("div.picsupload").show();
+            } else {
+                $("div.picsupload").hide();
+            }
+        } else {
+            show_error(response);
+        }
+    } , 'json');
+}
+
+function init_inventpics() {
+    var upload_templ= '<div class="qq-uploader picsupload"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
+        '<em></em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('file-uploader'),
+        allowedExtensions: ['jpg', 'jpeg', 'JPG', 'JPEG'],
+        action: '/fulfillment/inventory_picsattach',
+        template: upload_templ,
+        params: {
+            'uploadsession': $("#uploadsession").val()
+        },
+        // multiple: true,
+        multiple: false,
+        debug: false,
+        onSubmit: function(id, fileName){
+            $("div.qq-upload-button").css('visibility','hidden');
+            $("div.picssave_data").show();
+            $("div#loader").show();
+        },
+        onComplete: function(id, fileName, responseJSON){
+            $("div#loader").hide();
+            $("ul.qq-upload-list").css('display','none');
+            if (responseJSON.success==true) {
+                $("div.qq-upload-button").css('visibility','visible');
+                $("#orderattachlists").empty().html(responseJSON.content);
+                init_uploadpics_manage();
+                if (responseJSON.numrec>0) {
+                    $("div.picssave_data").show();
+                } else {
+                    $("div.picssave_data").hide();
+                }
+                if (responseJSON.numrec < 8) {
+                    $("div.picsupload").show();
+                } else {
+                    $("div.picsupload").hide();
+                }
+
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+}
+
+function init_uploadpics_manage() {
+    $("div.delpicsfile").unbind('click').click(function(){
+        var uplididx=$(this).data('updloadredraw');
+        remove_uploadpics(uplididx);
+    });
+}
+
+function remove_uploadpics(uplididx) {
+    if (confirm('Remove this Proof Docmument?')) {
+        var url='/fulfillment/inventory_deluplpics';
+        var params=new Array();
+        params.push({name:'uploadsession', value: $("input#uploadsession").val()});
+        params.push({name:'id', value: uplididx});
+        $.post(url,params, function(response){
+            if (response.errors=='') {
+                $("#orderattachlists").empty().html(response.data.content);
+                init_uploadpics_manage();
+                if (response.data.numrec>=0) {
+                    $("div.picssave_data").show();
+                } else {
+                    $("div.picssave_data").hide();
+                }
+                if (response.data.numrec <= 8) {
+                    $("div.picsupload").show();
+                } else {
+                    $("div.picsupload").hide();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    }
+}
+/*function save_picsupload() {
+    var printshop_color_id=$("input#printshop_color_id").val();
+    /!* Add New file *!/
+    var params=new Array();
+    params.push({name: 'uploadsession', value: $("input#uploadsession").val()});
+    params.push({name: 'printshop_color_id', value: printshop_color_id});
+    var url="/fulfillment/inventory_savepicsload";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            disable_popup1();
+            $("div#proofarea"+artwork_id).empty().html(response.data.content);
+            init_proofs();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}*/
+
+
 function init_change_onboatcontainer(container) {
     // Switch off other edit and add
     $("#printshopinventor").find("span.add_onboat").unbind('click');
@@ -639,27 +768,6 @@ function cancelonboat_container(container) {
         },'json');
     }
 }
-
-/*function save_pics() {
-    var dat=$("form#picsaddform").serializeArray();
-    var url="/fulfillment/savepicsattach";
-    $.post(url, dat, function(response){
-        if (response.errors=='') {
-            disablePopup();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}*/
-
-// Manage stock
-
-/*function specs_color_discription() {
-    var url = "/fulfillment/specs_color_description";
-    $.post(url, {}, function(response) {
-
-    });
-}*/
 
 function init_inventdatastock(color) {
     $("#pageModal").find('button.close').unbind('click').click(function(){
@@ -949,154 +1057,8 @@ function save_inventitem_color() {
     })
 }
 
-// Spec manage
-/*function init_inventspec(color) {
-    $("div.texteditarea").find('div.savedata').unbind('click').click(function(){
-        var url='/fulfillment/inventory_specsave';
-        var params=new Array();
-        params.push({name: 'printshop_color_id', value: color});
-        params.push({name: 'specfile', value: $("textarea.specfile").val()});
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                disablePopup();
-                $("div.specsdata[data-color='"+color+"']").find('i').removeClass('empty').addClass(response.data.specclass);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    })
-}*/
 
 //Pics
-
-function add_pics() {
-    var url="/fulfillment/inventory_pics";
-    // var params=[];
-    // /*params.push({name: 'artsession', value: $("input#artsession").val()});*/
-    // params.push({name:'printshop_color_id', value :printshop_color_id, uplsess : $("input#uploadsession").val()});
-    var params = {
-        uplsess :  $("input#uploadsession").val()
-    };
-    $.post(url, params, function(response) {
-        if (response.errors=='') {
-            show_popup('stockdataarea');
-            $("a#popupContactClose").unbind('click').click(function(){
-                var url = "/fulfillment/inventory_close_popup";
-                $.post(url, params, function(response) {
-                    if (response.errors=='') {
-                        disablePopup();
-                        $("a#popupContactClose").live('click',function(){
-                            disablePopup();
-                        })
-                        // $("a#popupContactClose").live('click');
-                    }
-                });
-            });
-            $("div#pop_content").empty().html(response.data.content);
-
-            init_inventpics();
-            init_uploadpics_manage();
-
-            $("div.picssave_data").unbind('click').click(function(){
-                disablePopup();
-
-            });
-
-            if (response.data.numrec < 8) {
-                $("div.picsupload").show();
-            } else {
-                $("div.picsupload").hide();
-            }
-        } else {
-            show_error(response);
-        }
-    } , 'json');
-}
-
-function init_inventpics() {
-    var upload_templ= '<div class="qq-uploader picsupload"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
-        '<em>Upload</em></span></div>' +
-        '<ul class="qq-upload-list"></ul>' +
-        '<ul class="qq-upload-drop-area"></ul>'+
-        '<div class="clear"></div></div>';
-
-    var uploader = new qq.FileUploader({
-        element: document.getElementById('file-uploader'),
-        allowedExtensions: ['jpg', 'jpeg', 'JPG', 'JPEG'],
-        action: '/fulfillment/inventory_picsattach',
-        template: upload_templ,
-        params: {
-            'uploadsession': $("#uploadsession").val()
-        },
-        // multiple: true,
-        multiple: false,
-        debug: false,
-        onSubmit: function(id, fileName){
-            $("div.qq-upload-button").css('visibility','hidden');
-            $("div.picssave_data").show();
-            $("div#loader").show();
-        },
-        onComplete: function(id, fileName, responseJSON){
-            $("div#loader").hide();
-            $("ul.qq-upload-list").css('display','none');
-            if (responseJSON.success==true) {
-                $("div.qq-upload-button").css('visibility','visible');
-                $("#orderattachlists").empty().html(responseJSON.content);
-                init_uploadpics_manage();
-                if (responseJSON.numrec>0) {
-                    $("div.picssave_data").show();
-                } else {
-                    $("div.picssave_data").hide();
-                }
-                if (responseJSON.numrec < 8) {
-                    $("div.picsupload").show();
-                } else {
-                    $("div.picsupload").hide();
-                }
-
-            } else {
-                alert(responseJSON.error);
-                $("div#loader").hide();
-                $("div.qq-upload-button").css('visibility','visible');
-            }
-        }
-    });
-}
-
-function init_uploadpics_manage() {
-    $("div.delpicsfile").unbind('click').click(function(){
-        var uplididx=$(this).data('updloadredraw');
-        remove_uploadpics(uplididx);
-    });
-}
-
-function remove_uploadpics(uplididx) {
-    if (confirm('Remove this Proof Docmument?')) {
-        var url='/fulfillment/inventory_deluplpics';
-        var params=new Array();
-        params.push({name:'uploadsession', value: $("input#uploadsession").val()});
-        params.push({name:'id', value: uplididx});
-        $.post(url,params, function(response){
-            if (response.errors=='') {
-                $("#orderattachlists").empty().html(response.data.content);
-                init_uploadpics_manage();
-                if (response.data.numrec>=0) {
-                    $("div.picssave_data").show();
-                } else {
-                    $("div.picssave_data").hide();
-                }
-                if (response.data.numrec <= 8) {
-                    $("div.picsupload").show();
-                } else {
-                    $("div.picsupload").hide();
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    }
-}
-
 function init_download_pics(printshop_color_id) {
     var url="/fulfillment/inventory_pics_download";
     var params=[];
@@ -1119,23 +1081,6 @@ function init_download_pics(printshop_color_id) {
     }, 'json');
 }
 
-/*function save_picsupload() {
-    var printshop_color_id=$("input#printshop_color_id").val();
-    /!* Add New file *!/
-    var params=new Array();
-    params.push({name: 'uploadsession', value: $("input#uploadsession").val()});
-    params.push({name: 'printshop_color_id', value: printshop_color_id});
-    var url="/fulfillment/inventory_savepicsload";
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            disable_popup1();
-            $("div#proofarea"+artwork_id).empty().html(response.data.content);
-            init_proofs();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}*/
 
 function init_download(printshop_item_id, type) {
     var url="/fulfillment/inventory_plate_download";
@@ -1160,8 +1105,10 @@ function add_platetemp(plate_temp, proof_temp, item_label, format) {
     params.push({name:'item_label', value :item_label});
     $.post(url, params, function(response) {
         if (response.errors=='') {
-            show_popup('stockdataarea');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','390px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             if (response.data.filename==null) {
                 $("div.delplatefile").css('display', 'none');
                 $("div#file-uploader").css('visibility','visible');
@@ -1182,7 +1129,7 @@ function add_platetemp(plate_temp, proof_temp, item_label, format) {
 
 function init_inventplatetemp(format) {
     var upload_templ= '<div class="qq-uploader tempupload"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
-        '<em>Upload</em></span></div>' +
+        '<em></em></span></div>' +
         '<ul class="qq-upload-list"></ul>' +
         '<ul class="qq-upload-drop-area"></ul>'+
         '<div class="clear"></div></div>';
@@ -1199,7 +1146,6 @@ function init_inventplatetemp(format) {
         // multiple: true,
         multiple: false,
         debug: false,
-
         onSubmit: function(id, fileName){
             $("div.qq-upload-button").css('visibility','visible');
             $("div.platetempsave_data").show();
