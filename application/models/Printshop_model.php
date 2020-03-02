@@ -1174,54 +1174,57 @@ Class Printshop_model extends MY_Model
 //
 //        return $res;
 //    }
-//
-//    public function invitem_color_stocklog($printshop_color_id) {
-//        $this->db->select('*');
-//        $this->db->from('v_printshop_instock');
-//        $this->db->where('printshop_color_id', $printshop_color_id);
-//        $this->db->order_by('instock_date','desc');
-//        $res=$this->db->get()->result_array();
-//
-//        $balance=$this->printcolor_instock($printshop_color_id);
-//        $data=array();
-//        foreach ($res as $row) {
-//            $order_id=$order_class='';
-//            if ($row['instok_type']=='O') {
-//                $order_class='leadorderlink';
-//                $this->db->select('order_id');
-//                $this->db->from('ts_orders');
-//                $this->db->where('order_num', $row['instock_descrip']);
-//                $ordres=$this->db->get()->row_array();
-//                $order_id=$ordres['order_id'];
-//            }
-//            $balanceclass=($balance<0 ? 'red' : '');
-//            $outbalance=QTYOutput($balance);
-//            if ($balance<0) {
-//                $outbalance='('.QTYOutput(abs($balance)).')';
-//            }
-//            $outamnt=QTYOutput($row['instock_amnt']);
-//            $amntclass='';
-//            if ($row['instock_amnt']<0)  {
-//                $amntclass='red';
-//                $outamnt='('.QTYOutput(abs($row['instock_amnt'])).')';
-//            }
-//            $data[]=array(
-//                'printshop_instock_id'=>($row['instok_type']=='S' ? $row['printshop_instock_id'] : ''),
-//                'instok_type'=>$row['instok_type'],
-//                'outstockdate'=>date('m/d/y',$row['instock_date']),
-//                'instock_descrip'=>$row['instock_descrip'],
-//                'amntclass'=>$amntclass,
-//                'outamnt'=>$outamnt,
-//                'balanceclass'=>$balanceclass,
-//                'balance'=>$outbalance,
-//                'order_class'=>$order_class,
-//                'order_id'=>$order_id,
-//            );
-//            $balance-=$row['instock_amnt'];
-//        }
-//        return $data;
-//    }
-//
+
+    public function invitem_color_stocklog($printshop_color_id, $brand) {
+        $this->db->select('*');
+        $this->db->from('v_printshop_instock');
+        $this->db->where('printshop_color_id', $printshop_color_id);
+        $this->db->order_by('instock_date','desc');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->result_array();
+
+        $balance=$this->printcolor_instock($printshop_color_id, $brand);
+        $data=array();
+        foreach ($res as $row) {
+            $order_id=$order_class='';
+            if ($row['instok_type']=='O') {
+                $order_class='leadorderlink';
+                $this->db->select('order_id');
+                $this->db->from('ts_orders');
+                $this->db->where('order_num', $row['instock_descrip']);
+                $ordres=$this->db->get()->row_array();
+                $order_id=$ordres['order_id'];
+            }
+            $balanceclass=($balance<0 ? 'red' : '');
+            $outbalance=QTYOutput($balance);
+            if ($balance<0) {
+                $outbalance='('.QTYOutput(abs($balance)).')';
+            }
+            $outamnt=QTYOutput($row['instock_amnt']);
+            $amntclass='';
+            if ($row['instock_amnt']<0)  {
+                $amntclass='red';
+                $outamnt='('.QTYOutput(abs($row['instock_amnt'])).')';
+            }
+            $data[]=array(
+                'printshop_instock_id'=>($row['instok_type']=='S' ? $row['printshop_instock_id'] : ''),
+                'instok_type'=>$row['instok_type'],
+                'outstockdate'=>date('m/d/y',$row['instock_date']),
+                'instock_descrip'=>$row['instock_descrip'],
+                'amntclass'=>$amntclass,
+                'outamnt'=>$outamnt,
+                'balanceclass'=>$balanceclass,
+                'balance'=>$outbalance,
+                'order_class'=>$order_class,
+                'order_id'=>$order_id,
+            );
+            $balance-=$row['instock_amnt'];
+        }
+        return $data;
+    }
+
 //    public function new_colorinstock($printshop_color_id) {
 //        $stock=array();
 //        $fields = $this->db->list_fields('ts_printshop_instock');
@@ -1746,26 +1749,33 @@ Class Printshop_model extends MY_Model
 //        $this->db->update('ts_configs');
 //        return TRUE;
 //    }
-//
-//    public function printcolor_instock($printshop_color_id) {
-//        $this->db->select('sum(instock_amnt) as stock');
-//        $this->db->from('ts_printshop_instock');
-//        $this->db->where('printshop_color_id', $printshop_color_id);
-//        $stockres=$this->db->get()->row_array();
-//        if (isset($stockres['stock'])) {
-//            $income=intval($stockres['stock']);
-//        } else {
-//            $income=0;
-//        }
-//        $this->db->select('sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
-//        $this->db->from('ts_order_amounts');
-//        $this->db->where('printshop',1);
-//        $this->db->where('printshop_color_id', $printshop_color_id);
-//        $data=$this->db->get()->row_array();
-//        $outcome=intval($data['shipped'])+intval($data['kepted'])+intval($data['misprint']);
-//        return $income-$outcome;
-//    }
-//
+
+    public function printcolor_instock($printshop_color_id, $brand) {
+        $this->db->select('sum(instock_amnt) as stock');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('printshop_color_id', $printshop_color_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $stockres=$this->db->get()->row_array();
+        if (isset($stockres['stock'])) {
+            $income=intval($stockres['stock']);
+        } else {
+            $income=0;
+        }
+        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1);
+        $this->db->where('oa.printshop_color_id', $printshop_color_id);
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $data=$this->db->get()->row_array();
+        $outcome=intval($data['shipped'])+intval($data['kepted'])+intval($data['misprint']);
+        return $income-$outcome;
+    }
+
 //    public function _update_ordercog($order_id) {
 //        $this->db->select('revenue, shipping, is_shipping, tax, cc_fee');
 //        $this->db->from('ts_orders');
@@ -2564,117 +2574,23 @@ Class Printshop_model extends MY_Model
 //        // Additional Options
 //        return $res;
 //    }
-//
-//    public function export_inventory() {
-//        $out=array('msg'=>$this->error_message, 'result'=>$this->error_result);
-//
-//        $options=array(
-//            'orderby'=>'item_num',
-//        );
-//        $invres=$this->get_printshopitems($options);
-//        $res=$invres['inventory'];
-//        $this->firephp->log($res[0]);
-//        $filename='export_inventory_'.time().'.xls';
-//        // die();
-//        $filesrc=$this->config->item('upload_path_preload').$filename;
-//        @unlink($filesrc);
-//        // Prepare Export file
-//        $this->load->library('PHPExcel');
-//        $this->load->library('PHPExcel/IOFactory');
-//        $objPHPExcel = new PHPExcel();
-//        //
-//        $objPHPExcel->getProperties()->setCreator("PHP");
-//        $namesheet = 'inventory_export';
-//        $objPHPExcel->getActiveSheet()->setTitle($namesheet);
-//        $styleWhite = array(
-//            'font' => array(
-//                'bold' => false,
-//            ),
-//            'alignment' => array(
-//                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-//            ),
-//            'borders' => array(
-//                'allborders' => array(
-//                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-//                )
-//            ),
-//            'fill' => array(
-//                'type' => PHPExcel_Style_Fill::FILL_NONE
-//            ),
-//        );
-//
-//
-//        $styleGray = array(
-//            'font' => array(
-//                'bold' => true,
-//                'color' => array(
-//                    'argb' => 'FFFFFFFF')
-//            ),
-//            'alignment' => array(
-//                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-//            ),
-//            'borders' => array(
-//                'allborders' => array(
-//                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-//                )
-//            ),
-//            'fill' => array(
-//                'type' => PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRAY
-//            ),
-//        );
-//        /* sheet */
-//        $sheet = $objPHPExcel->getActiveSheet();
-//        $sheet->setTitle('Price Report');
-//        $sheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT);
-//        $sheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-//        $sheet->getColumnDimension('A')->setAutoSize(); // Item #
-//        $sheet->getColumnDimension('B')->setAutoSize(); // Shape/ Color
-//        $sheet->getColumnDimension('C')->setAutoSize(); // Color Descript
-//        $sheet->getColumnDimension('D')->setAutoSize(); // In Stock
-//        $sheet->getColumnDimension('E')->setAutoSize(); // Reserved
-//        $sheet->getColumnDimension('F')->setAutoSize(); // Available
-//        $sheet->getColumnDimension('G')->setAutoSize(); // Cost Ea
-//        $sheet->getColumnDimension('H')->setAutoSize(); // Total Ea
-//        $sheet->setCellValue('A1','Item #');
-//        $sheet->setCellValue('B1','Shape/ Color');
-//        $sheet->setCellValue('C1','Color Descript');
-//        $sheet->setCellValue('D1','%');
-//        $sheet->setCellValue('E1','In Stock');
-//        $sheet->setCellValue('F1','Reserved');
-//        $sheet->setCellValue('G1','Available');
-//        $sheet->setCellValue('H1','Cost Ea');
-//        $sheet->setCellValue('I1','Total Ea');
-//        $numrow=2;
-//        foreach ($res as $row) {
-//            if ($row['type']=='item') {
-//                $sheet->setCellValue('A'.$numrow,$row['item_num']);
-//                $sheet->setCellValue('B'.$numrow, $row['item_name']);
-//            } else {
-//                $sheet->setCellValue('B'.$numrow,$row['item_name']);
-//                $sheet->setCellValue('C'.$numrow,$row['color_descript']);
-//            }
-//            /*
-//            'price_int'=>$crow['price'],
-//            'total_int'=>round($totalea,3),
-//            'instock_int'=>$instock,
-//            'reserved_int'=>$reserved,
-//            'availabled_int'=>$available,
-//
-//             */
-//            $sheet->setCellValue('D'.$numrow, str_replace('&nbsp;','0',$row['percent']));
-//            $sheet->setCellValue('E'.$numrow, $row['instock_int']);
-//            $sheet->setCellValue('F'.$numrow, $row['reserved_int']);
-//            $sheet->setCellValue('G'.$numrow, $row['availabled_int']);
-//            $sheet->setCellValue('H'.$numrow, $row['price_int']);
-//            $sheet->setCellValue('I'.$numrow, $row['total_int']);
-//            $numrow++;
-//        }
-//
-//        $objWriter = IOFactory::createWriter($objPHPExcel, 'Excel5');
-//        $objWriter->save($filesrc);
-//        $out['result']=$this->success_result;
-//        $out['url']=$this->config->item('pathpreload').$filename;
-//        return $out;
-//    }
+
+    public function export_inventory($brand) {
+        $out=array('msg'=>$this->error_message, 'result'=>$this->error_result);
+
+        $options=array(
+            'orderby'=>'item_num',
+            'brand' => $brand,
+        );
+        $invres=$this->get_printshopitems($options);
+        $res=$invres['inventory'];
+        if (count($res)>0) {
+            $this->load->model('exportexcell_model');
+            $url = $this->exportexcell_model->export_inventory($res, $brand);
+            $out['result'] = $this->success_result;
+            $out['url'] = $this->config->item('pathpreload').$url;
+        }
+        return $out;
+    }
 
 }

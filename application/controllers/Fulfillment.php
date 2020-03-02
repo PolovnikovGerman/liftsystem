@@ -1235,10 +1235,121 @@ class Fulfillment extends MY_Controller
         }
         show_404();
     }
+    // Export inventore to excell
+    public function inventory_export() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata = $this->input->post();
+            $error = 'Empty Brand';
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->export_inventory($brand);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['url']=$res['url'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Stock Data
+    public function inventory_colorstock() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $printshop_color_id=$this->input->post('printshop_color_id');
+            $brand = $this->input->post('brand');
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+            $content=$this->load->view('printshop/instock_data_view', array('data'=>$res,'brand'=>$brand),TRUE);
+            $mdata['content']=$this->load->view('printshop/instock_popup_view', array('content'=>$content, 'brand'=>$brand, 'color' => $printshop_color_id,), TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Edit Stock value
+    public function invcolor_stock_edit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $printshop_instock_id=$this->input->post('printshop_instock_id');
+            $printshop_color_id=$this->input->post('printshop_color_id');
+
+            $this->load->model('printshop_model');
+            if ($printshop_instock_id==0) {
+                $stock=$this->printshop_model->new_colorinstock($printshop_color_id);
+            } else {
+                $res=$this->printshop_model->invitem_color_stockdata($printshop_instock_id);
+                if ($res['result']==Fulfillment::ERR_FLAG) {
+                    $error=$res['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $stock=$res['data'];
+            }
+            $mdata['content']=$this->load->view('printshop/instock_data_edit', $stock,TRUE);
+            $this->session('stockdata', $stock);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change value
+    public function invcolor_stock_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $stockdata=$this->session('stockdata');
+            $postdata=$this->input->post();
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->invcolor_stock_change($stockdata, $postdata);
+            if ($res['result']==Fulfillment::ERR_FLAG) {
+                $error=$res['msg'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Cancel data
+    public function inventory_colorstock_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+
+            $this->load->model('printshop_model');
+            $stockdata=$this->session('stockdata');
+            $res=$this->printshop_model->invitem_color_stocksave($stockdata);
+            if ($res['result']==Fulfillment::ERR_FLAG) {
+                $error=$res['msg'];
+            } else {
+                $printshop_color_id=$res['printshop_color_id'];
+                $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id);
+                $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventory_colorstock_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('printshop_model');
+            $printshop_color_id=$this->input->post('printshop_color_id');
+            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id);
+            $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res),TRUE);
+            $this->session('stockdata', NULL);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     // Arive container
     public function inventory_arrivecontainer() {
-        if($this->func->isAjax()) {
+        if($this->isAjax()) {
             $mdata = array();
 
             $this->load->model('printshop_model');
@@ -1268,7 +1379,7 @@ class Fulfillment extends MY_Controller
             }
             // $edit = $this->printshop_model->add_to_instock($onboat_date);
 
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
     }
 

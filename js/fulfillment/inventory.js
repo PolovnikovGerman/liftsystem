@@ -298,11 +298,14 @@ function init_inventory_view() {
         var color=$(this).data('color');
         var params=new Array();
         params.push({name: 'printshop_color_id', value: color});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_colorstock";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup('stockdataarea');
-                $("div#pop_content").empty().html(response.data.content);
+                $("#pageModal").find('div.modal-dialog').css('width','390px');
+                $("#pageModalLabel").empty().html('Inventory Color Stock');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal('show');
                 init_inventdatastock(color);
             } else {
                 show_error(response);
@@ -490,6 +493,7 @@ function init_inventory_view() {
     $("div.printshopexporttoexcel").unbind('click').click(function(){
         var url="/fulfillment/inventory_export";
         var params=new Array();
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         $("#loader").show();
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -658,19 +662,21 @@ function cancelonboat_container(container) {
 }*/
 
 function init_inventdatastock(color) {
-    $("a#popupContactClose").unbind('click').click(function(){
+    $("#pageModal").find('button.close').unbind('click').click(function(){
         init_inventory_data();
     })
     $("div.addstock").unbind('click').click(function(){
         var url="/fulfillment/invcolor_stock_edit";
         var params=new Array();
+        var brand = $(this).data('brand');
         params.push({name: 'printshop_instock_id', value: 0});
         params.push({name: 'printshop_color_id', value: color});
+        params.push({name: 'brand', value: brand});
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".stockcontentdata").scrollTop();
                 $("div.stockcontentdata div.stokdatarow:first-child").before('<div class="stokdatarow">'+response.data.content+'<div>');
-                save_stockedit(color);
+                save_stockedit(color, brand);
             } else {
                 show_error(response);
             }
@@ -735,8 +741,10 @@ function invetory_exitorder(color) {
         var url="/fulfillment/inventory_colorstock";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup('stockdataarea');
-                $("div#pop_content").empty().html(response.data.content);
+                $("#pageModal").find('div.modal-dialog').css('width','390px');
+                $("#pageModalLabel").empty().html('Inventory Color Stock');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal('show');
                 init_inventdatastock(color);
             } else {
                 show_error(response);
@@ -745,13 +753,14 @@ function invetory_exitorder(color) {
     }
 }
 
-function save_stockedit(color) {
+function save_stockedit(color, brand) {
     // init_inventdatastock(color);
     $("input.instockdata.stockdateinpt").datepicker();
     $("input.instockdata").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'fldname', value: $(this).data('fldname')});
         params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'brand', })
         var url="/fulfillment/invcolor_stock_change";
         $.post(url, params, function(response){
             if (response.errors=='') {

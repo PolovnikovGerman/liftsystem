@@ -1,8 +1,8 @@
 <?php $numpp=0;?>
 <?php foreach ($data as $row) {?>
-<div class="stokdatarow <?=($numpp%2==0 ? 'white' : 'grey')?>" data-stock="<?=$row['printshop_instock_id']?>">    
-    <?php if ($row['instok_type']=='S') { ?>
-            <div class="editstock" data-stock="<?=$row['printshop_instock_id']?>"><i class="fa fa-pencil"></i></div>
+<div class="stokdatarow <?=($numpp%2==0 ? 'whitedatarow' : 'greydatarow')?>" data-stock="<?=$row['printshop_instock_id']?>">
+    <?php if ($row['instok_type']=='S' && $brand!=='ALL') { ?>
+            <div class="editstock" data-brand="<?=$brand?>" data-stock="<?=$row['printshop_instock_id']?>"><i class="fa fa-pencil"></i></div>
         <?php } else { ?>
             <div class="viewstock">&nbsp;</div>            
         <?php } ?>            
@@ -15,13 +15,12 @@
 <?php } ?>
 <?php if ($numpp<14) { ?>
     <?php for($i=$numpp; $i<14; $i++) { ?>
-    <div class="stokdatarow <?=($i%2==0 ? 'white' : 'grey')?>">
+    <div class="stokdatarow <?=($i%2==0 ? 'whitedatarow' : 'greydatarow')?>">
         <div class="editstock">&nbsp;</div>
         <div class="stockdate">&nbsp;</div>
         <div class="stockdescr">&nbsp;</div>
         <div class="stockamnt">&nbsp;</div>
-        <div class="stockbalance">&nbsp;</div>    
-    
+        <div class="stockbalance">&nbsp;</div>
     </div>    
     <?php } ?>
 <?php } ?>
