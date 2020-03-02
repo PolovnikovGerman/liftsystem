@@ -228,14 +228,15 @@ span.add_onboat {
 input.boatcontainerdate {
     height: 15px;
     margin-left: 2px;
-    width: 48px;
+    width: 56px;
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage {
     background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
     border: 1px solid #000000;
     height: 21px;
     line-height: 21px!important;
-    width: 55px;
+    /* width: 55px; */
+    width: 58px;
 }
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement {
     font-size: 16px;
@@ -273,7 +274,8 @@ input.boatcontainerdate {
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containertotal {
     background-color: #000000;
     color: #FFFFFF;
-    width: 55px;
+    /* width: 55px; */
+    width: 58px;
 }
 
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas .onboat,
@@ -1977,7 +1979,8 @@ input.addlcostinpt {
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .left_arrow_empty,
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .right_arrow_empty {
-    width: 21px;
+    /* width: 21px; */
+    width: 18px;
 }
 .printshopinventor .inventorytablebody > .inventoryonboatarea > .onboatdataareas {
     height: auto;
@@ -2009,7 +2012,7 @@ input.addlcostinpt {
 }
 input.onboatelementinput {
     height: 15px;
-    margin-left: 2px;
+    /* margin-left: 2px; */
     margin-top: 2px;
     text-align: center;
     width: 46px;

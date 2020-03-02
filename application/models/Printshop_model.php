@@ -652,37 +652,38 @@ Class Printshop_model extends MY_Model
 //            }
 //        }
 //    }
-//
-//    public function onboat_arrived($onboat_container) {
-//        $out=array('result'=>$this->error_result,'msg'=>'Container Not Found');
-//        $this->db->select('count(*) as cnt');
-//        $this->db->from('ts_printshop_onboats');
-//        $this->db->where('onboat_container', $onboat_container);
-//        $this->db->where('onboat_status',0);
-//        $chkres=$this->db->get()->row_array();
-//        if ($chkres['cnt']>0) {
-//            $this->db->set('onboat_status', 1);
-//            $this->db->where('onboat_container', $onboat_container);
-//            $this->db->update('ts_printshop_onboats');
-//
-//            $this->db->select('*');
-//            $this->db->from('ts_printshop_onboats');
-//            $this->db->where('onboat_container', $onboat_container);
-//
-//            $res = $this->db->get()->result_array();
-//            $descript='Container '.$res[0]['onboat_container'];
-//            foreach ($res as $row) {
-//                $this->db->set('printshop_color_id', $row['printshop_color_id']);
-//                $this->db->set('instock_date', $row['onboat_date']);
-//                $this->db->set('instock_amnt', $row['onroutestock']);
-//                $this->db->set('instock_descrip', $descript);
-//                $this->db->insert('ts_printshop_instock');
-//            }
-//            $out['result']=$this->success_result;
-//        }
-//        return $out;
-//    }
-//
+
+    public function onboat_arrived($onboat_container) {
+        $out=array('result'=>$this->error_result,'msg'=>'Container Not Found');
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_printshop_onboats');
+        $this->db->where('onboat_container', $onboat_container);
+        $this->db->where('onboat_status',0);
+        $chkres=$this->db->get()->row_array();
+        if ($chkres['cnt']>0) {
+            $this->db->set('onboat_status', 1);
+            $this->db->where('onboat_container', $onboat_container);
+            $this->db->update('ts_printshop_onboats');
+
+            $this->db->select('*');
+            $this->db->from('ts_printshop_onboats');
+            $this->db->where('onboat_container', $onboat_container);
+            $res = $this->db->get()->result_array();
+
+            $descript='Container '.$res[0]['onboat_container'];
+            foreach ($res as $row) {
+                $this->db->set('printshop_color_id', $row['printshop_color_id']);
+                $this->db->set('instock_date', $row['onboat_date']);
+                $this->db->set('instock_amnt', $row['onroutestock']);
+                $this->db->set('instock_descrip', $descript);
+                $this->db->set('brand', $row['brand']);
+                $this->db->insert('ts_printshop_instock');
+            }
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
 //    public function add_to_instock($onboat_container) {
 //        $this->db->select('*');
 //        $this->db->from('ts_printshop_onboats');

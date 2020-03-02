@@ -40,7 +40,8 @@ function search_printinventory_brand() {
             $("#maximuminvent").empty().html(response.data.maxsum);
             $("#inventonboatheah").empty().html(response.data.onboathead);
             $("#inventtotal").empty().html(response.data.invetorytotal);
-            $("#inventdownloadarea").css('width',response.data.width).css('margin-left',response.data.margin).empty().html(response.data.download_view);
+            $("#printshopinventor").find("div.inventoryonboatarea").css('visibility','hidden');
+            $("#inventdownloadarea").empty().html(response.data.download_view).css('width',response.data.width).css('margin-left',response.data.margin);
             var vendor = $("#printshopinventbrand").val();
             if (vendor!=='ALL') {
                 $("#printshopinventor").find("span.add_onboat").css('visibility','visible');
@@ -63,7 +64,7 @@ function init_inventory_data() {
     $.post(url, params, function (response) {
         if (response.errors == '') {
             $("#printshopinventor").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
-            $("#printshopinventor").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent);
+            $("#printshopinventor").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent).css('visibility','visible');
             $("#printshopinventor").find("div.inventorytableright").empty().html(response.data.speccontent);
             $("div#curinvtotal").empty().html(response.data.total_inventory);
             if (parseInt(response.data.margin) >= 0) {
@@ -370,7 +371,11 @@ function init_inventory_view() {
                 // Lets go
                 $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").find('div.containrermanage').empty().html(response.data.managecontent);
                 $("#printshopinventor").find("div.onboacontainerarea[data-container='"+container+"']").empty().html(response.data.containercontent);
-                $("#printshopinventor").find("input.boatcontainerdate[data-container='"+container+"']").datepicker();
+                $("#printshopinventor").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    'format' : 'mm/dd/yy',
+                    'autoclose' : true,
+                    'startDate': '0d'
+                });
                 init_change_onboatcontainer(container);
             } else {
                 show_error(response);
@@ -391,7 +396,11 @@ function init_inventory_view() {
             $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").find('div.containrermanage').empty().html(response.data.managecontent);
             $("#printshopinventor").find("div.inventoryonboatarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containercontent);
             $("#printshopinventor").find("div.boat_download").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width);
-            $("#printshopinventor").find("input.boatcontainerdate[data-container='"+container+"']").datepicker();
+            $("#printshopinventor").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                'format' : 'mm/dd/yy',
+                'autoclose' : true,
+                'startDate': '0d'
+            });
             init_change_onboatcontainer(container);
         },'json');
     });
@@ -403,6 +412,8 @@ function init_inventory_view() {
             var url="/fulfillment/inventory_arrivecontainer";
             var params=new Array();
             params.push({name: 'onboat_container', value: container});
+            params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+            $("#loader").show();
             $.post(url, params, function(response){
                 if (response.errors=='') {
                     $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").empty().html(response.data.containerhead);
@@ -411,8 +422,10 @@ function init_inventory_view() {
                     $("#printshopinventor").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
                     $("div#inventtotal").empty().html(response.data.totalinvview);
                     $("div#curinvtotal").empty().html(response.data.total_inventory);
+                    $("#loader").hide();
                     init_inventory_view();
                 } else {
+                    $("#loader").hide();
                     show_error(response);
                 }
             },'json');

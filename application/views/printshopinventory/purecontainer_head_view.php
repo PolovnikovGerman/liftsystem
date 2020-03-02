@@ -2,7 +2,7 @@
     <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?> <?=($onboat_container>0 ? 'Cont '.$onboat_container : 'New')  ?>
 </div>
 <div class="containerdate">
-    <input class="boatcontainerdate" data-container="<?= $onboat_container ?>" value="<?= date('m/d/y', $onboat_date) ?>" readonly="readonly"/>
+    <input class="boatcontainerdate" data-container="<?= $onboat_container ?>" value="<?= date('m/d/Y', $onboat_date) ?>" readonly="readonly"/>
 </div>
 <div class="containrermanage">
     <div class="<?= ($onboat_status == 1 ? 'arrived' : 'waitarrive') ?>" data-container="<?= $onboat_container ?>">&nbsp;</div>

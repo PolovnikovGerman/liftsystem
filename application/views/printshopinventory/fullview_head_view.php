@@ -68,7 +68,7 @@
         <div class="left_block">&nbsp;</div>
 
         <div class="onboatarea">
-            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px" id="#inventdownloadarea">
+            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px" id="inventdownloadarea">
                 <?=$download_view?>
             </div>
         </div>

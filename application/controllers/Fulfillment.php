@@ -1493,7 +1493,7 @@ class Fulfillment extends MY_Controller
                                 $mdata['containerhead']=$headview;
                                 $content='<div data-container="'.$details['onboat_container'].'" class="onboacontainerarea">'.$this->load->view('printshopinventory/purecontainer_data_view', $boptions, TRUE).'</div>';
                                 $mdata['containercontent']=$content;
-                                $containers=$this->printshop_model->get_data_onboat();
+                                $containers=$this->printshop_model->get_data_onboat($brand);
                                 $viewwidth=(count($containers))*$this->container_with;
                                 $mdata['width']=$viewwidth;
                                 $marginleft=($viewwidth>$this->maxlength ? ($this->maxlength-$viewwidth) : 0);
@@ -1628,16 +1628,17 @@ class Fulfillment extends MY_Controller
     public function inventory_arrivecontainer() {
         if($this->isAjax()) {
             $mdata = array();
-
             $this->load->model('printshop_model');
             $onboat_container=$this->input->post('onboat_container');
+            $brand = $this->input->post('brand');
             $res = $this->printshop_model->onboat_arrived($onboat_container);
             $error=$res['msg'];
-            if ($res['result']==Fulfillment::SUCCESS_RESULT) {
+            if ($res['result']==$this->success_result) {
                 $error='';
                 $options=array(
                     'orderby'=>'item_num',
                     'direct'=>'asc',
+                    'brand' => 'brand',
                 );
                 $data=$this->printshop_model->get_printshopitems($options);
                 // New Inv totals
@@ -1650,7 +1651,7 @@ class Fulfillment extends MY_Controller
 
                 $details=$this->printshop_model->get_container_details($onboat_container);
                 $mdata['containerhead']=$this->load->view('printshopinventory/purecontainer_head_view', $details, TRUE);
-                $totalinv=$this->printshop_model->get_inventory_totals();
+                $totalinv=$this->printshop_model->get_inventory_totals($brand);
                 $mdata['totalinvview']=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
 
             }
