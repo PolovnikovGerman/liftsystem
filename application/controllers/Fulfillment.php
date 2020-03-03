@@ -65,6 +65,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
                 $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand, $top_menu);
+            } elseif ($row['item_link']=='#invneedlistview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
+                $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
+                $content_options['invneedlistview'] = $this->_prepare_needlist_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -1660,6 +1664,60 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+    // Inventory List data
+    public function datalist() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+            $this->load->model('printshop_model');
+            $brand = ifset($postdata,'brand');
+            $options=array(
+                'orderby'=>'aftercontproc',
+                'direct'=>'asc',
+                'place'=>'fulfillment',
+                'brand' => $brand,
+            );
+            $data=$this->printshop_model->get_needinvlistdata($options);
+
+
+            // Make Total Inv content
+            $totaloptions=array(
+                'data'=>$data['inventory'],
+            );
+            $mdata['totalinvcontent']=$this->load->view('inventoryview/inventory_data_view', $totaloptions, TRUE);
+            $specopt=array(
+                'data'=>$data['inventory'],
+            );
+            $mdata['speccontent']=$this->load->view('inventoryview/specinventory_data_view', $specopt, TRUE);
+            // Get OnBoat Data
+            $colors=$data['inventory'];
+            $boatdata = $this->printshop_model->get_data_onboat($brand);
+            $containers_view='';
+            foreach ($boatdata as $drow) {
+                $boatcontndata=$this->printshop_model->get_needinvlistboat_details($drow['onboat_container'], $colors);
+                $boptions=array(
+                    'data'=>$boatcontndata,
+                    'onboat_container'=>$drow['onboat_container'],
+                    'onboat_status'=>$drow['onboat_status'],
+                );
+                $containers_view.=$this->load->view('inventoryview/container_data_view', $boptions, TRUE);
+            }
+            $slider_width=60*(count($boatdata));
+            $margin=$this->needlistlength-$slider_width;
+
+            $boatoptions=array(
+                'width'=>$slider_width,
+                'margin'=>($margin>0 ? 0 : $margin),
+                'boatcontent'=>$containers_view,
+            );
+            $mdata['onboatcontent']=$this->load->view('inventoryview/onboatdata_view', $boatoptions, TRUE);
+            $mdata['margin']=$margin;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
@@ -1801,5 +1859,52 @@ class Fulfillment extends MY_Controller
         $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
         return $content;
     }
+
+    private function _prepare_needlist_view($brand, $top_menu) {
+        $this->load->model('printshop_model');
+        $addcost=$this->printshop_model->invaddcost();
+        $totals=$this->printshop_model->count_prinshop_items();
+        $data = $this->printshop_model->get_data_onboat($brand);
+        $boathead_view='';
+        foreach ($data as $drow) {
+            $boathead_view.=$this->load->view('inventoryview/onboat_containerhead_view', $drow, TRUE);
+        }
+        // Build head content
+        $slider_width=60*count($data);
+        $margincount = $this->needlistlength-$slider_width;
+        $margin=($margincount>0 ? 0 : $margincount);
+
+        $boatoptions=array(
+            'data'=>$data,
+            'container_view'=>$boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content=$this->load->view('inventoryview/onboathead_view', $boatoptions, TRUE);
+
+        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+        $headoptions=array(
+            'addcost'=>$addcost,
+            'data' => $data,
+            'width' => $slider_width,
+            'margin' => $margin,
+            'onboathead'=>$onboat_content,
+            'download_view'=>$download_view,
+        );
+        $headview=$this->load->view('inventoryview/needlist_head_view', $headoptions,TRUE);
+
+        /*$specs_disc = $this->printshop_model->get_color_disc();*/
+
+        $invoption=array(
+            'totals'=>$totals,
+            'headview'=>$headview,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
+
+        $content=$this->load->view('inventoryview/page_data_view', $invoption, TRUE);
+        return $content;
+    }
+
 
 }

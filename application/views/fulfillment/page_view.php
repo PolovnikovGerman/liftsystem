@@ -19,6 +19,9 @@
         <?php if (isset($printshopinventview)) { ?>
             <div class="fulfillcontentarea" id="printshopinventview" style="display: none;"><?=$printshopinventview?></div>
         <?php } ?>
+        <?php if (isset($invneedlistview)) { ?>
+            <div class="fulfillcontentarea" id="invneedlistview" style="display: none;"><?=$invneedlistview?></div>
+        <?php } ?>
     </div>
 </div>
 

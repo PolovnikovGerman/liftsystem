@@ -2476,94 +2476,94 @@ Class Printshop_model extends MY_Model
 //            'balance'=>$balance,
 //        );
 //    }
-//
-//    public function get_needinvlistdata($options) {
-//        $this->db->select('i.printshop_item_id, i.item_num, i.item_name, c.printshop_color_id');
-//        $this->db->select('c.color, c.price, c.suggeststock, inventory_instock(c.printshop_color_id) as instock');
-//        $this->db->select("if(c.suggeststock=0,1,(inventory_instock(c.printshop_color_id)+onboat_notarrived(c.printshop_color_id))/c.suggeststock) as aftercontproc",FALSE);
-//        $this->db->select('onboat_notarrived(c.printshop_color_id) as  notarrived');
-//        $this->db->select('i.plate_temp, i.proof_temp, c.color_descript as specfile');
-//        $this->db->select('i.item_label');
-//        $this->db->from('ts_printshop_items i');
-//        $this->db->join('ts_printshop_colors c','c.printshop_item_id=i.printshop_item_id');
-//        // Options where
-//        $this->db->where('c.notreorder',0);
-//        if (isset($options['orderby'])) {
-//            if (isset($options['direct'])) {
-//                $this->db->order_by($options['orderby'], $options['direct']);
-//            } else {
-//                $this->db->order_by($options['orderby']);
-//            }
-//        } else {
-//            $this->db->order_by('printshop_item_id', 'desc');
-//        }
-//        $res=$this->db->get()->result_array();
-//        $numpp=1;
-//        $invent=array();
-//        foreach ($res as $row) {
-//            $row['needtomake']=0;
-//            $row['specsclass']='empty';
-//            $row['specsurl']='';
-//            if (!empty($row['specfile'])) {
-//                // specsdata full
-//                $row['specsclass']='full';
-//                if ($options['place']=='inventory') {
-//                    $row['specsurl']='href="/inventory/specs_bt/?id='.$row['printshop_color_id'].'"';
-//                } else {
-//                    $row['specsurl']='href="/fulfillment/specs_bt/?id='.$row['printshop_color_id'].'"';
-//                }
-//            }
-//            $row['itemlabel']=(empty($row['item_label']) ? 'empty' : 'full');
-//            $row['platetemp']=(empty($row['plate_temp']) ? 'empty' : 'full');
-//            $row['prooftemp']=(empty($row['proof_temp']) ? 'empty' : 'full');
-//            $pics = $this->get_picsattachments($row['printshop_color_id']);
-//
-//            $row['picsclass']=(count($pics) >0 ? 'full' : 'empty');
-//
-//            $need=$row['suggeststock']-($row['instock']+$row['notarrived']);
-//            if ($need>0) {
-//                $row['needtomake']=$need;
-//            }
-//            $row['aftercontproc']=round($row['aftercontproc']*100,0);
-//            $row['needclass']='';
-//            if ($row['aftercontproc']<=$this->config->item('invoutstock') && $need>0) {
-//                $row['needclass']='red';
-//            } elseif ($row['aftercontproc']<=$this->config->item('invlowstock') && $need>0) {
-//                $row['needclass']='orange';
-//            }
-//            $row['numpp']=$numpp;
-//            $numpp++;
-//            $invent[]=$row;
-//        }
-//        $out=array(
-//            'inventory'=>$invent,
-//        );
-//        return $out;
-//    }
-//
-//    public function get_needinvlistboat_details($onboat_container, $colors) {
-//        $this->db->select('b.*');
-//        $this->db->from('ts_printshop_onboats b');
-//        $this->db->where('b.onboat_container', $onboat_container);
-//        $contdata=$this->db->get()->result_array();
-//        $out=array();
-//        foreach ($colors as $crow) {
-//            $cellval=$this->empty_html_content;
-//            foreach ($contdata as $brow) {
-//                if ($brow['printshop_color_id']==$crow['printshop_color_id']) {
-//                    $cellval=QTYOutput($brow['onroutestock']);
-//                    break;
-//                }
-//            }
-//            $out[]=array(
-//                'printshop_item_id'=>$crow['printshop_item_id'],
-//                'printshop_color_id'=>$crow['printshop_color_id'],
-//                'onroutestock'=>$cellval,
-//            );
-//        }
-//        return $out;
-//    }
-//
+
+    public function get_needinvlistdata($options) {
+        $this->db->select('i.printshop_item_id, i.item_num, i.item_name, c.printshop_color_id');
+        $this->db->select("c.color, c.price, c.suggeststock, inventory_instock(c.printshop_color_id,'{$options['brand']}') as instock");
+        $this->db->select("if(c.suggeststock=0,1,(inventory_instock(c.printshop_color_id,'{$options['brand']}')+onboat_notarrived(c.printshop_color_id,'{$options['brand']}')/c.suggeststock)) as aftercontproc",FALSE);
+        $this->db->select("onboat_notarrived(c.printshop_color_id,'{$options['brand']}') as  notarrived");
+        $this->db->select('i.plate_temp, i.proof_temp, c.color_descript as specfile');
+        $this->db->select('i.item_label');
+        $this->db->from('ts_printshop_items i');
+        $this->db->join('ts_printshop_colors c','c.printshop_item_id=i.printshop_item_id');
+        // Options where
+        $this->db->where('c.notreorder',0);
+        if (isset($options['orderby'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['orderby'], $options['direct']);
+            } else {
+                $this->db->order_by($options['orderby']);
+            }
+        } else {
+            $this->db->order_by('printshop_item_id', 'desc');
+        }
+        $res=$this->db->get()->result_array();
+        $numpp=1;
+        $invent=array();
+        foreach ($res as $row) {
+            $row['needtomake']=0;
+            $row['specsclass']='empty';
+            $row['specsurl']='';
+            if (!empty($row['specfile'])) {
+                // specsdata full
+                $row['specsclass']='full';
+                if ($options['place']=='inventory') {
+                    $row['specsurl']='href="/inventory/specs_bt/?id='.$row['printshop_color_id'].'"';
+                } else {
+                    $row['specsurl']='href="/fulfillment/specs_bt/?id='.$row['printshop_color_id'].'"';
+                }
+            }
+            $row['itemlabel']=(empty($row['item_label']) ? 'empty' : 'full');
+            $row['platetemp']=(empty($row['plate_temp']) ? 'empty' : 'full');
+            $row['prooftemp']=(empty($row['proof_temp']) ? 'empty' : 'full');
+            $pics = $this->get_picsattachments($row['printshop_color_id']);
+
+            $row['picsclass']=(count($pics) >0 ? 'full' : 'empty');
+
+            $need=$row['suggeststock']-($row['instock']+$row['notarrived']);
+            if ($need>0) {
+                $row['needtomake']=$need;
+            }
+            $row['aftercontproc']=round($row['aftercontproc']*100,0);
+            $row['needclass']='';
+            if ($row['aftercontproc']<=$this->config->item('invoutstock') && $need>0) {
+                $row['needclass']='red';
+            } elseif ($row['aftercontproc']<=$this->config->item('invlowstock') && $need>0) {
+                $row['needclass']='orange';
+            }
+            $row['numpp']=$numpp;
+            $numpp++;
+            $invent[]=$row;
+        }
+        $out=array(
+            'inventory'=>$invent,
+        );
+        return $out;
+    }
+
+    public function get_needinvlistboat_details($onboat_container, $colors) {
+        $this->db->select('b.*');
+        $this->db->from('ts_printshop_onboats b');
+        $this->db->where('b.onboat_container', $onboat_container);
+        $contdata=$this->db->get()->result_array();
+        $out=array();
+        foreach ($colors as $crow) {
+            $cellval=$this->empty_html_content;
+            foreach ($contdata as $brow) {
+                if ($brow['printshop_color_id']==$crow['printshop_color_id']) {
+                    $cellval=QTYOutput($brow['onroutestock']);
+                    break;
+                }
+            }
+            $out[]=array(
+                'printshop_item_id'=>$crow['printshop_item_id'],
+                'printshop_color_id'=>$crow['printshop_color_id'],
+                'onroutestock'=>$cellval,
+            );
+        }
+        return $out;
+    }
+
 //    public function get_report_years() {
 //        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as year_amount, count(oa.amount_id) as cnt",FALSE);
 //        $this->db->from('ts_order_amounts oa');

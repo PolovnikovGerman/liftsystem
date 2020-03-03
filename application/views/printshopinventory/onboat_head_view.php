@@ -10,12 +10,12 @@
     <div class="arrived_data_tot">
         <?php foreach($data as $row) { ?>
             <?php if($row['onboat_date'] < time()) { ?>
-                <div class="arrived_data"><?= date("m/d/y", $row['onboat_date']) ?></div>
+                <div class="arrived_data"><?= date("m/d/Y", $row['onboat_date']) ?></div>
             <?php } else { ?>
-                <div class="arriving_data"><?= date("m/d/y", $row['onboat_date']) ?></div>
+                <div class="arriving_data"><?= date("m/d/Y", $row['onboat_date']) ?></div>
             <?php } ?>
         <?php } ?>
         <div class="add_boat">
-            <input type="text" class="arriving_data" id="onboatdate" value="<?= date("m/d/y", time()) ?>">
+            <input type="text" class="arriving_data" id="onboatdate" value="<?= date("m/d/Y", time()) ?>">
         </div>
     </div>

@@ -225,11 +225,6 @@ span.add_onboat {
     height: 22px;
     line-height: 22px!important;
 }
-input.boatcontainerdate {
-    height: 15px;
-    margin-left: 2px;
-    width: 56px;
-}
 .printshopinventor .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage {
     background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
     border: 1px solid #000000;

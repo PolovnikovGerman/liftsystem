@@ -29,6 +29,10 @@ function init_page(objid) {
             $("#printshopinventview").show();
             init_inventory_content();
             break;
+        case 'invneedlistview':
+            $("#invneedlistview").show();
+            init_needinvlist('fulfillment');
+            break;
     }
 
 }
