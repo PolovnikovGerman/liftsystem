@@ -32,12 +32,24 @@ function init_invsalesreport_content() {
 }
 
 function search_invsalesreport_brand() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#inventsalesreportbrand").val()});
+    params.push({name: 'salesreport', value: 1});
+    var url = '/fulfillment/inventory_brand';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#inventsalesreptotal").empty().html(response.data.totalinvview);
+            $("#inventsalesreponboat").empty().html(response.data.onboat_content);
+            init_invsalesreport();
+        } else {
+            show_error(response);
+        }
+    },'json');
 
 }
 
 function init_invsalesreport() {
     var params = new Array();
-    // {'salesreport': 1}
     params.push({name: 'salesreport', value: 1});
     params.push({name: 'brand', value: $("#inventsalesreportbrand").val()});
     var url = "/fulfillment/inventory_data";
@@ -139,16 +151,18 @@ function init_salesreport_view() {
         init_salesrepdownload_pics(color);
     });
     // Show Pantone Color
-    /* $("#inventsalesrep").find("div.specsdata.full").each(function(){
-        $(this).bt({
-            fill: '#ffffff',
-            trigger: 'hover',
-            width: '200px',
-            ajaxCache: false,
-            positions: ['left'],
-            ajaxPath: ["$(this).attr('href')"]
-        });
-    }); */
+    $("#inventsalesrep").find("div.specsdata.full").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'right center',
+            at: 'center left',
+        },
+        style: {
+            classes: 'colordata_tooltip'
+        }
+    });
     // Download Excell file of OnBoat container
     $("#inventsalesrep").find("div.download_link").unbind('click').click(function(){
         var date = $(this).data('download');

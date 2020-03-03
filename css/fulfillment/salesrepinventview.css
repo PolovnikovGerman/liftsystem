@@ -1982,7 +1982,7 @@ input.addlcostinpt {
 }
 .inventsalesreport .inventorytablebody > .inventoryonboatarea > .left_arrow_empty,
 .inventsalesreport .inventorytablebody > .inventoryonboatarea > .right_arrow_empty {
-    width: 21px;
+    width: 18px;
 }
 .inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas {
     height: auto;

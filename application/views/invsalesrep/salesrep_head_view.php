@@ -7,7 +7,7 @@
         <div class="reserved">Reserved</div>
         <div class="available">Available</div>
     </div>
-    <div class="headonboat">
+    <div class="headonboat" id="inventsalesreponboat">
         <?=$onboathead?>
     </div>    
     <div class="proofstab">

@@ -670,30 +670,54 @@ class Fulfillment extends MY_Controller
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
+                $salesreport = ifset($postdata,'salesreport',0);
                 $this->load->model('printshop_model');
-                $addcost=$this->printshop_model->invaddcost();
-                $totalinv=$this->printshop_model->get_inventory_totals($brand);
-                $mdata['maxsum'] = MoneyOutput($totalinv['maxsum']);
-                $mdata['invetorytotal'] = $this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-                $data = $this->printshop_model->get_data_onboat($brand);
-                $boathead_view='';
-                foreach ($data as $drow) {
-                    $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+                if ($salesreport==0) {
+                    $addcost=$this->printshop_model->invaddcost();
+                    $totalinv=$this->printshop_model->get_inventory_totals($brand);
+                    $mdata['maxsum'] = MoneyOutput($totalinv['maxsum']);
+                    $mdata['invetorytotal'] = $this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+                    $data = $this->printshop_model->get_data_onboat($brand);
+                    $boathead_view='';
+                    foreach ($data as $drow) {
+                        $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+                    }
+                    // Build head content
+                    $slider_width=60*count($data);
+                    $margin = $this->maxlength-$slider_width;
+                    $margin=($margin>0 ? 0 : $margin);
+                    $boatoptions=array(
+                        'data'=>$data,
+                        'container_view'=>$boathead_view,
+                        'width' => $slider_width,
+                        'margin' => $margin,
+                    );
+                    $mdata['onboathead'] = $this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
+                    $mdata['width']=$slider_width.'px';
+                    $mdata['margin'] = $margin.'px';
+                    $mdata['download_view'] =$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+                } else {
+                    $totalinv=$this->printshop_model->get_inventory_totals($brand);
+                    $mdata['totalinvview']=$this->load->view('invsalesrep/total_inventory_view',$totalinv,TRUE);
+                    $data = $this->printshop_model->get_data_onboat($brand);
+                    $boathead_view='';
+                    foreach ($data as $drow) {
+                        $boathead_view.=$this->load->view('invsalesrep/onboat_containerhead_view', $drow, TRUE);
+                    }
+                    // Build head content
+                    $slider_width=60*count($data);
+                    $margin = $this->salesreplength-$slider_width;
+                    $margin=($margin>0 ? 0 : $margin);
+
+                    $boatoptions=array(
+                        'data'=>$data,
+                        'container_view'=>$boathead_view,
+                        'width' => $slider_width,
+                        'margin' => $margin,
+                    );
+                    $mdata['onboat_content']=$this->load->view('invsalesrep/onboathead_view', $boatoptions, TRUE);
+
                 }
-                // Build head content
-                $slider_width=60*count($data);
-                $margin = $this->maxlength-$slider_width;
-                $margin=($margin>0 ? 0 : $margin);
-                $boatoptions=array(
-                    'data'=>$data,
-                    'container_view'=>$boathead_view,
-                    'width' => $slider_width,
-                    'margin' => $margin,
-                );
-                $mdata['onboathead'] = $this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
-                $mdata['width']=$slider_width.'px';
-                $mdata['margin'] = $margin.'px';
-                $mdata['download_view'] =$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
