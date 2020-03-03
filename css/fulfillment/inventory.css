@@ -2094,16 +2094,3 @@ input.onboatelementinput {
     text-align: center;
     width: 23px;
 }
-/* Tooltip for Color details */
-.colordata_tooltip {
-    width: 225px;
-    max-width: 225px!important;
-    padding: 10px;
-    color: #000000;
-    background: #ffffff;
-    border: 1px solid #000000;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: justify;
-    line-height: 18px;
-}

@@ -120,16 +120,6 @@ function init_needinventory_view(mainurl) {
         },'json');
     });
     // Show Pantone Color
-    // $("div.needinventlist").find("div.specsdata.full").each(function(){
-    //     $(this).bt({
-    //         fill: '#ffffff',
-    //         trigger: 'hover',
-    //         width: '200px',
-    //         ajaxCache: false,
-    //         positions: ['left'],
-    //         ajaxPath: ["$(this).attr('href')"]
-    //     });
-    // });
     $("div.needinventlist").find("div.specsdata.full").qtip({
         content: {
             attr: 'data-content'

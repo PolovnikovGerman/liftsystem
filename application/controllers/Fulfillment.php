@@ -1664,6 +1664,56 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    function inventory_plate_download() {
+        if ($this->isAjax()) {
+            $mdata=array();
+
+            $item_id=$this->input->post('printshop_item_id');
+            $type = $this->input->post('type');
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->get_invent_item($item_id);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $item=$res['item'];
+                $mdata['fileurl']=$item['plate_temp'];
+                $mdata['filename']=$item['plate_temp_source'];
+                if($type=='proof') {
+                    $mdata['fileurl']=$item['proof_temp'];
+                    $mdata['filename']=$item['proof_temp_source'];
+                } elseif ($type=='itemlabel') {
+                    $mdata['fileurl']=$item['item_label'];
+                    $mdata['filename']=$item['item_label_source'];
+                }
+                $error='';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    function inventory_pics_download() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $color_id=$this->input->post('printshop_color_id');
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->get_picsattachments($color_id);
+
+            foreach ($res as $fileurl => $row) {
+                $fileu[$fileurl]=$row['pics'];
+            }
+
+            foreach ($res as $filename => $row) {
+                $filen[$filename]=$row['pics_source'];
+            }
+
+            $mdata['fileurl'] = $fileu;
+            $mdata['filename'] =$filen;
+            $error='';
+
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     // INVENTORY NEED LIST
     public function invneedlist_brand() {
         if ($this->isAjax()) {
@@ -1748,6 +1798,33 @@ class Fulfillment extends MY_Controller
             );
             $mdata['onboatcontent']=$this->load->view('inventoryview/onboatdata_view', $boatoptions, TRUE);
             $mdata['margin']=$margin;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    function plate_download() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $item_id=$this->input->post('printshop_item_id');
+            $type = $this->input->post('type');
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->get_invent_item($item_id);
+            $error=$res['msg'];
+            if ($res['result']== $this->success_result) {
+                $item=$res['item'];
+                $mdata['fileurl']=$item['plate_temp'];
+                $mdata['filename']=$item['plate_temp_source'];
+
+                if($type=='proof') {
+                    $mdata['fileurl']=$item['proof_temp'];
+                    $mdata['filename']=$item['proof_temp_source'];
+                } elseif ($type=='itemlabel') {
+                    $mdata['fileurl']=$item['item_label'];
+                    $mdata['filename']=$item['item_label_source'];
+                }
+                $error='';
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

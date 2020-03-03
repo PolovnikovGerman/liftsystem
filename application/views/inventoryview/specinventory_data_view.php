@@ -6,7 +6,7 @@
         <div class="costea"><?= $row['price'] ?></div>
         <div class="devider">&nbsp;</div>
         <div class="specs">
-            <div class="specsdata <?=$row['specsclass']?>" <?=$row['specsurl']?> data-color="<?=$row['printshop_color_id']?>">
+            <div class="specsdata <?=$row['specsclass']?>" data-content="<?=$row['specfile']?>" <?=$row['specsurl']?> data-color="<?=$row['printshop_color_id']?>">
                 <i class="fa fa-file-text-o <?=$row['specsclass']?>" aria-hidden="true"></i>
             </div>
         </div>
