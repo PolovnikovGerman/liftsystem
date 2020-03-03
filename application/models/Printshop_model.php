@@ -2480,7 +2480,7 @@ Class Printshop_model extends MY_Model
     public function get_needinvlistdata($options) {
         $this->db->select('i.printshop_item_id, i.item_num, i.item_name, c.printshop_color_id');
         $this->db->select("c.color, c.price, c.suggeststock, inventory_instock(c.printshop_color_id,'{$options['brand']}') as instock");
-        $this->db->select("if(c.suggeststock=0,1,(inventory_instock(c.printshop_color_id,'{$options['brand']}')+onboat_notarrived(c.printshop_color_id,'{$options['brand']}')/c.suggeststock)) as aftercontproc",FALSE);
+        $this->db->select("if(c.suggeststock=0,1,(inventory_instock(c.printshop_color_id,'{$options['brand']}')+onboat_notarrived(c.printshop_color_id,'{$options['brand']}'))/c.suggeststock) as aftercontproc",FALSE);
         $this->db->select("onboat_notarrived(c.printshop_color_id,'{$options['brand']}') as  notarrived");
         $this->db->select('i.plate_temp, i.proof_temp, c.color_descript as specfile');
         $this->db->select('i.item_label');
