@@ -26,7 +26,7 @@
         <!-- Suggested 71px -->
         <div class="instock">In Stock</div> <!-- 50px -->
     </div>
-    <div class="headonboat">
+    <div class="headonboat" id="invneedlistonboathead">
         <?=$onboathead?>
     </div>
     <div class="specinventhead">
@@ -56,7 +56,7 @@
         <div class="left_block">&nbsp;</div>
 
         <div class="onboatarea">
-            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px">
+            <div class="after_head" style="width: <?= $width ?>px; margin-left: <?=$margin?>px" id="invneedlistonboatfoot">
                 <?=$download_view?>
             </div>
         </div>

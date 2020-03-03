@@ -31,7 +31,7 @@ function init_page(objid) {
             break;
         case 'invneedlistview':
             $("#invneedlistview").show();
-            init_needinvlist('fulfillment');
+            init_needinvlist_content('fulfillment');
             break;
     }
 

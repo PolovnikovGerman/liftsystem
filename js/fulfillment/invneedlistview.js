@@ -20,13 +20,28 @@ function init_needinvlist_content(mainurl) {
                 $("#inventoryneedlistbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
         });
-        search_printinventory_brand();
+        search_inventoryneed_brand();
     });
+}
+
+function search_inventoryneed_brand() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#inventoryneedlistbrand").val()});
+    var url = '/fulfillment/invneedlist_brand';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#invneedlistonboathead").empty().html(response.data.onboat_content);
+            $("#invneedlistonboatfoot").empty().html(response.data.download_view).css('width',response.data.width+'px').css('margin-left',response.data.margin+'px');
+            init_needinvlist('fulfillment');
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_needinvlist(mainurl) {
     var params = new Array();
-    params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+    params.push({name: 'brand', value: $("#inventoryneedlistbrand").val()});
     var url = "/"+mainurl+"/datalist";
     $("#loader").show();
     $.post(url, params, function (response) {

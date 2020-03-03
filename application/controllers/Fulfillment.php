@@ -1664,6 +1664,41 @@ class Fulfillment extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+    // INVENTORY NEED LIST
+    public function invneedlist_brand() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('printshop_model');
+                $data = $this->printshop_model->get_data_onboat($brand);
+                $boathead_view='';
+                foreach ($data as $drow) {
+                    $boathead_view.=$this->load->view('inventoryview/onboat_containerhead_view', $drow, TRUE);
+                }
+                // Build head content
+                $slider_width=60*count($data);
+                $margincount = $this->needlistlength-$slider_width;
+                $margin=($margincount>0 ? 0 : $margincount);
+
+                $boatoptions=array(
+                    'data'=>$data,
+                    'container_view'=>$boathead_view,
+                    'width' => $slider_width,
+                    'margin' => $margin,
+                );
+                $mdata['onboat_content']=$this->load->view('inventoryview/onboathead_view', $boatoptions, TRUE);
+                $mdata['download_view']=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+                $mdata['width']=$slider_width;
+                $mdata['margin'] = $margin;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     // Inventory List data
     public function datalist() {
         if ($this->isAjax()) {
