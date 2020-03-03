@@ -22,6 +22,9 @@
         <?php if (isset($invneedlistview)) { ?>
             <div class="fulfillcontentarea" id="invneedlistview" style="display: none;"><?=$invneedlistview?></div>
         <?php } ?>
+        <?php if (isset($salesrepinventview)) { ?>
+            <div class="fulfillcontentarea" id="salesrepinventview" style="display: none;"><?=$salesrepinventview?></div>
+        <?php } ?>
     </div>
 </div>
 

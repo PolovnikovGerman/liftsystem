@@ -33,6 +33,10 @@ function init_page(objid) {
             $("#invneedlistview").show();
             init_needinvlist_content('fulfillment');
             break;
+        case 'salesrepinventview':
+            $("#salesrepinventview").show();
+            init_invsalesreport_content();
+            break;
     }
 
 }

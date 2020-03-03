@@ -69,6 +69,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
                 $content_options['invneedlistview'] = $this->_prepare_needlist_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#salesrepinventview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/salesrepinventview.css');
+                $head['scripts'][] = array('src'=>'/js/fulfillment/salesrepinventview.js');
+                $content_options['salesrepinventview'] = $this->_prepare_inventsalesrep_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -2018,5 +2022,55 @@ class Fulfillment extends MY_Controller
         return $content;
     }
 
+    private function _prepare_inventsalesrep_view($brand, $top_menu) {
+        $this->load->model('printshop_model');
+        $addcost=$this->printshop_model->invaddcost();
+        $totals=$this->printshop_model->count_prinshop_items();
+        $totalinv=$this->printshop_model->get_inventory_totals($brand);
+        $totalinvview=$this->load->view('invsalesrep/total_inventory_view',$totalinv,TRUE);
+        $data = $this->printshop_model->get_data_onboat($brand);
+        $boathead_view='';
+        foreach ($data as $drow) {
+            $boathead_view.=$this->load->view('invsalesrep/onboat_containerhead_view', $drow, TRUE);
+        }
+        // Build head content
+        $slider_width=60*count($data);
+        $margin = $this->salesreplength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+
+        $width_edit = 58;
+        $boatoptions=array(
+            'data'=>$data,
+            'container_view'=>$boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content=$this->load->view('invsalesrep/onboathead_view', $boatoptions, TRUE);
+
+        $permission=$this->user_model->get_user_data($this->USR_ID);
+        // $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+        $headoptions=array(
+            'permission' => $permission['profit_view'],
+            'addcost'=>$addcost,
+            'data' => $data,
+            'width' => $slider_width,
+            'margin' => $margin,
+            'onboathead'=>$onboat_content,
+            'invetorytotal'=>$totalinvview,
+        );
+        $headview=$this->load->view('invsalesrep/salesrep_head_view', $headoptions,TRUE);
+
+        $invoption=array(
+            'totals'=>$totals,
+            'fullview'=>$headview,
+            'maxsum'=>$totalinv['maxsum'],
+            'brand' => $brand,
+            'top_menu'=>$top_menu,
+        );
+
+        $content=$this->load->view('invsalesrep/page_view', $invoption, TRUE);
+        return $content;
+
+    }
 
 }
