@@ -7,6 +7,9 @@
         </div>
     </div>
     <div class="maincontent_view">
+        <?php if (isset($profitordesview)) { ?>
+            <div class="accountcontentarea" id="profitordesview" style="display: none;"><?=$profitordesview?></div>
+        <?php } ?>
     </div>
 </div>
 
