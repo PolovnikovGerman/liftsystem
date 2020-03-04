@@ -133,36 +133,30 @@ function init_orderreport_page() {
     //         ajaxPath: ["$(this).data('profitview')"]
     //     });
     // });
-    // $("div.orderreporttablebody").find('div.itemname').bt({
-    //     fill: '#FFFFFF',
-    //     positions: ['right'],
-    //     cornerRadius: 10,
-    //     width: 300,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle: '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {
-    //         color: '#000000'
-    //     }
-    // });
-    // $("div.orderreporttablebody").find('div.itemcolor').bt({
-    //     fill: '#FFFFFF',
-    //     positions: ['right'],
-    //     cornerRadius: 10,
-    //     width: 300,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle: '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {
-    //         color: '#000000'
-    //     }
-    // });
+    $("div.orderreporttablebody").find('div.itemname').qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'left center',
+            at: 'center right',
+        },
+        style: {
+            classes: 'colordata_tooltip'
+        }
+    });
+    $("div.orderreporttablebody").find('div.itemcolor').qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'left center',
+            at: 'center right',
+        },
+        style: {
+            classes: 'colordata_tooltip'
+        }
+    });
     $("div.orderreport_export").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'search', value: $("input.reportorder_searchdata").val()});

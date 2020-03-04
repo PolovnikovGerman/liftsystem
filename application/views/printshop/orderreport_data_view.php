@@ -10,8 +10,8 @@
         <?=$row['order_num']?>
     </div>
     <div class="customer"><?=$row['customer']?></div>
-    <div class="itemname" title="<?=$row['item_name']?>"><?=$row['item_name']?></div>
-    <div class="itemcolor" title="<?=$row['color']?>"><?=$row['color']?></div>
+    <div class="itemname" data-content="<?=$row['item_name']?>"><?=$row['item_name']?></div>
+    <div class="itemcolor" data-content="<?=$row['color']?>"><?=$row['color']?></div>
     <div class="shipped"><?=QTYOutput($row['shipped'])?></div>
     <div class="kepted"><?=QTYOutput($row['kepted'])?></div>
     <div class="misprints"><?=QTYOutput($row['misprint'])?></div>
