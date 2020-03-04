@@ -37,6 +37,10 @@ function init_page(objid) {
             $("#salesrepinventview").show();
             init_invsalesreport_content();
             break;
+        case 'printshopreportview':
+            $("#printshopreportview").show();
+            init_orderreport_content();
+            break;
     }
 
 }

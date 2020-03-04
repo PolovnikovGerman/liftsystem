@@ -1340,10 +1340,10 @@ Class Printshop_model extends MY_Model
     public function get_orderreport_counts($options=array()) {
         $this->db->select('count(oa.amount_id) as cnt');
         $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('oa.printshop',1);
         // Additional Options
         if (isset($options['search'])) {
-            $this->db->join('ts_orders o','o.order_id=oa.order_id');
             $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
             $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
             $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
@@ -1355,128 +1355,134 @@ Class Printshop_model extends MY_Model
             $this->db->where('oa.printshop_date >= ', $start);
             $this->db->where('oa.printshop_date < ', $finish);
         }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
 
-//    // Totals
-//    public function get_orderreport_totals($options=array()) {
-//        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
-//        $this->db->select('sum(oa.shipped+oa.kepted+oa.misprint)as totalqty');
-//        $this->db->select('sum(oa.orangeplate+oa.blueplate) as totalplate');
-//        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*oa.extracost) as total_extra');
-//        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*(oa.price+oa.extracost)) as item_cost, sum(oa.orangeplate) as oranplate');
-//        $this->db->select('sum(oa.blueplate) as blueplate, sum(oa.misprint*(oa.price+oa.extracost)) as misprint_cost');
-//        $this->db->select('sum(oa.orangeplate*oa.orangeplate_price) as orangeplatecost');
-//        $this->db->select('sum(oa.blueplate*oa.blueplate_price) as blueplatecost');
-//        $this->db->select('sum(oa.printshop_total) as total_cost');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->where('printshop',1);
-//        // Options
-//        if (isset($options['search'])) {
-//            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//            $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
-//            $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
-//        }
-//        if (isset($options['report_year'])) {
-//            $start=strtotime($options['report_year'].'-01-01');
-//            $year_finish=intval($options['report_year']+1);
-//            $finish=strtotime($year_finish.'-01-01');
-//            $this->db->where('oa.printshop_date >= ', $start);
-//            $this->db->where('oa.printshop_date < ', $finish);
-//        }
-//        $res=$this->db->get()->row_array();
-//        $res['misprintperc']='0%';
-//        if ($res['shipped']>0) {
-//            $res['misprintperc']=round($res['misprint']/$res['shipped']*100,0).'%';
-//        }
-//        $res['platecost']=$res['orangeplatecost']+$res['blueplatecost'];
-//        return $res;
-//    }
-//
-//    // Get Data with Order Reports
-//    public function get_orderreport_data($options) {
-//        // Get Cost - Blue and Orange plates
-//        // $platesprice=$this->_get_plates_costs();
-//        // $blueplate_price=$platesprice['blueplate_price'];
-//        // $orangeplate_price=$platesprice['orangeplate_price'];
-//        $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num');
-//        $this->db->select('(oa.price+oa.extracost) as priceea');
-//        $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
-//        $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
-//        $this->db->select('(oa.shipped+oa.kepted+oa.misprint) as totalitem');
-//        $this->db->select('(oa.orangeplate+oa.blueplate) as totalplates');
-//        $this->db->select('(oa.orangeplate*oa.orangeplate_price+oa.blueplate*oa.blueplate_price) as platescost');
-//        $this->db->select('oa.printshop_total as totalitemcost');
-//        $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
-//        $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_printshop_colors c', 'c.printshop_color_id=oa.printshop_color_id');
-//        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->where('oa.printshop',1);
-//        if (isset($options['search'])) {
-//            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
-//        }
-//        if (isset($options['report_year'])) {
-//            $start=strtotime($options['report_year'].'-01-01');
-//            $year_finish=intval($options['report_year']+1);
-//            $finish=strtotime($year_finish.'-01-01');
-//            $this->db->where('oa.printshop_date >= ', $start);
-//            $this->db->where('oa.printshop_date < ', $finish);
-//        }
-//        if (isset($options['limit'])) {
-//            if (isset($options['offset'])) {
-//                $this->db->limit($options['limit'], $options['offset']);
-//            } else {
-//                $this->db->limit($options['limit']);
-//            }
-//        }
-//        // $this->db->order_by('o.order_num desc,oa.printshop_date desc');
-//        // $this->db->order_by('oa.printshop_date desc, o.order_num desc');
-//        // $this->db->order_by('oa.printshop_date desc, oa.amount_id desc');
-//        $this->db->order_by("sortdatefld desc, oa.update_date desc");
-//
-//        $res=$this->db->get()->result_array();
-//
-//        // Calc start index
-//        $startidx=$options['totals']-$options['offset'];
-//        $data=array();
-//        foreach ($res as $row) {
-//            $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
-//            $data[]=array(
-//                'printshop_income_id'=>$row['amount_id'],
-//                'numpp'=>$startidx,
-//                'order_date'=>date('j-M', $row['printshop_date']),
-//                'order_num'=>$row['order_num'],
-//                'customer'=>$row['customer_name'],
-//                'item_name'=>$row['item_num'].' '.str_replace('Stress Balls', '', $row['item_name']),
-//                'color'=>$row['color'],
-//                'shipped'=>$row['shipped'],
-//                'kepted'=>$row['kepted'],
-//                'misprint'=>$row['misprint'],
-//                'misprint_proc'=>round($misprint_proc,0).'%',
-//                'total_qty'=>$row['totalitem'],
-//                'price'=>$row['price'],
-//                'extracost'=>$row['extracost'],
-//                'totalea'=>round($row['priceea'],3),
-//                'extraitem'=>round($row['extraitem'],2),
-//                'costitem'=>round($row['costitem'],2),
-//                'oranplate'=>$row['orangeplate'],
-//                'blueplate'=>$row['blueplate'],
-//                'totalplates'=>$row['totalplates'],
-//                'platescost'=>$row['platescost'],
-//                'itemstotalcost'=>$row['totalitemcost'],
-//                'misprintcost'=>$row['misprintcost'],
-//                'orderclass'=>($row['printshop_type']=='M' ? 'manualinput' : 'systeminput'),
-//                'order_id'=>$row['order_id'],
-//            );
-//            $startidx--;
-//        }
-//        return $data;
-//    }
-//
+    // Totals
+    public function get_orderreport_totals($options=array()) {
+        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
+        $this->db->select('sum(oa.shipped+oa.kepted+oa.misprint)as totalqty');
+        $this->db->select('sum(oa.orangeplate+oa.blueplate) as totalplate');
+        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*oa.extracost) as total_extra');
+        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*(oa.price+oa.extracost)) as item_cost, sum(oa.orangeplate) as oranplate');
+        $this->db->select('sum(oa.blueplate) as blueplate, sum(oa.misprint*(oa.price+oa.extracost)) as misprint_cost');
+        $this->db->select('sum(oa.orangeplate*oa.orangeplate_price) as orangeplatecost');
+        $this->db->select('sum(oa.blueplate*oa.blueplate_price) as blueplatecost');
+        $this->db->select('sum(oa.printshop_total) as total_cost');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('printshop',1);
+        // Options
+        if (isset($options['search'])) {
+            $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
+            $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        $res['misprintperc']='0%';
+        if ($res['shipped']>0) {
+            $res['misprintperc']=round($res['misprint']/$res['shipped']*100,0).'%';
+        }
+        $res['platecost']=$res['orangeplatecost']+$res['blueplatecost'];
+        return $res;
+    }
+
+    // Get Data with Order Reports
+    public function get_orderreport_data($options) {
+        // Get Cost - Blue and Orange plates
+        // $platesprice=$this->_get_plates_costs();
+        // $blueplate_price=$platesprice['blueplate_price'];
+        // $orangeplate_price=$platesprice['orangeplate_price'];
+        $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num');
+        $this->db->select('(oa.price+oa.extracost) as priceea');
+        $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
+        $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
+        $this->db->select('(oa.shipped+oa.kepted+oa.misprint) as totalitem');
+        $this->db->select('(oa.orangeplate+oa.blueplate) as totalplates');
+        $this->db->select('(oa.orangeplate*oa.orangeplate_price+oa.blueplate*oa.blueplate_price) as platescost');
+        $this->db->select('oa.printshop_total as totalitemcost');
+        $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
+        $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_printshop_colors c', 'c.printshop_color_id=oa.printshop_color_id');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.printshop',1);
+        if (isset($options['search'])) {
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('o.brand', $options['brand']);
+        }
+        $this->db->order_by("sortdatefld desc, oa.update_date desc");
+
+        $res=$this->db->get()->result_array();
+
+        // Calc start index
+        $startidx=$options['totals']-$options['offset'];
+        $data=array();
+        foreach ($res as $row) {
+            $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
+            $data[]=array(
+                'printshop_income_id'=>$row['amount_id'],
+                'numpp'=>$startidx,
+                'order_date'=>date('j-M', $row['printshop_date']),
+                'order_num'=>$row['order_num'],
+                'customer'=>$row['customer_name'],
+                'item_name'=>$row['item_num'].' '.str_replace('Stress Balls', '', $row['item_name']),
+                'color'=>$row['color'],
+                'shipped'=>$row['shipped'],
+                'kepted'=>$row['kepted'],
+                'misprint'=>$row['misprint'],
+                'misprint_proc'=>round($misprint_proc,0).'%',
+                'total_qty'=>$row['totalitem'],
+                'price'=>$row['price'],
+                'extracost'=>$row['extracost'],
+                'totalea'=>round($row['priceea'],3),
+                'extraitem'=>round($row['extraitem'],2),
+                'costitem'=>round($row['costitem'],2),
+                'oranplate'=>$row['orangeplate'],
+                'blueplate'=>$row['blueplate'],
+                'totalplates'=>$row['totalplates'],
+                'platescost'=>$row['platescost'],
+                'itemstotalcost'=>$row['totalitemcost'],
+                'misprintcost'=>$row['misprintcost'],
+                'orderclass'=>($row['printshop_type']=='M' ? 'manualinput' : 'systeminput'),
+                'order_id'=>$row['order_id'],
+            );
+            $startidx--;
+        }
+        return $data;
+    }
+
 //    // Get Data about separate Order
 //    public function get_printshop_order($printshop_income_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -1586,15 +1592,15 @@ Class Printshop_model extends MY_Model
 //        );
 //        return $data;
 //    }
-//
-//    // Get Data about config values (plates prices, etc)
-//    public function _get_plates_costs() {
-//        $this->db->select('orangeplate_price, blueplate_price, repaid_cost, inv_addcost');
-//        $this->db->from('ts_configs');
-//        $res=$this->db->get()->row_array();
-//        return $res;
-//    }
-//
+
+    // Get Data about config values (plates prices, etc)
+    public function _get_plates_costs() {
+        $this->db->select('orangeplate_price, blueplate_price, repaid_cost, inv_addcost');
+        $this->db->from('ts_configs');
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
 //    public function get_printshopitem_list() {
 //        $this->db->select("printshop_item_id, concat(replace(item_name, 'Stress Balls',''),' ',item_num ) as item_name", FALSE);
 //        $this->db->from('ts_printshop_items');
@@ -2564,16 +2570,20 @@ Class Printshop_model extends MY_Model
         return $out;
     }
 
-//    public function get_report_years() {
-//        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as year_amount, count(oa.amount_id) as cnt",FALSE);
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->where('oa.printshop',1);
-//        $this->db->group_by('year_amount');
-//        $this->db->order_by('year_amount','desc');
-//        $res=$this->db->get()->result_array();
-//        // Additional Options
-//        return $res;
-//    }
+    public function get_report_years($options=[]) {
+        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as year_amount, count(oa.amount_id) as cnt",FALSE);
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1);
+        $this->db->group_by('year_amount');
+        $this->db->order_by('year_amount','desc');
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('o.brand', $options['brand']);
+        }
+        $res=$this->db->get()->result_array();
+        // Additional Options
+        return $res;
+    }
 
     public function export_inventory($brand) {
         $out=array('msg'=>$this->error_message, 'result'=>$this->error_result);

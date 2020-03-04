@@ -1,6 +1,6 @@
 <?php $numpp=1;?>
 <?php foreach ($orders as $row) { ?>
-<div class="datarow <?=$numpp%2==0 ? 'grey' : 'white'?> <?=$row['orderclass']?>" data-report="<?=$row['printshop_income_id']?>">
+<div class="datarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?> <?=$row['orderclass']?>" data-report="<?=$row['printshop_income_id']?>">
     <div class="numpp"><?=$row['numpp']?></div>
     <div class="delrecord" data-reportnum="<?=$row['order_num']?>" data-report="<?=$row['printshop_income_id']?>">
     <i class="fa fa-trash" aria-hidden="true"></i>

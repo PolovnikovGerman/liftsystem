@@ -73,6 +73,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/salesrepinventview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/salesrepinventview.js');
                 $content_options['salesrepinventview'] = $this->_prepare_inventsalesrep_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#printshopreportview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
+                $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
+                $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -1858,6 +1862,95 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    // Printshop Report
+    // Order Data View and manage
+    /*public function orderreport_head() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('printshop_model');
+            $totalrecs=$this->printshop_model->get_orderreport_counts();
+            $summary=$this->printshop_model->get_orderreport_totals();
+            $summary_view=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+            $addcosts=$this->printshop_model->_get_plates_costs();
+            $options=array(
+                'totals'=>$totalrecs,
+                'summary'=>$summary_view,
+                'repaid_cost'=>$addcosts['repaid_cost'],
+                'orangeplate_price'=>$addcosts['orangeplate_price'],
+                'blueplate_price'=>$addcosts['blueplate_price'],
+            );
+            // Get Summary
+            $mdata['content']=$this->load->view('printshop/orderreport_head_view', $options, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    */
+
+    public function orderreport_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $this->load->model('printshop_model');
+            $postdata=$this->input->post();
+            $limit=(intval($postdata['limit'])==0 ? 30 : $postdata['limit']);
+            $page=(intval($postdata['offset'])==0 ? 0 : $postdata['offset']);
+            $offset=$page*$limit;
+            $totals=$postdata['totals'];
+            $options=array(
+                'limit'=>$limit,
+                'offset'=>$offset,
+                'totals'=>$totals,
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+            if (isset($postdata['report_year']) && !empty($postdata['report_year'])) {
+                $options['report_year']=$postdata['report_year'];
+            }
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $options['brand']=$brand;
+                $res=$this->printshop_model->get_orderreport_data($options);
+                $options=array(
+                    'orders'=>$res,
+                );
+                $mdata['content']=$this->load->view('printshop/orderreport_data_view', $options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Export data to excel
+    public function orderreport_dataexport() {
+        if ($this->func->isAjax()) {
+            $mdata=array();
+
+            $this->load->model('printshop_model');
+            $postdata=$this->input->post();
+            $options=array(
+                'export' => 1,
+            );
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+            if (isset($postdata['report_year']) && !empty($postdata['report_year'])) {
+                $options['report_year']=$postdata['report_year'];
+            }
+            $res=$this->printshop_model->get_orderreport_data($options);
+            $error='Empty content for exxport';
+            if (count($res)>0) {
+                $error = '';
+                $mdata['url'] = $this->printshop_model->export_orderreport($res);
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
@@ -2095,6 +2188,29 @@ class Fulfillment extends MY_Controller
         $content=$this->load->view('invsalesrep/page_view', $invoption, TRUE);
         return $content;
 
+    }
+
+    private function _prepare_printshop_report($brand, $top_menu) {
+        $this->load->model('printshop_model');
+        $total_options = ['brand'=> $brand];
+        $totalrecs=$this->printshop_model->get_orderreport_counts($total_options);
+        $summary=$this->printshop_model->get_orderreport_totals($total_options);
+        $summary_view=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+        $addcosts=$this->printshop_model->_get_plates_costs();
+        $report_years=$this->printshop_model->get_report_years($total_options);
+        $options=array(
+            'totals'=>$totalrecs,
+            'summary'=>$summary_view,
+            'repaid_cost'=>$addcosts['repaid_cost'],
+            'orangeplate_price'=>$addcosts['orangeplate_price'],
+            'blueplate_price'=>$addcosts['blueplate_price'],
+            'report_years'=>$report_years,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
+        // Get Summary
+        $content=$this->load->view('printshop/pagereport_view', $options, TRUE);
+        return $content;
     }
 
 }

@@ -25,6 +25,9 @@
         <?php if (isset($salesrepinventview)) { ?>
             <div class="fulfillcontentarea" id="salesrepinventview" style="display: none;"><?=$salesrepinventview?></div>
         <?php } ?>
+        <?php if (isset($printshopreportview)) { ?>
+            <div class="fulfillcontentarea" id="printshopreportview" style="display: none;"><?=$printshopreportview?></div>
+        <?php } ?>
     </div>
 </div>
 
