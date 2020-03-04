@@ -1887,6 +1887,142 @@ class Fulfillment extends MY_Controller
         show_404();
     }
     */
+    // show Profit $ and %
+    public function ordereport_profit() {
+        $order_id=$this->input->get('d');
+        $inven_id=$this->input->get('amnt');
+        $this->load->model('orders_model');
+        $this->load->model('printshop_model');
+        $order=$this->orders_model->get_order_detail($order_id);
+        $inventlevel=$this->printshop_model->get_invenory_level($inven_id);
+        $options=array(
+            'order'=>$order,
+            'invent'=>$inventlevel,
+        );
+        $out_msg=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
+        echo $out_msg;
+    }
+
+    // Edit Data of report
+    public function orderreport_edit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('printshop_model');
+            $postdata=$this->input->post();
+            $printshop_income_id=(isset($postdata['printshop_income_id']) ? $postdata['printshop_income_id'] : 0);
+            $res=$this->printshop_model->get_printshop_order($printshop_income_id);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $data=$res['data'];
+                // Get Items for dropdown
+                $items=$this->printshop_model->get_printshopitem_list();
+                // Get Colors of Item
+                $colors=$this->printshop_model->get_item_colors($data['printshop_item_id']);
+                $sessionid='order'.uniq_link(15);
+                $data['items']=$items;
+                $data['colors']=$colors;
+                $data['session']=$sessionid;
+                $mdata['content']=$this->load->view('printshop/orderreport_edit_view', $data, TRUE);
+                usersession($sessionid, $data);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Change session values
+    public function orderreport_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Edit Connection Lost. Please, recall form';
+            $postdata=$this->input->post();
+            $sessionid=$postdata['sessionid'];
+            $orderdata=usersession($sessionid);
+            if (!empty($orderdata)) {
+                $fldname=$postdata['fldname'];
+                $newval=$postdata['newval'];
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
+                $error=$res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval']=$res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $orderdata=usersession($sessionid);
+                    $mdata['misprint_proc']=$orderdata['misprint_proc'];
+                    $mdata['total_qty']=QTYOutput($orderdata['total_qty']);
+                    $mdata['costitem']=MoneyOutput($orderdata['costitem']);
+                    $mdata['totalplates']=QTYOutput($orderdata['totalplates']);
+                    $mdata['platescost']=MoneyOutput($orderdata['platescost']);
+                    $mdata['itemstotalcost']=MoneyOutput($orderdata['itemstotalcost']);
+                    $mdata['misprintcost']=  MoneyOutput($orderdata['misprintcost']);
+                    $mdata['extraitem']= MoneyOutput($orderdata['extraitem']);
+                    $mdata['price']=number_format($orderdata['price'],3);
+                    $mdata['extracost']=number_format($orderdata['extracost'],3);
+                    $mdata['totalea']=number_format($orderdata['totalea']);
+                    $mdata['customer']=$orderdata['customer'];
+                    // totalea,3
+                    if ($fldname=='printshop_item_id') {
+                        $options=array(
+                            'printshop_color_id'=>$orderdata['printshop_color_id'],
+                            'colors'=>$orderdata['colors'],
+                        );
+                        $mdata['colorlist']=$this->load->view('printshop/orderreport_colorselect_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save Sesision data
+    public function orderreport_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $error='Edit Connection Lost. Please, recall form';
+            $sessionid=ifset($postdata, 'sessionid','empptysession');
+            $brand = ifset($postdata,'brand');
+            $search = ifset($postdata,'search');
+            $report_year = ifset($postdata,'report_year');
+            $orderdata=usersession($sessionid);
+            if (!empty($orderdata)) {
+                $this->load->model('printshop_model');
+                $res=$this->printshop_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $total_options = [];
+                    if (!empty($search)) {
+                        $total_options['search']=strtoupper($search);
+                    }
+                    if (!empty($report_year)) {
+                        $total_options['report_year'] = $report_year;
+                    }
+                    if (!empty($brand)) {
+                        $total_options['brand'] = $brand;
+                    }
+                    $mdata['totals']=$this->printshop_model->get_orderreport_counts($total_options);
+                    $summary=$this->printshop_model->get_orderreport_totals($total_options);
+                    $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+                    $this->load->model('orders_model');
+                    $order=$this->orders_model->get_order_detail($res['order_id']);
+                    $inventlevel=$this->printshop_model->get_invenory_level($res['printshop_income_id']);
+                    $options=array(
+                        'order'=>$order,
+                        'invent'=>$inventlevel,
+                    );
+                    $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function orderreport_data() {
         if ($this->isAjax()) {
@@ -1950,6 +2086,35 @@ class Fulfillment extends MY_Controller
         show_404();
     }
 
+    public function orderreport_remove() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            // After
+            $amount_id=$postdata['printshop_income_id'];
+            $this->load->model('printshop_model');
+            $res=$this->printshop_model->orderreport_remove($amount_id);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $options=array();
+                if (isset($postdata['search']) && !empty($postdata['search'])) {
+                    $options['search']=strtoupper($postdata['search']);
+                }
+                if (isset($postdata['report_year']) && !empty($postdata['report_year'])) {
+                    $options['report_year'] = $postdata['report_year'];
+                }
+                if (isset($postdata['brand']) && !empty($postdata['brand'])) {
+                    $options['brand']=$postdata['brand'];
+                }
+                $mdata['totals']=$this->printshop_model->get_orderreport_counts($options);
+                $summary=$this->printshop_model->get_orderreport_totals($options);
+                $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
 
     private function _prepare_vendors_view() {

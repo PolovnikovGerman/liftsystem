@@ -1149,23 +1149,23 @@ Class Printshop_model extends MY_Model
         return $out;
     }
 
-//    public function get_invitem_colordata($printshop_color_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->select('c.*, i.item_name, i.item_num');
-//        $this->db->from('ts_printshop_colors c');
-//        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
-//        $this->db->where('c.printshop_color_id', $printshop_color_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['printshop_color_id'])) {
-//            $out['msg']='Color Not Found';
-//        } else {
-//            $out['result']=$this->success_result;
-//            $out['color']=$res;
-//        }
-//        return $out;
-//
-//    }
-//
+    public function get_invitem_colordata($printshop_color_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('c.*, i.item_name, i.item_num');
+        $this->db->from('ts_printshop_colors c');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->where('c.printshop_color_id', $printshop_color_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['printshop_color_id'])) {
+            $out['msg']='Color Not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $out['color']=$res;
+        }
+        return $out;
+
+    }
+
 //    public function invitem_color_stock_bydate() {
 //        $this->db->select('tspi.instock_date, tspc.onroutestock');
 //        $this->db->from('ts_printshop_colors tspc');
@@ -1483,115 +1483,96 @@ Class Printshop_model extends MY_Model
         return $data;
     }
 
-//    // Get Data about separate Order
-//    public function get_printshop_order($printshop_income_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if ($printshop_income_id==0) {
-//            $res=$this->_newprintshop_order();
-//        } else {
-//            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.printshop_item_id, o.customer_name as customer, o.order_num');
-//            $this->db->from('ts_order_amounts oa');
-//            $this->db->join('ts_printshop_colors c', 'c.printshop_color_id=oa.printshop_color_id');
-//            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//            $this->db->where('oa.amount_id', $printshop_income_id);
-//            $res=$this->db->get()->row_array();
-//            if (!isset($res['amount_id'])) {
-//                $out['msg']='Printshop Order Not Found';
-//                return $out;
-//            }
-//        }
-//        $data=$this->_prinshoporder_params($res);
-//        $out['result']=$this->success_result;
-//        $out['data']=$data;
-//        return $out;
-//    }
-//
-//    private function _newprintshop_order() {
-////        $ordfld = $this->db->list_fields('ts_printshop_orders');
-////        foreach ($ordfld as $row) {
-////            if ($row=='printshop_income_id') {
-////                $data[$row]=-1;
-////            } elseif ($row=='order_date') {
-////                $data[$row]=time();
-////            } elseif($row=='order_num' || $row=='customer' || $row=='printshop_color_id') {
-////                $data[$row]='';
-////            } elseif ($row=='order_type') {
-////                $data[$row]='M';
-////            } else {
-////                $data[$row]=0;
-////            }
-////        }
-////        $data['printshop_item_id']='';
-//        $platesprice=$this->_get_plates_costs();
-//        $blueplate_price=$platesprice['blueplate_price'];
-//        $orangeplate_price=$platesprice['orangeplate_price'];
-//        $data=array(
-//            'printshop_income_id'=>0,
-//            'printshop_date'=>time(),
-//            'printshop_color_id'=>'',
-//            'printshop_item_id'=>'',
-//            'shipped'=>0,
-//            'kepted'=>0,
-//            'misprint'=>0,
-//            'price'=>0,
-//            'extracost'=>0,
-//            'orangeplate'=>0,
-//            'blueplate'=>0,
-//            'extraitem'=>0,
-//            'orangeplate_price'=>$orangeplate_price,
-//            'blueplate_price'=>$blueplate_price,
-//            'printshop_type'=>'M',
-//            'order_id'=>0,
-//            'order_num'=>'',
-//            'customer'=>'',
-//            'printshop_history'=>0,
-//        );
-//        return $data;
-//    }
-//
-//    public function _prinshoporder_params($order) {
-//        /* $platesprice=$this->_get_plates_costs();
-//        $blueplate_price=$platesprice['blueplate_price'];
-//        $orangeplate_price=$platesprice['orangeplate_price'];
-//        */
-//        $totalea=round($order['price']+$order['extracost'],3);
-//        $costitem=$totalea*($order['shipped']+$order['kepted']+$order['misprint']);
-//        $misprint_proc=($order['shipped']==0 ? 0 : $order['misprint']/$order['shipped']*100);
-//        $misprintcost=$order['misprint']*$totalea;
-//        $totalplates=$order['orangeplate']+$order['blueplate'];
-//        $platescost=$order['orangeplate']*$order['orangeplate_price']+$order['blueplate']*$order['blueplate_price'];
-//        $totalitemcost=$platescost+$costitem;
-//        $data=array(
-//            'printshop_income_id'=>$order['printshop_income_id'],
-//            'printshop_date'=>$order['printshop_date'],
-//            'order_num'=>$order['order_num'],
-//            'customer'=>$order['customer'],
-//            'printshop_item_id'=>$order['printshop_item_id'],
-//            'printshop_color_id'=>$order['printshop_color_id'],
-//            'shipped'=>$order['shipped'],
-//            'kepted'=>$order['kepted'],
-//            'misprint'=>$order['misprint'],
-//            'misprint_proc'=>round($misprint_proc,0).'%',
-//            'total_qty'=>($order['shipped']+$order['kepted']+$order['misprint']),
-//            'price'=>$order['price'],
-//            'extracost'=>$order['extracost'],
-//            'extraitem'=>($order['shipped']+$order['kepted']+$order['misprint'])*$order['extracost'],
-//            'totalea'=>$totalea,
-//            'costitem'=>round($costitem,2),
-//            'orangeplate'=>$order['orangeplate'],
-//            'orangeplate_price'=>$order['orangeplate_price'],
-//            'blueplate'=>$order['blueplate'],
-//            'blueplate_price'=>$order['blueplate_price'],
-//            'totalplates'=>$totalplates,
-//            'platescost'=>$platescost,
-//            'itemstotalcost'=>$totalitemcost,
-//            'misprintcost'=>$misprintcost,
-//            'printshop_type'=>$order['printshop_type'],
-//            'order_id'=>$order['order_id'],
-//            'printshop_history'=>$order['printshop_history'],
-//        );
-//        return $data;
-//    }
+    // Get Data about separate Order
+    public function get_printshop_order($printshop_income_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if ($printshop_income_id==0) {
+            $res=$this->_newprintshop_order();
+        } else {
+            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.printshop_item_id, o.customer_name as customer, o.order_num');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_printshop_colors c', 'c.printshop_color_id=oa.printshop_color_id');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('oa.amount_id', $printshop_income_id);
+            $res=$this->db->get()->row_array();
+            if (!isset($res['amount_id'])) {
+                $out['msg']='Printshop Order Not Found';
+                return $out;
+            }
+        }
+        $data=$this->_prinshoporder_params($res);
+        $out['result']=$this->success_result;
+        $out['data']=$data;
+        return $out;
+    }
+
+    private function _newprintshop_order() {
+        $platesprice=$this->_get_plates_costs();
+        $blueplate_price=$platesprice['blueplate_price'];
+        $orangeplate_price=$platesprice['orangeplate_price'];
+        $data=array(
+            'printshop_income_id'=>0,
+            'printshop_date'=>time(),
+            'printshop_color_id'=>'',
+            'printshop_item_id'=>'',
+            'shipped'=>0,
+            'kepted'=>0,
+            'misprint'=>0,
+            'price'=>0,
+            'extracost'=>0,
+            'orangeplate'=>0,
+            'blueplate'=>0,
+            'extraitem'=>0,
+            'orangeplate_price'=>$orangeplate_price,
+            'blueplate_price'=>$blueplate_price,
+            'printshop_type'=>'M',
+            'order_id'=>0,
+            'order_num'=>'',
+            'customer'=>'',
+            'printshop_history'=>0,
+        );
+        return $data;
+    }
+
+    public function _prinshoporder_params($order) {
+        $totalea=round($order['price']+$order['extracost'],3);
+        $costitem=$totalea*($order['shipped']+$order['kepted']+$order['misprint']);
+        $misprint_proc=($order['shipped']==0 ? 0 : $order['misprint']/$order['shipped']*100);
+        $misprintcost=$order['misprint']*$totalea;
+        $totalplates=$order['orangeplate']+$order['blueplate'];
+        $platescost=$order['orangeplate']*$order['orangeplate_price']+$order['blueplate']*$order['blueplate_price'];
+        $totalitemcost=$platescost+$costitem;
+        $data=array(
+            'printshop_income_id'=>$order['printshop_income_id'],
+            'printshop_date'=>$order['printshop_date'],
+            'order_num'=>$order['order_num'],
+            'customer'=>$order['customer'],
+            'printshop_item_id'=>$order['printshop_item_id'],
+            'printshop_color_id'=>$order['printshop_color_id'],
+            'shipped'=>$order['shipped'],
+            'kepted'=>$order['kepted'],
+            'misprint'=>$order['misprint'],
+            'misprint_proc'=>round($misprint_proc,0).'%',
+            'total_qty'=>($order['shipped']+$order['kepted']+$order['misprint']),
+            'price'=>$order['price'],
+            'extracost'=>$order['extracost'],
+            'extraitem'=>($order['shipped']+$order['kepted']+$order['misprint'])*$order['extracost'],
+            'totalea'=>$totalea,
+            'costitem'=>round($costitem,2),
+            'orangeplate'=>$order['orangeplate'],
+            'orangeplate_price'=>$order['orangeplate_price'],
+            'blueplate'=>$order['blueplate'],
+            'blueplate_price'=>$order['blueplate_price'],
+            'totalplates'=>$totalplates,
+            'platescost'=>$platescost,
+            'itemstotalcost'=>$totalitemcost,
+            'misprintcost'=>$misprintcost,
+            'printshop_type'=>$order['printshop_type'],
+            'order_id'=>$order['order_id'],
+            'printshop_history'=>$order['printshop_history'],
+        );
+        return $data;
+    }
 
     // Get Data about config values (plates prices, etc)
     public function _get_plates_costs() {
@@ -1601,156 +1582,147 @@ Class Printshop_model extends MY_Model
         return $res;
     }
 
-//    public function get_printshopitem_list() {
-//        $this->db->select("printshop_item_id, concat(replace(item_name, 'Stress Balls',''),' ',item_num ) as item_name", FALSE);
-//        $this->db->from('ts_printshop_items');
-//        $this->db->order_by('item_name');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
-//    public function change_printshop_order($orderdata, $fldname, $newval,$sessionid) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (!array_key_exists($fldname, $orderdata)) {
-//            $out['msg']='Field '.$fldname.' Not Found';
-//            return $out;
-//        }
-//        if ($fldname=='order_num') {
-//            $this->db->select('order_id, customer_name');
-//            $this->db->from('ts_orders');
-//            $this->db->where('order_num', $newval);
-//            $res=$this->db->get()->row_array();
-//            if (!isset($res['order_id'])) {
-//                $out['msg']='Order Not Exist';
-//                $out['oldval']=$orderdata['order_num'];
-//                return $out;
-//            }
-//            $orderdata['order_id']=$res['order_id'];
-//            $orderdata['customer']=$res['customer_name'];
-//        }
-//        if ($fldname=='printshop_date') {
-//            $newval=strtotime($newval);
-//        }
-//        $orderdata[$fldname]=$newval;
-//        if ($fldname=='printshop_item_id') {
-//            // New Item
-//            $colors=$this->get_item_colors($newval);
-//            $colordef=$colors[0];
-//            // $orderdata['price']=$colordef['price'];
-//            // $orderdata['printshop_color_id']=$colordef['printshop_color_id'];
-//            $orderdata['price']=0;
-//            $orderdata['printshop_color_id']='';
-//            $costs=$this->_get_plates_costs();
-//            $orderdata['extracost']=0; //$costs['inv_addcost'];
-//            $orderdata['colors']=$colors;
-//        } elseif ($fldname=='printshop_color_id') {
-//            $outcolor=$this->get_invitem_colordata($newval);
-//            if ($outcolor['result']==$this->error_result) {
-//                $out['msg']=$outcolor['msg'];
-//                return $out;
-//            }
-//            $colordat=$outcolor['color'];
-//            $orderdata['price']=$colordat['price'];
-//            $costs=$this->_get_plates_costs();
-//            $orderdata['extracost']=$costs['inv_addcost'];
-//        }
-//        $data=$this->_prinshoporder_params($orderdata);
-//        $data['items']=$orderdata['items'];
-//        $data['colors']=$orderdata['colors'];
-//        $data['session']=$orderdata['session'];
-//        $this->func->session($sessionid, $data);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//    public function save_printshop_order($orderdata, $sessionid, $user_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (empty($orderdata['printshop_color_id'])) {
-//            $out['msg']='Choose Item Color';
-//            return $out;
-//        }
-//        if (empty($orderdata['printshop_item_id'])) {
-//            $out['msg']='Choose Item';
-//            return $out;
-//        }
-//        if (empty($orderdata['order_num'])) {
-//            $out['msg']='Enter Order #';
-//            return $out;
-//        }
-//        if (empty($orderdata['customer'])) {
-//            $out['msg']='Enter Customer';
-//            return $out;
-//        }
-//        $this->db->set('printshop_date', $orderdata['printshop_date']);
-//        // $this->db->set('order_num', $orderdata['order_num']);
-//        // $this->db->set('customer', $orderdata['customer']);
-//        $this->db->set('printshop_color_id', $orderdata['printshop_color_id']);
-//        $this->db->set('shipped', intval($orderdata['shipped']));
-//        $this->db->set('kepted', intval($orderdata['kepted']));
-//        $this->db->set('misprint', intval($orderdata['misprint']));
-//        $this->db->set('orangeplate', floatval($orderdata['orangeplate']));
-//        $this->db->set('blueplate', floatval($orderdata['blueplate']));
-//        $this->db->set('price', floatval($orderdata['price']));
-//        $this->db->set('extracost', floatval($orderdata['extracost']));
-//        if ($orderdata['printshop_history']==0) {
-//            $this->db->set('amount_sum', floatval($orderdata['itemstotalcost']));
-//        }
-//        $this->db->set('printshop_total', floatval($orderdata['itemstotalcost']));
-//        if ($orderdata['printshop_income_id']<=0) {
-//            $this->db->set('printshop_type', $orderdata['printshop_type']);
-//            $this->db->set('printshop', 1);
-//            $this->db->set('order_id', $orderdata['order_id']);
-//            $this->db->set('orangeplate_price', $orderdata['orangeplate_price']);
-//            $this->db->set('blueplate_price', $orderdata['blueplate_price']);
-//            $this->db->set('vendor_id', $this->config->item('inventory_vendor'));
-//            $this->db->set('method_id', $this->config->item('inventory_paymethod'));
-//            $this->db->set('amount_date', time());
-//            $this->db->set('create_date', time());
-//            $this->db->set('create_user', $user_id);
-//            $this->db->set('update_date', time());
-//            $this->db->set('update_user', $user_id);
-//            $this->db->insert('ts_order_amounts');
-//            $orderdata['printshop_income_id']=$this->db->insert_id();
-//        } else {
-//            $this->db->set('update_date', time());
-//            $this->db->set('update_user', $user_id);
-//            $this->db->where('amount_id', $orderdata['printshop_income_id']);
-//            $this->db->update('ts_order_amounts');
-//        }
-//        // Update Orders by new COG
-////        $this->db->select('order_id');
-////        $this->db->from('ts_order_amounts');
-////        $this->db->where('amount_id', $orderdata['printshop_income_id']);
-////        $orddat=$this->db->get()->row_array();
-////        $order_id=$orddat['order_id'];
-//        if ($orderdata['printshop_history']==0) {
-//            $this->_update_ordercog($orderdata['order_id']);
-//        }
-//        $out['result']=$this->success_result;
-//        $out['order_id']=$orderdata['order_id'];
-//        $out['printshop_income_id']=$orderdata['printshop_income_id'];
-//        $this->func->session($sessionid, NULL);
-//        return $out;
-//    }
-//
-//    // Remove amounts
-//    public function orderreport_remove($amount_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $chk=$this->get_printshop_order($amount_id);
-//        if ($chk['result']==$this->error_result) {
-//            $out['msg']=$chk['msg'];
-//            return $out;
-//        }
-//        $order_id=$chk['data']['order_id'];
-//        $this->db->where('amount_id', $amount_id);
-//        $this->db->delete('ts_order_amounts');
-//        // Recalc COG
-//        $this->_update_ordercog($order_id);
-//        $out['result']=$this->success_result;
-//        return $out;
-//    }
-//
-//
+    public function get_printshopitem_list() {
+        $this->db->select("printshop_item_id, concat(replace(item_name, 'Stress Balls',''),' ',item_num ) as item_name", FALSE);
+        $this->db->from('ts_printshop_items');
+        $this->db->order_by('item_name');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function change_printshop_order($orderdata, $fldname, $newval,$sessionid) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists($fldname, $orderdata)) {
+            $out['msg']='Field '.$fldname.' Not Found';
+            return $out;
+        }
+        if ($fldname=='order_num') {
+            $this->db->select('order_id, customer_name');
+            $this->db->from('ts_orders');
+            $this->db->where('order_num', $newval);
+            $res=$this->db->get()->row_array();
+            if (!isset($res['order_id'])) {
+                $out['msg']='Order Not Exist';
+                $out['oldval']=$orderdata['order_num'];
+                return $out;
+            }
+            $orderdata['order_id']=$res['order_id'];
+            $orderdata['customer']=$res['customer_name'];
+        }
+        if ($fldname=='printshop_date') {
+            $newval=strtotime($newval);
+        }
+        $orderdata[$fldname]=$newval;
+        if ($fldname=='printshop_item_id') {
+            // New Item
+            $colors=$this->get_item_colors($newval);
+            $colordef=$colors[0];
+            $orderdata['price']=0;
+            $orderdata['printshop_color_id']='';
+            $costs=$this->_get_plates_costs();
+            $orderdata['extracost']=0; //$costs['inv_addcost'];
+            $orderdata['colors']=$colors;
+        } elseif ($fldname=='printshop_color_id') {
+            $outcolor=$this->get_invitem_colordata($newval);
+            if ($outcolor['result']==$this->error_result) {
+                $out['msg']=$outcolor['msg'];
+                return $out;
+            }
+            $colordat=$outcolor['color'];
+            $orderdata['price']=$colordat['price'];
+            $costs=$this->_get_plates_costs();
+            $orderdata['extracost']=$costs['inv_addcost'];
+        }
+        $data=$this->_prinshoporder_params($orderdata);
+        $data['items']=$orderdata['items'];
+        $data['colors']=$orderdata['colors'];
+        $data['session']=$orderdata['session'];
+        usersession($sessionid, $data);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function save_printshop_order($orderdata, $sessionid, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (empty($orderdata['printshop_color_id'])) {
+            $out['msg']='Choose Item Color';
+            return $out;
+        }
+        if (empty($orderdata['printshop_item_id'])) {
+            $out['msg']='Choose Item';
+            return $out;
+        }
+        if (empty($orderdata['order_num'])) {
+            $out['msg']='Enter Order #';
+            return $out;
+        }
+        if (empty($orderdata['customer'])) {
+            $out['msg']='Enter Customer';
+            return $out;
+        }
+        $this->db->set('printshop_date', $orderdata['printshop_date']);
+        $this->db->set('printshop_color_id', $orderdata['printshop_color_id']);
+        $this->db->set('shipped', intval($orderdata['shipped']));
+        $this->db->set('kepted', intval($orderdata['kepted']));
+        $this->db->set('misprint', intval($orderdata['misprint']));
+        $this->db->set('orangeplate', floatval($orderdata['orangeplate']));
+        $this->db->set('blueplate', floatval($orderdata['blueplate']));
+        $this->db->set('price', floatval($orderdata['price']));
+        $this->db->set('extracost', floatval($orderdata['extracost']));
+        if ($orderdata['printshop_history']==0) {
+            $this->db->set('amount_sum', floatval($orderdata['itemstotalcost']));
+        }
+        $this->db->set('printshop_total', floatval($orderdata['itemstotalcost']));
+        if ($orderdata['printshop_income_id']<=0) {
+            $this->db->set('printshop_type', $orderdata['printshop_type']);
+            $this->db->set('printshop', 1);
+            $this->db->set('order_id', $orderdata['order_id']);
+            $this->db->set('orangeplate_price', $orderdata['orangeplate_price']);
+            $this->db->set('blueplate_price', $orderdata['blueplate_price']);
+            $this->db->set('vendor_id', $this->config->item('inventory_vendor'));
+            $this->db->set('method_id', $this->config->item('inventory_paymethod'));
+            $this->db->set('amount_date', time());
+            $this->db->set('create_date', time());
+            $this->db->set('create_user', $user_id);
+            $this->db->set('update_date', time());
+            $this->db->set('update_user', $user_id);
+            $this->db->insert('ts_order_amounts');
+            $orderdata['printshop_income_id']=$this->db->insert_id();
+        } else {
+            $this->db->set('update_date', time());
+            $this->db->set('update_user', $user_id);
+            $this->db->where('amount_id', $orderdata['printshop_income_id']);
+            $this->db->update('ts_order_amounts');
+        }
+        // Update Orders by new COG
+        if ($orderdata['printshop_history']==0) {
+            $this->_update_ordercog($orderdata['order_id']);
+        }
+        $out['result']=$this->success_result;
+        $out['order_id']=$orderdata['order_id'];
+        $out['printshop_income_id']=$orderdata['printshop_income_id'];
+        usersession($sessionid, NULL);
+        return $out;
+    }
+
+    // Remove amounts
+    public function orderreport_remove($amount_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $chk=$this->get_printshop_order($amount_id);
+        if ($chk['result']==$this->error_result) {
+            $out['msg']=$chk['msg'];
+            return $out;
+        }
+        $order_id=$chk['data']['order_id'];
+        $this->db->where('amount_id', $amount_id);
+        $this->db->delete('ts_order_amounts');
+        // Recalc COG
+        $this->_update_ordercog($order_id);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+
 //    public function change_additional_cost($fldname, $newval) {
 //        $this->db->set($fldname, floatval($newval));
 //        $this->db->update('ts_configs');
@@ -1783,39 +1755,39 @@ Class Printshop_model extends MY_Model
         return $income-$outcome;
     }
 
-//    public function _update_ordercog($order_id) {
-//        $this->db->select('revenue, shipping, is_shipping, tax, cc_fee');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_id', $order_id);
-//        $orddat=$this->db->get()->row_array();
-//        $revenue=  floatval($orddat['revenue']);
-//        $shipping=floatval($orddat['shipping']);
-//        $is_shipping=intval($orddat['is_shipping']);
-//        $tax=floatval($orddat['tax']);
-//        $cc_fee=floatval($orddat['cc_fee']);
-//        // Get COG Value
-//        $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
-//        $this->db->from('ts_order_amounts');
-//        $this->db->where('order_id', $order_id);
-//        $cogres=$this->db->get()->row_array();
-//        if ($cogres['cnt']==0) {
-//            // Default
-//            $new_order_cog=NULL;
-//            $new_profit_pc=NULL;
-//            $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
-//        } else {
-//            $new_order_cog=floatval($cogres['cog']);
-//            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-//            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
-//        }
-//        $this->db->set('order_cog',$new_order_cog);
-//        $this->db->set('profit',$new_profit);
-//        $this->db->set('profit_perc',$new_profit_pc);
-//        $this->db->where('order_id',$order_id);
-//        $this->db->update('ts_orders');
-//        return TRUE;
-//    }
-//
+    public function _update_ordercog($order_id) {
+        $this->db->select('revenue, shipping, is_shipping, tax, cc_fee');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddat=$this->db->get()->row_array();
+        $revenue=  floatval($orddat['revenue']);
+        $shipping=floatval($orddat['shipping']);
+        $is_shipping=intval($orddat['is_shipping']);
+        $tax=floatval($orddat['tax']);
+        $cc_fee=floatval($orddat['cc_fee']);
+        // Get COG Value
+        $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('order_id', $order_id);
+        $cogres=$this->db->get()->row_array();
+        if ($cogres['cnt']==0) {
+            // Default
+            $new_order_cog=NULL;
+            $new_profit_pc=NULL;
+            $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+        } else {
+            $new_order_cog=floatval($cogres['cog']);
+            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+        }
+        $this->db->set('order_cog',$new_order_cog);
+        $this->db->set('profit',$new_profit);
+        $this->db->set('profit_perc',$new_profit_pc);
+        $this->db->where('order_id',$order_id);
+        $this->db->update('ts_orders');
+        return TRUE;
+    }
+
 //    public function save_printshopcolor_spec($printshop_color_id, $specfile) {
 //        if ($specfile=='') {
 //            $this->db->set('specfile', NULL);
@@ -2462,26 +2434,26 @@ Class Printshop_model extends MY_Model
         return $colordata;
     }
 
-//    public function get_invenory_level($printshop_income_id) {
-//        $this->db->select('oa.printshop_color_id, oa.printshop_date, oa.shipped, oa.kepted, oa.misprint');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->where('oa.amount_id', $printshop_income_id);
-//        $amtdata=$this->db->get()->row_array();
-//        // Get Prv
-//        $this->db->select('sum(v.instock_amnt) as total');
-//        $this->db->from('v_printshop_instock v');
-//        $this->db->where('v.printshop_color_id', $amtdata['printshop_color_id']);
-//        $this->db->where('v.instock_date < ', $amtdata['printshop_date']);
-//        $strockres=$this->db->get()->row_array();
-//        $instock=intval($strockres['total']);
-//        $outcome=intval($amtdata['shipped'])+intval($amtdata['kepted'])+intval($amtdata['misprint']);
-//        $balance=$instock-$outcome;
-//        return array(
-//            'instock'=>$instock,
-//            'outcome'=>$outcome,
-//            'balance'=>$balance,
-//        );
-//    }
+    public function get_invenory_level($printshop_income_id) {
+        $this->db->select('oa.printshop_color_id, oa.printshop_date, oa.shipped, oa.kepted, oa.misprint');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.amount_id', $printshop_income_id);
+        $amtdata=$this->db->get()->row_array();
+        // Get Prv
+        $this->db->select('sum(v.instock_amnt) as total');
+        $this->db->from('v_printshop_instock v');
+        $this->db->where('v.printshop_color_id', $amtdata['printshop_color_id']);
+        $this->db->where('v.instock_date < ', $amtdata['printshop_date']);
+        $strockres=$this->db->get()->row_array();
+        $instock=intval($strockres['total']);
+        $outcome=intval($amtdata['shipped'])+intval($amtdata['kepted'])+intval($amtdata['misprint']);
+        $balance=$instock-$outcome;
+        return array(
+            'instock'=>$instock,
+            'outcome'=>$outcome,
+            'balance'=>$balance,
+        );
+    }
 
     public function get_needinvlistdata($options) {
         $this->db->select('i.printshop_item_id, i.item_num, i.item_name, c.printshop_color_id');

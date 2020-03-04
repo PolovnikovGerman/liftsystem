@@ -564,7 +564,7 @@ i.canceleditorderdata {
     width: 73px;
 }
 .printshopcontent > .orderreporttablebody .datarow select.psprintcolor {
-    width: 67px;
+    width: 54px;
 }
 .printshopcontent > .orderreporttablebody .datarow input.psshipped {
     text-align: center;

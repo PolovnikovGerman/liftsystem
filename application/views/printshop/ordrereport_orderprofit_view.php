@@ -1,5 +1,5 @@
 <div class="orderreportprofitview <?=$order['profit_class']?>">
-    <div class="label">Profit</div>
+    <div class="labeltxt">Profit</div>
     <div class="value"><?=  MoneyOutput($order['profit'])?></div>
     <div class="value"><?=round($order['profit_perc'],0)?>%</div>
     <div class="inventorylevel">

@@ -117,22 +117,29 @@ function init_orderreport_page() {
         $("input#report_year").val($(this).data('year'));
         search_printshoporders();
     })
-
-    // $("div.datarow").find("div.ordernum").each(function(){
-    //     $(this).bt({
-    //         ajaxCache: false,
-    //         fill : '#FFFFFF',
-    //         cornerRadius: 10,
-    //         width: 178,
-    //         padding: 4,
-    //         strokeWidth: '2',
-    //         positions: "most",
-    //         strokeStyle : '#000000',
-    //         strokeHeight: '18',
-    //         // cssClass: '_tooltip',
-    //         ajaxPath: ["$(this).data('profitview')"]
-    //     });
-    // });
+    $("div.orderreporttablebody").find("div.ordernum").qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('profitview') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'left center',
+            at: 'center right',
+        },
+        style: {
+            classes: 'orderprofit_tooltip'
+        }
+    });
     $("div.orderreporttablebody").find('div.itemname').qtip({
         content: {
             attr: 'data-content'
@@ -199,6 +206,7 @@ function edit_printshoporder(report) {
     params.push({name:'printshop_income_id', value: report});
     $.post(url, params, function(response){
         if (response.errors=='') {
+            $(".qtip").qtip('hide');
             if (report==0) {
                 $(".orderreporttablebody").scrollTop(-55555);
                 $("div#orderreportdataarea").prepend("<div class='datarow' data-report=0>"+response.data.content+'</div>');
@@ -278,6 +286,8 @@ function init_printshiporder_edit(report) {
         var params=new Array();
         params.push({name: 'sessionid', value: $("input#sessionid").val()});
         params.push({name:'search', value: $("input.reportorder_searchdata").val()});
+        params.push({name: 'report_year', value : $("#report_year").val()});
+        params.push({name: 'brand', value: $("#printshopreportbrand").val()});
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $('#orderreptotals').val(response.data.totals);
@@ -320,6 +330,8 @@ function delete_printshoporder(report, repnum) {
         var url="/fulfillment/orderreport_remove";
         var params=new Array();
         params.push({name:'search', value: $("input.reportorder_searchdata").val()});
+        params.push({name: 'report_year', value: $("#report_year").val()});
+        params.push({name: 'brand', value: $("#printshopreportbrand").val()});
         params.push({name:'printshop_income_id', value: report});
         $.post(url, params, function(response){
             if (response.errors=='') {
