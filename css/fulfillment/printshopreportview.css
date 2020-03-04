@@ -176,7 +176,7 @@ and open the template in the editor.
 .printshopcontent > .orderreporttablehead > .orderdate {
     border-right: 1px solid #000000;
     padding-left: 23px;
-    width: 72px;
+    width: 79px;
 }
 .printshopcontent > .orderreporttablehead > .ordernum {
     border-right: 1px solid #000000;
@@ -192,20 +192,20 @@ and open the template in the editor.
 }
 .printshopcontent > .orderreporttablehead > .itemcolor {
     border-right: 2px solid #000000;
-    width: 54px;
+    width: 58px;
 }
 .printshopcontent > .orderreporttablehead > .shipped {
     border-right: 1px solid #000000;
-    width: 51px;
+    width: 54px;
 }
 .printshopcontent > .orderreporttablehead > .kepted {
     border-right: 1px solid #000000;
     line-height: 13px;
-    width: 35px;
+    width: 37px;
 }
 .printshopcontent > .orderreporttablehead > .misprints {
     border-right: 2px solid #000000;
-    width: 37px;
+    width: 41px;
 }
 .printshopcontent > .orderreporttablehead > .misprintproc {
     border-right: 2px solid #000000;
@@ -232,12 +232,12 @@ and open the template in the editor.
 }
 .printshopcontent > .orderreporttablehead > .totaladdlcost {
     border-right: 2px solid #000000;
-    width: 48px;
+    width: 47px;
     line-height: 13px;
 }
 .printshopcontent > .orderreporttablehead > .itemscost {
     border-right: 2px solid #000000;
-    width: 59px;
+    width: 63px;
 }
 .printshopcontent > .orderreporttablehead > .oranplate {
     border-right: 1px solid #000000;
@@ -261,11 +261,11 @@ and open the template in the editor.
 }
 .printshopcontent > .orderreporttablehead > .totalcost {
     border-right: 1px solid #000000;
-    width: 62px;
+    width: 63px;
 }
 .printshopcontent > .orderreporttablehead > .misprintcost {
     line-height: 13px;
-    width: 43px;
+    width: 44px;
 }
 .printshopcontent > .orderreporttablehead > .endtable {
     background: url('/img/printshop/orderreport_tableend_bg.png') no-repeat transparent;
@@ -309,7 +309,7 @@ i.addnewprintshopincome {
 .printshopcontent >  .summaryrow > .summarylabel {
     border-right: 1px solid #000000;
     font-size: 12px;
-    width: 63px;
+    width: 70px;
 }
 .printshopcontent >  .summaryrow > .ordernum {
     border-right: 1px solid #000000;
@@ -325,19 +325,19 @@ i.addnewprintshopincome {
 }
 .printshopcontent >  .summaryrow > .itemcolor {
     border-right: 2px solid #000000;
-    width: 54px;
+    width: 58px;
 }
 .printshopcontent >  .summaryrow > .shipped {
     border-right: 1px solid #000000;
-    width: 50px;
+    width: 54px;
 }
 .printshopcontent >  .summaryrow > .kepted {
     border-right: 1px solid #000000;
-    width: 35px;
+    width: 37px;
 }
 .printshopcontent >  .summaryrow > .misprints {
     border-right: 2px solid #000000;
-    width: 37px;
+    width: 41px;
 }
 .printshopcontent >  .summaryrow > .misprintproc {
     border-right: 2px solid #000000;
@@ -365,7 +365,7 @@ i.addnewprintshopincome {
 }
 .printshopcontent >  .summaryrow > .itemscost {
     border-right: 2px solid #000000;
-    width: 59px;
+    width: 62px;
 }
 .printshopcontent >  .summaryrow > .oranplate {
     border-right: 1px solid #000000;
@@ -385,10 +385,10 @@ i.addnewprintshopincome {
 }
 .printshopcontent >  .summaryrow > .totalcost {
     border-right: 1px solid #000000;
-    width: 62px;
+    width: 63px;
 }
 .printshopcontent >  .summaryrow > .misprintcost {
-    width: 50px;
+    width: 54px;
 }
 
 .printshopcontent > .orderreporttablebody > div {
@@ -420,15 +420,13 @@ i.addnewprintshopincome {
     border-right: 1px solid #000000;
     color: #010101 !important;
     font-size: 10px;
-    width: 21px;
+    width: 30px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .delrecord {
     border-right: 1px solid #000000;
     color: #010101 !important;
     cursor: pointer;
     font-size: 12px;
-    height: 18px;
-    padding-top: 4px;
     width: 21px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .orderdate {
@@ -447,31 +445,31 @@ i.addnewprintshopincome {
     padding-left: 3px;
     padding-right: 3px;
     text-overflow: ellipsis;
-    width: 75px;
+    width: 81px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .itemname {
     border-right: 1px solid #000000;
     padding-left: 3px;
     text-align: left;
-    width: 69px;
+    width: 72px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .itemcolor {
     border-right: 2px solid #000000;
     padding-left: 3px;
     text-align: left;
-    width: 51px;
+    width: 58px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .shipped {
     border-right: 1px solid #000000;
-    width: 50px;
+    width: 53px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .kepted {
     border-right: 1px solid #000000;
-    width: 35px;
+    width: 38px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .misprints {
     border-right: 2px solid #000000;
-    width: 37px;
+    width: 41px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .misprintproc {
     border-right: 2px solid #000000;
@@ -499,7 +497,7 @@ i.addnewprintshopincome {
 }
 .printshopcontent > .orderreporttablebody .datarow > .itemscost {
     border-right: 2px solid #000000;
-    width: 59px;
+    width: 62px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .oranplate {
     border-right: 1px solid #000000;
@@ -520,7 +518,7 @@ i.addnewprintshopincome {
 .printshopcontent > .orderreporttablebody .datarow > .totalcost {
     border-right: 1px solid #000000;
     font-weight: bold;
-    width: 62px;
+    width: 63px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .misprintcost {
     width: 45px;
