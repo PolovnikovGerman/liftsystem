@@ -22,7 +22,7 @@ function init_orderreport_content() {
                 $("#printshopreportbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
         });
-        search_inventoryneed_brand();
+        search_printshoporders();
     });
 }
 
@@ -111,8 +111,8 @@ function init_orderreport_page() {
         $("input.reportorder_searchdata").val('');
         search_printshoporders();
     });
-    $('div.orderreport_filter').find("div.label").unbind('click').click(function(){
-        $('div.orderreport_filter').find("div.label").removeClass('active');
+    $('div.orderreport_filter').find("div.labeltxt").unbind('click').click(function(){
+        $('div.orderreport_filter').find("div.labeltxt").removeClass('active');
         $(this).addClass('active');
         $("input#report_year").val($(this).data('year'));
         search_printshoporders();
@@ -168,6 +168,7 @@ function init_orderreport_page() {
         var params=new Array();
         params.push({name:'search', value: $("input.reportorder_searchdata").val()});
         params.push({name: 'report_year', value : $("#report_year").val()});
+        params.push({name: 'brand', value: $("#printshopreportbrand").val()});
         var url="/fulfillment/orderreport_dataexport";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -313,6 +314,7 @@ function search_printshoporders() {
     var params=new Array();
     params.push({name:'search', value: $("input.reportorder_searchdata").val()});
     params.push({name: 'report_year', value: $("#report_year").val()});
+    params.push({name: 'brand', value: $("#printshopreportbrand").val()});
     var url="/fulfillment/orderreport_search";
     $.post(url, params, function(response){
         if (response.errors=='') {

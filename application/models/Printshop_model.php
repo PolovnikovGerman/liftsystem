@@ -1445,6 +1445,9 @@ Class Printshop_model extends MY_Model
         $this->db->order_by("sortdatefld desc, oa.update_date desc");
 
         $res=$this->db->get()->result_array();
+        if (isset($options['export']) && $options['export']==1) {
+            return $res;
+        }
 
         // Calc start index
         $startidx=$options['totals']-$options['offset'];
@@ -1723,11 +1726,11 @@ Class Printshop_model extends MY_Model
     }
 
 
-//    public function change_additional_cost($fldname, $newval) {
-//        $this->db->set($fldname, floatval($newval));
-//        $this->db->update('ts_configs');
-//        return TRUE;
-//    }
+    public function change_additional_cost($fldname, $newval) {
+        $this->db->set($fldname, floatval($newval));
+        $this->db->update('ts_configs');
+        return TRUE;
+    }
 
     public function printcolor_instock($printshop_color_id, $brand) {
         $this->db->select('sum(instock_amnt) as stock');

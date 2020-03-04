@@ -178,4 +178,68 @@ class Exportexcell_model extends CI_Model
         $writer->save($filename);    // download file
         return $report_name;
     }
+
+    public function export_orderreport($data) {
+        // Prepare Export file
+        ini_set("memory_limit",-1);
+        $namesheet = 'report_export';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Date');
+        $sheet->setCellValue('B1','Order');
+        $sheet->setCellValue('C1','Customer');
+        $sheet->setCellValue('D1','Shape');
+        $sheet->setCellValue('E1','Color');
+        $sheet->setCellValue('F1','Shipped');
+        $sheet->setCellValue('G1','We Kept');
+        $sheet->setCellValue('H1','Misprnt');
+        $sheet->setCellValue('I1','%');
+        $sheet->setCellValue('J1','Total QTY');
+        $sheet->setCellValue('K1','Cost EA');
+        $sheet->setCellValue('L1','Add&apos;l Extra');
+        $sheet->setCellValue('M1','Total EA');
+        $sheet->setCellValue('N1','Total Extra');
+        $sheet->setCellValue('O1','Items Cost');
+        $sheet->setCellValue('P1','Oran Plate');
+        $sheet->setCellValue('Q1','Blue Plate');
+        $sheet->setCellValue('R1','Total Plate');
+        $sheet->setCellValue('S1','Plate Cost');
+        $sheet->setCellValue('T1','Total Cost');
+        $sheet->setCellValue('U1','Misprint Cost');
+        $j=2;
+        foreach ($data as $row) {
+            $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
+            $sheet->setCellValue('A'.$j, date('m/d/Y', $row['printshop_date']));
+            $sheet->setCellValue('B'.$j, $row['order_num']);
+            $sheet->setCellValue('C'.$j, $row['customer_name']);
+            $sheet->setCellValue('D'.$j, $row['item_num'].' '.str_replace('Stress Balls', '', $row['item_name']));
+            $sheet->setCellValue('E'.$j, $row['color']);
+            $sheet->setCellValue('F'.$j, $row['shipped']);
+            $sheet->setCellValue('G'.$j, $row['kepted']);
+            $sheet->setCellValue('H'.$j, $row['misprint']);
+            $sheet->setCellValue('I'.$j,round($misprint_proc,0).'%');
+            $sheet->setCellValue('J'.$j, $row['totalitem']);
+            $sheet->setCellValue('K'.$j, $row['price']);
+            $sheet->setCellValue('L'.$j, $row['extracost']);
+            $sheet->setCellValue('M'.$j, round($row['priceea'],3));
+            $sheet->setCellValue('N'.$j, round($row['extraitem'],2));
+            $sheet->setCellValue('O'.$j, round($row['costitem'],2));
+            $sheet->setCellValue('P'.$j, $row['orangeplate']);
+            $sheet->setCellValue('Q'.$j, $row['blueplate']);
+            $sheet->setCellValue('R'.$j, $row['totalplates']);
+            $sheet->setCellValue('S'.$j, $row['platescost']);
+            $sheet->setCellValue('T'.$j, $row['totalitemcost']);
+            $sheet->setCellValue('U'.$j, $row['misprintcost']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = 'export_report_' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        $url = $this->config->item('pathpreload').$report_name;
+        return $url;
+    }
+
 }
