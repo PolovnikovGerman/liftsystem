@@ -138,5 +138,7 @@
 
 </div>
 <input type="hidden" id="profitordersbrand" value="<?=$brand?>">
-<?=$top_menu?>
+<div id="inventsalesreportbrandmenu">
+    <?=$top_menu?>
+</div>
 

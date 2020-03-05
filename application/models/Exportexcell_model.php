@@ -36,6 +36,7 @@ class Exportexcell_model extends CI_Model
 
     // Export Profit (orders)
     public function export_profitorders($data, $labels) {
+        ini_set("memory_limit","-1");
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
 
         $sheet = $spreadsheet->getActiveSheet();

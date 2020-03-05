@@ -701,7 +701,7 @@ function profile_filter_get() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
-    params.push({name: 'brand', value: $("#profitorders").val()});
+    params.push({name: 'brand', value: $("#profitordersbrand").val()});
     return params;
 }
 
@@ -747,7 +747,7 @@ function init_prepare_export() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
-    params.push({name: 'brand', value: $("#profitorders").val()});
+    params.push({name: 'brand', value: $("#profitordersbrand").val()});
     var url='/accounting/orderprofit_export';
     $.post(url,params, function (response){
         if (response.errors=='') {
