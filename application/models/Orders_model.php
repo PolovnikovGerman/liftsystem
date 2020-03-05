@@ -479,7 +479,7 @@ Class Orders_model extends MY_Model
         if ($res['order_cog']=='') {
             $res['profit_class']='projprof';
         } else {
-            $res['profit_class']=profitClass($res['profit_perc']);
+            $res['profit_class']=orderProfitClass($res['profit_perc']);
         }
         return $res;
     }
@@ -1661,5 +1661,127 @@ Class Orders_model extends MY_Model
         }
         return $out;
     }
+
+    /* Cancel_order */
+    function cancel_order($order_id,$flag, $user_id) {
+        $this->db->set('is_canceled',$flag);
+        $this->db->set('update_date',time());
+        $this->db->set('update_usr',$user_id);
+        $this->db->where('order_id',$order_id);
+        $this->db->update('ts_orders');
+        if ($this->db->affected_rows()==0) {
+            $retval=FALSE;
+        } else {
+            if ($flag) {
+                $orderdat=$this->get_order_detail($order_id);
+                $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+                $this->db->from('netprofit np');
+                $this->db->where('np.profit_month',NULL);
+                $this->db->where('np.datebgn <= ',$orderdat['order_date']);
+                $this->db->where('np.dateend > ',$orderdat['order_date']);
+                $netdat=$this->db->get()->row_array();
+                if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
+                    $this->load->model('balances_model');
+                    $total_options=array(
+                        'type'=>'week',
+                        'start'=>$this->config->item('netprofit_start'),
+                    );
+                    $rundat=$this->balances_model->get_netprofit_runs($total_options);
+                    $newtotalrun=$rundat['out_debtval'];
+                    $oldtotalrun=$newtotalrun+$orderdat['profit'];
+                    /* Get total data */
+                    $totalcost=floatval($netdat['profit_operating'])+floatval($netdat['profit_payroll'])+floatval($netdat['profit_advertising'])+floatval($netdat['profit_projects'])+floatval($netdat['profit_purchases']);
+                    $netprofit=floatval($netdat['gross_profit'])-$totalcost;
+                    $newdebt=floatval($netprofit)-floatval($netdat['profit_owners'])-floatval($netdat['profit_saved'])-floatval($netdat['od2']);
+                    if ($newdebt<0) {
+                        $outnewdebt='($'.number_format(abs($newdebt),0,'.',',').')';
+                    } else {
+                        $outnewdebt='$'.number_format($newdebt,0,'.',',');
+                    }
+                    // $newdebt=$netdat['gross_profit'];
+                    $olddebt=$newdebt+$orderdat['profit'];
+                    if ($olddebt<0) {
+                        $outolddebt='($'.number_format(abs($olddebt),0,'.',',').')';
+                    } else {
+                        $outolddebt='$'.number_format(abs($olddebt),0,'.',',');
+                    }
+                    $start_month=date('M',$netdat['datebgn']);
+                    $start_year=date('Y',$netdat['datebgn']);
+                    $end_month=date('M',$netdat['dateend']);
+                    $end_year=date('Y',$netdat['dateend']);
+                    if ($start_month!=$end_month) {
+                        $weekname=$start_month.'/'.$end_month;
+                    } else {
+                        $weekname=$start_month;
+                    }
+                    $weekname.=' '.date('j',$netdat['datebgn']).'-'.date('j',$netdat['dateend']);
+                    if ($start_year!=$end_year) {
+                        $weekname.=' '.$start_year.'/'.date('y',$netdat['dateend']);
+                    } else {
+                        $weekname.=', '.$start_year;
+                    }
+                    if ($oldtotalrun<0) {
+                        $outoldrundebt='($'.number_format(abs($oldtotalrun),0,'.',',').')';
+                    } else {
+                        $outoldrundebt='$'.number_format($oldtotalrun,0,'.',',');
+                    }
+                    if ($newtotalrun<0) {
+                        $outnewrundebt='($'.number_format(abs($newtotalrun),0,'.',',').')';
+                    } else {
+                        $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
+                    }
+                    $notifoptions=array(
+                        'ordercancel'=>1,
+                        'orderdata'=>$orderdat,
+                        'olddebt'=>$outolddebt,
+                        'newdebt'=>$outnewdebt,
+                        'weeknum'=>$weekname,
+                        'user_id'=>$user_id,
+                        'oldtotalrun'=>$outoldrundebt,
+                        'newtotalrun'=>$outnewrundebt,
+                    );
+                    $this->notify_netdebtchanged($notifoptions);
+                }
+            }
+            $retval=TRUE;
+        }
+        return $retval;
+    }
+
+    public function ship_orderprofit($order_id) {
+        $out=array('result'=> $this->error_result, 'msg'=>'Order Not Found');
+
+        $order_det=$this->get_order_detail($order_id);
+        if (isset($order_det['order_id'])) {
+            $is_shipping=($order_det['is_shipping']==1 ? 0 : 1);
+            $this->db->set('is_shipping',$is_shipping);
+            $this->db->set('update_date',time());
+            if (floatval($order_det['order_cog'])!=0) {
+                /* Update Profit */
+                $profit=floatval($order_det['revenue'])-(floatval($order_det['shipping'])*$is_shipping)-floatval($order_det['tax'])-floatval($order_det['cc_fee'])-floatval($order_det['order_cog']);
+                if (floatval($order_det['revenue'])!=0) {
+                    $profit_perc=round($profit/$order_det['revenue']*100,1);
+                } else {
+                    $profit_perc=NULL;
+                }
+                $this->db->set('profit',$profit);
+                $this->db->set('profit_perc',$profit_perc);
+            }
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            // Update ART View parameters
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id',$order_id);
+            $statres=$this->db->get()->row_array();
+            $this->db->where('order_id',$order_id);
+            $this->db->set('order_artview', $statres['aprrovview']);
+            $this->db->set('order_placed', $statres['placeord']);
+            $this->db->update('ts_orders');
+            $out['result']=  $this->success_result;
+        }
+        return $out;
+    }
+
 
 }

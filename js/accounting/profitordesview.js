@@ -317,22 +317,10 @@ function init_profitorder_manage() {
             classes : 'lowprofit_tooltip',
         }
     });
-    // $("div.multicolor").each(function(){
-    //     $(this).bt({
-    //         fill: '#ffffff',
-    //         trigger: 'hover',
-    //         // trigger: 'click',
-    //         width: '200px',
-    //         ajaxCache: false,
-    //         positions: ['left'],
-    //         ajaxPath: ["$(this).attr('href')"]
-    //     });
-    //     $(this).addClass('test');
-    // });
 }
 
 function edit_shipping(order) {
-    var url="/finance/order_changeship";
+    var url="/accounting/order_changeship";
     $.post(url, {'order_id': order}, function(response){
         if (response.errors=='') {
             $("div#profitord"+order+" div.profitorder_profit_data").empty().html(response.data.profit);
@@ -399,7 +387,7 @@ function save_orderitem(order_id) {
 /* Edit COG */
 function edit_cogval(obj) {
     var order_id=obj.id.substr(3);
-    $.post('/finance/editcog', {'order_id':order_id}, function(response){
+    $.post('/accounting/editcog', {'order_id':order_id}, function(response){
         if (response.errors=='') {
             show_popup('editcog');
             $("div#pop_content div.editcogform").empty().html(response.data.content);
@@ -594,15 +582,15 @@ function saveorderprofit() {
             $("#totaltab1").val(data.data.total);
             if (data.data.order_content!='') {
                 $("div#totalcntorders").empty().html(data.data.order_content);
-                $("div.totalorder").each(function(){
-                    $(this).bt({
-                        trigger: 'click',
-                        width: '463px',
-                        ajaxCache: false,
-                        positions: ['top'],
-                        ajaxPath: ["$(this).attr('href')"]
-                    });
-                })
+                // $("div.totalorder").each(function(){
+                //     $(this).bt({
+                //         trigger: 'click',
+                //         width: '463px',
+                //         ajaxCache: false,
+                //         positions: ['top'],
+                //         ajaxPath: ["$(this).attr('href')"]
+                //     });
+                // })
             }
             initProfitOrderPagination();
         }
@@ -680,15 +668,12 @@ function cancel_order(order_id) {
     // var order_id=obj.id.substr(4);
     var ordernum=$("#profitord"+order_id+" .profitorder_numorder_data").text();
     if (confirm('Are you sure you want to cancel Order # '+ordernum+' ?')) {
-        var url="/finance/cancel_order";
+        var url="/accounting/cancel_order";
         $.post(url, {'order_id': order_id, 'flag':1}, function(response){
             if (response.errors=='') {
                 initProfitOrderPagination();
             } else {
-                alert(response.errors);
-                if(response.data.url !== undefined) {
-                    window.location.href=response.data.url;
-                }
+                show_error(response);
             }
         }, 'json');
     }
@@ -696,15 +681,12 @@ function cancel_order(order_id) {
 
 function revert_order(order_id) {
     // var order_id=obj.id.substr(4);
-    var url="/finance/cancel_order";
+    var url="/accounting/cancel_order";
     $.post(url, {'order_id': order_id, 'flag':0}, function(response){
         if (response.errors=='') {
             initProfitOrderPagination();
         } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     }, 'json');
 

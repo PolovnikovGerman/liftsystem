@@ -1,7 +1,7 @@
 <table style="width: 100%">
     <thead>
     <tr>
-        <th style="width: 70%; height: 22px; line-height: 22px;">Color</th>
+        <th style="width: 60%; height: 22px; line-height: 22px;">Color</th>
         <th style="height: 22px; line-height: 22px;">QTY</th>
     </tr>
     </thead>

@@ -479,6 +479,45 @@ class Accounting extends MY_Controller
         echo $content;
     }
 
+    /* cancel order */
+    function cancel_order() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $flag=$this->input->post('flag');
+            $this->load->model('orders_model');
+            $res=$this->orders_model->cancel_order($order_id,$flag, $this->USR_ID);
+            if (!$res) {
+                $error='Order wasn\'t canceled';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Include/exclude shipment cost from Profit */
+    function order_changeship() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $order_id=$this->input->post('order_id');
+            // $is_shipping=$this->input->post('shipincl');
+            $this->load->model('orders_model');
+            $res=$this->orders_model->ship_orderprofit($order_id);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $order_detail=$this->orders_model->get_order_detail($order_id);
+                $mdata['profit']=($order_detail['profit']=='' ? '' : '$'.number_format($order_detail['profit'],2,'.',','));
+                $mdata['profit_perc']=($order_detail['profit_perc']=='' ? 'PROJ' : $order_detail['profit_perc'].'%');
+                $mdata['profit_class']=$order_detail['profit_class'];
+                $mdata['shipinput']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+                if ($order_detail['is_shipping']==1) {
+                    $mdata['shipinput']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
 
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {

@@ -62,31 +62,31 @@ input.search_input {
     background-color: #001072;
     color: #ffffff;
 }
-.green {
-    background-color: #00e947;
+.green, .greenprofit {
+    background-color: #00e947!important;
     color: #000000 !important;
 }
-.red {
-    background-color: #ff0000;
+.red, .redprofit {
+    background-color: #ff0000!important;
     color: #ffffff;
 }
-.black {
-    background-color: #000000;
+.black, .blackprofit {
+    background-color: #000000!important;
     color: #ffffff;
 }
-.orange {
-    background-color: #ea8a0e;
+.orange, .orangeprofit {
+    background-color: #ea8a0e!important;
     color: #000000 !important;
 }
 .cancelprof {
-    background: #919191;
+    background: #919191!important;
     color: #000000;
 }
 .moroon, .moroonprofit {
-    background-color: #6d0303;
+    background-color: #6d0303!important;
     color: #ffffff;
 }
 .white, .whiteprofit {
-    background-color: #ffffff;
+    background-color: #ffffff!important;
     color: #000000;
 }
