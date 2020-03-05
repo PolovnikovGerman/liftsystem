@@ -17,9 +17,9 @@ function init_profit_orders() {
     //     changeYear: true,
     //     dateFormat: 'm/d/y'
     // });
-    // $("div.exportdatacall").unbind('click').click(function(){
-    //     prepare_export();
-    // });
+    $("div.exportdatacall").unbind('click').click(function(){
+         prepare_export();
+    });
 }
 
 function init_profit_management() {
@@ -706,11 +706,12 @@ function profile_filter_get() {
 }
 
 function prepare_export() {
-    var url='/finance/prepare_orderprofit_export';
+    var url='/accounting/prepare_orderprofit_export';
     $.post(url,{},function(response){
         if (response.errors=='') {
             show_popup('exportfldselect');
             $("div#pop_content").empty().html(response.data.content);
+            // 480px
             $("a.button").button();
             $("#exportflds").unbind('click').click(function(){
                 init_prepare_export();

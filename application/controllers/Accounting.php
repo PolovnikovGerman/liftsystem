@@ -323,6 +323,17 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function prepare_orderprofit_export() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $this->load->model('orders_model');
+            $fields = $this->orders_model->get_profitexport_fields();
+            $mdata['content']=$this->load->view('orderprofit/prepare_export', ['fields'=>$fields], TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
