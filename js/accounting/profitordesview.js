@@ -20,14 +20,6 @@ function init_profit_orders() {
     $("div.exportdatacall").unbind('click').click(function(){
          prepare_export();
     });
-}
-
-function init_profit_management() {
-    /* Profit Page Inits */
-    /* Other Features */
-    /* $("div#profitsearch #start_date").datepicker();
-    $("div#profitsearch #end_date").datepicker();*/
-
     $("#profitsearch").keypress(function(event){
         if (event.which == 13) {
             search_profit_data();
@@ -67,7 +59,7 @@ function init_profit_management() {
     $("select#order_filtr").change(function(){
         search_profit_data();
     })
-    $("select#perpagetab1").unbind('change').change(function(){
+    $("select#perpage_profitorders").unbind('change').change(function(){
         $("#curpagetab1").val(0);
         initProfitOrderPagination();
     });
@@ -90,7 +82,7 @@ function init_profit_management() {
     $(".selectshiplocationdat").unbind('change').change(function(){
         if (parseInt($(".selectshiplocationdat").val())>0) {
             // Add Shipping States
-            var url="/finance/orderprofit_states";
+            var url="/accounting/orderprofit_states";
             $.post(url, {'country_id': $(".selectshiplocationdat").val()}, function (response) {
                 if (response.errors=='') {
                     $(".selectstatelocation").empty().html(response.data.content);
@@ -123,7 +115,7 @@ function init_profit_management() {
     $("#customdateend").unbind('change').change(function () {
         search_profit_data();
     });
-    /* End Profit Page Inits */
+    
 }
 
 function change_profit_sort(sortname,sortclass) {

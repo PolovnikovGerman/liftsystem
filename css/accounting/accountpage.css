@@ -45,6 +45,15 @@ input.search_input {
     margin-top: -20px;
     margin-bottom: -20px;
 }
+/* SORTING*/
+.activesortdesc {
+    color: #ffffff;
+    background-color: #0000ff;
+}
+.activesortasc {
+    color: #ffffff;
+    background-color: #0040FF;
+}
 /* */
 .projectcog {
     color: #c22;
