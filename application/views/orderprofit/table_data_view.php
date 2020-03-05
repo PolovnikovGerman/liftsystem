@@ -1,12 +1,11 @@
 <?php $nrec=0;?>
 <?php foreach ($orders as $row) {?>
-    <div class="tr <?=($nrec%2==0 ? 'white' : 'grey')?> <?=$row['lineclass']?>" id="profitord<?=$row['order_id']?>">
+    <div class="tr <?=($nrec%2==0 ? 'whitedatarow' : 'greydatarow')?> <?=$row['lineclass']?>" id="profitord<?=$row['order_id']?>">
         <div class="profitorder_date_data"><?=$row['order_date']?></div>
         <div class="profitorder_action_data"><?=$row['cancellnk']?></div>
         <div class="profitorder_numorder_data" data-order="<?=$row['order_id']?>"><?=$row['order_num']?></div>
         <div class="profitorder_ordertype <?=$row['ordertype_class']?>"><?=$row['ordertype']=='' ? '&nbsp;' : $row['ordertype']?></div>
         <div class="profitorder_confirm_data"><?=($row['order_confirmation']=='' ? 'historical' : $row['order_confirmation'])?></div>
-        <!-- <div class="profitorder_email_data"><?php // echo $row['out_email']?></div> -->
         <div class="profitorder_customer_data"><?=$row['customer_name']?></div>
         <div class="profitorder_qty_data"><?=$row['order_qty']?></div>
         <div class="profitorder_item_data <?=$row['item_class']?>"><?=$row['order_items']?></div>

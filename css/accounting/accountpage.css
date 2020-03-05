@@ -73,7 +73,11 @@ input.search_input {
     background: #919191;
     color: #000000;
 }
-.moroon {
+.moroon, .moroonprofit {
     background-color: #6d0303;
     color: #ffffff;
+}
+.white, .whiteprofit {
+    background-color: #ffffff;
+    color: #000000;
 }

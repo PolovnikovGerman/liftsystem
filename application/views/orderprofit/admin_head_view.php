@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class="profitorder-head-row">
-        <div id="profittotals_title">&nbsp;</div>
+        <div id="profittotals_title" class="totalallrow-title">&nbsp;</div>
         <div class="orders-table">
             <div class="profitorder_addaction">
                 <a id="addnew" href="javascript:void(0);" class="searchbtn">

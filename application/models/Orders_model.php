@@ -855,7 +855,7 @@ Class Orders_model extends MY_Model
             if ($admin_mode==0) {
                 $row['cancellnk']='';
             } else {
-                $row['cancellnk']='<a class="cancord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/cancel_order.png"/></a>';
+                $row['cancellnk']='<a class="cancord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/accounting/cancel_order.png"/></a>';
             }
 
             $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
@@ -888,7 +888,7 @@ Class Orders_model extends MY_Model
 
             $row['item_class']='';
             if ($row['is_canceled']) {
-                $row['cancellnk']='<a class="revertord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/revert.png"/></a>';
+                $row['cancellnk']='<a class="revertord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/accounting/revert.png"/></a>';
                 $row['lineclass']='cancelord';
                 $row['order_cog']='canceled';
                 $row['cog_class']='canceledcog';
@@ -898,12 +898,10 @@ Class Orders_model extends MY_Model
                 $row['editlnk']='';
                 $row['dellnk']='';
             } else {
-                // $row['input_ship']='<input type="checkbox" id="cship'.$row['order_id'].'" class="calcship" '.($row['is_shipping'] ? 'checked="checked"' : '').' />';
                 $row['input_ship']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
                 if ($row['is_shipping']==0) {
                     $row['input_ship']='<i class="fa fa-square-o" aria-hidden="true"></i>';
                 }
-                // $row['input_other']='<input type="checkbox" id="ccfee'.$row['order_id'].'" class="calcccfee" '.($row['cc_fee'] ?  'checked="checked"' : '' ).' title="'.($row['cc_fee']==0 ? '-' : '$'.number_format($row['cs_fee'],2,'.',',')).'" />';
                 if ($usrdat['profit_view']=='Points') {
                     $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
                 } else {

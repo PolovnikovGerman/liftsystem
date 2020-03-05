@@ -283,18 +283,18 @@ function init_profitorder_manage() {
         edit_shipping(order);
     });
     // Show by hover
-    $("div.multicolor").each(function(){
-        $(this).bt({
-            fill: '#ffffff',
-            trigger: 'hover',
-            // trigger: 'click',
-            width: '200px',
-            ajaxCache: false,
-            positions: ['left'],
-            ajaxPath: ["$(this).attr('href')"]
-        });
-        $(this).addClass('test');
-    });
+    // $("div.multicolor").each(function(){
+    //     $(this).bt({
+    //         fill: '#ffffff',
+    //         trigger: 'hover',
+    //         // trigger: 'click',
+    //         width: '200px',
+    //         ajaxCache: false,
+    //         positions: ['left'],
+    //         ajaxPath: ["$(this).attr('href')"]
+    //     });
+    //     $(this).addClass('test');
+    // });
 }
 
 function edit_shipping(order) {
