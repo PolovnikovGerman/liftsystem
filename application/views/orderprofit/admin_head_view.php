@@ -138,7 +138,7 @@
 
 </div>
 <input type="hidden" id="profitordersbrand" value="<?=$brand?>">
-<div id="inventsalesreportbrandmenu">
+<div id="profitordersbrandmenu">
     <?=$top_menu?>
 </div>
 

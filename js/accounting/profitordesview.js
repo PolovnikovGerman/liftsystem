@@ -115,7 +115,24 @@ function init_profit_orders() {
     $("#customdateend").unbind('change').change(function () {
         search_profit_data();
     });
-    
+    // Change Brand
+    $("#profitordersbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#profitordersbrand").val(brand);
+        $("#profitordersbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#profitordersbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#profitordersbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_profit_data();
+        // Years totals
+        totalyears();
+    });
 }
 
 function change_profit_sort(sortname,sortclass) {
