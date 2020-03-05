@@ -2,21 +2,11 @@ function init_profit_orders() {
     // initProfitOrderPagination();
     search_profit_data();
     totalyears();
-    /* Hover */
-    // $("div.totalorder").each(function(){
-    //     $(this).bt({
-    //         trigger: 'click',
-    //         width: '813px',
-    //         ajaxCache: false,
-    //         positions: ['top'],
-    //         ajaxPath: ["$(this).attr('href')"]
-    //     });
-    // });
-    // $(".profitorder_dateinpt").datepicker({
-    //     changeMonth: true,
-    //     changeYear: true,
-    //     dateFormat: 'm/d/y'
-    // });
+    $(".profitorder_dateinpt").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'm/d/y'
+    });
     $("div.exportdatacall").unbind('click').click(function(){
          prepare_export();
     });
@@ -208,7 +198,7 @@ function initProfitOrderPagination() {
     } else {
         var curpage = $("#curpagetab1").val();
         // Create content inside pagination element
-        $(".proford_pagination").empty().mypagination(num_entries, {
+        $("#profitorders_pagination").empty().mypagination(num_entries, {
             current_page: curpage,
             callback: pageProfitOrederCallback,
             items_per_page: perpage, // Show only one item per page
@@ -785,6 +775,46 @@ function totalyears() {
             $("div#totalcntorders").empty().html(response.data.content);
             $("div.profitordertotalarea").empty().html(response.data.content);
             $("div.profitordertotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
+            /* Hover */
+            $(".orders_totals").find('div.totalorder').qtip({
+                content : {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                        }).then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Loading...'; // Set some initial text
+                    }
+                },
+                show: {
+                    event: 'click'
+                },
+                hide: {
+                    event: 'click'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'middle center',
+                },
+                style: {
+                    classes: 'orderdetails_tooltip'
+                },
+            });
+            // $("div.totalorder").each(function(){
+            //     $(this).bt({
+            //         trigger: 'click',
+            //         width: '813px',
+            //         ajaxCache: false,
+            //         positions: ['top'],
+            //         ajaxPath: ["$(this).attr('href')"]
+            //     });
+            // });
+
             slidermargin=parseInt($("div.profitordertotalarea").css('margin-left'));
             /* $("div.totalorder").each(function(){
                 $(this).bt({

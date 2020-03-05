@@ -59,6 +59,9 @@ class Accounting extends MY_Controller
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+        // DatePicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
 
         $options = [
             'title' => $head['title'],
@@ -430,6 +433,22 @@ class Accounting extends MY_Controller
         );
         return $voption;
 
+    }
+
+    public function totaldetails() {
+        /* totaldetails/?type=proj&year=2013 */
+        $year=$this->input->get('year');
+        $type=$this->input->get('type');
+        /* Orders by year and profit_type */
+        $this->load->model('orders_model');
+        $res=$this->orders_model->get_orders_byprofittype($year, $type);
+        $options=array(
+            'orders'=>$res['orders'],
+            'cnt'=>$res['numord'],
+            'totals'=>$res['totals'],
+        );
+        $content=$this->load->view('accounting/orders_profittype_view',$options,TRUE);
+        echo $content;
     }
 
 

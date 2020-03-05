@@ -1384,6 +1384,7 @@ Class Orders_model extends MY_Model
 
         );
         if (isset($res['order_year'])) {
+            $detail_url = '/accounting/totaldetails/';
             $out['order_year'] = $res['order_year'];
             $total_ord = intval($res['cntord']);
             $total_rev = intval($res['sumrevenue']);
@@ -1397,7 +1398,7 @@ Class Orders_model extends MY_Model
                 if ($proj_ord != 0) {
                     $out['proj_ord'] = $proj_ord;
                     $out['proj_perc'] = round($proj_ord / $total_ord * 100, 0) . '%';
-                    $out['proj_link'] = "href='/finance/totaldetails/?type=projprof&year=" . $year . "'";
+                    $out['proj_link'] = $detail_url."?type=projprof&year=" . $year."&brand=".$brand;
                 }
                 $proj_revenue = round(floatval($res['proj_revenue']), 0);
                 if ($proj_revenue > 0) {
@@ -1421,7 +1422,7 @@ Class Orders_model extends MY_Model
                 if ($green_ord != 0) {
                     $out['green_ord'] = $green_ord;
                     $out['green_perc'] = round($green_ord / $total_ord * 100, 0) . '%';
-                    $out['green_link'] = "href='/finance/totaldetails/?type=green&year=" . $year . "'";
+                    $out['green_link'] = $detail_url."?type=green&year=" . $year."&brand=".$brand;
                 }
                 $green_revenue = round(floatval($res['green_revenue']), 0);
                 if ($green_revenue != 0) {
@@ -1445,7 +1446,7 @@ Class Orders_model extends MY_Model
                 if ($white_ord != 0) {
                     $out['white_ord'] = $white_ord;
                     $out['white_perc'] = round($white_ord / $total_ord * 100, 0) . '%';
-                    $out['white_link'] = "href='/finance/totaldetails/?type=white&year=" . $year . "'";
+                    $out['white_link'] = $detail_url."?type=white&year=" . $year."&brand=".$brand;
                 }
                 $white_revenue = round(floatval($res['white_revenue']), 0);
                 if ($white_revenue != 0) {
@@ -1469,7 +1470,7 @@ Class Orders_model extends MY_Model
                 if ($orange_ord != 0) {
                     $out['orange_ord'] = $orange_ord;
                     $out['orange_perc'] = round($orange_ord / $total_ord * 100, 0) . '%';
-                    $out['orange_link'] = "href='/finance/totaldetails/?type=orange&year=" . $year . "'";
+                    $out['orange_link'] = $detail_url."?type=orange&year=" . $year."&brand=".$brand;
                 }
                 $orange_revenue = round(floatval($res['orange_revenue']), 0);
                 if ($orange_revenue != 0) {
@@ -1493,7 +1494,7 @@ Class Orders_model extends MY_Model
                 if ($red_ord != 0) {
                     $out['red_ord'] = $red_ord;
                     $out['red_perc'] = round($red_ord / $total_ord * 100, 0) . '%';
-                    $out['red_link'] = "href='/finance/totaldetails/?type=red&year=" . $year . "'";
+                    $out['red_link'] = $detail_url."?type=red&year=" . $year."&brand=".$brand;
                 }
                 $red_revenue = round(floatval($res['red_revenue']), 0);
                 if ($red_revenue != 0) {
@@ -1517,7 +1518,7 @@ Class Orders_model extends MY_Model
                 if ($maroon_ord != 0) {
                     $out['maroon_ord'] = $maroon_ord;
                     $out['maroon_perc'] = round($maroon_ord / $total_ord * 100, 0) . '%';
-                    $out['maroon_link'] = "href='/finance/totaldetails/?type=moroon&year=" . $year . "'";
+                    $out['maroon_link'] = $detail_url."?type=moroon&year=" . $year."&brand=".$brand;
                 }
                 $maroon_revenue = round(floatval($res['maroon_revenue']), 0);
                 if ($maroon_revenue != 0) {
@@ -1541,7 +1542,7 @@ Class Orders_model extends MY_Model
                 if ($black_ord != 0) {
                     $out['black_ord'] = $black_ord;
                     $out['black_perc'] = round($black_ord / $total_ord * 100, 0) . '%';
-                    $out['black_link'] = "href='/finance/totaldetails/?type=black&year=" . $year . "'";
+                    $out['black_link'] = $detail_url."?type=black&year=" . $year."&brand=".$brand;
                 }
                 $black_revenue = round(floatval($res['black_revenue']), 0);
                 if ($black_revenue != 0) {
@@ -1564,6 +1565,84 @@ Class Orders_model extends MY_Model
             }
         }
         return $out;
+    }
+
+    /* Get data about orders per year */
+    function get_orders_byprofittype($year, $type) {
+        $datbgn=strtotime($year."-01-01 00:00:00");
+        $datend=strtotime($year."-12-31 23:59:59");
+        $this->db->select('*');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ',$datbgn);
+        $this->db->where('order_date <= ',$datend);
+        switch ($type) {
+            case 'projprof':
+                $this->db->where('profit_perc is null');
+                break;
+            case 'black':
+                $this->db->where('profit_perc <= ',0);
+                break;
+            case 'moroon':
+                $this->db->where('profit_perc > ',0);
+                $this->db->where('profit_perc < ',10);
+                break;
+            case 'red':
+                $this->db->where('profit_perc >= ',10);
+                $this->db->where('profit_perc < ',20);
+                break;
+            case 'orange':
+                $this->db->where('profit_perc >= ',20);
+                $this->db->where('profit_perc < ',30);
+                break;
+            case 'white':
+                $this->db->where('profit_perc >= ',30);
+                $this->db->where('profit_perc < ',40);
+                break;
+            case 'green':
+                $this->db->where('profit_perc >= ',40);
+                break;
+        }
+        $this->db->where('is_canceled',0);
+        $this->db->order_by('revenue','desc');
+        $result=$this->db->get()->result_array();
+        $orders=array();
+        $def_profperc='';
+        if ($type=='proj') {
+            $def_profperc='PROJ';
+        }
+        $total_profit=0;
+        $total_revenue=0;
+        $total_orders=0;
+        foreach ($result as $row) {
+            $total_orders++;
+            $total_profit+=floatval($row['profit']);
+            $total_revenue+=floatval($row['revenue']);
+            $orders[]=array(
+                'order_num'=>$row['order_num'],
+                'order_date'=>date('m/d/y',$row['order_date']),
+                'revenue'=>(floatval($row['revenue'])==0 ? '' : '$'.  number_format($row['revenue'],2,'.',',')),
+                'profit'=>(floatval($row['profit'])==0 ? '' : '$'.number_format($row['profit'],2,'.',',')),
+                'profit_perc'=>($row['profit_perc']=='' ? $def_profperc : round($row['profit_perc'],0).'%'),
+                'customer'=>($row['customer_name']=='' ? '&nbsp;' : $row['customer_name']),
+                'item_name'=>($row['order_items']=='' ? '&nbsp;' : $row['order_items']),
+            );
+        }
+        $avg_revenue=0;
+        $avg_profit=0;
+        if ($total_orders!=0) {
+            $avg_profit=$total_profit/$total_orders;
+            $avg_revenue=$total_revenue/$total_orders;
+        }
+        $totals=array(
+            'order_date' => $year,
+            'type' => $type,
+            'total_revenue'=>($total_revenue==0 ? '' : '$'.number_format($total_revenue,2,'.',',')),
+            'total_profit'=>($total_profit==0 ? '' : '$'.number_format($total_profit,2,'.',',')),
+            'avg_revenue'=>($avg_revenue==0 ? '' : '$'.number_format($avg_revenue,2,'.',',')),
+            'avg_profit'=>($avg_profit==0 ? '' : '$'.number_format($avg_profit,2,'.',',')),
+            'total_orders'=>($total_orders==0 ? '' : $total_orders),
+        );
+        return array('orders'=>$orders,'numord'=>$total_orders, 'totals'=>$totals);
     }
 
 }
