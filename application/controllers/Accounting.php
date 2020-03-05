@@ -353,7 +353,7 @@ class Accounting extends MY_Controller
     }
 
     public function orderprofit_states() {
-        if ($this->func->isAjax()) {
+        if ($this->isAjax()) {
             $mdata = [
                 'content' => '',
             ];
@@ -366,7 +366,7 @@ class Accounting extends MY_Controller
             if (count($data)>0) {
                 $mdata['content']=$this->load->view('orderprofit/select_shipstates', ['states'=>$data], TRUE);
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }

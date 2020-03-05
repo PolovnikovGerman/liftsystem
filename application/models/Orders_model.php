@@ -1198,7 +1198,7 @@ Class Orders_model extends MY_Model
             // save to file
             $this->load->model('exportexcell_model');
             $replink=$this->exportexcell_model->export_profitorders($data, $labels);
-            $out['result']=$this->succes_result;
+            $out['result']=$this->success_result;
             $out['url']=$replink;
         }
         return $out;

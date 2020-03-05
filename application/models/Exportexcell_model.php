@@ -33,4 +33,35 @@ class Exportexcell_model extends CI_Model
         $writer->save($filename);    // download file
         return $report_name;
     }
+
+    // Export Profit (orders)
+    public function export_profitorders($data, $labels) {
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // manually set table data value
+        $headcell = 0;
+        $headrow = 1;
+        foreach ($labels as $lrow) {
+            $sheet->setCellValue(getNameFromNumber($headcell).$headrow,$lrow);
+            $headcell++;
+        }
+        $numrow=2;
+        foreach ($data as $row) {
+            $numcell=0;
+            foreach ($row as $key=>$val) {
+                $sheet->setCellValue(getNameFromNumber($numcell).$numrow, $val);
+                $numcell++;
+            }
+            $numrow++;
+        }
+
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+
+        $report_name = 'profitorder_export_' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        return $this->config->item('pathpreload').$report_name;
+    }
 }

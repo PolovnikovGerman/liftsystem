@@ -752,7 +752,7 @@ function init_prepare_export() {
     $.post(url,params, function (response){
         if (response.errors=='') {
             window.open(response.data.url);
-            disablePopup();
+            $("#pageModal").modal('hide');
         } else {
             show_error(response);
         }
