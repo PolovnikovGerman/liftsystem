@@ -122,7 +122,7 @@
             <div class="date">&nbsp;</div>
             <?php for ($i = 0; $i <= 6; $i++) { ?>
                 <div class="order">
-                    <div class="label">Order</div>
+                    <div class="labeltxt">Order</div>
                     <div class="labelqty">QTY</div>
                     <div class="labelperc">%</div>
                 </div>

@@ -371,6 +371,68 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    /* Change year at bottom - show Count of orders per year */
+    public function ordercnt_total() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $out=$this->_prepare_orderprofit_bottom($brand);
+                $mdata['content']=$out['content'];
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    private function _prepare_orderprofit_bottom($brand) {
+        $yearview='';
+        $this->load->model('orders_model');
+        $dats=$this->orders_model->get_profit_limitdates($brand);
+
+        if (isset($dats['max_year'])) {
+            if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
+                $dats['cur_month']=$dats['max_month'];
+                $dats['cur_year']=$dats['max_year'];
+            } else {
+                $dats['cur_month']=date('m');
+                $dats['cur_year']=date('Y');
+            }
+        } else {
+            $dats['max_month']=date('m');
+            $dats['max_year']=date('Y');
+            $dats['max_date']=time();
+            $dats['cur_month']=date('m');
+            $dats['cur_year']=date('Y');
+        }
+        $year=$dats['cur_year'];
+        $i=0;
+        while ($i<5) {
+            $out = $this->orders_model->calendar_orders($year, $brand);
+            $voptions = array('title' => $year);
+            foreach ($out as $k => $v) {
+                $voptions[$k] = $out[$k];
+            }
+            if ($i==4) {
+                $voptions['lastrow']='lastrow';
+            } else {
+                $voptions['lastrow']='';
+            }
+            $yearview .= $this->load->view('accounting/admin_ordercnt_view', $voptions, TRUE);
+            $year--;
+            $i++;
+        }
+
+        $voption=array(
+            'content'=>$yearview,
+        );
+        return $voption;
+
+    }
+
+
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
         // $search_form=''

@@ -1,7 +1,7 @@
 function init_profit_orders() {
     // initProfitOrderPagination();
     search_profit_data();
-    // totalyears();
+    totalyears();
     /* Hover */
     // $("div.totalorder").each(function(){
     //     $(this).bt({
@@ -757,4 +757,77 @@ function init_prepare_export() {
             show_error(response);
         }
     },'json');
+}
+
+function show_bottomview() {
+    $("div#ordertotalscntarea").show();
+}
+function hide_bottomview() {
+    $("div#ordertotalscntarea").hide();
+}
+
+/* Change bottom orders  */
+function totalyears() {
+    var url='/accounting/ordercnt_total';
+    var params = new Array();
+    params.push({name: 'brand', value: $("#profitordersbrand").val()});
+    $.post(url,params, function(response){
+        if (response.errors=='') {
+            $("div#totalcntorders").empty().html(response.data.content);
+            $("div.profitordertotalarea").empty().html(response.data.content);
+            $("div.profitordertotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
+            slidermargin=parseInt($("div.profitordertotalarea").css('margin-left'));
+            /* $("div.totalorder").each(function(){
+                $(this).bt({
+                    fill: '#ffffff',
+                    trigger: 'click',
+                    width: '891px',
+                    ajaxCache: false,
+                    positions: ['top'],
+                    ajaxPath: ["$(this).attr('href')"]
+                });
+            });
+            */
+            init_profitorder_slider();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function init_profitorder_slider() {
+    $(".profitordercalend_slidermanage.left").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var offset=100;
+            profitorder_slider_move(offset);
+        }
+    });
+    $(".profitordercalend_slidermanage.right").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var offset=-100;
+            profitorder_slider_move(offset);
+        }
+    });
+}
+
+function profitorder_slider_move(offset) {
+    var margin=parseInt($("div.profitordertotalarea").css('margin-left'));
+    var slwidth=parseInt($("div.profitordertotalarea").css('width'));
+    var slshow=parseInt($("div#weekdays-totals").css('max-width'));
+    var newmargin=(margin+offset);
+    if (newmargin>=0) {
+        newmargin=0;
+        $(".profitordercalend_slidermanage.left").removeClass('active');
+    } else {
+        $(".profitordercalend_slidermanage.left").addClass('active');
+    }
+    $("div.profitordertotalarea").animate({marginLeft:newmargin+'px'},'slow');
+    // if ((slwidth+newmargin)>=slshow) {
+    if ((slwidth+newmargin)>920) {
+        $(".profitordercalend_slidermanage.right").addClass('active');
+    } else {
+        $("div.profitordertotalarea").animate({marginLeft:slidermargin+'px'},'quick');
+        $(".profitordercalend_slidermanage.right").removeClass('active');
+    }
+    init_profitorder_slider();
 }

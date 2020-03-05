@@ -1265,5 +1265,305 @@ Class Orders_model extends MY_Model
         return $labels;
     }
 
+    public function get_profit_limitdates($brand) {
+        $this->db->select('max(order_date) as max_date, min(order_date) as min_date');
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+        if (isset($res['max_date'])) {
+            $res['max_month']=date('m',$res['max_date']);
+            $res['max_year']=date('Y',$res['max_date']);
+        }
+        if (isset($res['min_date'])) {
+            $res['min_month']=date('m',$res['min_date']);
+            $res['min_year']=date('Y',$res['min_date']);
+        }
+        return $res;
+    }
+
+    /* Calculate average  */
+    public function calendar_orders($year, $brand) {
+        /* Empty array */
+        $empty_val='&mdash;';
+        $kilolimit=10000;
+        // Prepare sub-query
+        $field_list = 'select date_format(from_unixtime(order_date),\'%Y\') as ordyear, count(order_id) as cntord, sum(revenue) as sumrevenue, sum(profit) as sumprofit from ts_orders where is_canceled=0';
+        if ($brand!=='ALL') {
+            $field_list.=' and brand = \''.$brand.'\'';
+        }
+        $projSql = $field_list.' and profit_perc is null group by ordyear';
+        $greenSql = $field_list.' and profit_perc>=40 group by ordyear';
+        $whiteSql = $field_list.' and profit_perc>=30 and profit_perc<40 group by ordyear';
+        $orangeSql = $field_list.' and profit_perc>=20 and profit_perc<30 group by ordyear';
+        $redSql = $field_list.' and profit_perc>=10 and profit_perc<20 group by ordyear';
+        $maroonSql = $field_list.' and profit_perc>0 and profit_perc<10 group by ordyear';
+        $blackSql = $field_list.' and profit_perc<=0 group by ordyear';
+        // Build SQL
+        $this->db->select("date_format(from_unixtime(ord.order_date),'%Y') as order_year, count(order_id) cntord, sum(revenue) as sumrevenue, sum(profit) as sumprofit, proj.cntord as proj_ord,
+                                green.cntord as green_order,white.cntord as white_order,orange.cntord as orange_order,red.cntord as red_order,
+                                maroon.cntord as maroon_order, black.cntord as black_order,
+                                proj.sumrevenue as proj_revenue, proj.sumprofit as proj_profit,
+                                green.sumrevenue as green_revenue, green.sumprofit as green_profit,
+                                white.sumrevenue as white_revenue, white.sumprofit as white_profit,
+                                orange.sumrevenue as orange_revenue, orange.sumprofit as orange_profit,
+                                red.sumrevenue as red_revenue, red.sumprofit as red_profit,
+                                maroon.sumrevenue as maroon_revenue, maroon.sumprofit as maroon_profit,
+                                black.sumrevenue as black_revenue, black.sumprofit as black_profit
+                                ",FALSE);
+        $this->db->from("ts_orders ord");
+        $this->db->join("({$projSql}) proj","proj.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$greenSql}) green","green.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$whiteSql}) white","white.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$orangeSql}) orange","orange.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$maroonSql}) maroon","maroon.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$redSql}) red","red.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->join("({$blackSql}) black","black.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
+        $this->db->where('ord.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('ord.brand', $brand);
+        }
+        $this->db->where("date_format(from_unixtime(order_date),'%Y')",$year);
+        $this->db->group_by("order_year");
+        $res=$this->db->get()->row_array();
+        $out = array(
+            'title' => $year,
+            'order_year' => '',
+            'total_order' => '',
+            'proj_ord' => $empty_val,
+            'proj_perc' => $empty_val,
+            'proj_link' => '',
+            'green_ord' => $empty_val,
+            'green_perc' => $empty_val,
+            'green_link' => '',
+            'white_ord' => $empty_val,
+            'white_perc' => $empty_val,
+            'white_link' => '',
+            'orange_ord' => $empty_val,
+            'orange_perc' => $empty_val,
+            'orange_link' => '',
+            'red_ord' => $empty_val,
+            'red_perc' => $empty_val,
+            'red_link' => '',
+            'maroon_ord' => $empty_val,
+            'maroon_perc' => $empty_val,
+            'maroon_link' => '',
+            'black_ord' => $empty_val,
+            'black_perc' => $empty_val,
+            'black_link' => '',
+            'proj_revenue' => $empty_val,
+            'proj_profit' => $empty_val,
+            'green_revenue' => $empty_val,
+            'green_profit' => $empty_val,
+            'white_revenue' => $empty_val,
+            'white_profit' => $empty_val,
+            'orange_revenue' => $empty_val,
+            'orange_profit' => $empty_val,
+            'red_revenue' => $empty_val,
+            'red_profit' => $empty_val,
+            'maroon_revenue' => $empty_val,
+            'maroon_profit' => $empty_val,
+            'black_revenue' => $empty_val,
+            'black_profit' => $empty_val,
+            'proj_revenue_class' => 'small',
+            'proj_profit_class' => 'small',
+            'green_revenue_class' => 'small',
+            'green_profit_class' => 'small',
+            'white_revenue_class' => 'small',
+            'white_profit_class' => 'small',
+            'orange_revenue_class' => 'small',
+            'orange_profit_class' => 'small',
+            'red_revenue_class' => 'small',
+            'red_profit_class' => 'small',
+            'maroon_revenue_class' => 'small',
+            'maroon_profit_class' => 'small',
+            'black_revenue_class' => 'small',
+            'black_profit_class' => 'small',
+
+        );
+        if (isset($res['order_year'])) {
+            $out['order_year'] = $res['order_year'];
+            $total_ord = intval($res['cntord']);
+            $total_rev = intval($res['sumrevenue']);
+            $total_prof = intval($res['sumprofit']);
+            if ($total_ord != 0) {
+                $out['total_order'] = $total_ord;
+                $out['total_rev'] = $total_rev;
+                $out['total_prof'] = $total_prof;
+                /* Project */
+                $proj_ord = intval($res['proj_ord']);
+                if ($proj_ord != 0) {
+                    $out['proj_ord'] = $proj_ord;
+                    $out['proj_perc'] = round($proj_ord / $total_ord * 100, 0) . '%';
+                    $out['proj_link'] = "href='/finance/totaldetails/?type=projprof&year=" . $year . "'";
+                }
+                $proj_revenue = round(floatval($res['proj_revenue']), 0);
+                if ($proj_revenue > 0) {
+                    if ($proj_revenue>=$kilolimit) {
+                        $out['proj_revenue_class']='';
+                        $out['proj_revenue']=  MoneyOutput($proj_revenue/1000,0).'K';
+                    } else {
+                        $out['proj_revenue'] = MoneyOutput($proj_revenue,0);
+                    }
+                }
+                $proj_profit = round(floatval($res['proj_profit']), 0);
+                if ($proj_profit > 0) {
+                    if ($proj_profit>$kilolimit) {
+                        $out['proj_profit_class']='';
+                        $out['proj_profit']=MoneyOutput($proj_profit/1000,0).'K';
+                    } else {
+                        $out['proj_profit']=MoneyOutput($proj_profit,0);
+                    }
+                }
+                $green_ord = intval($res['green_order']);
+                if ($green_ord != 0) {
+                    $out['green_ord'] = $green_ord;
+                    $out['green_perc'] = round($green_ord / $total_ord * 100, 0) . '%';
+                    $out['green_link'] = "href='/finance/totaldetails/?type=green&year=" . $year . "'";
+                }
+                $green_revenue = round(floatval($res['green_revenue']), 0);
+                if ($green_revenue != 0) {
+                    if ($green_revenue>=$kilolimit) {
+                        $out['green_revenue_class']='';
+                        $out['green_revenue'] = MoneyOutput($green_revenue/1000, 0).'K';
+                    } else {
+                        $out['green_revenue'] = MoneyOutput($green_revenue, 0);
+                    }
+                }
+                $green_profit = round(floatval($res['green_profit']), 0);
+                if ($green_profit != 0) {
+                    if ($green_profit>=$kilolimit) {
+                        $out['green_profit_class']='';
+                        $out['green_profit'] = MoneyOutput($green_profit/1000, 0).'K';
+                    } else {
+                        $out['green_profit'] = MoneyOutput($green_profit, 0);
+                    }
+                }
+                $white_ord = intval($res['white_order']);
+                if ($white_ord != 0) {
+                    $out['white_ord'] = $white_ord;
+                    $out['white_perc'] = round($white_ord / $total_ord * 100, 0) . '%';
+                    $out['white_link'] = "href='/finance/totaldetails/?type=white&year=" . $year . "'";
+                }
+                $white_revenue = round(floatval($res['white_revenue']), 0);
+                if ($white_revenue != 0) {
+                    if ($white_revenue>=$kilolimit) {
+                        $out['white_revenue_class']='';
+                        $out['white_revenue'] = MoneyOutput($white_revenue/1000, 0).'K';
+                    } else {
+                        $out['white_revenue'] = MoneyOutput($white_revenue, 0);
+                    }
+                }
+                $white_profit = round(floatval($res['white_profit']), 0);
+                if ($white_profit != 0) {
+                    if ($white_revenue>=$kilolimit) {
+                        $out['white_profit_class']='';
+                        $out['white_profit'] = MoneyOutput($white_profit/1000, 0).'K';
+                    } else {
+                        $out['white_profit'] = MoneyOutput($white_profit, 0);
+                    }
+                }
+                $orange_ord = intval($res['orange_order']);
+                if ($orange_ord != 0) {
+                    $out['orange_ord'] = $orange_ord;
+                    $out['orange_perc'] = round($orange_ord / $total_ord * 100, 0) . '%';
+                    $out['orange_link'] = "href='/finance/totaldetails/?type=orange&year=" . $year . "'";
+                }
+                $orange_revenue = round(floatval($res['orange_revenue']), 0);
+                if ($orange_revenue != 0) {
+                    if ($orange_revenue>=$kilolimit) {
+                        $out['orange_revenue_class']='';
+                        $out['orange_revenue'] = MoneyOutput($orange_revenue/1000, 0).'K';
+                    } else {
+                        $out['orange_revenue'] = MoneyOutput($orange_revenue, 0);
+                    }
+                }
+                $orange_profit = round(floatval($res['orange_profit']), 0);
+                if ($orange_profit != 0) {
+                    if ($orange_revenue>=$kilolimit) {
+                        $out['orange_profit_class']='';
+                        $out['orange_profit'] = MoneyOutput($orange_profit/1000,0).'K';
+                    } else {
+                        $out['orange_profit'] = MoneyOutput($orange_profit, 0);
+                    }
+                }
+                $red_ord = intval($res['red_order']);
+                if ($red_ord != 0) {
+                    $out['red_ord'] = $red_ord;
+                    $out['red_perc'] = round($red_ord / $total_ord * 100, 0) . '%';
+                    $out['red_link'] = "href='/finance/totaldetails/?type=red&year=" . $year . "'";
+                }
+                $red_revenue = round(floatval($res['red_revenue']), 0);
+                if ($red_revenue != 0) {
+                    if ($red_revenue>=$kilolimit) {
+                        $out['orange_profit_class']='';
+                        $out['red_revenue'] = MoneyOutput($red_revenue/1000, 0).'K';
+                    } else {
+                        $out['red_revenue'] = MoneyOutput($red_revenue, 0);
+                    }
+                }
+                $red_profit = round(floatval($res['red_profit']), 0);
+                if ($red_profit != 0) {
+                    if ($red_profit>=$kilolimit) {
+                        $out['red_profit_class']='';
+                        $out['red_profit'] = MoneyOutput($red_profit/1000, 0).'K';
+                    } else {
+                        $out['red_profit'] = MoneyOutput($red_profit, 0);
+                    }
+                }
+                $maroon_ord = intval($res['maroon_order']);
+                if ($maroon_ord != 0) {
+                    $out['maroon_ord'] = $maroon_ord;
+                    $out['maroon_perc'] = round($maroon_ord / $total_ord * 100, 0) . '%';
+                    $out['maroon_link'] = "href='/finance/totaldetails/?type=moroon&year=" . $year . "'";
+                }
+                $maroon_revenue = round(floatval($res['maroon_revenue']), 0);
+                if ($maroon_revenue != 0) {
+                    if ($maroon_revenue>=$kilolimit) {
+                        $out['maroon_revenue_class']='';
+                        $out['maroon_revenue'] = MoneyOutput($maroon_revenue/1000, 0).'K';
+                    } else {
+                        $out['maroon_revenue'] = MoneyOutput($maroon_revenue, 0);
+                    }
+                }
+                $maroon_profit = round(floatval($res['maroon_profit']), 0);
+                if ($maroon_profit != 0) {
+                    if ($maroon_profit>=$kilolimit) {
+                        $out['maroon_profit_class']='';
+                        $out['maroon_profit'] = MoneyOutput($maroon_profit/1000, 0).'K';
+                    } else {
+                        $out['maroon_profit'] =  MoneyOutput($maroon_profit, 0);
+                    }
+                }
+                $black_ord = intval($res['black_order']);
+                if ($black_ord != 0) {
+                    $out['black_ord'] = $black_ord;
+                    $out['black_perc'] = round($black_ord / $total_ord * 100, 0) . '%';
+                    $out['black_link'] = "href='/finance/totaldetails/?type=black&year=" . $year . "'";
+                }
+                $black_revenue = round(floatval($res['black_revenue']), 0);
+                if ($black_revenue != 0) {
+                    if (abs($black_revenue)>=$kilolimit) {
+                        $out['black_revenue_class']='';
+                        $out['black_revenue'] = MoneyOutput($black_revenue/1000, 0).'K';
+                    } else {
+                        $out['black_revenue'] = MoneyOutput($black_revenue, 0);
+                    }
+                }
+                $black_profit = round(floatval($res['black_profit']), 0);
+                if ($black_profit != 0) {
+                    if (abs($black_revenue)>=$kilolimit) {
+                        $out['black_profit_class']='';
+                        $out['black_profit'] = MoneyOutput($black_profit/1000, 0).'K';
+                    } else {
+                        $out['black_profit'] = MoneyOutput($black_profit, 0);
+                    }
+                }
+            }
+        }
+        return $out;
+    }
 
 }
