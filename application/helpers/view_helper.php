@@ -446,5 +446,19 @@ if (!function_exists('BankDays')) {
         return $bank_days;
     }
 }
+if (!function_exists('short_number')) {
+    function short_number($value, $precesion=1) {
+        $base=1000;
+        $returnValue = number_format(round($value,0),0);
+        if ($value > $base) {
+            if ($value<1000000) {
+                $returnValue=number_format(round($value/1000,$precesion),$precesion).'K';
+            } else {
+                $returnValue=number_format(round($value/1000000,$precesion),$precesion).'M';
+            }
+        }
+        return $returnValue;
+    }
+}
 
 ?>

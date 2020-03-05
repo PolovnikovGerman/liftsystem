@@ -1,26 +1,25 @@
 function init_profit_orders() {
     // initProfitOrderPagination();
     search_profit_data();
-    totalyears();
+    // totalyears();
     /* Hover */
-    $("div.totalorder").each(function(){
-        $(this).bt({
-            trigger: 'click',
-            width: '813px',
-            ajaxCache: false,
-            positions: ['top'],
-            ajaxPath: ["$(this).attr('href')"]
-        });
-    });
-    $(".profitorder_dateinpt").datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'm/d/y'
-    });
-    $("div.exportdatacall").unbind('click').click(function(){
-        prepare_export();
-    });
-
+    // $("div.totalorder").each(function(){
+    //     $(this).bt({
+    //         trigger: 'click',
+    //         width: '813px',
+    //         ajaxCache: false,
+    //         positions: ['top'],
+    //         ajaxPath: ["$(this).attr('href')"]
+    //     });
+    // });
+    // $(".profitorder_dateinpt").datepicker({
+    //     changeMonth: true,
+    //     changeYear: true,
+    //     dateFormat: 'm/d/y'
+    // });
+    // $("div.exportdatacall").unbind('click').click(function(){
+    //     prepare_export();
+    // });
 }
 
 function init_profit_management() {
@@ -165,24 +164,23 @@ function clear_profit_search() {
 function search_profit_data() {
     var params=profile_filter_get();
     /* Recalculate total number */
-    var url="/finance/search_orders";
+    var url="/accounting/search_orders";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#profittotals_title").empty().html(response.data.totals_head);
             $("#totaltab1").val(response.data.totals);
             $("#curpagetab1").val(0);
             $("#orders-total-row").empty().html(response.data.total_row);
-            $("div.profitotaltooltip").each(function(){
-                $(this).bt({
-                    /* trigger: 'click', */
-                    width: '326px',
-                    fill: '#ffffff',
-                    ajaxCache: false,
-                    positions: ['left'],
-                    ajaxPath: ["$(this).attr('href')"]
-                });
-            });
-
+            // $("div.profitotaltooltip").each(function(){
+            //     $(this).bt({
+            //         /* trigger: 'click', */
+            //         width: '326px',
+            //         fill: '#ffffff',
+            //         ajaxCache: false,
+            //         positions: ['left'],
+            //         ajaxPath: ["$(this).attr('href')"]
+            //     });
+            // });
             initProfitOrderPagination();
         } else {
             show_error(response);
@@ -196,7 +194,7 @@ function initProfitOrderPagination() {
     // var perpage = itemsperpage;
     var perpage = $("#perpagetab1").val();
     if (parseInt(num_entries) < parseInt(perpage)) {
-        $(".proford_pagination").empty();
+        $("#profitorders_pagination").empty();
         pageProfitOrederCallback(0);
     } else {
         var curpage = $("#curpagetab1").val();
@@ -212,18 +210,17 @@ function initProfitOrderPagination() {
             next_text : '>>'
         });
     }
-
 }
 
 function pageProfitOrederCallback(page_index) {
     var params=profile_filter_get();
-    params.push({name:'limit', value:$("#perpagetab1").val()});
+    params.push({name:'limit', value:$("#perpage_profitorders").val()});
     params.push({name:'offset', value:page_index});
     params.push({name:'order_by', value:$("#orderbytab1").val()});
     params.push({name:'direction', value:$("#directiontab1").val()});
     params.push({name:'maxval', value:$('#totaltab1').val()});
-    var url='/finance/adminprofitorderdat';
-    $("#loader").css('display','block');
+    var url='/accounting/adminprofitorderdat';
+    $("#loader").show();
     $.post(url,params,function(response){
         $("#loader").css('display','none');
         if (response.errors=='') {
@@ -267,20 +264,20 @@ function init_profitorder_manage() {
         var order_id=$(this).data('orderid');
         edit_item(order_id);
     });
-    $("div.lowprofittitle").bt({
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 300,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {
-            color: '#000000'
-        }
-    });
+    // $("div.lowprofittitle").bt({
+    //     fill: '#FFFFFF',
+    //     cornerRadius: 10,
+    //     width: 300,
+    //     padding: 10,
+    //     strokeWidth: '2',
+    //     positions: "most",
+    //     strokeStyle: '#000000',
+    //     strokeHeight: '18',
+    //     cssClass: 'white_tooltip',
+    //     cssStyles: {
+    //         color: '#000000'
+    //     }
+    // });
     $("div.profitorder_shipping_calc").find('i').unbind('click').click(function(){
         var order=$(this).parent('div.profitorder_shipping_calc').data('order');
         edit_shipping(order);
@@ -681,9 +678,6 @@ function revert_order(order_id) {
 
 function profile_filter_get() {
     var search=$("#profitsearch").val();
-    if (search=='Enter order #, amount, customer') {
-        search='';
-    }
     var params = new Array();
     params.push({name:'search', value: search});
     params.push({name:'filter', value:$("#order_filtr").val()});
@@ -707,6 +701,7 @@ function profile_filter_get() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
+    params.push({name: 'brand', value: $("#profitorders").val()});
     return params;
 }
 

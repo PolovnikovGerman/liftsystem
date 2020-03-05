@@ -1,0 +1,79 @@
+.legend {
+    font-size: 14px;
+    margin-right: 10px;
+}
+.legend ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.legend ul li {
+    display: inline;
+    float: left;
+    padding-left: 10px;
+    height: 22px;
+    line-height: 22px;
+}
+select.selectrecords {
+    height: 22px;
+    font-size: 12px;
+    width: 180px;
+}
+input.search_input {
+    height: 22px;
+    width: 179px;
+    font-size: 12px;
+    font-style: italic;
+    margin-right: 10px;
+}
+.find_id {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    cursor: pointer;
+}
+.accounting_pagination {
+    float: right!important;
+    margin-top: -20px;
+    margin-bottom: -20px;
+}
+/* */
+.projectcog {
+    color: #c22;
+}
+.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.green {
+    background-color: #00e947;
+    color: #000000 !important;
+}
+.red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.black {
+    background-color: #000000;
+    color: #ffffff;
+}
+.orange {
+    background-color: #ea8a0e;
+    color: #000000 !important;
+}
+.cancelprof {
+    background: #919191;
+    color: #000000;
+}
+.moroon {
+    background-color: #6d0303;
+    color: #ffffff;
+}

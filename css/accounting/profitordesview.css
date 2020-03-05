@@ -1,33 +1,31 @@
-.proforder_adminsearch {
-    width: 1016px;
-    margin-bottom: 4px;
-}
-select.selectrecords {
-    height: 18px;
-}
-.profitorder-head {
-    width: 1033px;
-}
-.orders-table {
-    margin: 0px 0 0 10px;
-    width: 1024px;
-}
-.orders-table div {
-    float: left;
-}
-.profitorder_addaction {
-    width: 64px;
-}
-.proforder_head_row {
+.profitorder-content {
     clear: both;
+    width: 1017px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.profitorder-content input,
+.profitorder-content select {
     float: left;
-    width: 1016px;
-    height: 28px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+}
+.profitorder-head-row {
+    clear: both;
+    width: 100%;
+    margin-bottom: 5px;
+}
+select.profitorder-filtrer {
+    margin-right: 12px;
+    height: 22px;
+    font-size: 12px;
+    width: 154px;
 }
 .profit_filterdate_area {
     width: 351px;
     height: 22px;
-    float: right;
+    float: right!important;
 }
 .profit_filterdate_area.adminview {
     width: 740px;
@@ -36,7 +34,7 @@ select.selectrecords {
     float: left;
     line-height: 26px;
 }
-.profit_filterdate_area .label {
+.profit_filterdate_area .labeltxt {
     width: 57px;
     text-align: right;
     font-size: 13px;
@@ -44,7 +42,8 @@ select.selectrecords {
 }
 .profit_filterdate_area .checkpint {
     margin-top: 3px;
-    width: 22px;
+    width: 17px;
+    margin-left: 5px;
 }
 .profit_filterdate_area .selectorderyear {
 
@@ -110,7 +109,7 @@ select.selectrecords {
 }
 .profit_filterdate_area input.profitorder_dateinpt {
     width: 50px;
-    height: 19px;
+    height: 23px;
 }
 .profit_filterdate_area .dateslabelto {
     width: 22px;
@@ -118,336 +117,144 @@ select.selectrecords {
     font-size: 13px;
 }
 .exportdatacall {
-    background: url(/img/export_button.png);
+    background: url(/img/accounting/export_button.png);
     width: 64px;
     height: 28px;
     cursor: pointer;
     margin-top: -1px;
     margin-left: 10px;
 }
-.totalrow-title {
-    float: right;
-    width: 780px;
+.orders-table {
+    margin: 0px 0 0 10px;
+    width: 1024px;
 }
-.totalrow-title div {
-    height: 18px;
-    font-size: 13px;
-    float: left;
-    text-align: center;
-}
-.totalrow-title .orders {
-    text-align: left;
-    width: 93px;
-    padding-left: 8px;
-}
-.totalrow-title .qty {
-    width: 65px;
-}
-.totalrow-title .itemcolors {
-    width: 209px;
-}
-.totalrow-title .revenue {
-    width: 70px;
-}
-.totalrow-title .shipping {
-    width: 61px;
-}
-.totalrow-title .shipdate {
-    width: 38px;
-}
-.totalrow-title .tax {
-    width: 44px;
-}
-.totalrow-title .cog {
-    width: 65px;
-}
-.totalrow-title .profitval {
-    width: 62px;
-}
-.totalrow-title .profitperc {
-    width: 40px;
-}
-.totalallrow-title {
-    float: right;
-    width: 802px;
-}
-.totalallrow-title div {
-    height: 18px;
-    font-size: 13px;
-    float: left;
-    text-align: center;
-}
-.totalallrow-title .orders {
-    width: 77px;
-}
-.totalallrow-title .orders_new {
-    width: 82px;
-}
-.totalallrow-title .orders_repeat {
-    width: 82px;
-}
-.totalallrow-title .orders_blank {
-    width: 82px;
-}
-.totalallrow-title .qty {
-    width: 77px;
-    margin-right: 28px;
-}
-.totalallrow-title .itemcolors {
-    width: 209px;
-}
-.totalallrow-title .revenue {
-    width: 68px;
-}
-.totalallrow-title .shipping {
-    width: 61px;
-}
-.totalallrow-title .tax {
-    width: 50px;
-}
-.totalallrow-title .cog {
-    width: 65px;
-}
-.totalallrow-title .profitval {
-    width: 62px;
-}
-.totalallrow-title .profitperc {
-    width: 40px;
-}
-.orders-profittotal-row {
-    width: 890px;
-}
-.orders-profittotal-row .profitorder_total {
-    margin-left: 0;
-    padding-right: 4px;
-    padding-top: 4px;
-    text-align: right;
-    width: 105px;
-    font-size: 13px;
-    font-weight: bold;
-}
-.orders-profittotal-row .profitorder_totaldata {
-    background-color: #ededed;
-    font-size: 13px;
-    height: 22px;
-    border: 1px solid #a4a4a4;
-    width: 778px;
-}
-.orders-profittotal-row .profitorder_totaldata div {
-    line-height: 22px;
-    text-align: center;
-}
-.orders-profittotal-row .profitorder_totaldata .orders {
-    width: 94px;
-    text-align: left;
-    padding-left: 8px;
-}
-.orders-profittotal-row .profitorder_totaldata .qty {
-    width: 77px;
-}
-.orders-profittotal-row .profitorder_totaldata .itemcolors {
-    width: 195px;
-}
-.orders-profittotal-row .profitorder_totaldata .revenue {
-    width: 70px;
-}
-.orders-profittotal-row .profitorder_totaldata .shipping {
-    width: 61px;
-}
-.orders-profittotal-row .profitorder_totaldata .shipdate {
-    width: 38px;
-}
-.orders-profittotal-row .profitorder_totaldata .tax {
-    width: 44px;
-}
-/*
-.orders-profittotal-row .profitorder_totaldata .ccfee {
-    width: 70px;
-}
-*/
-.orders-profittotal-row .profitorder_totaldata .cog {
-    width: 65px;
-}
-.orders-profittotal-row .profitorder_totaldata .profitval {
-    width: 62px;
-}
-.orders-profittotal-row .profitorder_totaldata .profitperc {
-    width: 40px;
-}
-/* All Totals */
-.orders-profitalltotal-row {
-    width: 913px;
-}
-.orders-profitalltotal-row .profitorder_total {
-    margin-left: 0;
-    padding-right: 4px;
-    padding-top: 0;
-    text-align: right;
-    width: auto;
-    font-size: 13px;
-    font-weight: bold;
-    height: 22px;
-    line-height: 22px;
-}
-.orders-profitalltotal-row .profitorder_totaldata {
-    background-color: #ededed;
-    font-size: 13px;
-    height: 22px;
-    border: 1px solid #a4a4a4;
-    width: 800px;
-    float: right;
-}
-.orders-profitalltotal-row .profitorder_totaldata div {
-    line-height: 22px;
-    text-align: center;
-}
-.orders-profitalltotal-row .profitorder_totaldata .orders {
-    width: 77px;
-    /* text-align: left;
-    padding-left: 5px; */
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .orders-new {
-    width: 82px;
-}
-.orders-profitalltotal-row .profitorder_totaldata .orders-repeat {
-    width: 82px;
-}
-.orders-profitalltotal-row .profitorder_totaldata .orders-blank {
-    width: 82px;
-}
-.orders-profitalltotal-row .profitorder_totaldata .qty {
-    width: 77px;
-    margin-right: 28px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .itemcolors {
-    width: 195px;
-}
-.orders-profitalltotal-row .profitorder_totaldata .revenue {
-    width: 70px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .shipping {
-    width: 61px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .shipdate {
-    width: 38px;
-}
-.orders-profitalltotal-row .profitorder_totaldata .tax {
-    width: 50px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .cog {
-    width: 65px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .profitval {
-    width: 62px;
-    cursor: pointer;
-}
-.orders-profitalltotal-row .profitorder_totaldata .profitperc {
-    width: 40px;
-}
-/* POPUP Details */
-.profit_tooltip_content {
-    clear: both;
-    float: left;
-    background: #ffffff;
-    width: 290px;
-    padding: 15px;
-}
-.profit_tooltip_content > div {
-    float: left;
-    font-size: 13px;
-}
-.profit_tooltip_content > .title {
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    font-size: 15px;
-    height: 32px;
-    line-height: 32px;
-}
-.profit_tooltip_content > .profit_tooltip_row {
-    width: 100%;
-}
-.profit_tooltip_content > .profit_tooltip_row > div {
-    height: 22px;
-    line-height: 22px;
+.orders-table div {
     float: left;
 }
-.profit_tooltip_content > .profit_tooltip_row > .profit_paramname {
-    width: 15%;
-}
-.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertypeblank {
-    color: #0b6100;
-}
-.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertypenew {
-    color: #0000FF;
-}
-.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertyperepeat {
-    color: #a4a4a4;
-}
-.profit_tooltip_content > .profit_tooltip_row > .profit_paramvalue {
-    text-align: right!important;
-    width: 83%;
+.profitorder_addaction {
+    width: 64px;
 }
 .orders-table-title, .orderprofitcontent-table {
-    margin-left: 5px;
-    width: 1027px;
-}
-/* Popup */
-.exportfields_select_content {
-    background-color: #ffffff;
-    border-radius: 2%;
-    padding: 15px;
-    float: left;
-    width: 441px;
-}
-.exportfields_select_content .title {
+    /* margin-left: 5px;
+    width: 1027px;*/
     clear: both;
-    float: left;
+}
+.orders-table-title {
+    background-color: #bcbcbc;
+    border: 1px solid #919191;
+    color: #000000;
+    width: 1013px;
+}
+.orders-table-title > div {
+    font-size: 13px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
-    font-size: 15px;
-    font-weight: bold;
-    width: 100%;
-    height: 29px;
-    line-height: 29px;
 }
-.exportfields_select_content .dataarea {
+.orders-table-title > .profitorder_date {
+    width: 56px;
+    cursor: pointer;
+}
+.orders-table-title > .profitorder_action {
+    width: 27px;
+}
+.orders-table-title > .profitorder_numorder {
+    width: 56px;
+}
+.orders-table-title > .profitorder_confirm {
+    width: 60px;
+}
+.orders-table-title > .profitorder_customer {
+    cursor:pointer;
+    width: 162px;
+}
+.orders-table-title > .profitorder_qty {
+    width: 35px;
+}
+.orders-table-title > .profitorder_item {
+    width: 161px;
+}
+.orders-table-title > .profitorder_color {
+    width: 66px;
+}
+.orders-table-title > .profitorder_revenue {
+    width: 70px;
+}
+.orders-table-title > .profitorder_shipping {
+    width: 71px;
+}
+.orders-table-title > .profitorder_shipdate {
+    width: 34px;
+}
+.orders-table-title > .profitorder_tax {
+    width: 37px;
+}
+.orders-table-title > .profitorder_cog {
+    width: 65px;
+}
+.orders-table-title > .profitorder_profit {
+    width: 68px;
+}
+.orders-table-title > .profitorder_profitperc {
+    width: 40px;
+}
+.orderprofitcontent-table {
+    border-bottom: 1px solid #919191;
+    border-left: 1px solid #919191;
     clear: both;
     float: left;
-    width: 100%;
-    max-height: 233px;
-    overflow: auto;
+    height: 336px;
+    margin-bottom: 9px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 1004px;
 }
-.exportfields_select_content .dataarea .datarow {
-    clear: both;
+/* FOOTER */
+.orders_totals_table {
+    background-color: #bcbcbc;
+    border: 1px solid #919191;
+    color: #000000;
     float: left;
-    padding: 0 3%;
-    height: 24px;
-    width: 94%;
-}
-.exportfields_select_content .dataarea .datarow .chkinpt {
-    width: 5%;
+    font-size: 11px;
+    height: 32px;
+    line-height: 32px;
+    margin-left: 10px;
     text-align: center;
-    float: left;
+    width: 1003px;
 }
-.exportfields_select_content .dataarea .datarow .label {
-    width: 90%;
-    text-align: left;
+.orders_totals_table > .date {
     float: left;
+    width: 30px;
 }
-.exportfields_select_content .startexport {
+.orders_totals_table > .order {
+    float: left;
+    width: 52px;
+}
+.orders_totals_table > .order > .label {
+    border-bottom: 1px solid #919191;
     clear: both;
     float: left;
-    height: 35px;
-    line-height: 35px;
-    width: 100%;
-    margin-top: 6px;
+    height: 16px;
+    line-height: 16px;
+    width: 51px;
 }
-.exportfields_select_content .startexport .exportfldbut {
-    float: right;
+.orders_totals_table > .order > .labelqty {
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    width: 27px;
+}
+.orders_totals_table > .order > .labelperc {
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    width: 25px;
+}
+.orders_totals_table > .profit {
+    float: left;
+    width: 43px;
+}
+.orders_totals_table > .revenue {
+    float: left;
+    width: 44px;
 }

@@ -141,13 +141,11 @@ Class Orders_model extends MY_Model
             $this->db->join("({$shipsql}) as s",'s.order_id=o.order_id');
         }
         if (isset($filtr['order_type'])) {
-            $artsql ="select DISTINCT art.order_id from ts_artwork_arts a join ts_artworks art on art.artwork_id=a.artwork_id where order_id is not null ";
-            if ($filtr['order_type']=='new') {
-                $artsql.=" and a.art_type!='Repeat'";
-            } else {
-                $artsql.=" and a.art_type='Repeat'";
-            }
-            $this->db->join("({$artsql}) as art",'art.order_id=o.order_id');
+            $this->db->where('o.order_blank',0);
+            $this->db->where('o.arttype', $filtr['order_type']);
+        }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('o.brand', $filtr['brand']);
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -504,5 +502,445 @@ Class Orders_model extends MY_Model
             return 'No User Messages';
         }
     }
+
+    function get_orders_dates($options=[]) {
+        $this->db->select("max(date_format(from_unixtime(order_date),'%Y')) as max_year, min(date_format(from_unixtime(order_date),'%Y')) as min_year ",FALSE);
+        $this->db->from('ts_orders');
+        $this->db->where("is_canceled",0);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->where('brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function orders_profit_tolals($filtr) {
+        $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
+            sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
+        $this->db->from("ts_orders o");
+        $this->db->where('o.is_canceled',0);
+        if (count($filtr)>0) {
+            if (isset($filtr['shipping_country'])) {
+                $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
+                if (isset($filtr['shipping_state'])) {
+                    $shipsql.=" where state_id=".$filtr['shipping_state'];
+                } else {
+                    if (intval($filtr['shipping_country'])>0) {
+                        $shipsql.=" where country_id = ".$filtr['shipping_country'];
+                    } else {
+                        $shipsql.=" where country_id not in (223,39)";
+                    }
+                }
+            }
+
+            if (isset($filtr['search']) && $filtr['search']) {
+                // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($filtr['search']));
+                $this->db->like("concat(ucase(customer_name),' ',ucase(customer_email),' ',order_num,' ', coalesce(order_confirmation,''), ' ', ucase(order_items), ucase(order_itemnumber), revenue ) ",strtoupper($filtr['search']));
+            }
+            if (isset($filtr['filter'])) {
+                if ($filtr['filter']==1) {
+                    $this->db->where('o.order_cog is null');
+                } elseif ($filtr['filter']==2) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=40');
+                } elseif ($filtr['filter']==3) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=30 and round(o.profit_perc,0)<40');
+                } elseif ($filtr['filter']==4) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=20 and round(o.profit_perc,0)<30');
+                } elseif ($filtr['filter']==5) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=10 and round(o.profit_perc,0)<20');
+                } elseif ($filtr['filter']==6) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)<=0');
+                } elseif ($filtr['filter']==7) {
+                    $this->db->where('o.is_canceled',1);
+                } elseif ($filtr['filter']==8) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>0 and round(o.profit_perc,0)<10');
+                }
+            }
+            // Dates
+            if (isset($filtr['date_bgn'])) {
+                $this->db->where('o.order_date >= ', $filtr['date_bgn']);
+            }
+            if (isset($filtr['date_end'])) {
+                $this->db->where('o.order_date < ', $filtr['date_end']);
+            }
+            if (isset($filtr['shipping_country'])) {
+                $this->db->join("({$shipsql}) as s" ,'s.order_id=o.order_id');
+            }
+            if (isset($filtr['order_type'])) {
+                $this->db->where('o.order_blank',0);
+                $this->db->where('o.arttype', $filtr['order_type']);
+            }
+        }
+        $totalres=$this->db->get()->row_array();
+        $sum_array=array(
+            'numorders'=>intval($totalres['numorders']),
+            'qty'=>intval($totalres['qty']),
+            'revenue'=>floatval($totalres['revenue']),
+            'shipping'=>floatval($totalres['shipping']),
+            'tax'=>floatval($totalres['tax']),
+            'cog'=>floatval($totalres['order_cog']),
+            'cc_fee'=>floatval($totalres['cc_fee']),
+            'profit'=>floatval($totalres['profit']),
+            'profit_perc'=>'',
+            'profit_class'=>'',
+        );
+        if (!isset($filtr['order_type'])) {
+            // Get totals for blank
+            $totals_blank = $this->_profit_totals($filtr, 'blank');
+            // Get totals for new
+            $totals_new = $this->_profit_totals($filtr, 'new');
+            // Get Totals for repeat
+            $totals_repeat = $this->_profit_totals($filtr, 'repeat');
+            $sum_array['numorders_new']=$sum_array['numorders_detail_new']=intval($totals_new['numorders']);
+            $sum_array['numorders_repeat']=$sum_array['numorders_detail_repeat']=intval($totals_repeat['numorders']);
+            $sum_array['numorders_blank']=$sum_array['numorders_detail_blank']=intval($totals_blank['numorders']);
+            // Percents ORDERS
+            $sum_array['numorders_detail_newperc']=$sum_array['numorders_detail_repeatperc']=$sum_array['numorders_detail_blankperc']='';
+            if ($sum_array['numorders']!=0) {
+                $sum_array['numorders_detail_newperc']=round($sum_array['numorders_new']/$sum_array['numorders']*100,0);
+                $sum_array['numorders_detail_repeatperc']=round($sum_array['numorders_repeat']/$sum_array['numorders']*100,0);
+                $sum_array['numorders_detail_blankperc']=round($sum_array['numorders_blank']/$sum_array['numorders']*100,0);
+            }
+            $sum_array['qty_new']=$sum_array['qty_detail_new']=intval($totals_new['qty']);
+            $sum_array['qty_repeat']=$sum_array['qty_detail_repeat']=intval($totals_repeat['qty']);
+            $sum_array['qty_blank']=$sum_array['qty_detail_blank']=intval($totals_blank['qty']);
+            // Percent QTY
+            $sum_array['qty_detail_newperc']=$sum_array['qty_detail_repeatperc']=$sum_array['qty_detail_blankperc']='';
+            if ($sum_array['qty']!=0) {
+                $sum_array['qty_detail_newperc']=round($sum_array['qty_new']/$sum_array['qty']*100,0);
+                $sum_array['qty_detail_repeatperc']=round($sum_array['qty_repeat']/$sum_array['qty']*100,0);
+                $sum_array['qty_detail_blankperc']=round($sum_array['qty_blank']/$sum_array['qty']*100,0);
+            }
+            $sum_array['revenue_new']=$sum_array['revenue_detail_new']=floatval($totals_new['revenue']);
+            $sum_array['revenue_repeat']=$sum_array['revenue_detail_repeat']=floatval($totals_repeat['revenue']);
+            $sum_array['revenue_blank']=$sum_array['revenue_detail_blank']=floatval($totals_blank['revenue']);
+            // Percent Revenue
+            $sum_array['revenue_detail_newproc']=$sum_array['revenue_detail_repeatproc']=$sum_array['revenue_detail_blankproc']='';
+            if ($sum_array['revenue']!=0) {
+                $sum_array['revenue_detail_newproc']=round($sum_array['revenue_new']/$sum_array['revenue']*100,0);
+                $sum_array['revenue_detail_repeatproc']=round($sum_array['revenue_repeat']/$sum_array['revenue']*100,0);
+                $sum_array['revenue_detail_blankproc']=round($sum_array['revenue_blank']/$sum_array['revenue']*100,0);
+            }
+            $sum_array['shipping_new']=$sum_array['shipping_detail_new']=floatval($totals_new['shipping']);
+            $sum_array['shipping_repeat']=$sum_array['shipping_detail_repeat']=floatval($totals_repeat['shipping']);
+            $sum_array['shipping_blank']=$sum_array['shipping_detail_blank']=floatval($totals_blank['shipping']);
+            // Percent Shipping
+            $sum_array['shipping_detail_newperc']=$sum_array['shipping_detail_repeatperc']=$sum_array['shipping_detail_blankperc']='';
+            if ($sum_array['shipping']!=0) {
+                $sum_array['shipping_detail_newperc']=round($sum_array['shipping_new']/$sum_array['shipping']*100,0);
+                $sum_array['shipping_detail_repeatperc']=round($sum_array['shipping_repeat']/$sum_array['shipping']*100,0);
+                $sum_array['shipping_detail_blankperc']=round($sum_array['shipping_blank']/$sum_array['shipping']*100,0);
+            }
+            $sum_array['tax_new']=$sum_array['tax_detail_new']=floatval($totals_new['tax']);
+            $sum_array['tax_repeat']=$sum_array['tax_detail_repeat']=floatval($totals_repeat['tax']);
+            $sum_array['tax_blank']=$sum_array['tax_detail_blank']=floatval($totals_blank['tax']);
+            // Tax Percent
+            $sum_array['tax_detail_newperc']=$sum_array['tax_detail_repeatperc']=$sum_array['tax_detail_blankperc']='';
+            if ($sum_array['tax']!=0) {
+                $sum_array['tax_detail_newperc']=round($sum_array['tax_new']/$sum_array['tax']*100,0);
+                $sum_array['tax_detail_repeatperc']=round($sum_array['tax_repeat']/$sum_array['tax']*100,0);
+                $sum_array['tax_detail_blankperc']=round($sum_array['tax_blank']/$sum_array['tax']*100,0);
+            }
+            $sum_array['cog_new']=$sum_array['cog_detail_new']=floatval($totals_new['order_cog']);
+            $sum_array['cog_repeat']=$sum_array['cog_detail_repeat']=floatval($totals_repeat['order_cog']);
+            $sum_array['cog_blank']=$sum_array['cog_detail_blank']=floatval($totals_blank['order_cog']);
+            // Procent COG
+            $sum_array['cog_detail_newperc']=$sum_array['cog_detail_repeatperc']=$sum_array['cog_detail_blankperc']='';
+            if ($sum_array['cog']!=0) {
+                $sum_array['cog_detail_newperc']=round($sum_array['cog_new']/$sum_array['cog']*100,0);
+                $sum_array['cog_detail_repeatperc']=round($sum_array['cog_repeat']/$sum_array['cog']*100,0);
+                $sum_array['cog_detail_blankperc']=round($sum_array['cog_blank']/$sum_array['cog']*100,0);
+            }
+            $sum_array['profit_new']=$sum_array['profit_detail_new']=floatval($totals_new['profit']);
+            $sum_array['profit_repeat']=$sum_array['profit_detail_repeat']=floatval($totals_repeat['profit']);
+            $sum_array['profit_blank']=$sum_array['profit_detail_blank']=floatval($totals_blank['profit']);
+            // Procent Profit
+            $sum_array['profit_detail_newperc']=$sum_array['profit_detail_repeatperc']=$sum_array['profit_detail_blankperc']='';
+            if ($sum_array['profit']!=0) {
+                $sum_array['profit_detail_newperc']=round($sum_array['profit_new']/$sum_array['profit']*100,0);
+                $sum_array['profit_detail_repeatperc']=round($sum_array['profit_repeat']/$sum_array['profit']*100,0);
+                $sum_array['profit_detail_blankperc']=round($sum_array['profit_blank']/$sum_array['profit']*100,0);
+            }
+            $sum_array['numorders_new']=($sum_array['numorders_new']==0 ? '' : short_number($sum_array['numorders_new'],0));
+            $sum_array['numorders_repeat']=($sum_array['numorders_repeat']==0 ? '' : short_number($sum_array['numorders_repeat'],0));
+            $sum_array['numorders_blank']=($sum_array['numorders_blank']==0 ? '' : short_number($sum_array['numorders_blank'],0));
+        }
+        /* Prepare sum_array */
+        $sum_array['show_numorders']=short_number($sum_array['numorders']);
+        $sum_array['numorders']=($totalres['numorders']==0 ? '' : QTYOutput($totalres['numorders'],0));
+        $sum_array['show_qty']=short_number($sum_array['qty']);
+        $sum_array['qty']=($totalres['qty']==0 ? '' : QTYOutput($totalres['qty'],0));
+        $sum_array['profit_perc']='';
+        if ($sum_array['revenue']!=0) {
+            $profit_perc=$sum_array['profit']/$sum_array['revenue']*100;
+            $sum_array['profit_perc']=round($profit_perc,0).'%';
+            $sum_array['profit_class']=profitClass($profit_perc);
+        }
+        $sum_array['show_revenue']=($sum_array['revenue']==0 ? '-' : '$'.short_number($sum_array['revenue'],2));
+        $sum_array['revenue']=($sum_array['revenue']==0 ? '-' : MoneyOutput($sum_array['revenue'],0));
+        $sum_array['show_shipping']=($sum_array['shipping']==0 ? '-' : '$'.short_number($sum_array['shipping'],2));
+        $sum_array['shipping']=($sum_array['shipping']==0 ? '-' : MoneyOutput($sum_array['shipping'],0));
+        $sum_array['show_tax']=($sum_array['tax']==0 ? '-' : '$'.short_number($sum_array['tax']));
+        $sum_array['tax']=($sum_array['tax']==0 ? '-' : MoneyOutput($sum_array['tax'],0));
+        $sum_array['show_cc_fee']=($sum_array['cc_fee']==0 ? '-' : '$'.short_number($sum_array['cc_fee']));
+        $sum_array['cc_fee']=($sum_array['cc_fee']==0 ? '-' : MoneyOutput($sum_array['cc_fee'],0));
+        $sum_array['show_cog']=($sum_array['cog']==0 ? '-' : '$'.short_number($sum_array['cog']));
+        $sum_array['cog']=($sum_array['cog']==0 ? '-' : MoneyOutput($sum_array['cog'],0));
+        $sum_array['show_profit']=($sum_array['profit']==0 ? '-' : '$'.short_number($sum_array['profit']));
+        $sum_array['profit']=($sum_array['profit']==0 ? '-' : MoneyOutput($sum_array['profit'],0));
+        return $sum_array;
+    }
+
+    private function _profit_totals($filtr, $addtype) {
+        $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
+            sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
+        $this->db->from("ts_orders o");
+        $this->db->where('o.is_canceled',0);
+        if (count($filtr)>0) {
+            if (isset($filtr['shipping_country'])) {
+                $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
+                if (isset($filtr['shipping_state'])) {
+                    $shipsql.=" where state_id=".$filtr['shipping_state'];
+                } else {
+                    if (intval($filtr['shipping_country'])>0) {
+                        $shipsql.=" where country_id = ".$filtr['shipping_country'];
+                    } else {
+                        $shipsql.=" where country_id not in (223,39)";
+                    }
+                }
+            }
+
+            if (isset($filtr['search']) && $filtr['search']) {
+                // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($filtr['search']));
+                $this->db->like("concat(ucase(customer_name),' ',ucase(customer_email),' ',order_num,' ', coalesce(order_confirmation,''), ' ', ucase(order_items), ucase(order_itemnumber), revenue ) ",strtoupper($filtr['search']));
+            }
+            if (isset($filtr['filter'])) {
+                if ($filtr['filter']==1) {
+                    $this->db->where('o.order_cog is null');
+                } elseif ($filtr['filter']==2) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=40');
+                } elseif ($filtr['filter']==3) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=30 and round(o.profit_perc,0)<40');
+                } elseif ($filtr['filter']==4) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=20 and round(o.profit_perc,0)<30');
+                } elseif ($filtr['filter']==5) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=10 and round(o.profit_perc,0)<20');
+                } elseif ($filtr['filter']==6) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)<=0');
+                } elseif ($filtr['filter']==7) {
+                    $this->db->where('o.is_canceled',1);
+                } elseif ($filtr['filter']==8) {
+                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>0 and round(o.profit_perc,0)<10');
+                }
+            }
+            // Dates
+            if (isset($filtr['date_bgn'])) {
+                $this->db->where('o.order_date >= ', $filtr['date_bgn']);
+            }
+            if (isset($filtr['date_end'])) {
+                $this->db->where('o.order_date < ', $filtr['date_end']);
+            }
+            if (isset($filtr['shipping_country'])) {
+                $this->db->join("({$shipsql}) as s" ,'s.order_id=o.order_id');
+            }
+            if ($addtype=='blank') {
+                $this->db->where('o.order_blank',1);
+            } else {
+                $this->db->where('o.order_blank',0);
+                $this->db->where('o.arttype', $addtype);
+            }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
+        }
+        $totalres=$this->db->get()->row_array();
+        return $totalres;
+    }
+
+    public function get_profit_orders($filtr,$order_by,$direct,$limit,$offset, $admin_mode, $user_id) {
+        $this->load->model('user_model');
+        $usrdat=$this->user_model->get_user_data($user_id);
+        $item_dbtable='sb_items';
+        $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand, o.order_num, o.customer_name, o.customer_email, o.revenue,
+            o.shipping,o.is_shipping, o.tax, o.cc_fee, o.order_cog, o.profit, o.profit_perc, o.is_canceled,
+            o.reason, itm.item_name, o.item_id, o.order_items, finance_order_amountsum(o.order_id) as cnt_amnt',FALSE);
+        $this->db->select('o.order_blank, o.arttype');
+        $this->db->select('o.order_qty, o.shipdate, o.order_confirmation');
+        $this->db->from('ts_orders o');
+        // $this->db->join('brands b','b.brand_id=o.brand_id','left');
+        $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
+        if ($admin_mode==0) {
+            $this->db->where('o.is_canceled',0);
+        }
+
+        if (count($filtr)>0) {
+            if (isset($filtr['search']) && $filtr['search']) {
+                // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue,' ',ucase(o.order_items)) ",strtoupper($filtr['search']));
+                $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==1) {
+                $this->db->where('order_cog is null');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==2) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)>=40');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==3) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)>=30 and round(profit_perc,1)<40');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==4) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)>=20 and round(profit_perc,1)<30');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==5) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)>=10 and round(profit_perc,1)<20');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==6) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)<=0');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==8) {
+                $this->db->where('order_cog is not null and round(profit_perc,1)>0 and round(profit_perc,1)<10');
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==7) {
+                $this->db->where('is_canceled',1);
+            }
+            if (isset($filtr['start_date'])) {
+                $this->db->where('o.order_date >= ', $filtr['start_date']);
+            }
+            if (isset($filtr['end_date'])) {
+                $this->db->where('o.order_date < ', $filtr['end_date']);
+            }
+            if (isset($filtr['shipping_country'])) {
+                $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
+                if (isset($filtr['shipping_state'])) {
+                    $shipsql.=" where state_id=".$filtr['shipping_state'];
+                } else {
+                    if (intval($filtr['shipping_country'])>0) {
+                        $shipsql.=" where country_id=".$filtr['shipping_country'];
+                    } else {
+                        $shipsql.=" where country_id not in (223, 39)";
+                    }
+                }
+                $this->db->join("({$shipsql}) as s",'s.order_id=o.order_id');
+            }
+            if (isset($filtr['order_type'])) {
+                $this->db->where('o.order_blank',0);
+                $this->db->where('o.arttype', $filtr['order_type']);
+            }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
+        }
+        $this->db->limit($limit,$offset);
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+        /* Summary */
+        $out_array=array();
+        foreach ($res as $row) {
+            $this->db->select('count(DISTINCT oi.item_color) as cnt_colors, min(oi.item_color) as item_color');
+            $this->db->from('ts_order_itemcolors oi');
+            $this->db->join('ts_order_items i','i.order_item_id=oi.order_item_id');
+            $this->db->where('i.order_id', $row['order_id']);
+            $colorres=$this->db->get()->row_array();
+            $row['coloropt']='';
+            $row['color']=$colorres['item_color'];
+            $row['colordata']='title="'.$row['color'].'"';
+            if ($colorres['cnt_colors']>1) {
+                $row['color'] = $this->multicolor;
+                $row['coloropt'] = 'multicolor';
+                $row['colordata']='href="/finance/get_ordercolordetails?id='.$row['order_id'].'"';
+            }
+            $row['lineclass']='';
+
+            if ($admin_mode==0) {
+                $row['cancellnk']='';
+            } else {
+                $row['cancellnk']='<a class="cancord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/cancel_order.png"/></a>';
+            }
+
+            $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
+            $row['revenue']=(intval($row['revenue'])==0 ? '-' : MoneyOutput($row['revenue'],2));
+            $row['shipping']=(intval($row['shipping'])==0 ? '-' : MoneyOutput($row['shipping'],2));
+            $row['tax']=(intval($row['tax'])==0 ? '-' : MoneyOutput($row['tax'],2));
+            $row['out_email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/email.png" alt="Email" title="'.$row['customer_email'].'"/>');
+            $row['cc_fee_show']=($row['cc_fee']==0 ? 0 : 1);
+            $row['cc_fee']=(floatval($row['cc_fee'])==0 ? '' : MoneyOutput($row['cc_fee'],2));
+            $row['profit_class']='';
+            $row['proftitleclass']='';
+            $row['proftitle']='';
+            $row['input_ship']='&nbsp;';
+            $order_type = '';
+            $order_type_class='';
+            if ($row['order_blank']==1) {
+                $order_type='B';
+                $order_type_class='ordertypeblank';
+            } else {
+                if ($row['arttype']=='new') {
+                    $order_type='N';
+                    $order_type_class='ordertypenew';
+                } else {
+                    $order_type='R';
+                    $order_type_class='ordertyperepeat';
+                }
+            }
+            $row['ordertype']=$order_type;
+            $row['ordertype_class']=$order_type_class;
+
+            $row['item_class']='';
+            if ($row['is_canceled']) {
+                $row['cancellnk']='<a class="revertord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/revert.png"/></a>';
+                $row['lineclass']='cancelord';
+                $row['order_cog']='canceled';
+                $row['cog_class']='canceledcog';
+                $row['profit_class']='cancelprof';
+                $row['profit_perc']='CANC';
+                $row['add']='&nbsp;';
+                $row['editlnk']='';
+                $row['dellnk']='';
+            } else {
+                // $row['input_ship']='<input type="checkbox" id="cship'.$row['order_id'].'" class="calcship" '.($row['is_shipping'] ? 'checked="checked"' : '').' />';
+                $row['input_ship']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                if ($row['is_shipping']==0) {
+                    $row['input_ship']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+                }
+                // $row['input_other']='<input type="checkbox" id="ccfee'.$row['order_id'].'" class="calcccfee" '.($row['cc_fee'] ?  'checked="checked"' : '' ).' title="'.($row['cc_fee']==0 ? '-' : '$'.number_format($row['cs_fee'],2,'.',',')).'" />';
+                if ($usrdat['profit_view']=='Points') {
+                    $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+                } else {
+                    $row['profit']=MoneyOutput($row['profit'],2);
+                }
+                $row['points']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+
+                if ($row['item_id']==$this->config->item('custom_id')) {
+                    $row['item_class']='customitem';
+                }
+                if ($row['order_cog']=='') {
+                    $row['order_cog']='project';
+                    $row['cog_class']='projectcog';
+                    $row['profit_class']='projprof';
+                    $row['profit_perc']=$this->project_name;
+                    $row['add']='';
+                } else {
+                    $row['cog_class']='';
+                    $row['profit_class']=orderProfitClass($row['profit_perc']);
+                    if ($row['profit_perc']<$this->config->item('minimal_profitperc') && !empty($row['reason'])) {
+                        $row['proftitleclass']='lowprofittitle';
+                        $row['proftitle']='title="'.$row['reason'].'"';
+                    }
+                    $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
+                    if ($admin_mode==0) {
+                        $row['add']=(floatval($row['cnt_amnt'])==floatval($row['order_cog']) ? '' : '<a href="javascript:void(0);" class="editcoglnk" id="add'.$row['order_id'].'">*</a>' );
+                    } else {
+                        $row['add']='<a href="javascript:void(0);" class="editcoglnk" id="add'.$row['order_id'].'">*</a>';
+                    }
+                    $row['order_cog']=MoneyOutput($row['order_cog'],2);
+                }
+            }
+            $row['out_shipdate']=($row['shipdate']==0 ? '&nbsp;' : date('m/d', $row['shipdate']));
+            $out_array[]=$row;
+        }
+        return $out_array;
+    }
+
 
 }
