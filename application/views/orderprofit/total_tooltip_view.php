@@ -1,1 +1,1 @@
-/finance/totaldetailsshow?title=<?=$title?>&type=<?=$type?>&nv=<?=$new_val?>&np=<?=$new_perc?>&rv=<?=$repeat_val?>&rp=<?=$repeat_perc?>&bv=<?=$blank_val?>&bp=<?=$blank_perc?>
+/accounting/totaldetailsshow?title=<?=$title?>&type=<?=$type?>&nv=<?=$new_val?>&np=<?=$new_perc?>&rv=<?=$repeat_val?>&rp=<?=$repeat_perc?>&bv=<?=$blank_val?>&bp=<?=$blank_perc?>

@@ -1,15 +1,15 @@
-<table>
+<table style="width: 100%">
     <thead>
     <tr>
-        <th>Color</th>
-        <th>QTY</th>
+        <th style="width: 70%; height: 22px; line-height: 22px;">Color</th>
+        <th style="height: 22px; line-height: 22px;">QTY</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($data as $row) { ?>
     <tr>
-        <td><?=$row['item_color']?></td>
-        <td><?=$row['item_qty']?></td>
+        <td style="width: 60%; height: 22px; line-height: 22px;"><?=$row['item_color']?></td>
+        <td style="height: 22px; line-height: 22px;"><?=$row['item_qty']?></td>
     </tr>
     <?php } ?>
     </tbody>

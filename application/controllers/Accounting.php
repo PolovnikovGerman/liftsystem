@@ -237,6 +237,34 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function totaldetailsshow() {
+        $postdata=$this->input->get();
+        $options = [
+            'title' => $postdata['title'],
+            'type' => $postdata['type'],
+            'new_val' => $postdata['nv'],
+            'new_perc' => $postdata['np'],
+            'repeat_val' => $postdata['rv'],
+            'repeat_perc' => $postdata['rp'],
+            'blank_val' => $postdata['bv'],
+            'blank_perc' => $postdata['bp'],
+        ];
+        $content = $this->load->view('orderprofit/total_tooltipdetails_view', $options, TRUE);
+        echo $content;
+    }
+
+    public function get_ordercolordetails() {
+        $this->load->model('orders_model');
+        $order_id=$this->input->get('id');
+        $res=$this->orders_model->get_order_colordata($order_id);
+        $msg=$res['msg'];
+        if ($res['result'] == $this->success_result) {
+            $msg=$this->load->view('orderprofit/color_details_view',['data'=>$res['data']], TRUE);
+        }
+        echo $msg;
+    }
+
+
     public function adminprofitorderdat() {
         if ($this->isAjax()) {
             $mdata=array('content'=>'','totals'=>'');

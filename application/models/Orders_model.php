@@ -571,6 +571,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
         }
         $totalres=$this->db->get()->row_array();
         $sum_array=array(
@@ -848,7 +851,7 @@ Class Orders_model extends MY_Model
             if ($colorres['cnt_colors']>1) {
                 $row['color'] = $this->multicolor;
                 $row['coloropt'] = 'multicolor';
-                $row['colordata']='href="/finance/get_ordercolordetails?id='.$row['order_id'].'"';
+                $row['colordata']='data-viewsrc="/accounting/get_ordercolordetails?id='.$row['order_id'].'"';
             }
             $row['lineclass']='';
 
@@ -923,7 +926,7 @@ Class Orders_model extends MY_Model
                     $row['profit_class']=orderProfitClass($row['profit_perc']);
                     if ($row['profit_perc']<$this->config->item('minimal_profitperc') && !empty($row['reason'])) {
                         $row['proftitleclass']='lowprofittitle';
-                        $row['proftitle']='title="'.$row['reason'].'"';
+                        $row['proftitle']='data-content="'.$row['reason'].'"';
                     }
                     $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
                     if ($admin_mode==0) {
@@ -1643,6 +1646,20 @@ Class Orders_model extends MY_Model
             'total_orders'=>($total_orders==0 ? '' : $total_orders),
         );
         return array('orders'=>$orders,'numord'=>$total_orders, 'totals'=>$totals);
+    }
+
+    public function get_order_colordata($order_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Order Not Found'];
+        $this->db->select('oi.item_color, oi.item_qty');
+        $this->db->from('ts_order_itemcolors oi');
+        $this->db->join('ts_order_items i','i.order_item_id=oi.order_item_id');
+        $this->db->where('i.order_id', $order_id);
+        $result=$this->db->get()->result_array();
+        if (!empty($result)) {
+            $out['result']=$this->success_result;
+            $out['data']=$result;
+        }
+        return $out;
     }
 
 }

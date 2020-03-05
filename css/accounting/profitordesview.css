@@ -728,3 +728,56 @@ select.profitorder-filtrer {
 .qtip-content {
     padding: 0!important;
 }
+/* QTIP Totals */
+/* POPUP Details */
+.profit_tooltip_content {
+    clear: both;
+    float: left;
+    background: #ffffff;
+    width: 198px;
+    padding: 15px;
+}
+.profit_tooltip_content > div {
+    float: left;
+    font-size: 13px;
+}
+.profit_tooltip_content > .title {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    height: 32px;
+    line-height: 32px;
+}
+.profit_tooltip_content > .profit_tooltip_row {
+    width: 100%;
+}
+.profit_tooltip_content > .profit_tooltip_row > div {
+    height: 22px;
+    line-height: 22px;
+    float: left;
+}
+.profit_tooltip_content > .profit_tooltip_row > .profit_paramname {
+    width: 28%;
+}
+.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertypeblank {
+    color: #0b6100;
+}
+.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertypenew {
+    color: #0000FF;
+}
+.profit_tooltip_content > .profit_tooltip_row > .profit_paramname.ordertyperepeat {
+    color: #a4a4a4;
+}
+.profit_tooltip_content > .profit_tooltip_row > .profit_paramvalue {
+    text-align: right!important;
+    width: 72%;
+}
+.lowprofit_tooltip {
+    background: #ffffff;
+    color: #000;
+    font-size: 14px;
+    width: 300px;
+    max-width: 300px;
+    padding: 10px;
+}
