@@ -335,6 +335,42 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function orderprofit_export() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error='';
+            $postdata=$this->input->post();
+            $this->load->model('orders_model');
+            $res = $this->orders_model->profit_export($postdata);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $mdata['url']=$res['url'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function orderprofit_states() {
+        if ($this->func->isAjax()) {
+            $mdata = [
+                'content' => '',
+            ];
+            $error = '';
+            $postdata = $this->input->post();
+
+            $this->load->model('shipping_model');
+            $data = $this->shipping_model->get_country_states($postdata['country_id']);
+
+            if (count($data)>0) {
+                $mdata['content']=$this->load->view('orderprofit/select_shipstates', ['states'=>$data], TRUE);
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
         // $search_form=''

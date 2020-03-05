@@ -959,4 +959,311 @@ Class Orders_model extends MY_Model
         return $data;
     }
 
+    public function profit_export($postdata) {
+        $out=['result'=>$this->error_result,'msg'=>'Select Fields for Export'];
+        $fields=$this->_export_fields($postdata);
+        $labels=$this->_export_labels($fields);
+        if (count($fields)>0) {
+            $search=array();
+            if (isset($postdata['search'])) {
+                $search['search']=$postdata['search'];
+            }
+            if (isset($postdata['filter'])) {
+                $search['filter']=$postdata['filter'];
+            }
+            if (isset($postdata['add_filter'])) {
+                $search['add_filtr']=$postdata['add_filter'];
+            }
+            if ($postdata['show_year']==1) {
+                if ($postdata['year']>0) {
+                    $nxtyear = $postdata['year']+1;
+                    if ($postdata['month']==0) {
+                        $search['start_date']=strtotime($postdata['year'].'-01-01');
+                        $search['end_date']=strtotime($nxtyear.'-01-01');
+                    } else {
+                        $start = $postdata['year'].'-'.str_pad($postdata['month'],2,'0',STR_PAD_LEFT).'-01';
+                        $search['start_date']=strtotime($start);
+                        $finish = date('Y-m-d', strtotime($start. ' + 1 month'));
+                        $search['end_date']=strtotime($finish);
+                    }
+                }
+            } else {
+                if ($postdata['date_bgn']) {
+                    $search['start_date']=strtotime($postdata['date_bgn']);
+                }
+                if ($postdata['date_end']) {
+                    // $search['end_date']=strtotime($postdata['date_end']);
+                    $d_finish = date('Y-m-d',strtotime($postdata['date_end']));
+                    $search['end_date'] = date(strtotime("+1 day", strtotime($d_finish)));
+                }
+            }
+            if (isset($postdata['shipping_country']) && intval($postdata['shipping_country'])!==0) {
+                $search['shipping_country']=$postdata['shipping_country'];
+                if (isset($postdata['shipping_state']) && intval($postdata['shipping_state'])>0) {
+                    $search['shipping_state'] = $postdata['shipping_state'];
+                }
+            }
+            if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
+                $search['order_type']=$postdata['order_type'];
+            }
+
+
+            $select_flds=[];
+            foreach ($fields as $row) {
+                if (!in_array($row,['colors','vendor_dates', 'vendor_name', 'vendor_cog','rush_days','shipping_state','order_new'])) {
+                    array_push($select_flds, $row);
+                }
+            }
+            $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype');
+            foreach ($select_flds as $select_fld) {
+                $this->db->select("o.{$select_fld}");
+            }
+            $this->db->from('ts_orders o');
+
+            if (count($search)>0) {
+                if (isset($search['search']) && $search['search']) {
+                    $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), ucase(o.order_itemnumber), o.revenue ) ",strtoupper($search['search']));
+                }
+                if (isset($search['filter']) && $search['filter']==1) {
+                    $this->db->where('order_cog is null');
+                }
+                if (isset($search['filter']) && $search['filter']==2) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)>=40');
+                }
+                if (isset($search['filter']) && $search['filter']==3) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)>=30 and round(profit_perc,1)<40');
+                }
+                if (isset($search['filter']) && $search['filter']==4) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)>=20 and round(profit_perc,1)<30');
+                }
+                if (isset($search['filter']) && $search['filter']==5) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)>=10 and round(profit_perc,1)<20');
+                }
+                if (isset($search['filter']) && $search['filter']==6) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)<=0');
+                }
+                if (isset($search['filter']) && $search['filter']==8) {
+                    $this->db->where('order_cog is not null and round(profit_perc,1)>0 and round(profit_perc,1)<10');
+                }
+                if (isset($search['filter']) && $search['filter']==7) {
+                    $this->db->where('is_canceled',1);
+                    // } else {
+                    //     $this->db->where('is_canceled',0);
+                }
+                if (isset($search['start_date'])) {
+                    $this->db->where('o.order_date >= ', $search['start_date']);
+                }
+                if (isset($search['end_date'])) {
+                    $this->db->where('o.order_date < ', $search['end_date']);
+                }
+                if (isset($search['shipping_country'])) {
+                    $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
+                    if (isset($search['shipping_state'])) {
+                        $shipsql.=" where state_id=".$search['shipping_state'];
+                    } else {
+                        if (intval($search['shipping_country'])>0) {
+                            $shipsql.=" where country_id=".$search['shipping_country'];
+                        } else {
+                            $shipsql.=" where country_id not in (223, 39)";
+                        }
+                    }
+                    $this->db->join("({$shipsql}) as s",'s.order_id=o.order_id');
+                }
+                if (isset($search['order_type'])) {
+                    $this->db->where('o.order_blank',0);
+                    $this->db->where('o.arttype', $search['order_type']);
+                }
+            }
+            if (isset($postdata['brand']) && $postdata['brand']!=='ALL') {
+                $this->db->where('o.brand', $postdata['brand']);
+            }
+            $this->db->order_by('o.order_id');
+            $res=$this->db->get()->result_array();
+
+            $data=[];
+            foreach ($res as $row) {
+                if (in_array('order_date', $fields)) {
+                    $row['order_date']=date('m/d/Y', $row['order_date']);
+                }
+                if (in_array('is_canceled', $fields)) {
+                    $row['is_canceled']=($row['is_canceled']==1 ? 'YES' : '');
+                }
+                if (in_array('colors', $fields)) {
+                    // Add Colors
+                    $this->db->select("group_concat(oi.item_color,' - ', oi.item_qty) as color",FALSE);
+                    $this->db->from('ts_order_itemcolors oi');
+                    $this->db->join('ts_order_items i','i.order_item_id=oi.order_item_id');
+                    $this->db->where('i.order_id', $row['order_id']);
+                    $colorres=$this->db->get()->row_array();
+                    $row['colors']=$colorres['color'];
+                }
+                if (in_array('shipping_state', $fields)) {
+                    // Add shipping states
+                    $this->db->select('group_concat(st.state_code) ship_states');
+                    $this->db->from('ts_order_shipaddres s');
+                    $this->db->join('ts_states st','s.state_id=st.state_id');
+                    $this->db->where('s.order_id', $row['order_id']);
+                    $statesres=$this->db->get()->row_array();
+                    $row['shipping_state']=$statesres['ship_states'];
+                }
+                if (in_array('vendor_cog', $fields) || in_array('vendor_dates', $fields) || in_array('vendor_name', $fields)) {
+                    $this->db->select('v.vendor_name, oa.amount_sum, oa.amount_date');
+                    $this->db->from('ts_order_amounts oa');
+                    $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+                    $this->db->where('oa.order_id',$row['order_id']);
+                    $cogres=$this->db->get()->result_array();
+                    $cogcont='';
+                    $vendname='';
+                    $venddate='';
+                    $numpp = 1; $numcogs = count($cogres);
+                    foreach ($cogres as $crow) {
+                        $cogcont.=$crow['amount_sum'];
+                        $vendname.=$crow['vendor_name'];
+                        $venddate.=date('m/d/y', $crow['amount_date']);
+                        $numpp++;
+                        if ($numpp<=$numcogs) {
+                            $cogcont.=PHP_EOL;
+                            $vendname.=PHP_EOL;
+                            $venddate.=PHP_EOL;
+                        }
+                    }
+                    if (in_array('vendor_cog', $fields)) {
+                        $row['vendor_cog'] = $cogcont;
+                    }
+                    if (in_array('vendor_dates', $fields)) {
+                        $row['vendor_dates'] = $venddate;
+                    }
+                    if (in_array('vendor_name', $fields)) {
+                        $row['vendor_name'] = $vendname;
+                    }
+                }
+                if (in_array('profit', $fields) && $row['is_canceled']==1) {
+                    $row['profit']='Canceled';
+                }
+                if (in_array('order_cog', $fields) && $row['is_canceled']==1) {
+                    $row['order_cog']='Canceled';
+                }
+                if (in_array('profit_perc', $fields) && $row['is_canceled']==1) {
+                    $row['profit_perc']='Canceled';
+                }
+                if (in_array('order_cog', $fields) && is_null($row['order_cog'])) {
+                    $row['order_cog']='Project';
+                }
+                if (in_array('profit_perc', $fields) && is_null($row['profit_perc'])) {
+                    $row['profit_perc']='Project';
+                }
+                if (in_array('order_usr_repic', $fields)) {
+                    if (intval($row['order_usr_repic'])>0) {
+                        $this->db->select('user_name');
+                        $this->db->from('users');
+                        $this->db->where('user_id', $row['order_usr_repic']);
+                        $usrres=$this->db->get()->row_array();
+                        $row['order_usr_repic']=$usrres['user_name'];
+                    } else {
+                        $row['order_usr_repic']='Weborder';
+                    }
+                }
+                if (in_array('rush_days', $fields)) {
+                    $this->db->select('*');
+                    $this->db->from('ts_order_shippings');
+                    $this->db->where('order_id', $row['order_id']);
+                    $shipres=$this->db->get()->row_array();
+                    $row['rush_days']='n/d';
+                    if (isset($shipres['order_shipping_id'])) {
+                        $shipdate=$shipres['shipdate'];
+                        $rush_list=$shipres['rush_list'];
+                        $outrush=unserialize($rush_list);
+                        $list=$outrush['rush'];
+                        foreach ($list as $lrow) {
+                            if ($lrow['date']==$shipdate) {
+                                $row['rush_days']=$lrow['rushterm'];
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (in_array('order_new', $fields)) {
+                    if ($row['order_blank']==1) {
+                        $row['order_new']='Blank';
+                    } else {
+                        $row['order_new']=ucfirst($row['arttype']);
+                    }
+                }
+                $datarow=[];
+                foreach ($fields as $frow) {
+                    $datarow[$frow]=$row[$frow];
+                }
+                $data[]=$datarow;
+            }
+            // save to file
+            $this->load->model('exportexcell_model');
+            $replink=$this->exportexcell_model->export_profitorders($data, $labels);
+            $out['result']=$this->succes_result;
+            $out['url']=$replink;
+        }
+        return $out;
+    }
+
+    private function _export_fields($data) {
+        $out=[];
+        foreach ($data as $key=>$val) {
+            $var=substr($key,0,6);
+            if (substr($key,0,6)=='field_') {
+                array_push($out, substr($key,6));
+            }
+        }
+        return $out;
+    }
+
+    private function _export_labels($fields) {
+        $labels=[];
+        foreach ($fields as $frow) {
+            if ($frow=='order_date') {
+                array_push($labels,'Date');
+            } elseif ($frow=='order_num') {
+                array_push($labels, 'Order#');
+            } elseif ($frow=='is_canceled') {
+                array_push($labels, 'Canceled');
+            } elseif ($frow=='customer_name') {
+                array_push($labels, 'Customer');
+            } elseif ($frow=='order_qty') {
+                array_push($labels,'QTY');
+            } elseif ($frow=='colors') {
+                array_push($labels,'Colors');
+            } elseif ($frow=='order_itemnumber') {
+                array_push($labels,'Item #');
+            } elseif ($frow=='order_items') {
+                array_push($labels,'Item Name');
+            } elseif ($frow=='revenue') {
+                array_push($labels,'Revenue');
+            } elseif ($frow=='shipping') {
+                array_push($labels,'Shipping');
+            } elseif ($frow=='tax') {
+                array_push($labels, 'Tax');
+            } elseif ($frow=='shipping_state') {
+                array_push($labels, 'Shipping States');
+            } elseif ($frow=='order_cog') {
+                array_push($labels,'COG');
+            } elseif ($frow=='profit') {
+                array_push($labels,'Profit');
+            } elseif ($frow=='profit_perc') {
+                array_push($labels,'Profit %');
+            } elseif ($frow=='vendor_cog') {
+                array_push($labels,'COG/PO Vendors');
+            } elseif ($frow=='rush_days') {
+                array_push($labels,'Rush Days');
+            } elseif ($frow=='order_usr_repic') {
+                array_push($labels,'Sales Replica');
+            } elseif ($frow=='vendor_dates') {
+                array_push($labels,'PO Dates');
+            } elseif ($frow=='vendor_name') {
+                array_push($labels, 'PO Vendors');
+            } elseif ($frow=='order_new') {
+                array_push($labels, 'Order Type');
+            }
+        }
+        return $labels;
+    }
+
+
 }

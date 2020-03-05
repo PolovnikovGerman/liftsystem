@@ -709,10 +709,10 @@ function prepare_export() {
     var url='/accounting/prepare_orderprofit_export';
     $.post(url,{},function(response){
         if (response.errors=='') {
-            show_popup('exportfldselect');
-            $("div#pop_content").empty().html(response.data.content);
-            // 480px
-            $("a.button").button();
+            $("#pageModal").find('div.modal-dialog').css('width','480px');
+            $("#pageModalLabel").empty().html('Select Field for Export');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             $("#exportflds").unbind('click').click(function(){
                 init_prepare_export();
             });
@@ -725,9 +725,6 @@ function prepare_export() {
 function init_prepare_export() {
     var params=$("#exportfields").serializeArray();
     var search=$("#profitsearch").val();
-    if (search=='Enter order #, amount, customer') {
-        search='';
-    }
     params.push({name:'search', value: search});
     params.push({name:'filter', value:$("#order_filtr").val()});
     if ($("input#profitdatetypechoise1").prop('checked')==true) {
@@ -750,7 +747,8 @@ function init_prepare_export() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
-    var url='/finance/orderprofit_export';
+    params.push({name: 'brand', value: $("#profitorders").val()});
+    var url='/accounting/orderprofit_export';
     $.post(url,params, function (response){
         if (response.errors=='') {
             window.open(response.data.url);
