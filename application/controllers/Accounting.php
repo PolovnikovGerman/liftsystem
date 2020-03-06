@@ -26,6 +26,7 @@ class Accounting extends MY_Controller
                 redirect('/');
             }
         }
+        $this->load->model('orders_model');
     }
 
     public function index()
@@ -53,6 +54,10 @@ class Accounting extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/accounting/profitdatesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/profitdatesview.js');
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
+            } elseif ($row['item_link']=='#openinvoicesview') {
+                $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
+                $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -86,7 +91,6 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $this->load->model('orders_model');
             $postdata=$this->input->post();
             $options=array();
             if (isset($postdata['search'])) {
@@ -258,7 +262,6 @@ class Accounting extends MY_Controller
     }
 
     public function get_ordercolordetails() {
-        $this->load->model('orders_model');
         $order_id=$this->input->get('id');
         $res=$this->orders_model->get_order_colordata($order_id);
         $msg=$res['msg'];
@@ -341,7 +344,6 @@ class Accounting extends MY_Controller
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                 $search['brand'] = $postdata['brand'];
             }
-            $this->load->model('orders_model');
             $ordersdat=$this->orders_model->get_profit_orders($search,$order_by,$direct,$limit,$offset, $admin_mode, $this->USR_ID);
 
             if (count($ordersdat)==0) {
@@ -362,7 +364,6 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $mdata = [];
             $error = '';
-            $this->load->model('orders_model');
             $fields = $this->orders_model->get_profitexport_fields();
             $mdata['content']=$this->load->view('orderprofit/prepare_export', ['fields'=>$fields], TRUE);
             $this->ajaxResponse($mdata, $error);
@@ -375,7 +376,6 @@ class Accounting extends MY_Controller
             $mdata=[];
             $error='';
             $postdata=$this->input->post();
-            $this->load->model('orders_model');
             $res = $this->orders_model->profit_export($postdata);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
@@ -424,7 +424,6 @@ class Accounting extends MY_Controller
 
     private function _prepare_orderprofit_bottom($brand) {
         $yearview='';
-        $this->load->model('orders_model');
         $dats=$this->orders_model->get_profit_limitdates($brand);
 
         if (isset($dats['max_year'])) {
@@ -472,7 +471,6 @@ class Accounting extends MY_Controller
         $year=$this->input->get('year');
         $type=$this->input->get('type');
         /* Orders by year and profit_type */
-        $this->load->model('orders_model');
         $res=$this->orders_model->get_orders_byprofittype($year, $type);
         $options=array(
             'orders'=>$res['orders'],
@@ -490,7 +488,6 @@ class Accounting extends MY_Controller
             $error='';
             $order_id=$this->input->post('order_id');
             $flag=$this->input->post('flag');
-            $this->load->model('orders_model');
             $res=$this->orders_model->cancel_order($order_id,$flag, $this->USR_ID);
             if (!$res) {
                 $error='Order wasn\'t canceled';
@@ -505,7 +502,6 @@ class Accounting extends MY_Controller
             $mdata=array();
             $order_id=$this->input->post('order_id');
             // $is_shipping=$this->input->post('shipincl');
-            $this->load->model('orders_model');
             $res=$this->orders_model->ship_orderprofit($order_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
@@ -530,7 +526,6 @@ class Accounting extends MY_Controller
             $month=$this->input->post('month');
             $year=$this->input->post('year');
             $brand = $this->input->post('brand');
-            $this->load->model('orders_model');
             $orders=$this->orders_model->orders_by_date($month,$year, $brand);
             $orders['cnt']=count($orders['data_results']);
             $orders['brand']=$brand;
@@ -548,7 +543,6 @@ class Accounting extends MY_Controller
             $year=$this->input->post('year');
             $brand = $this->input->post('brand');
             /* Get Full limits */
-            $this->load->model('orders_model');
             $dats=$this->orders_model->get_profit_limitdates($brand);
 
             /* Cur Month */
@@ -583,7 +577,6 @@ class Accounting extends MY_Controller
     function dayresults() {
         $date=$this->input->get('day');
         $brand = $this->input->get('brand');
-        $this->load->model('orders_model');
         $orders=$this->orders_model->get_order_bydate($date, $brand);
         $options=array(
             'orders'=>$orders,
@@ -604,7 +597,6 @@ class Accounting extends MY_Controller
             if (!empty($year) && !empty($brand)) {
                 // Get Goal Content
                 $error = '';
-                $this->load->model('orders_model');
                 $goaldata=$this->orders_model->get_profit_goaldata($year, $brand);
                 // Save to Session
                 usersession('goaldata', $goaldata);
@@ -624,7 +616,6 @@ class Accounting extends MY_Controller
             if (empty($goaldata)) {
                 $error='Connection Lost. Please, recall function';
             } else {
-                $this->load->model('orders_model');
                 $field=$this->input->post('field');
                 $newval=$this->input->post('newval');
                 $res=$this->orders_model->change_goal_value($goaldata, $field, $newval);
@@ -651,7 +642,6 @@ class Accounting extends MY_Controller
             if (empty($goaldata)) {
                 $error='Connection Lost. Please, recall function';
             } else {
-                $this->load->model('orders_model');
                 $res=$this->orders_model->save_profitdate_goal($goaldata);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -679,7 +669,6 @@ class Accounting extends MY_Controller
         // $search_form=''
         $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
         /* Calc total orders */
-        $this->load->model('orders_model');
         $options=[];
         $options['brand'] = $brand;
         $total_rec=$this->orders_model->get_count_orders($options);
@@ -725,7 +714,6 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_profitcalend_content($brand, $top_menu) {
-        $this->load->model('orders_model');
         $dats=$this->orders_model->get_profit_limitdates($brand);
         $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
         /* Cur Month */
@@ -847,7 +835,6 @@ class Accounting extends MY_Controller
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;
-        $this->load->model('orders_model');
         $dats=$this->orders_model->get_profit_limitdates($brand);
         if (isset($dats['max_year'])) {
             if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
@@ -1275,7 +1262,6 @@ class Accounting extends MY_Controller
     {
         $yearview = '';
         $numyears = 0;
-        $this->load->model('orders_model');
         $dats=$this->orders_model->get_profit_limitdates($brand);
         if (isset($dats['max_year'])) {
             if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
@@ -1528,25 +1514,25 @@ class Accounting extends MY_Controller
     }
 
     // Open Invoices
-    private function prepare_openinvoice_content() {
+    private function _prepare_openinvoice_content($brand, $top_menu) {
         $filtr=array(
             'paid'=>1,
+            'brand' => $brand,
         );
         /* count, sums */
-        $dats=$this->order_model->get_count_monitor($filtr);
-        // $totals=$this->order_model->get_totals_monitor();
+        $dats=$this->orders_model->get_count_monitor($filtr);
         $searchform=$this->load->view('finopenivoice/monitor_search_view',array(),TRUE);
 
         $perpage_data=array(
-            'fieldname'=>'perpagetab4',
+            // 'fieldname'=>'perpagetab4',
+            'fieldname'=>'perpageopeninvoice',
             'default_value'=>$this->order_profit_perpage,
             'numrecs'=>$this->perpage_options,
         );
 
-        $perpage_view=$this->load->view('html/number_records', $perpage_data, TRUE);
+        $perpage_view=$this->load->view('page/number_records', $perpage_data, TRUE);
 
         $options=array(
-            /* 'perpage'=>  Finance::ORDER_PERORDER, */
             'perpage_view'=>$perpage_view,
             'order'=>'order_num',
             'direc'=>'desc',
@@ -1558,6 +1544,8 @@ class Accounting extends MY_Controller
             'qty_paid'=>'',
             'searchform'=>$searchform,
             'paid'=>1,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
         );
 
         $content=$this->load->view('finopenivoice/paymonitor_view',$options,TRUE);

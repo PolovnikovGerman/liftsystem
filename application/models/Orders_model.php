@@ -2837,5 +2837,31 @@ Class Orders_model extends MY_Model
         usersession('goaldata', NULL);
         return $out;
     }
+    // Number of records in monitor
+    public function get_count_monitor($filtr) {
+        $this->db->select('count(order_id) as total_rec ',FALSE);
+        $this->db->from('v_paymonitor');
+        if (isset($filtr['paid'])) {
+            if ($filtr['paid']==1) {
+                $this->db->where('is_invoiced',0);
+                $this->db->or_where('is_canceled',1);
+            } elseif ($filtr['paid']==2) {
+                $this->db->where('is_paid', 0);
+                $this->db->where('(revenue-sum_amounts) > ',0);
+                $this->db->where('is_invoiced',1);
+            } elseif ($filtr['paid']==4) {
+                $this->db->where('order_approved',1);
+                $this->db->where('is_invoiced',0);
+            }
+        }
+        if (isset($filtr['search']) && $filtr['search']!='') {
+            $this->db->like('concat(ucase(customer_name),order_num) ',strtoupper($filtr['search']));
+        }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('brand', $filtr['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
 
 }

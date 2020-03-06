@@ -21,6 +21,11 @@ function init_page(objid) {
             $("#profitdatesview").show();
             init_profitcalend_content();
             break;
+        case 'openinvoicesview':
+            $("#openinvoicesview").show();
+            //
+            // init_paymonitor();
+            break;
     }
 
 }

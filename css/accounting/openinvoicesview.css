@@ -1,0 +1,250 @@
+.paymonitor-content {
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 1003px;
+}
+.monitor-head {
+    clear: both;
+    float: left;
+    width: 998px;
+    margin-bottom: 5px;
+}
+.monitor-head-totals {
+    float: left;
+    width: 580px;
+}
+.total_notinvoiced {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 220px;
+}
+.total_notinvoiced_qty {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 220px;
+}
+.total_notpaid {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 300px;
+}
+.total_notpaid_qty {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 300px;
+}
+.openinvoiceperpage {
+    float: left;
+    width: 200px;
+}
+.showpaid {
+    color: #0000FF;
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 12px;
+    margin-left: 48px;
+    margin-top: 2px;
+    width: 150px;
+}
+.monitorsearch_form {
+    width : 380px;
+    margin-left: 15px;
+}
+.monitor_pagesviews {
+    float: left;
+    padding-top: 3px;
+    width: 578px;
+}
+.monitorsearch_input {
+    float: left;
+    width: 160px;
+    margin-top : 2px;
+}
+input.monitorsearch_input {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 150px;
+    color: #4c4c4c;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+}
+input.monitorsearch_input_active {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 150px;
+    color: #000000;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+}
+/* Monitor table */
+.paymonitor-table {
+    clear: both;
+    float: left;
+    width: 967px;
+    margin: 0 0 0 15px;
+}
+.paymonitor-title {
+    border: 1px solid #919191;
+    float: left;
+    width: 960px;
+}
+/* Table head & rows */
+.paymonitor-title > div {
+    height: 30px;
+    line-height: 30px;
+    background-color: #bcbcbc;
+    font-size: 13px;
+    color: #000000;
+    text-align:center;
+}
+.paymonitor-title > .paymonitor-approved {
+    width: 18px;
+}
+.paymonitor-title > .paymonitor-orderdate {
+    width: 55px;
+}
+.paymonitor-title > .paymonitor-numorder {
+    width: 72px;
+}
+.paymonitor-title > .paymonitor-customer {
+    width: 162px;
+}
+.paymonitor-title > .paymonitor-inv {
+    width: 25px;
+}
+.paymonitor-title > .paymonitor-revenue {
+    width: 116px;
+}
+.paymonitor-title > .paymonitor-pay {
+    width: 40px;
+}
+.paymonitor-title > .paymonitor-code {
+    width: 28px;
+}
+.sortcalclnk {
+    margin-left: 3px;
+    width: 16px;
+    margin-top: 4px;
+}
+
+.content-paymonutortable {
+    clear: both;
+    float: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 553px;
+    margin-bottom: 10px;
+    width: 961px;
+    border-left: 1px solid #919191;
+    border-bottom: 1px solid #919191;
+}
+.paymonitor-numorder-dat {
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-weight: bold;
+    padding-top: 4px;
+    width: 72px;
+}
+.paymonitor-approved-dat {
+    float: left;
+    width: 18px;
+    text-align: center;
+}
+.paymonitor-approved-dat img {
+    width: 16px;
+    height: 16px;
+}
+.paymonitor-approved-dat.attachview:hover{
+    cursor: pointer;
+}
+.paymonitor-orderdate-dat {
+    float : left;
+    padding-top: 4px;
+    width: 54px;
+}
+.paymonitor-customer-dat {
+    float: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 4px;
+    text-align: left;
+    width: 163px;
+}
+.paymonitor-generalname {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 150px;
+}
+.paymonitor-revenue-dat {
+    float: left;
+    padding-top: 4px;
+    width: 118px;
+}
+.refund {
+    float: left;
+    width: 18px;
+}
+.refund:hover {
+    cursor: pointer;
+}
+.refund img {
+    width: 16px;
+}
+.paymonitor_ccfee {
+    float: left;
+    padding-top: 1px;
+    width: 37px;
+}
+.paymonitor_ccfee_dat {
+    float: left;
+    padding-top: 1px;
+    width: 27px;
+}
+.paymonitor_ccfee_dat img {
+    width: 24px;
+    height: 24px;
+}
+.paymonitor-inv-dat {
+    float: left;
+    padding-top: 4px;
+    width: 30px;
+}
+.paymonitor-pay-dat {
+    float: left;
+    padding-top: 4px;
+    width: 40px;
+}
+.paymonitor-code-dat {
+    float: left;
+    padding-top: 4px;
+    width: 28px;
+}
+.paymonitor-codedat {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 28px;
+}
+
+.paymonitorsort:hover {
+    cursor:pointer;
+}
+.paymsortactive {
+    background-color: #0000FF!important;
+    color: #FFFFFF!important;
+    height: 24px;
+}

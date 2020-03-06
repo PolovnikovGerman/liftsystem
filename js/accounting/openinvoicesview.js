@@ -1,0 +1,801 @@
+function init_paymonitor() {
+    initPaymonitPagination();
+    $("#addpayfilter").unbind('change').change(function(){
+        show_paidsord();
+    })
+    $(".chkinvinput").unbind('click').click(function(){
+        invite(this);
+    })
+    $(".chkpaid").unbind('click').click(function(){
+        // paidorder(this);return false;
+        paybatch(this);
+    })
+    $("#find_ord").unbind('click').click(function(){
+        search_paymonitor();
+    })
+    $("#clear_ord").unbind('click').click(function(){
+        $("#monitorsearch").val('');
+        search_paymonitor();
+    })
+    $(".add_payment").unbind('click').click(function(){
+        edit_payment(this);
+    })
+    $("#monitorsearch").keypress(function(event){
+        if (event.which == 13) {
+            search_paymonitor();
+        }
+    });
+    $("div.edit_ordernote").unbind('click').click(function(){
+        edit_ordernote(this);
+    })
+    $("div.saveordernote").unbind('click').click(function(){
+        save_ordernote();
+    })
+    $("div.paymonitorsort").unbind('click').click(function(){
+        change_paymonitsort(this);
+    })
+    $("div.attachview").unbind('click').click(function(){
+        view_orderattach(this);
+    })
+    $("div.refund").unbind('click').click(function(){
+        refund_sum(this);
+    })
+    $("select#perpageopeninvoice").unbind('change').change(function(){
+        $('#curpagetab4').val(0);
+        initPaymonitPagination();
+    });
+
+}
+
+function init_paymonitor_management() {
+}
+
+function view_orderattach(obj) {
+    var order_id=obj.id.substr(7);
+    var datqry=new Date().getTime();
+    var url="/finance/order_viewattach";
+    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            var point;
+            var winname;
+            var url;
+            for (var key in response.data.attachments) {
+                point = response.data.attachments[key];
+                url=point.doc_link;
+                winname=point.doc_name;
+                open(url,winname,'width=800,height=600');
+            }
+            // $("div#pop_content").empty().html(response.data.content);
+        } else {
+            alert(response.errors)
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function view_orderattach_old(obj) {
+    var order_id=obj.id.substr(7);
+    var datqry=new Date().getTime();
+    var url="/finance/order_viewattach";
+    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            show_popup('userdata');
+            $("div#pop_content").empty().html(response.data.content);
+        } else {
+            alert(response.errors)
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function edit_ordernote(obj) {
+    /*
+    */
+    var order_id=obj.id.substr(7);
+    var url="/finance/order_note";
+    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            show_popup('userdata');
+            $("div#pop_content").empty().html(response.data.content);
+        } else {
+            alert(response.errors)
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+
+}
+
+function initPaymonitPagination() {
+    // count entries inside the hidden content
+    var num_entries = $('#totaltab4').val();
+    // var perpage = itemsperpage;
+    var perpage = $("#perpageopeninvoice").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $(".paymonitor_paginator").empty();
+        pagePaymonitCallback(0,datqry);
+    } else {
+        var curpage = $("#curpagetab4").val();
+        // Create content inside pagination element
+        $(".paymonitor_paginator").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pagePaymonitCallback,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
+    }
+
+}
+
+function pagePaymonitCallback(page_index) {
+    // var perpage = itemsperpage;
+    var perpage = $("#perpageopeninvoice").val();
+    var order_by=$("#orderbytab4").val();
+    var direction=$("#directiontab4").val();
+    var maxval = $('#totaltab4').val();
+    var paid=$("#addpayfilter").val();
+
+    /* Search */
+    var search=$("#monitorsearch").val();
+    if (search=='Enter order #, customer') {
+        search='';
+    }
+    $("#loader").css('display','block');
+    $.post('/finance/adminpaymonitordat',{'search':search,  'paid':paid, 'offset':page_index,'limit':perpage,'order_by':order_by,'direction':direction,'maxval':maxval,'datq':datqry},
+        function(response){
+            if (response.errors=='') {
+                $('#tableinfotab4').empty().html(response.data.content);
+
+                $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
+                $("div.total_notpaid").empty().html('Partial Paid Orders '+response.data.not_paid);
+                $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced '+response.data.qty_inv);
+                $("div.total_notpaid_qty").empty().html('Qty Partial Paid '+response.data.qty_paid);
+                $("#curpagetab4").val(page_index);
+                $("#loader").css('display','none');
+                profit_init();
+            } else {
+                alert(response.errors);
+                if(response.data.url !== undefined) {
+                    window.location.href=response.data.url;
+                }
+            }
+        },'json');
+    return false;
+}
+
+function search_paymonitor() {
+
+    var paid=$("#addpayfilter").val();
+    /* Search */
+    var search=$("#monitorsearch").val();
+    if (search=='Enter order #, customer') {
+        search='';
+    }
+    var url='/finance/calc_monitor';
+    $.post(url, {'paid':paid, 'search':search, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            $('#totaltab4').val(response.data.totals);
+            initPaymonitPagination();
+        } else {
+            alert(response.errors)
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function show_paidsord() {
+    var paid=$("#addpayfilter").val();
+    /* Recalculate TOTAL recs for monitor */
+    var search=$("#monitorsearch").val();
+    if (search=='Enter order #, customer') {
+        search='';
+    }
+    var url='/finance/calc_monitor';
+    $.post(url, {'paid':paid, 'search':search, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            $('#totaltab4').val(response.data.totals);
+            initPaymonitPagination();
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function paidorder(obj) {
+    var objid=obj.id;
+    var order_id=objid.substr(4);
+    var chkpaid=$("input#"+objid).is(':checked');
+
+    var valpaid=0;
+    if (chkpaid) {
+        valpaid=1;
+    }
+
+    var url='/finance/payorder';
+
+    $.post(url, {'order_id':order_id, 'is_paid':valpaid, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            $("div#paymon"+order_id).empty().html(response.data.content);
+            $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
+            $("div.total_notpaid").empty().html('Partial Paid Orders '+response.data.not_paid);
+            $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced '+response.data.qty_inv);
+            $("div.total_notpaid_qty").empty().html('Qty Partial Paid '+response.data.qty_paid);
+            profit_init();
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+        return false;
+    }, 'json');
+
+}
+function refund_sum(obj) {
+    var objid=obj.id;
+    var receiv=0;
+    if ($("#"+objid).prop('checked')==true) {
+        receiv=1;
+    }
+    var order_id=objid.substr(6);
+    /* send new value */
+    var url='/finance/paybatch';
+    $.post(url, {'order_id':order_id}, function(response){
+        if (response.errors=='') {
+            show_popup('batchesview');
+            $("div#pop_content").empty().html(response.data.content);
+            /* Init Calend */
+            $("input#batchselect").datepicker({
+                onSelect: function(date) {
+                    show_batchdate(date);
+                },
+                maxDate: "+0D"
+            });
+            $("div.batchpaynotelnk").click(function(){
+                show_note();
+            })
+            $("select#paymethod").change(function(){
+                change_paymethod();
+            });
+            $("a#savebatch").click(function(){
+                save_refund();
+            })
+            $("a#popupContactClose").unbind('click').click(function(){
+                close_batchpay();
+            });
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            } else {
+                if (receiv==1) {
+                    $("#"+objid).prop('checked',false);
+                } else {
+                    $("#"+objid).prop('checked',true);
+                }
+
+            }
+        }
+    },'json');
+}
+function paybatch(obj) {
+    var objid=obj.id;
+    var receiv=0;
+    if ($("#"+objid).prop('checked')==true) {
+        receiv=1;
+    }
+    var order_id=objid.substr(4);
+    /* send new value */
+    var url='/finance/paybatch';
+    $.post(url, {'order_id':order_id,  'datq':datqry}, function(response){
+        if (response.errors=='') {
+            show_popup('batchesview');
+            $("div#pop_content").empty().html(response.data.content);
+            /* Init Calend */
+            $("input#batchselect").datepicker({
+                onSelect: function(date) {
+                    show_batchdate(date);
+                },
+                maxDate: "+0D"
+            });
+            $("div.batchpaynotelnk").click(function(){
+                show_note();
+            })
+            $("select#paymethod").change(function(){
+                change_paymethod();
+            });
+            $("a#savebatch").click(function(){
+                save_batch();
+            })
+            $("a#popupContactClose").unbind('click').click(function(){
+                close_batchpay();
+            });
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            } else {
+                if (receiv==1) {
+                    $("#"+objid).prop('checked',false);
+                } else {
+                    $("#"+objid).prop('checked',true);
+                }
+
+            }
+        }
+    },'json');
+}
+
+function show_note() {
+    var shown=$("div.batchpaynote_content").css('display');
+    if (shown=='none') {
+        $("div.batchdaytabledat").css('display','none');
+        $("div.batchpaynote_content").css('display','block');
+        $("div.batchpaynote").empty().html('Click here to hide note');
+    } else {
+        $("div.batchpaynote_content").css('display','none');
+        $("div.batchdaytabledat").css('display','block');
+        $("div.batchpaynote").empty().html('Click here to write note');
+    }
+}
+
+function show_batchdate(date) {
+    var url="/finance/batchdetailview";
+    var paymeth=$("select#paymethod").val();
+    $.post(url, {'date':date,'paymethod':paymeth}, function(response){
+        if (response.errors=='') {
+            $("div#pop_content div.savebatch").css('display','block');
+            $("div#pop_content div.batchpoptable").empty().html(response.data.content);
+            $("div#pop_content div.batchpopmentresults_value").empty().html(response.data.dayresults);
+            $("div#pop_content div.bathpaydatedue").empty().html(response.data.dateinpt).css('display','block');
+            $("input#datedue").val(response.data.datedue);
+            if (response.data.edit_option=='1') {
+                $("input#datdue").datepicker({
+                    onSelect: function(date) {
+                        change_due(date);
+                    }
+                });
+
+            }
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function change_paymethod() {
+    var paymethod=$("select#paymethod").val();
+    var batch_date=$("input#batchselect").val();
+    if (batch_date!='') {
+        var url="/finance/batch_paymethod";
+        $.post(url, {'date':batch_date,'paymethod':paymethod}, function(response){
+            if (response.errors=='') {
+                $("div#pop_content div.bathpaydatedue").empty().html(response.data.dateinpt).css('display','block');
+                $("input#datedue").val(response.data.datedue);
+                if (response.data.edit_option=='1') {
+                    $("input#datdue").datepicker({
+                        onSelect: function(date) {
+                            change_due(date);
+                        }
+                    });
+                }
+            } else {
+                alert(response.errors);
+                if(response.data.url !== undefined) {
+                    window.location.href=response.data.url;
+                }
+            }
+        }, 'json');
+    }
+}
+
+function change_due(date) {
+    $.post('/finance/change_datedue',{'date':date},function(response){
+        if (response.errors=='') {
+            $("input#datedue").val(response.data.datedue);
+            $("input#datdue").val(response.data.datedueformat);
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    },'json');
+}
+function save_refund() {
+    var date=$("input#batchselect").val();
+    var paymethod=$("select#paymethod").val();
+    var amount=$("input#amount").val();
+    var order_id=$("input#order_id").val();
+    var batch_note=$("textarea#batch_note").val();
+    var datedue=$("input#datedue").val();
+    var url="/finance/saverefund"
+    $.post(url, {'date':date, 'paymethod':paymethod, 'amount':amount,'order_id':order_id,'batch_note':batch_note,'datedue':datedue}, function(response){
+        if (response.errors=='') {
+            $("div.batchselectpay").css('display','none');
+            $("div.batchselectunit").css('display','none');
+            $("div.batchpaynote_content").css('display','none');
+            $("div#pop_content div.savebatch").css('display','none');
+            $("div#pop_content div.batchpopmentresults_value").empty().html(response.data.dayresults);
+            $("div#pop_content div.batchpoptable").empty().html(response.data.content);
+            $("div#pop_content div.batchdaytabledat").css('max-height','262px').css('display','block');
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+function save_batch() {
+    var date=$("input#batchselect").val();
+    var paymethod=$("select#paymethod").val();
+    var amount=$("input#amount").val();
+    var order_id=$("input#order_id").val();
+    var batch_note=$("textarea#batch_note").val();
+    var datedue=$("input#datedue").val();
+    var url="/finance/savebatch"
+    $.post(url, {'date':date, 'paymethod':paymethod, 'amount':amount,'order_id':order_id,'batch_note':batch_note,'datedue':datedue}, function(response){
+        if (response.errors=='') {
+            $("div.batchselectpay").css('display','none');
+            $("div.batchselectunit").css('display','none');
+            $("div.batchpaynote_content").css('display','none');
+            $("div#pop_content div.savebatch").css('display','none');
+            $("div#pop_content div.batchpopmentresults_value").empty().html(response.data.dayresults);
+            $("div#pop_content div.batchpoptable").empty().html(response.data.content);
+            $("div#pop_content div.batchdaytabledat").css('max-height','262px').css('display','block');
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function close_batchpay() {
+    var order_id=$("input#order_id").val();
+    var cancel=$("input#is_canceled").val();
+    var url="/finance/close_batchpayadd";
+    $.post(url, {'order_id':order_id,'canceled':cancel}, function(response){
+        if (response.errors=='') {
+            if (cancel=='1') {
+                disablePopup();
+                initPaymonitPagination();
+            } else {
+                $("div#paymon"+order_id).empty().html(response.data.content);
+                /* $("div#paymon"+order_id+" a.paynotinvoice"); */
+                $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
+                $("div.total_notpaid").empty().html('Partial Paid Orders '+response.data.not_paid);
+                $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced '+response.data.qty_inv);
+                $("div.total_notpaid_qty").empty().html('Qty Partial Paid '+response.data.qty_paid);
+                profit_init();
+
+                disablePopup();
+            }
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function invite(obj) {
+    var objid=obj.id;
+    var order_id=objid.substr(7);
+    /* send new value */
+    var chkinv=$("input#"+objid).is(':checked');
+    var valinv=0;
+    if (chkinv) {
+        valinv=1;
+    }
+
+    var url='/finance/inviteorder';
+
+    $.post(url, {'order_id':order_id, 'is_invited':valinv, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            $("div#paymon"+order_id).empty().html(response.data.content);
+            $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
+            $("div.total_notpaid").empty().html('Partial Paid Orders '+response.data.not_paid);
+            $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced '+response.data.qty_inv);
+            $("div.total_notpaid_qty").empty().html('Qty Partial Paid '+response.data.qty_paid);
+            profit_init();
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+        return false;
+    }, 'json');
+}
+
+function edit_payment(obj) {
+    var order_id=obj.id.substr(10);
+    $.post('/finance/customer_payment', {'order_id':order_id, 'datq': datqry}, function(response){
+        if (response.errors=='') {
+            show_popup('editpayment');
+            $("div#pop_content div.editcogform").empty().html(response.data.content);
+            $("#savecustpaid").click(function(){
+                save_payment();
+            })
+            $("#popupContactClose").click(function(){
+                disablePopup();
+            });
+
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json')
+}
+
+function save_payment() {
+    var dat=$("form#editpaymenform").serializeArray();
+    var url="/finance/save_custompay";
+    $.post(url,dat,function(response){
+        if (response.errors=='') {
+            disablePopup();
+            initPaymonitPagination();
+            $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
+            $("div.total_notpaid").empty().html('Partial Paid '+response.data.not_paid);
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    },'json');
+}
+
+function profit_init() {
+    $("div.paymonitor-numorder-dat.greenprof").bt({
+        fill : '#86FF80',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#FFFFFF',
+        strokeHeight: '18',
+        cssClass: 'green_tooltip',
+        cssStyles: {color: '#OOOOOO'}
+    });
+    $("div.paymonitor-numorder-dat.whiteprof").bt({
+        fill : '#FFFFFF',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'white_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("div.paymonitor-numorder-dat.redprof").bt({
+        fill : '#FF0000',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'red_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("div.paymonitor-numorder-dat.orangeprof").bt({
+        fill : '#FFA500',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'orange_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("div.paymonitor-numorder-dat.blackprof").bt({
+        fill : '#000000',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#FFFFFF',
+        strokeHeight: '18',
+        cssClass: 'black_tooltip',
+        cssStyles: {color: '#FFFFFF'}
+    })
+    $("div.paymonitor-numorder-dat.deepblueprof").bt({
+        fill : '#001072',
+        cornerRadius: 10,
+        width: 110,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#FFFFFF',
+        strokeHeight: '18',
+        cssClass: 'deepblue_tooltip',
+        cssStyles: {color: '#FFFFFF'}
+    });
+    $("img.ordernotedata").bt({
+        fill : '#FFFFFF',
+        cornerRadius: 10,
+        width: 220,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'white_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("img.monitorapproved").bt({
+        fill : '#FFFFFF',
+        cornerRadius: 10,
+        width: 120,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'white_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("div.paymonitor-generalname").bt({
+        fill : '#FFFFFF',
+        cornerRadius: 10,
+        width: 250,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'white_tooltip',
+        cssStyles: {color: '#000000'}
+    })
+    $("div.paymonitor-codedat").bt({
+        fill : '#FFFFFF',
+        cornerRadius: 10,
+        width: 120,
+        padding: 10,
+        strokeWidth: '2',
+        positions: "top",
+        strokeStyle : '#000000',
+        strokeHeight: '18',
+        cssClass: 'white_tooltip',
+        cssStyles: {color: '#000000'}
+    });
+    $("div.paymonitor-numorder-dat").unbind('click').click(function(){
+        var order=$(this).data('order');
+        edit_paymonitororder(order);
+    });
+    $("#addpayfilter").unbind('change').change(function(){
+        show_paidsord();
+    })
+    $(".chkinvinput").unbind('click').click(function(){
+        invite(this);
+    })
+    $(".chkpaid").unbind('click').click(function(){
+        // paidorder(this);return false;
+        paybatch(this);
+    })
+    $("#find_ord").unbind('click').click(function(){
+        search_paymonitor();
+    })
+    $("#clear_ord").unbind('click').click(function(){
+        $("#monitorsearch").val('');
+        search_paymonitor();
+    })
+    $(".add_payment").unbind('click').click(function(){
+        edit_payment(this);
+    })
+    $("#monitorsearch").keypress(function(event){
+        if (event.which == 13) {
+            search_paymonitor();
+        }
+    });
+    $("div.edit_ordernote").unbind('click').click(function(){
+        edit_ordernote(this);
+    })
+    $("div.saveordernote").unbind('click').click(function(){
+        save_ordernote();
+    })
+    $("div.paymonitorsort").unbind('click').click(function(){
+        change_paymonitsort(this);
+    })
+    $("div.attachview").unbind('click').click(function(){
+        view_orderattach(this);
+    })
+    $("div.refund").unbind('click').click(function(){
+        refund_sum(this);
+    })
+    $("select#perpageopeninvoice").unbind('change').change(function(){
+        $('#curpagetab4').val(0);
+        initPaymonitPagination();
+    });
+}
+
+function edit_paymonitororder(order) {
+    // var orderid=obj.id.substr(3);
+    var total=$("#totalrec").val()
+    var url="/finance/orderprofitdata";
+    $.post(url, {'order':order,'page': 'paymonitor'}, function(response){
+        if (response.errors=='') {
+            show_popup('leadorderdetailspopup');
+            $("#pop_content").empty().html(response.data.content);
+            init_onlineleadorder_edit();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+
+}
+
+function save_ordernote() {
+    var order_id=$("form#ordernoteedit input#order_id").val();
+    var order_note=$("form#ordernoteedit #order_note").val();
+    var url="/finance/save_ordernote";
+    $.post(url, {'order_id':order_id,'order_note':order_note, 'datq':datqry}, function(response){
+        if (response.errors=='') {
+            disablePopup();
+            $("div#paymon"+order_id).empty().html(response.data.content);
+            profit_init();
+        } else {
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    }, 'json');
+}
+
+function change_paymonitsort(obj) {
+    var divid=obj.id;
+    var newsort='';
+    var newdirect='';
+    var oldsort=$("#orderbytab4").val();
+    var olddirec=$("#directiontab4").val();
+    if (divid=='monitorsort_order') {
+        newsort='order_num';
+    } else if (divid=='monitorsort_revenue') {
+        newsort='revenue';
+    }
+    /* Remove active sort class */
+    $("div.paymonitor-title div.paymsortactive div.sortcalclnk").empty();
+    $("div.paymonitor-title div.paymsortactive").removeClass('paymsortactive');
+    $("#"+divid).addClass('paymsortactive');
+    if (newsort==oldsort) {
+        if (olddirec=='asc') {
+            newdirect='desc';
+            $("#"+divid+" div.sortcalclnk").html('<img src="/img/sort_down.png" alt="Sort">');
+        } else {
+            newdirect='asc';
+            $("#"+divid+" div.sortcalclnk").html('<img src="/img/sort_up.png" alt="Sort">');
+        }
+    } else {
+        newdirect='desc';
+        $("#"+divid+" div.sortcalclnk").html('<img src="/img/sort_down.png" alt="Sort">');
+    }
+    $("#orderbytab4").val(newsort);
+    $("#directiontab4").val(newdirect);
+    initPaymonitPagination();
+}
