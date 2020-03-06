@@ -3,8 +3,41 @@ $(document).ready(function(){
     slidermargin=parseInt($("div.profitdatatotalarea").css('margin-left'));
 })
 
-function init_profit_date() {
+function init_profitcalend_content() {
     show_curent_calend();
+    // Change Brand
+    $("#profitcalendarbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#profitcalendarbrand").val(brand);
+        $("#profitcalendarbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#profitcalendarbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#profitcalendarbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        show_profitcaltend_total();
+        show_curent_calend();
+    });
+}
+
+function show_profitcaltend_total() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
+    var url="/accounting/profit_calendar_totals";
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#profitdatatotalarea").empty().html(response.data.yearview);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_profit_date() {
     $(".monthselect").unbind('click').click(function(){
         change_month(this);
     })
@@ -31,7 +64,7 @@ function init_profit_date() {
     });
     $("div.finance_month_filter").find("select.enddate").unbind('change').change(function () {
         filter_profitcalend_slider();
-    })
+    });
 }
 
 function change_profitcalend_slider() {
@@ -117,17 +150,17 @@ function change_year(obj) {
         $("div#"+newobj).children('div').removeClass('style-text2-nonactive').addClass('style-text3');
     }
     /* Get new links on months */
-    var url="/finance/profitdate_months";
-    $.post(url,{'year': newyear},function(response){
+    var url="/accounting/profitdate_months";
+    var params = new Array();
+    params.push({name: 'year', value: newyear});
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.profitdate_months").empty().html(response.data.content);
             $("input#cur_month").val(response.data.min_month);
             show_curent_calend();
         } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     },'json');
 }
@@ -151,7 +184,7 @@ function show_curent_calend() {
                     ajaxPath: ["$(this).attr('href')"]
                 }); */
             });
-            // init_profit_date();
+            init_profit_date();
         } else {
             show_error(response);
         }

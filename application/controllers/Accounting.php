@@ -540,6 +540,45 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function profitdate_months() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $year=$this->input->post('year');
+            $brand = $this->input->post('brand');
+            /* Get Full limits */
+            $this->load->model('orders_model');
+            $dats=$this->orders_model->get_profit_limitdates($brand);
+
+            /* Cur Month */
+            $error='No Data';
+            if (isset($dats['max_year'])) {
+                $error = '';
+                if ($year==$dats['max_year']) {
+                    /* We start new month but there are no orders in this month */
+                    $dats['cur_month']=$dats['max_month'];
+                    $dats['cur_year']=$dats['max_year'];
+                    $dats['min_month']=1;
+                } elseif($year==$dats['min_year']) {
+                    $dats['cur_year']=$dats['min_year'];
+                    $dats['cur_month']=12;
+                    $dats['min_month']=$dats['min_month'];
+                } else {
+                    $dats['cur_year']=$year;
+                    $dats['min_month']=1;
+                    $dats['cur_month']=12;
+                }
+                $curyear_months=$this->orders_model->get_months($dats['cur_year'],$dats['cur_month'], $brand, $dats['min_month']);
+                $year_links=$this->load->view('accounting/protidate_yearlinks_view',array('lnks'=>$curyear_months,'numrec'=>count($curyear_months)),TRUE);
+                $mdata['content']=$year_links;
+                $mdata['min_month']=$dats['min_month'];
+            }
+            /* Build curent year scale with motnt */
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
         // $search_form=''
@@ -642,6 +681,22 @@ class Accounting extends MY_Controller
         );
         $content=$this->load->view('accounting/profit_date_view',$options,TRUE);
         return $content;
+    }
+
+    public function profit_calendar_totals() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $slider=$this->_prepare_profit_dateslider($brand, 1);
+                $mdata['yearview']=$slider['content'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {

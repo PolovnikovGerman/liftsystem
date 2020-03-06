@@ -104,8 +104,7 @@
         <div class="profitdatatotalsarea">
             <div class="profitcalend_slidermanage left <?= ($start_margin == 0 ? '' : 'active') ?>">&nbsp;</div>
             <div class="line-week-results" id="weekdays-totals">
-                <div class="profitdatatotalarea"
-                     style="width: <?= $slider_width ?>px; margin-left:<?= $start_margin ?>px;">
+                <div class="profitdatatotalarea" id="profitdatatotalarea" style="width: <?= $slider_width ?>px; margin-left:<?= $start_margin ?>px;">
                     <?= $yearsview ?>
                 </div>
             </div>

@@ -19,7 +19,7 @@ function init_page(objid) {
             break;
         case 'profitdatesview':
             $("#profitdatesview").show();
-            init_profit_date();
+            init_profitcalend_content();
             break;
     }
 

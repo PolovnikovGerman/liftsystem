@@ -2036,7 +2036,7 @@ Class Orders_model extends MY_Model
         // Get Goals
         if ($brand=='ALL') {
             $this->db->select('max(goal_order_id) as goal_order_id, sum(goal_orders) as goal_orders');
-            $this->db->select('sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_revenue');
+            $this->db->select('sum(goal_revenue) as goal_revenue, sum(goal_profit) as goal_profit');
             $this->db->from('ts_goal_orders');
             $this->db->where('goal_year', $year);
             $this->db->where('goal_type', 'TOTAL');
