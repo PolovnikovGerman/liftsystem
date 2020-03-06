@@ -194,25 +194,14 @@ function show_curent_calend() {
                 show: {
                     event: 'click'
                 },
-                hide: {
-                    event: 'click'
-                },
                 position: {
                     my: 'bottom center',
                     at: 'middle center',
                 },
                 style: {
-                    classes: 'orderdetails_tooltip'
+                    classes: 'dayorders_tooltip'
                 },
             });
-            // $("div.cell-dayinfo").each(function(){
-                /* $("div#"+$(this).prop('id')).bt({
-                    trigger: 'click',
-                    ajaxCache: false,
-                    width: '762px',
-                    ajaxPath: ["$(this).attr('href')"]
-                }); */
-            // });
             init_profit_date();
         } else {
             show_error(response);
@@ -224,7 +213,6 @@ function change_month(obj) {
     var month=obj.id.substr(5);
     $("input#cur_month").val(month);
     show_curent_calend();
-
 }
 
 function init_profitdate_slider() {
@@ -269,11 +257,16 @@ function profitdate_slider_move(offset) {
 }
 
 function edit_goalsvalue(year) {
-    var url="/finance/edit_profitdata_goals";
-    $.post(url,{'year': year}, function(response){
+    var url="/accounting/edit_profitdata_goals";
+    var params = new Array();
+    params.push({name: 'year', value: year});
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
+    $.post(url,params, function(response){
         if (response.errors=='') {
-            show_popup('profitdategoaledit');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','480px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             $("input.goaleditinput").unbind('change').change(function(){
                 var fld=$(this).prop('id');
                 var newval=parseFloat($(this).val());
@@ -289,7 +282,7 @@ function edit_goalsvalue(year) {
 }
 
 function edit_goalparam(fld, newval) {
-    var url="/finance/change_profitdata_goals";
+    var url="/accounting/change_profitdata_goals";
     $.post(url, {'field': fld,'newval': newval}, function(response){
         if (response.errors=='') {
             $("div.goaleditvalue[data-fld='goalavgrevenue']").empty().html(response.data.goalavgrevenue);
@@ -302,12 +295,13 @@ function edit_goalparam(fld, newval) {
 }
 
 function save_profitdategoal() {
-    var url="/finance/save_profitdata_goals";
+    var url="/accounting/save_profitdata_goals";
     var params=new Array();
     params.push({name: 'showgrowth', value: $("input#showgrowth").val()});
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
     $.post(url,params,function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#pageModal").modal('hide');
             $("div.profitdatatotalarea").empty().html(response.data.content);
             $("div.profitdatatotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
             init_profitdate_slider();
@@ -322,12 +316,8 @@ function show_filter_months() {
     if (show == 1) {
         $("div.finance_month_filter").show();
         filter_profitcalend_slider();
-        // $("div.profitmonthgoal").show();
-        // $("div.year-totals").hide();
     } else {
         $("div.finance_month_filter").hide();
         change_profitcalend_slider();
-        // $("div.profitmonthgoal").hide();
-        // $("div.year-totals").show();
     }
 }

@@ -835,6 +835,12 @@ select.filter {
     width: 57px;
 }
 /* Day date details */
+.dayorders_tooltip {
+    width: 763px;
+    max-width: 763px!important;
+    background: #ffffff;
+    color: #000;
+}
 .orders_by_date {
     background-color: #FFFFFF;
     clear: both;

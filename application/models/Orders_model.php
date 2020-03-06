@@ -2044,6 +2044,7 @@ Class Orders_model extends MY_Model
             $this->db->select('*');
             $this->db->from('ts_goal_orders');
             $this->db->where('goal_year', $year);
+            $this->db->where('brand', $brand);
             $this->db->where('goal_type', 'TOTAL');
         }
         $goalres=$this->db->get()->row_array();
@@ -2745,7 +2746,96 @@ Class Orders_model extends MY_Model
         } else {
             return '';
         }
+    }
 
+    public function get_profit_goaldata($year, $brand, $goal_type='TOTAL') {
+        $this->db->select('*');
+        $this->db->from('ts_goal_orders');
+        $this->db->where('goal_year', $year);
+        $this->db->where('goal_type', $goal_type);
+        $this->db->where('brand', $brand);
+        $goalres=$this->db->get()->row_array();
+        if (!isset($goalres['goal_order_id'])) {
+            // Insert New record
+            $this->db->set('goal_year', $year);
+            $this->db->set('goal_type', $goal_type);
+            $this->db->insert('ts_goal_orders');
+            $id=$this->db->insert_id();
+            $goalres=array(
+                'goal_order_id'=>$id,
+                'goal_year'=>$year,
+                'goal_orders'=>0,
+                'goal_revenue'=>0,
+                'goal_profit'=>0,
+                'goal_type'=>$goal_type,
+                'brand' => $brand,
+            );
+        }
+        $out=array(
+            'goal_order_id'=>$goalres['goal_order_id'],
+            'goal_year'=>$goalres['goal_year'],
+            'goal_orders'=>$goalres['goal_orders'],
+            'goal_revenue'=>$goalres['goal_revenue'],
+            'goal_profit'=>$goalres['goal_profit'],
+            'goal_type'=>$goalres['goal_type'],
+            'brand' => $goalres['brand'],
+        );
+        // Calc other params
+        $goal_avgrevenue=$goal_avgprofit=0;
+        if ($goalres['goal_orders']>0) {
+            $goal_avgrevenue=($goalres['goal_revenue']/$goalres['goal_orders']);
+            $goal_avgprofit=($goalres['goal_profit']/$goalres['goal_orders']);
+        }
+        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : '$'.number_format($goal_avgrevenue,2,'.',','));
+        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : '$'.number_format($goal_avgprofit,2,'.',','));
+        // Profit %
+        $goal_avgprofit_perc=0;
+        if ($goalres['goal_revenue']>0) {
+            $goal_avgprofit_perc=($goalres['goal_profit']/$goalres['goal_revenue']*100);
+        }
+        $out['goal_avgprofit_perc']=($goal_avgprofit_perc==0 ? '&nbsp;' : number_format($goal_avgprofit_perc,1,'.',',').'%');
+        $out['goal_profit_class']=orderProfitClass(round($goal_avgprofit_perc),0);
+        return $out;
+    }
+
+    public function change_goal_value($data, $field, $newval) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->init_error_msg);
+        if (!isset($data[$field])) {
+            $out['msg']='Unknown field '.$field;
+            return $out;
+        }
+        $data[$field]=$newval;
+        usersession('goaldata', $data);
+        $out['result']=  $this->success_result;
+        // Count new params
+        $goal_avgprofit=$goal_avgrevenue=$goal_avgprofit_perc='&nbsp;';
+        if ($data['goal_orders']!=0) {
+            $goal_avgrevenue=($data['goal_revenue']/$data['goal_orders']);
+            $goal_avgrevenue='$'.number_format($goal_avgrevenue,2,'.',',');
+            $goal_avgprofit=($data['goal_profit']/$data['goal_orders']);
+            $goal_avgprofit='$'.number_format($goal_avgprofit,2,'.',',');
+        }
+        if ($data['goal_revenue']) {
+            $goal_avgprofit_perc=($data['goal_profit']/$data['goal_revenue']*100);
+            $goal_avgprofit_perc=number_format($goal_avgprofit_perc,1).'%';
+        }
+        $out['goalavgrevenue']=$goal_avgrevenue;
+        $out['goalavgprofit']=$goal_avgprofit;
+        $out['goalavgprofitperc']=$goal_avgprofit_perc;
+        return $out;
+    }
+
+    public function save_profitdate_goal($data) {
+        $out = array('result' => $this->error_result, 'msg' => $this->init_error_msg);
+        $this->db->where('goal_order_id', $data['goal_order_id']);
+        $this->db->set('goal_orders', $data['goal_orders']);
+        $this->db->set('goal_revenue', $data['goal_revenue']);
+        $this->db->set('goal_profit', $data['goal_profit']);
+        $this->db->set('brand', $data['brand']);
+        $this->db->update('ts_goal_orders');
+        $out['result']=$this->success_result;
+        usersession('goaldata', NULL);
+        return $out;
     }
 
 }

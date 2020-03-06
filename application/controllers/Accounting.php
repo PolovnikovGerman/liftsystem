@@ -594,6 +594,85 @@ class Accounting extends MY_Controller
         echo $content;
     }
 
+    // Edit Goal value
+    public function edit_profitdata_goals() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Edit parameters';
+            $year=$this->input->post('year');
+            $brand = $this->input->post('brand');
+            if (!empty($year) && !empty($brand)) {
+                // Get Goal Content
+                $error = '';
+                $this->load->model('orders_model');
+                $goaldata=$this->orders_model->get_profit_goaldata($year, $brand);
+                // Save to Session
+                usersession('goaldata', $goaldata);
+                $mdata['content']=$this->load->view('profit_calend/goal_edit_view',$goaldata,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    // Change GOAL parameter
+    public function change_profitdata_goals() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            // Restore session
+            $goaldata=usersession('goaldata');
+            if (empty($goaldata)) {
+                $error='Connection Lost. Please, recall function';
+            } else {
+                $this->load->model('orders_model');
+                $field=$this->input->post('field');
+                $newval=$this->input->post('newval');
+                $res=$this->orders_model->change_goal_value($goaldata, $field, $newval);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['goalavgrevenue']=$res['goalavgrevenue'];
+                    $mdata['goalavgprofit']=$res['goalavgprofit'];
+                    $mdata['goalavgprofitperc']=$res['goalavgprofitperc'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save GOAL value
+    public function save_profitdata_goals() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            // Restore session
+            $goaldata=usersession('goaldata');
+            if (empty($goaldata)) {
+                $error='Connection Lost. Please, recall function';
+            } else {
+                $this->load->model('orders_model');
+                $res=$this->orders_model->save_profitdate_goal($goaldata);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $growth=$this->input->post('showgrowth');
+                    $brand = $this->input->post('brand');
+                    if ($growth==1) {
+                        $showgrowth=0;
+                    } else {
+                        $showgrowth=1;
+                    }
+                    $out=$this->_prepare_profit_dateslider($brand, $showgrowth);
+                    $mdata['content']=$out['content'];
+                    $mdata['slider_width']=$out['slider_width'];
+                    $mdata['margin']=$out['margin'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
