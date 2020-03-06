@@ -60,11 +60,11 @@ Class Cronjob extends CI_Controller
 
         $email_from='grey@bluetrack.com';
 
-        // $email_to='roy.ferrer@bluetrack.com';
-        $email_to='to_german@yahoo.com';
+        $email_to='roy.ferrer@bluetrack.com';
+        // $email_to='to_german@yahoo.com';
 
         $email_body='At '.date('hA:i').' on '.date('m/d/y');
-        $email_body.'into a Closed Order.';
+        $email_body.'change status Lead #018-854 to a Closed Order.';
 
         $this->email->from($email_from);
         $this->email->to($email_to);
