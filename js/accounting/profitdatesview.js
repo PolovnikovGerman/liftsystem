@@ -71,6 +71,7 @@ function change_profitcalend_slider() {
     var viewtype=$("div.finance_date_filter").find("select.filter").val();
     var params=new Array();
     params.push({name: 'showgrowth', value: $("input#showgrowth").val()});
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
     var url;
     if (viewtype==0) {
         url="/accounting/profitdate_showgrowth";
@@ -99,12 +100,11 @@ function filter_profitcalend_slider() {
     params.push({name: 'showgrowth', value: $("input#showgrowth").val()});
     params.push({name: 'startdate', value: $("select.startdate").val()});
     params.push({name: 'enddate', value: $("select.enddate").val()});
-    var url="/finance/filter_profitdate_showgrowth";
-
+    params.push({name: 'brand', value: $("#profitcalendarbrand").val()});
+    var url="/accounting/filter_profitdate_showgrowth";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.showhidegrowth").empty().html(response.data.label);
-            // $("input#showgrowth").val(response.data.newval);
             $("div.profitdatatotalarea").empty().html(response.data.content);
             $("div.profitdatatotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
             slidermargin=parseInt($("div.profitdatatotalarea").css('margin-left'));
@@ -176,14 +176,43 @@ function show_curent_calend() {
             $("#totalsbymonth").empty().html(response.data.monthtotal);
             $("#tableinfotab2").empty().html(response.data.content);
             $(".profitdate-selected-monthname").empty().html(response.data.monthname);
-            $("div.cell-dayinfo").each(function(){
+            $("div.cell-dayinfo").qtip({
+                content : {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                        }).then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Loading...'; // Set some initial text
+                    }
+                },
+                show: {
+                    event: 'click'
+                },
+                hide: {
+                    event: 'click'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'middle center',
+                },
+                style: {
+                    classes: 'orderdetails_tooltip'
+                },
+            });
+            // $("div.cell-dayinfo").each(function(){
                 /* $("div#"+$(this).prop('id')).bt({
                     trigger: 'click',
                     ajaxCache: false,
                     width: '762px',
                     ajaxPath: ["$(this).attr('href')"]
                 }); */
-            });
+            // });
             init_profit_date();
         } else {
             show_error(response);

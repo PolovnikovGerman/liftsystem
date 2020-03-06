@@ -2,7 +2,9 @@
     <div class="year-totals">
         <div class="totalyear-titlerow">
             <?= $title ?>
-            <div class="editgoal" data-year="<?=$year?>">Edit</div>
+            <?php if ($brand!=='ALL') { ?>
+                <div class="editgoal" data-year="<?=$year?>">Edit</div>
+            <?php } ?>
         </div>    
         <div class="year-totaldataarea">
             <div class="year-totaldata">

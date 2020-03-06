@@ -19,7 +19,7 @@
         </div>
         <div class="line-week">
     <?php }  ?>
-    <div class="cell-dayinfo <?=($row['day_class'])?>" id="calday<?=$row['curdate']?>" href="/finance/dayresults/?day=<?=$row['curdate']?>">
+    <div class="cell-dayinfo <?=($row['day_class'])?>" id="calday<?=$row['curdate']?>" data-viewsrc="/accounting/dayresults/?day=<?=$row['curdate']?>&brand=<?=$brand?>">
         <div class="cell-dayinfo-profitperc">
             <div class="cell-dayinfo-day"><?=$row['day']?></div>
             <div class="cell-dayinfo-profitval <?=$row['profit_class']?>">

@@ -2526,4 +2526,226 @@ Class Orders_model extends MY_Model
         return $out_array;
     }
 
+    // Get data filter about orders */
+    public function get_filter_data($year, $startmonth, $endmonth, $brand, $prvdata=array(), $compare=0) {
+        $out=array(
+            'total_orders'=>0,
+            'avg_revenue'=>0,
+            'avg_profit'=>0,
+            'avg_profit_perc'=>0,
+            'revenue'=>0,
+            'profit'=>0,
+        );
+
+        $startDate = new DateTime();
+        $startDate->setDate($year, $startmonth, 1);
+        $endDate= new DateTime();
+        $endDate->setDate($year, $endmonth, 1);
+        $endDate->modify(' +1 Month ');
+
+        $sDate=$startDate->format('U');
+        $eDate=$endDate->format('U');
+        $this->db->select('count(order_id) as total_orders, avg(revenue) as avg_revenue, sum(revenue) as revenue, sum(profit) as profit',FALSE);
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $this->db->where("order_date >= '".$sDate."'");
+        $this->db->where("order_date < '".$eDate."'");
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+
+        $total_orders=floatval($res['total_orders']);
+        $profit=round(floatval($res['profit']),0);
+        $revenue=round(floatval($res['revenue']),0);
+
+        $avg_revenue=$avg_profit=$avg_profit_perc=0;
+        if ($total_orders>0) {
+            $avg_profit=round($profit/$total_orders,2);
+            $avg_revenue=round($revenue/$total_orders,2);
+            if ($revenue>0) {
+                $avg_profit_perc=round($profit/$revenue*100,1);
+            }
+        }
+        $out['total_orders']=($total_orders==0 ? '&nbsp;' : number_format($total_orders,0,'.',','));
+        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : '$'.number_format($avg_revenue,2,'.',','));
+        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : '$'.number_format($avg_profit,2,'.',','));
+        $out['avg_profit_perc']=($avg_profit_perc==0 ? '&nbsp;' : number_format($avg_profit_perc,1,'.',',').'%');
+        $out['profit_class']=orderProfitClass(round($avg_profit_perc),0);
+        $out['profit']=($profit==0 ? '&nbsp;' : '$'.number_format($profit,0,'.',','));
+        $out['revenue']=($revenue==0 ? '&nbsp;' : '$'.number_format($revenue,0,'.',','));
+        // Out number
+        $out['num_orders']=$total_orders;
+        $out['num_avgrevenue']=$avg_revenue;
+        $out['num_avgprofit']=$avg_profit;
+        $out['num_avgprofitperc']=$avg_profit_perc;
+        $out['num_profit']=$profit;
+        $out['num_revenue']=$revenue;
+        // Growth
+        $growth=array(
+            'order_num'=>'',
+            'order_perc'=>'',
+            'revenue_num'=>'',
+            'revenue_perc'=>'',
+            'avgrevenue_num'=>'',
+            'avgrevenue_perc'=>'',
+            'profit_num'=>'',
+            'profit_perc'=>'',
+            'avgprofit_num'=>'',
+            'avgprofit_perc'=>'',
+            'ave_num'=>'',
+            'ave_proc'=>'',
+        );
+        if ($compare==0) {
+            $out['growth']=$growth;
+        } else {
+            if ($total_orders==0) {
+                if ($prvdata['num_orders']>0) {
+                    $growth['order_num']=(-1)*($prvdata['num_orders']);
+                    $growth['order_proc']=-100;
+                }
+            } else {
+                // 1500 - 1000 = 500.   500/1000 = 50% growth
+                if ($prvdata['num_orders']==0) {
+                    $growth['order_num']=$total_orders;
+                    $growth['order_proc']=100;
+                } else {
+                    $diff=($total_orders-$prvdata['num_orders']);
+                    $growth['order_num']=$diff;
+                    $growth['order_proc']=round($diff/$prvdata['num_orders']*100,0);
+                }
+            }
+            if ($revenue==0) {
+                if ($prvdata['num_revenue']>0) {
+                    $growth['revenue_num']=(-1)*($prvdata['num_revenue']);
+                    $growth['revenue_perc']=-100;
+                }
+            } else {
+                if ($prvdata['num_revenue']==0) {
+                    $growth['revenue_num']=$revenue;
+                    $growth['revenue_perc']=100;
+                } else {
+                    $diff=($revenue-$prvdata['num_revenue']);
+                    $growth['revenue_num']=$diff;
+                    $growth['revenue_perc']=round($diff/$prvdata['num_revenue']*100,0);
+                }
+            }
+            if ($avg_revenue==0) {
+                if ($prvdata['num_avgrevenue']>0) {
+                    $growth['avgrevenue_num']=(-1)*($prvdata['num_avgrevenue']);
+                    $growth['avgrevenue_perc']=-100;
+                }
+            } else {
+                if ($prvdata['num_avgrevenue']==0) {
+                    $growth['avgrevenue_num']=$avg_revenue;
+                    $growth['avgrevenue_perc']=100;
+                } else {
+                    $diff=($avg_revenue-$prvdata['num_avgrevenue']);
+                    $growth['avgrevenue_num']=$diff;
+                    $growth['avgrevenue_perc']=round($diff/$prvdata['num_avgrevenue']*100,0);
+                }
+            }
+            if ($profit==0) {
+                if ($prvdata['num_profit']>0) {
+                    $growth['profit_num']=(-1)*($prvdata['num_profit']);
+                    $growth['profit_perc']=-100;
+                }
+            } else {
+                if ($prvdata['num_profit']==0) {
+                    $growth['profit_num']=$profit;
+                    $growth['profit_perc']=100;
+                } else {
+                    $diff=($profit-$prvdata['num_profit']);
+                    $growth['profit_num']=$diff;
+                    $growth['profit_perc']=round($diff/$prvdata['num_profit']*100,0);
+                }
+            }
+            if ($avg_profit==0) {
+                if ($prvdata['num_avgprofit']>0) {
+                    $growth['avgprofit_num']=(-1)*$prvdata['num_avgprofit'];
+                    $growth['avgprofit_perc']=-100;
+                }
+            } else {
+                if ($prvdata['num_avgprofit']==0) {
+                    $growth['avgprofit_num']=$avg_profit;
+                    $growth['avgprofit_perc']=100;
+                } else {
+                    $diff=($avg_profit-$prvdata['num_avgprofit']);
+                    $growth['avgprofit_num']=$diff;
+                    $growth['avgprofit_perc']=round($diff/$prvdata['num_avgprofit']*100,0);
+                }
+            }
+            if ($avg_profit_perc==0) {
+                if ($prvdata['num_avgprofitperc']) {
+                    $growth['ave_num']=(-1)*$prvdata['num_avgprofitperc'];
+                    $growth['ave_proc']=-100;
+                }
+            } else {
+                if ($prvdata['num_avgprofitperc']==0) {
+                    $growth['ave_num']=$avg_profit_perc;
+                    $growth['ave_proc']=100;
+                } else {
+                    $diff=($avg_profit_perc-$prvdata['num_avgprofitperc']);
+                    $growth['ave_num']=round($diff,1);
+                    $growth['ave_proc']=round($diff/$prvdata['num_avgprofitperc']*100,0);
+                }
+            }
+            $out['growth']=$growth;
+        }
+        return $out;
+    }
+
+    public function get_order_bydate($date, $brand) {
+        $bgn=strtotime(date('Y-m-d',$date));
+        $end=strtotime(date('m/d/Y',$bgn).' +1 day');
+        $this->db->select('*');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ',$bgn);
+        $this->db->where('order_date < ',$end);
+        $this->db->where('is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by('order_num');
+        $result=$this->db->get()->result_array();
+        $out=array();
+        foreach ($result as $row) {
+            $row['revenue']=($row['revenue']==0 ? '----' : '$'.number_format($row['revenue'],2,'.',','));
+            $row['status']='-------';
+            if (floatval($row['order_cog'])==0) {
+                $row['profit_class']='projprof';
+                $row['profit_perc']='PROJ';
+                /* get stage of order */
+                $status=$this->get_order_status($row['order_id']);
+                if ($status!='') {
+                    $status=substr($status,2).'_short';
+                    $row['status']=$this->$status;
+                }
+            } else {
+                $row['profit_class']=orderProfitClass($row['profit_perc']);
+                $row['profit_perc']=($row['profit_perc']==0 ? '-----' : number_format($row['profit_perc'],1,'.','').'%');
+            }
+            $row['profit']=($row['profit']==0 ? '-----' : '$'.number_format($row['profit'],2,'.',','));
+            $row['item_class']='';
+            if ($row['item_id']==-3) {
+                $row['item_class']='customitem';
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    private function get_order_status($order_id) {
+        $this->db->select('order_proj_status');
+        $this->db->from('v_order_statuses');
+        $this->db->where('order_id',$order_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['order_proj_status'])) {
+            return $res['order_proj_status'];
+        } else {
+            return '';
+        }
+
+    }
+
 }
