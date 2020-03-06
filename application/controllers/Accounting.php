@@ -1527,4 +1527,41 @@ class Accounting extends MY_Controller
         return $out;
     }
 
+    // Open Invoices
+    private function prepare_openinvoice_content() {
+        $filtr=array(
+            'paid'=>1,
+        );
+        /* count, sums */
+        $dats=$this->order_model->get_count_monitor($filtr);
+        // $totals=$this->order_model->get_totals_monitor();
+        $searchform=$this->load->view('finopenivoice/monitor_search_view',array(),TRUE);
+
+        $perpage_data=array(
+            'fieldname'=>'perpagetab4',
+            'default_value'=>$this->order_profit_perpage,
+            'numrecs'=>$this->perpage_options,
+        );
+
+        $perpage_view=$this->load->view('html/number_records', $perpage_data, TRUE);
+
+        $options=array(
+            /* 'perpage'=>  Finance::ORDER_PERORDER, */
+            'perpage_view'=>$perpage_view,
+            'order'=>'order_num',
+            'direc'=>'desc',
+            'total'=>$dats['total_rec'],
+            'curpage'=>0,
+            'total_inv'=>'',
+            'qty_inv'=>'',
+            'total_paid'=>'',
+            'qty_paid'=>'',
+            'searchform'=>$searchform,
+            'paid'=>1,
+        );
+
+        $content=$this->load->view('finopenivoice/paymonitor_view',$options,TRUE);
+        return $content;
+    }
+
 }
