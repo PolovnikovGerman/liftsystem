@@ -17,6 +17,10 @@ function init_page(objid) {
             $("#profitordesview").show();
             init_profit_orders();
             break;
+        case 'profitdatesview':
+            $("#profitdatesview").show();
+            init_profit_date();
+            break;
     }
 
 }

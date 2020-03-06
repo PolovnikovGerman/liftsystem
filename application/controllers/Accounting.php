@@ -49,6 +49,10 @@ class Accounting extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/profitordesview.js');
                 $content_options['profitordesview'] = $this->_prepare_order_profit($brand, $top_menu);
+            } elseif ($row['item_link']=='#profitdatesview') {
+                $head['styles'][]=array('style'=>'/css/accounting/profitdatesview.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/profitdatesview.js');
+                $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -518,6 +522,23 @@ class Accounting extends MY_Controller
             $this->ajaxResponse($mdata,$error);
         }
     }
+    // Profit (Date)
+    public function profit_calendar() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $month=$this->input->post('month');
+            $year=$this->input->post('year');
+            $brand = $this->input->post('brand');
+            $this->load->model('orders_model');
+            $orders=$this->orders_model->orders_by_date($month,$year, $brand);
+            $orders['cnt']=count($orders['data_results']);
+            $mdata['monthtotal']=$this->load->view('profit_calend/ajax_totalbymonth_view',$orders['month_results'],TRUE);
+            $mdata['content']=$this->load->view('profit_calend/ajax_monthcalend_view',$orders,TRUE);
+            $mdata['monthname']=$orders['current_month'];
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
@@ -567,6 +588,486 @@ class Accounting extends MY_Controller
         $content=$this->load->view('orderprofit/admin_head_view',$view_options,TRUE);
 
         return $content;
+    }
+
+    private function _prepare_profitcalend_content($brand, $top_menu) {
+        $this->load->model('orders_model');
+        $dats=$this->orders_model->get_profit_limitdates($brand);
+        $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
+        /* Cur Month */
+        if (isset($dats['max_year'])) {
+            if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
+                /* We start new month but there are no orders in this month */
+                $dats['cur_month']=$dats['max_month'];
+                $dats['cur_year']=$dats['max_year'];
+            } else {
+                $dats['cur_month']=date('m');
+                $dats['cur_year']=date('Y');
+            }
+        } else {
+            $dats['max_month']=date('m');
+            $dats['max_year']=date('Y');
+            $dats['max_date']=time();
+            $dats['cur_month']=date('m');
+            $dats['cur_year']=date('Y');
+        }
+        /* Build curent year scale with month */
+
+        $curyear_months=$this->orders_model->get_months($dats['cur_year'],$dats['cur_month'], $brand);
+        $year_links=$this->load->view('accounting/protidate_yearlinks_view',array('lnks'=>$curyear_months,'numrec'=>count($curyear_months)),TRUE);
+        $slider=$this->_prepare_profit_dateslider($brand, 1);
+        $yearview=$slider['content'];
+        $slider_width=$slider['slider_width'];
+        $margin=$slider['margin'];
+        // Get Previous Month
+        $datefiltr=new DateTime('NOW');
+        $datefiltr->modify('-1 Month');
+
+        $options=array(
+            'legend'=>$legend,
+            'max_year'=>$dats['max_year'],
+            'month_name'=>date('F',$dats['max_date']),
+            'max_month'=>$dats['max_month'],
+            'min_year'=>$dats['min_year'],
+            'min_month'=>$dats['min_month'],
+            'year_links'=>$year_links,
+            'cur_month'=>$dats['cur_month'],
+            'cur_year'=>$dats['cur_year'],
+            'yearsview'=>$yearview,
+            'slider_width'=>$slider_width,
+            'start_margin'=>($margin>0 ? 0 : ceil($margin)),
+            'showgrowth'=>1,
+            'showhidegrowth'=>'[hide growth]',
+            'montfilterend'=>$datefiltr->format('m'),
+        );
+        $content=$this->load->view('accounting/profit_date_view',$options,TRUE);
+        return $content;
+    }
+
+    private function _prepare_profit_dateslider($brand, $showgrowth=1) {
+        $yearview='';
+        $numyears=0;
+        $this->load->model('orders_model');
+        $dats=$this->orders_model->get_profit_limitdates($brand);
+        if (isset($dats['max_year'])) {
+            if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
+                /* We start new month but there are no orders in this month */
+                $dats['cur_month']=$dats['max_month'];
+                $dats['cur_year']=$dats['max_year'];
+            } else {
+                $dats['cur_month']=date('m');
+                $dats['cur_year']=date('Y');
+            }
+        } else {
+            $dats['max_month']=date('m');
+            $dats['max_year']=date('Y');
+            $dats['max_date']=time();
+            $dats['cur_month']=date('m');
+            $dats['cur_year']=date('Y');
+        }
+        $prvdata = [];
+        for($i=$dats['min_year']; $i<=$dats['cur_year'] ; $i++) {
+            // Get Data about year
+            if ($numyears==0) {
+                $ydata=$this->orders_model->calendar_totals($i, $brand);
+            } else {
+                $ydata=$this->orders_model->calendar_totals($i, $brand, $prvdata,1);
+            }
+            if ($i!=$dats['cur_year']) {
+                $prvdata=$ydata;
+            }
+            if ($numyears==0 || $i==$dats['cur_year']) {
+                $voptions=array(
+                    'year'=>$i,
+                    'title'=>($i==$dats['cur_year'] ? $i.' - Year to Date' : $i),
+                    'total_orders'=>$ydata['total_orders'],
+                    'revenue'=>$ydata['revenue'],
+                    'avg_revenue'=>$ydata['avg_revenue'],
+                    'profit'=>$ydata['profit'],
+                    'avg_profit'=>$ydata['avg_profit'],
+                    'profit_class'=>$ydata['profit_class'],
+                    'avg_profit_perc'=>$ydata['avg_profit_perc'],
+                    'devider'=>($i==$dats['cur_year'] ? 0 : 1),
+                    'growthview'=>0,
+                );
+                $yearview.=$this->load->view('accounting/year_data_view', $voptions, TRUE);
+            } else {
+                $voptions=array(
+                    'year'=>$i,
+                    'title'=>($i==$dats['cur_year'] ? $i.' - Year to Date' : $i),
+                    'total_orders'=>$ydata['total_orders'],
+                    'revenue'=>$ydata['revenue'],
+                    'avg_revenue'=>$ydata['avg_revenue'],
+                    'profit'=>$ydata['profit'],
+                    'avg_profit'=>$ydata['avg_profit'],
+                    'profit_class'=>$ydata['profit_class'],
+                    'avg_profit_perc'=>$ydata['avg_profit_perc'],
+                    'devider'=>1,
+                    'growthview'=>0,
+                );
+                if ($showgrowth==1) {
+                    $voptions['growthview']=1;
+                    // Growth title
+                    $prvyear=$i-1;
+                    $grtitle="'".substr($prvyear,2,2)."'-'".substr($i,2,2)." Growth";
+                    $voptions['growthtitle']=$grtitle;
+                    $growth=$ydata['growth'];
+                    $voptions['growth_orderclass']=$voptions['growth_revenueclass']=$voptions['growth_avgprofitclass']='';
+                    if ($growth['order_num']==0) {
+                        $voptions['growth_ordernum']='&mdash;';
+                        $voptions['growth_orderprc']='&mdash;';
+                    } else {
+                        if ($growth['order_num']>0) {
+                            $voptions['growth_ordernum']=QTYOutput($growth['order_num']);
+                            $voptions['growth_orderprc']=$growth['order_proc'].'%';
+                        } else {
+                            $voptions['growth_ordernum']='('.abs(QTYOutput($growth['order_num'])).')';
+                            $voptions['growth_orderprc']='('.abs($growth['order_proc']).'%)';
+                            $voptions['growth_orderclass']='color_red';
+                        }
+                    }
+                    if ($growth['revenue_num']==0) {
+                        $voptions['growth_revenuenum']='&mdash;';
+                        $voptions['growth_revenueprc']='&mdash;';
+                    } else {
+                        if ($growth['revenue_num']>0) {
+                            $voptions['growth_revenuenum']=MoneyOutput($growth['revenue_num'],0);
+                            $voptions['growth_revenueprc']=$growth['revenue_perc'].'%';
+                        } else {
+                            $voptions['growth_revenuenum']='('.MoneyOutput(abs($growth['revenue_num']),0).')';
+                            $voptions['growth_revenueprc']='('.abs($growth['revenue_perc']).'%)';
+                            $voptions['growth_revenueclass']='color_red';
+                        }
+                    }
+                    $voptions['growth_avgrevenueclass']=$voptions['growth_profitclass']='';
+                    if ($growth['avgrevenue_num']==0) {
+                        $voptions['growth_avgrevenuenum']='&mdash;';
+                        $voptions['growth_avgrevenueprc']='&mdash;';
+                    } else {
+                        if ($growth['avgrevenue_num']>0) {
+                            $voptions['growth_avgrevenuenum']=MoneyOutput($growth['avgrevenue_num'],0);
+                            $voptions['growth_avgrevenueprc']=$growth['avgrevenue_perc'].'%';
+                        } else {
+                            $voptions['growth_avgrevenuenum']='('.MoneyOutput(abs($growth['avgrevenue_num']),0).')';
+                            $voptions['growth_avgrevenueprc']='('.abs($growth['avgrevenue_perc']).'%)';
+                            $voptions['growth_avgrevenueclass']='color_red';
+                        }
+                    }
+                    if ($growth['avgrevenue_num']==0) {
+                        $voptions['growth_avgrevenuenum']='&mdash;';
+                        $voptions['growth_avgrevenueprc']='&mdash;';
+                    } else {
+                        if ($growth['avgrevenue_num']>0) {
+                            $voptions['growth_avgrevenuenum']=MoneyOutput($growth['avgrevenue_num'],0);
+                            $voptions['growth_avgrevenueprc']=$growth['avgrevenue_perc'].'%';
+                        } else {
+                            $voptions['growth_avgrevenuenum']='('.MoneyOutput(abs($growth['avgrevenue_num']),0).')';
+                            $voptions['growth_avgrevenueprc']='('.abs($growth['avgrevenue_perc']).'%)';
+                            $voptions['growth_avgrevenueclass']='color_red';
+                        }
+                    }
+                    if ($growth['profit_num']==0) {
+                        $voptions['growth_profitnum']='&mdash;';
+                        $voptions['growth_profitprc']='&mdash;';
+                    } else {
+                        if ($growth['profit_num']>0) {
+                            $voptions['growth_profitnum']=MoneyOutput($growth['profit_num'],0);
+                            $voptions['growth_profitprc']=$growth['profit_perc'].'%';
+                        } else {
+                            $voptions['growth_profitnum']='('.MoneyOutput(abs($growth['profit_num']),0).')';
+                            $voptions['growth_profitprc']='('.abs($growth['profit_perc']).'%)';
+                            $voptions['growth_profitclass']='color_red';
+                        }
+                    }
+
+                    if ($growth['avgprofit_num']==0) {
+                        $voptions['growth_avgprofitnum']='&mdash;';
+                        $voptions['growth_avgprofitprc']='&mdash;';
+                    } else {
+                        if ($growth['avgprofit_num']>0) {
+                            $voptions['growth_avgprofitnum']=MoneyOutput($growth['avgprofit_num'],0);
+                            $voptions['growth_avgprofitprc']=$growth['avgprofit_perc'].'%';
+                        } else {
+                            $voptions['growth_avgprofitnum']='('.MoneyOutput(abs($growth['avgprofit_num']),0).')';
+                            $voptions['growth_avgprofitprc']='('.abs($growth['avgprofit_perc']).'%)';
+                            $voptions['growth_avgprofitclass']='color_red';
+                        }
+                    }
+                    $voptions['growth_aveprcclass']='';
+                    if ($growth['ave_num']==0) {
+                        $voptions['growth_avenum']='&mdash;';
+                        $voptions['growth_aveprc']='&mdash;';
+                    } else {
+                        if ($growth['ave_num']>0) {
+                            $voptions['growth_avenum']=$growth['ave_num'].'%';
+                            $voptions['growth_aveprc']=$growth['ave_proc'].'%';
+                        } else {
+                            $voptions['growth_avenum']='('.abs($growth['ave_num']).'%)';
+                            $voptions['growth_aveprc']='('.abs($growth['ave_proc']).'%)';
+                            $voptions['growth_aveprcclass']='color_red';
+                        }
+                    }
+                }
+                $yearview.=$this->load->view('accounting/year_data_view', $voptions, TRUE);
+            }
+            $numyears++;
+        }
+        if ($numyears>1) {
+            // Calc Pace to Hit
+            $pacetotal=$this->orders_model->orders_pacetohit($dats['cur_year'], $brand, $prvdata, 1);
+        } else {
+            // Calc Pace to Hit
+            $pacetotal=$this->orders_model->orders_pacetohit($dats['cur_year'], $brand);
+        }
+
+        $voptions=array(
+            'year'=>$dats['cur_year'],
+            'title'=>$dats['cur_year'].' On Pace to Hit',
+            'total_orders'=>$pacetotal['total_orders'],
+            'revenue'=>$pacetotal['revenue'],
+            'avg_revenue'=>$pacetotal['avg_revenue'],
+            'profit'=>$pacetotal['profit'],
+            'avg_profit'=>$pacetotal['avg_profit'],
+            'profit_class'=>$pacetotal['profit_class'],
+            'avg_profit_perc'=>$pacetotal['avg_profit_perc'],
+            'devider'=>0,
+            'growthview'=>0,
+        );
+        // On Pace Growth
+        $growth=$pacetotal['growth'];
+        if (!empty($growth) && $showgrowth==1) {
+            $voptions['growthview']=1;
+            $prvyear=$dats['cur_year']-1;
+            $grtitle="'".substr($prvyear,2,2)."'-'".substr($dats['cur_year'],2,2)." Growth";
+            $voptions['growthtitle']=$grtitle;
+            $voptions['growth_orderclass']=$voptions['growth_revenueclass']=$voptions['growth_avgprofitclass']='';
+            if ($growth['order_num']==0) {
+                $voptions['growth_ordernum']='&mdash;';
+                $voptions['growth_orderprc']='&mdash;';
+            } else {
+                if ($growth['order_num']>0) {
+                    $voptions['growth_ordernum']=QTYOutput($growth['order_num']);
+                    $voptions['growth_orderprc']=$growth['order_proc'].'%';
+                } else {
+                    $voptions['growth_ordernum']='('.QTYOutput(abs($growth['order_num'])).')';
+                    $voptions['growth_orderprc']='('.abs($growth['order_proc']).'%)';
+                    $voptions['growth_orderclass']='color_red';
+                }
+            }
+            if ($growth['revenue_num']==0) {
+                $voptions['growth_revenuenum']='&mdash;';
+                $voptions['growth_revenueprc']='&mdash;';
+            } else {
+                if ($growth['revenue_num']>0) {
+                    $voptions['growth_revenuenum']=MoneyOutput($growth['revenue_num'],0);
+                    $voptions['growth_revenueprc']=$growth['revenue_perc'].'%';
+                } else {
+                    $voptions['growth_revenuenum']='('.MoneyOutput(abs($growth['revenue_num']),0).')';
+                    $voptions['growth_revenueprc']='('.abs($growth['revenue_perc']).'%)';
+                    $voptions['growth_revenueclass']='color_red';
+                }
+            }
+            $voptions['growth_avgrevenueclass']=$voptions['growth_profitclass']='';
+            if ($growth['avgrevenue_num']==0) {
+                $voptions['growth_avgrevenuenum']='&mdash;';
+                $voptions['growth_avgrevenueprc']='&mdash;';
+            } else {
+                if ($growth['avgrevenue_num']>0) {
+                    $voptions['growth_avgrevenuenum']=MoneyOutput($growth['avgrevenue_num'],0);
+                    $voptions['growth_avgrevenueprc']=$growth['avgrevenue_perc'].'%';
+                } else {
+                    $voptions['growth_avgrevenuenum']='('.MoneyOutput(abs($growth['avgrevenue_num']),0).')';
+                    $voptions['growth_avgrevenueprc']='('.abs($growth['avgrevenue_perc']).'%)';
+                    $voptions['growth_avgrevenueclass']='color_red';
+                }
+            }
+            if ($growth['avgrevenue_num']==0) {
+                $voptions['growth_avgrevenuenum']='&mdash;';
+                $voptions['growth_avgrevenueprc']='&mdash;';
+            } else {
+                if ($growth['avgrevenue_num']>0) {
+                    $voptions['growth_avgrevenuenum']=MoneyOutput($growth['avgrevenue_num'],0);
+                    $voptions['growth_avgrevenueprc']=$growth['avgrevenue_perc'].'%';
+                } else {
+                    $voptions['growth_avgrevenuenum']='('.MoneyOutput(abs($growth['avgrevenue_num']),0).')';
+                    $voptions['growth_avgrevenueprc']='('.abs($growth['avgrevenue_perc']).'%)';
+                    $voptions['growth_avgrevenueclass']='color_red';
+                }
+            }
+            if ($growth['profit_num']==0) {
+                $voptions['growth_profitnum']='&mdash;';
+                $voptions['growth_profitprc']='&mdash;';
+            } else {
+                if ($growth['profit_num']>0) {
+                    $voptions['growth_profitnum']=MoneyOutput($growth['profit_num'],0);
+                    $voptions['growth_profitprc']=$growth['profit_perc'].'%';
+                } else {
+                    $voptions['growth_profitnum']='('.MoneyOutput(abs($growth['profit_num']),0).')';
+                    $voptions['growth_profitprc']='('.abs($growth['profit_perc']).'%)';
+                    $voptions['growth_profitclass']='color_red';
+                }
+            }
+
+            if ($growth['avgprofit_num']==0) {
+                $voptions['growth_avgprofitnum']='&mdash;';
+                $voptions['growth_avgprofitprc']='&mdash;';
+            } else {
+                if ($growth['avgprofit_num']>0) {
+                    $voptions['growth_avgprofitnum']=MoneyOutput($growth['avgprofit_num'],0);
+                    $voptions['growth_avgprofitprc']=$growth['avgprofit_perc'].'%';
+                } else {
+                    $voptions['growth_avgprofitnum']='('.MoneyOutput(abs($growth['avgprofit_num']),0).')';
+                    $voptions['growth_avgprofitprc']='('.abs($growth['avgprofit_perc']).'%)';
+                    $voptions['growth_avgprofitclass']='color_red';
+                }
+            }
+            $voptions['growth_aveprcclass']='';
+            if ($growth['ave_num']==0) {
+                $voptions['growth_avenum']='&mdash;';
+                $voptions['growth_aveprc']='&mdash;';
+            } else {
+                if ($growth['ave_num']>0) {
+                    $voptions['growth_avenum']=$growth['ave_num'].'%';
+                    $voptions['growth_aveprc']=$growth['ave_proc'].'%';
+                } else {
+                    $voptions['growth_avenum']='('.abs($growth['ave_num']).'%)';
+                    $voptions['growth_aveprc']='('.abs($growth['ave_proc']).'%)';
+                    $voptions['growth_aveprcclass']='color_red';
+                }
+            }
+        }
+        $yearview.=$this->load->view('accounting/year_data_view', $voptions, TRUE);
+        $numyears++;
+        // Goals
+        $goptions=array(
+            'year'=>$dats['cur_year'],
+            'title'=>$dats['cur_year'].' - Goals',
+            'total_orders'=>$pacetotal['goal_orders'],
+            'revenue'=>$pacetotal['goal_revenue'],
+            'avg_revenue'=>$pacetotal['goal_avgrevenue'],
+            'profit'=>$pacetotal['goal_profit'],
+            'avg_profit'=>$pacetotal['goal_avgprofit'],
+            'profit_class'=>$pacetotal['goal_profit_class'],
+            'avg_profit_perc'=>$pacetotal['goal_avgprofit_perc'],
+            'growthview'=>0,
+        );
+        $growth=$pacetotal['growth_goals'];
+        if (!empty($growth) && $showgrowth==1) {
+            $goptions['growthview']=1;
+            $prvyear=$dats['cur_year']-1;
+            $grtitle="'".substr($prvyear,2,2)."'-'".substr($dats['cur_year'],2,2)." Growth";
+            $goptions['growthtitle']=$grtitle;
+            $goptions['growth_orderclass']=$goptions['growth_revenueclass']=$goptions['growth_avgprofitclass']='';
+            if ($growth['order_num']==0) {
+                $goptions['growth_ordernum']='&mdash;';
+                $goptions['growth_orderprc']='&mdash;';
+            } else {
+                if ($growth['order_num']>0) {
+                    $goptions['growth_ordernum']=QTYOutput($growth['order_num']);
+                    $goptions['growth_orderprc']=$growth['order_proc'].'%';
+                } else {
+                    $goptions['growth_ordernum']='('.QTYOutput(abs($growth['order_num'])).')';
+                    $goptions['growth_orderprc']='('.abs($growth['order_proc']).'%)';
+                    $goptions['growth_orderclass']='color_red';
+                }
+            }
+            if ($growth['revenue_num']==0) {
+                $goptions['growth_revenuenum']='&mdash;';
+                $goptions['growth_revenueprc']='&mdash;';
+            } else {
+                if ($growth['revenue_num']>0) {
+                    $goptions['growth_revenuenum']=MoneyOutput($growth['revenue_num'],0);
+                    $goptions['growth_revenueprc']=$growth['revenue_perc'].'%';
+                } else {
+                    $goptions['growth_revenuenum']='('.MoneyOutput(abs($growth['revenue_num']),0).')';
+                    $goptions['growth_revenueprc']='('.abs($growth['revenue_perc']).'%)';
+                    $goptions['growth_revenueclass']='color_red';
+                }
+            }
+            $goptions['growth_avgrevenueclass']=$goptions['growth_profitclass']='';
+            if ($growth['avgrevenue_num']==0) {
+                $goptions['growth_avgrevenuenum']='&mdash;';
+                $goptions['growth_avgrevenueprc']='&mdash;';
+            } else {
+                if ($growth['avgrevenue_num']>0) {
+                    $goptions['growth_avgrevenuenum']=MoneyOutput($growth['avgrevenue_num'],0);
+                    $goptions['growth_avgrevenueprc']=$growth['avgrevenue_perc'].'%';
+                } else {
+                    $goptions['growth_avgrevenuenum']='('.MoneyOutput(abs($growth['avgrevenue_num']),0).')';
+                    $goptions['growth_avgrevenueprc']='('.abs($growth['avgrevenue_perc']).'%)';
+                    $goptions['growth_avgrevenueclass']='color_red';
+                }
+            }
+            if ($growth['profit_num']==0) {
+                $goptions['growth_profitnum']='&mdash;';
+                $goptions['growth_profitprc']='&mdash;';
+            } else {
+                if ($growth['profit_num']>0) {
+                    $goptions['growth_profitnum']=MoneyOutput($growth['profit_num'],0);
+                    $goptions['growth_profitprc']=$growth['profit_perc'].'%';
+                } else {
+                    $goptions['growth_profitnum']='('.MoneyOutput(abs($growth['profit_num']),0).')';
+                    $goptions['growth_profitprc']='('.abs($growth['profit_perc']).'%)';
+                    $goptions['growth_profitclass']='color_red';
+                }
+            }
+
+            if ($growth['avgprofit_num']==0) {
+                $goptions['growth_avgprofitnum']='&mdash;';
+                $goptions['growth_avgprofitprc']='&mdash;';
+            } else {
+                if ($growth['avgprofit_num']>0) {
+                    $goptions['growth_avgprofitnum']=MoneyOutput($growth['avgprofit_num'],0);
+                    $goptions['growth_avgprofitprc']=$growth['avgprofit_perc'].'%';
+                } else {
+                    $goptions['growth_avgprofitnum']='('.MoneyOutput(abs($growth['avgprofit_num']),0).')';
+                    $goptions['growth_avgprofitprc']='('.abs($growth['avgprofit_perc']).'%)';
+                    $goptions['growth_avgprofitclass']='color_red';
+                }
+            }
+            $goptions['growth_aveprcclass']='';
+            if ($growth['ave_num']==0) {
+                $goptions['growth_avenum']='&mdash;';
+                $goptions['growth_aveprc']='&mdash;';
+            } else {
+                if ($growth['ave_num']>0) {
+                    $goptions['growth_avenum']=$growth['ave_num'].'%';
+                    $goptions['growth_aveprc']=$growth['ave_proc'].'%';
+                } else {
+                    $goptions['growth_avenum']='('.abs($growth['ave_num']).'%)';
+                    $goptions['growth_aveprc']='('.abs($growth['ave_proc']).'%)';
+                    $goptions['growth_aveprcclass']='color_red';
+                }
+            }
+        }
+        $yearview.=$this->load->view('accounting/goal_data_view', $goptions, TRUE);
+        $numyears++;
+        // Reminder
+        $roptions=array(
+            'days'=>$pacetotal['reminder_days'],
+            'orders'=>$pacetotal['reminder_orders'],
+            'profit'=>$pacetotal['reminder_profit'],
+            'revenue'=>$pacetotal['reminder_revenue'],
+            'totaldays'=>$pacetotal['bankdays'],
+            'reminder_prc'=>$pacetotal['reminder_prc'],
+        );
+        $yearview.=$this->load->view('accounting/reminder_data_view', $roptions, TRUE);
+        // Calc total length
+        if ($showgrowth==1) {
+            $slider_width=($dats['cur_year']-$dats['min_year'])*246+547;
+        } else {
+            $slider_width=($dats['cur_year']-$dats['min_year']+1)*132+364; // +363;
+        }
+        // $slider_width=$numyears*172+83;
+        $margin=(918-$slider_width);
+        /*  margin-left: -1164px;
+            width: 2064px; */
+        $out=array(
+            'content'=>$yearview,
+            'slider_width'=>$slider_width,
+            'margin'=>$margin,
+        );
+        return $out;
     }
 
 }

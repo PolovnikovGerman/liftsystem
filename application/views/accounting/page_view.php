@@ -10,6 +10,9 @@
         <?php if (isset($profitordesview)) { ?>
             <div class="accountcontentarea" id="profitordesview" style="display: none;"><?=$profitordesview?></div>
         <?php } ?>
+        <?php if (isset($profitdatesview)) { ?>
+            <div class="accountcontentarea" id="profitdatesview" style="display: none;"><?=$profitdatesview?></div>
+        <?php } ?>
     </div>
 </div>
 
