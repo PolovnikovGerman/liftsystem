@@ -23,8 +23,8 @@
     <div class="monitor-head inner">
         <div class="adminsearchform">
             <?=$searchform?>
-            <div class="accounting_pagination" id="paymentmonitor_pagination"></div>
         </div>
+        <div class="accounting_pagination" id="paymentmonitor_pagination"></div>
     </div>
     <div class="paymonitor-table">
         <div class="paymonitor-title">

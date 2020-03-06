@@ -23,8 +23,7 @@ function init_page(objid) {
             break;
         case 'openinvoicesview':
             $("#openinvoicesview").show();
-            //
-            // init_paymonitor();
+            init_paymonitor();
             break;
     }
 

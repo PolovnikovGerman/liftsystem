@@ -829,7 +829,110 @@ class Accounting extends MY_Controller
         }
         show_404();
     }
+    // Payments Monitor
+    public function adminpaymonitordat() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','asc');
+            $paid=$this->input->post('paid',0);
+            $search=$this->input->post('search');
+            $offset=$offset*$limit;
+            $brand = $this->input->post('brand');
+            /* Get data about orders */
+            $filtr=array(
+                'paid'=>$paid,
+                'search'=>$search,
+                'brand' => $brand,
+            );
+            $totals=$this->orders_model->get_totals_monitor($brand);
+            $mdata['not_invoiced']=$totals['sum_invoice'];
+            $mdata['not_paid']=$totals['sum_paid'];
+            $mdata['qty_inv']=$totals['qty_inv'];
+            $mdata['qty_paid']=$totals['qty_paid'];
+            $orders=$this->orders_model->get_paymonitor_data($filtr,$order_by,$direct,$limit,$offset, $this->USR_ID);
+            if (count($orders)==0) {
+                $mdata['content']=$this->load->view('finopenivoice/empty_monitordat_view',array(),TRUE);
+            } else {
+                $mdata['content']=$this->load->view('finopenivoice/monitordat_view',array('orders'=>$orders),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
+    public function calc_monitor() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $paid = ifset($postdata, 'paid', '');
+            $search = ifset($postdata, 'search', '');
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $filtr=array(
+                    'paid'=>$paid,
+                    'search'=>$search,
+                    'brand' => $brand,
+                );
+                $res=$this->orders_model->get_count_monitor($filtr);
+                $mdata['totals']=$res['total_rec'];
+                if ($paid==1) {
+                    $mdata['paidlink']='[hide paid]';
+                } elseif ($paid==0) {
+                    $mdata['paidlink']='[show paid]';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+    /* Event CLICK on INV */
+    function inviteorder() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $is_invited=$this->input->post('is_invited');
+            $brand = $this->input->post('brand');
+            $res=$this->orders_model->ordinvite($order_id,$is_invited);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $order_data=$this->orders_model->get_monitor_data($order_id);
+                $res=$this->orders_model->get_totals_monitor($brand);
+                $mdata['not_invoiced']=$res['sum_invoice'];
+                $mdata['not_paid']=$res['sum_paid'];
+                $mdata['qty_inv']=$res['qty_inv'];
+                $mdata['qty_paid']=$res['qty_paid'];
+                $mdata['content']=$this->load->view('finopenivoice/paymonitor_line_view',array('order'=>$order_data),TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    /* Event CLICK on PAID */
+    function payorder() {
+        if ($this->func->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $is_paid=$this->input->post('is_paid');
+            $res=$this->order_model->orderpay($order_id,$is_paid);
+            if ($res['result']==Finance::ERR_FLAG) {
+                $error=$res['msg'];
+            } else {
+                $mdata['content']=$this->load->view('finopenivoice/paymonitor_line_view',array('order'=>$res['order']),TRUE);
+                $mdata['not_invoiced']=$res['invoice'];
+                $mdata['not_paid']=$res['paid'];
+                $mdata['qty_inv']=$res['qty_inv'];
+                $mdata['qty_paid']=$res['qty_paid'];
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+    }
 
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {

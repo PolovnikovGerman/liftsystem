@@ -3,6 +3,12 @@
     margin-top: 10px;
     width: 1003px;
 }
+.paymonitor-content select {
+    float: left;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+}
 .monitor-head {
     clear: both;
     float: left;
@@ -57,6 +63,12 @@
     margin-left: 48px;
     margin-top: 2px;
     width: 150px;
+}
+.showpaid > select {
+    height: 22px;
+    font-size: 12px;
+    width: 150px;
+    color: #000000;
 }
 .monitorsearch_form {
     width : 380px;
@@ -121,19 +133,22 @@ input.monitorsearch_input_active {
     width: 72px;
 }
 .paymonitor-title > .paymonitor-customer {
-    width: 162px;
+    width: 165px;
+}
+.paymonitor-title > .paymonitor_ccfee {
+    width: 28px;
 }
 .paymonitor-title > .paymonitor-inv {
-    width: 25px;
+    width: 30px;
 }
 .paymonitor-title > .paymonitor-revenue {
-    width: 116px;
+    width: 118px;
 }
 .paymonitor-title > .paymonitor-pay {
     width: 40px;
 }
 .paymonitor-title > .paymonitor-code {
-    width: 28px;
+    width: 42px;
 }
 .sortcalclnk {
     margin-left: 3px;
@@ -152,48 +167,62 @@ input.monitorsearch_input_active {
     border-left: 1px solid #919191;
     border-bottom: 1px solid #919191;
 }
-.paymonitor-numorder-dat {
-    color: #0000ff;
-    cursor: pointer;
-    float: left;
-    font-weight: bold;
-    padding-top: 4px;
-    width: 72px;
+.content-paymonutortable > .tr {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    width: 959px;
 }
-.paymonitor-approved-dat {
-    float: left;
-    width: 18px;
+.content-paymonutortable > .tr > div {
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
 }
-.paymonitor-approved-dat img {
+.content-paymonutortable > .tr > .paymonitor-approved-dat {
+    width: 18px;
+}
+.content-paymonutortable > .tr > .paymonitor-approved-dat img {
     width: 16px;
     height: 16px;
 }
-.paymonitor-approved-dat.attachview:hover{
+.content-paymonutortable > .tr > .paymonitor-numorder-dat {
+    color: #0000ff;
     cursor: pointer;
+    font-weight: bold;
+    width: 72px;
 }
-.paymonitor-orderdate-dat {
-    float : left;
-    padding-top: 4px;
+.content-paymonutortable > .tr > .paymonitor-orderdate-dat {
     width: 54px;
 }
-.paymonitor-customer-dat {
-    float: left;
+.content-paymonutortable > .tr > .paymonitor-customer-dat {
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 4px;
-    text-align: left;
-    width: 163px;
+    text-align: left!important;
+    width: 165px;
+}
+.content-paymonutortable > .tr > .paymonitor_ccfee_dat {
+    width: 28px;
+}
+.content-paymonutortable > .tr > .paymonitor_ccfee_dat img {
+    width: 24px;
+    height: 24px;
+}
+.content-paymonutortable > .tr > .paymonitor-revenue-dat {
+    width: 118px;
+}
+.content-paymonutortable > .tr > .paymonitor-inv-dat {
+    width: 30px;
+}
+
+.paymonitor-approved-dat.attachview:hover{
+    cursor: pointer;
 }
 .paymonitor-generalname {
     overflow: hidden;
     white-space: nowrap;
     width: 150px;
-}
-.paymonitor-revenue-dat {
-    float: left;
-    padding-top: 4px;
-    width: 118px;
 }
 .refund {
     float: left;
@@ -209,20 +238,6 @@ input.monitorsearch_input_active {
     float: left;
     padding-top: 1px;
     width: 37px;
-}
-.paymonitor_ccfee_dat {
-    float: left;
-    padding-top: 1px;
-    width: 27px;
-}
-.paymonitor_ccfee_dat img {
-    width: 24px;
-    height: 24px;
-}
-.paymonitor-inv-dat {
-    float: left;
-    padding-top: 4px;
-    width: 30px;
 }
 .paymonitor-pay-dat {
     float: left;

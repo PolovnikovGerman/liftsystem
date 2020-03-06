@@ -2864,4 +2864,305 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
+    /* Totals for Open Invoice page */
+    public function get_totals_monitor($brand) {
+        /* Totals for grey shape */
+        $empty_money='------';
+        $empty_qty='---';
+        $res=array(
+            'sum_invoice'=>$empty_money,
+            'sum_paid'=>$empty_money,
+            'qty_inv'=>$empty_qty,
+            'qty_paid'=>$empty_qty,
+        );
+
+        $this->db->select('count(order_id) as qty, sum(revenue) as sum_invoice',FALSE);
+        $this->db->from('v_paymonitor');
+        $this->db->where('is_invoiced',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $ordsum=$this->db->get()->row_array();
+        $res['sum_invoice']=(floatval($ordsum['sum_invoice'])==0 ? $empty_money : '$'.number_format($ordsum['sum_invoice'],2,'.',','));
+        $res['qty_inv']=$ordsum['qty'];
+
+        $this->db->select("count(order_id) as cnt_not_paid, sum(revenue-sum_amounts) as sum_debt");
+        $this->db->from("v_paymonitor");
+        $this->db->where('is_paid',0);
+        $this->db->where('(revenue-sum_amounts) > ',0);
+        $this->db->where('sum_amounts > ',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $ordsum=$this->db->get()->row_array();
+        $res['sum_paid']=(floatval($ordsum['sum_debt'])==0 ? $empty_money : '$'.number_format($ordsum['sum_debt'],2,'.',','));
+        $res['qty_paid']=$ordsum['cnt_not_paid'];
+        return $res;
+    }
+
+    /* Get data for payment monitor */
+    public function get_paymonitor_data($filtr, $order_by, $direct, $limit, $offset, $user_id) {
+        $this->load->model('user_model');
+        $userdata=$this->user_model->get_user_data($user_id);
+
+        $empty_money='------';
+        $this->db->select('*');
+        $this->db->from('v_paymonitor');
+        if (isset($filtr['paid'])) {
+            if ($filtr['paid']==1) {
+                $this->db->where('(is_invoiced=0 or is_canceled=1)');
+                //$this->db->or_where('is_canceled',1);
+            } elseif ($filtr['paid']==2) {
+                $this->db->where('is_paid', 0);
+                $this->db->where('(revenue-sum_amounts) > ',0);
+                $this->db->where('is_invoiced',1);
+            } elseif ($filtr['paid']==4) {
+                $this->db->where('order_approved',1);
+                $this->db->where('is_invoiced',0);
+            }
+        }
+
+        if (isset($filtr['search']) && $filtr['search']!='') {
+            $this->db->like('concat(ucase(customer_name),order_num) ',strtoupper($filtr['search']));
+        }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('brand', $filtr['brand']);
+        }
+        $this->db->limit($limit, $offset);
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+
+        $out_arr=array();
+
+        foreach ($res as $row) {
+            $row['add_payment']='';
+            $row['invoiced']=$row['not_invoiced']=$row['not_paid']=$empty_money;
+            $row['paid_class']='';
+            $row['cccheck']='&nbsp;';
+            $row['invpay_class']='';
+            if (floatval($row['cc_fee'])==0) {
+                $row['cccheck']='<img src="/img/icons/check_symbol.png" alt="No CC FEE" title="No CC FEE"/>';
+            }
+            $row['chkinv']=$row['chkpaym']='';
+            $row['refund']='';
+            if ($row['is_invoiced']==0) {
+                $row['not_invoiced']=($row['revenue']==0 ? $empty_money : '$'.number_format($row['revenue'],2,'.',','));
+            } else {
+                $row['chkinv']="checked='checked'";
+                $row['invoiced']=($row['revenue']==0 ? $empty_money : number_format($row['revenue'],2,'.',','));
+            }
+            if ($row['is_paid']==1) {
+                $row['chkpaym']="checked='checked'";
+                $row['paid_class']='paid';
+                $row['not_paid']='PAID';
+            } else {
+                if (floatval($row['sum_amounts'])>0) {
+                    $diff=floatval($row['revenue'])-floatval($row['sum_amounts']);
+                    if ($diff==0) {
+                        $row['chkpaym']="checked='checked'";
+                        $row['paid_class']='paid';
+                        $row['not_paid']='PAID';
+                    } else {
+                        if ($diff<0) {
+                            $row['refund']=$this->load->view('finopenivoice/refund_view',array('id'=>$row['order_id']),TRUE);
+                            $row['not_paid']='-$'.number_format(abs($diff),2,'.',',');
+                        } else {
+                            $row['not_paid']='$'.number_format($diff,2,'.',',');
+                        }
+                    }
+                }
+            }
+            if ($row['chkpaym']!='' && $row['is_invoiced']==0) {
+                $row['invpay_class']='paynotinvoice';
+            }
+            $sign=(floatval($row['profit'])<0 ? '-' : '');
+            if ($row['order_cog']=='') {
+                $row['profitclass']='deepblue';
+                $row['profit_percent']=$this->project_name;
+            } else {
+                $row['profit_percent']='';
+                $row['profitclass']='';
+                if ($row['revenue']!=0) {
+                    $profit_perc=$row['profit']/$row['revenue']*100;
+                    $row['profit_percent']=round($profit_perc,1);
+                    $row['profitclass']=orderProfitClass($profit_perc);
+                }
+            }
+            if (floatval($row['profit'])==0) {
+                $row['profit']=$empty_money;
+            } else {
+                if ($userdata['profit_view']=='Points') {
+                    $row['profit']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+                } else {
+                    $row['profit']=MoneyOutput($row['profit'],2);
+                }
+            }
+
+            $row['revenue']=($row['revenue']==0 ? $empty_money : number_format($row['revenue'],2,'.',','));
+            $row['order_date']=date('m/d/y',$row['order_date']);
+            if ($row['order_approved']==1) {
+                $row['approved']='<img src="/img/icons/bluestar.png" alt="Approved" class="monitorapproved" title="Attachments '.intval($row['cntdocs']).'"/>';
+            } else {
+                $row['approved']='<img src="/img/icons/whitestar.png" alt="Not approved"/>';
+            }
+            /* Refund button */
+            //$row['refund']=()
+            $out_arr[]=$row;
+        }
+        return $out_arr;
+    }
+
+    public function ordinvite($order_id,$is_invited) {
+        $res=array('result'=>$this->error_result, 'msg'=> $this->init_error_msg);
+        $this->db->set('is_invoiced',$is_invited);
+        $this->db->set('update_date',time());
+        $this->db->where('order_id',$order_id);
+        $this->db->update('ts_orders');
+        if ($this->db->affected_rows()==0) {
+            $res['msg']='Order not Invited. Try late';
+        } else {
+            $res['result']=$this->success_result;
+            $res['msg']='';
+        }
+        return $res;
+    }
+
+    public function orderpay($order_id,$is_paid) {
+        $res=array('result'=>0,'msg'=>'Test');
+        $this->db->set('is_paid',$is_paid);
+        $this->db->set('update_date',time());
+        if ($is_paid==0) {
+            $this->db->set('paid_sum',0);
+        }
+        $this->db->where('order_id',$order_id);
+        $this->db->update('ts_orders');
+        if ($this->db->affected_rows()==0) {
+            $res['msg']='Order not Paid. Try late';
+        } else {
+            /* Get ORDER */
+            $this->db->select('*');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id',$order_id);
+            $order=$this->db->get()->row_array();
+            if (!isset($order['order_id'])) {
+                $res['msg']='Unknown Order';
+            } else {
+                $res['msg']='';
+                $res['result']=1;
+                $empty_money='------';
+                $order['invoiced']=$order['not_invoiced']=$order['not_paid']=$empty_money;
+                $order['paid_class']='';
+                $order['chkinv']=$order['chkpaym']='';
+                $order['add_payment']='';
+                if ($order['is_invoiced']==0) {
+                    $order['not_invoiced']=($order['revenue']==0 ? $empty_money : '$'.number_format($order['revenue'],2,'.',','));
+                } else {
+                    $order['chkinv']="checked='checked'";
+                    // $order['add_payment']='<div class="add_payment" id="addpayment'.$order['order_id'].'">*</div>';
+                    $order['invoiced']=($order['revenue']==0 ? $empty_money : '$'.number_format($order['revenue'],2,'.',','));
+                    if ($order['is_paid']==0) {
+                        $sum_notpaid=floatval($order['revenue'])-floatval($order['paid_sum']);
+                        $order['not_paid']=($sum_notpaid==0 ? $empty_money : number_format($sum_notpaid,2,'.',','));
+                    } else {
+                        $order['add_payment']='';
+                        $order['chkpaym']="checked='checked'";
+                        $order['paid_class']='paid';
+                        $order['not_paid']='PAID';
+                    }
+                }
+                $sign=(floatval($order['profit'])<0 ? '-' : '');
+                if ($order['order_cog']=='') {
+                    $order['profitclass']='deepblue';
+                    $order['profit_percent']=$this->project_name;
+                } else {
+                    $order['profit_percent']='';
+                    $order['profitclass']='';
+                    if (floatval($order['revenue'])!=0) {
+                        $profit_percent=$order['profit']/$order['revenue']*100;
+                        $order['profit_percent']=round($profit_percent,1);
+                        $order['profitclass']=$this->profit_class($profit_percent);
+                    }
+                }
+                $order['profit']=(floatval($order['profit'])==0 ? $empty_money : $sign.'$'.number_format(abs($order['profit']),2,'.',','));
+                $order['revenue']=($order['revenue']==0 ? $empty_money : number_format($order['revenue'],2,'.',','));
+                $order['order_date']=($order['order_date']==0 ? '&nbsp' : date('m/d/y',$order['order_date']));
+                $order['revenue']=($order['revenue']==0 ? $empty_money : number_format($order['revenue'],2,'.',','));
+                if ($order['order_approved']==1) {
+                    $order['approved']='<img src="/img/bluestar.png" alt="Approved"/>';
+                } else {
+                    $order['approved']='<img src="/img/whitestar.png" alt="Not approved"/>';
+                }
+                $res['order']=$order;
+                $sums=$this->get_count_monitor(array());
+                $res['invoice']=$sums['sum_invoice'];
+                $res['paid']=$sums['sum_paid'];
+                $res['qty_inv']=$sums['qty_inv'];
+                $res['qty_paid']=$sums['qty_paid'];
+            }
+        }
+        return $res;
+    }
+
+    public function get_monitor_data($order_id) {
+        $empty_money='------';
+        $this->db->select('o.*, batch.sum_amounts');
+        $this->db->from('ts_orders o');
+        $this->db->join("(select order_id, sum(batch_amount) as sum_amounts from ts_order_batches group by order_id) as batch","batch.order_id=o.order_id","left");
+        $this->db->where('o.order_id',$order_id);
+        $order=$this->db->get()->row_array();
+        $order['add_payment']='';
+        $order['cccheck']='&nbsp;';
+        if (floatval($order['cc_fee'])==0) {
+            $order['cccheck']='<img src="/img/icons/check_symbol.png" alt="No CC FEE" title="No CC FEE"/>';
+        }
+        $order['not_invoiced']=$order['invoiced']=$order['not_paid']=$empty_money;
+        $order['paid_class']=$order['chkinv']=$order['chkpaym']='';
+        $order['invpay_class']='';
+        if ($order['is_invoiced']==1) {
+            $order['invoiced']=($order['revenue']==0 ? '' : '$'.number_format($order['revenue'],2,'.',','));
+            $order['chkinv']="checked='checked'";
+        } else {
+            $order['not_invoiced']=($order['revenue']==0 ? '' : '$'.number_format($order['revenue'],2,'.',','));
+        }
+        if ($order['is_paid']==1) {
+            $order['chkpaym']="checked='checked'";
+            $order['paid_class']='paid';
+            $order['not_paid']='PAID';
+        } else {
+            $diff=floatval($order['revenue'])-floatval($order['sum_amounts']);
+            if ($diff==0) {
+                $order['chkpaym']="checked='checked'";
+                $order['paid_class']='paid';
+                $order['not_paid']='PAID';
+            } else {
+                $order['not_paid']='$'.number_format($diff,2,'.',',');
+            }
+        }
+        if ($order['chkpaym']!='' && $order['is_invoiced']==0) {
+            $order['invpay_class']='paynotinvoice';
+        }
+        $sign=(floatval($order['profit'])<0 ? '-' : '');
+        if ($order['order_cog']=='') {
+            $order['profitclass']='deepblue';
+            $order['profit_percent']=$this->project_name;
+        } else {
+            $order['profit_percent']='';
+            $order['profitclass']='';
+            if (floatval($order['revenue'])!=0) {
+                $profit_percent=$order['profit']/$order['revenue']*100;
+                $order['profit_percent']=round($profit_percent,1);
+                $order['profitclass']=orderProfitClass($profit_percent);
+            }
+        }
+        $order['profit']=(floatval($order['profit'])==0 ? $empty_money : $sign.'$'.number_format(abs($order['profit']),2,'.',','));
+        $order['revenue']=($order['revenue']==0 ? $empty_money : number_format($order['revenue'],2,'.',','));
+        $order['order_date']=($order['order_date']==0 ? '&nbsp' : date('m/d/y',$order['order_date']));
+        if ($order['order_approved']==1) {
+            $order['approved']='<img src="/img/icons/bluestar.png" alt="Approved"/>';
+        } else {
+            $order['approved']='<img src="/img/icons/whitestar.png" alt="Not approved"/>';
+        }
+        return $order;
+    }
+
 }
