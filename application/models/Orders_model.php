@@ -3001,7 +3001,7 @@ Class Orders_model extends MY_Model
             $row['revenue']=($row['revenue']==0 ? $empty_money : number_format($row['revenue'],2,'.',','));
             $row['order_date']=date('m/d/y',$row['order_date']);
             if ($row['order_approved']==1) {
-                $row['approved']='<img src="/img/icons/bluestar.png" alt="Approved" class="monitorapproved" title="Attachments '.intval($row['cntdocs']).'"/>';
+                $row['approved']='<img src="/img/icons/bluestar.png" alt="Approved" class="monitorapproved" data-content="Attachments '.intval($row['cntdocs']).'"/>';
             } else {
                 $row['approved']='<img src="/img/icons/whitestar.png" alt="Not approved"/>';
             }
@@ -3191,6 +3191,89 @@ Class Orders_model extends MY_Model
             }
         }
         return $res;
+    }
+
+    public function update_ordernote($order_id,$order_note) {
+        $this->db->set('order_note',$order_note);
+        $this->db->set('update_date',time());
+        $this->db->where('order_id',$order_id);
+        $this->db->update('ts_orders');
+        return TRUE;
+    }
+
+    function order_data_profit($order) {
+        $empty_money='------';
+        $order['invoiced']=$order['not_invoiced']=$order['not_paid']=$empty_money;
+        $order['paid_class']='';
+        $order['chkinv']=$order['chkpaym']='';
+        $order['add_payment']='';
+        if ($order['is_invoiced']==0) {
+            $order['not_invoiced']=($order['revenue']==0 ? $empty_money : '$'.number_format($order['revenue'],2,'.',','));
+        } else {
+            $order['chkinv']="checked='checked'";
+            $order['add_payment']='<div class="add_payment" id="addpayment'.$order['order_id'].'">*</div>';
+
+            $order['invoiced']=($order['revenue']==0 ? $empty_money : number_format($order['revenue'],2,'.',','));
+            if ($order['is_paid']==0) {
+                $sum_notpaid=floatval($order['revenue'])-floatval($order['paid_sum']);
+                $order['not_paid']=($sum_notpaid==0 ? $empty_money : number_format($sum_notpaid,2,'.',','));
+            } else {
+                $order['add_payment']='';
+                $order['chkpaym']="checked='checked'";
+                $order['paid_class']='paid';
+                $order['not_paid']='PAID';
+            }
+        }
+        $sign=(floatval($order['profit'])<0 ? '-' : '');
+        if ($order['order_cog']=='') {
+            $order['profitclass']='deepblue';
+            $order['profit_percent']=$this->project_name;
+        } else {
+            $order['profit_percent']=($order['revenue']==0 ? '' : round($order['profit']/$order['revenue']*100,1));
+            $order['profitclass']=$this->morder->profit_class($order['profit_percent']);
+        }
+        $order['profit']=(floatval($order['profit'])==0 ? $empty_money : $sign.'$'.number_format(abs($order['profit']),2,'.',','));
+        $order['revenue']=($order['revenue']==0 ? $empty_money : number_format($order['revenue'],2,'.',','));
+        $order['order_date']=($order['order_date']==0 ? '&nbsp' : date('m/d/y',$order['order_date']));
+        if ($order['order_approved']==1) {
+            $order['approved']='<img src="/img/icons/bluestar.png" alt="Approved"/>';
+        } else {
+            $order['approved']='<img src="/img/icons/whitestar.png" alt="Not approved"/>';
+        }
+        $order['cccheck']='&nbsp;';
+        $order['invpay_class']='';
+        if (floatval($order['cc_fee'])==0) {
+            $order['cccheck']='<img src="/img/icons/check_symbol.png" alt="No CC FEE" title="No CC FEE"/>';
+        }
+        if ($order['chkpaym']!='' && $order['is_invoiced']==0) {
+            $order['invpay_class']='paynotinvoice';
+        }
+        return $order;
+    }
+
+    public function get_order_artattachs($order_id) {
+        $this->db->select('ad.artwork_proof_id as orderdoc_id, a.order_id, ad.approved_time as upd_time, proof_name as doc_link');
+        $this->db->from('ts_artwork_proofs ad');
+        $this->db->join('ts_artworks a','a.artwork_id=ad.artwork_id');
+        $this->db->where('a.order_id',$order_id);
+        $this->db->where('ad.approved',1);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $path_file=$this->config->item('artwork_proofs_relative');
+        foreach ($res as $row) {
+            $row['upd_time']=date('m/d/Y H:i:s',  strtotime($row['upd_time']));
+            $row['doc_name']=str_replace($path_file,'',$row['doc_link']);
+            $out[]=$row;
+        }
+        $this->db->select('*');
+        $this->db->from('ts_order_docs');
+        $this->db->where('order_id',$order_id);
+        $docres=$this->db->get()->result_array();
+        foreach ($docres as $row) {
+            $row['upd_time']=date('m/d/Y H:i:s',  strtotime($row['upd_time']));
+            $out[]=$row;
+        }
+        return $out;
     }
 
 }

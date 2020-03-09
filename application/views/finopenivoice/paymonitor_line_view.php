@@ -2,10 +2,8 @@
     <?=$order['approved']?>
 </div>
 <div class="paymonitor-orderdate-dat"><?=$order['order_date']?></div>
-<div class="paymonitor-numorder-dat">
-    <a href="javascript:void(0);" class="<?=$order['profitclass']?>prof  <?=$order['invpay_class']?>" title="<?='Profit '.$order['profit'].'<br/>Profit % '.$order['profit_percent']?>">
-        <?=$order['order_num'] ?>
-    </a>
+<div class="paymonitor-numorder-dat <?=$order['profitclass']?>prof  <?=$order['invpay_class']?>" data-content="<?='Profit '.$order['profit'].'<br/>Profit % '.$order['profit_percent']?>">
+    <?=$order['order_num'] ?>
 </div>
 
 <div class="paymonitor-customer-dat <?=$order['invpay_class']?>" data-content="<?=$order['customer_name']?>">

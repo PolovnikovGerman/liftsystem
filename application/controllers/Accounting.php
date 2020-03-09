@@ -1135,6 +1135,36 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function save_ordernote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $order_note=$this->input->post('order_note');
+            $res=$this->orders_model->update_ordernote($order_id,$order_note);
+            $order=$this->orders_model->get_order_detail($order_id);
+            $order=$this->orders_model->order_data_profit($order);
+            $mdata['content']=$this->load->view('finopenivoice/paymonitor_line_view',array('order'=>$order),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Show docs attached to Order */
+    public function order_viewattach() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $order_attach=$this->orders_model->get_order_artattachs($order_id);
+            if (count($order_attach)==0) {
+                $error='No attachments to this order';
+            } else {
+                $mdata['attachments']=$order_attach;
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';

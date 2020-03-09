@@ -7,13 +7,12 @@ function init_paymonitor() {
         invite(this);
     })
     $(".chkpaid").unbind('click').click(function(){
-        // paidorder(this);return false;
         paybatch(this);
     })
-    $("#find_ord").unbind('click').click(function(){
+    $("#find_paymonitor").unbind('click').click(function(){
         search_paymonitor();
     })
-    $("#clear_ord").unbind('click').click(function(){
+    $("#clear_paymonitor").unbind('click').click(function(){
         $("#monitorsearch").val('');
         search_paymonitor();
     })
@@ -44,17 +43,28 @@ function init_paymonitor() {
         $('#curpagetab4').val(0);
         initPaymonitPagination();
     });
-
-}
-
-function init_paymonitor_management() {
+    // Change Brand
+    $("#paymentmonitorbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#paymentmonitorbrand").val(brand);
+        $("#paymentmonitorbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#paymentmonitorbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#paymentmonitorbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        search_paymonitor();
+    });
 }
 
 function view_orderattach(obj) {
     var order_id=obj.id.substr(7);
-    var datqry=new Date().getTime();
-    var url="/finance/order_viewattach";
-    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
+    var url="/accounting/order_viewattach";
+    $.post(url, {'order_id':order_id}, function(response){
         if (response.errors=='') {
             var point;
             var winname;
@@ -75,26 +85,7 @@ function view_orderattach(obj) {
     }, 'json');
 }
 
-function view_orderattach_old(obj) {
-    var order_id=obj.id.substr(7);
-    var datqry=new Date().getTime();
-    var url="/finance/order_viewattach";
-    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
-        if (response.errors=='') {
-            show_popup('userdata');
-            $("div#pop_content").empty().html(response.data.content);
-        } else {
-            alert(response.errors)
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
-        }
-    }, 'json');
-}
-
 function edit_ordernote(obj) {
-    /*
-    */
     var order_id=obj.id.substr(7);
     var url="/accounting/order_note";
     $.post(url, {'order_id':order_id}, function(response){
@@ -103,6 +94,9 @@ function edit_ordernote(obj) {
             $("#pageModalLabel").empty().html('Order Note');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal('show');
+            $("div.saveordernote").unbind('click').click(function(){
+                save_ordernote();
+            });
         } else {
             alert(response.errors)
             if(response.data.url !== undefined) {
@@ -168,7 +162,7 @@ function pagePaymonitCallback(page_index) {
 
 function search_paymonitor() {
     /* Search */
-    var url='/finance/calc_monitor';
+    var url='/accounting/calc_monitor';
     var params = new Array();
     params.push({name: 'paid', value: $("#addpayfilter").val()});
     params.push({name: 'search', value: $("#monitorsearch").val()});
@@ -203,38 +197,6 @@ function show_paidsord() {
     }, 'json');
 }
 
-function paidorder(obj) {
-    var objid=obj.id;
-    var order_id=objid.substr(4);
-    var chkpaid=$("input#"+objid).is(':checked');
-
-    var valpaid=0;
-    if (chkpaid) {
-        valpaid=1;
-    }
-    var url='/finance/payorder';
-    var params = new Array();
-    params.push({name: 'order_id', value: order_id});
-    params.push({name: 'is_paid', value: valpaid});
-    params.push({name: 'brand', value: $("#paymentmonitorbrand").val()});
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            $("div#paymon"+order_id).empty().html(response.data.content);
-            $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
-            $("div.total_notpaid").empty().html('Partial Paid Orders '+response.data.not_paid);
-            $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced '+response.data.qty_inv);
-            $("div.total_notpaid_qty").empty().html('Qty Partial Paid '+response.data.qty_paid);
-            profit_init();
-        } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
-        }
-        return false;
-    }, 'json');
-
-}
 function refund_sum(obj) {
     var objid=obj.id;
     var receiv=0;
@@ -243,7 +205,7 @@ function refund_sum(obj) {
     }
     var order_id=objid.substr(6);
     /* send new value */
-    var url='/finance/paybatch';
+    var url='/accounting/paybatch';
     $.post(url, {'order_id':order_id}, function(response){
         if (response.errors=='') {
             show_popup('batchesview');
@@ -565,78 +527,102 @@ function save_payment() {
 }
 
 function profit_init() {
-    // $("div.paymonitor-numorder-dat.greenprof").bt({
-    //     fill : '#86FF80',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '18',
-    //     cssClass: 'green_tooltip',
-    //     cssStyles: {color: '#OOOOOO'}
-    // });
-    // $("div.paymonitor-numorder-dat.whiteprof").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    // $("div.paymonitor-numorder-dat.redprof").bt({
-    //     fill : '#FF0000',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'red_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    // $("div.paymonitor-numorder-dat.orangeprof").bt({
-    //     fill : '#FFA500',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'orange_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    // $("div.paymonitor-numorder-dat.blackprof").bt({
-    //     fill : '#000000',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '18',
-    //     cssClass: 'black_tooltip',
-    //     cssStyles: {color: '#FFFFFF'}
-    // })
-    // $("div.paymonitor-numorder-dat.deepblueprof").bt({
-    //     fill : '#001072',
-    //     cornerRadius: 10,
-    //     width: 110,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#FFFFFF',
-    //     strokeHeight: '18',
-    //     cssClass: 'deepblue_tooltip',
-    //     cssStyles: {color: '#FFFFFF'}
-    // });
+    $("div.paymonitor-numorder-dat.greenprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'green_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-numorder-dat.whiteprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'white_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-numorder-dat.redprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'red_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-numorder-dat.orangeprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'orange_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-numorder-dat.blackprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'black_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-numorder-dat.deepblueprof").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'deepblue_tooltip paymonitor_ordernum_tooltip'
+        }
+    });
+    $("div.paymonitor-customer-dat").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'paymonitor_customer_tooltip'
+        }
+    });
+    $("img.monitorapproved").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'left center',
+            at: 'center right',
+        },
+        style: {
+            classes: 'paymonitor_attachments_tooltip'
+        }
+    })
     // $("img.ordernotedata").bt({
     //     fill : '#FFFFFF',
     //     cornerRadius: 10,
@@ -653,18 +639,6 @@ function profit_init() {
     //     fill : '#FFFFFF',
     //     cornerRadius: 10,
     //     width: 120,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "top",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
-    // $("div.paymonitor-generalname").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 250,
     //     padding: 10,
     //     strokeWidth: '2',
     //     positions: "top",
@@ -696,7 +670,6 @@ function profit_init() {
         invite(this);
     })
     $(".chkpaid").unbind('click').click(function(){
-        // paidorder(this);return false;
         paybatch(this);
     })
     $("#find_ord").unbind('click').click(function(){
@@ -716,9 +689,6 @@ function profit_init() {
     });
     $("div.edit_ordernote").unbind('click').click(function(){
         edit_ordernote(this);
-    })
-    $("div.saveordernote").unbind('click').click(function(){
-        save_ordernote();
     })
     $("div.paymonitorsort").unbind('click').click(function(){
         change_paymonitsort(this);
@@ -752,12 +722,14 @@ function edit_paymonitororder(order) {
 }
 
 function save_ordernote() {
-    var order_id=$("form#ordernoteedit input#order_id").val();
-    var order_note=$("form#ordernoteedit #order_note").val();
-    var url="/finance/save_ordernote";
-    $.post(url, {'order_id':order_id,'order_note':order_note, 'datq':datqry}, function(response){
+    var url="/accounting/save_ordernote";
+    var order_id = $("form#ordernoteedit input#order_id").val();
+    var params = new Array();
+    params.push({name: 'order_id', value: order_id});
+    params.push({name: 'order_note', value: $("form#ordernoteedit #order_note").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#pageModal").modal('hide');
             $("div#paymon"+order_id).empty().html(response.data.content);
             profit_init();
         } else {

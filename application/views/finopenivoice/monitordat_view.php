@@ -3,7 +3,7 @@
     <div class="tr <?=(($nrow%2)==0 ? 'whitedatarow' : 'greydatarow')?>" id="paymon<?=$row['order_id']?>">
         <div class="paymonitor-approved-dat <?=($row['order_approved']==1 ? 'attachview' : '')?>" id="vattach<?=$row['order_id']?>"><?=$row['approved']?></div>
         <div class="paymonitor-orderdate-dat"><?=$row['order_date']?></div>
-        <div class="paymonitor-numorder-dat <?=$row['profitclass']?>prof <?=$row['invpay_class']?>" data-order="<?=$row['order_id']?>" title="<?='Profit '.$row['profit'].'<br/>Profit % '.$row['profit_percent']?>">
+        <div class="paymonitor-numorder-dat <?=$row['profitclass']?>prof <?=$row['invpay_class']?>" data-order="<?=$row['order_id']?>" data-content="<?='Profit '.$row['profit'].'<br/>Profit % '.$row['profit_percent']?>">
             <?=$row['order_num']?>            
         </div>
         <div class="paymonitor-customer-dat <?=$row['invpay_class']?>" data-content="<?=$row['customer_name']?>">

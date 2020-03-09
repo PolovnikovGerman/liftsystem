@@ -90,3 +90,60 @@ input.search_input {
     background-color: #ffffff!important;
     color: #000000;
 }
+.green_tooltip {
+    background-color: #86FF80;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.white_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.red_tooltip {
+    background-color: #FF0000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.orange_tooltip {
+    background-color: #FFA500;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.black_tooltip {
+    background-color: #000000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #FFFFFF;
+    text-align: justify;
+}
+.deepblue_tooltip {
+    background-color: #001072;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #ffffff;
+    text-align: justify;
+}
+.paymonitor_ordernum_tooltip {
+    width: 140px;
+    line-height: 18px;
+    border: 1px solid #000000;
+    padding: 10px!important;
+}
+/*
+
+ */
