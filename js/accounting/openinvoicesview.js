@@ -96,11 +96,13 @@ function edit_ordernote(obj) {
     /*
     */
     var order_id=obj.id.substr(7);
-    var url="/finance/order_note";
-    $.post(url, {'order_id':order_id, 'datq':datqry}, function(response){
+    var url="/accounting/order_note";
+    $.post(url, {'order_id':order_id}, function(response){
         if (response.errors=='') {
-            show_popup('userdata');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','470px');
+            $("#pageModalLabel").empty().html('Order Note');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
         } else {
             alert(response.errors)
             if(response.data.url !== undefined) {
@@ -165,15 +167,13 @@ function pagePaymonitCallback(page_index) {
 }
 
 function search_paymonitor() {
-
-    var paid=$("#addpayfilter").val();
     /* Search */
-    var search=$("#monitorsearch").val();
-    if (search=='Enter order #, customer') {
-        search='';
-    }
     var url='/finance/calc_monitor';
-    $.post(url, {'paid':paid, 'search':search, 'datq':datqry}, function(response){
+    var params = new Array();
+    params.push({name: 'paid', value: $("#addpayfilter").val()});
+    params.push({name: 'search', value: $("#monitorsearch").val()});
+    params.push({name: 'brand', value: $("#paymentmonitorbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $('#totaltab4').val(response.data.totals);
             initPaymonitPagination();
@@ -315,7 +315,7 @@ function paybatch(obj) {
             $("select#paymethod").change(function(){
                 change_paymethod();
             });
-            $("a#savebatch").click(function(){
+            $("#savebatch").click(function(){
                 save_batch();
             })
         } else {
@@ -352,18 +352,19 @@ function show_batchdate(date) {
     var paymeth=$("select#paymethod").val();
     $.post(url, {'date':date,'paymethod':paymeth}, function(response){
         if (response.errors=='') {
-            $("div#pop_content div.savebatch").css('display','block');
-            $("div#pop_content div.batchpoptable").empty().html(response.data.content);
-            $("div#pop_content div.batchpopmentresults_value").empty().html(response.data.dayresults);
-            $("div#pop_content div.bathpaydatedue").empty().html(response.data.dateinpt).css('display','block');
+            $("div.savebatch").css('display','block');
+            $("div.batchpoptable").empty().html(response.data.content);
+            $("div.batchpopmentresults_value").empty().html(response.data.dayresults);
+            $("div.bathpaydatedue").empty().html(response.data.dateinpt).css('display','block');
             $("input#datedue").val(response.data.datedue);
             if (response.data.edit_option=='1') {
                 $("input#datdue").datepicker({
-                    onSelect: function(date) {
-                        change_due(date);
-                    }
+                    autoclose: true,
                 });
-
+                $("input#datdue").unbind('change').change(function () {
+                    var newdate = $(this).val();
+                    change_due(newdate);
+                });
             }
         } else {
             alert(response.errors);
@@ -385,9 +386,11 @@ function change_paymethod() {
                 $("input#datedue").val(response.data.datedue);
                 if (response.data.edit_option=='1') {
                     $("input#datdue").datepicker({
-                        onSelect: function(date) {
-                            change_due(date);
-                        }
+                        autoclose: true,
+                    });
+                    $("input#datdue").unbind('change').change(function () {
+                        var newdate = $(this).val();
+                        change_due(newdate);
                     });
                 }
             } else {
@@ -437,28 +440,30 @@ function save_refund() {
 }
 
 function save_batch() {
-    var date=$("input#batchselect").val();
-    var paymethod=$("select#paymethod").val();
-    var amount=$("input#amount").val();
-    var order_id=$("input#order_id").val();
-    var batch_note=$("textarea#batch_note").val();
-    var datedue=$("input#datedue").val();
-    var url="/finance/savebatch"
-    $.post(url, {'date':date, 'paymethod':paymethod, 'amount':amount,'order_id':order_id,'batch_note':batch_note,'datedue':datedue}, function(response){
+    var url="/accounting/savebatch"
+    var params = new Array();
+    params.push({name: 'date', value: $("input#batchselect").val()});
+    params.push({name: 'paymethod', value: $("select#paymethod").val()});
+    params.push({name: 'amount', value: $("input#amount").val()});
+    params.push({name: 'order_id', value: $("input#order_id").val()});
+    params.push({name: 'batch_note', value: $("textarea#batch_note").val()});
+    params.push({name: 'datedue', value: $("input#datedue").val()});
+    params.push({name: 'brand', value: $("#paymentmonitorbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.batchselectpay").css('display','none');
             $("div.batchselectunit").css('display','none');
             $("div.batchpaynote_content").css('display','none');
-            $("div#pop_content div.savebatch").css('display','none');
-            $("div#pop_content div.batchpopmentresults_value").empty().html(response.data.dayresults);
-            $("div#pop_content div.batchpoptable").empty().html(response.data.content);
-            $("div#pop_content div.batchdaytabledat").css('max-height','262px').css('display','block');
+            $("div.savebatch").css('display','none');
+            $("div.batchpopmentresults_value").empty().html(response.data.dayresults);
+            $("div.batchpoptable").empty().html(response.data.content);
+            $("div.batchdaytabledat").css('max-height','262px').css('display','block');
         } else {
             show_error(response);
         }
     }, 'json');
 }
-
+// ????
 function close_batchpay() {
     var order_id=$("input#order_id").val();
     var cancel=$("input#is_canceled").val();
@@ -519,17 +524,18 @@ function invite(obj) {
 
 function edit_payment(obj) {
     var order_id=obj.id.substr(10);
-    $.post('/finance/customer_payment', {'order_id':order_id, 'datq': datqry}, function(response){
+    $.post('/accounting/customer_payment', {'order_id':order_id}, function(response){
         if (response.errors=='') {
-            show_popup('editpayment');
-            $("div#pop_content div.editcogform").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','245px');
+            $("#pageModalLabel").empty().html('Edit Payment');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
+
+            // show_popup('editpayment');
+            // $("div#pop_content div.editcogform").empty().html(response.data.content);
             $("#savecustpaid").click(function(){
                 save_payment();
-            })
-            $("#popupContactClose").click(function(){
-                disablePopup();
             });
-
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -541,7 +547,8 @@ function edit_payment(obj) {
 
 function save_payment() {
     var dat=$("form#editpaymenform").serializeArray();
-    var url="/finance/save_custompay";
+    dat.push({name: 'brand', value: $("#paymentmonitorbrand").val()});
+    var url="/accounting/save_custompay";
     $.post(url,dat,function(response){
         if (response.errors=='') {
             disablePopup();

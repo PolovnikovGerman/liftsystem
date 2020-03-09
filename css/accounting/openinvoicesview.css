@@ -396,3 +396,204 @@ textarea.batchnote {
     float: right;
     margin-right: 5px;
 }
+/* Batch POPUP */
+.batchdaytabledat {
+    clear: both;
+    float: left;
+    max-height: 191px;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 489px;
+}
+.batchpopmentresults_value {
+    float: right;
+    margin-right: 21px;
+}
+.batchpoptable {
+    clear: both;
+    float: left;
+    width: 473px;
+}
+.batchpoptable_title {
+    background-color: #6D6AFF;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    padding-top: 3px;
+    width: 472px;
+}
+.batchpoptable_totaltitle {
+    float: left;
+    width: 193px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 21px;
+    padding-top: 3px;
+}
+.batchpoptable_totalvalues {
+    float: left;
+    padding-top: 3px;
+    width: 272px;
+}
+.batchpoptable_totalinvoiced {
+    background-color: #808080;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    width: 472px;
+}
+.batchpoptable_notreceiv {
+    background-color: #A9A9A9;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    width: 472px;
+}
+.batchpopdetailtable_orders {
+    clear: both;
+    float: left;
+    width: 471px;
+    color: #000000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+}
+.batchpoptable_email {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpoptable_ordernum {
+    float: left;
+    width: 48px;
+    text-align: center;
+}
+.batchpoptable_customer {
+    float: left;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 118px;
+}
+.batchpoptable_vmd {
+    float: left;
+    width: 60px;
+    text-align: center;
+}
+.batchpoptable_amex {
+    float: left;
+    width: 58px;
+    text-align: center;
+}
+.batchpoptable_other {
+    float: left;
+    width: 37px;
+    text-align: center;
+}
+.batchpoptable_terms {
+    float: left;
+    width: 56px;
+    text-align: center;
+}
+.batchpoptable_due {
+    float: left;
+    width: 30px;
+    text-align: center;
+}
+.batchpoptable_reach {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.savebatch {
+    background: url(/img/accounting/addnew.png) no-repeat scroll 0 0 transparent;
+    color: #ffffff;
+    float: left;
+    height: 28px;
+    margin-left: 350px;
+    margin-top: 10px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+    cursor: pointer;
+}
+.batchpaytable_vmd {
+    float: left;
+    width: 61px;
+    text-align: center;
+}
+.batchpaytable_amex {
+    float: left;
+    width: 56px;
+    text-align: center;
+}
+.batchpaytable_other {
+    float: left;
+    width: 37px;
+    text-align: center;
+}
+.batchpaytable_terms {
+    float: left;
+    width: 62px;
+    text-align: center;
+}
+.batchpaytable_due {
+    float: left;
+    width: 35px;
+    text-align: center;
+}
+.batchpaytable_reach {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpaytable_totalinvoiced {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #808080;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_totaltitle {
+    float: left;
+    width: 205px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 21px;
+    padding-top: 3px;
+}
+.batchpaytable_totalvalues {
+    float: left;
+    width: 279px;
+    padding-top: 3px;
+}
+.batchpaytable_notreceiv {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #a9a9a9;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_orders {
+    clear: both;
+    float: left;
+    width: 487px;
+    color: #000000;
+    font-size: 11px;
+}

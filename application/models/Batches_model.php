@@ -621,148 +621,144 @@ class Batches_model extends My_Model
         return array('totals'=>$total,'details'=>$out);
     }
 
-//    function save_batch($batch_data, $order_data, $user_id) {
-//        $ci=&get_instance();
-//        $out=array('result'=>  Batches_model::ERR_FLAG, 'msg'=>  Batches_model::INIT_ERRMSG);
-//        if ($batch_data['batch_date']==0) {
-//            $out['msg']='Empty batch date';
-//        } elseif ($batch_data['paymethod']=='') {
-//            $out['msg']='Empty payment method';
-//        } elseif ($batch_data['amount']==0) {
-//            $out['msg']='Empty amount';
-//        } elseif (!isset($order_data['order_id'])) {
-//            $out['msg']='Order not found';
-//        } elseif ($batch_data['amount']>floatval($order_data['revenue'])) {
-//            $out['msg']='Amout great then order revenue';
-//        } else {
-//            $paypal_apply=strtotime($this->paypal_apply);
-//            if ($batch_data['batch_date']<$paypal_apply) {
-//                /* Apply Fee of Auth.net */
-//                $paymethod='AUTH';
-//                $amex_fee=$this->config->item('auth_amexfee');
-//                $vmd_fee=$this->config->item('auth_vmdfee');
-//            } else {
-//                /* Apply Fee of Paypal */
-//                $paymethod='PAYPAL';
-//                $amex_fee=$this->config->item('paypal_amexfee');
-//                $vmd_fee=$this->config->item('paypal_vmdfee');
-//            }
-//
-//            $inv_vmd=0;
-//            $inv_amex=0;
-//            $inv_other=0;
-//            $inv_term=0;
-//            $inv_writeoff=0;
-//            switch ($batch_data['paymethod']) {
-//                case 'v':
-//                case 'm':
-//                case 'd':
-//                    $inv_vmd=round($batch_data['amount']*((100-$vmd_fee)/100),2);
-//                    $duedate=$ci->func->getVMDDueDate($batch_data['batch_date'],$paymethod);
-//                    break;
-//                case 'a':
-//                    $inv_amex=round($batch_data['amount']*((100-$amex_fee)/100),2);
-//                    $duedate=$ci->func->getAmexDueDate($batch_data['batch_date'],$paymethod);
-//                    break;
-//                case 'o':
-//                    // $duedate=strtotime(date("Y-m-d", $batch_data['batch_date']) . " +1 day");
-//                    $duedate=$batch_data['datedue'];
-//                    $inv_other=$batch_data['amount'];
-//                    break;
-//                case 't':
-//                    // $duedate=strtotime(date("Y-m-d", $batch_data['batch_date']) . " +1 month");
-//                    $duedate=$batch_data['datedue'];
-//                    $inv_term=$batch_data['amount'];
-//                    break;
-//                case 'w':
-//                    $duedate=$batch_data['datedue'];
-//                    $inv_writeoff=$batch_data['amount'];
-//                    $batch_data['batch_received']=1;
-//                    break;
-//            }
-//            /* Correct data according to business calendar */
-//            $duedate=$ci->func->businessdate($duedate);
-//            $this->db->set('update_usr',$user_id);
-//            $this->db->set('batch_date',$batch_data['batch_date']);
-//            $this->db->set('order_id',$order_data['order_id']);
-//            $this->db->set('batch_amount',$batch_data['amount']);
-//            $this->db->set('batch_vmd',$inv_vmd);
-//            $this->db->set('batch_amex',$inv_amex);
-//            $this->db->set('batch_other',$inv_other);
-//            $this->db->set('batch_term',$inv_term);
-//            $this->db->set('batch_writeoff', $inv_writeoff);
-//            $this->db->set('batch_note',$batch_data['batch_note']);
-//            $this->db->set('batch_due',$duedate);
-//            if (isset($batch_data['batch_received'])) {
-//                $this->db->set('batch_received', $batch_data['batch_received']);
-//            }
-//            if (isset($batch_data['batch_type'])) {
-//                $this->db->set('batch_type', $batch_data['batch_type']);
-//            }
-//            if (isset($batch_data['batch_num'])) {
-//                $this->db->set('batch_num', $batch_data['batch_num']);
-//            }
-//            if (isset($batch_data['batch_transaction'])) {
-//                $this->db->set('batch_transaction', $batch_data['batch_transaction']);
-//            }
-//            if ($batch_data['amount']<0) {
-//                /* Refund */
-//                // $this->db->set('batch_received',1);
-//            }
-//            if ($batch_data['batch_id']==0) {
-//                $this->db->set('create_date',date('Y-m-d H:i:s'));
-//                $this->db->set('create_usr',$user_id);
-//                $this->db->insert('ts_order_batches');
-//                $out['result']=$this->db->insert_id();
-//                if ($out['result']!=Batches_model::ERR_FLAG) {
-//                    $out['msg']='';
-//                } else {
-//                    $out['msg']='Error during add data';
-//                }
-//            } else {
-//                $this->db->where('batch_id',$batch_data['batch_id']);
-//                $this->db->update('ts_order_batches');
-//                $out['result']=Batches_model::SUCCESS_RESULT;
-//                $out['msg']='';
-//            }
-//        }
-//        // Update Order CC FEE
-//        $this->db->select('count(b.batch_id) as cnt, sum(b.batch_amount) as batch_amount, sum(b.batch_amex) as batch_amex, sum(b.batch_vmd) as batch_vmd');
-//        $this->db->from('ts_order_batches b');
-//        $this->db->where('b.order_id', $order_data['order_id']);
-//        $this->db->where('(b.batch_amex!=0 or b.batch_vmd!=0)');
-//        $batchres=$this->db->get()->row_array();
-//        if ($batchres['cnt']>0) {
-//            // Update Order CC FEE
-//            $cc_fee=$batchres['batch_amount']-$batchres['batch_amex']-$batchres['batch_vmd'];
-//            // Update profit
-//        } else {
-//            $cc_fee=0;
-//        }
-//        $this->db->set('cc_fee', $cc_fee);
-//        $this->db->where('order_id', $order_data['order_id']);
-//        $this->db->update('ts_orders');
-//        $this->db->select('revenue, cc_fee, order_cog, tax, shipping, is_shipping');
-//        $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
-//        $this->db->from('ts_orders');
-//        $this->db->where('order_id', $order_data['order_id']);
-//        $ordres=$this->db->get()->row_array();
-//        if (!empty($ordres['order_cog'])) {
-//            $newprofit=$ordres['revenue']-($ordres['order_cog']+$ordres['cc_fee']+$ordres['tax']+$ordres['shipping']*$ordres['is_shipping']);
-//            $newprofitprc=0;
-//            if ($ordres['revenue']>0) {
-//                $newprofitprc=round($newprofit/$ordres['revenue']*100,2);
-//            }
-//            $this->db->set('profit', $newprofit);
-//            $this->db->set('profit_perc', $newprofitprc);
-//            $this->db->set('order_artview', $ordres['aprrovview']);
-//            $this->db->set('order_placed', $ordres['placeord']);
-//            $this->db->where('order_id', $order_data['order_id']);
-//            $this->db->update('ts_orders');
-//        }
-//        return $out;
-//    }
-//
+    function save_batch($batch_data, $order_data, $user_id) {
+        $ci=&get_instance();
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        if ($batch_data['batch_date']==0) {
+            $out['msg']='Empty batch date';
+        } elseif ($batch_data['paymethod']=='') {
+            $out['msg']='Empty payment method';
+        } elseif ($batch_data['amount']==0) {
+            $out['msg']='Empty amount';
+        } elseif (!isset($order_data['order_id'])) {
+            $out['msg']='Order not found';
+        } elseif ($batch_data['amount']>floatval($order_data['revenue'])) {
+            $out['msg']='Amout great then order revenue';
+        } else {
+            $paypal_apply=strtotime($this->paypal_apply);
+            if ($batch_data['batch_date']<$paypal_apply) {
+                /* Apply Fee of Auth.net */
+                $paymethod='AUTH';
+                $amex_fee=$this->config->item('auth_amexfee');
+                $vmd_fee=$this->config->item('auth_vmdfee');
+            } else {
+                /* Apply Fee of Paypal */
+                $paymethod='PAYPAL';
+                $amex_fee=$this->config->item('paypal_amexfee');
+                $vmd_fee=$this->config->item('paypal_vmdfee');
+            }
+            $inv_vmd=0;
+            $inv_amex=0;
+            $inv_other=0;
+            $inv_term=0;
+            $inv_writeoff=0;
+            switch ($batch_data['paymethod']) {
+                case 'v':
+                case 'm':
+                case 'd':
+                    $inv_vmd=round($batch_data['amount']*((100-$vmd_fee)/100),2);
+                    $duedate=$this->getVMDDueDate($batch_data['batch_date'],$paymethod);
+                    break;
+                case 'a':
+                    $inv_amex=round($batch_data['amount']*((100-$amex_fee)/100),2);
+                    $duedate=$this->getAmexDueDate($batch_data['batch_date'],$paymethod);
+                    break;
+                case 'o':
+                    // $duedate=strtotime(date("Y-m-d", $batch_data['batch_date']) . " +1 day");
+                    $duedate=$batch_data['datedue'];
+                    $inv_other=$batch_data['amount'];
+                    break;
+                case 't':
+                    $duedate=$batch_data['datedue'];
+                    $inv_term=$batch_data['amount'];
+                    break;
+                case 'w':
+                    $duedate=$batch_data['datedue'];
+                    $inv_writeoff=$batch_data['amount'];
+                    $batch_data['batch_received']=1;
+                    break;
+            }
+            /* Correct data according to business calendar */
+            $this->load->model('calendars_model');
+            $duedate=$this->calendars_model->businessdate($duedate);
+            $this->db->set('update_usr',$user_id);
+            $this->db->set('batch_date',$batch_data['batch_date']);
+            $this->db->set('order_id',$order_data['order_id']);
+            $this->db->set('batch_amount',$batch_data['amount']);
+            $this->db->set('batch_vmd',$inv_vmd);
+            $this->db->set('batch_amex',$inv_amex);
+            $this->db->set('batch_other',$inv_other);
+            $this->db->set('batch_term',$inv_term);
+            $this->db->set('batch_writeoff', $inv_writeoff);
+            $this->db->set('batch_note',$batch_data['batch_note']);
+            $this->db->set('batch_due',$duedate);
+            if (isset($batch_data['batch_received'])) {
+                $this->db->set('batch_received', $batch_data['batch_received']);
+            }
+            if (isset($batch_data['batch_type'])) {
+                $this->db->set('batch_type', $batch_data['batch_type']);
+            }
+            if (isset($batch_data['batch_num'])) {
+                $this->db->set('batch_num', $batch_data['batch_num']);
+            }
+            if (isset($batch_data['batch_transaction'])) {
+                $this->db->set('batch_transaction', $batch_data['batch_transaction']);
+            }
+            if ($batch_data['amount']<0) {
+                /* Refund */
+                // $this->db->set('batch_received',1);
+            }
+            if ($batch_data['batch_id']==0) {
+                $this->db->set('create_date',date('Y-m-d H:i:s'));
+                $this->db->set('create_usr',$user_id);
+                $this->db->insert('ts_order_batches');
+                $newid = $this->db->insert_id();
+                if ($newid > 0) {
+                    $out['result'] = $this->success_result;
+                }
+            } else {
+                $this->db->where('batch_id',$batch_data['batch_id']);
+                $this->db->update('ts_order_batches');
+                $out['result']=$this->success_result;
+            }
+        }
+        // Update Order CC FEE
+        $this->db->select('count(b.batch_id) as cnt, sum(b.batch_amount) as batch_amount, sum(b.batch_amex) as batch_amex, sum(b.batch_vmd) as batch_vmd');
+        $this->db->from('ts_order_batches b');
+        $this->db->where('b.order_id', $order_data['order_id']);
+        $this->db->where('(b.batch_amex!=0 or b.batch_vmd!=0)');
+        $batchres=$this->db->get()->row_array();
+        if ($batchres['cnt']>0) {
+            // Update Order CC FEE
+            $cc_fee=$batchres['batch_amount']-$batchres['batch_amex']-$batchres['batch_vmd'];
+            // Update profit
+        } else {
+            $cc_fee=0;
+        }
+        $this->db->set('cc_fee', $cc_fee);
+        $this->db->where('order_id', $order_data['order_id']);
+        $this->db->update('ts_orders');
+        $this->db->select('revenue, cc_fee, order_cog, tax, shipping, is_shipping');
+        $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_data['order_id']);
+        $ordres=$this->db->get()->row_array();
+        if (!empty($ordres['order_cog'])) {
+            $newprofit=$ordres['revenue']-($ordres['order_cog']+$ordres['cc_fee']+$ordres['tax']+$ordres['shipping']*$ordres['is_shipping']);
+            $newprofitprc=0;
+            if ($ordres['revenue']>0) {
+                $newprofitprc=round($newprofit/$ordres['revenue']*100,2);
+            }
+            $this->db->set('profit', $newprofit);
+            $this->db->set('profit_perc', $newprofitprc);
+            $this->db->set('order_artview', $ordres['aprrovview']);
+            $this->db->set('order_placed', $ordres['placeord']);
+            $this->db->where('order_id', $order_data['order_id']);
+            $this->db->update('ts_orders');
+        }
+        return $out;
+    }
+
 //    function batchmailed($batch_id,$mail) {
 //        $this->db->set('batch_email',$mail);
 //        $this->db->where('batch_id',$batch_id);

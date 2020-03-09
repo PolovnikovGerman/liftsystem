@@ -36,8 +36,6 @@
         <div class="batchpoptable"></div>
     </div>
     
-    <div class="savebatch" style="display: none;">
-        <a href="javascript:void(0)" id="savebatch">Save</a>
-    </div>        
+    <div class="savebatch" id="savebatch" style="display: none;">Save</div>
     
 </div>

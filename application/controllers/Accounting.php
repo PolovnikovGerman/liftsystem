@@ -1036,6 +1036,105 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    /* Save batch */
+    public function savebatch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $date=$this->input->post('date');
+            $batch_date=strtotime($date);
+            $paymethod=$this->input->post('paymethod');
+            $amount=$this->input->post('amount');
+            $amount=floatval($amount);
+            $batch_note=$this->input->post('batch_note');
+            $datedue=$this->input->post('datedue');
+            $order_id=$this->input->post('order_id');
+            $brand = $this->input->post('brand');
+            $error='Empty order data';
+            if ($order_id) {
+                $options=array(
+                    'batch_id'=>0,
+                    'batch_date'=>$batch_date,
+                    'paymethod'=>$paymethod,
+                    'amount'=>$amount,
+                    'order_id'=>$order_id,
+                    'batch_note'=>$batch_note,
+                    'datedue'=>$datedue,
+                );
+                /* Order Details */
+                $order_data=$this->orders_model->get_order_detail($order_id);
+                /* Save results */
+                $user_id=$this->USR_ID;
+                $this->load->model('batches_model');
+                $res=$this->batches_model->save_batch($options, $order_data,$user_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $filter=array(
+                        'batch_date'=>$batch_date,
+                    );
+                    $batchdetails=$this->batches_model->get_batchdetails_date($filter);
+                    $options=array(
+                        'totals'=>$batchdetails['totals'],
+                        'details'=>$batchdetails['details'],
+                    );
+                    $mdata['dayresults']=$batchdetails['totals']['day_results'];
+                    $mdata['content']=$this->load->view('finopenivoice/batchselect_table_view',$options,TRUE);
+                }
+            }
+        }
+        $this->ajaxResponse($mdata,$error);
+    }
+
+    /* Prepare form for halp payment */
+    public function customer_payment() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            /* Get order Data */
+            $order_data=$this->orders_model->get_order_detail($order_id);
+            $sum_notpaid=floatval($order_data['revenue']);
+            $paid_sum=floatval($order_data['paid_sum']);
+            $data=array(
+                'order_id'=>$order_id,
+                'revenue'=>$sum_notpaid,
+                'paid_sum'=>number_format($paid_sum,2,'.',''),
+            );
+            $mdata['content']=$this->load->view('accounting/editpaidsum_view',$data,TRUE);
+
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function save_custompay() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $order_id=$this->input->post('order_id');
+            $paid_sum=$this->input->post('paid_sum');
+            $brand = $this->input->post('brand');
+            $res=$this->orders_model->save_custompayment($order_id,$paid_sum, $brand);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['not_invoiced']=$res['invoice'];
+                $mdata['not_paid']=$res['paid'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function order_note() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $order_id=$this->input->post('order_id');
+            $order_dat=$this->orders_model->get_order_detail($order_id);
+            $mdata['content']=$this->load->view('accounting/ordernote_edit_view',$order_dat,TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';

@@ -3164,4 +3164,33 @@ Class Orders_model extends MY_Model
         return $order;
     }
 
+    function save_custompayment($order_id,$paid_sum, $brand) {
+        $res=array('result'=>$this->error_result , 'msg'=>  $this->init_error_msg);
+        if (!$order_id) {
+            $res['msg']='Unknown Order';
+        } else {
+            $this->db->select('*');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id',$order_id);
+            $order=$this->db->get()->row_array();
+            if (floatval($order['revenue'])<floatval($paid_sum)) {
+                $res['msg']='You try to pay more then Order revenue';
+            } else {
+                $this->db->set('paid_sum',floatval($paid_sum));
+                $this->db->set('update_date',time());
+                if (floatval($order['revenue'])==floatval($paid_sum)) {
+                    $this->db->set('is_paid',1);
+                }
+                $this->db->where('order_id',$order_id);
+                $this->db->update('ts_orders');
+                $res['msg']='';
+                $res['result']=$this->success_result;
+                $sums=$this->get_count_monitor(array('brand' => $brand));
+                $res['invoice']=$sums['sum_invoice'];
+                $res['paid']=$sums['sum_paid'];
+            }
+        }
+        return $res;
+    }
+
 }
