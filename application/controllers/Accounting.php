@@ -890,7 +890,7 @@ class Accounting extends MY_Controller
         }
     }
     /* Event CLICK on INV */
-    function inviteorder() {
+    public function inviteorder() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
@@ -913,25 +913,127 @@ class Accounting extends MY_Controller
         }
     }
 
-    /* Event CLICK on PAID */
-    function payorder() {
-        if ($this->func->isAjax()) {
+//    /* Event CLICK on PAID */
+//    function payorder() {
+//        if ($this->isAjax()) {
+//            $mdata=array();
+//            $order_id=$this->input->post('order_id');
+//            $is_paid=$this->input->post('is_paid');
+//            $brand = $this->input->post('brand');
+//            $res=$this->orders_model->orderpay($order_id,$is_paid, $brand);
+//            $error=$res['msg'];
+//            if ($res['result']==$this->success_result) {
+//                $error = '';
+//                $mdata['content']=$this->load->view('finopenivoice/paymonitor_line_view',array('order'=>$res['order']),TRUE);
+//                $mdata['not_invoiced']=$res['invoice'];
+//                $mdata['not_paid']=$res['paid'];
+//                $mdata['qty_inv']=$res['qty_inv'];
+//                $mdata['qty_paid']=$res['qty_paid'];
+//            }
+//            $this->ajaxResponse($mdata, $error);
+//        }
+//    }
+
+    /* Event CLICK on PAY - call batch */
+    public function paybatch() {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $order_id=$this->input->post('order_id');
-            $is_paid=$this->input->post('is_paid');
-            $res=$this->order_model->orderpay($order_id,$is_paid);
-            if ($res['result']==Finance::ERR_FLAG) {
-                $error=$res['msg'];
-            } else {
-                $mdata['content']=$this->load->view('finopenivoice/paymonitor_line_view',array('order'=>$res['order']),TRUE);
-                $mdata['not_invoiced']=$res['invoice'];
-                $mdata['not_paid']=$res['paid'];
-                $mdata['qty_inv']=$res['qty_inv'];
-                $mdata['qty_paid']=$res['qty_paid'];
+            /* Get list of Batches */
+            $order_details=$this->orders_model->get_order_detail($order_id);
+            if ($order_details['is_canceled']==1) {
+                $order_details['revenue']=0;
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->load->model('batches_model');
+            $batchsum=$this->batches_model->get_batchsum_order($order_id);
+            $amount=$order_details['revenue']-$batchsum;
+            if ($amount==0) {
+                $error='Order paid';
+            } else {
+                $options=array(
+                    'order_id'=>$order_id,
+                    'amount'=>$amount,
+                    'batch_note'=>'',
+                    'is_cancel'=>$order_details['is_canceled'],
+                );
+                $mdata['content']=$this->load->view('finopenivoice/batchselect_view',$options,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    /* Show table with orders */
+    public function batchdetailview() {
+        if($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $date=$this->input->post('date');
+            $paymethod=$this->input->post('paymethod');
+            $date=strtotime($date);
+            /*  get data about batch orders */
+            $filter=array(
+                'batch_date'=>$date,
+            );
+            $this->load->model('batches_model');
+            $batchdetails=$this->batches_model->get_batchdetails_date($filter);
+            $mdata['dayresults']=$batchdetails['totals']['day_results'];
+            $options=array(
+                'totals'=>$batchdetails['totals'],
+                'details'=>$batchdetails['details'],
+            );
+            $mdata['content']=$this->load->view('finopenivoice/batchselect_table_view',$options,TRUE);
+            /* Recalculate DUE Date */
+            $datdue=$this->batches_model->get_batchdue($date,$paymethod);
+            $mdata['datedue']=$datdue;
+            $mdata['edit_option']=0;
+            $mdata['dateinpt']='Due '.date('m/d/Y',$datdue);
+            if ($paymethod=='o' || $paymethod=='t') {
+                $mdata['edit_option']=1;
+                $due='<div style="color: #000000;float: left;font-size: 13px; padding-top: 3px; width: 29px;">Due</div>';
+                $mdata['dateinpt']=$due.'<input type="text" id="datdue" class="selectbatchunit" style="margin-top: -3px;" readonly="readonly" value="'.date('m/d/Y',$datdue).'"/>';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Change Paymethod  */
+    public function batch_paymethod() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $date=$this->input->post('date');
+            $paymethod=$this->input->post('paymethod');
+            $date=strtotime($date);
+            /* Recalculate DUE Date */
+            $this->load->model('batches_model');
+            $datdue=$this->batches_model->get_batchdue($date,$paymethod);
+            $mdata['datedue']=$datdue;
+            $mdata['edit_option']=0;
+            $mdata['dateinpt']='Due '.date('m/d/Y',$datdue);
+            if ($paymethod=='o' || $paymethod=='t') {
+                $mdata['edit_option']=1;
+                $due='<div style="color: #000000;float: left;font-size: 13px; padding-top: 3px; width: 29px;">Due</div>';
+                $mdata['dateinpt']=$due.'<input type="text" id="datdue" class="selectbatchunit" style="margin-top: -3px;" readonly="readonly" value="'.date('m/d/Y',$datdue).'"/>';
+                $mdata['dateeditinpt']='<input id="dueedit" class="batchdueedit" readonly="readonly" value="'.date('m/d/Y',$datdue).'"/>';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function change_datedue() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $duedate=$this->input->post('date');
+            $duedate=strtotime($duedate);
+            $this->load->model('calendars_model');
+            $duedate=$this->calendars_model->businessdate($duedate);
+            $mdata['datedue']=$duedate;
+            $mdata['datedueformat']=date('m/d/Y',$duedate);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
     }
 
 

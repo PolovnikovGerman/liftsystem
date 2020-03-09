@@ -2,7 +2,6 @@
 <input type="hidden" id="datedue" name="date_due" value=""/>
 <input type="hidden" id="is_canceled" name="is_canceled" value="<?=$is_cancel?>"/>
 <div class="batchpopup">
-    <div class="batchpopuptitle">Would you like to add a payment to the batch?</div>
     <div class="batchselectunit">
         <div class="batchselectunit_title">Which Batch?</div>
         <input type="text" id="batchselect" class="selectbatchunit" readonly="readonly"/>
@@ -22,7 +21,7 @@
         <input type="text" class="amountvalue" name="amount" id="amount" value="<?=$amount?>"/>
         <div class="bathpaydatedue">&nbsp;</div>
         <div class="batchpaynote">Click here to write note</div>
-        <div class="batchpaynotelnk"><img src="/img/list.png" alt="Note"/></div>
+        <div class="batchpaynotelnk"><img src="/img/accounting/list.png" alt="Note"/></div>
         
     </div>
     <div class="batchpaynote_content">

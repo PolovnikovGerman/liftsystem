@@ -233,4 +233,21 @@ Class Calendars_model extends MY_Model
 //
 //    }
 
+    public function businessdate($date) {
+        $calendar=$this->config->item('bank_calendar');
+        $holidays=$this->get_calendar_holidays($calendar);
+        for ($i=1; $i<=15;$i++) {
+            if (in_array($date, $holidays)) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==6) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==7) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } else {
+                break;
+            }
+        }
+        return $date;
+    }
+
 }

@@ -3027,8 +3027,8 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
-    public function orderpay($order_id,$is_paid) {
-        $res=array('result'=>0,'msg'=>'Test');
+    public function orderpay($order_id,$is_paid, $brand) {
+        $res=array('result'=>$this->error_result, 'msg'=> $this->init_error_msg);
         $this->db->set('is_paid',$is_paid);
         $this->db->set('update_date',time());
         if ($is_paid==0) {
@@ -3047,8 +3047,7 @@ Class Orders_model extends MY_Model
             if (!isset($order['order_id'])) {
                 $res['msg']='Unknown Order';
             } else {
-                $res['msg']='';
-                $res['result']=1;
+                $res['result']=$this->success_result;
                 $empty_money='------';
                 $order['invoiced']=$order['not_invoiced']=$order['not_paid']=$empty_money;
                 $order['paid_class']='';
@@ -3093,7 +3092,7 @@ Class Orders_model extends MY_Model
                     $order['approved']='<img src="/img/whitestar.png" alt="Not approved"/>';
                 }
                 $res['order']=$order;
-                $sums=$this->get_count_monitor(array());
+                $sums=$this->get_count_monitor(array('brand' => $brand));
                 $res['invoice']=$sums['sum_invoice'];
                 $res['paid']=$sums['sum_paid'];
                 $res['qty_inv']=$sums['qty_inv'];

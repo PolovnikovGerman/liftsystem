@@ -212,10 +212,12 @@ function paidorder(obj) {
     if (chkpaid) {
         valpaid=1;
     }
-
     var url='/finance/payorder';
-
-    $.post(url, {'order_id':order_id, 'is_paid':valpaid, 'datq':datqry}, function(response){
+    var params = new Array();
+    params.push({name: 'order_id', value: order_id});
+    params.push({name: 'is_paid', value: valpaid});
+    params.push({name: 'brand', value: $("#paymentmonitorbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#paymon"+order_id).empty().html(response.data.content);
             $("div.total_notinvoiced").empty().html('Total Not Invoiced '+response.data.not_invoiced);
@@ -280,6 +282,7 @@ function refund_sum(obj) {
         }
     },'json');
 }
+
 function paybatch(obj) {
     var objid=obj.id;
     var receiv=0;
@@ -288,18 +291,24 @@ function paybatch(obj) {
     }
     var order_id=objid.substr(4);
     /* send new value */
-    var url='/finance/paybatch';
-    $.post(url, {'order_id':order_id,  'datq':datqry}, function(response){
+    var url='/accounting/paybatch';
+    var params = new Array();
+    params.push({name: 'order_id', value :order_id});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup('batchesview');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','535px');
+            $("#pageModalLabel").empty().html('Would you like to add a payment to the batch?');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             /* Init Calend */
             $("input#batchselect").datepicker({
-                onSelect: function(date) {
-                    show_batchdate(date);
-                },
-                maxDate: "+0D"
+                autoclose: true,
+                endDate: "0d",
             });
+            $("input#batchselect").unbind('change').change(function() {
+                var newdate=$(this).val();
+                show_batchdate(newdate);
+            })
             $("div.batchpaynotelnk").click(function(){
                 show_note();
             })
@@ -309,9 +318,6 @@ function paybatch(obj) {
             $("a#savebatch").click(function(){
                 save_batch();
             })
-            $("a#popupContactClose").unbind('click').click(function(){
-                close_batchpay();
-            });
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -342,7 +348,7 @@ function show_note() {
 }
 
 function show_batchdate(date) {
-    var url="/finance/batchdetailview";
+    var url="/accounting/batchdetailview";
     var paymeth=$("select#paymethod").val();
     $.post(url, {'date':date,'paymethod':paymeth}, function(response){
         if (response.errors=='') {
@@ -372,7 +378,7 @@ function change_paymethod() {
     var paymethod=$("select#paymethod").val();
     var batch_date=$("input#batchselect").val();
     if (batch_date!='') {
-        var url="/finance/batch_paymethod";
+        var url="/accounting/batch_paymethod";
         $.post(url, {'date':batch_date,'paymethod':paymethod}, function(response){
             if (response.errors=='') {
                 $("div#pop_content div.bathpaydatedue").empty().html(response.data.dateinpt).css('display','block');
@@ -395,7 +401,7 @@ function change_paymethod() {
 }
 
 function change_due(date) {
-    $.post('/finance/change_datedue',{'date':date},function(response){
+    $.post('/accounting/change_datedue',{'date':date},function(response){
         if (response.errors=='') {
             $("input#datedue").val(response.data.datedue);
             $("input#datdue").val(response.data.datedueformat);
@@ -429,6 +435,7 @@ function save_refund() {
         }
     }, 'json');
 }
+
 function save_batch() {
     var date=$("input#batchselect").val();
     var paymethod=$("select#paymethod").val();

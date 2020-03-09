@@ -8,10 +8,8 @@
     </a>
 </div>
 
-<div class="paymonitor-customer-dat <?=$order['invpay_class']?>">
-    <div class="paymonitor-generalname" title="<?=$order['customer_name']?>">
-        <?=$order['customer_name'] ?>
-    </div>
+<div class="paymonitor-customer-dat <?=$order['invpay_class']?>" data-content="<?=$order['customer_name']?>">
+    <?=$order['customer_name'] ?>
 </div>
 <!-- add check symbol-->
 <div class="paymonitor_ccfee_dat"><?=$order['cccheck']?></div>
@@ -23,20 +21,18 @@
 </div>
 <div class="paymonitor-revenue-dat"><?=$order['not_invoiced'] ?></div>
 <div class="paymonitor-revenue-dat"><?=$order['invoiced'] ?></div>
-<div class="paymonitor-inv-dat paydiv" id="pmnt<?=$order['order_id'] ?>">
-    <div class="paychkinpt">
-        <input type="checkbox" class="chkpaid" name="paid<?=$order['order_id'] ?>" id="paid<?=$order['order_id'] ?>" <?=$order['chkpaym']?>/>
-    </div>    
-    <?=$order['add_payment']?>
-    <div class="edit_ordernote" id="ordnote<?=$order['order_id']?>">
-        <?php if (empty($order['order_note'])) {?>
-        <img src='/img/edit_grey.png' alt="Edit note" title="Edit Order note"/>
-        <?php } else { ?>                
-        <img src='/img/edit_blue.png' alt="Edit note" class="ordernotedata" title="<?=$order['order_note']?>"/>
-        <?php } ?>
-    </div>    
+<div class="paymonitor-inv-dat paydiv" id="pmnt<?=$order['order_id']?>">
+    <input type="checkbox" class="chkpaid" name="paid<?=$order['order_id']?>" id="paid<?=$order['order_id']?>" <?=$order['chkpaym']?>/>
+</div>
+<?=$order['add_payment']?>
+<div class="edit_ordernote" id="ordnote<?=$order['order_id']?>">
+    <?php if (empty($order['order_note'])) {?>
+        <img src='/img/accounting/edit_grey.png' alt="Edit note" title="Edit Order note"/>
+    <?php } else { ?>
+        <img src='/img/accounting/edit_blue.png' alt="Edit note" class="ordernotedata" title="<?=$order['order_note']?>"/>
+    <?php } ?>
 </div>
 <div class="paymonitor-revenue-dat notpaiddat <?=$order['paid_class']?>"><?=$order['not_paid'] ?></div>
 <div class="paymonitor-code-dat">
-    <?=($order['order_code']=='' ? '&nbsp;' : '<div class="paymonitor-codedat" title="'.$order['order_code'].'">'.$order['order_code'].'</div>')?>    
+    <?=($order['order_code']=='' ? '&nbsp;' : '<div class="paymonitor-codedat" title="'.$order['order_code'].'">'.$order['order_code'].'</div>')?>
 </div>
