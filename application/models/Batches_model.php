@@ -1113,14 +1113,18 @@ class Batches_model extends My_Model
 //        $newbatch=$this->db->insert_id();
 //        return $newbatch;
 //    }
-//
-//    public function get_batches_years() {
-//        $this->db->select('distinct(date_format(from_unixtime(batch_date),\'%Y\')) as year', FALSE);
-//        $this->db->from('ts_order_batches');
-//        $this->db->order_by('year', 'desc');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
+
+    public function get_batches_years($brand) {
+        $this->db->select('distinct(date_format(from_unixtime(b.batch_date),\'%Y\')) as year', FALSE);
+        $this->db->from('ts_order_batches b');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=b.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->order_by('year', 'desc');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
     public function getAmexDueDate($batch_date,$paymeth) {
         if ($paymeth=='PAYPAL') {

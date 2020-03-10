@@ -58,6 +58,10 @@ class Accounting extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
                 $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand, $top_menu);
+            } elseif ($row['item_link']=='#financebatchesview') {
+                $head['styles'][]=array('style'=>'/css/accounting/financebatchesview.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
+                $content_options['financebatchesview'] = $this->_prepare_batches_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -663,6 +667,72 @@ class Accounting extends MY_Controller
         }
         show_404();
     }
+
+    function adminbatchesdata() {
+        if ($this->isAjax()) {
+            $postdata=$this->input->post();
+            $filtr=(isset($postdata['filter']) ? $postdata['filter'] : 0);
+            $year_view=(isset($postdata['year']) ? $postdata['year'] : date('Y'));
+            $mdata=array();
+            $error='';
+            $this->load->model('batches_model');
+            /* Get Max & min date  */
+            $batch_dates=$this->batches_model->get_batches_limits();
+
+            $max_date=strtotime(date("Y-m-d", time()) . " +5 week");
+            $min_date=strtotime(date("Y-m-d",time())." -5 week");
+            if (isset($batch_dates['min_date']) && $min_date>$batch_dates['min_date']) {
+                $min_date=$batch_dates['min_date'];
+            }
+            $mdata['max_date']=$max_date;
+            $mdata['min_date']=$min_date;
+            $dats=getDatesByWeek(date('W',$min_date),date('Y',$min_date));
+
+            $options=array(
+                'curdate'=>strtotime(date('Y-m-d')),
+                'monday'=>$dats['start_week'],
+                'max_date'=>$max_date,
+                'min_date'=>$min_date,
+            );
+            if ($filtr!='') {
+                $options['received']=$filtr;
+            }
+            $options['viewyear']=$year_view;
+            /* Batch calendar */
+            /*get data about batches from current data */
+
+            $batchdat=$this->batches_model->get_calendar_view($options);
+
+            /* Get totals */
+            $calend_total=$this->batches_model->get_calend_totals($options);
+            $cnt=count($batchdat);
+            $view_options=array(
+                'data'=>$batchdat,
+                'cnt'=>$cnt,
+                'totals'=>$calend_total,
+                'curdate'=>strtotime(date('Y-m-d')),
+            );
+            $mdata['calendar_view']=$this->load->view('batch/batches_calendar_view',$view_options,TRUE);
+
+            $batchdet=$this->batches_model->get_batchdetails($options);
+            $detdat=array();
+            /* Add content */
+            foreach ($batchdet as $row) {
+                $options=array(
+                    'totals'=>$row['totals'],
+                    'details'=>$row['lines'],
+                );
+                $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                $detdat[]=array(
+                    'batch_date'=>$row['batch_date'],
+                    'content'=>$content,
+                );
+            }
+            $mdata['details']=$this->load->view('batch/batch_detailpart_view',array('details'=>$detdat),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
 
     // Private functions - Orders Profit
     private function _prepare_order_profit ($brand, $top_menu) {
@@ -1883,6 +1953,25 @@ class Accounting extends MY_Controller
         );
 
         $content=$this->load->view('finopenivoice/paymonitor_view',$options,TRUE);
+        return $content;
+    }
+
+    private function _prepare_batches_view($brand, $top_menu) {
+        /* Batch calendar */
+        /*get data about batches from current data */
+        $details='';
+        $calendar_view='';
+        // Get a list of batch years
+        $this->load->model('batches_model');
+        $years_list=$this->batches_model->get_batches_years($brand);
+        $options=array(
+            'details'=>$details,
+            'calendar'=>$calendar_view,
+            'years'=>$years_list,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
+        $content=$this->load->view('batch/batches_view',$options,TRUE);
         return $content;
     }
 

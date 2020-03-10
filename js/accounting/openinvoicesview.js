@@ -385,7 +385,7 @@ function save_refund() {
     var order_id=$("input#order_id").val();
     var batch_note=$("textarea#batch_note").val();
     var datedue=$("input#datedue").val();
-    var url="/finance/saverefund"
+    var url="/accounting/saverefund"
     $.post(url, {'date':date, 'paymethod':paymethod, 'amount':amount,'order_id':order_id,'batch_note':batch_note,'datedue':datedue}, function(response){
         if (response.errors=='') {
             $("div.batchselectpay").css('display','none');

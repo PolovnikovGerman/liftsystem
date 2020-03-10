@@ -16,6 +16,9 @@
         <?php if (isset($openinvoicesview)) { ?>
             <div class="accountcontentarea" id="openinvoicesview" style="display: none;"><?=$openinvoicesview?></div>
         <?php } ?>
+        <?php if (isset($financebatchesview)) { ?>
+            <div class="accountcontentarea" id="financebatchesview" style="display: none;"><?=$financebatchesview?></div>
+        <?php } ?>
     </div>
 </div>
 

@@ -25,6 +25,10 @@ function init_page(objid) {
             $("#openinvoicesview").show();
             init_paymonitor();
             break;
+        case 'financebatchesview':
+            $("#financebatchesview").show();
+            init_batches();
+            break;
     }
 
 }
