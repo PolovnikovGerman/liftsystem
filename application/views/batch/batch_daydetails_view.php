@@ -1,7 +1,7 @@
 <div class="batchdetailtitle">
     <div class="batchdetailtitle_title">Batch:</div>
     <div class="batchdetailtitle_date"><?=$totals['out_date']?></div>
-    <div class="batchdetailtitle_manual" data-batchdate="<?=$totals['batch_date']?>" title="Add Manual batch"><img src="/img/manual_batch_add.png" alt="Add Manual"/></div>
+    <div class="batchdetailtitle_manual" data-batchdate="<?=$totals['batch_date']?>" title="Add Manual batch"><img src="/img/accounting/manual_batch_add.png" alt="Add Manual"/></div>
     <div class="batchdetailtitle_results"><?=$totals['day_results']?></div>
 </div>
 <div class="batchdetailtable">
@@ -47,8 +47,7 @@
                     <input type="checkbox" class="batchemail" id="btchem<?=$row['batch_id']?>" <?=($row['batch_email']==1 ? 'checked="checked"' : '')?>/>
                 </div>
                 <div class="batchpaytable_actions">
-                    <img src="/img/edit.png" alt="edit" class="editbatchrow" id="editbatchrow<?=$row['batch_id']?>" />
-                    <!-- <img src="/img/delete.png" alt="delete" class="delbatchrow" id="delbatchrow<?=$row['batch_id']?>" /> -->
+                    <img src="/img/icons/edit.png" alt="edit" class="editbatchrow" id="editbatchrow<?=$row['batch_id']?>" />
                 </div>
                 <div class="batchpaytable_ordernum"><?=$row['order_num']?></div>
                 <div class="batchpaytable_note <?=$row['batchnote_class']?>" title="<?=$row['batchnote_title']?>" id="batchnote<?=$row['batch_id']?>"><?=$row['batchnote']?></div>

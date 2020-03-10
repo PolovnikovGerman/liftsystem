@@ -1,3 +1,22 @@
+function init_batches_content() {
+    init_batches();
+    // Change Brand
+    $("#finbatchesbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#finbatchesbrand").val(brand);
+        $("#finbatchesbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#finbatchesbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#finbatchesbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        init_batches();
+    });
+}
 /* Fuction instead DOCUMENT READY */
 function init_batches_management() {
     $("input.batchemail").unbind('click').click(function(){
@@ -30,12 +49,13 @@ function init_batches_management() {
 }
 /* Deeds of open (focus) of tab */
 function init_batches() {
-    var url="/finance/adminbatchesdata";
-    var filter=$("#batchfilter").val();
-    var current=$("input#batchcurrent").val();
-    $("#loader").css('display','block');
-    $.post(url, {'filter':filter, 'current':current}, function(response){
-        $("#loader").css('display','none');
+    var url="/accounting/adminbatchesdata";
+    var params = new Array();
+    params.push({name: 'filter', value: $("#batchfilter").val()});
+    params.push({name: 'current', value: $("input#batchcurrent").val()});
+    params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+    $("#loader").show();
+    $.post(url, params , function(response){
         if (response.errors=='') {
             $("div.batchcalendar").empty().html(response.data.calendar_view);
             $("div#batchdetailsview").empty().html(response.data.details);
@@ -46,7 +66,7 @@ function init_batches() {
             $("#batchcalmaxdate").val(response.data.max_date);
             $("#batchcalmindate").val(response.data.min_date);
             /* View full data about customer & note */
-            $("div.batchnoteview").bt({
+            /* $("div.batchnoteview").bt({
                 fill : '#FFFFFF',
                 cornerRadius: 10,
                 width: 160,
@@ -59,8 +79,8 @@ function init_batches() {
                 cssStyles: {
                     color: '#000000'
                 }
-            });
-            $("div.batchpaytable_customer").bt({
+            }); */
+            /* $("div.batchpaytable_customer").bt({
                 fill : '#FFFFFF',
                 cornerRadius: 10,
                 width: 160,
@@ -73,18 +93,20 @@ function init_batches() {
                 cssStyles: {
                     color: '#000000'
                 }
-            });
+            }); */
             $("div.batchcalend_dateinfo").each(function(){
-                $("div#"+$(this).prop('id')).bt({
+                /* $("div#"+$(this).prop('id')).bt({
                     trigger: 'click',
                     ajaxCache: false,
                     width: '463px',
                     ajaxPath: ["$(this).attr('href')"]
-                });
+                }); */
             });
             // Init manage elements
+            $("#loader").hide();
             init_batches_management();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     }, 'json');
@@ -93,23 +115,29 @@ function init_batches() {
 function change_received(obj) {
     var objid=obj.id;
     var batch_id=objid.substr(6);
-    var filter=$("#batchfilter").val();
     var receiv=0;
     if ($("#"+objid).prop('checked')==true) {
         receiv=1;
     }
-    var url="/finance/batchreceived";
-    $.post(url, {'batch_id':batch_id, 'receiv':receiv, 'filter':filter}, function(response){
+    var url="/accounting/batchreceived";
+    var params = new Array();
+    params.push({name: 'batch_id', value: batch_id});
+    params.push({name: 'receiv', value: receiv});
+    params.push({name: 'filter', value: $("#batchfilter").val()});
+    params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             /* rebuild calendar & current day view */
             $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
             $("div#batch"+response.data.batch_due).empty().html(response.data.calendar_view);
             $("div.batchcalend_dateinfo").each(function(){
+                /*
                 $("div#"+$(this).prop('id')).bt({
                     trigger: 'click',
                     width: '463px',
                     ajaxPath: ["$(this).attr('href')"]
                 });
+                */
             });
             $("span.pendcc").empty().html(response.data.pendcc);
             $("span.openterm").empty().html(response.data.terms);
@@ -135,7 +163,7 @@ function change_emailed(obj) {
     if ($("#"+objid).prop('checked')==true) {
         mail=1;
     }
-    var url="/finance/batchmailed";
+    var url="/accounting/batchmailed";
     $.post(url, {'batch_id':batch_id, 'mail':mail}, function(response){
         if (response.errors=='') {
             if (mail==1) {
@@ -154,7 +182,7 @@ function show_batchdetails(obj) {
     var batch_date=obj.id.substr(5);
     $("input#batchcurrent").val(batch_date);
     var filter=$("#batchfilter").val();
-    var url="/finance/batchdetails";
+    var url="/accounting/batchdetails";
     $.post(url, {'batch_date':batch_date,'filter':filter}, function(response){
         if (response.errors=='') {
             $("div#batchdetailsview").empty().html(response.data.content);
@@ -175,17 +203,12 @@ function change_batchview() {
     params.push({name: 'filter', value: filter});
     params.push({name: 'current', value: $("input#batchcurrent").val()});
     params.push({name: 'year', value: $("select#batchview_year").val()});
-    // var current=$("input#batchcurrent").val();
-    var url="/finance/adminbatchesdata";
+    params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+    var url="/accounting/adminbatchesdata";
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            //$("div.batchcalendar").empty().html(response.data.calendar_view);
             $("div#batchdetailsview").empty().html(response.data.details);
-            //var offset=parseInt(response.data.offset)*76;
-            // $('#calendar_date').stop().scrollTo( {top:'+'+response.data.offset+'px',left:'0px'}, 800 );
-            // $("#batchcalmaxdate").val(response.data.max_date);
-            // $("#batchcalmindate").val(response.data.min_date);
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -198,9 +221,12 @@ function del_batchrow(obj) {
     var batch_id=obj.id.substr(11);
     var order_num=$("div#batchrow"+batch_id+" div.batchpaytable_ordernum").text();
     if (confirm('Delete batch for order '+order_num+'?')==true) {
-        var url="/finance/delbatchrow";
-        var filter=$("#batchfilter").val();
-        $.post(url, {'batch_id':batch_id, 'filter':filter}, function(response){
+        var url="/accounting/delbatchrow";
+        var params = new Array();
+        params.push({name: 'batch_id', value :batch_id});
+        params.push({name: 'filter', value: $("#batchfilter").val()});
+        params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
                 $("div#batch"+response.data.batch_due).empty().html(response.data.calendar_view);
@@ -209,14 +235,13 @@ function del_batchrow(obj) {
             } else {
                 show_error(response);
             }
-
         }, 'json');
     }
 }
 
 function edit_batchrow(obj) {
     var batch_id=obj.id.substr(12);
-    var url="/finance/edit_batch";
+    var url="/accounting/edit_batch";
     $.post(url, {'batch_id':batch_id}, function(response){
         if (response.errors=='') {
             $("div#batchrow"+batch_id).empty().html(response.data.content);
@@ -224,15 +249,15 @@ function edit_batchrow(obj) {
             $("img#cancenbatchrow").click(function(){
                 cancel_batchedit();
             })
-            $("input#dueedit").datepicker({
-                onSelect: function(date) {
-                    batchrow_duedate(date);
-                }
-            });
-            $("input.input_batch").change(function(){
+            $("input#dueedit").datepicker();
+            $("input#dueedit").unbind('change').change(function(){
+                var newdate = $(this).val();
+                batchrow_duedate(newdate);
+            })
+            $("input.input_batch").unbind('change').change(function(){
                 change_batchrowsum(this);
             })
-            $("img#acceptbatchrow").click(function(){
+            $("img#acceptbatchrow").unbind('click').click(function(){
                 save_batchedit();
             })
         } else {
@@ -242,7 +267,7 @@ function edit_batchrow(obj) {
 }
 
 function batchrow_duedate(date) {
-    var url="/finance/change_datedue";
+    var url="/accounting/change_datedue";
     $.post(url, {'date':date}, function(response){
         if (response.errors=='') {
             $("input#datedue").val(response.data.datedue);
@@ -272,24 +297,22 @@ function change_batchrowsum(obj) {
                 paymethod='t';
                 break;
         }
-        var url="/finance/batch_paymethod";
+        var url="/accounting/batch_paymethod";
         $.post(url, {'date':batch_date,'paymethod':paymethod}, function(response){
             if (response.errors=='') {
                 $("form#editbatchdata div.batchpaytable_due").empty().html(response.data.dateeditinpt);
                 $("input#datedue").val(response.data.datedue);
                 if (response.data.edit_option=='1') {
-                    $("input#dueedit").datepicker({
-                        onSelect: function(date) {
-                            batchrow_duedate(date);
-                        }
+                    $("input#dueedit").datepicker();
+                    $("input#dueedit").unbind('change').change(function(){
+                        var newdate = $(this).val();
+                        batchrow_duedate(newdate);
                     });
                 }
             } else {
                 show_error(response);
             }
         }, 'json');
-
-
     }
 }
 
@@ -297,7 +320,9 @@ function save_batchedit() {
     var dat=$("form#editbatchdata").serializeArray();
     var filter=$("#batchfilter").val();
     dat.push({name: "filter", value: filter});
-    var url="/finance/save_batch";
+    dat.push({name: 'brand', value: $("#finbatchesbrand").val()});
+
+    var url="/accounting/save_batch";
     $.post(url, dat, function(response){
         if (response.errors=='') {
             $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
@@ -315,10 +340,12 @@ function save_batchedit() {
 }
 
 function cancel_batchedit() {
-    var batch_id=$("form#editbatchdata input#batch_id").val();
-    var filter=$("#batchfilter").val();
-    var url="/finance/batch_canceledit";
-    $.post(url, {'batch_id':batch_id,'filter':filter}, function(response){
+    var url="/accounting/batch_canceledit";
+    var params = new Array();
+    params.push({name: 'batch_id', value: $("form#editbatchdata input#batch_id").val()});
+    params.push({name: 'filter', value: $("#batchfilter").val()});
+    params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
         } else {
@@ -332,11 +359,15 @@ function cancel_batchedit() {
 
 function edit_batchnote(obj) {
     var batch_id=obj.id.substr(9);
-    var url="/finance/batchnote";
+    var url="/accounting/batchnote";
     $.post(url, {'batch_id':batch_id}, function(response){
         if (response.errors=='') {
-            show_popup('userdata');
-            $("div#pop_content").empty().html(response.data.content);
+            // show_popup('userdata');
+            // $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','470px');
+            $("#pageModalLabel").empty().html('Order Note');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
             $("div.savebatchnote").click(function(){
                 save_batchnote();
             })
@@ -350,15 +381,17 @@ function edit_batchnote(obj) {
 }
 
 function save_batchnote() {
-    var batch_id=$("form#batchnoteedit input#batch_id").val();
-    var batch_note=$("form#batchnoteedit textarea#batch_note").val();
-    var filter=$("select#batchfilter").val();
-    var url="/finance/save_batchnote";
-    $.post(url, {'batch_id':batch_id, 'batch_note':batch_note, 'filter':filter}, function(response){
+    var url="/accounting/save_batchnote";
+    var params = new Array();
+    params.push({name: 'batch_id', value: $("form#batchnoteedit input#batch_id").val()});
+    params.push({name: 'batch_note', value: $("form#batchnoteedit textarea#batch_note").val()});
+    params.push({name: 'filter', value: $("select#batchfilter").val()});
+    params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#pageModal").modal('hide');
             $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
-            $("div.batchnoteview").bt({
+            /* $("div.batchnoteview").bt({
                 fill : '#FFFFFF',
                 cornerRadius: 10,
                 width: 160,
@@ -371,8 +404,8 @@ function save_batchnote() {
                 cssStyles: {
                     color: '#000000'
                 }
-            });
-            $("div.batchpaytable_customer").bt({
+            }); */
+            /* $("div.batchpaytable_customer").bt({
                 fill : '#FFFFFF',
                 cornerRadius: 10,
                 width: 160,
@@ -385,7 +418,7 @@ function save_batchnote() {
                 cssStyles: {
                     color: '#000000'
                 }
-            });
+            }); */
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -396,13 +429,15 @@ function save_batchnote() {
 }
 
 function add_manualbatch(batchdate) {
-    var url="/finance/batch_addmanual";
-    var filter=$("#batchfilter").val();
+    var url="/accounting/batch_addmanual";
     if (confirm('Add Manual Batch?')) {
-        $.post(url, {'batchdate':batchdate, 'filter':filter}, function(response){
+        var params = new Array();
+        params.push({name: 'batchdate', value: batchdate});
+        params.push({name: 'filter', value: $("#batchfilter").val()});
+        params.push({name: 'brand', value: $("#finbatchesbrand").val()});
+        $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#batchday"+batchdate).empty().html(response.data.content);
-                // init_batchcontent();
             } else {
                 show_error(response);
             }

@@ -27,7 +27,7 @@ function init_page(objid) {
             break;
         case 'financebatchesview':
             $("#financebatchesview").show();
-            init_batches();
+            init_batches_content();
             break;
     }
 

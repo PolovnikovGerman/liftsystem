@@ -472,5 +472,18 @@ if (!function_exists('getNameFromNumber')) {
         }
     }
 }
+if (!function_exists('dates_diff')) {
+    function dates_diff($date_min, $date_max, $type='D') {
+        // if (PHP_VERSION_ID)
+        // echo date_diff(new DateTime(), new DateTime('1986-01-04 00:00:01'))->days;
+        $diff=$date_max-$date_min;
+        if ($type=='D') {
+            return max(round($diff/(24*60*60)),1);
+        } else {
+            // Weeks
+            return ceil(max(round($diff/(24*60*60)),1)/7);
+        }
+    }
+}
 
 ?>

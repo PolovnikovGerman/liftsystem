@@ -7,8 +7,8 @@
             <input type="checkbox" name="batch_email" class="batch_email" value="1" <?=($batch_email==1 ? 'checked="checked"' : '')?>/>
         </div>
         <div class="batchpaytable_actions">
-            <img src="/img/accept.png" alt="Accept" id="acceptbatchrow" />
-            <img src="/img/close.png" alt="Cancel"  id="cancenbatchrow" />
+            <img src="/img/icons/accept.png" alt="Accept" id="acceptbatchrow" />
+            <img src="/img/icons/close.png" alt="Cancel"  id="cancenbatchrow" />
         </div>
         <div class="batchpaytable_ordernum"><?=$order_num?></div>
         <div class="batchpaytable_customer" title="<?=$customer_name?>">

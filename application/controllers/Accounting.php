@@ -671,64 +671,476 @@ class Accounting extends MY_Controller
     function adminbatchesdata() {
         if ($this->isAjax()) {
             $postdata=$this->input->post();
-            $filtr=(isset($postdata['filter']) ? $postdata['filter'] : 0);
-            $year_view=(isset($postdata['year']) ? $postdata['year'] : date('Y'));
+            $mdata=array();
+            $error='Empty Brand';
+            $filtr = ifset($postdata, 'filter', 0);
+            $year_view = ifset($postdata, 'year', date('Y'));
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('batches_model');
+                /* Get Max & min date  */
+                $batch_dates=$this->batches_model->get_batches_limits($brand);
+                $max_date=strtotime(date("Y-m-d", time()) . " +5 week");
+                $min_date=strtotime(date("Y-m-d",time())." -5 week");
+                if (isset($batch_dates['min_date']) && $min_date>$batch_dates['min_date']) {
+                    $min_date=$batch_dates['min_date'];
+                }
+                $mdata['max_date']=$max_date;
+                $mdata['min_date']=$min_date;
+                $dats=getDatesByWeek(date('W',$min_date),date('Y',$min_date));
+
+                $options=array(
+                    'curdate'=>strtotime(date('Y-m-d')),
+                    'monday'=>$dats['start_week'],
+                    'max_date'=>$max_date,
+                    'min_date'=>$min_date,
+                    'brand' => $brand,
+                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $options['viewyear']=$year_view;
+                /* Batch calendar */
+                /*get data about batches from current data */
+
+                $batchdat=$this->batches_model->get_calendar_view($options);
+
+                /* Get totals */
+                $calend_total=$this->batches_model->get_calend_totals($options);
+                $cnt=count($batchdat);
+                $view_options=array(
+                    'data'=>$batchdat,
+                    'cnt'=>$cnt,
+                    'totals'=>$calend_total,
+                    'curdate'=>strtotime(date('Y-m-d')),
+                );
+                $mdata['calendar_view']=$this->load->view('batch/batches_calendar_view',$view_options,TRUE);
+
+                $batchdet=$this->batches_model->get_batchdetails($options);
+                $detdat=array();
+                /* Add content */
+                foreach ($batchdet as $row) {
+                    $options=array(
+                        'totals'=>$row['totals'],
+                        'details'=>$row['lines'],
+                    );
+                    $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                    $detdat[]=array(
+                        'batch_date'=>$row['batch_date'],
+                        'content'=>$content,
+                    );
+                }
+                $mdata['details']=$this->load->view('batch/batch_detailpart_view',array('details'=>$detdat),TRUE);
+
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Change Batch option EMAILED */
+    function batchmailed() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $batch_id=$this->input->post('batch_id');
+            if (!$batch_id) {
+                $error='Unknown batch';
+            } else {
+                $mail=$this->input->post('mail');
+                $this->load->model('');
+                $res=$this->batches_model->batchmailed($batch_id,$mail);
+                $error='Batch wasn\'t updated';
+                if ($res==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Change BATCH OPTION received */
+    public function batchreceived() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $filtr=$this->input->post('filter');
+            $batch_id=$this->input->post('batch_id');
+            $brand = $this->input->post('brand');
+            if (!$batch_id) {
+                $error='Unknown batch';
+            } else {
+                $this->load->model('batches_model');
+                $receiv=$this->input->post('receiv');
+                $res=$this->batches_model->batchreceived($batch_id,$receiv);
+                $error='Batch wasn\'t updated';
+                if ($res==$this->success_result) {
+                    $error = '';
+                    /* Get data about current day - according to filter statement */
+                    $batch_data=$this->batches_model->get_batch_detail($batch_id);
+                    $batch_date=$batch_data['batch_date'];
+                    $mdata['batch_date']=$batch_date;
+                    $mdata['batch_due']=$batch_data['batch_due'];
+
+                    /* prepare new day content */
+                    $filter=array(
+                        'batch_date'=>$batch_date,
+                        'brand' => $brand,
+                    );
+                    if ($filtr!='') {
+                        $filter['received']=$filtr;
+                    }
+                    $batchdetails=$this->batches_model->get_batchdetails_date($filter);
+                    if (count($batchdetails['details'])==0) {
+                        $mdata['content']='';
+                    } else {
+                        $options=array(
+                            'totals'=>$batchdetails['totals'],
+                            'details'=>$batchdetails['details'],
+                        );
+                        $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                    }
+                    /* Get data about calendar by day */
+                    /* Calendar */
+                    $options=array(
+                        'batch_due'=>$batch_data['batch_due'],
+                        'brand' => $options['brand'],
+                    );
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batch_cal=$this->batches_model->get_batchcalen_date($options);
+                    $mdata['calendar_view']=$this->load->view('batch/batch_daycalend_view',$batch_cal,TRUE);
+                    /* Totals */
+                    $calend_total=$this->batches_model->get_calend_totals($options);
+                    $mdata['pendcc']=$calend_total['out_pendcc'];
+                    $mdata['terms']=$calend_total['out_term'];
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function delbatchrow() {
+        if ($this->isAjax()) {
+            $this->load->model('batches_model');
+            $mdata=array();
+            $error='';
+            $batch_id=$this->input->post('batch_id');
+            $filtr=$this->input->post('filter');
+            $brand = $this->input->post('brand');
+            /* get data about batch */
+            $batchdata=$this->batches_model->get_batch_detail($batch_id);
+            if (!isset($batchdata['batch_id'])) {
+                $error='Incorrect batch ID';
+            } else {
+                /* delete data */
+                $res=$this->batches_model->del_batch($batch_id);
+                if (!$res) {
+                    $error='Delete of batch not execute';
+                } else {
+                    /* get data by calend */
+                    $mdata['batch_date']=$batchdata['batch_date'];
+                    $mdata['batch_due']=$batchdata['batch_due'];
+                    $options=array(
+                        'batch_date'=>$batchdata['batch_date'],
+                        'brand' => $brand,
+                    );
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batchs=$this->batches_model->get_batchdetails_date($options);
+                    $mdata['content']='';
+                    if (count($batchs['details'])>0) {
+                        $options=array(
+                            'totals'=>$batchs['totals'],
+                            'details'=>$batchs['details'],
+                        );
+                        $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                    }
+                    /* Calendar */
+                    $options=array(
+                        'batch_due'=>$batchdata['batch_due'],
+                        'brand' => $brand,
+                    );
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batch_cal=$this->batches_model->get_batchcalen_date($options);
+                    $mdata['calendar_view']=$this->load->view('batch/batch_daycalend_view',$batch_cal,TRUE);
+                    /* Totals */
+                    $calend_total=$this->batches_model->get_calend_totals($options);
+                    $mdata['pendcc']=$calend_total['out_pendcc'];
+                    $mdata['terms']=$calend_total['out_term'];
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Edit batch row */
+    public function edit_batch() {
+        if ($this->isAjax()) {
+            $this->load->model('batches_model');
+            $mdata=array();
+            $error='';
+            $batch_id=$this->input->post('batch_id');
+            if (!$batch_id) {
+                $error='Empty batch';
+            } else {
+                $batch_data=$this->batches_model->get_batch_detail($batch_id);
+                if (!isset($batch_data['batch_id'])) {
+                    $error='Incorrect batch ID';
+                } else {
+                    if ($batch_data['batch_other']!=0 || $batch_data['batch_term']!=0) {
+                        $batch_data['due_vie']='<input id="dueedit" class="batchdueedit" readonly="readonly" value="'.date('m/d/Y',$batch_data['batch_due']).'"/>';
+                    } else {
+                        $batch_data['due_vie']=date('m/d',$batch_data['batch_due']);
+                    }
+                    $mdata['content']=$this->load->view('batch/batch_editrow_view',$batch_data,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* cancel_edit */
+    public function batch_canceledit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('batches_model');
+            $error='';
+            $batch_id=$this->input->post('batch_id');
+            $filtr=$this->input->post('filter');
+            $brand = $this->input->post('brand');
+            /* get data about batch */
+            $batchdata=$this->batches_model->get_batch_detail($batch_id);
+            if (!isset($batchdata['batch_id'])) {
+                $error='Incorrect batch ID';
+            } else {
+                $mdata['batch_date']=$batchdata['batch_date'];
+                $batch_date=$batchdata['batch_date'];
+                $options=array(
+                    'batch_date'=>$batch_date,
+                    'brand' => $brand,
+                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $batchs=$this->batches_model->get_batchdetails_date($options);
+                if (count($batchs['details'])>0) {
+                    $options=array(
+                        'totals'=>$batchs['totals'],
+                        'details'=>$batchs['details'],
+                    );
+                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                } else {
+                    $mdata['content']='';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* save bathc row */
+    public function save_batch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('batches_model');
+            $options=$this->input->post();
+            $user_id=$this->USR_ID;
+            $filtr=$options['filter'];
+            $brand = ifset($options,'brand');
+            $batch_data=$this->batches_model->get_batch_detail($options['batch_id']);
+            if ($batch_data['order_id']) {
+                $options['batch_sum']=($this->batches_model->get_batchsum_order($batch_data['order_id'])-$batch_data['batch_amount']);
+                $order_data=$this->orders_model->get_order_detail($batch_data['order_id']);
+                $options['order_revenue']=$order_data['revenue'];
+                $old_batch_due=$batch_data['batch_due'];
+                $batch_date=$batch_data['batch_date'];
+                $mdata['batch_date']=$batch_date;
+                $options['batch_date']=$batch_data['batch_date'];
+                $res=$this->batches_model->save_batchrow($options,$user_id);
+            } else {
+                $options['batch_date']=$batch_data['batch_date'];
+                $old_batch_due=$batch_data['batch_due'];
+                $batch_date=$batch_data['batch_date'];
+                $mdata['batch_date']=$batch_date;
+                $res=$this->batches_model->save_manualrow($options, $user_id);
+            }
+            /* Previously entered  */
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $new_batch_due=$res['batch_due'];
+                $options=array(
+                    'batch_date'=>$batch_date,
+                    'brand' => $brand,
+                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $batchs=$this->batches_model->get_batchdetails_date($options);
+                $mdata['content']='';
+                if (count($batchs['details'])>0) {
+                    $options=array(
+                        'totals'=>$batchs['totals'],
+                        'details'=>$batchs['details'],
+                    );
+                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                }
+                $mdata['calend_change']=1;
+                $mdata['batch_due']=$old_batch_due;
+                /* Calendar */
+                $options=array(
+                    'batch_due'=>$old_batch_due,
+                    'brand' => $brand,
+                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $batch_cal=$this->batches_model->get_batchcalen_date($options);
+                $mdata['calendar_view']=$this->load->view('batch/batch_daycalend_view',$batch_cal,TRUE);
+                /* Totals */
+                $calend_total=$this->batches_model->get_calend_totals($options);
+                $mdata['pendcc']=$calend_total['out_pendcc'];
+                $mdata['terms']=$calend_total['out_term'];
+                if ($old_batch_due!=$new_batch_due) {
+                    $mdata['calend_change']=2;
+                    $mdata['batch_due_second']=$new_batch_due;
+                    $options=array(
+                        'batch_due'=>$new_batch_due,
+                        'brand' => $brand,
+                    );
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batch_cal=$this->batches_model->get_batchcalen_date($options);
+                    $mdata['calendar_view_second']=$this->load->view('batch/batch_daycalend_view',$batch_cal,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function batch_addmanual() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $batchdate=$this->input->post('batchdate');
+            $filtr=$this->input->post('filter');
+            $brand = $this->input->post('brand');
+            $newrec=array(
+                'create_usr'=>  $this->USR_ID,
+                'create_date'=>date('Y-m-d H:i:s'),
+                'update_usr'=>  $this->USR_ID,
+                'batch_date'=>$batchdate,
+            );
+            $this->load->model('batches_model');
+            $duedate=$this->batches_model->getAmexDueDate($batchdate,'paypal');
+            $newrec['batch_due']=$duedate;
+            $res=$this->batches_model->batch_freebatchadd($newrec);
+            $error=$res['msg'];
+            if ($res['result']=$this->success_result) {
+                $error = '';
+                $options=array(
+                    'batch_date'=>$batchdate,
+                    'brand' => $brand,
+                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $batchs=$this->batches_model->get_batchdetails_date($options);
+                if (count($batchs['details'])>0) {
+                    $options=array(
+                        'totals'=>$batchs['totals'],
+                        'details'=>$batchs['details'],
+                    );
+                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                } else {
+                    $mdata['content']='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function batchnote() {
+        if ($this->isAjax()) {
             $mdata=array();
             $error='';
             $this->load->model('batches_model');
-            /* Get Max & min date  */
-            $batch_dates=$this->batches_model->get_batches_limits();
-
-            $max_date=strtotime(date("Y-m-d", time()) . " +5 week");
-            $min_date=strtotime(date("Y-m-d",time())." -5 week");
-            if (isset($batch_dates['min_date']) && $min_date>$batch_dates['min_date']) {
-                $min_date=$batch_dates['min_date'];
+            $batch_id=$this->input->post('batch_id');
+            $batch=$this->batches_model->get_batch_detail($batch_id);
+            if (!isset($batch['batch_id'])) {
+                $error='Unknown batch';
+            } else {
+                $mdata['content']=$this->load->view('batch/batchnote_edit_view',$batch,TRUE);
             }
-            $mdata['max_date']=$max_date;
-            $mdata['min_date']=$min_date;
-            $dats=getDatesByWeek(date('W',$min_date),date('Y',$min_date));
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
 
-            $options=array(
-                'curdate'=>strtotime(date('Y-m-d')),
-                'monday'=>$dats['start_week'],
-                'max_date'=>$max_date,
-                'min_date'=>$min_date,
-            );
-            if ($filtr!='') {
-                $options['received']=$filtr;
-            }
-            $options['viewyear']=$year_view;
-            /* Batch calendar */
-            /*get data about batches from current data */
+    public function save_batchnote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $batch_id=$this->input->post('batch_id');
+            $batch_note=$this->input->post('batch_note');
+            $filtr=$this->input->post('filter');
+            $brand = $this->input->post('brand');
+            $this->load->model('batches_model');
+            $this->batches_model->save_batchnote($batch_id,$batch_note);
 
-            $batchdat=$this->batches_model->get_calendar_view($options);
-
-            /* Get totals */
-            $calend_total=$this->batches_model->get_calend_totals($options);
-            $cnt=count($batchdat);
-            $view_options=array(
-                'data'=>$batchdat,
-                'cnt'=>$cnt,
-                'totals'=>$calend_total,
-                'curdate'=>strtotime(date('Y-m-d')),
-            );
-            $mdata['calendar_view']=$this->load->view('batch/batches_calendar_view',$view_options,TRUE);
-
-            $batchdet=$this->batches_model->get_batchdetails($options);
-            $detdat=array();
-            /* Add content */
-            foreach ($batchdet as $row) {
+            $batchdata=$this->batches_model->get_batch_detail($batch_id);
+            if (!isset($batchdata['batch_id'])) {
+                $error='Incorrect batch ID';
+            } else {
+                $mdata['batch_date']=$batchdata['batch_date'];
+                $batch_date=$batchdata['batch_date'];
                 $options=array(
-                    'totals'=>$row['totals'],
-                    'details'=>$row['lines'],
+                    'batch_date'=>$batch_date,
+                    'brand' => $brand,
                 );
-                $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
-                $detdat[]=array(
-                    'batch_date'=>$row['batch_date'],
-                    'content'=>$content,
-                );
+                if ($filtr!='') {
+                    $options['received']=$filtr;
+                }
+                $batchs=$this->batches_model->get_batchdetails_date($options);
+                $mdata['content']='';
+                if (count($batchs['details'])>0) {
+                    $options=array(
+                        'totals'=>$batchs['totals'],
+                        'details'=>$batchs['details'],
+                    );
+                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                }
             }
-            $mdata['details']=$this->load->view('batch/batch_detailpart_view',array('details'=>$detdat),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    /* Batch details per day */
+    public function batchdetails() {
+        if($this->isAjax()) {
+            $this->load->model('batches_model');
+            $mdata=array();
+            $error='';
+            $batch_date=$this->input->post('batch_date');
+            $received=$this->input->post('filter');
+            $brand = $this->input->post('brand');
+            $filter=array(
+                'batch_date'=>$batch_date,
+                'brand' => $brand,
+            );
+            if ($received!='') {
+                $filter['received']=$received;
+            }
+            $batchdetails=$this->batches_model->get_batchdetails($filter);
+            $options=array(
+                'totals'=>$batchdetails['totals'],
+                'details'=>$batchdetails['details'],
+            );
+            $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
             $this->ajaxResponse($mdata,$error);
         }
     }

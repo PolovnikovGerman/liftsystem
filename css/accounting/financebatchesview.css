@@ -1,0 +1,350 @@
+.batchnegative {
+    color: #db1d1d;
+    font-weight: bold;
+}
+.batchcontent {
+    clear: both;
+    float: left;
+    width: 1003px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.batch_details {
+    float: left;
+    padding-left: 10px;
+    width: 503px;
+}
+.batchfilter {
+    clear: both;
+    float: left;
+    /*    width: 230px; */
+    margin-bottom: 5px;
+}
+select.batchviewselect {
+    font-size: 11px;
+    font-style: italic;
+    width: 214px;
+    color: #383838;
+}
+select.batchviewyearselect {
+    margin-left: 7px;
+    visibility: hidden;
+    /* width: 214px; */
+
+}
+.batchdaydata_content {
+    clear: both;
+    float: left;
+    max-height: 602px;
+    overflow-y: auto;
+    width: 506px;
+}
+.batchdaydata {
+    clear: both;
+    float: left;
+    width: 487px;
+    margin-bottom: 10px;
+}
+.batchdetailtitle {
+    clear: both;
+    float: left;
+    width: 484px;
+}
+.batchdetailtitle_title {
+    float: left;
+    width: 77px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #383838;
+}
+.batchdetailtitle_date {
+    float: left;
+    width: 270px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #0d07ff;
+}
+.batchdetailtitle_manual {
+    float: left;
+    width: 26px;
+    text-align: center;
+}
+.batchdetailtitle_manual:hover {
+    cursor: pointer;
+}
+.batchdetailtitle_results {
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    color: #232323;
+    width: 110px;
+    text-align: right;
+}
+.batchdetailtable {
+    clear: both;
+    float: left;
+    width: 487px;
+}
+.batchdetailtable_title {
+    border-bottom: 1px solid #000000;
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #6d6aff;
+    color: #fff;
+    padding-top: 3px;
+    font-size: 11px;
+}
+.batchdetailtable_totalinvoiced {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #808080;
+    color: #fff;
+    font-size: 11px;
+    border-bottom: 1px solid #000000;
+}
+.batchdetailtable_totaltitle {
+    float: left;
+    width: 206px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 17px;
+    padding-top: 3px;
+}
+.batchdetailtable_totalvalues {
+    float: left;
+    width: 280px;
+    padding-top: 3px;
+}
+.batchdetailtable_notreceiv {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #a9a9a9;
+    border-bottom: 1px solid #000;
+    color: #fff;
+    font-size: 11px;
+}
+.batchdetailtable_orders {
+    clear: both;
+    float: left;
+    width: 487px;
+    color: #000000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+}
+/* EMAILED */
+.emailed {
+    background-color: #a2a6ff;
+}
+/* RECEIVED */
+.received {
+    background-color: #6d6aff;
+}
+.batchpaytable_email {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpaytable_actions {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpaytable_actions img {
+    float: left;
+    width: 12px;
+    height: 12px;
+}
+.batchpaytable_ordernum {
+    float: left;
+    width: 48px;
+    text-align: center;
+}
+.batchpaytable_note {
+    float: left;
+    width: 18px;
+}
+.batchpaytable_note img {
+    width: 14px;
+}
+.batchpaytable_customer {
+    float: left;
+    width: 80px;
+    padding-left: 5px;
+    padding-right: 3px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.batchpaytable_customertitle {
+    float: left;
+    width: 111px;
+    text-align: center;
+}
+.batchpaytable_vmd {
+    float: left;
+    width: 61px;
+    text-align: center;
+}
+.batchpaytable_amex {
+    float: left;
+    width: 56px;
+    text-align: center;
+}
+.batchpaytable_other {
+    float: left;
+    width: 37px;
+    text-align: center;
+}
+.batchpaytable_terms {
+    float: left;
+    width: 62px;
+    text-align: center;
+}
+.batchpaytable_due {
+    float: left;
+    width: 35px;
+    text-align: center;
+}
+.batchpaytable_reach {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpaytable_totalinvoiced {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #808080;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_totaltitle {
+    float: left;
+    width: 205px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 21px;
+    padding-top: 3px;
+}
+.batchpaytable_totalvalues {
+    float: left;
+    width: 279px;
+    padding-top: 3px;
+}
+.batchpaytable_notreceiv {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #a9a9a9;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_orders {
+    clear: both;
+    float: left;
+    width: 487px;
+    color: #000000;
+    font-size: 11px;
+}
+.savebatch {
+    background: url("/img/addnew.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 24px;
+    margin-left: 350px;
+    margin-top: 10px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+}
+.savebatch a {
+    text-decoration: none;
+    color: #FFF;
+}
+
+/* Calendar view */
+.batchcalendar {
+    float: left;
+    width: 464px;
+    padding-top: 10px;
+    margin-left: 20px;
+}
+.batchcalendar_title {
+    clear: both;
+    float: left;
+    width: 448px;
+    font-size: 13px;
+    color:#717171;
+    text-align: center;
+    border-bottom: 1px solid #000;
+}
+.batchcalendar_daytitle {
+    float: left;
+    width: 64px;
+    margin-top: 3px;
+    /* border-right: 1px solid; */
+}
+.batchcalendar_view {
+    clear: both;
+    float: left;
+    max-height: 607px;
+    overflow-y: auto;
+    width: 470px;
+}
+.batchcalendar_data {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    color:#000;
+    text-align: center;
+    height: 80px;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+.batchholiday {
+    background-color: #cfcfcf;
+}
+.batchcalend_dateinfo {
+    border-left: 1px solid #000;
+    width: 64px;
+    height: 79px;
+}
+.batchcalend_dateinfo:hover {
+    cursor: pointer;
+}
+.batchcalendar_sums {
+    float: left;
+    color: #000cff;
+    margin-top: 2px;
+    font-size: 11px;
+    width: 64px;
+}
+.batchcalendar_sums.negative {
+    color: #db1d1d;
+}
+.batchcalend_totals {
+    clear: both;
+    float: left;
+    width: 448px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+span.batchcalendar_totals_title {
+    color: #000;
+}
+span.batchcalendar_totals_sums {
+    color: #000cff;
+}
