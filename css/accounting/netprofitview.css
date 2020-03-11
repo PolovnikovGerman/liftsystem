@@ -1,0 +1,1302 @@
+/*
+    Document   : netprofit
+    Created on : Mar 20, 2014, 7:38:13 PM
+    Author     : german
+    Description:
+        Purpose of the stylesheet follows.
+*/
+/* Week select */
+.netprofit_header {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 1013px;
+}
+.netprofit_sortview {
+    float: left;
+    margin-left: 10px;
+    width: 160px;
+}
+.netprofit_sortview span {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    width: 50px;
+}
+select.netprofitsort {
+    background-color: #fff;
+    border: 1px solid;
+    float: left;
+    height: 21px;
+    text-align: left;
+    width: 107px;
+}
+.netreportview {
+    color: #222222;
+    float: left;
+    font-size: 12px;
+    text-align: center;
+    width: 170px;
+}
+.netreportview span {
+    float: left;
+    line-height: 22px;
+    width: 70px;
+}
+select.netreportviewselect {
+    background-color: #fff;
+    border: 1px solid;
+    float: left;
+    height: 21px !important;
+    text-align: left;
+    width: 90px;
+}
+.netprofit_week_selectarea {
+    color: #222222;
+    float: left;
+    font-size: 12px;
+    line-height: 22px;
+    width: 500px;
+}
+.weekselect-data {
+    float: left;
+    width: 100px;
+}
+.weekselect-data-input {
+    float: left;
+    width: 22px;
+}
+span.weekselect-label {
+    float: left;
+    width: 60px;
+}
+span.weekselect-labelchoice {
+    float: left;
+    margin-left: 5px;
+    width: 34px;
+}
+select.weekselect {
+    background-color: #fff;
+    border: 1px solid;
+    float: left;
+    height: 22px;
+    width: 154px;
+}
+.weekselect-datalist {
+    float: left;
+    width: 388px;
+}
+.table_netprofit {
+    clear: both;
+    float: left;
+    margin-left: 5px;
+    width: 1011px;
+}
+.title_table_netprofit {
+    background: none repeat scroll 0 0 #BCBCBC;
+    border: 1px solid #919191;
+    clear: both;
+    color: #353535;
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 5px;
+    width: 995px;
+    margin-left: 25px;
+}
+.title_table_netprofit > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    text-align: center;
+}
+.line_table_netprofit div {
+    float: left;
+    text-align: center;
+    font-size: 11px;
+    height: 22px;
+    line-height: 22px;
+}
+.line_table_netprofit div.yearbegin {
+    border-bottom: 1px solid #000000;
+    height: 21px;
+    line-height: 21px;
+}
+.cell_button {
+    width: 23px;
+}
+.cell_year {
+    width: 33px;
+}
+.cell_week {
+    width: 88px;
+}
+.cell_sales {
+    width: 38px;
+}
+.cell_revenue {
+    width: 65px;
+}
+.cell_gross_profit {
+    width: 67px;
+}
+.cell_gross_profitpercent {
+    width: 26px;
+}
+.cell_totalcostpercent,
+.cell_netprofitpercent {
+    width: 25px;
+}
+.cell_operating {
+    width: 57px;
+}
+.cell_advertising {
+    width: 64px;
+}
+.cell_payroll {
+    width: 62px;
+}
+.cell_projects {
+    width: 61px;
+}
+.cell_w9work {
+    width: 63px;
+}
+.cell_w9work_edit {
+    cursor: pointer;
+    width: 63px;
+}
+.cell_purchases {
+    width: 86px;
+}
+.cell_purchases2 {
+    border-right: 1px solid;
+    width: 85px;
+}
+.cell_purchases_edit {
+    cursor: pointer;
+    width: 66px;
+}
+.cell_purchases3 {
+    width: 66px;
+}
+.cell_purchases3.emptynetproofnote, .cell_inbut2.emptynetproofnote {
+    background-color: #ffff7f;
+}
+.cell_total_costs {
+    width: 68px;
+}
+.cell_net_profit {
+    width: 68px;
+}
+.cell_net_saved {
+    width: 59px;
+}
+.cell_for_saved {
+    width: 60px;
+}
+.cell_for_saved2 {
+    width: 60px;
+}
+.cell_for_owners {
+    width: 61px;
+}
+.cell_for_debt {
+    width: 58px;
+}
+.cell_running_total {
+    width: 88px;
+}
+.cell_gross_profit2 {
+    width: 67px;
+}
+.cell_gross_profitpercent2,
+.cell_totalcostpercent2,
+.cell_netprofitpercent2 {
+    border-right: 1px solid #1e1e1e;
+    width: 25px;
+}
+.cell_gross_profit2.projprof {
+    background-color: #001072;
+    color: #FFFFFF;
+    /* padding-top: 3px; */
+}
+.cell_inbut2 {
+    border-right: 1px solid #1e1e1e;
+    padding: 2px 0;
+    width: 18px;
+}
+.cell_inbut2.yearbegin {
+    height: 17px !important;
+}
+.cell_inbut2 > .imbox_edit {
+    cursor: pointer;
+}
+.cell_total_costs2 {
+    width: 69px;
+}
+.cell_net_profit2 {
+    width: 67px;
+}
+.cell_net_profit3 {
+    width: 50px;
+}
+.cell_button2 {
+    float: left;
+    padding: 2px 0 2px 2px;
+    width: 17px;
+}
+.cell_year2 {
+    float: left;
+    width: 33px;
+    padding: 2px 0;
+}
+.cell_week2 {
+    float: left;
+    line-height: 16px;
+    width: 96px;
+}
+span.showallweekdata {
+    margin-left: 5px;
+    font-size: 12px;
+    color: #0000ff;
+    cursor: pointer;
+}
+.cell_week2edt {
+    float: left;
+    line-height: 16px;
+    width: 69px;
+}
+.cell_week2:hover {
+    cursor: pointer;
+}
+.cell_sales2 {
+    width: 30px;
+}
+.cell_revenue2 {
+    width: 65px;
+}
+.cell_operating2 {
+    width: 61px;
+}
+.cell_payroll2 {
+    width: 61px;
+}
+.cell_advertising2 {
+    width: 66px;
+}
+.cell_projects2 {
+    width: 57px;
+}
+.cell_for_debtincl {
+    cursor: pointer;
+    font-size: 14px !important;
+    height: 17px !important;
+    padding-top: 4px;
+    width: 18px;
+}
+.cell_for_debtincledit {
+    cursor: pointer;
+    font-size: 14px !important;
+    padding-top: 4px;
+    width: 18px;
+}
+.cell_for_debt2 {
+    width: 58px;
+}
+.cell_for_owners2 {
+    width: 50px;
+}
+.cell_running_total2 {
+    float: left;
+    width: 85px;
+    padding: 2px 0;
+}
+.content_table_netprofit {
+    border-bottom: 1px solid #919191;
+    color: #353535;
+    float: left;
+    font-size: 12px;
+    height: 599px;
+    text-align: center;
+    width: 1023px;
+}
+.content_table_netprofit.compressed_title {
+    width: 732px;
+}
+.content_table_netprofit > .netprofitabledataarea {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 549px;
+    width: 100%;
+}
+.line_table_netprofit {
+    float: left;
+    clear: both;
+    height: 22px;
+    width: 1022px;
+}
+.radio_button {
+    width: 60px;
+    font-size: 11px;
+    float:left;
+    line-height: 8px;
+    margin-top: -8px;
+}
+.tq_title {
+    width: 25px;
+    position: absolute;
+    height: 21px;
+    margin-top: 5px;
+}
+.tq_total {
+    width: 25px;
+    float: left;
+    line-height: 20px;
+    border-right: 1px solid #000000;
+}
+.tax_quarter {
+    width: 25px;
+    float: left;
+    line-height: 20px;
+    color: #06919e;
+    border-right: 1px solid #000000;
+    background: #FFFFFF;
+    font-size: 10px;
+}
+.tax_border {
+    border: 1px solid #000000;
+    color: #000000;
+    height: 20px !important;
+    line-height: 20px !important;
+    width: 24px;
+}
+.compressed_title {
+    width: 702px;
+}
+.comressed_profitrow {
+    width: 729px;
+}
+/* Chartdata */
+.chartdataarea {
+    padding-top:  15px;
+    background-color: #fff;
+    clear: both;
+    float: left;
+    width: 100%;
+    padding-bottom: 15px;
+}
+.chartdataarea div {
+    float: left;
+}
+.chartdataarea > .totalsarea {
+}
+.chartdataarea > .totalsarea > .weektotalsheadrow {
+    height: 25px;
+    margin-left: 79px;
+}
+select.weektotalsviewtype {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 3px;
+    width: 140px;
+}
+.chartdataarea > .totalsarea > .weekselectforcompare {
+    clear: both;
+    display: none;
+    float: left;
+    font-size: 12px;
+    margin-bottom: 16px;
+    margin-left: 77px;
+    margin-top: 12px;
+}
+select.weekcompareselect {
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 3px;
+    width: 126px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    margin-left: 3px;
+}
+
+/* Edit Details ROW */
+.line_table_netprofit input {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #3e3e3e;
+    font-size: 11px;
+    height: 17px;
+}
+.line_table_netprofit input.inputoper {
+    width: 54px;
+}
+.line_table_netprofit input.inputpayroll {
+    width: 54px;
+}
+.line_table_netprofit input.inputpurchase {
+    width: 54px;
+}
+input.inputadvert {
+    width: 61px;
+}
+input.inputprojects {
+    width: 53px;
+}
+input.inputdebt {
+    width: 54px;
+}
+input.inputowners {
+    width: 43px;
+}
+input.inputsaved {
+    width: 43px;
+}
+
+/* Period */
+.chartdataarea > .totalsarea > .baseperiodselectarea {
+    clear: both;
+    font-size: 12px;
+    margin-left: 89px;
+    margin-top: 5px;
+    width: 274px;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect {
+    width: 137px;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect > .label {
+    width: 100%;
+    color: #0000ff;
+    text-align: left;
+    height: 18px;
+    line-height: 18px;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea {
+    border: 1px solid #000000;
+    height: 43px;
+    width: 128px;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow {
+    width: 100%;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow div {
+    height: 20px;
+    line-height: 20px;
+}
+.chartdataarea > .totalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow > .inputplace {
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 2px;
+    text-align: center;
+    width: 20px;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea {
+    clear: both;
+    width: 100%;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow {
+    clear: both;
+    height: 22px;
+    width: 100%;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.small {
+    height: 16px;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.small > div {
+    line-height: 16px;
+    font-size: 11px;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.expensivesrow {
+    display: none;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > div {
+    color: #010101;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parameterlabel {
+    padding-right: 5px;
+    width: 83px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.small > .parameterlabel {
+    border-right: 1px solid #FFFFFF;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parameterlabel.netprofit {
+    font-weight: bold;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parameterlabel.expensives {
+    color: #ff0000;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parameterlabel > span.exponsivedata {
+    cursor: pointer;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue {
+    width: 73px;
+    border-right: 1px solid #000000;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue.currentyearval {
+    display: block;
+    background: #ededed;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.small > .parametervalue {
+    border-right: 1px solid #FFFFFF;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.small > .parametervalue.showhidecuryear {
+    color: #0000ff;
+    cursor: pointer;
+    text-align: center;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue.netprofit {
+    font-weight: bold;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow.bottomborder > .parametervalue {
+    border-bottom: 1px solid #000000;
+    height: 21px;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue.headdata {
+    background-color: #d6d6d6;
+    font-size: 13px;
+    font-weight: bold;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    height: 20px;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis {
+    color: #0000ff;
+}
+.chartdataarea > .totalsarea > .weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.currentyear {
+    display: block;
+}
+.chartdataarea > .comparevaluesarea {
+    width: 148px;
+}
+.chartdataarea > .comparevaluesarea > .comparedatatitle {
+    font-size: 12px;
+    font-weight: bold;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    width: 100%;
+}
+.chartdataarea > .comparevaluesarea > .comparedatasubtitle {
+    font-size: 11px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    width: 100%;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea {
+    margin-left: 13px;
+    margin-top: 16px;
+    width: 104px;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .weektotalsheadrow {
+    font-size: 12px;
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+    width: 100%;
+}
+select.selectcompareyears {
+    margin-left: 25px;
+    width: 55px;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea {
+    /* border: 1px solid #000000; */
+    width: 100%;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    clear: both;
+    height: 22px;
+    line-height: 22px;
+    width: 100%;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow.expensivesrow {
+    display: none;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue {
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    width: 104px;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow.bottomborder > .parametervalue {
+    border-bottom: 1px solid #000000;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue.headdata {
+    background-color: #d6d6d6;
+    border-bottom: 1px solid #000000;
+    border-top: 1px solid #000;
+    color: #00850c;
+    font-size: 12px;
+    font-weight: bold;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue div {
+    color: #010101;
+    font-size: 12px;
+    line-height: 22px;
+    height: 22px;
+    text-align: center;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue.negative {
+    color: #ff0000;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue.netprofit {
+    font-weight: bold;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue > .grownval {
+    width: 65px;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue > .grownval.negative {
+    color: #ff0000;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue > .grownprc {
+    width: 38px;
+}
+.chartdataarea > .comparevaluesarea > .comparedataarea > .comptabledataarea > .weektotalsrow > .parametervalue > .grownprc.negative {
+    color: #ff0000;
+}
+/* W9WORK Table */
+.chartdataarea > .w9totalsarea {
+    float: right;
+    height: 679px;
+    margin-right: 60px;
+    width: 320px;
+}
+.chartdataarea > .w9totalsarea > .w9purchaseyear {
+    width: 100%;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+}
+.chartdataarea > .w9totalsarea > .w9purchaseyear > select.w9workyears {
+    height: 17px;
+    margin-left: 121px;
+    margin-top: 4px;
+    width: 60px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetitle {
+    width: 100%;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea {
+    /* border: 1px solid #7f7f7f; */
+    height: 608px;
+    margin-left: 4px;
+    width: 310px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablearticlehead {
+    height: 41px;
+    width: 100%;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablearticlehead > .articletitle {
+    margin-left: 8px;
+    line-height: 41px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablearticlehead > .articlevalue {
+    margin-left: 8px;
+    line-height: 41px;
+    font-size: 12px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablearticlehead > .managecategory {
+    color: #0000ff;
+    cursor: pointer;
+    float: right;
+    font-size: 11px;
+    margin-right: 10px;
+    margin-top: 21px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow {
+    margin-left: 20px;
+    border: 1px solid #000000;
+    width: 281px;
+    font-size: 12px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow > div {
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow > div > .tablesort {
+    display: none;
+    width: 15px;
+    float: right;
+    margin-top: 4px;
+}
+
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow > .category_name {
+    width: 148px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow > .amountvalue {
+    width: 82px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tableheaddatarow > .amountperc {
+    width: 51px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea {
+    margin-left: 20px;
+    border: 1px solid #000000;
+    width: 281px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-size: 12px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea.w9work {
+    height: 100px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea.purchases {
+    height: 400px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow {
+    clear: both;
+    width: 281px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow > div {
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow > .category_name {
+    border-right: 1px solid #7f7f7f;
+    padding-left: 5px;
+    width: 142px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow > .category_name.entered {
+    cursor: pointer;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow > .amountvalue {
+    border-right: 1px solid #7f7f7f;
+    padding-right: 5px;
+    text-align: right;
+    width: 77px;
+}
+.chartdataarea > .w9totalsarea > .w9purchasetablearea > .tablebodyarea > .tabledatarow > .amountperc {
+    padding-right: 5px;
+    text-align: right;
+    width: 38px;
+}
+
+/* Purchase Popup */
+.netproofpurchasearea {
+    clear: both;
+    float: left;
+    background-color: #f2f2f2;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    height: 680px;
+    width: 937px;
+}
+.netproofpurchasearea div {
+    float: left;
+    font-size: 12px;
+    text-align: left;
+    color: #000000;
+}
+.netproofpurchasearea input {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 12px;
+    height: 15px;
+    padding-left: 2px;
+}
+.netproofpurchasearea textarea {
+    font-size: 12px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    resize: none;
+    overflow-y: auto;
+}
+.netproofpurchasearea > .title {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .subtitle {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea {
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea {
+    width: 362px;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 82px;
+    text-align: center;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > textarea.weeknoteedit {
+    height: 485px;
+    width: 340px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea {
+    margin-top: 20px;
+    width: 570px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea {
+    /*    border: 1px dotted #000000;
+        height: 314px;*/
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    text-align: left;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead {
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > div {
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell {
+    font-weight: normal;
+    color: #0000ff;
+    font-size: 16px;
+    height: 22px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell > i {
+    cursor: pointer;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .amount {
+    width: 56px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .vendor {
+    width: 154px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .category {
+    width: 147px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .description {
+    width: 191px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody {
+    border: 1px solid #000000;
+    height: 212px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 572px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow {
+    overflow-x: hidden;
+    width: 572px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > div {
+    height: 21px;
+    line-height: 21px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell {
+    font-weight: normal;
+    color: #000000;
+    font-size: 16px;
+    height: 19px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell > i {
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 1px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .amount {
+    border-right: 1px solid;
+    width: 55px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .vendor {
+    border-right: 1px solid;
+    width: 153px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .category {
+    border-right: 1px solid;
+    width: 156px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .description {
+    width: 181px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata {
+    padding-left: 10px;
+    width: 400px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .totaldata > .label {
+    margin-right: 5px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .savedata {
+    background: transparent url("/img/save_netprofitpopup_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    height: 27px;
+    margin-top: -17px;
+    text-align: center;
+    width: 67px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.amount,
+.netproofpurchasearea > .editdataarea input.w9workinput.amount {
+    width: 47px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.vendor,
+.netproofpurchasearea > .editdataarea input.w9workinput.vendor {
+    margin-left: 2px;
+    width: 144px;
+}
+.netproofpurchasearea > .editdataarea select.purchaselect,
+.netproofpurchasearea > .editdataarea select.w9workselect {
+    margin-left: 2px;
+    height: 19px;
+    width: 137px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn {
+    width: 12px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn > i {
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.descript,
+.netproofpurchasearea > .editdataarea input.w9workinput.descript {
+    margin-left: 2px;
+    width: 165px;
+}
+
+.viewnotesarea {
+    float: left;
+    height: auto;
+    width: 420px;
+}
+.viewnotesarea > textarea.weeknoteedit {
+    float: left;
+    width: 411px;
+    height: 486px;
+    resize: none;
+}
+/* Edit manage */
+.netprofitcategoryeditarea {
+    background-color: #ffffff;
+    border-radius: 10px;
+    height: 300px;
+    width: 415px;
+    padding: 10px;
+}
+.netprofitcategoryeditarea div {
+    float: left;
+    color: #000000;
+    font-size: 12px;
+}
+.netprofitcategoryeditarea > .title {
+    height: 21px;
+    line-height: 21px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.netprofitcategoryeditarea > .category_table {
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead {
+    font-weight: bold;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell {
+    height: 17px;
+    padding-top: 5px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell > i {
+    font-size: 16px;
+    cursor: pointer;
+    color: #0000ff;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .category_name {
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody {
+    border: 1px solid #000000;
+    clear: both;
+    height: 241px;
+    overflow-y: auto;
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow {
+    overflow-x: hidden;
+    clear: both;
+    width: 100%;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell {
+    height: 19px;
+    text-align: center;
+    padding-top: 3px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > i {
+    font-size: 16px;
+    color : #5e4316;
+    cursor: pointer;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .category_name {
+    padding-left: 3px;
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .saveeditnetprofitcategory {
+    color: #00850c;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 12px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .canceleditnetprofitcategory {
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 13px;
+}
+.netprofitcategoryeditarea input.profitcategorynameinpt {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 11px;
+    height: 16px;
+    line-height: 21px;
+    padding-left: 3px;
+    width: 351px;
+}
+.expenseweekdetailsarea {
+    clear: both;
+    float: left;
+    width: 572px;
+}
+.expenseweekdetailsarea div {
+    float: left;
+    font-size: 11px;
+}
+.expenseweekdetailsarea > .label {
+    color: #00850c;
+    font-size: 12px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 16px;
+}
+.expenseweekdetailsarea > .totals {
+    float: right;
+}
+.expenseweekdetailsarea > .totals > div {
+    height: 16px;
+    line-height: 16px;
+}
+.expenseweekdetailsarea > .totals > .label {
+    margin-right: 5px;
+}
+.expenseweekdetailsarea > .totals > .value {
+
+}
+.expenseweekdetailsarea > .tablehead {
+    clear: both;
+    width: 100%;
+}
+.expenseweekdetailsarea > .tablehead > div {
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+}
+.expenseweekdetailsarea > .tablehead > .amount {
+    width: 55px;
+}
+.expenseweekdetailsarea > .tablehead > .vendor {
+    width: 153px;
+}
+.expenseweekdetailsarea > .tablehead > .category_name {
+    width: 156px;
+}
+.expenseweekdetailsarea > .tablehead > .description {
+    width: 181px;
+}
+.expenseweekdetailsarea > .tablebody {
+    border: 1px solid #000000;
+    clear: both;
+    width: 100%;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow {
+    clear: both;
+    width: 100%;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow > div {
+    height: 16px;
+    line-height: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow > .amount {
+    width: 51px;
+    padding-right: 3px;
+    border-right: 1px solid #000000;
+    text-align: right;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow > .vendor {
+    width: 151px;
+    border-right: 1px solid #000000;
+    padding-left: 3px;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow > .category_name {
+    width: 153px;
+    border-right: 1px solid #000000;
+    padding-left: 3px;
+}
+.expenseweekdetailsarea > .tablebody > .tablerow > .description {
+    width: 178px;
+    padding-left: 3px;
+}
+/* Category Expense */
+.w9purchaseexpensesarea {
+    clear: both;
+    float: left;
+    width: 572px;
+}
+.w9purchaseexpensesarea div {
+    float: left;
+    font-size: 12px;
+}
+.w9purchaseexpensesarea > .title {
+    color: #00850c;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    width: 100%;
+}
+.w9purchaseexpensesarea > .tablehead {
+    clear: both;
+    width: 100%;
+}
+.w9purchaseexpensesarea > .tablehead > div {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+}
+.w9purchaseexpensesarea > .tablehead > .week {
+    width: 97px;
+}
+.w9purchaseexpensesarea > .tablehead > .amount {
+    width: 63px;
+}
+.w9purchaseexpensesarea > .tablehead > .vendor {
+    width: 168px;
+}
+.w9purchaseexpensesarea > .tablehead > .description {
+    width: 244px;
+}
+.w9purchaseexpensesarea > .tablebody {
+    border: 1px solid #000;
+    clear: both;
+    min-height: 36px;
+    overflow-y: auto;
+    width: 100%;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow {
+    clear: both;
+    width: 100%;
+    overflow-x: hidden;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow > div {
+    height: 18px;
+    line-height: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow > .week {
+    border-right: 1px solid #000000;
+    width: 96px;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow > .amount {
+    border-right: 1px solid #000000;
+    padding-right: 3px;
+    text-align: right;
+    width: 58px;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow > .vendor {
+    border-right: 1px solid #000000;
+    padding-left: 3px;
+    width: 164px;
+}
+.w9purchaseexpensesarea > .tablebody > .tabledatarow > .description {
+    padding-left: 3px;
+    width: 240px;
+}
+.w9purchaseexpensesarea > .totals {
+    clear: both;
+    margin-left: 25px;
+}
+.w9purchaseexpensesarea > .totals > div {
+    height: 20px;
+    line-height: 20px;
+}
+.w9purchaseexpensesarea > .totals > .label {
+    width: 74px;
+}
+.w9purchaseexpensesarea > .totals > .value {
+    font-weight: bold;
+    text-align: right;
+    width: 61px;
+}

@@ -62,6 +62,14 @@ class Accounting extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/accounting/financebatchesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
                 $content_options['financebatchesview'] = $this->_prepare_batches_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#netprofitview') {
+                $head['styles'][]=array('style'=>'/css/accounting/netprofitview.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/netprofitview.js');
+                $content_options['netprofitview'] = $this->_prepare_batches_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#expensesview') {
+                $head['styles'][]=array('style'=>'/css/accounting/expensesview.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/expensesview.js');
+                $content_options['expensesview'] = $this->_prepare_expensives_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -1648,6 +1656,88 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function opercalcdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $sort=$this->input->post('sort','yearly');
+            $direction=$this->input->post('direction','desc');
+            $brand = $this->input->post('brand');
+            $this->load->model('balances_model');
+            $calc=$this->balances_model->get_calcdata($sort,$direction, $brand);
+            $calc_data=$calc['body'];
+            if (count($calc_data)==0) {
+                $mdata['content']=$this->load->view('accounting/calcdata_empty_view',array('brand' => $brand),TRUE);
+            } else {
+                $mdata['content']=$this->load->view('accounting/calcdata_view',array('data'=>$calc['body'], 'brand' => $brand),TRUE);
+            }
+            $mdata['total_month']=$calc['sums']['month'];
+            $mdata['total_week']=$calc['sums']['week'];
+            $mdata['total_quart']=$calc['sums']['quart'];
+            $mdata['total_year']=$calc['sums']['year'];
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function calcrow() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $calc_id=$this->input->post('calc_id');
+            $this->load->model('balances_model');
+            $calcdata=$this->balances_model->get_calcrow_data($calc_id);
+            if (!isset($calcdata['calc_id'])) {
+                $error='Unknow calc data';
+            } else {
+                $mdata['content']=$this->load->view('accounting/calcrow_form_view',$calcdata,TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function calcsave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error = 'Empty Brand';
+            $this->load->model('balances_model');
+            $postdata = $this->input->post();
+            $options=array();
+            $options['calc_id']=ifset($postdata, 'calc_id','0');
+            $options['description']=ifset($postdata, 'descr','');
+            $options['monthsum']=ifset($postdata, 'month','');
+            $options['weeksum']=ifset($postdata, 'week','');
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $options['brand']=$brand;
+                $res=$this->balances_model->save_calcdata($options);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function calcdelete() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('balances_model');
+            $calc_id=$this->input->post('calc_id');
+            if (!$calc_id) {
+                $error='Unknown calculator row';
+            } else {
+                $res=$this->balances_model->delete_calcdata($calc_id);
+                $error='Data wasn\'t deleted';
+                if ($res) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;
@@ -2385,6 +2475,110 @@ class Accounting extends MY_Controller
         );
         $content=$this->load->view('batch/batches_view',$options,TRUE);
         return $content;
+    }
+
+    private function _prepare_netprofit_content($brand, $top_menu) {
+        $this->load->model('balances_model');
+        $title=$this->load->view('netprofit/admin_netprofitweek_view',array(),TRUE);
+        // Get List of weeks
+        $weeklist=$this->balances_model->get_weeklist($brand);
+        $weekopt=array(
+            'weekallcheck'=>'checked="checked"',
+            'weekfrom'=>'',
+            'weekuntil'=>'',
+            'weeklist'=>$weeklist,
+        );
+        $weekselect=$this->load->view('netprofit/week_select_view',$weekopt,TRUE);
+        // Prepare Years totals
+        $options=array(
+            'compareweek'=>0,
+            'paceincome'=>1,
+            'paceexpense'=>1,
+        );
+        $yearstotals=$this->mbalanc->get_netprofit_totalsbyweekdata($options);
+
+        $yearstotals['compareweek']=0;
+        $yearstotals['paceincome']=1;
+        $yearstotals['paceexpense']=1;
+
+        $table_view=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
+        $weekyearlist=$this->mbalanc->get_currentyearweeks();
+        // Build chart data
+        $chartoptions=array(
+            'table_view'=>$table_view,
+            'weeklist'=>$weekyearlist,
+            'paceincome'=>1,
+            'paceexpense'=>1,
+        );
+        $chartdata=$this->load->view('netprofit/chartdata_view', $chartoptions, TRUE);
+        // Build On Race compare with prev year
+        $endyear=$yearstotals['end_year'];
+        if ($endyear==date('Y')) {
+            $endyear=$endyear-1;
+        }
+        $years=array();
+        for ($i=$endyear; $i>=$yearstotals['start_year']; $i--) {
+            array_push($years, $i);
+        }
+        $compare_options=array(
+            'compareyear'=>$endyear,
+            'paceincome'=>1,
+            'paceexpense'=>1,
+        );
+        $pacedata=$this->mbalanc->get_onpacecompare($compare_options);
+        $pacegrow_view=$this->load->view('netprofit/onpace_grown_view', $pacedata,TRUE);
+        // W9 Work
+        $w9data=$this->mbalanc->get_w9purchase_tabledata();
+        $w9table_options=array(
+            'w9totals'=>$w9data['w9totals'],
+            'w9details'=>$w9data['w9details'],
+            'purchasetotals'=>$w9data['purchasetotals'],
+            'purchasedetails'=>$w9data['purchasedetails'],
+            'w9sortfld'=>'amount_perc',
+            'w9sortdir'=>'desc',
+            'purchasesortfld'=>'amount_perc',
+            'purchasesortdir'=>'desc',
+            'sortascicon'=>'<i class="fa fa-caret-square-o-up" aria-hidden="true"></i>',
+            'sortdescicon'=>'<i class="fa fa-caret-square-o-down" aria-hidden="true"></i>',
+            'year'=>$w9data['years'][0]['year'],
+        );
+        $w9tableview=$this->load->view('netprofit/w9purchase_table_view', $w9table_options, TRUE);
+        $w9options=array(
+            'years'=>$w9data['years'],
+            'totals'=>$w9data['totals'],
+            'table_view'=>$w9tableview,
+        );
+        $w9purchase_view=$this->load->view('netprofit/w9purchase_view', $w9options, TRUE);
+        // Get year, start / end time
+        $expancedates=$this->mbalanc->get_expansedates();
+
+        $pageoptions=array(
+            'title'=>$title,
+            'weekselect'=>$weekselect,
+            'sorting'=>'profitdate_desc',
+            'chartdata_view'=>$chartdata,
+            'limitrow'=>$this->weekshow_limit,
+            'years'=>$years,
+            'pacegrow_view'=>$pacegrow_view,
+            'cur_year'=>$expancedates['year'],
+            'cur_start'=>$expancedates['datebgn'],
+            'cur_end'=>$expancedates['dateend'],
+            'w9purchase'=>$w9purchase_view,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        );
+        $content=$this->load->view('netprofit/admin_netprofit_view',$pageoptions ,TRUE);
+        return $content;
+    }
+
+    private function _prepare_expensives_view($brand, $top_menu) {
+        $options = [
+            'calcdirec'=>'desc',
+            'calcsort'=>'yearly',
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
     }
 
 }

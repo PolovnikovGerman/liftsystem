@@ -6,7 +6,7 @@
         <div class="calc_cell-01 sortcalc" id="sortdescription">
             <div class="sortcalclnk">
                 <?php if ($calcsort=='description') {?>            
-                    <img src="/img/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>            
+                    <img src="/img/icons/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
                 <?php } ?>            
             </div>
             Description
@@ -14,7 +14,7 @@
         <div class="calc_cell-02 sortcalc" id="sortmonthly">            
             <div class="sortcalclnk">
                 <?php if ($calcsort=='monthly') {?>
-                    <img src="/img/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
+                    <img src="/img/icons/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
                 <?php } ?>                        
             </div>            
             Monthly
@@ -22,7 +22,7 @@
         <div class="calc_cell-03 sortcalc" id="sortweekly">
             <div class="sortcalclnk">
                 <?php if ($calcsort=='weekly') {?>            
-                    <img src="/img/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>            
+                    <img src="/img/icons/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
                 <?php } ?>            
             </div>
             Weekly
@@ -30,7 +30,7 @@
         <div class="calc_cell-03 sortcalc" id="sortquarta">            
             <div class="sortcalclnk">
                 <?php if ($calcsort=='quarta') {?>
-                    <img src="/img/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
+                    <img src="/img/icons/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
                 <?php } ?>            
             </div>            
             4 / 12
@@ -38,7 +38,7 @@
         <div class="calc_cell-04 sortcalc" id="sortyearly">
             <div class="sortcalclnk">
                 <?php if ($calcsort=='yearly') {?>
-                    <img src="/img/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>            
+                    <img src="/img/icons/<?=($calcdirec=='desc' ? 'sort_down.png' : 'sort_up.png')?>" alt="Sort"/>
                 <?php } ?>
             </div>
             Yearly
@@ -57,4 +57,8 @@
         <div class="calc-totalpercent">&nbsp;</div>
         <div class="calc-grandtotal-end">&nbsp;</div>
     </div>
+</div>
+<input type="hidden" id="expensesviewbrand" value="<?=$brand?>">
+<div id="expensesviewbrandmenu">
+    <?=$top_menu?>
 </div>
