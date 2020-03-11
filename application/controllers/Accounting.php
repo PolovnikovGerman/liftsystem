@@ -8,6 +8,7 @@ class Accounting extends MY_Controller
     private $order_profit_perpage=100;
     private $order_totals_perpage=100;
     private $perpage_options =array(100, 250, 500, 1000);
+    private $restore_data_error = 'Edit Connection Lost. Please, recall form';
 
     public function __construct()
     {
@@ -1782,9 +1783,9 @@ class Accounting extends MY_Controller
 
                 // Get NetProfit
                 $paceincome=$paceexpense=1;
-                $netprofit=$this->balances_model->get_projected_netprofit($now, $curyear, $paceincome, $paceexpense);
+                $netprofit=$this->balances_model->get_projected_netprofit($now, $curyear, $paceincome, $paceexpense, $brand);
                 // $netprofit=400000;
-                if ($this->USER_REPLICA=='SEAN') {
+                if (strtoupper($this->USER_REPLICA)=='SEAN') {
                     $profitkf=0.75;
                 } else {
                     $profitkf=0.25;
@@ -1792,7 +1793,7 @@ class Accounting extends MY_Controller
 
                 // Get data for single calc
 
-                $singledata=$this->rates_model->get_ownertaxdata('single', $this->USER_REPLICA);
+                $singledata=$this->rates_model->get_ownertaxdata('single', $this->USER_REPLICA, $brand);
                 $singledata['netprofit']=$netprofit;
                 $singledata['profitkf']=$profitkf;
                 $singledata['od_incl']=1;
@@ -1802,6 +1803,7 @@ class Accounting extends MY_Controller
                 $singcalcoption=array(
                     'rateview'=>$siglerateview,
                     'profitkf'=>$profitkf,
+                    'brand' => $brand,
                 );
                 foreach ($siglecalcdata as $key=>$val) {
                     $singcalcoption[$key]=$val;
@@ -1829,7 +1831,7 @@ class Accounting extends MY_Controller
                 $jointrate_options=array('fedtax'=>$jointfed_rate_view,'state'=>$jointstate_rate_view);
                 $jointrateview=$this->load->view('ownertaxes/calclrates_view', $jointrate_options, TRUE);
                 // Get data for joint calc
-                $jointdata=$this->rates_model->get_ownertaxdata('joint', $this->USER_REPLICA);
+                $jointdata=$this->rates_model->get_ownertaxdata('joint', $this->USER_REPLICA, $brand);
                 $jointdata['netprofit']=$netprofit;
                 $jointdata['profitkf']=$profitkf;
                 $jointdata['od_incl']=1;
@@ -1838,12 +1840,13 @@ class Accounting extends MY_Controller
 
                 $jointcalcoption=array(
                     'rateview'=>$jointrateview,
+                    'brand' => $brand,
                 );
                 foreach ($jointcalcdata as $key=>$val) {
                     $jointcalcoption[$key]=$val;
                 }
                 $jointcalcview=$this->load->view('ownertaxes/jointcalc_view', $jointcalcoption, TRUE);
-                $session_id=$this->func->uniq_link('15');
+                $session_id=uniq_link('15');
                 $content_options=array(
                     'singlecalc'=>$singlecalcview,
                     'jointcalc'=>$jointcalcview,
@@ -1860,11 +1863,112 @@ class Accounting extends MY_Controller
                     'now'=>$now,
                     'curyear'=>$curyear,
                 );
-                $this->func->session($session_id, $calcdata);
+                usersession($session_id, $calcdata);
                 $mdata['content']=$this->load->view('ownertaxes/page_view', $content_options, TRUE);
                 $error = '';
             }
-            $this->func->ajaxResponse($mdata, $error);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function ownnertaxes_change() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error = $this->restore_data_error;
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['calcsession']) ? $postdata['calcsession'] : 'test');
+            $calcsession = usersession($session_id);
+            if (!empty($calcsession)) {
+                // Params
+                $fldname = $postdata['fldname'];
+                $calc_type = $postdata['calc_type'];
+                $newval = $postdata['newval'];
+                // Update
+                $this->load->model('rates_model');
+                $res = $this->rates_model->taxowner_change($calcsession, $calc_type, $fldname, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    // Out
+                    $mdata['newval'] = ($res['newval'] == 0 ? '' : MoneyOutput($res['newval'], 2));
+                    $calc = $res['calc'];
+                    $mdata['total_income'] = ($calc['total_income'] == 0 ? $this->empty_html_content : MoneyOutput($calc['total_income'], 2));
+                    $mdata['taxable_income'] = ($calc['taxable_income'] == 0 ? $this->empty_html_content : MoneyOutput($calc['taxable_income'], 2));
+                    $mdata['fed_taxes'] = ($calc['fed_taxes'] == 0 ? $this->empty_html_content : MoneyOutput($calc['fed_taxes'], 2));
+                    $mdata['fed_taxes_due'] = ($calc['fed_taxes_due'] == 0 ? $this->empty_html_content : MoneyOutput($calc['fed_taxes_due'], 2));
+                    $mdata['fed_pay'] = ($calc['fed_pay'] == 0 ? $this->empty_html_content : MoneyOutput($calc['fed_pay'], 2));
+                    $mdata['state_taxes'] = ($calc['state_taxes'] == 0 ? $this->empty_html_content : MoneyOutput($calc['state_taxes'], 2));
+                    $mdata['state_taxes_due'] = ($calc['state_taxes_due'] == 0 ? $this->empty_html_content : MoneyOutput($calc['state_taxes_due'], 2));
+                    $mdata['state_pay'] = ($calc['state_pay'] == 0 ? $this->empty_html_content : MoneyOutput($calc['state_pay'], 2));
+                    $mdata['take_home'] = ($calc['take_home'] == 0 ? $this->empty_html_content : MoneyOutput($calc['take_home'], 2));
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function ownnertaxes_odincl() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=  $this->restore_data_error;
+            $postdata=$this->input->post();
+            $session_id=(isset($postdata['calcsession']) ? $postdata['calcsession'] : 'test');
+            $calcsession=usersession($session_id);
+            if (!empty($calcsession)) {
+                $od_incl=$postdata['od_incl'];
+                $this->load->model('rates_model');
+                $res=$this->rates_model->taxowner_change_odincl($calcsession, $od_incl, $session_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $calcsession=usersession($session_id);
+                    // Prepare output
+                    $single=$calcsession['single'];
+                    $mdata['single_total_income']=($single['total_income']==0 ? $this->empty_html_content : MoneyOutput($single['total_income'],2));
+                    $mdata['single_taxable_income']=($single['taxable_income']==0 ? $this->empty_html_content : MoneyOutput($single['taxable_income'],2));
+                    $mdata['single_fed_taxes']=($single['fed_taxes']==0 ? $this->empty_html_content : MoneyOutput($single['fed_taxes'],2));
+                    $mdata['single_fed_taxes_due']=($single['fed_taxes_due']==0 ? $this->empty_html_content : MoneyOutput($single['fed_taxes_due'],2));
+                    $mdata['single_fed_pay']=($single['fed_pay']==0 ? $this->empty_html_content : MoneyOutput($single['fed_pay'],2));
+                    $mdata['single_state_taxes']=($single['state_taxes']==0 ? $this->empty_html_content : MoneyOutput($single['state_taxes'],2));
+                    $mdata['single_state_taxes_due']=($single['state_taxes_due']==0 ? $this->empty_html_content : MoneyOutput($single['state_taxes_due'],2));
+                    $mdata['single_state_pay']=($single['state_pay']==0 ? $this->empty_html_content : MoneyOutput($single['state_pay'],2));
+                    $mdata['single_take_home']=($single['take_home']==0 ? $this->empty_html_content : MoneyOutput($single['take_home'],2));
+                    $joint=$calcsession['joint'];
+                    $mdata['joint_total_income']=($joint['total_income']==0 ? $this->empty_html_content : MoneyOutput($joint['total_income'],2));
+                    $mdata['joint_taxable_income']=($joint['taxable_income']==0 ? $this->empty_html_content : MoneyOutput($joint['taxable_income'],2));
+                    $mdata['joint_fed_taxes']=($joint['fed_taxes']==0 ? $this->empty_html_content : MoneyOutput($joint['fed_taxes'],2));
+                    $mdata['joint_fed_taxes_due']=($joint['fed_taxes_due']==0 ? $this->empty_html_content : MoneyOutput($joint['fed_taxes_due'],2));
+                    $mdata['joint_fed_pay']=($joint['fed_pay']==0 ? $this->empty_html_content : MoneyOutput($joint['fed_pay'],2));
+                    $mdata['joint_state_taxes']=($joint['state_taxes']==0 ? $this->empty_html_content : MoneyOutput($joint['state_taxes'],2));
+                    $mdata['joint_state_taxes_due']=($joint['state_taxes_due']==0 ? $this->empty_html_content : MoneyOutput($joint['state_taxes_due'],2));
+                    $mdata['joint_state_pay']=($joint['state_pay']==0 ? $this->empty_html_content : MoneyOutput($joint['state_pay'],2));
+                    $mdata['joint_take_home']=($joint['take_home']==0 ? $this->empty_html_content : MoneyOutput($joint['take_home'],2));
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function ownnertaxes_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            $session_id=(isset($postdata['calcsession']) ? $postdata['calcsession'] : 'test');
+            $calcsession=usersession($session_id);
+            $brand = ifset($postdata,'brand');
+            if (!empty($calcsession)) {
+                $this->load->model('rates_model');
+                $res=$this->rates_model->taxowner_save($calcsession, $this->USER_REPLICA, $session_id, $brand);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }

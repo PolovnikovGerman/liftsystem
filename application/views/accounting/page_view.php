@@ -19,6 +19,9 @@
         <?php if (isset($financebatchesview)) { ?>
             <div class="accountcontentarea" id="financebatchesview" style="display: none;"><?=$financebatchesview?></div>
         <?php } ?>
+        <?php if (isset($ownertaxesview)) { ?>
+            <div class="accountcontentarea" id="ownertaxesview" style="display: none;"><?=$ownertaxesview?></div>
+        <?php } ?>
         <?php if (isset($expensesview)) { ?>
             <div class="accountcontentarea" id="expensesview" style="display: none;"><?=$expensesview?></div>
         <?php } ?>

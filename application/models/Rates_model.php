@@ -48,20 +48,31 @@ class Rates_model extends My_Model
         return $out;
     }
 
-    public function get_ownertaxdata($calc_type, $user) {
-        $this->db->select('*');
+    public function get_ownertaxdata($calc_type, $user, $brand) {
+        if ($brand=='ALL') {
+            $this->db->select('sum(salary) as salary, sum(other_income) as other_income, sum(partner_income) as partner_income, sum(k401) as k401');
+            $this->db->select('sum(property_tax) as property_tax, sum(mortgage_int) as mortgage_int, sum(other_deduct) as other_deduct');
+            $this->db->select('sum(fed_withheld) as fed_withheld, sum(state_withheld) as state_withheld, sum(other_taxes) as other_taxes, count(owner_tax_id) as owner_tax_id');
+        } else {
+            $this->db->select('*');
+        }
         $this->db->from('ts_owner_taxes');
         $this->db->where('calc_type', $calc_type);
         $this->db->where('owner', $user);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $data=$this->db->get()->row_array();
-        if (!isset($data['owner_tax_id'])) {
+        if (!isset($data['owner_tax_id']) && $brand!=='ALL') {
             $this->db->set('calc_type', $calc_type);
-            $this->db->set('owner', $user);
+            $this->db->set('owner', strtoupper($user));
+            $this->db->set('brand', $brand);
             $this->db->insert('ts_owner_taxes');
             // Repeat Get
             $this->db->select('*');
             $this->db->from('ts_owner_taxes');
             $this->db->where('calc_type', $calc_type);
+            $this->db->where('brand', $brand);
             $data=$this->db->get()->row_array();
         }
         return $data;
@@ -135,7 +146,7 @@ class Rates_model extends My_Model
             $newcalcdata=$this->get_owner_taxes($calc_type, $calcdata);
             $out['calc']=$newcalcdata;
             $session[$calc_type]=$newcalcdata;
-            $this->func->session($session_id, $session);
+            usersession($session_id, $session);
         }
         return $out;
     }
@@ -150,12 +161,12 @@ class Rates_model extends My_Model
         $session['single']=$newsingle;
         $session['joint']=$newjoint;
         $out['result']=$this->success_result;
-        $this->func->session($session_id, $session);
+        usersession($session_id, $session);
         return $out;
     }
 
     // Save Tax Owner Inputs
-    public function taxowner_save($session, $user, $session_id) {
+    public function taxowner_save($session, $user, $session_id, $brand) {
         $out=array('result'=>  $this->error_result, 'msg'=>'Field Not Found');
         $single=$session['single'];
         $joint=$session['joint'];
@@ -164,6 +175,7 @@ class Rates_model extends My_Model
         $this->db->from('ts_owner_taxes');
         $this->db->where('calc_type','single');
         $this->db->where('owner', $user);
+        $this->db->where('brand', $brand);
         $singleres=$this->db->get()->row_array();
         $single_key=0;
         if (isset($singleres['owner_tax_id'])) {
@@ -192,6 +204,7 @@ class Rates_model extends My_Model
         $this->db->from('ts_owner_taxes');
         $this->db->where('calc_type','joint');
         $this->db->where('owner', $user);
+        $this->db->where('brand', $brand);
         $jointres=$this->db->get()->row_array();
         $joint_key=0;
         if (isset($jointres['owner_tax_id'])) {
@@ -217,7 +230,7 @@ class Rates_model extends My_Model
             $this->db->update('ts_owner_taxes');
         }
         $out['result']=$this->success_result;
-        $this->func->session($session_id,NULL);
+        usersession($session_id,NULL);
         return $out;
     }
 

@@ -29,6 +29,10 @@ function init_page(objid) {
             $("#financebatchesview").show();
             init_batches_content();
             break;
+        case 'ownertaxesview':
+            $("#ownertaxesview").show();
+            init_ownertax_content();
+            break;
         case 'expensesview':
             $("#expensesview").show();
             init_opercalc();

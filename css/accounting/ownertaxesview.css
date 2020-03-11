@@ -15,6 +15,7 @@ and open the template in the editor.
     float: left;
     margin-top: 10px;
     margin-left: 7px;
+    margin-bottom: 15px;
     width: 1000px;
 }
 .ownertaxcontent div {
@@ -35,7 +36,7 @@ and open the template in the editor.
     height: 28px;
     line-height: 28px;
 }
-.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals > .datarow > .label {
+.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals > .datarow > .labeltxt {
     text-align: right;
     width: 222px;
 }
@@ -45,12 +46,12 @@ and open the template in the editor.
 }
 .ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea {
     font-size: 12px;
-    width: 259px;
+    width: 257px;
 }
 .ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect {
     width: 126px;
 }
-.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect  > .label {
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect  > .labeltxt {
     width: 100%;
     color: #0000ff;
     text-align: left;
@@ -61,7 +62,7 @@ and open the template in the editor.
 .ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect  > .periodtypeselectarea {
     border: 1px solid #000000;
     height: 43px;
-    width: 110px;
+    width: 115px;
 }
 .ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow {
     width: 100%;
@@ -119,7 +120,7 @@ and open the template in the editor.
     font-weight: bold;
 }
 .ownertaxcontent .taxratesarea > .tabledata {
-    width: 163px;
+    width: 167px;
     background-color: #e5e5e5;
     border: 1px solid #000000;
 }
@@ -136,7 +137,7 @@ and open the template in the editor.
     text-align: center;
 }
 .ownertaxcontent .taxratesarea > .tabledata .incomevalues {
-    width: 118px;
+    width: 116px;
     text-align: center;
 }
 .ownertaxcontent .taxratesarea > .tabledata > .tabledatarow div {
@@ -150,7 +151,7 @@ and open the template in the editor.
 .ownertaxcontent .taxratesarea > .tabledata > .tabledatarow > .incomevalues {
     padding-left: 10px;
     text-align: left;
-    width: 108px;
+    width: 115px;
 }
 .ownertaxcontent .calcdataareadata {
     border: 1px solid #000000;
@@ -164,13 +165,13 @@ and open the template in the editor.
 .ownertaxcontent .calcdataareadata > .incomedataarea.jointcalc {
     height: 118px;
 }
-.ownertaxcontent .calcdataareadata > .incomedataarea > .label {
+.ownertaxcontent .calcdataareadata > .incomedataarea > .labeltxt {
     height: 84px;
     margin-left: 7px;
     margin-top: 13px;
     width: 23px;
 }
-.ownertaxcontent .calcdataareadata > .incomedataarea.jointcalc > .label {
+.ownertaxcontent .calcdataareadata > .incomedataarea.jointcalc > .labeltxt {
     margin-top: 20px;
 }
 .ownertaxcontent .calcdataareadata .taxdatarow {
@@ -183,7 +184,7 @@ and open the template in the editor.
     height: 23px;
     line-height: 23px;
 }
-.ownertaxcontent .calcdataareadata .taxdatarow > .label {
+.ownertaxcontent .calcdataareadata .taxdatarow > .labeltxt {
     text-align: right;
     width: 111px;
     font-size: 12px;
@@ -205,6 +206,8 @@ input.ownertaxdatainput {
     padding-left: 3px;
     text-align: center;
     width: 78px;
+    float: left;
+    margin-top: 2px;
 }
 .ownertaxcontent .calcdataareadata .taxdatarow > .taxvalue.total {
     font-weight: bold;
@@ -212,7 +215,7 @@ input.ownertaxdatainput {
 .ownertaxcontent .calcdataareadata > .deducatedataarea {
     height: 113px;
 }
-.ownertaxcontent .calcdataareadata > .deducatedataarea > .label {
+.ownertaxcontent .calcdataareadata > .deducatedataarea > .labeltxt {
     height: 91px;
     margin-left: 7px;
     margin-top: 3px;
@@ -225,7 +228,7 @@ input.ownertaxdatainput {
     height: 25px;
     line-height: 25px;
 }
-.ownertaxcontent .calcdataareadata > .taxableincome > .label {
+.ownertaxcontent .calcdataareadata > .taxableincome > .labeltxt {
     font-size: 13px;
     font-weight: bold;
     text-align: right;
@@ -242,7 +245,7 @@ input.ownertaxdatainput {
     height: 98px;
     margin-top: 5px;
 }
-.ownertaxcontent .calcdataareadata > .fedtaxesarea > .label {
+.ownertaxcontent .calcdataareadata > .fedtaxesarea > .labeltxt {
     height: 83px;
     margin-left: 7px;
     margin-top: 15px;
@@ -252,7 +255,7 @@ input.ownertaxdatainput {
     height: 98px;
     margin-top: 17px;
 }
-.ownertaxcontent .calcdataareadata > .statetaxesarea > .label {
+.ownertaxcontent .calcdataareadata > .statetaxesarea > .labeltxt {
     height: 83px;
     margin-left: 7px;
     margin-top: 15px;
@@ -269,7 +272,7 @@ input.ownertaxdatainput {
     margin-top: 16px;
     height: 29px;
 }
-.ownertaxcontent .calcdataareadata > .othertaxesrow > .label {
+.ownertaxcontent .calcdataareadata > .othertaxesrow > .labeltxt {
     font-size: 13px;
     font-weight: bold;
     text-align: right;
@@ -289,7 +292,7 @@ input.ownertaxdatainput {
     height: 35px;
     line-height: 35px;
 }
-.ownertaxcontent .calcdataareadata > .takehomedatarow > .label {
+.ownertaxcontent .calcdataareadata > .takehomedatarow > .labeltxt {
     font-size: 13px;
     font-weight: bold;
     text-align: right;
@@ -316,7 +319,7 @@ input.ownertaxdatainput {
     font-size: 17px;
     cursor: pointer;
 }
-.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage > .label {
+.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage > .labeltxt {
     width: 72px;
     margin-left: 5px;
     font-size: 11px;

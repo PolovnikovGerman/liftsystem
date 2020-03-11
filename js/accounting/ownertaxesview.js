@@ -42,7 +42,7 @@ function init_ownertax_manage() {
         params.push({name: 'calc_type', value: calc_type});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/finance/ownnertaxes_change";
+        var url="/accounting/ownnertaxes_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.ownertaxessave").show();
@@ -70,7 +70,7 @@ function init_ownertax_manage() {
         var params=new Array();
         params.push({name: 'calcsession', value: $("input#calcsessionid").val()});
         params.push({name: 'od_incl', value: newval});
-        var url="/finance/ownnertaxes_odincl";
+        var url="/accounting/ownnertaxes_odincl";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.ownertaxessave").show();
@@ -108,7 +108,8 @@ function init_ownertax_manage() {
     $("div.ownertaxessave").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'calcsession', value: $("input#calcsessionid").val()});
-        var url="/finance/ownnertaxes_save";
+        params.push({name: 'brand', value: $("#ownertaxesbrand").val()});
+        var url="/accounting/ownnertaxes_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 init_ownertax();

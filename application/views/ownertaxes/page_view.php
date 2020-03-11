@@ -5,17 +5,17 @@
     <div class="ownertaxtotalsarea">
         <div class="ownertaxtotals">
             <div class="datarow">
-                <div class="label">Projected <?= $year ?> Company Profit:</div>
+                <div class="labeltxt">Projected <?= $year ?> Company Profit:</div>
                 <div class="value ownertxprofit"><?= MoneyOutput($netprofit, 0) ?></div>
             </div>
             <div class="datarow">
-                <div class="label"><?= $profitkf ?>% Ownership:</div>
+                <div class="labeltxt"><?= $profitkf ?>% Ownership:</div>
                 <div class="value ownertxvalue"><?= MoneyOutput($ownership, 0) ?></div>                
             </div>
         </div>
         <div class="baseperiodselectarea">
             <div class="periodtypeselect">
-                <div class="label">Projected Income</div>
+                <div class="labeltxt">Projected Income</div>
                 <div class="periodtypeselectarea">
                     <div class="datarow">
                         <div class="inputplace switchon" data-pace="income" data-proj="1">
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="periodtypeselect">
-                <div class="label">Projected Expenses</div>
+                <div class="labeltxt">Projected Expenses</div>
                 <div class="periodtypeselectarea">
                     <div class="datarow">
                         <div class="inputplace switchon" data-pace="expenses" data-proj="1">
@@ -58,12 +58,12 @@
                 <i class="fa fa-square-o" aria-hidden="true"></i>
                 <!-- <i class="fa fa-check-square-o" aria-hidden="true"></i> -->
             </div>
-            <div class="label">Exclude OD</div>
+            <div class="labeltxt">Exclude OD</div>
         </div>
         <!-- Joint Filing Calculator -->
         <?= $jointcalc ?>        
     </div>
     <div class="ownertaxessave">
-        <img src="/img/saveticket.png" alt="Save"/>
+        <img src="/img/accounting/saveticket.png" alt="Save"/>
     </div>
 </div>

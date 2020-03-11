@@ -3289,10 +3289,14 @@ class Balances_model extends My_Model
             $this->db->select('sum(np.profit_operating) as operating');
             $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
             $this->db->select('sum(np.profit_projects) as odesk, sum(np.profit_purchases) as purchases');
-            $this->db->from('netprofit np');
-            $this->db->where('np.profit_week is not NULL');
-            $this->db->where('np.profit_year', $year);
-            $this->db->where('np.dateend < ', $now);
+            $this->db->from('netprofit_dat np');
+            $this->db->join('netprofit nd', 'nd.profit_id=np.profit_id');
+            $this->db->where('nd.profit_week is not NULL');
+            $this->db->where('nd.profit_year', $year);
+            $this->db->where('nd.dateend < ', $now);
+            if ($brand!=='ALL') {
+                $this->db->where('np.brand', $brand);
+            }
             $curyear_netdata=$this->db->get()->row_array();
             foreach ($curyear_netdata as $row) {
                 $cur_expenses+=floatval($row);
@@ -3303,11 +3307,14 @@ class Balances_model extends My_Model
             $this->db->select('sum(np.profit_operating) as operating');
             $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
             $this->db->select('sum(np.profit_projects) as projects, sum(np.profit_purchases) as purchases');
-            $this->db->from('netprofit np');
-            $this->db->where('np.datebgn >= ', $pacedatstart);
-            $this->db->where('np.dateend < ', $now);
+            $this->db->from('netprofit_dat np');
+            $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
+            $this->db->where('nd.datebgn >= ', $pacedatstart);
+            $this->db->where('nd.dateend < ', $now);
+            if ($brand!=='ALL') {
+                $this->db->where('np.brand', $brand);
+            }
             $curdebtres=$this->db->get()->row_array();
-
             $expensive=0;
             foreach ($curdebtres as $row) {
                 $expensive+=floatval($row);
