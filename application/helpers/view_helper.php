@@ -485,5 +485,12 @@ if (!function_exists('dates_diff')) {
         }
     }
 }
-
+if (!function_exists('getDayOfWeek')) {
+    function getDayOfWeek($_week_number, $_year = null,$weekday=1) {
+        $year = $_year ? $_year : date('Y');
+        $week_number = sprintf('%02d', $_week_number);
+        $day_week = strtotime($year . 'W' . $week_number . $weekday.' 00:00:00');
+        return $day_week;
+    }
+}
 ?>

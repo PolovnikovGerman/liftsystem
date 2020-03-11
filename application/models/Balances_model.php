@@ -3207,111 +3207,116 @@ class Balances_model extends My_Model
 //        }
 //        return $compare;
 //    }
-//
-//    public function get_ownertax_dates() {
-//        $out=array('year'=>date('Y'), 'week'=>'1', 'date'=>time());
-//        // $now=strtotime('monday this week');
-//        $now=$this->func->getDayOfWeek(date('W'), date('Y'),1);
-//        // Get current week number
-//        $this->db->select('profit_week, profit_year');
-//        $this->db->from('netprofit');
-//        $this->db->where('profit_week is not NULL');
-//        $this->db->where('dateend < ',$now);
-//        $this->db->order_by('datebgn','desc');
-//        $weekres=$this->db->get()->row_array();
-//        $out['date']=$now;
-//        $out['year']=$weekres['profit_year'];
-//        $out['week']=$weekres['profit_week'];
-//        return $out;
-//    }
-//
-//
-//    public function get_projected_netprofit($now, $year, $paceincome, $paceexpense) {
-//        // $this->load->model('reports_model');
-//        // Get current week number
-//        $this->db->select('profit_week');
-//        $this->db->from('netprofit');
-//        $this->db->where('profit_week is not NULL');
-//        $this->db->where('dateend < ',$now);
-//        $this->db->order_by('datebgn','desc');
-//        $weekres=$this->db->get()->row_array();
-//        if ($weekres['profit_week']>52) {
-//            $weekres['profit_week']=52;
-//        }
-//        $paceweekkf=52/$weekres['profit_week'];
-//        $current_weeknum=$weekres['profit_week'];
-//        $prev_year=$year-1;
-//        if ($current_weeknum==52) {
-//            $prev_weeknum=1;
-//            $prev_year=$prev_year+1;
-//        } else {
-//            $prev_weeknum=$current_weeknum+1;
-//        }
-//        // Select date
-//        $this->db->select('profit_id,datebgn');
-//        $this->db->from('netprofit');
-//        $this->db->where('profit_week', $prev_weeknum);
-//        $this->db->where('profit_year', $prev_year);
-//        $paceres=$this->db->get()->row_array();
-//        if (isset($paceres['profit_id'])) {
-//            $pacedatstart=$paceres['datebgn'];
-//        } else {
-//            // Exclude
-//            $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
-//        }
-//
-//        $this->db->select('sum(o.profit) as gross_profit', FALSE);
-//        $this->db->from('ts_orders o');
-//        $this->db->where('o.is_canceled',0);
-//        $this->db->where('date_format(from_unixtime(o.order_date),\'%x\')', $year);
-//        $this->db->where('o.order_date < ', $now);
-//        $ordersres=$this->db->get()->row_array();
-//        if ($paceincome==2) {
-//            // Prev Year income
-//            $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as gross_profit');
-//            $this->db->from('ts_orders o');
-//            $this->db->where('o.is_canceled',0);
-//            $this->db->where('o.order_date >= ', $pacedatstart);
-//            $this->db->where('o.order_date < ', $now);
-//            $paceordat=$this->db->get()->row_array();
-//            // $grossprofit=round(floatval($ordersres['gross_profit'])+floatval($paceordat['gross_profit']),0);
-//            $grossprofit=round(floatval($paceordat['gross_profit']),0);
-//        } else {
-//            $grossprofit=floatval($ordersres['gross_profit'])*$paceweekkf;
-//        }
-//        if ($paceexpense==1) {
-//            $cur_expenses=0;
-//            $this->db->select('sum(np.profit_operating) as operating');
-//            $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
-//            $this->db->select('sum(np.profit_projects) as odesk, sum(np.profit_purchases) as purchases');
-//            $this->db->from('netprofit np');
-//            $this->db->where('np.profit_week is not NULL');
-//            $this->db->where('np.profit_year', $year);
-//            $this->db->where('np.dateend < ', $now);
-//            $curyear_netdata=$this->db->get()->row_array();
-//            foreach ($curyear_netdata as $row) {
-//                $cur_expenses+=floatval($row);
-//            }
-//            $expensive=$cur_expenses*$paceweekkf;
-//        } else {
-//            // Curren Year Espenses
-//            $this->db->select('sum(np.profit_operating) as operating');
-//            $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
-//            $this->db->select('sum(np.profit_projects) as projects, sum(np.profit_purchases) as purchases');
-//            $this->db->from('netprofit np');
-//            $this->db->where('np.datebgn >= ', $pacedatstart);
-//            $this->db->where('np.dateend < ', $now);
-//            $curdebtres=$this->db->get()->row_array();
-//
-//            $expensive=0;
-//            foreach ($curdebtres as $row) {
-//                $expensive+=floatval($row);
-//            }
-//        }
-//        $netprofit=$grossprofit-$expensive;
-//        return $netprofit;
-//    }
-//
+
+    public function get_ownertax_dates() {
+        $out=array('year'=>date('Y'), 'week'=>'1', 'date'=>time());
+        // $now=strtotime('monday this week');
+        $now=getDayOfWeek(date('W'), date('Y'),1);
+        // Get current week number
+        $this->db->select('profit_week, profit_year');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not NULL');
+        $this->db->where('dateend < ',$now);
+        $this->db->order_by('datebgn','desc');
+        $weekres=$this->db->get()->row_array();
+        $out['date']=$now;
+        $out['year']=$weekres['profit_year'];
+        $out['week']=$weekres['profit_week'];
+        return $out;
+    }
+
+
+    public function get_projected_netprofit($now, $year, $paceincome, $paceexpense, $brand) {
+        // $this->load->model('reports_model');
+        // Get current week number
+        $this->db->select('profit_week');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not NULL');
+        $this->db->where('dateend < ',$now);
+        $this->db->order_by('datebgn','desc');
+        $weekres=$this->db->get()->row_array();
+        if ($weekres['profit_week']>52) {
+            $weekres['profit_week']=52;
+        }
+        $paceweekkf=52/$weekres['profit_week'];
+        $current_weeknum=$weekres['profit_week'];
+        $prev_year=$year-1;
+        if ($current_weeknum==52) {
+            $prev_weeknum=1;
+            $prev_year=$prev_year+1;
+        } else {
+            $prev_weeknum=$current_weeknum+1;
+        }
+        // Select date
+        $this->db->select('profit_id,datebgn');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week', $prev_weeknum);
+        $this->db->where('profit_year', $prev_year);
+        $paceres=$this->db->get()->row_array();
+        if (isset($paceres['profit_id'])) {
+            $pacedatstart=$paceres['datebgn'];
+        } else {
+            // Exclude
+            $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
+        }
+
+        $this->db->select('sum(o.profit) as gross_profit', FALSE);
+        $this->db->from('ts_orders o');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('date_format(from_unixtime(o.order_date),\'%x\')', $year);
+        $this->db->where('o.order_date < ', $now);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $ordersres=$this->db->get()->row_array();
+        if ($paceincome==2) {
+            // Prev Year income
+            $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as gross_profit');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('o.order_date >= ', $pacedatstart);
+            $this->db->where('o.order_date < ', $now);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $paceordat=$this->db->get()->row_array();
+            $grossprofit=round(floatval($paceordat['gross_profit']),0);
+        } else {
+            $grossprofit=floatval($ordersres['gross_profit'])*$paceweekkf;
+        }
+        if ($paceexpense==1) {
+            $cur_expenses=0;
+            $this->db->select('sum(np.profit_operating) as operating');
+            $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
+            $this->db->select('sum(np.profit_projects) as odesk, sum(np.profit_purchases) as purchases');
+            $this->db->from('netprofit np');
+            $this->db->where('np.profit_week is not NULL');
+            $this->db->where('np.profit_year', $year);
+            $this->db->where('np.dateend < ', $now);
+            $curyear_netdata=$this->db->get()->row_array();
+            foreach ($curyear_netdata as $row) {
+                $cur_expenses+=floatval($row);
+            }
+            $expensive=$cur_expenses*$paceweekkf;
+        } else {
+            // Curren Year Espenses
+            $this->db->select('sum(np.profit_operating) as operating');
+            $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
+            $this->db->select('sum(np.profit_projects) as projects, sum(np.profit_purchases) as purchases');
+            $this->db->from('netprofit np');
+            $this->db->where('np.datebgn >= ', $pacedatstart);
+            $this->db->where('np.dateend < ', $now);
+            $curdebtres=$this->db->get()->row_array();
+
+            $expensive=0;
+            foreach ($curdebtres as $row) {
+                $expensive+=floatval($row);
+            }
+        }
+        $netprofit=$grossprofit-$expensive;
+        return $netprofit;
+    }
+
 //    public function get_profit_purchase($profit_id,$type) {
 //        $out=array('result'=>$this->error_result, 'msg'=>'Profit Data Not Found');
 //        $this->db->select('profit_id, weeknote, datebgn, dateend, profit_purchases');

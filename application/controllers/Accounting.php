@@ -63,9 +63,13 @@ class Accounting extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
                 $content_options['financebatchesview'] = $this->_prepare_batches_view($brand, $top_menu);
             } elseif ($row['item_link']=='#netprofitview') {
-                $head['styles'][]=array('style'=>'/css/accounting/netprofitview.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/netprofitview.js');
+                $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
+                $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
                 $content_options['netprofitview'] = $this->_prepare_batches_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#ownertaxesview') {
+                $head['styles'][] = array('style' => '/css/accounting/ownertaxesview.css');
+                $head['scripts'][] = array('src' => '/js/accounting/ownertaxesview.js');
+                $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_view($brand, $top_menu);
             } elseif ($row['item_link']=='#expensesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/expensesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/expensesview.js');
@@ -1738,6 +1742,133 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function ownnertaxes_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand');
+            if (!empty($brand)) {
+                $this->load->model('rates_model');
+                $this->load->model('balances_model');
+                // Get current week, year
+                $res=$this->balances_model->get_ownertax_dates();
+                $now=$res['date'];
+                $curyear=$res['year'];
+                $curyearshort=substr($curyear,2);
+
+                // Prepare Single view
+                $singfedrates=$this->rates_model->get_ratestable('single','federal');
+
+                $singfedoptions=array(
+                    'title'=>'`'.$curyearshort.' Federal Tax Brackets',
+                    'rates'=>$singfedrates,
+                );
+                $singlefed_rate_view=$this->load->view('ownertaxes/rates_view', $singfedoptions,TRUE);
+
+                $singlestaterates=$this->rates_model->get_ratestable('single','state');
+
+                $singlestateoptions=array(
+                    'title'=>'`'.$curyearshort.' NJ Tax Brackets',
+                    'rates'=>$singlestaterates,
+                );
+
+                $singlestate_rate_view=$this->load->view('ownertaxes/rates_view', $singlestateoptions,TRUE);
+                $siglerate_options=array(
+                    'fedtax'=>$singlefed_rate_view,
+                    'state'=>$singlestate_rate_view,
+                );
+                $siglerateview=$this->load->view('ownertaxes/calclrates_view', $siglerate_options, TRUE);
+
+                // Get NetProfit
+                $paceincome=$paceexpense=1;
+                $netprofit=$this->balances_model->get_projected_netprofit($now, $curyear, $paceincome, $paceexpense);
+                // $netprofit=400000;
+                if ($this->USER_REPLICA=='SEAN') {
+                    $profitkf=0.75;
+                } else {
+                    $profitkf=0.25;
+                }
+
+                // Get data for single calc
+
+                $singledata=$this->rates_model->get_ownertaxdata('single', $this->USER_REPLICA);
+                $singledata['netprofit']=$netprofit;
+                $singledata['profitkf']=$profitkf;
+                $singledata['od_incl']=1;
+
+                $siglecalcdata=$this->rates_model->get_owner_taxes('single', $singledata);
+
+                $singcalcoption=array(
+                    'rateview'=>$siglerateview,
+                    'profitkf'=>$profitkf,
+                );
+                foreach ($siglecalcdata as $key=>$val) {
+                    $singcalcoption[$key]=$val;
+                }
+                $singlecalcview=$this->load->view('ownertaxes/singlecalc_view', $singcalcoption, TRUE);
+
+                // Prepare Join Calc
+                $jointfedrates=$this->rates_model->get_ratestable('joint','federal');
+
+                $jointfedoptions=array(
+                    'title'=>'`'.$curyearshort.' Federal Tax Brackets',
+                    'rates'=>$jointfedrates,
+                );
+
+                $jointfed_rate_view=$this->load->view('ownertaxes/rates_view', $jointfedoptions,TRUE);
+
+                $jointstaterates=$this->rates_model->get_ratestable('joint','state');
+
+                $jointstateoptions=array(
+                    'title'=>'`'.$curyearshort.' NJ Tax Brackets',
+                    'rates'=>$jointstaterates,
+                );
+
+                $jointstate_rate_view=$this->load->view('ownertaxes/rates_view', $jointstateoptions,TRUE);
+                $jointrate_options=array('fedtax'=>$jointfed_rate_view,'state'=>$jointstate_rate_view);
+                $jointrateview=$this->load->view('ownertaxes/calclrates_view', $jointrate_options, TRUE);
+                // Get data for joint calc
+                $jointdata=$this->rates_model->get_ownertaxdata('joint', $this->USER_REPLICA);
+                $jointdata['netprofit']=$netprofit;
+                $jointdata['profitkf']=$profitkf;
+                $jointdata['od_incl']=1;
+
+                $jointcalcdata=$this->rates_model->get_owner_taxes('joint', $jointdata);
+
+                $jointcalcoption=array(
+                    'rateview'=>$jointrateview,
+                );
+                foreach ($jointcalcdata as $key=>$val) {
+                    $jointcalcoption[$key]=$val;
+                }
+                $jointcalcview=$this->load->view('ownertaxes/jointcalc_view', $jointcalcoption, TRUE);
+                $session_id=$this->func->uniq_link('15');
+                $content_options=array(
+                    'singlecalc'=>$singlecalcview,
+                    'jointcalc'=>$jointcalcview,
+                    'od_incl'=>0,
+                    'session_id'=>$session_id,
+                    'netprofit'=>$netprofit,
+                    'profitkf'=>$profitkf*100,
+                    'ownership'=>round($netprofit*$profitkf,0),
+                    'year'=>$curyear,
+                );
+                $calcdata=array(
+                    'joint'=>$jointcalcdata,
+                    'single'=>$siglecalcdata,
+                    'now'=>$now,
+                    'curyear'=>$curyear,
+                );
+                $this->func->session($session_id, $calcdata);
+                $mdata['content']=$this->load->view('ownertaxes/page_view', $content_options, TRUE);
+                $error = '';
+            }
+            $this->func->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;
@@ -2569,6 +2700,14 @@ class Accounting extends MY_Controller
         );
         $content=$this->load->view('netprofit/admin_netprofit_view',$pageoptions ,TRUE);
         return $content;
+    }
+
+    private function _prepare_ownerstaxes_view($brand, $top_menu) {
+        $options = [
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        return $this->load->view('accounting/ownertaxes_view', $options, TRUE);
     }
 
     private function _prepare_expensives_view($brand, $top_menu) {

@@ -1,7 +1,5 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: german
- * Date: 11.03.20
- * Time: 13:27
- */
+<div id="ownertax"></div>
+<input type="hidden" id="ownertaxesbrand" value="<?=$brand?>">
+<div id="ownertaxesbrandmenu">
+    <?=$top_menu?>
+</div>
