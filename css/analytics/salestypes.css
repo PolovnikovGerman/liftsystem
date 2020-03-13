@@ -1,0 +1,1040 @@
+/*
+    Created on : May 21, 2015, 8:17:57 PM
+    Author     : polovnikov-go
+*/
+
+.salestype_viewarea {
+    clear: both;
+    float: left;
+    margin-left: 7px;
+    margin-top: 10px;
+    /* max-height: 643px;
+    overflow-y: auto;*/
+    width: 1030px;
+}
+.salestype_dataarea {
+    clear: both;
+    float: left;
+    margin-bottom: 10px;
+    width: 1012px;
+}
+.salestype_reportarea {
+    border-bottom: 2px solid #000000;
+    clear: both;
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    height: 34px;
+    line-height: 34px;
+    margin-bottom: 4px;
+    text-align: center;
+    width: 100%;
+}
+.salestotal_title {
+    clear: both;
+    color: #0101b4;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    width: 100%;
+}
+.salestotal_title > .year {
+    float: left;
+    width: 27px;
+}
+.salestotal_title > .total {
+    float: left;
+    width: 65px;
+}
+.salestotal_title > .totaldiff {
+    float: left;
+    width: 41px;
+}
+.salestotal_title > .map {
+    float: left;
+    width: 40px;
+}
+.salestotal_title > .month {
+    float: left;
+    width: 62px;
+}
+.yeardata {
+    clear: both;
+    float: left;
+    margin-bottom: 7px;
+    height: 71px;
+    width: 100%;
+}
+.yeardata.customs {
+    height: 123px;
+}
+.yeardata > .yearlabelarea {
+    float: left;
+    width: 26px;
+}
+.yeardata > .yearlabelarea > .yearlabel {
+    /* writing-mode: tb-rl; */
+    -o-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    height: 17px;
+    float: left;
+    color: #0101b4;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 17px;
+    margin-left: -26px;
+    margin-top: 27px;
+    text-align: right;
+    width: 71px;
+}
+.yeardata > .yearlabelarea > .rowshowhide {
+    clear: both;
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-size: 17px;
+    height: 18px;
+    line-height: 18px;
+    text-align: left;
+    width: 19px;
+    position: relative;
+    z-index: 6;
+}
+
+.yeardata > .total {
+    border: 2px solid #000000;
+    float: left;
+    height: 71px;
+    /* margin-left: -22px; */
+    margin-left: -6px;
+    text-align: left;
+    width: 62px;
+}
+.yeardata > .total.customs {
+    height: 124px;
+}
+.yeardata > .total > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 58px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.yeardata > .total > .row.percent {
+    font-size: 15px;
+    font-weight: bold;
+    height: 21px;
+    line-height: 21px;
+}
+.yeardata > .total > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.yeardata > .total > .row.orders {
+    font-size: 12px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.yeardata > .total > .row.orders.datayear {
+    display: none;
+}
+.yeardata > .total > .row.orders.customs {
+    font-weight: bold;
+}
+.yeardata > .totaldiff {
+    border: 2px solid #000000;
+    float: left;
+    height: 71px;
+    margin-left: 2px;
+    text-align: left;
+    width: 39px;
+}
+.yeardata > .totaldiff.customs {
+    height: 124px;
+}
+.yeardata > .totaldiff > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 38px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.yeardata > .totaldiff > .row.percent {
+    font-size: 13px;
+    font-weight: bold;
+    height: 21px;
+    line-height: 21px;
+}
+.yeardata > .totaldiff > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.yeardata > .totaldiff > .row.orders {
+    font-size: 12px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.yeardata > .totaldiff > .row.orders.datayear {
+    display: none;
+}
+.yeardata > .totaldiff > .row.orders.customs {
+    font-weight: bold;
+}
+.yeardata > .map {
+    background: #d3d3d3 none repeat scroll 0 0;
+    border: 1px solid #9b9b9b;
+    color: #141414;
+    float: left;
+    font-size: 10px;
+    font-weight: normal;
+    height: 72px;
+    margin-left: 4px;
+    text-align: center;
+    width: 35px;
+}
+.yeardata.customs > .map {
+    height: 124px;
+}
+.yeardata > .map > .row {
+    clear: both;
+    float: left;
+    height: 18px;
+    line-height: 18px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+.yeardata > .map > .row.datayear {
+    display: none;
+}
+.yeardata > .monthdataarea {
+    float: left;
+    margin-left: 3px;
+    width: 60px;
+}
+.yeardata > .monthdataarea.customs {
+    height: 138px;
+}
+.yeardata > .monthdataarea.customs > div {
+    float: left;
+}
+.yeardata > .monthdataarea > .month {
+    border: 1px solid #000000;
+    height: 72px;
+    width: 100%;
+}
+.yeardata  > .monthdataarea > .month.customs {
+    height: 124px;
+    width: 58px;
+}
+.yeardata   > .monthdataarea > .monthdiff {
+    font-size: 10px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+    width: 100%;
+    text-align: center;
+}
+.yeardata   > .monthdataarea > .monthdiff.positive {
+    color: #008000;
+}
+.yeardata   > .monthdataarea > .monthdiff.negative {
+    color: #FF0000;
+}
+.salesmonthview {
+    cursor: pointer;
+}
+.yeardata  > .monthdataarea >  .month.empty {
+    background: #d3d3d3 none repeat scroll 0 0;
+}
+.yeardata  > .monthdataarea > .month.future {
+    opacity: 0.16;
+}
+.yeardata  > .monthdataarea > .month > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 95%;
+    margin-right: 0;
+    margin-left: 0;
+}
+.yeardata  > .monthdataarea > .month > .row > .magnifying {
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 36%;
+}
+.yeardata  > .monthdataarea > .month > .row > .rowpercent {
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    text-align: right;
+    width: 64%;
+}
+.yeardata  > .monthdataarea > .month > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.yeardata  > .monthdataarea > .month > .row.orders {
+    font-size: 11px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.yeardata  > .monthdataarea > .month > .row.orders.datayear {
+    display: none;
+}
+.yeardata  > .monthdataarea > .month > .row.orders.customs {
+    font-weight: bold;
+}
+/* Difference */
+.differences_area {
+    clear: both;
+    float: left;
+    height: 67px;
+    margin-left: 42px;
+    width: 895px;
+}
+.differences_area div {
+    float: left;
+}
+.differences_area > .differences_area_title {
+    color: #0d01b3;
+    width: 89px;
+}
+.differences_area > .differences_area_title > .label {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.differences_area > .differences_area_title > .yearselect {
+    width: 44px;
+}
+.differences_area > .differences_area_title > .yearselect > .label {
+    font-size: 8px;
+    text-align: center;
+    width: 100%;
+}
+.differences_area > .differences_area_title > .yearselect > .dataselect {
+    text-align: center;
+    width: 100%;
+}
+.differences_area > .differences_area_title > .yearselect > .dataselect select.yearselect {
+    font-size: 9px;
+    /* font-weight: bold; */
+    color: #0d01b3;
+    width: 42px;
+}
+.differences_area > .differences_map {
+    background: #d3d3d3 none repeat scroll 0 0;
+    border: 1px solid #9b9b9b;
+    color: #141414;
+    float: left;
+    font-size: 9px;
+    font-weight: normal;
+    margin-left: 4px;
+    text-align: center;
+    width: 30px;
+}
+.differences_area > .differences_map > .label {
+    height: 18px;
+    line-height: 18px;
+    width: 100%;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea {
+    margin-left: 3px;
+    width: 60px;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month {
+    border: 1.5px solid #000000;
+    height: 36px;
+    width: 96%;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month.projectview {
+    /* border-color: #0d01b3; */
+    border: 1.5px dashed #0d01b3;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month.future {
+    opacity: 0.16;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month > .row {
+    height: 18px;
+    line-height: 18px;
+    font-size: 11px;
+    text-align: center;
+    color: #0d01b3;
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+}
+.differences_area > .montsquaterarea > .monthsarea > .monthdataarea > .month > .row.negative {
+    color: #ff0000;
+}
+.differences_area > .montsquaterarea > .quaterarea {
+    clear: both;
+    margin-top: 4px;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdatabefore {
+    margin-top: -4px;
+    margin-left: 2.7px;
+    border-left: 1.5px solid #000000;
+    border-bottom: 1.5px solid #000000;
+    height: 13px;
+    width: 15px;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdatabefore.projectview {
+    border-left: 1.5px solid #0d01b3;
+    border-bottom: 1.5px solid #0d01b3;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdataafter {
+    margin-top: -4px;
+    border-right: 1.5px solid #000000;
+    border-bottom: 1.5px solid #000000;
+    height: 13px;
+    width: 15px;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdataafter.projectview {
+    border-right: 1.5px solid #0d01b3;
+    border-bottom: 1.5px solid #0d01b3;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdatabefore.future, .differences_area > .montsquaterarea > .quaterarea > .quaterdataafter.future {
+    opacity: 0.16;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdata {
+    width: 151px;
+    height: 18px;
+    line-height: 18px;
+    color: #0d01b3;
+    font-size: 11px;
+    text-align: center;
+    border: 1.5px solid #000000;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdata.projectview {
+    border: 1.5px dashed #0d01b3;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdata > span.negative {
+    color: #ff0000;
+}
+.differences_area > .montsquaterarea > .quaterarea > .quaterdata.future {
+    opacity: 0.16;
+    text-align: left;
+    padding-left: 20px;
+    width: 132px;
+}
+/* Popup */
+.differencesshowdetails {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    padding: 15px;
+    width: 232px;
+}
+.differencesshowdetails div {
+    float: left;
+}
+.differencesshowdetails > .title {
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+.differencesshowdetails > .totalarea {
+    width: 100%;
+}
+.differencesshowdetails > .totalarea > .yeardata {
+    height: 20px;
+    line-height: 20px;
+}
+.differencesshowdetails > .totalarea > .yeardata > .labeltxt {
+    width: 20%;
+}
+.differencesshowdetails > .totalarea > .yeardata > .value {
+    width: 70%;
+}
+/* Goals */
+.salestype_goals {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.pacehittitle {
+    float: left;
+    width: 64px;
+    margin-left: 32px;
+}
+.pacehittitle > .delimvertical {
+    border-right: 1px solid #000000;
+    float: left;
+    height: 98px;
+    margin-top: -70px;
+}
+.pacehittitle > .delimhorisont {
+    border-bottom: 1px solid #000000;
+    float: left;
+    height: 27px;
+    width: 58px;
+}
+.pacehittitle > .label {
+    clear: both;
+    color: #0101b4;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    /* margin-left: 33px; */
+    text-align: right;
+    width: 60px;
+}
+.pacehitdata {
+    border: 2px solid #000000;
+    float: left;
+    height: 72px;
+    width: 72px;
+}
+.pacehitdata.customs {
+    height: 118px;
+}
+.pacehitdata > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 69px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.pacehitdata > .row.percent {
+    font-size: 14px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+}
+.pacehitdata > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.pacehitdata > .row.orders {
+    font-size: 11px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.pacehitdata > .row.orders.datayear {
+    display: none;
+}
+.pacehitdata > .row.orders.customs {
+    font-weight: bold;
+}
+/* Pacehits Different */
+.pacehitdiffdata {
+    border: 1px solid #000000;
+    float: left;
+    height: 72px;
+    width: 41px;
+    margin-left: 2px;
+}
+.pacehitdiffdata.customs {
+    height: 118px;
+}
+.pacehitdiffdata > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 39px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.pacehitdiffdata > .row.percent {
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+}
+.pacehitdiffdata > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.pacehitdiffdata > .row.orders {
+    font-size: 11px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.pacehitdiffdata > .row.orders.customs {
+    font-weight: bold;
+}
+.pacehitdiffdata > .row.orders.datayear {
+    display: none;
+}
+.salesgoaltitle {
+    border-bottom: 1px solid #000000;
+    float: left;
+    width: 65px;
+}
+.salesgoaltitle > .label {
+    color: #0101b4;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 3px;
+    text-align: right;
+    width: 60px;
+}
+.salesgoaldataarea {
+    float: left;
+    width: 75px;
+}
+.salesgoaldata {
+    border: 2px solid #000000;
+    float: left;
+    height: 72px;
+    width: 72px;
+}
+.salesgoaldata > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 69px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.salesgoaldata > .row.percent {
+    font-size: 14px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+}
+.salesgoaldata > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.salesgoaldata > .row.orders {
+    font-size: 11px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.salesgoaledit {
+    clear: both;
+    float: left;
+    text-align: right;
+    font-size: 13px;
+    color: #0000ff;
+    width: 21px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+.salesavgtitle {
+    border-bottom: 1px solid #000000;
+    float: left;
+    width: 65px;
+}
+.salesavgtitle > .label {
+    color: #0101b4;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 3px;
+    text-align: right;
+    width: 55px;
+}
+.salesavgarea {
+    float: left;
+    width: 162px;
+}
+.salesavgarea > .head {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    color: #000000;
+    width: 100%;
+}
+.salesavgarea > .salesavgdata {
+    float: left;
+    width: 72px;
+    border: 2px solid #999999;
+    height: 50px;
+}
+.salesavgarea > .salesavgdata > .row {
+    clear: both;
+    float: left;
+    text-align: right;
+    width: 69px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.salesavgarea > .salesavgdata > .row.profit {
+    font-size: 13px;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+}
+.salesavgarea > .salesavgdata > .row.orders {
+    font-size: 11px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+}
+.salesavgarea > .avglegend {
+    float: left;
+    width: 80px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+.salesavgarea > .avglegend > .row {
+    clear: both;
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+/* POPUP class */
+.salestypepopup {
+    background: #ffffff!important;
+    border-color: #000000!important;
+    font-size: 15px!important;
+    color: #000!important;
+}
+/* Goal Edit POPUP */
+.goaleditarea {
+    background: none repeat scroll 0 0 #ffffff;
+    border-radius: 9px;
+    color: #000;
+    font-size: 14px;
+    height: 235px;
+    padding: 10px;
+    width: 390px;
+}
+.goaledittitle {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 26px;
+    text-align: center;
+    width: 100%;
+}
+.goaleditrow {
+    clear: both;
+    float: left;
+    height: 28px;
+    line-height: 24px;
+    text-align: left;
+    width: 100%;
+}
+.goaleditlabel {
+    float: left;
+    width: 60%;
+}
+.goaleditvalue {
+    float: left;
+    width: 40%;
+}
+input.goaleditinput {
+    background: none repeat scroll 0 0 #ebebeb;
+    border: 1px solid #000;
+    float: left;
+    height: 18px;
+    width: 99px;
+}
+.goaleditsave {
+    cursor: pointer;
+    float: left;
+    margin-left: 260px;
+    width: 90px;
+}
+/* POPUP with month details */
+.salesmonthdetailsarea {
+    background: #ffffff none repeat scroll 0 0;
+    border-radius: 11px;
+    clear: both;
+    color: #000000;
+    float: left;
+    max-height: 420px;
+    padding: 15px;
+    text-align: left;
+    width: 650px;
+}
+.salesmonthdetailsarea > .title {
+    clear: both;
+    float: left;
+    font-size: 16px;
+    font-weight: bold;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    width: 100%;
+}
+.salesmonthdetailsarea > .growdataarea {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.salesmonthdetailsarea > .growdataarea div {
+    float: left;
+}
+.salesmonthdetailsarea > .growdataarea > .title {
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 100%;
+}
+.salesmonthdetailsarea > .growdataarea > .growrow {
+    clear: both;
+    width: 95%;
+}
+.salesmonthdetailsarea > .growdataarea > .growrow div {
+    font-size: 12px;
+    height: 15px;
+    line-height: 15px;
+}
+.salesmonthdetailsarea > .growdataarea > .growrow > .label {
+    width: 40%;
+}
+.salesmonthdetailsarea > .growdataarea > .growrow > .value {
+    width: 9%;
+    margin-right: 1%;
+    text-align: right;
+}
+.salesmonthdetailsarea > .growdataarea > .growrow > .value.main {
+    font-weight: bold;
+}
+.salesmonthdetailsarea > .datahead {
+    background: #d3d3d3 none repeat scroll 0 0;
+    clear: both;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 100%;
+}
+/* Cols labels */
+.salesmonthdetailsarea > .datahead > .date {
+    float: left;
+    width: 60px;
+}
+.salesmonthdetailsarea > .datahead > .ordernum {
+    float: left;
+    width: 60px;
+}
+.salesmonthdetailsarea > .datahead > .customer {
+    float: left;
+    width: 286px;
+}
+.salesmonthdetailsarea > .datahead > .profit {
+    float: left;
+    width: 80px;
+}
+.salesmonthdetailsarea > .datahead > .revenue {
+    float: left;
+    width: 80px;
+}
+.salesmonthdetailsarea > .datahead > .profit_perc {
+    float: left;
+    width: 40px;
+}
+.salesmonthdetailsarea > .dataarea {
+    clear: both;
+    float: left;
+    /*     max-height: 320px; */
+    max-height: 297px;
+    overflow-y: auto;
+    width: 100%;
+}
+.salesmonthdetailsarea > .dataarea > .datarow {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    width: 604px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow.customitemorder {
+    font-weight: bold;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .date {
+    float: left;
+    width: 60px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .ordernum {
+    float: left;
+    width: 60px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .customer {
+    float: left;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 284px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .profit {
+    float: left;
+    text-align: right;
+    width: 80px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .revenue {
+    float: left;
+    text-align: right;
+    width: 80px;
+}
+.salesmonthdetailsarea > .dataarea > .datarow > .profit_perc {
+    float: left;
+    width: 40px;
+}
+.salesmonthdetailsarea > .datatotals {
+    background: #d3d3d3 none repeat scroll 0 0;
+    clear: both;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+}
+.salesmonthdetailsarea > .datatotals > .total {
+    float: left;
+    text-align: left;
+    width: 70px;
+}
+.salesmonthdetailsarea > .datatotals > .numorders {
+    float: left;
+    width: 334px;
+}
+.salesmonthdetailsarea > .datatotals > .profit {
+    float: left;
+    text-align: right;
+    width: 80px;
+}
+.salesmonthdetailsarea > .datatotals > .revenue {
+    float: left;
+    text-align: right;
+    width: 80px;
+}
+.salesmonthdetailsarea > .datatotals > .profit_perc {
+    float: left;
+    text-align: center;
+    width: 40px;
+}
+.salestypemonthdiffarea {
+    clear: both;
+    float: left;
+    background-color: #ffffff;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+    width: 338px;
+    height: 254px;
+    padding: 10px;
+}
+.salestypemonthdiffarea div {
+    float: left;
+}
+.salestypemonthdiffarea > .title {
+    height: 26px;
+    line-height: 26px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.salestypemonthdiffarea > .subtitle {
+    clear: both;
+    font-size: 14px;
+    width: 347px;
+}
+.salestypemonthdiffarea > .subtitle div {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+}
+.salestypemonthdiffarea > .subtitle > .article {
+    width: 100px;
+}
+.salestypemonthdiffarea > .subtitle > .yeardatavalue {
+    width: 63px;
+}
+.salestypemonthdiffarea > .subtitle > .growth {
+    width: 64px;
+}
+.salestypemonthdiffarea > .subtitle > .growthproc {
+    width: 56px;
+}
+.salestypemonthdiffarea > .dataarea {
+    margin-bottom: 5px;
+    border-bottom: 1px solid #000000;
+}
+.salestypemonthdiffarea > .dataarea > .datarow {
+    clear: both;
+    font-size: 14px;
+    width: 347px;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > div {
+    float: left;
+    font-size: 13px;
+    height: 16px;
+    line-height: 16px;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > div.negative {
+    color: #FF0000;
+    font-weight: bold;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > div.positive {
+    color: #0000FF;
+    font-weight: bold;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > .article {
+    padding-right: 8px;
+    text-align: right;
+    width: 90px;
+    border-right: 1px solid #000000;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > .yeardatavalue {
+    text-align: center;
+    width: 62px;
+    border-right: 1px solid #000000;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > .growth {
+    text-align: center;
+    width: 63px;
+    border-right: 1px solid #000000;
+}
+.salestypemonthdiffarea > .dataarea > .datarow > .growthproc {
+    text-align: center;
+    width: 57px;
+}
