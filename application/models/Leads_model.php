@@ -375,26 +375,26 @@ Class Leads_model extends MY_Model
         }
         return $out;
     }
-//    /* Get Lead Tasks, related with lead */
-//    function get_lead_tasks($lead_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_lead_tasks');
-//        $this->db->where('lead_id',$lead_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['leadtask_id'])) {
-//            $res=array();
-//            /* Get Struct */
-//            $fields = $this->db->list_fields('ts_lead_tasks');
-//            foreach ($fields as $field)
-//            {
-//                $res[$field]='';
-//            }
-//            $res['lead_id']=$lead_id;
-//            $res['leadtask_id']=0;
-//        }
-//        return $res;
-//    }
-//
+    /* Get Lead Tasks, related with lead */
+    public function get_lead_tasks($lead_id) {
+        $this->db->select('*');
+        $this->db->from('ts_lead_tasks');
+        $this->db->where('lead_id',$lead_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['leadtask_id'])) {
+            $res=array();
+            /* Get Struct */
+            $fields = $this->db->list_fields('ts_lead_tasks');
+            foreach ($fields as $field)
+            {
+                $res[$field]='';
+            }
+            $res['lead_id']=$lead_id;
+            $res['leadtask_id']=0;
+        }
+        return $res;
+    }
+
     public function get_leadnum() {
         $this->db->select('max(lead_number) as last_num');
         $this->db->from('ts_leads');
@@ -1121,15 +1121,15 @@ Class Leads_model extends MY_Model
 //        $result=$this->db->get()->result_array();
 //        return $result;
 //    }
-//
-//    public function items_list() {
-//        $this->db->select('item_id, item_name, item_number');
-//        $this->db->from('v_itemsearch');
-//        $this->db->order_by('item_name');
-//        $result=$this->db->get()->result_array();
-//        return $result;
-//    }
-//
+
+    public function items_list() {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->order_by('item_name');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
 //    public function search_itemid($item_id) {
 //        $out=array('result'=>Leads_model::ERR_FLAG, 'msg'=>Leads_model::INIT_ERRMSG);
 //        // Search

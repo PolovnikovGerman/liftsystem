@@ -2,8 +2,8 @@
 
 Class Orders_model extends MY_Model
 {
-    protected $START_ORDNUM=22000;
-    protected $INIT_ERRMSG='Unknown error. Try later';
+    const START_ORDNUM=22000;
+    const INIT_ERRMSG='Unknown error. Try later';
     protected $project_name='PROJ';
 
     protected $NO_ART = '06_noart';
@@ -51,6 +51,9 @@ Class Orders_model extends MY_Model
         if (isset($filtr['weborder'])) {
             $this->db->where('o.weborder', $filtr['weborder']);
         }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('o.brand', $filtr['brand']);
+        }
         $this->db->from('ts_orders o');
         if (isset($filtr['filter']) && $filtr['filter']==7) {
             $this->db->where('o.is_canceled',1);
@@ -59,7 +62,6 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.is_canceled',0);
             }
         }
-
         /*  */
         if (count($filtr)>0) {
             if (isset($filtr['hideart']) && $filtr['hideart']==1) {
@@ -349,6 +351,9 @@ Class Orders_model extends MY_Model
             if (isset($filtr['artadd_filtr']) && $filtr['artadd_filtr']==1) {
                 $this->db->where('o.order_rush',1);
             }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);
@@ -363,8 +368,6 @@ Class Orders_model extends MY_Model
             $row['shipping']=(floatval($row['shipping'])==0 ? '-' : '$'.number_format($row['shipping'], 2, '.', ','));
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
-            // $lastmsg=$this->get_lastupdate($row['order_id']);
-            // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $artlastupdat="artlastmessageview";
             $row['lastmsg']='/artorders/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
@@ -503,6 +506,181 @@ Class Orders_model extends MY_Model
         } else {
             return 'No User Messages';
         }
+    }
+
+    public function get_nonassignorders() {
+        $this->db->select('order_id, order_id, order_date, order_num, customer_name, order_items, revenue');
+        $this->db->from('ts_orders');
+        $this->db->where('order_cog',NULL);
+        $this->db->where('order_art',0);
+        $this->db->where('order_arthide',0);
+        $this->db->where('is_canceled',0);
+        $this->db->order_by('order_num');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            $row['total']=(floatval($row['revenue'])==0 ? '---' : '$'.number_format($row['revenue'],2,'.',''));
+            $row['item']=$row['order_items'];
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function get_newitemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        if ($item_id>0 && count($res)>0) {
+            // Get Colors
+            $this->db->select('item_color as colors');
+            $this->db->from('sb_item_colors');
+            $this->db->where('item_color_itemid', $item_id);
+            $colors=$this->db->get()->result_array();
+
+            $res['num_colors']=count($colors);
+            if (count($colors)>0) {
+                $newcolor=array();
+                foreach ($colors as $row) {
+                    array_push($newcolor, $row['colors']);
+                }
+            } else {
+                $newcolor=array();
+            }
+            $res['colors']=$newcolor;
+
+        } else {
+            $res['colors']=array();
+            $res['num_colors']=0;
+        }
+        return $res;
+    }
+
+    /* List of Items */
+    public function get_item_list($options=array()) {
+        $this->db->select('*');
+        $this->db->from('v_itemsearch');
+        if (isset($options['exclude'])) {
+            $this->db->where_not_in('item_id', $options['exclude']);
+        }
+        $this->db->order_by('item_number');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            if ($row['item_id']>1) {
+                $row['item_list']=$row['item_name'].' / '.$row['item_number'];
+            } else {
+                $row['item_list']=$row['item_name'];
+            }
+            $out[]=array(
+                'item_id'=>$row['item_id'],
+                'item_name'=>$row['item_list'],
+                'itemnumber'=>$row['item_number'],
+                'itemname'=>$row['item_name'],
+            );
+        }
+        return $out;
+    }
+
+    public function get_itemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    function get_last_ordernum() {
+        $this->db->set('order_date', time());
+        $this->db->insert('ts_ordernum');
+        return $this->db->insert_id();
+    }
+
+    public function notify_netdebtchanged($data) {
+        $this->load->model('user_model');
+        $log_options=array(
+            'olddebt'=>$data['oldtotalrun'],
+            'newdebt'=>$data['newtotalrun'],
+            'event'=>'',
+        );
+        $msg_subj='For Debt changed from '.$data['oldtotalrun'].' to '.$data['newtotalrun'];
+        $usrdat=$this->user_model->get_user_data($data['user_id']);
+        $email_body='The For Debt value in the Net Profit report ('.$data['weeknum'].') changed value from '.$data['olddebt'].' to '.$data['newdebt'];
+        $email_body.=' at '.date('h:i a').' '.date('m/d/Y').' from the following event:'.PHP_EOL;
+        if (isset($data['ordercancel'])) {
+            $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was cancelled by '.$usrdat['user_name'];
+            $log_options['event']='cancel_order';
+        }
+        if (isset($data['orderchange'])) {
+            if ($data['orderdata']['oldprofit']==0) {
+                $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was added by '.$usrdat['user_name'];
+            } else {
+                // $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was changed by '.$usrdat['user_name'].'. ';
+                // $email_body.='Old profit was $'.number_format($data['orderdata']['oldprofit'],2,'.',',');
+                $email_body.='The revenue on order '.$data['orderdata']['order_num'].' was changed ';
+                if (isset($data['orderdata']['oldrevenue'])) {
+                    $email_body.=' from $'.number_format($data['orderdata']['oldrevenue']);
+                }
+                if (isset($data['orderdata']['oldprofit'])) {
+                    $email_body.=' ($'.number_format($data['orderdata']['oldprofit'],2,'.',',').' profit) ';
+                }
+                $email_body.='to $'.number_format($data['orderdata']['revenue'],2,'.','.').' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit)';
+                $email_body.='by '.$usrdat['user_name'].'. ';
+            }
+            $log_options['event']='change_order';
+        }
+        if (isset($data['podelete'])) {
+            $email_body.='PO '.$data['order_num'].' was deleted by '.$usrdat['user_name'].' Sum $'.number_format($data['old_amount_sum'],2,'.','');
+            $log_options['event']='PO deleted';
+        }
+        if (isset($data['pochange'])) {
+            if ($data['old_amount_sum']==0) {
+                $email_body.='PO '.$data['order_num'].' was added by '.$usrdat['user_name'].' Sum $'.number_format($data['amount_sum'],2,'.','');
+            } else {
+                $email_body.='PO '.$data['order_num'].' was changed from $'.number_format($data['old_amount_sum'],2,'.','').' to $'.number_format($data['amount_sum'],2,'.','').' by '.$usrdat['user_name'];
+            }
+            if (isset($data['comment']) && $data['comment']!='') {
+                $email_body.=PHP_EOL.'Reason '.$data['comment'];
+            }
+            $log_options['event']='PO changed';
+        }
+        if (isset($data['netproofdebt'])) {
+            if (isset($data['profit_saved'])) {
+                $email_body.=PHP_EOL.' Saved was changed from $'.number_format($data['profit_saved']['old'],2,'.','').' to $'.number_format($data['profit_saved']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['profit_owners'])) {
+                $email_body.=PHP_EOL.' For Owners was changed from $'.number_format($data['profit_owners']['old'],2,'.','').' to $'.number_format($data['profit_owners']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['od2'])) {
+                $email_body.=PHP_EOL.' OD2 was changed from $'.number_format($data['od2']['old'],2,'.','').' to $'.number_format($data['od2']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+        }
+        if ($_SERVER['SERVER_NAME']!='lift_stressballs.local') {
+            $this->load->library('email');
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+            $this->email->initialize($config);
+            $this->email->set_newline("\r\n");
+            $mailto=$this->config->item('sean_email');
+            $this->email->to($mailto);
+            $this->email->cc($this->config->item('sage_email'));
+            $from = $this->config->item('email_notification_sender');
+            $this->email->from($from);
+            $this->email->subject($msg_subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        /* Save to log */
+        $this->db->set('old_debt',$log_options['olddebt']);
+        $this->db->set('new_debt',$log_options['newdebt']);
+        $this->db->set('checngelog_event', $log_options['event']);
+        $this->db->set('user_id',$data['user_id']);
+        $this->db->insert('netprofit_changelog');
+        return TRUE;
     }
 
     public function change_goal_value($data, $field, $newval) {

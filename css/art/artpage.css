@@ -5,7 +5,8 @@ a.find_it {
     font-size: 14px;
     font-weight: bold;
     height: 22px;
-    margin: 3px 0 0 8px;
+    line-height: 18px;
+    margin: 0px 0 0 8px;
     padding-top: 3px;
     text-align: center;
     text-decoration: none;
@@ -118,5 +119,18 @@ textarea.aprovemail_message {
     text-align: justify;
 }
 .green_background {
-    background: #1DCD19;
+    background: #1DCD19!important;
 }
+.art_lastmessage {
+    background-color: #1DCD19!important;
+    float: left;
+    padding: 0px;
+    font-size: 13px!important;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+}
+/*
+
+ */

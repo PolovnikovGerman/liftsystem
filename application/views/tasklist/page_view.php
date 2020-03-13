@@ -106,4 +106,7 @@
         </div>
     </div>
 </div>
-<div id="mailnoticationarea" style="display: none; width: 365px;  height: 472px"></div>
+<input type="hidden" id="arttasksviewbrand" value="<?=$brand?>"/>
+<div id="arttasksviewbrandmenu">
+    <?=$top_menu?>
+</div>

@@ -12,7 +12,7 @@ $(document).ready(function () {
 
 function show_error(response) {
     alert(response.errors);
-    if(response.data.url !== undefined) {
+    if(typeof response.data.url !== "undefined" ) {
         window.location.href=response.data.url;
     }
 }
