@@ -22,6 +22,7 @@ function navigation_init() {
         $("#artModal").modal('hide');
         if ($("input#root_call_page").length>0) {
             var callpage=$("input#root_call_page").val();
+            console.log('Call Page '+callpage+'!');
             if (callpage=='artorderlist') {
                 $("#orderlist").show();
                 init_orders();
@@ -29,6 +30,9 @@ function navigation_init() {
                 $("#taskview").show();
                 init_tasks_management();
                 init_tasks_page();
+            } else if (callpage=='orderslist') {
+                // Orders list
+                search_leadorders();
             }
         }
     })
@@ -274,7 +278,6 @@ function init_onlineleadorder_edit() {
         $("#artModal").modal('hide');
         $("#artModalLabel").empty();
         $("#artModal").find('div.modal-body').empty();
-
         // Current page
         if (callpage=='artorderlist') {
             $("#orderlist").show();
@@ -283,8 +286,11 @@ function init_onlineleadorder_edit() {
             $("#taskview").show();
             init_tasks_management();
             init_tasks_page();
+        } else if (callpage=='orderslist') {
+            // Orders list
+            search_leadorders();
         }
-            if (callpage=='finance') {
+        if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
                 init_profit_orders();

@@ -9,7 +9,6 @@ $(document).ready(function(){
 });
 
 function init_page(objid) {
-    console.log('Page '+objid);
     $(".orderscontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
@@ -25,8 +24,6 @@ function init_page(objid) {
         case 'onlineordersview':
             $("#onlineordersview").show();
             init_orderview();
-            // init_tasks_page();
             break;
     }
-
 }
