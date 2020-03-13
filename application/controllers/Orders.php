@@ -375,6 +375,25 @@ class Orders extends MY_Controller
         }
     }
 
+    public function upload_attach() {
+        $url=$this->input->post('url');
+        $this->load->helper('file');
+        $pathdest=$this->config->item('artwork_logo');
+        $filename=str_replace('/uploads/artlogos/',$pathdest,$url);
+        if (file_exists($filename)) {
+            $short_name=  str_replace('/uploads/artlogos/', '', $url);
+            $url=base_url().$url;
+            header("Pragma: public");
+            header('Content-disposition: attachment; filename='.$short_name);
+            header("Content-type: ".get_mime_by_extension($filename));
+            header('Content-Transfer-Encoding: binary');
+            readfile($url);
+        } else {
+            echo 'Sorry - file not exist';
+        }
+    }
+
+
     private function online_imprintval($typeimprint) {
         $out='';
         if ($typeimprint==0) {
