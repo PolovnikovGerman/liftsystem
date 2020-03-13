@@ -1,7 +1,30 @@
-function init_netprofit() {
+function init_netprofit_area() {
+    google.load('visualization', '1.0', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-    init_expensive_help();
+    console.log('STATRT');
+    init_netprofit();
+    // Change Brand
+    $("#netprofitviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#netprofitviewbrand").val(brand);
+        $("#netprofitviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#netprofitviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#netprofitviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        init_netprofit();
+    });
+}
+
+
+function init_netprofit() {
     init_netprofitpage();
+    init_expensive_help();
     // Init management of Chart Area
     $("select.weektotalsviewtype").unbind('change').change(function(){
         var showdetail=$(this).val();
@@ -47,14 +70,13 @@ function init_netprofit() {
     $("div.managecategory").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'category_type', value:$(this).data('category')});
-        var url="/finance/manage_profcategory";
+        var url="/accounting/manage_profcategory";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup('userdata');
-                $("div#pop_content").empty().html(response.data.content);
-                $("a#popupContactClose").unbind('click').click(function(){
-                    disablePopup();
-                });
+                $("#pageModal").find('div.modal-dialog').css('width','470px');
+                $("#pageModalLabel").empty().html('Edit Categories');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal('show');
                 init_manage_categories();
             } else {
                 show_error(response)
@@ -64,7 +86,8 @@ function init_netprofit() {
 }
 
 function init_netprofitpage() {
-    var url='/finance/netprofitdat';
+    console.log('SHOW CONTENT');
+    var url='/accounting/netprofitdat';
     var radio = $("div.radio_button input:checked").val();
     var params=new Array();
     params.push({name: 'type', value:$("select#but-reportview").val()});
@@ -78,6 +101,7 @@ function init_netprofitpage() {
     }
     params.push({name: 'order_by', value: $("select#netreportsortorder").val()});
     params.push({name: 'limitshow', value :$("input#limitweekshow").val()});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -112,56 +136,69 @@ function init_netprofit_content() {
             change_run_week();
         })
     }
-    $("div.cell_gross_profit2.projprof").each(function () {
-        $(this).bt({
-            ajaxCache: false,
-            fill: '#FFFFFF',
-            cornerRadius: 10,
-            width: 787,
-            padding: 10,
-            strokeWidth: '2',
-            positions: "most",
-            strokeStyle: '#000000',
-            strokeHeight: '18',
-            cssClass: 'orders_tooltip',
-            ajaxPath: ["$(this).data('profitid')"]
-        });
+    $("div.cell_gross_profit2.projprof").qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('profitid') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'left center',
+            at: 'middle right',
+        },
+        style: {
+            classes: 'profitorders_tooltip'
+        },
     });
     $("span.showallweekdata").unbind('click').click(function(){
         $("input#limitweekshow").val(0);
         init_netprofitpage();
     });
-
-    $("div.cell_sales2").bt({
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 140,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {
-            color: '#000000'
+    $("div.cell_sales2").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'white_tooltip paymonitor_ordernum_tooltip'
         }
     });
-    $("div.imbox.shownote").bt({
-        ajaxCache: false,
-        /* trigger: 'click',  */
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 578,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        ajaxPath: ["$(this).data('netnote')"]
-    })
-
-    $("div.cell_week2").unbind('click').click(function(){
+    $("div.imbox.shownote").qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('netnote') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'right center',
+            at: 'middle left',
+        },
+        style: {
+            classes: 'shownote_tooltip'
+        },
+    });
+    $("div.cell_week2.editdata").unbind('click').click(function(){
         var profit=$(this).data('profit');
         edit_profdat(profit);
     });
@@ -234,42 +271,32 @@ function init_netprofit_content() {
         }
         rebuild_w9table();
     });
-    $("div.w9purchasetablearea").find('div.category_name.entered').bt({
-        ajaxCache: false,
-        trigger: 'click',
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 578,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        ajaxPath: ["$(this).attr('href')"]
-    });
-}
-
-function change_run_week() {
-    var url='/finance/get_weektotals';
-    var params=new Array();
-    var fromweek=$("select#weekselectfrom").val();
-    var untilweek=$("select#weekselectuntil").val();
-    if (fromweek=='' && untilweek=='') {
-        $("input.allweekschoice").prop('checked',true);
-    }
-    params.push({name: 'fromweek', value: fromweek});
-    params.push({name: 'untilweek', value: untilweek});
-    $.post(url,params,function(response){
-        if (response.errors=='') {
-            $("div.color_total").empty().html(response.data.content);
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-function init_netprofit_manage() {
+    $("div.w9purchasetablearea").find('div.category_name.entered').qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('content') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'right center',
+            at: 'middle left',
+        },
+        show: {
+            event: 'click'
+        },
+        style: {
+            classes: 'shownote_tooltip'
+        },
+    })
     $("div.saveweeknote").unbind('click').click(function(){
         save_weeknote();
     })
@@ -291,9 +318,31 @@ function init_netprofit_manage() {
     });
 }
 
+function change_run_week() {
+    var url='/accounting/get_weektotals';
+    var params=new Array();
+    var fromweek=$("select#weekselectfrom").val();
+    var untilweek=$("select#weekselectuntil").val();
+    if (fromweek=='' && untilweek=='') {
+        $("input.allweekschoice").prop('checked',true);
+    }
+    params.push({name: 'fromweek', value: fromweek});
+    params.push({name: 'untilweek', value: untilweek});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    $.post(url,params,function(response){
+        if (response.errors=='') {
+            $("div.color_total").empty().html(response.data.content);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_netprofit_manage() {
+}
+
 function edit_profdat(profit) {
     $("#loader").show();
-    // $("div.but-detailed").html('Detailed');
     $("select#but-detailed").val('Detailed');
     var cssblock='block';
     $("div.title_table_netprofit").removeClass('compressed_title');
@@ -313,14 +362,16 @@ function edit_profdat(profit) {
     var params=new Array();
     params.push({name: 'profit_id', value: profit});
     params.push({name: 'type', value: $("select#but-reportview").val()});
-    var url='/finance/netprofitedit';
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url='/accounting/netprofitedit';
     $.post(url, params, function(response){
-        $("#loader").hide();
         if (response.errors=='') {
             $("div.cell_week2").unbind('click');
             $("div#nerpr"+response.data.weekid).empty().html(response.data.content);
             init_netprofitdetails_edit();
+            $("#loader").hide();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     }, 'json');
@@ -330,7 +381,8 @@ function init_netprofitdetails_edit() {
     $("a#netprofitdetailsave").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url="/finance/netprofit_details_save";
+        params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+        var url="/accounting/netprofit_details_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 init_netprofitpage();
@@ -353,7 +405,7 @@ function init_netprofitdetails_edit() {
         params.push({name: 'session', value: $("#detailssession").val()});
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/finance/netprofit_details_change";
+        var url="/accounting/netprofit_details_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
             } else {
@@ -365,14 +417,13 @@ function init_netprofitdetails_edit() {
     $("div.cell_purchases_edit").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url='/finance/netprofit_purchase';
+        var url='/accounting/netprofit_purchase';
         $.post(url, params, function(response){
             if (response.errors=='') {
-                show_popup('netproofpurchasedata');
-                $("div#pop_content").empty().html(response.data.content);
-                $("a#popupContactClose").unbind('click').click(function(){
-                    disablePopup();
-                });
+                $("#pageModal").find('div.modal-dialog').css('width','966px');
+                $("#pageModalLabel").empty().html(response.data.title);
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal('show');
                 init_netprofitdetails_popup();
                 // init_purchase_edit();
             } else {
@@ -440,7 +491,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'session', value: $("input#detailssession").val()});
         params.push({name: 'fldname', value: 'weeknote'});
         params.push({name: 'newval', value: $("textarea.weeknoteedit").val()});
-        var url="/finance/netprofit_details_change";
+        var url="/accounting/netprofit_details_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
             } else {
@@ -452,10 +503,11 @@ function init_netprofitdetails_popup() {
     $("div#purchasepopupsavevalue").unbind('click').click(function(response){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url="/finance/netprofit_details_save";
+        params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+        var url="/accounting/netprofit_details_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                disablePopup();
+                $("#pageModal").modal('hide');
                 init_netprofitpage();
                 if (parseInt(response.data.refresh)===1) {
                     drawChart();
@@ -473,7 +525,7 @@ function init_netprofitdetails_popup() {
     $("#addnewpurchasedetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url="/finance/purchase_newdetails";
+        var url="/accounting/purchase_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='purchase']").empty().html(response.data.content);
@@ -496,7 +548,7 @@ function init_netprofitdetails_popup() {
             transition: 'fade',
             ajax: true,
             width:440,
-            href: '/finance/profit_newcategory',
+            href: '/accounting/profit_newcategory',
             data: params,
             onComplete: function() {
                 // init_check();
@@ -512,7 +564,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Purchase'});
-        var url="/finance/purchase_editdetails";
+        var url="/accounting/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#purchasepopuptotalvalue").empty().html(response.data.total);
@@ -529,7 +581,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Purchase'});
-        var url="/finance/purchase_editdetails";
+        var url="/accounting/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#purchasepopuptotalvalue").empty().html(response.data.total);
@@ -545,7 +597,7 @@ function init_netprofitdetails_popup() {
         params.push({name:'session', value: $("#detailssession").val()});
         params.push({name: 'detail_id', value: $(this).data('detail')});
         params.push({name: 'category_type', value: category_type});
-        var url="/finance/purchase_deletedetails";
+        var url="/accounting/purchase_deletedetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 if (category_type=='Purchase') {
@@ -565,7 +617,7 @@ function init_netprofitdetails_popup() {
     $("#addneww9workdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
-        var url="/finance/w9work_newdetails";
+        var url="/accounting/w9work_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='w9work']").empty().html(response.data.content);
@@ -582,7 +634,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'W9'});
-        var url="/finance/purchase_editdetails";
+        var url="/accounting/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#w9workpopuptotalvalue").empty().html(response.data.total);
@@ -599,7 +651,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'W9'});
-        var url="/finance/purchase_editdetails";
+        var url="/accounting/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#w9workpopuptotalvalue").empty().html(response.data.total);
@@ -617,7 +669,7 @@ function init_newnetcategory(detail, category_type) {
         params.push({name: 'detail', value: detail});
         params.push({name: 'category', value: $("input#newcategoryvalue").val()});
         params.push({name: 'category_type', value: category_type});
-        var url="/finance/profit_categorysave";
+        var url="/accounting/profit_categorysave";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $.colorbox.close();
@@ -662,22 +714,24 @@ function detail_view() {
     $("div.cell_projects2").css('display',cssblock);
     $("div.cell_purchases").css('display',cssblock);
     $("div.cell_purchases2").css('display',cssblock);
-
 }
+
 /* Edit notes */
 function edit_profitnotes(obj) {
     var type=$("select#but-reportview").val();
     // var objid=obj.id;
     var weekid=obj.id.substr(7);
-    var url='/finance/netprofit_weeknote'
-    var datqry=new Date().getTime();
-    $.post(url, {'week_id':weekid, 'type':type, 'datq':datqry}, function(response){
+    var url='/accounting/netprofit_weeknote'
+    var params = new Array();
+    params.push({name: 'week_id', value: weekid});
+    params.push({name: 'type', value: type});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup('userdata');
-            $("div#pop_content").empty().html(response.data.content);
-            $("a#popupContactClose").unbind('click').click(function(){
-                disablePopup();
-            })
+            $("#pageModal").find('div.modal-dialog').css('width','470px');
+            $("#pageModalLabel").empty().html('Edit Note');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal('show');
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -691,11 +745,14 @@ function edit_profitnotes(obj) {
 function save_weeknote() {
     var profit_id=$("input#profit_id").val();
     var weeknote=$("#weeknote").val();
-    var url="/finance/save_weeknote";
-    var datqry=new Date().getTime();
-    $.post(url, {'profit_id':profit_id, 'weeknote':weeknote, 'datq':datqry}, function(response){
+    var url="/accounting/save_weeknote";
+    var params = new Array();
+    params.push({name: 'profit_id', value :profit_id});
+    params.push({name: 'weeknote', value :weeknote});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            disablePopup();
+            $("#pageModal").modal('hide');
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -708,7 +765,7 @@ function save_weeknote() {
 
 function report_view() {
     var type=$("select#but-reportview").val();
-    var url="/finance/netprofit_viewtype";
+    var url="/accounting/netprofit_viewtype";
     $.post(url, {'type':type}, function(response){
         if (response.errors=='') {
             $("div.table_netprofit").empty().html(response.data.content);
@@ -724,7 +781,8 @@ function include_debt(profit) {
     var params=new Array();
     params.push({name: 'profit_id', value: profit});
     params.push({name: 'type', value: $("select#but-reportview").val()});
-    var url="/finance/netprofit_debincl"
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_debincl"
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.cell_for_debtincl[data-debincl='"+profit+"']").empty().html(response.data.debincl);
@@ -735,25 +793,6 @@ function include_debt(profit) {
     }, 'json');
 }
 
-function _include_debt(obj) {
-    var objid=obj.id;
-    var newdat;
-    if ($("input#"+objid).prop('checked')==true) {
-        newdat=1;
-    } else {
-        newdat=0;
-    }
-    var weekid=obj.id.substr(10);
-    var nettype=$("select#but-reportview").val();
-    var url="/finance/netprofit_debincl"
-    $.post(url, {'newdat':newdat, 'weekid':weekid,'type':nettype}, function(response){
-        if (response.errors=='') {
-            $("div.color_total").empty().html(response.data.content);
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
 // Rebuild W9 Work Purchase Table
 function rebuild_w9table() {
     var params=new Array();
@@ -762,7 +801,8 @@ function rebuild_w9table() {
     params.push({name: 'w9workdir', value: $("input#w9worksortdirec").val()});
     params.push({name: 'purchasesort', value: $("input#purchasesortfld").val()});
     params.push({name: 'purchasedir', value: $("input#purchasesortdirec").val()});
-    var url="/finance/netprofit_w9purchasetable";
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_w9purchasetable";
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.w9purchasetitle").empty().html(response.data.title);
@@ -781,7 +821,8 @@ function rebuild_charttable() {
     params.push({name: 'weekend', value: $("select#endweek").val()});
     params.push({name: 'paceincome', value: $("input#projincome").val()});
     params.push({name: 'paceexpense', value: $("input#projexpence").val()});
-    var url="/finance/netprofit_charttabledata";
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_charttabledata";
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.weektotalsdataarea").empty().html(response.data.content);
@@ -805,11 +846,12 @@ function rebuild_comparetable() {
     params.push({name: 'compareyear', value: $("select.selectcompareyears").val()});
     params.push({name: 'paceincome', value: $("input#projincome").val()});
     params.push({name: 'paceexpense', value: $("input#projexpence").val()});
-    var url="/finance/netprofit_comparetabledata";
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_comparetabledata";
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.comptabledataarea").empty().html(response.data.content);
-            if ($("span.exponsivedata").hasClass('show')==true) {
+            if ($("span.exponsivedata").hasClass('shown')==true) {
                 $(".expensivesrow").hide();
             } else {
                 $(".expensivesrow").show();
@@ -819,18 +861,19 @@ function rebuild_comparetable() {
         }
     },'json');
 }
+
 function init_charttable_content() {
     init_expensive_help();
     $("span.exponsivedata").unbind('click').click(function(){
         var show=1;
-        if ($(this).hasClass('hide')) {
+        if ($(this).hasClass('hiden')) {
             show=0;
         }
         if (show==1) {
-            $(this).empty().html('<i class="fa fa-minus-square-o" aria-hidden="true">').removeClass('show').addClass('hide');
+            $(this).empty().html('<i class="fa fa-minus-square-o" aria-hidden="true">').removeClass('shown').addClass('hiden');
             $("div.weektotalsrow.expensivesrow").show();
         } else {
-            $(this).empty().html('<i class="fa fa-plus-square-o" aria-hidden="true">').removeClass('hide').addClass('show');
+            $(this).empty().html('<i class="fa fa-plus-square-o" aria-hidden="true">').removeClass('hiden').addClass('shown');
             $("div.weektotalsrow.expensivesrow").hide();
         }
     });
@@ -855,7 +898,7 @@ function drawChart() {
     params.push({name: 'weekend', value: $("select#endweek").val()});
     params.push({name: 'paceincome', value: $("input#projincome").val()});
     params.push({name: 'paceexpense', value: $("input#projexpence").val()});
-    var url="/finance/netprofit_chartdata";
+    var url="/accounting/netprofit_chartdata";
     $.post(url,params,function(response){
         if (response.errors=='') {
             var datarows = response.data.datarows;
@@ -928,7 +971,7 @@ function init_manage_categories() {
         var category_id=$(this).data('category');
         var params=new Array();
         params.push({name: 'category_id', value: category_id});
-        var url="/finance/profcategory_edit";
+        var url="/accounting/profcategory_edit";
         $.post(url, params, function(response){
             if (response.errors==0) {
                 $("div.netprofitcategoryeditarea").find('div.datarow > div.deedcell').unbind('click');
@@ -943,7 +986,7 @@ function init_manage_categories() {
     $("#addnewcategoryprofit").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'category_id', value: 0});
-        var url="/finance/profcategory_edit";
+        var url="/accounting/profcategory_edit";
         $.post(url, params, function(response){
             if (response.errors==0) {
                 $("div.netprofitcategoryeditarea").find('div.datarow > div.deedcell').unbind('click');
@@ -964,7 +1007,7 @@ function manage_profit_categories() {
         params.push({name: 'category_id', value: $(this).data('category')});
         params.push({name: 'category_name', value: $("input#profitcategorynameinpt").val()});
         params.push({name: 'category_type', value: $("input#netprofitcategorytype").val()});
-        var url="/finance/profcategory_save";
+        var url="/accounting/profcategory_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netprofitcategoryeditarea").find('div.tablebody').empty().html(response.data.content);
@@ -977,7 +1020,7 @@ function manage_profit_categories() {
     $("div.canceleditnetprofitcategory").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'category_type', value: $("input#netprofitcategorytype").val()});
-        var url="/finance/profcategory_cancel";
+        var url="/accounting/profcategory_cancel";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netprofitcategoryeditarea").find('div.tablebody').empty().html(response.data.content);
@@ -987,23 +1030,20 @@ function manage_profit_categories() {
             }
         },'json');
     });
-
 }
 
 function init_expensive_help() {
     // Show Expencive Help
-    $("div.helpexpensive").bt({
-        fill: '#FFFFFF',
-        cornerRadius: 10,
-        width: 90,
-        padding: 10,
-        strokeWidth: '2',
-        positions: "most",
-        strokeStyle: '#000000',
-        strokeHeight: '18',
-        cssClass: 'white_tooltip',
-        cssStyles: {
-            color: '#000000'
+    $("div.helpexpensive").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom center',
+            at: 'center top',
+        },
+        style: {
+            classes: 'white_tooltip paymonitor_ordernum_tooltip'
         }
     });
 }

@@ -30,7 +30,7 @@
     <?php $nrow = 0; ?>
     <?php foreach ($w9details as $row) { ?>
         <div class="tabledatarow <?= $nrow % 2 == 0 ? 'grey' : 'white' ?>">
-            <div class="category_name entered" href="/finance/netprofit_showdetais?cat=<?=$row['netprofit_category_id']?>&year=<?=$year?>" title="<?= $row['category_name'] ?>"><?= $row['category_name'] ?></div>
+            <div class="category_name entered" data-content="/accounting/netprofit_showdetais?cat=<?=$row['netprofit_category_id']?>&year=<?=$year?>&brand=<?=$brand?>" title="<?= $row['category_name'] ?>"><?= $row['category_name'] ?></div>
             <div class="amountvalue <?= $row['amount_class'] ?>"><?= $row['amount_out'] ?></div>
             <div class="amountperc"><?= $row['amount_perc'] ?>%</div>
         </div>
@@ -75,7 +75,7 @@
     <?php $nrow = 0; ?>
     <?php foreach ($purchasedetails as $row) { ?>
         <div class="tabledatarow <?= $nrow % 2 == 0 ? 'grey' : 'white' ?>">
-            <div class="category_name entered" href="/finance/netprofit_showdetais?cat=<?=$row['netprofit_category_id']?>&year=<?=$year?>" title="<?= $row['category_name'] ?>"><?= $row['category_name'] ?></div>
+            <div class="category_name entered" data-content="/accounting/netprofit_showdetais?cat=<?=$row['netprofit_category_id']?>&year=<?=$year?>&brand=<?=$brand?>" title="<?= $row['category_name'] ?>"><?= $row['category_name'] ?></div>
             <div class="amountvalue <?= $row['amount_class'] ?>"><?= $row['amount_out'] ?></div>
             <div class="amountperc"><?= $row['amount_perc'] ?>%</div>
         </div>

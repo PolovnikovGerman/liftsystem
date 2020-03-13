@@ -3276,4 +3276,198 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    /* Get List of orders in PROJ stage by Period */
+    public function get_projorders_netproof($datbgn, $dateend, $brand='ALL') {
+        // Totals row
+        $this->db->select('count(o.order_id) as cnt, sum(o.profit) as sumprof');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ',$datbgn);
+        $this->db->where('o.order_date < ',$dateend);
+        $this->db->where('o.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $totalres=$this->db->get()->row_array();
+        $totals=array(
+            'numorders'=>0,
+            'allorders'=>intval($totalres['cnt']),
+            'profit'=>0,
+            'revenue'=>0,
+            'allprofit'=>floatval($totalres['sumprof']),
+            'customorders'=>0,
+            'all_qty'=>0,
+        );
+        // Get data about project stage
+        $this->db->select('o.order_id, o.order_date, o.order_num, o.customer_name, o.item_id, o.order_items, o.revenue, o.profit, o.order_qty');
+        $this->db->select('vo.order_proj_status, vo.day_diff, vo.hour_diff, vo.art_day_diff, vo.art_hour_diff, vo.redrawn_day_diff');
+        $this->db->select('vo.redrawn_hour_diff, vo.vectorized_day_diff, vo.vectorized_hour_diff, vo.proofed_day_diff, vo.proofed_hour_diff');
+        $this->db->select('vo.approved_day_diff, vo.approved_hour_diff');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses vo','vo.order_id=o.order_id and vo.status_type="O"','left');
+        $this->db->where('o.order_date >= ',$datbgn);
+        $this->db->where('o.order_date < ',$dateend);
+        $this->db->where('o.order_cog is NULL');
+        $this->db->where('o.is_canceled',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->order_by('vo.order_proj_status desc, vo.specialdiff desc, o.order_date desc');
+        $res=$this->db->get()->result_array();
+        $data=array();
+        foreach ($res as $row) {
+            $totals['numorders']+=1;
+            $totals['profit']+=$row['profit'];
+            $totals['revenue']+=$row['revenue'];
+            $totals['all_qty']+=$row['order_qty'];
+            $row['item_class']='';
+            if ($row['item_id']==$this->config->item('custom_id')) {
+                $totals['customorders']+=1;
+                $row['item_class']='customitem';
+            }
+            $row['out_date']=date('m/d/y',$row['order_date']);
+            $row['out_revenue']='$'.number_format($row['revenue'],2,'.',',');
+            $row['out_profit']='$'.number_format($row['profit'],2,'.',',');
+            $row['art_stage']=$this->_notplaced_short;
+            switch ($row['order_proj_status']) {
+                case $this->JUST_APPROVED :
+                    $row['art_stage']=$this->_notplaced;
+                    $row['diff']=$diff=($row['approved_day_diff']==0 ? $row['approved_hour_diff'].' h' : $row['approved_day_diff'].' d '.($row['approved_hour_diff']-($row['approved_day_diff']*24)).'h');
+                    break;
+                case $this->NEED_APPROVAL:
+                    $row['art_stage']=$this->_notapprov_short;
+                    $row['diff']=$diff=($row['proofed_day_diff']==0 ? $row['proofed_hour_diff'].' h' : $row['proofed_day_diff'].' d '.($row['proofed_hour_diff']-($row['proofed_day_diff']*24)).'h');
+                    break;
+                case $this->TO_PROOF:
+                    $row['art_stage']=$this->_notprof_short;
+                    $row['diff']=$diff=($row['vectorized_day_diff']==0 ? $row['vectorized_hour_diff'].' h' : $row['vectorized_day_diff'].' d '.($row['vectorized_hour_diff']-($row['vectorized_day_diff']*24)).'h');
+                    break;
+                case $this->NO_VECTOR:
+                    $row['art_stage']=$this->_notvector_short;
+                    $row['diff']=$diff=($row['redrawn_day_diff']==0 ? $row['redrawn_hour_diff'].' h' : $row['redrawn_day_diff'].' d '.($row['redrawn_hour_diff']-($row['redrawn_day_diff']*24)).'h');
+                    break;
+                case $this->REDRAWN:
+                    $row['art_stage']=$this->_notredr_short;
+                    $row['diff']=$diff=($row['art_day_diff']==0 ? $row['art_hour_diff'].' h' : $row['art_day_diff'].' d '.($row['art_hour_diff']-($row['art_day_diff']*24)).'h');
+                    break;
+                case $this->NO_ART:
+                    $row['art_stage']=$this->_noart_short;
+                    $row['diff']=$diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                    break;
+            }
+            $data[]=$row;
+        }
+        // Make totals counts
+        $totals['out_profit']='$'.number_format($totals['profit'],0,'.',',');
+        $totals['out_revenue']='$'.number_format($totals['revenue'],0,'.',',');
+        if ($totals['allorders']==0) {
+            $totals['out_customer']='&mdash;';
+        } else {
+            $ordcntproc=round($totals['numorders']/$totals['allorders']*100,0);
+            $totals['out_customer']=$totals['numorders'].' of '.$totals['allorders'].' PROJ ('.$ordcntproc.'%)';
+        }
+        $totals['out_artstage']=$totals['out_item']='&nbsp;';
+        if ($totals['allprofit']!=0) {
+            $profitperc=round($totals['profit']/$totals['allprofit']*100,0);
+            $totals['out_artstage']=$totals['out_profit'].' of $'.number_format($totals['allprofit'],0,'.',',').' Profit ('.$profitperc.'%)';
+        }
+        if ($totals['customorders']==0) {
+            $totals['out_item']=$totals['numorders'].' regular';
+        } else {
+            $totals['out_item']=($totals['numorders']-$totals['customorders']).' regular, '.$totals['customorders'].' customs';
+        }
+        $out=array(
+            'data'=>$data,
+            'totals'=>$totals,
+        );
+        return $out;
+    }
+
+    public function notify_netdebtchanged($data) {
+        $this->load->model('user_model');
+        $log_options=array(
+            'olddebt'=>$data['oldtotalrun'],
+            'newdebt'=>$data['newtotalrun'],
+            'event'=>'',
+        );
+        $msg_subj='For Debt changed from '.$data['oldtotalrun'].' to '.$data['newtotalrun'];
+        $usrdat=$this->user_model->get_user_data($data['user_id']);
+        $email_body='The For Debt value in the Net Profit report ('.$data['weeknum'].') changed value from '.$data['olddebt'].' to '.$data['newdebt'];
+        $email_body.=' at '.date('h:i a').' '.date('m/d/Y').' from the following event:'.PHP_EOL;
+        if (isset($data['ordercancel'])) {
+            $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was cancelled by '.$usrdat['user_name'];
+            $log_options['event']='cancel_order';
+        }
+        if (isset($data['orderchange'])) {
+            if ($data['orderdata']['oldprofit']==0) {
+                $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was added by '.$usrdat['user_name'];
+            } else {
+                // $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was changed by '.$usrdat['user_name'].'. ';
+                // $email_body.='Old profit was $'.number_format($data['orderdata']['oldprofit'],2,'.',',');
+                $email_body.='The revenue on order '.$data['orderdata']['order_num'].' was changed ';
+                if (isset($data['orderdata']['oldrevenue'])) {
+                    $email_body.=' from $'.number_format($data['orderdata']['oldrevenue']);
+                }
+                if (isset($data['orderdata']['oldprofit'])) {
+                    $email_body.=' ($'.number_format($data['orderdata']['oldprofit'],2,'.',',').' profit) ';
+                }
+                $email_body.='to $'.number_format($data['orderdata']['revenue'],2,'.','.').' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit)';
+                $email_body.='by '.$usrdat['user_name'].'. ';
+            }
+            $log_options['event']='change_order';
+        }
+        if (isset($data['podelete'])) {
+            $email_body.='PO '.$data['order_num'].' was deleted by '.$usrdat['user_name'].' Sum $'.number_format($data['old_amount_sum'],2,'.','');
+            $log_options['event']='PO deleted';
+        }
+        if (isset($data['pochange'])) {
+            if ($data['old_amount_sum']==0) {
+                $email_body.='PO '.$data['order_num'].' was added by '.$usrdat['user_name'].' Sum $'.number_format($data['amount_sum'],2,'.','');
+            } else {
+                $email_body.='PO '.$data['order_num'].' was changed from $'.number_format($data['old_amount_sum'],2,'.','').' to $'.number_format($data['amount_sum'],2,'.','').' by '.$usrdat['user_name'];
+            }
+            if (isset($data['comment']) && $data['comment']!='') {
+                $email_body.=PHP_EOL.'Reason '.$data['comment'];
+            }
+            $log_options['event']='PO changed';
+        }
+        if (isset($data['netproofdebt'])) {
+            if (isset($data['profit_saved'])) {
+                $email_body.=PHP_EOL.' Saved was changed from $'.number_format($data['profit_saved']['old'],2,'.','').' to $'.number_format($data['profit_saved']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['profit_owners'])) {
+                $email_body.=PHP_EOL.' For Owners was changed from $'.number_format($data['profit_owners']['old'],2,'.','').' to $'.number_format($data['profit_owners']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['od2'])) {
+                $email_body.=PHP_EOL.' OD2 was changed from $'.number_format($data['od2']['old'],2,'.','').' to $'.number_format($data['od2']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+        }
+        if ($_SERVER['SERVER_NAME']!='tempsys.net') {
+            $this->load->library('email');
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+            $this->email->initialize($config);
+            $this->email->set_newline("\r\n");
+            $mailto=$this->config->item('sean_email');
+            $this->email->to($mailto);
+            $this->email->cc($this->config->item('sage_email'));
+            $from = $this->config->item('email_notification_sender');
+            $this->email->from($from);
+            $this->email->subject($msg_subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        /* Save to log */
+        $this->db->set('old_debt',$log_options['olddebt']);
+        $this->db->set('new_debt',$log_options['newdebt']);
+        $this->db->set('checngelog_event', $log_options['event']);
+        $this->db->set('user_id',$data['user_id']);
+        $this->db->insert('netprofit_changelog');
+        return TRUE;
+    }
+
+
 }

@@ -12,7 +12,7 @@
 <div class="tablebody">
     <?php $nrow=0;?>
     <?php foreach ($data as $row) { ?>
-    <div class="tablerow <?=$nrow%2==0 ? 'grey' : 'white'?>">
+    <div class="tablerow <?=$nrow%2==0 ? 'greydatarow' : 'whitedatarow'?>">
         <div class="amount <?=$row['amount_class']?>"><?=$row['amount_out']?></div>
         <div class="vendor"><?=(empty($row['vendor']) ? '&nbsp;' : $row['vendor'])?></div>
         <div class="category_name"><?=(empty($row['category_name']) ? 'Unclassified' : $row['category_name'])?></div>

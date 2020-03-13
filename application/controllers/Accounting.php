@@ -9,6 +9,7 @@ class Accounting extends MY_Controller
     private $order_totals_perpage=100;
     private $perpage_options =array(100, 250, 500, 1000);
     private $restore_data_error = 'Edit Connection Lost. Please, recall form';
+    private $weekshow_limit=104;
 
     public function __construct()
     {
@@ -28,6 +29,7 @@ class Accounting extends MY_Controller
             }
         }
         $this->load->model('orders_model');
+        $this->load->model('balances_model');
     }
 
     public function index()
@@ -66,7 +68,7 @@ class Accounting extends MY_Controller
             } elseif ($row['item_link']=='#netprofitview') {
                 $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
-                $content_options['netprofitview'] = $this->_prepare_batches_view($brand, $top_menu);
+                $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand, $top_menu);
             } elseif ($row['item_link']=='#ownertaxesview') {
                 $head['styles'][] = array('style' => '/css/accounting/ownertaxesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/ownertaxesview.js');
@@ -88,6 +90,8 @@ class Accounting extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        /*Google Chart */
+        $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
 
         $options = [
             'title' => $head['title'],
@@ -1668,7 +1672,6 @@ class Accounting extends MY_Controller
             $sort=$this->input->post('sort','yearly');
             $direction=$this->input->post('direction','desc');
             $brand = $this->input->post('brand');
-            $this->load->model('balances_model');
             $calc=$this->balances_model->get_calcdata($sort,$direction, $brand);
             $calc_data=$calc['body'];
             if (count($calc_data)==0) {
@@ -1689,7 +1692,6 @@ class Accounting extends MY_Controller
             $mdata=array();
             $error='';
             $calc_id=$this->input->post('calc_id');
-            $this->load->model('balances_model');
             $calcdata=$this->balances_model->get_calcrow_data($calc_id);
             if (!isset($calcdata['calc_id'])) {
                 $error='Unknow calc data';
@@ -1705,7 +1707,6 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error = 'Empty Brand';
-            $this->load->model('balances_model');
             $postdata = $this->input->post();
             $options=array();
             $options['calc_id']=ifset($postdata, 'calc_id','0');
@@ -1728,7 +1729,6 @@ class Accounting extends MY_Controller
     public function calcdelete() {
         if ($this->isAjax()) {
             $mdata=array();
-            $this->load->model('balances_model');
             $calc_id=$this->input->post('calc_id');
             if (!$calc_id) {
                 $error='Unknown calculator row';
@@ -1751,7 +1751,6 @@ class Accounting extends MY_Controller
             $brand = ifset($postdata, 'brand');
             if (!empty($brand)) {
                 $this->load->model('rates_model');
-                $this->load->model('balances_model');
                 // Get current week, year
                 $res=$this->balances_model->get_ownertax_dates();
                 $now=$res['date'];
@@ -1971,6 +1970,871 @@ class Accounting extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function netprofitdat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $type=$this->input->post('type');
+            $radio=$this->input->post('radio');
+            $datbgn=$this->config->item('netprofit_start');
+            $order_by=$this->input->post('order_by');
+            $limitshow=$this->input->post('limitshow');
+            $brand = $this->input->post('brand');
+            $order='nd.datebgn';
+            $direc='desc';
+            switch ($order_by) {
+                case 'profitdate_desc':
+                    break;
+                case 'profitdate_asc':
+                    $direc='asc';
+                    break;
+                case 'sales_desc':
+                    $order='sales';
+                    break;
+                case 'sales_asc':
+                    $order='sales';
+                    $direc='asc';
+                    break;
+                case 'revenue_desc':
+                    $order='revenue';
+                    break;
+                case 'revenue_desc':
+                    $order='revenue';
+                    $direc='asc';
+                    break;
+                case 'grosprofit_desc':
+                    $order='gross_profit';
+                    break;
+                case 'grosprofit_asc':
+                    $order='gross_profit';
+                    $direc='asc';
+                    break;
+                case 'operating_desc':
+                    $order='np.profit_operating';
+                    break;
+                case 'operating_asc':
+                    $order='np.profit_operating';
+                    $direc='asc';
+                    break;
+                case 'payroll_desc':
+                    $order='profit_payroll';
+                    break;
+                case 'payroll_asc':
+                    $order='profit_payroll';
+                    $direc='asc';
+                    break;
+                case 'advertising_desc':
+                    $order='profit_advertising';
+                    break;
+                case 'advertising_asc':
+                    $order='profit_advertising';
+                    $direc='asc';
+                    break;
+                case 'projects_desc':
+                    $order='profit_projects';
+                    break;
+                case 'projects_asc':
+                    $order='profit_projects';
+                    $direc='asc';
+                    break;
+                case 'w9work_desc':
+                    $order='profit_projects';
+                    break;
+                case 'w9work_asc':
+                    $order='profit_projects';
+                    $direc='asc';
+                    break;
+                case 'purchases_desc':
+                    $order='profit_purchases';
+                    break;
+                case 'purchases_asc':
+                    $order='profit_purchases';
+                    $direc='asc';
+                    break;
+                case 'totalcost_desc':
+                    $order='totalcost';
+                    break;
+                case 'totalcost_asc':
+                    $order='totalcost';
+                    $direc='asc';
+                    break;
+                case 'netprofit_desc':
+                    $order='netprofit';
+                    break;
+                case 'netprofit_asc':
+                    $order='netprofit';
+                    $direc='asc';
+                    break;
+                case 'netsaved_desc':
+                    $order='np.profit_saved';
+                    break;
+                case 'netsaved_asc':
+                    $order='np.profit_saved';
+                    $direc='asc';
+                    break;
+                case 'owners_desc':
+                    $order='np.profit_owners';
+                    break;
+                case 'owners_asc':
+                    $order='np.profit_owners';
+                    $direc='asc';
+                    break;
+                case 'od2_desc':
+                    $order='np.od2';
+                    break;
+                case 'od2_asc':
+                    $order='np.od2';
+                    $direc='asc';
+                    break;
+            }
+            if ($type=='week') {
+                $this->balances_model->_check_current_week($this->USR_ID);
+                $dat_end=date('Y-m-d', strtotime("Sunday this week", time())).' 23:59:59';
+                $datend=strtotime($dat_end);
+                $data=$this->balances_model->get_netprofit_data($datbgn,$datend, $order, $direc, $this->USR_ID, $radio, $brand, $limitshow);
+            } else {
+                $curmonth=date('m');
+                $curyear=date('Y');
+                $datend=strtotime($curmonth.'/01/'.$curyear.' 00:00:00');
+                $datend=strtotime(date("Y-m-d", ($datend)) . " +1 month");
+                $datend=$datend-1;
+                $data=$this->mbalanc->get_netprofit_monthdata($datbgn,$datend, $order, $direc, $this->USR_ID, $radio);
+            }
+            if ($type=='week') {
+                $fromweek=$this->input->post('fromweek');
+                $untilweek=$this->input->post('untilweek');
+                $options=array(
+                    'type'=>'week',
+                    'start'=>0,
+                    'end'=>0,
+                    'brand' => $brand,
+                );
+                // Get start && end date
+                if ($fromweek) {
+                    $res=$this->balances_model->getweekdetail($fromweek,'start');
+                    if ($res['result']==$this->error_result) {
+                        $this->ajaxResponse($mdata, $res['msg']);
+                    }
+                    $options['start']=$res['date'];
+                }
+                if ($untilweek) {
+                    $res=$this->balances_model->getweekdetail($untilweek,'end');
+                    if ($res['result']==$this->error_result) {
+                        $this->ajaxResponse($mdata, $res['msg']);
+                    }
+                    $options['end']=$res['date'];
+                }
+                $runtotal=$this->balances_model->get_netprofit_runs($options, $radio);
+            } else {
+                $total_options=array(
+                    'type'=>$type,
+                    'start'=>$this->config->item('netprofit_start'),
+                    'brand' => $brand,
+                );
+                $runtotal=$this->mbalanc->get_netprofit_runs($total_options, $radio);
+            }
+            $total_view=$this->load->view('netprofit/netprofit_totals_view', $runtotal, TRUE);
+            $content_options=array(
+                'data'=>$data,
+                'totals'=>$total_view,
+                'limitshow'=>$limitshow,
+                'brand' => $brand,
+            );
+            $mdata['content']=$this->load->view('netprofit/netprofit_tabledata_view',$content_options,TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function manage_profcategory() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $category_type=$this->input->post('category_type');
+            $categories=$this->balances_model->get_profit_categories($category_type, 0);
+            $tableoptions=array(
+                'data'=>$categories,
+            );
+            $tableview=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
+            $options=array(
+                'category_type'=>$category_type,
+                'tableview'=>$tableview,
+            );
+            $mdata['content']=$this->load->view('netprofit/netprofit_categories_view', $options, TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function profcategory_edit() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
+            $category_id=$this->input->post('category_id');
+            if ($category_id==0) {
+                $data=array(
+                    'category_id'=>-1,
+                    'category_name'=>'',
+                );
+            } else {
+                $res=$this->balances_model->get_profit_category($category_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $data=array(
+                        'category_id'=>$res['data']['netprofit_category_id'],
+                        'category_name'=>$res['data']['category_name'],
+                    );
+                }
+            }
+            if (empty($error)) {
+                $mdata['content']=$this->load->view('netprofit/netprofit_category_edit', $data, TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function profcategory_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+
+            $res=$this->balances_model->save_profit_category($postdata);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $category_type=$postdata['category_type'];
+                $categories=$this->balances_model->get_profit_categories($category_type, 0);
+                $tableoptions=array(
+                    'data'=>$categories,
+                );
+                $mdata['content']=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function profcategory_cancel() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $category_type=$this->input->post('category_type');
+            $categories=$this->balances_model->get_profit_categories($category_type, 0);
+            $tableoptions=array(
+                'data'=>$categories,
+            );
+            $mdata['content']=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function netprofit_orders() {
+        $profit_id=$this->input->get('d');
+        $brand = $this->input->get('brand');
+        $netprofit=$this->balances_model->get_netprofit_details($profit_id);
+        if (!isset($netprofit['profit_id'])) {
+            $out_msg='Orders Data Not Found';
+        } else {
+            $orddata=$this->orders_model->get_projorders_netproof($netprofit['datebgn'],$netprofit['dateend'], $brand);
+            $listoptions=array(
+                'list'=>$orddata['data'],
+                'profit'=>$netprofit,
+                'totals'=>$orddata['totals'],
+            );
+            $out_msg=$this->load->view('netprofit/orders_list_view',$listoptions,TRUE);
+        }
+        /* Get Orders List */
+        echo $out_msg;
+    }
+
+    public function get_weektotals() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $fromweek=$this->input->post('fromweek');
+            $untilweek=$this->input->post('untilweek');
+            $brand = $this->input->post('brand');
+            $options=array(
+                'type'=>'week',
+                'start'=>0,
+                'end'=>0,
+                'brand' => $brand,
+            );
+            // Get start && end date
+            if ($fromweek) {
+                $res=$this->balances_model->getweekdetail($fromweek,'start');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $options['start']=$res['date'];
+            }
+            if ($untilweek) {
+                $res=$this->balances_model->getweekdetail($untilweek,'end');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $options['end']=$res['date'];
+            }
+            $totals=$this->balances_model->get_netprofit_runs($options);
+            $mdata['content']=$this->load->view('netprofit/weektotal_data_view',$totals,TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function netprofitedit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Unknown Period For Edit';
+            $postdata=$this->input->post();
+            $profit_id = ifset($postdata,'profit_id',0);
+            $brand = ifset($postdata,'brand');
+            if ($profit_id>0 && !empty($brand)) {
+                /* Get data about */
+                $res=$this->balances_model->get_netprofit_dataedit($profit_id, $brand);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    // Session ID
+                    $session='purchedit'.uniq_link(15);
+
+                    $type=$res['type'];
+                    $data=$res['data'];
+                    $data['session']=$session;
+                    $mdata['weekid']=$res['weekid'];
+                    if ($type=='week') {
+                        $mdata['content']=$this->load->view('netprofit/netprofit_edit_view',$data,TRUE);
+                    } else {
+                        $mdata['content']=$this->load->view('netprofit/netprofit_editmonth_view',$data,TRUE);
+                    }
+                    // Save to session
+                    $sessiondata=array(
+                        'session'=>$session,
+                        'profit_id'=>$profit_id,
+                        'netprofit'=>$res['data'],
+                        'type'=>$type,
+                        'purchase_details'=>$res['purchase_details'],
+                        'w9work_details'=>$res['w9work_details'],
+                        'delrecords'=>array(),
+                    );
+                    usersession($session, $sessiondata);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function netprofit_details_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->netprofit_details_edit($netprofitdata, $postdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function netprofit_purchase() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $netprofit=$netprofitdata['netprofit'];
+                    $purchase_details=$netprofitdata['purchase_details'];
+                    $purchsession='purchedit'.uniq_link(15);
+                    // Table view
+                    $purch_categories=$this->balances_model->get_profit_categories('Purchase');
+                    $tableoptions=array(
+                        'data'=>$purchase_details,
+                        'category'=>$purch_categories,
+                    );
+                    $purch_tableview=$this->load->view('netprofit/purchase_tabledata_view', $tableoptions, TRUE);
+                    $purchase_totals=0;
+                    foreach ($purchase_details as $drow) {
+                        $purchase_totals+=$drow['amount'];
+                    }
+                    // Get W9 Works
+                    $w9work_details=$netprofitdata['w9work_details'];
+                    $w9work_categories=$this->balances_model->get_profit_categories('W9');
+                    $w9options=array(
+                        'data'=>$w9work_details,
+                        'category'=>$w9work_categories,
+                    );
+                    $w9work_tableview=$this->load->view('netprofit/w9work_tabledata_view', $w9options, TRUE);
+                    $w9work_total=0;
+                    foreach ($w9work_details as $wrow) {
+                        $w9work_total+=$wrow['amount'];
+                    }
+
+                    $options=array(
+                        'session'=>$session_id,
+                        'datebgn'=>$netprofit['datebgn'],
+                        'dateend'=>$netprofit['dateend'],
+                        'weeknote'=>$netprofit['weeknote'],
+                        'profit_purchases'=>$purchase_totals,
+                        'putchase_tableview'=>$purch_tableview,
+                        'w9work_tableview'=>$w9work_tableview,
+                        'profit_w9'=>$w9work_total,
+                    );
+                    $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
+                    $mdata['content']=$this->load->view('netprofit/purchase_details_view', $options, TRUE);
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchase_newdetails() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->purchase_details_add($netprofitdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $categories=$this->balances_model->get_profit_categories('Purchase');
+                        $netprofitdata=usersession($session_id);
+                        $options=array(
+                            'data'=>$netprofitdata['purchase_details'],
+                            'category'=>$categories,
+                        );
+                        $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function profit_newcategory() {
+        $mdata = array();
+        $error = 'Test';
+        $postdata = $this->input->post();
+        $options = array('category' => $postdata['category'],);
+        $content = $this->load->view('netprofit/new_category_view', $options, TRUE);
+        echo $content;
+    }
+
+    public function purchase_editdetails() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->purchase_details_edit($netprofitdata, $postdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $netprofitdata=usersession($session_id);
+                        if ($postdata['category_type']=='Purchase') {
+                            $details=$netprofitdata['purchase_details'];
+                        } else {
+                            $details=$netprofitdata['w9work_details'];
+                        }
+                        $total=0;
+                        foreach ($details as $row) {
+                            $total+=floatval($row['amount']);
+                        }
+                        $mdata['total']=MoneyOutput($total,2);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchase_deletedetails() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $detail_id=$postdata['detail_id'];
+                    $category_type=$postdata['category_type'];
+                    $res=$this->balances_model->purchase_details_remove($netprofitdata, $category_type, $detail_id, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $netprofitdata=usersession($session_id);
+                        if ($category_type=='Purchase') {
+                            $details=$netprofitdata['purchase_details'];
+                            $categories=$this->balances_model->get_profit_categories('Purchase');
+                            $options=array(
+                                'data'=>$details,
+                                'category'=>$categories,
+                            );
+                            $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $options, TRUE);
+                        } else {
+                            $details=$netprofitdata['w9work_details'];
+                            $categories=$this->balances_model->get_profit_categories('W9');
+                            $options=array(
+                                'data'=>$details,
+                                'category'=>$categories,
+                            );
+                            $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $options, TRUE);
+                        }
+                        $total=0;
+                        foreach ($details as $row) {
+                            $total+=floatval($row['amount']);
+                        }
+                        $mdata['total']=MoneyOutput($total,2);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function w9work_newdetails() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->w9work_details_add($netprofitdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $netprofitdata=usersession($session_id);
+                        $details=$netprofitdata['w9work_details'];
+                        $categories=$this->balances_model->get_profit_categories('W9');
+                        $tableoptions=array(
+                            'category'=>$categories,
+                            'data'=>$details,
+                        );
+                        // Table view
+                        $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function profit_categorysave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->netprofit_newcategory($netprofitdata,$postdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $netprofitdata=usersession($session_id);
+                        $categories=$this->balances_model->get_profit_categories($postdata['category_type']);
+                        if ($postdata['category_type']=='Purchase') {
+                            $details=$netprofitdata['purchase_details'];
+                        } else {
+                            $details=$netprofitdata['w9work_details'];
+                        }
+                        $tableoptions=array(
+                            'data'=>$details,
+                            'category'=>$categories,
+                        );
+                        if ($postdata['category_type']=='Purchase') {
+                            $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $tableoptions, TRUE);
+                        } else {
+                            $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function netprofit_details_save() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error = $this->restore_data_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'testsession');
+            $brand = ifset($postdata,'brand');
+            // Restore session data
+            $netprofitdata = usersession($session_id);
+            if (!empty($netprofitdata) && !empty($brand)) {
+                $res = $this->balances_model->netprofit_details_save($netprofitdata, $this->USR_ID, $session_id, $brand);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $mdata['refresh'] = $res['refresh'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function netprofit_weeknote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $week_id=$this->input->post('week_id');
+            $type=$this->input->post('type');
+            $brand = $this->input->post('brand');
+            $weekar=explode('-',$week_id);
+            $week=$weekar[1];
+            $year=$weekar[0];
+            $notearr=$this->balances_model->get_week_note($week,$year, $brand, $type);
+            if ($type=='week') {
+                $mdata['content']=$this->load->view('netprofit/netprofit_weeknote_view',$notearr,TRUE);
+            } else {
+                $mdata['content']=$this->load->view('netprofit/netprofit_monthnote_view',$notearr,TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function save_weeknote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $profit_id=$this->input->post('profit_id');
+            $weeknote=$this->input->post('weeknote');
+            $brand = $this->input->post('brand');
+            $res=$this->balances_model->save_week_note($profit_id, $brand, $weeknote);
+            if (!$res['result']) {
+                $error=$res['msg'];
+            }
+            $this->func->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function netprofit_viewtype() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $type=$this->input->post('type');
+            if ($type=='week') {
+                $mdata['content']=$this->load->view('netprofit/admin_netprofitweek_view',array(),TRUE);
+                $weeklist=$this->balances_model->get_weeklist();
+                $weekopt=array(
+                    'weekallcheck'=>'checked="checked"',
+                    'weekfrom'=>'',
+                    'weekuntil'=>'',
+                    'weeklist'=>$weeklist,
+                );
+                $mdata['weekchoice']=$this->load->view('netprofit/week_select_view',$weekopt,TRUE);
+            } else {
+                $mdata['content']=$this->load->view('netprofit/admin_netprofitmonth_view',array(),TRUE);
+                $mdata['weekchoice']=$this->load->view('netprofit/week_selectempty_view',array(),TRUE);;
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function netprofit_debincl() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $type=$this->input->post('type');
+            $profit_id=$this->input->post('profit_id');
+            $brand = $this->input->post('brand');
+            if (!$profit_id) {
+                $error='Unknown period';
+            } else {
+                /* Get data about */
+                $res=$this->balances_model->include_netprofit_debt($profit_id, $brand, $type);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['debincl']=$res['debincl'];
+                    $data=$res['totals'];
+                    $mdata['content']=$this->load->view('netprofit/netprofit_totals_view',$data,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function netprofit_w9purchasetable() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Year';
+            $postdata=$this->input->post();
+            if (isset($postdata['year']) && !empty($postdata['year'])) {
+                $brand =ifset($postdata,'brand','ALL');
+                $error='';
+                $w9sortfld=(isset($postdata['w9worksort']) ? $postdata['w9worksort'] : 'category_name');
+                $w9sortdir=(isset($postdata['w9workdir']) ? $postdata['w9workdir'] : 'asc');
+                $purchasesortfld=(isset($postdata['purchasesort']) ? $postdata['purchasesort'] : 'category_name');
+                $purchasesortdir=(isset($postdata['purchasedir']) ? $postdata['purchasedir'] : 'asc');
+                $w9data=$this->balances_model->get_w9yeardetails($postdata['year'], $brand, $w9sortfld, $w9sortdir);
+                $purchdata=$this->balances_model->get_purchaseyeardetails($postdata['year'], $brand, $purchasesortfld, $purchasesortdir);
+                $totals=$w9data['totals']+$purchdata['totals'];
+                $mdata['title']='W9 Work & Purchase Breakdown: '.MoneyOutput($totals,2);
+                // Build table
+                $w9table_options=array(
+                    'w9totals'=>$w9data['totals'],
+                    'w9details'=>$w9data['details'],
+                    'purchasetotals'=>$purchdata['totals'],
+                    'purchasedetails'=>$purchdata['details'],
+                    'w9sortfld'=>$w9sortfld,
+                    'w9sortdir'=>$w9sortdir,
+                    'purchasesortfld'=>$purchasesortfld,
+                    'purchasesortdir'=>$purchasesortdir,
+                    'sortascicon'=>'<i class="fa fa-caret-square-o-up" aria-hidden="true"></i>',
+                    'sortdescicon'=>'<i class="fa fa-caret-square-o-down" aria-hidden="true"></i>',
+                    'year'=>$postdata['year'],
+                    'brand' => $brand,
+                );
+                $mdata['content']=$this->load->view('netprofit/w9purchase_table_view', $w9table_options, TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function netprofit_charttabledata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($postdata);
+            $yearstotals['compareweek']=$postdata['compareweek'];
+            $mdata['content']=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
+            $error='';
+        }
+        $this->ajaxResponse($mdata,$error);
+    }
+
+    public function netprofit_comparetabledata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $pacedata=$this->balances_model->get_onpacecompare($postdata);
+            $mdata['content']=$this->load->view('netprofit/onpace_grown_view', $pacedata,TRUE);
+            $error='';
+        }
+        $this->ajaxResponse($mdata,$error);
+    }
+
+    public function netprofit_chartdata() {
+        if ($this->isAjax()) {
+            // $mdata=array();
+            $postdata=$this->input->post();
+            $mdata=$this->balances_model->get_netprofit_chartbyweekdata($postdata);
+            $error='';
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function netprofit_weeknoteview() {
+        $profit_id=$this->input->get('d');
+        $brand = $this->input->get('brand');
+        $netprofit=$this->balances_model->get_netprofit_details($profit_id);
+        if (!isset($netprofit['profit_id'])) {
+            $out_msg='Orders Data Not Found';
+        } else {
+            // Get a W9 work and purchase
+            $expensdat=$this->balances_model->get_netprofit_purchasedetails($profit_id, $brand);
+            if ($expensdat['result']==$this->error_result) {
+                $out_msg=$this->load->view('netprofit/weeknote_view', $netprofit, TRUE);
+            } else {
+                $w9work=$purchase='&nbsp;';
+                if (count($expensdat['w9work'])) {
+                    $totals=0;
+                    foreach ($expensdat['w9work'] as $wrow) {
+                        $totals+=$wrow['amount'];
+                    }
+                    $options=array(
+                        'data'=>$expensdat['w9work'],
+                        'total'=>$totals,
+                        'label'=>'W9 Work',
+                    );
+                    $w9work=$this->load->view('netprofit/expense_details_view', $options, TRUE);
+                }
+                if (count($expensdat['purchase'])>0) {
+                    $totals=0;
+                    foreach ($expensdat['purchase'] as $wrow) {
+                        $totals+=$wrow['amount'];
+                    }
+                    $options=array(
+                        'data'=>$expensdat['purchase'],
+                        'total'=>$totals,
+                        'label'=>'Purchase',
+                    );
+                    $purchase=$this->load->view('netprofit/expense_details_view', $options, TRUE);
+                }
+                $totaloptions=array(
+                    'w9work'=>$w9work,
+                    'purchase'=>$purchase,
+                );
+                $out_msg=$this->load->view('netprofit/expense_week_view', $totaloptions, TRUE);
+            }
+        }
+        /* Get Orders List */
+        echo $out_msg;
+    }
+
+    public function netprofit_showdetais() {
+        $getdata=$this->input->get();
+        $year=ifset($getdata, 'year', date('Y'));
+        $category=ifset($getdata, 'cat', '');
+        $brand = ifset($getdata, 'brand', 'ALL');
+        // Get category Data
+        $res=$this->balances_model->get_expenses_details($category, $year, $brand);
+
+        if ($res['result']==$this->error_result) {
+            echo $res['msg'];
+        } else {
+            $options=array(
+                'category'=>$res['category'],
+                'type'=>($res['type']=='W9' ? 'W9 Work' : $res['type']),
+                'data'=>$res['data'],
+                'totals'=>$res['totals'],
+            );
+            $content=$this->load->view('netprofit/w9purchase_expenses_view', $options, TRUE);
+            echo $content;
+        }
     }
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
@@ -2713,10 +3577,9 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_netprofit_content($brand, $top_menu) {
-        $this->load->model('balances_model');
         $title=$this->load->view('netprofit/admin_netprofitweek_view',array(),TRUE);
         // Get List of weeks
-        $weeklist=$this->balances_model->get_weeklist($brand);
+        $weeklist=$this->balances_model->get_weeklist();
         $weekopt=array(
             'weekallcheck'=>'checked="checked"',
             'weekfrom'=>'',
@@ -2729,15 +3592,16 @@ class Accounting extends MY_Controller
             'compareweek'=>0,
             'paceincome'=>1,
             'paceexpense'=>1,
+            'brand' => $brand,
         );
-        $yearstotals=$this->mbalanc->get_netprofit_totalsbyweekdata($options);
+        $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($options);
 
         $yearstotals['compareweek']=0;
         $yearstotals['paceincome']=1;
         $yearstotals['paceexpense']=1;
 
         $table_view=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
-        $weekyearlist=$this->mbalanc->get_currentyearweeks();
+        $weekyearlist=$this->balances_model->get_currentyearweeks();
         // Build chart data
         $chartoptions=array(
             'table_view'=>$table_view,
@@ -2759,11 +3623,12 @@ class Accounting extends MY_Controller
             'compareyear'=>$endyear,
             'paceincome'=>1,
             'paceexpense'=>1,
+            'brand' => $brand,
         );
-        $pacedata=$this->mbalanc->get_onpacecompare($compare_options);
+        $pacedata=$this->balances_model->get_onpacecompare($compare_options);
         $pacegrow_view=$this->load->view('netprofit/onpace_grown_view', $pacedata,TRUE);
         // W9 Work
-        $w9data=$this->mbalanc->get_w9purchase_tabledata();
+        $w9data=$this->balances_model->get_w9purchase_tabledata($brand);
         $w9table_options=array(
             'w9totals'=>$w9data['w9totals'],
             'w9details'=>$w9data['w9details'],
@@ -2776,6 +3641,7 @@ class Accounting extends MY_Controller
             'sortascicon'=>'<i class="fa fa-caret-square-o-up" aria-hidden="true"></i>',
             'sortdescicon'=>'<i class="fa fa-caret-square-o-down" aria-hidden="true"></i>',
             'year'=>$w9data['years'][0]['year'],
+            'brand' => $brand,
         );
         $w9tableview=$this->load->view('netprofit/w9purchase_table_view', $w9table_options, TRUE);
         $w9options=array(
@@ -2785,7 +3651,7 @@ class Accounting extends MY_Controller
         );
         $w9purchase_view=$this->load->view('netprofit/w9purchase_view', $w9options, TRUE);
         // Get year, start / end time
-        $expancedates=$this->mbalanc->get_expansedates();
+        $expancedates=$this->balances_model->get_expansedates();
 
         $pageoptions=array(
             'title'=>$title,

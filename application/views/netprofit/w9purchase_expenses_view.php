@@ -9,7 +9,7 @@
     <div class="tablebody">
         <?php $nrow = 0; ?>
         <?php foreach ($data as $row) { ?>
-            <div class="tabledatarow <?= ($nrow % 2 == 0 ? 'grey' : 'white') ?>">
+            <div class="tabledatarow <?= ($nrow % 2 == 0 ? 'greydatarow' : 'whitedatarow') ?>">
                 <div class="week"><?= $row['week'] ?></div>
                 <div class="amount <?= $row['amount_class'] ?>"><?= $row['amount'] ?></div>
                 <div class="vendor"><?= $row['vendor'] ?></div>
@@ -19,7 +19,7 @@
         <?php } ?>
     </div>
     <div class="totals">
-        <div class="label">Total</div>
+        <div class="labeltxt">Total</div>
         <div class="value"><?=MoneyOutput($totals,2)?></div>
     </div>
 </div>

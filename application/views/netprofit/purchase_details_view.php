@@ -1,6 +1,4 @@
 <div class="netproofpurchasearea">    
-    <div class="title">W9 Work &amp; Purchases</div>
-    <div class="subtitle">for Week of <?= date('m/d/Y', $datebgn) ?> - <?= date('m/d/Y', $dateend) ?></div>
     <div class="editdataarea">
         <div class="editnotearea">
             <div class="title">Old Notes Format:</div>

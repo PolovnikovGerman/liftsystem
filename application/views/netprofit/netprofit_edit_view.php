@@ -2,10 +2,10 @@
 <div class="tax_quarter">&nbsp;</div>
 <div class="cell_buttonedit">
     <div class="but-accept">
-        <a href="javascript:void(0);" id="netprofitdetailsave"><img src="/img/accept.png"/></a>
+        <a href="javascript:void(0);" id="netprofitdetailsave"><img src="/img/icons/accept.png"/></a>
     </div>
     <div class="but-cancel">
-        <a href="javascript:void(0);" id="netprofitdetailcancel"><img src="/img/cancel.png"/></a>
+        <a href="javascript:void(0);" id="netprofitdetailcancel"><img src="/img/icons/cancel.png"/></a>
     </div>
 </div>
 <div class="cell_week2edt"><?= $week ?></div>
@@ -33,7 +33,7 @@
 </div>
 <div class="cell_inbut2">
     <div class="imbox_edit">
-        <img src="/img/list.png" alt="box" title="Notes"/>
+        <img src="/img/accounting/list.png" alt="box" title="Notes"/>
     </div>
 </div>
 <div class="cell_total_costs2"><?=$out_totalcost ?></div>            
