@@ -51,6 +51,9 @@ Class Orders_model extends MY_Model
         if (isset($filtr['weborder'])) {
             $this->db->where('o.weborder', $filtr['weborder']);
         }
+        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+            $this->db->where('o.brand', $filtr['brand']);
+        }
         $this->db->from('ts_orders o');
         if (isset($filtr['filter']) && $filtr['filter']==7) {
             $this->db->where('o.is_canceled',1);
@@ -58,9 +61,6 @@ Class Orders_model extends MY_Model
             if (isset($filtr['admin_mode']) && $filtr['admin_mode']==0) {
                 $this->db->where('o.is_canceled',0);
             }
-        }
-        if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            $this->db->where('o.brand', $filtr['brand']);
         }
         /*  */
         if (count($filtr)>0) {
@@ -352,6 +352,9 @@ Class Orders_model extends MY_Model
             if (isset($filtr['artadd_filtr']) && $filtr['artadd_filtr']==1) {
                 $this->db->where('o.order_rush',1);
             }
+            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
+                $this->db->where('o.brand', $filtr['brand']);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);
@@ -366,8 +369,6 @@ Class Orders_model extends MY_Model
             $row['shipping']=(floatval($row['shipping'])==0 ? '-' : '$'.number_format($row['shipping'], 2, '.', ','));
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
-            // $lastmsg=$this->get_lastupdate($row['order_id']);
-            // $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $artlastupdat="artlastmessageview";
             $row['lastmsg']='/artorders/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
@@ -824,5 +825,501 @@ Class Orders_model extends MY_Model
         return $order_art;
     }
 
+
+    public function get_nonassignorders() {
+        $this->db->select('order_id, order_id, order_date, order_num, customer_name, order_items, revenue');
+        $this->db->from('ts_orders');
+        $this->db->where('order_cog',NULL);
+        $this->db->where('order_art',0);
+        $this->db->where('order_arthide',0);
+        $this->db->where('is_canceled',0);
+        $this->db->order_by('order_num');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            $row['total']=(floatval($row['revenue'])==0 ? '---' : '$'.number_format($row['revenue'],2,'.',''));
+            $row['item']=$row['order_items'];
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function get_newitemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        if ($item_id>0 && count($res)>0) {
+            // Get Colors
+            $this->db->select('item_color as colors');
+            $this->db->from('sb_item_colors');
+            $this->db->where('item_color_itemid', $item_id);
+            $colors=$this->db->get()->result_array();
+
+            $res['num_colors']=count($colors);
+            if (count($colors)>0) {
+                $newcolor=array();
+                foreach ($colors as $row) {
+                    array_push($newcolor, $row['colors']);
+                }
+            } else {
+                $newcolor=array();
+            }
+            $res['colors']=$newcolor;
+
+        } else {
+            $res['colors']=array();
+            $res['num_colors']=0;
+        }
+        return $res;
+    }
+
+    /* List of Items */
+    public function get_item_list($options=array()) {
+        $this->db->select('*');
+        $this->db->from('v_itemsearch');
+        if (isset($options['exclude'])) {
+            $this->db->where_not_in('item_id', $options['exclude']);
+        }
+        $this->db->order_by('item_number');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            if ($row['item_id']>1) {
+                $row['item_list']=$row['item_name'].' / '.$row['item_number'];
+            } else {
+                $row['item_list']=$row['item_name'];
+            }
+            $out[]=array(
+                'item_id'=>$row['item_id'],
+                'item_name'=>$row['item_list'],
+                'itemnumber'=>$row['item_number'],
+                'itemname'=>$row['item_name'],
+            );
+        }
+        return $out;
+    }
+
+    public function get_itemdat($item_id) {
+        $this->db->select('item_id, item_name, item_number');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    function get_last_ordernum() {
+        $this->db->set('order_date', time());
+        $this->db->insert('ts_ordernum');
+        return $this->db->insert_id();
+    }
+
+    public function notify_netdebtchanged($data) {
+        $this->load->model('user_model');
+        $log_options=array(
+            'olddebt'=>$data['oldtotalrun'],
+            'newdebt'=>$data['newtotalrun'],
+            'event'=>'',
+        );
+        $msg_subj='For Debt changed from '.$data['oldtotalrun'].' to '.$data['newtotalrun'];
+        $usrdat=$this->user_model->get_user_data($data['user_id']);
+        $email_body='The For Debt value in the Net Profit report ('.$data['weeknum'].') changed value from '.$data['olddebt'].' to '.$data['newdebt'];
+        $email_body.=' at '.date('h:i a').' '.date('m/d/Y').' from the following event:'.PHP_EOL;
+        if (isset($data['ordercancel'])) {
+            $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was cancelled by '.$usrdat['user_name'];
+            $log_options['event']='cancel_order';
+        }
+        if (isset($data['orderchange'])) {
+            if ($data['orderdata']['oldprofit']==0) {
+                $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was added by '.$usrdat['user_name'];
+            } else {
+                // $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was changed by '.$usrdat['user_name'].'. ';
+                // $email_body.='Old profit was $'.number_format($data['orderdata']['oldprofit'],2,'.',',');
+                $email_body.='The revenue on order '.$data['orderdata']['order_num'].' was changed ';
+                if (isset($data['orderdata']['oldrevenue'])) {
+                    $email_body.=' from $'.number_format($data['orderdata']['oldrevenue']);
+                }
+                if (isset($data['orderdata']['oldprofit'])) {
+                    $email_body.=' ($'.number_format($data['orderdata']['oldprofit'],2,'.',',').' profit) ';
+                }
+                $email_body.='to $'.number_format($data['orderdata']['revenue'],2,'.','.').' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit)';
+                $email_body.='by '.$usrdat['user_name'].'. ';
+            }
+            $log_options['event']='change_order';
+        }
+        if (isset($data['podelete'])) {
+            $email_body.='PO '.$data['order_num'].' was deleted by '.$usrdat['user_name'].' Sum $'.number_format($data['old_amount_sum'],2,'.','');
+            $log_options['event']='PO deleted';
+        }
+        if (isset($data['pochange'])) {
+            if ($data['old_amount_sum']==0) {
+                $email_body.='PO '.$data['order_num'].' was added by '.$usrdat['user_name'].' Sum $'.number_format($data['amount_sum'],2,'.','');
+            } else {
+                $email_body.='PO '.$data['order_num'].' was changed from $'.number_format($data['old_amount_sum'],2,'.','').' to $'.number_format($data['amount_sum'],2,'.','').' by '.$usrdat['user_name'];
+            }
+            if (isset($data['comment']) && $data['comment']!='') {
+                $email_body.=PHP_EOL.'Reason '.$data['comment'];
+            }
+            $log_options['event']='PO changed';
+        }
+        if (isset($data['netproofdebt'])) {
+            if (isset($data['profit_saved'])) {
+                $email_body.=PHP_EOL.' Saved was changed from $'.number_format($data['profit_saved']['old'],2,'.','').' to $'.number_format($data['profit_saved']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['profit_owners'])) {
+                $email_body.=PHP_EOL.' For Owners was changed from $'.number_format($data['profit_owners']['old'],2,'.','').' to $'.number_format($data['profit_owners']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+            if (isset($data['od2'])) {
+                $email_body.=PHP_EOL.' OD2 was changed from $'.number_format($data['od2']['old'],2,'.','').' to $'.number_format($data['od2']['new'],2,'.','').' by '.$usrdat['user_name'];
+                $log_options['event']='profit_changed';
+            }
+        }
+        if ($_SERVER['SERVER_NAME']!='lift_stressballs.local') {
+            $this->load->library('email');
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+            $this->email->initialize($config);
+            $this->email->set_newline("\r\n");
+            $mailto=$this->config->item('sean_email');
+            $this->email->to($mailto);
+            $this->email->cc($this->config->item('sage_email'));
+            $from = $this->config->item('email_notification_sender');
+            $this->email->from($from);
+            $this->email->subject($msg_subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        /* Save to log */
+        $this->db->set('old_debt',$log_options['olddebt']);
+        $this->db->set('new_debt',$log_options['newdebt']);
+        $this->db->set('checngelog_event', $log_options['event']);
+        $this->db->set('user_id',$data['user_id']);
+        $this->db->insert('netprofit_changelog');
+        return TRUE;
+    }
+
+    public function change_goal_value($data, $field, $newval) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        if (!isset($data[$field])) {
+            $out['msg']='Unknown field '.$field;
+            return $out;
+        }
+        $data[$field]=$newval;
+        usersession('goaldata', $data);
+        $out['result']=  $this->success_result;
+        // Count new params
+        $goal_avgprofit=$goal_avgrevenue=$goal_avgprofit_perc='&nbsp;';
+        if ($data['goal_orders']!=0) {
+            $goal_avgrevenue=($data['goal_revenue']/$data['goal_orders']);
+            $goal_avgrevenue=MoneyOutput($goal_avgrevenue);
+            $goal_avgprofit=($data['goal_profit']/$data['goal_orders']);
+            $goal_avgprofit=MoneyOutput($goal_avgprofit);
+        }
+        if ($data['goal_revenue']) {
+            $goal_avgprofit_perc=($data['goal_profit']/$data['goal_revenue']*100);
+            $goal_avgprofit_perc=number_format($goal_avgprofit_perc,1).'%';
+        }
+        $out['goalavgrevenue']=$goal_avgrevenue;
+        $out['goalavgprofit']=$goal_avgprofit;
+        $out['goalavgprofitperc']=$goal_avgprofit_perc;
+        return $out;
+    }
+
+    public function save_profitdate_goal($data) {
+        $out = array('result' => $this->error_result, 'msg' => $this->INIT_ERRMSG);
+        $this->db->where('goal_order_id', $data['goal_order_id']);
+        $this->db->set('goal_orders', $data['goal_orders']);
+        $this->db->set('goal_revenue', $data['goal_revenue']);
+        $this->db->set('goal_profit', $data['goal_profit']);
+        $this->db->update('ts_goal_orders');
+        $out['result']=$this->success_result;
+        usersession('goaldata', NULL);
+        return $out;
+    }
+
+
+
+
+    public function get_checkouts_by_weekday($brand) {
+        $out_array = [];
+        /* Add Empty values */
+        $out_array['mon'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['tue'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['wed'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['thu'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['fri'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['sat'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['sun'] = ['cnt' => 0, 'sum' => 0.00];
+        $out_array['total'] = ['cnt' => 0, 'sum' => 0.00];
+        $this->db->select('date_format(order_date,\'%w\') as dayweek,count(order_id) as cnt_ord, sum(order_total) as sum_order',FALSE);
+        $this->db->from('sb_orders');
+        $this->db->where('is_void',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('dayweek');
+        $res = $this->db->get()->result_array();
+
+        foreach ($res as $row) {
+            switch ($row['dayweek']) {
+                case '0':
+                    $out_array['sun']['cnt'] = $row['cnt_ord'];
+                    $out_array['sun']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '1':
+                    $out_array['mon']['cnt'] = $row['cnt_ord'];
+                    $out_array['mon']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '2':
+                    $out_array['tue']['cnt'] = $row['cnt_ord'];
+                    $out_array['tue']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '3':
+                    $out_array['wed']['cnt'] = $row['cnt_ord'];
+                    $out_array['wed']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '4':
+                    $out_array['thu']['cnt'] = $row['cnt_ord'];
+                    $out_array['thu']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '5':
+                    $out_array['fri']['cnt'] = $row['cnt_ord'];
+                    $out_array['fri']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+                case '6':
+                    $out_array['sat']['cnt'] = $row['cnt_ord'];
+                    $out_array['sat']['sum'] = MoneyOutput($row['sum_order']);
+                    break;
+            }
+            $out_array['total']['cnt']+=$row['cnt_ord'];
+            $out_array['total']['sum']+=$row['sum_order'];
+        }
+        if ($out_array['total']['sum'] > 0) {
+            $out_array['total']['sum'] = MoneyOutput($out_array['total']['sum']);
+        }
+        return $out_array;
+    }
+
+    public function checkout_reportdata($brand, $d_bgn = '', $d_end = '') {
+        if ($d_end == '') {
+            $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
+        }
+        /* Get Begin & End of Week  */
+        $weekend = date('W', $d_end);
+        $yearend = date('Y', $d_end);
+        $dates = getDatesByWeek($weekend, $yearend);
+        $d_end = $dates['end_week'];
+
+        /* Calculate END day */
+        if ($d_bgn == '') {
+            $this->db->select('min(unix_timestamp(order_date)) as min_date', FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('is_void', 0);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $res_ar = $this->db->get()->row_array();
+            $last_date = $res_ar['min_date'];
+        } else {
+            $last_date = $d_bgn;
+        }
+        if ($last_date == '') {
+            $last_date = $dates['start_week'];
+        }
+        $d_bgn = $last_date;
+        /* Select # of weekes between end date and begin date */
+        $this->db->select('TIMESTAMPDIFF(WEEK, from_unixtime(' . $d_bgn . '),from_unixtime(' . ($d_end) . ')) as numweeks');
+        $wres = $this->db->get()->row_array();
+
+
+        $out_array = array();
+        // $out_index=-1;
+        for ($j = 0; $j <= $wres['numweeks']; $j++) {
+
+            $weekend = date('W', $d_end);
+            $yearend = date('Y', $d_end);
+            $dates = getDatesByWeek($weekend, $yearend);
+
+            $week_bgn = $dates['start_week'];
+            $week_end = $dates['end_week'];
+            if (date('m', $week_bgn) != date('m', $week_end)) {
+                if (date('Y', $week_bgn) != date('Y', $week_end)) {
+                    $week_name = date('M, Y', $week_bgn) . '/' . date('M, Y', $week_end);
+                } else {
+                    $week_name = date('M', $week_bgn) . '/' . date('M, Y', $week_end);
+                }
+            } else {
+                $week_name = date('F, Y', $week_bgn);
+            }
+            $out_array[] = array(
+                'date' => $week_name,
+                'mon_day' => '',
+                'mon_cnt' => 0,
+                'mon_sum' => 0,
+                'tue_day' => 0,
+                'tue_cnt' => 0,
+                'tue_sum' => 0,
+                'wed_day' => 0,
+                'wed_cnt' => 0,
+                'wed_sum' => 0,
+                'thu_day' => 0,
+                'thu_cnt' => 0,
+                'thu_sum' => 0,
+                'fri_day' => 0,
+                'fri_cnt' => 0,
+                'fri_sum' => 0,
+                'sat_day' => 0,
+                'sat_cnt' => 0,
+                'sat_sum' => 0,
+                'sun_day' => 0,
+                'sun_cnt' => 0,
+                'sun_sum' => 0,
+                'total_cnt' => 0,
+                'total_sum' => 0,
+                'week_num' => $weekend,
+                'year' => $yearend,
+            );
+            $outidx = count($out_array) - 1;
+            $this->db->select("date_format(order_date,'%Y-%m-%d') as weekday, count(order_id) as cnt_ord, sum(order_total) as sum_ord ", FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('unix_timestamp(order_date) >= ', $week_bgn);
+            $this->db->where('unix_timestamp(order_date) <= ', $week_end);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $this->db->group_by('weekday');
+            $res = $this->db->get()->result_array();
+            foreach ($res as $row) {
+                $datrep = strtotime($row['weekday']);
+                $weekday = date('w', $datrep);
+                switch ($weekday) {
+                    case '0':
+                        /* Sun */
+                        $out_array[$outidx]['sun_day'] = date('j', $datrep);
+                        $out_array[$outidx]['sun_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['sun_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '1':
+                        /* Mon */
+                        $out_array[$outidx]['mon_day'] = date('j', $datrep);
+                        $out_array[$outidx]['mon_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['mon_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '2' :
+                        /* Tue */
+                        $out_array[$outidx]['tue_day'] = date('j', $datrep);
+                        $out_array[$outidx]['tue_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['tue_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '3':
+                        /* Wed */
+                        $out_array[$outidx]['wed_day'] = date('j', $datrep);
+                        $out_array[$outidx]['wed_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['wed_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '4':
+                        /* Thu */
+                        $out_array[$outidx]['thu_day'] = date('j', $datrep);
+                        $out_array[$outidx]['thu_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['thu_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '5':
+                        /* Thu */
+                        $out_array[$outidx]['fri_day'] = date('j', $datrep);
+                        $out_array[$outidx]['fri_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['fri_sum'] = floatval($row['sum_ord']);
+                        break;
+                    case '6':
+                        /* Sat */
+                        $out_array[$outidx]['sat_day'] = date('j', $datrep);
+                        $out_array[$outidx]['sat_cnt'] = $row['cnt_ord'];
+                        $out_array[$outidx]['sat_sum'] = floatval($row['sum_ord']);
+                        break;
+                }
+                $out_array[$outidx]['total_cnt']+=$row['cnt_ord'];
+                $out_array[$outidx]['total_sum']+=floatval($row['sum_ord']);
+            }
+            /* Rebuild Date End */
+            $d_end = strtotime(date("Y-m-d", $d_end) . " - 7 days");
+        }
+        $out = array();
+        foreach ($out_array as $row) {
+            if ($row['sun_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 7);
+                $row['sun_day'] = date('j', $dayw);
+            }
+            $row['sun_sum'] = MoneyOutput($row['sun_sum']);
+            if ($row['mon_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 1);
+                $row['mon_day'] = date('j', $dayw);
+            }
+            $row['mon_sum'] = MoneyOutput($row['mon_sum']);
+            if ($row['tue_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 2);
+                $row['tue_day'] = date('j', $dayw);
+            }
+            $row['tue_sum'] = MoneyOutput($row['tue_sum']);
+            if ($row['wed_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 3);
+                $row['wed_day'] = date('j', $dayw);
+            }
+            $row['wed_sum'] = MoneyOutput($row['wed_sum']);
+            if ($row['thu_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 4);
+                $row['thu_day'] = date('j', $dayw);
+            }
+            $row['thu_sum'] = MoneyOutput($row['thu_sum']);
+            if ($row['fri_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 5);
+                $row['fri_day'] = date('j', $dayw);
+            }
+            $row['fri_sum'] = MoneyOutput($row['fri_sum']);
+            if ($row['sat_day'] == 0) {
+                $dayw = getDayOfWeek($row['week_num'], $row['year'], 6);
+                $row['sat_day'] = date('j', $dayw);
+            }
+            $row['sat_sum'] = MoneyOutput($row['sat_sum']);
+            $row['total_sum'] = MoneyOutput($row['total_sum']);
+            $out[] = $row;
+        }
+        return $out;
+    }
+
+    function get_graphp_data($type, $d_bgn = '', $d_end = '') {
+
+        if ($d_end == '') {
+            $d_end = strtotime(date('Y-m-d') . ' 23:59:59');
+        }
+        if ($d_bgn=='') {
+            // 53 week ago
+            $d_bgn = strtotime(date('Y-m-d', strtotime(date('Y-m-d',$d_end). ' - 53 weeks')));
+        }
+        /* Calculate nearlest monday */
+        if ($type == 'chart-bydate') {
+            $this->db->select('date_format(order_date,\'%Y-%m-%d\') as odate, sum(order_total) as sum_order', FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('unix_timestamp(order_date) >= ', $d_bgn);
+            $this->db->where('unix_timestamp(order_date) <= ', $d_end);
+            $this->db->group_by('odate');
+            $this->db->order_by('odate');
+        } else {
+            $this->db->select('date_format(order_date,\'%Y %u\') as odate, sum(order_total) as sum_order',FALSE);
+            $this->db->from('sb_orders');
+            $this->db->where('unix_timestamp(order_date) >= ', $d_bgn);
+            $this->db->where('unix_timestamp(order_date) <= ', $d_end);
+            $this->db->group_by('odate');
+            $this->db->order_by('odate');
+            // $sql = "select date_format(order_date,'%Y %u') as date, coalesce(sum(order_total),0) as sum_order from sb_orders  where unix_timestamp(order_date) between " . $d_bgn . " and " . $d_end . " group by 1 order by 1";
+        }
+        $res = $this->db->get()->result_array();
+        $datarows[]=['Date', 'Totals, $'];
+        foreach ($res as $row) {
+            $datarows[]=[$row['odate'], floatval($row['sum_order'])];
+        }
+        return $datarows;
+    }
 
 }
