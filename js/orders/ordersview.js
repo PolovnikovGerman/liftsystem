@@ -146,6 +146,33 @@ function search_leadorders() {
 }
 
 // Edit Order
+function edit_leadorder(order) {
+    var callpage = 'orderslist';
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: $("input#ordersviewbrand").val()});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").modal('show');
+            if (parseInt(order)==0) {
+                init_onlineleadorder_edit();
+            } else {
+                navigation_init();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+
+
+}
 // function edit_leadorder(order) {
 //     var url="/orders/leadorder_edit";
 //     $.post(url, {'order_id': order}, function(response){
