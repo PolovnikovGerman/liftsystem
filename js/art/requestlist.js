@@ -109,15 +109,16 @@ function pageProofsCallback(page_index) {
     params.push({name:'show_deleted',value:deleted})
 
     var url=main_proofurl+'/proof_listdata';
-    $("#loader").css('display','block');
+    $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
+            $("#loader").hide();
             $("div.proof_tabledat").empty().html(response.data.content);
             $("#curpageproof").val(page_index);
             init_prooflistmanage();
             $("#loader").css('display','none');
         } else {
-            $("#loader").css('display','none');
+            $("#loader").hide();
             show_error(response);
         }
     },'json');
@@ -126,8 +127,6 @@ function pageProofsCallback(page_index) {
 
 function init_prooflistmanage() {
     /* change size */
-    var arttemplate='<div class="popover green_background"  role="tooltip"><div class="arrow"></div><div class="popover-content art_tooltip"></div></div>';
-
     var maxh=$("div.proof_tabledat").css('max-height');
     maxh=parseInt(maxh.replace('px',''));
     var dath=$("div.proof_tabledat").css('height');
@@ -156,7 +155,7 @@ function init_prooflistmanage() {
     $("div.proof_brand_dat").click(function(){
         var mailid=$(this).data('proofid');
         // POPUP
-        // artproof_lead(mailid);
+        artproof_lead(mailid, 'artprooflist');
         return false;
     })
     /* All other divs */
@@ -191,32 +190,44 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         edit_note(mailid);
     });
-    $("div.proof_note_dat").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $("div.proof_parsedata").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $('div.prooflastmessageview').hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('messageview'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'left',
-                    html: true,
-                    template: arttemplate
-                }).popover('show');
-            });
+    $("div.proof_note_dat").qtip({
+        content: {
+            attr: 'data-content'
         },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light'
+    });
+    $("div.proof_parsedata").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light'
+    });
+
+    $('div.prooflastmessageview').qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('messageview') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        style: 'art_lastmessage'
+    });
 
     $("div.proof_includ_dat").click(function(){
         var mailid=$(this).data('proofid');
@@ -254,6 +265,7 @@ function prooflead(mailid) {
     var url=main_proofurl+"/change_status";
     $.post(url, {'quest_id':mailid, 'type':'proof'}, function(response){
         if (response.errors=='') {
+            $("#artModal").find('div.modal-dialog').css('width','565px');
             $("#artModalLabel").empty().html('Lead Assign');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
@@ -341,7 +353,8 @@ function edit_note(mailid) {
     var url=main_proofurl+"/proof_openartnote";
     $.post(url, {'mail_id':mailid}, function(response){
         if (response.errors=='') {
-            $("#artModalLabel").empty().html('Edit Lead Note');
+            $("#artModalLabel").empty().html(response.data.title);
+            $("#artModal").find('div.modal-dialog').css('width','569px');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").modal('show');
             $("div#artModal div.saveordernote").click(function(){

@@ -1,0 +1,1 @@
+<div class="artpopup_ordernum"><?=$order_num?></div>

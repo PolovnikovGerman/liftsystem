@@ -1,0 +1,1 @@
+<input class="orderitem_colorinpt orderitem_input input_border_gray" data-orderitem="<?=$order_item_id?>" data-field="item_color" data-item="<?=$item_id?>" value="<?=$item_color?>"/>

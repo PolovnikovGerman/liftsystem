@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='1.07';
-$config['css_version']='1.071';
+$config['js_version']='1.085';
+$config['css_version']='1.085';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -44,6 +44,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='http://bluetrack.sys/proofview/?doc=';
         break;
     default :
         $config['sean_email']='sean@bluetrack.com';
@@ -55,6 +56,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }
 switch($_SERVER['SERVER_NAME']){
@@ -65,7 +67,7 @@ switch($_SERVER['SERVER_NAME']){
             'smtp_host' => 'ssl://smtp.gmail.com',
             'smtp_port' => '465',
             'smtp_user'=>'logosbt@gmail.com',
-            'smtp_pass'=>'NjfJrL9cHALy',
+            'smtp_pass'=>'bYnU%u2Dqf;y6QVj',
             'smtp_timeout'=>'7',
             'validation'=>TRUE,
             'charset'=>'utf8',
@@ -122,6 +124,8 @@ $config['default_paysystem']='paypal';
 $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',
+    'lift.stressballs.com',
+    'lift_stressballs.local',
 );
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
@@ -148,11 +152,8 @@ $config['defqty_custom']=1000;
 // Minimal timeout of lock - 20 min
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
-if ($_SERVER['SERVER_NAME']=='brown.bluetrack.com') {
-    $config['loctimeout']=130;
-} else {
-    $config['loctimeout']=1200;
-}
+$config['loctimeout']=130;
+$config['loctimeout_local']=1200; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=151;
 $config['inventory_paymethod']=5;
@@ -219,6 +220,7 @@ $config['normal_price_base']=array(
     25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
 );
 
+$config['perpage_orders'] = ['100','150','200','250'];
 $config['leads_perpage'] = 250;
 $config['orders_perpage'] = 150;
 $config['quotes_perpage'] = 250;

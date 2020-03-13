@@ -1,13 +1,39 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Leads extends MY_Controller
-{
+class Leads extends My_Controller {
+
+    protected $PERPAGE=1000;
+    protected $PERPAGE_LEADS=250;
+    protected $ITEMLNK='leadsbtn';
+    protected $NONPARSED=0;
+    protected $PARSED_CLASS='empty';
+    protected $PERPAGE_ORDERS=array(
+        '100','150','200','250'
+    );
+
+    protected $vendor_prices = array(
+        array('base'=>25,'label'=>'25'),
+        array('base'=>75,'label'=>'75'),
+        array('base'=>150,'label'=>'150'),
+        array('base'=>250,'label'=>'250'),
+        array('base'=>500,'label'=>'500'),
+        array('base'=>1000,'label'=>'1000'),
+        array('base'=>3000,'label'=>'3000'),
+        array('base'=>5000,'label'=>'5000'),
+        array('base'=>10000,'label'=>'10K'),
+        array('base'=>20000,'label'=>'20K'),
+    );
+
+    /* Timeout to show DEAD option - 14 DAYS */
+    protected $timeout_dead=1209600;
+    /* Statuses - DEAD & CLOSED */
+    protected $LEAD_DEAD=3;
+    protected $LEAD_CLOSED=4;
+    private $restore_orderdata_error='Connection Lost. Please, recall form';
 
     private $pagelink = '/leads';
 
-    public function __construct()
-    {
+    function __construct() {
         parent::__construct();
         $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
         if ($pagedat['result'] == $this->error_result) {
@@ -25,8 +51,7 @@ class Leads extends MY_Controller
         }
     }
 
-    public function index()
-    {
+    function index() {
         $head = [];
         $head['title'] = 'Leads';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);

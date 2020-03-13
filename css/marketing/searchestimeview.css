@@ -1,0 +1,112 @@
+.searchtime_content {
+    clear: both;
+    margin-left: 10px;
+    width: 1003px;
+}
+.searchtime_content input {
+    font-size: 13px;
+    font-family: arial, verdana, sans-serif;
+}
+.searhctime_head {
+    clear: both;
+    width: 100%;
+}
+.searhctime_head > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searhctime_head .select_timesearsch {
+    margin-left: 5px;
+}
+.searhctime_head .select_custom_period {
+    visibility: hidden;
+    margin-left: 10px;
+}
+.searhctime_head .select_custom_period > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searhctime_head .select_custom_period .customsearchbtn {
+    cursor: pointer;
+}
+.searhctime_head input.datesearchinpt {
+    width: 75px;
+    margin-right: 10px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+}
+.searchtime_dataconatiner {
+    clear: both;
+    width: 100%;
+    margin-top: 10px;
+}
+.searchtime_dataconatiner .datacontainer_head {
+    height: 35px;
+    line-height: 35px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+}
+.searchtime_dataconatiner .datacontainer_head.weekdates {
+    background: url("/img/marketing/tabletime-head-left.png") no-repeat;
+    width: 147px;
+}
+.searchtime_dataconatiner .datacontainer_head.weekday {
+    background: url("/img/marketing/tabletime-head-center.png") repeat-x;
+    width: 109px;
+    border-left: 2px solid #000000;
+}
+.searchtime_dataconatiner .datacontainer_head.weekdayend {
+    background: url("/img/marketing/tabletime-head-right.png") no-repeat;
+    border-left: 2px solid #000000;
+    width: 136px;
+}
+.searchtime_dataconatiner .datacontainer_content {
+    border-bottom: 2px solid #000000;
+    margin-bottom: 15px;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow {
+    clear: both;
+    width: 100%;
+    overflow-x: hidden;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow.emptyresults {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    color: #ff0000;
+    width: 937px;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow .weekdates {
+    width: 147px;
+    text-align: right!important;
+    font-weight: bold;
+    border-left: 2px solid #000000;
+    padding-right: 4px;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow .weekday {
+    width: 109px;
+    border-left: 2px solid #000000;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow .weekdayend {
+    width: 136px;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow .weekday em,
+.searchtime_dataconatiner .datacontainer_content .datarow .weekdayend em {
+    font-style: italic;
+}
+.searchtime_dataconatiner .datacontainer_content .datarow .weekday em.negativeresult,
+.searchtime_dataconatiner .datacontainer_content .datarow .weekdayend em.negativeresult {
+    color: #0000ff;
+}
