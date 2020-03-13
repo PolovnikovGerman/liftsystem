@@ -5318,6 +5318,18 @@ Class Leadorder_model extends My_Model {
                     // $out_colors=$this->empty_htmlcontent;
                     $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
                 } else {
+                    // check that current color exist
+                    $colors = $newitem['colors'];
+                    $found = 0;
+                    foreach ($colors as $crow) {
+                        if ($crow==$irow['item_color']) {
+                            $found=1;
+                        }
+                    }
+                    if ($found==0) {
+                        $colors[]=$irow['item_color'];
+                        $options['colors']=$colors;
+                    }
                     $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                 }
                 $qty_class = 'normal';
