@@ -7620,6 +7620,21 @@ Class Leadorder_model extends My_Model {
         $this->load->model('shipping_model');
         $this->load->helper(array('dompdf', 'file'));
         $order=$leadorder['order'];
+        $payments_details = [];
+        foreach ($leadorder['payments'] as $prow) {
+            $label = '';
+            if ($prow['batch_amount']<0) {
+                $label.='Refund ';
+            } else {
+                // if ($)
+                $label.='Payment ';
+            }
+            $label.='- '.date('m/d/y', $prow['batch_date']);
+            $payments_details[]=[
+                'label' => $label,
+                'value' => MoneyOutput($prow['batch_amount']),
+            ];
+        }
 
         $customer_po='';
         $biladr=array();
@@ -7739,6 +7754,8 @@ Class Leadorder_model extends My_Model {
             'tax'=>MoneyOutput($order['tax']),
             'total'=>  MoneyOutput($order['revenue']),
             'payments'=> MoneyOutput($order['payment_total']),
+            'payments_count' => count($payments_details),
+            'payments_detail' => $payments_details,
             'balance'=>  MoneyOutput($balance),
             'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
         );
@@ -7748,11 +7765,12 @@ Class Leadorder_model extends My_Model {
         $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/'),'_',$order['order_items']).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
-        $data = pdf_create($html, '', false);
-        write_file($file_out, $data);
-        $out['result']=$this->success_result;
-        $out['html_path']=$this->config->item('pathpreload').$file_name;
-        $out['doc_path']=$file_out;
+        pdf_create($html, $file_out, true);
+        if (file_exists($file_out)) {
+            $out['result']=$this->success_result;
+            $out['html_path']=$this->config->item('pathpreload').$file_name;
+            $out['doc_path']=$file_out;
+        }
         return $out;
     }
 

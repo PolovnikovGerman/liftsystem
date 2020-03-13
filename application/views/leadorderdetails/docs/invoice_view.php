@@ -222,8 +222,10 @@ td.advpicplace {
     height: 144px;
 }
 td.invoicetotals {
-    background: url('/img/invoice/totals_bg.png') no-repeat scroll left top transparent;
-    height: 141px;
+    /* background: url('/img/invoice/totals_bg.png') no-repeat scroll left top transparent; */
+    /* height: 141px; */
+    border: 2px solid #000000;
+    border-radius: 5px;
     width: 329px;
 }
 td.taxlabel {
@@ -252,19 +254,23 @@ td.totalvalue {
     color: #0000FF;
 }
 tr.payments {
-    background-color: #000000;
+    /* background-color: #000000; */
+    background-color: #e1e1e1;
 }
 td.paymentlabel {
     padding-left: 6px;
     height: 24px;
     font-size: 18px;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
+    color: #000000;
     width: 212px;
 }
 td.paymentvalue {
     height: 24px;
     font-size: 18px;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
+    color: #000000;
+    width: 99%;
 }
         </style>
     </head>
@@ -272,8 +278,9 @@ td.paymentvalue {
         <div class="content">
             <table cellpadding="0" style="width:750px; padding: 0;">
                 <tr>
-                    <td>
-                       <div class="logo">&nbsp;</div>
+                    <td style="width: 409px;">
+                        <!-- <div class="logo">&nbsp;</div> -->
+                        <img src="<?=$_SERVER['DOCUMENT_ROOT']?>/img/invoice/invoice_logo_new.png" alt="Logo"/>
                     </td>
                     <td>
                         <div class="invoicenum">
@@ -407,10 +414,14 @@ td.paymentvalue {
                                 <td class="totallabel">Total</td>
                                 <td class="totalvalue"><?=$total?></td>
                             </tr>
-                            <tr class="payments">
-                                <td class="paymentlabel">Payments/Credits</td>
-                                <td class="paymentvalue"><?=$payments?></td>
-                            </tr>
+                            <?php if ($payments_count) { ?>
+                                <?php foreach ($payments_detail as $row) { ?>
+                                    <tr class="payments">
+                                        <td class="paymentlabel"><?=$row['label']?></td>
+                                        <td class="paymentvalue"><?=$row['value']?></td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } ?>
                             <tr>
                                 <td class="totallabel">Balance Due</td>
                                 <td class="totalvalue"><?=$balance?></td>
