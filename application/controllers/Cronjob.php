@@ -50,32 +50,33 @@ Class Cronjob extends CI_Controller
         }
     }
 
-    public function test_mail() {
-        $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-
-        $this->email->initialize($config);
-
-        $email_from='grey@bluetrack.com';
-
-        $email_to='roy.ferrer@bluetrack.com';
-        // $email_to='to_german@yahoo.com';
-
-        $email_body='At '.date('hA:i').' on '.date('m/d/y');
-        $email_body.'change status Lead #018-854 to a Closed Order.';
-
-        $this->email->from($email_from);
-        $this->email->to($email_to);
-        $subj="Roy Ferrer closed Lead #018-854";
-        $this->email->subject($subj);
-        $this->email->message($email_body);
-        $this->email->send();
-        $this->email->clear(TRUE);
-        return TRUE;
-
+    public function searchresult_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('search_result_id');
+        $this->db->from('sb_search_results');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('search_result_id', $row['search_result_id']);
+            $this->db->update('sb_search_results');
+        }
     }
 
+    public function emails_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('email_id');
+        $this->db->from('ts_emails');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('email_id', $row['email_id']);
+            $this->db->update('ts_emails');
+            echo 'Email '.$row['email_id'].' Brand '.$webs.PHP_EOL;
+        }
+    }
 
 }
