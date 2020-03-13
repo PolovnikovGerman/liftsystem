@@ -3,7 +3,7 @@
 Class Orders_model extends MY_Model
 {
     const START_ORDNUM=22000;
-    const INIT_ERRMSG='Unknown error. Try later';
+    private $INIT_ERRMSG='Unknown error. Try later';
     protected $project_name='PROJ';
 
     protected $NO_ART = '06_noart';
@@ -128,6 +128,7 @@ Class Orders_model extends MY_Model
         }
         if (isset($filtr['order_qty'])) {
             $this->db->where('o.order_qty',$filtr['order_qty']);
+            $this->db->where('o.is_canceled',0);
         }
         if (isset($filtr['shipping_country'])) {
             $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -507,6 +508,323 @@ Class Orders_model extends MY_Model
             return 'No User Messages';
         }
     }
+
+    // Get Order by num (template)
+    public function get_orderbynum($ordernum) {
+        $this->db->select('count(o.order_id) as cnt');
+        $this->db->from('ts_orders o');
+        $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==1) {
+            $this->db->select('order_id');
+            $this->db->from('ts_orders o');
+            $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+            $detail=$this->db->get()->row_array();
+            $out=array(
+                'numrec'=>1,
+                'detail'=>$detail['order_id'],
+            );
+        } else {
+            $out=array(
+                'numrec'=>$res['cnt'],
+                'detail'=>0,
+            );
+        }
+        return $out;
+    }
+
+    public function get_missed_orders($brand) {
+        $this->db->select("date_format(from_unixtime(order_date), '%Y') as year, count(order_id) as total",FALSE);
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $this->db->where('order_qty',0);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('year');
+        $this->db->order_by('year','desc');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function update_order($options) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->init_error_msg);
+        if (!isset($options['order_id']) || !isset($options['user_id'])) {
+            $out['msg']='Lost Parameter for Update';
+            return $out;
+        }
+        $this->db->where('order_id', $options['order_id']);
+        $this->db->set('update_date', time());
+        $this->db->set('update_usr', $options['user_id']);
+        if (isset($options['order_usr_repic'])) {
+            $this->db->set('order_usr_repic', $options['order_usr_repic']);
+        }
+        if (isset($options['weborder'])) {
+            $this->db->set('weborder', $options['weborder']);
+        }
+        if (isset($options['unassigned'])) {
+            $this->db->set('order_usr_repic', NULL);
+        }
+        if (isset($options['order_qty'])) {
+            $this->db->set('order_qty', $options['order_qty']);
+        }
+        $this->db->update('ts_orders');
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    public function count_onlineorders($brand, $options=[]) {
+        $this->db->select('count(order_id) as cnt');
+        $this->db->from('sb_orders');
+        if (isset($options['replica']) && $options['replica']) {
+            $this->db->like('ucase(concat(order_rep,order_num)) ', strtoupper($options['replica']));
+        }
+        if (isset($options['confirm']) && $options['confirm']) {
+            $this->db->like('ucase(order_confirmation) ', strtoupper($options['confirm']));
+        }
+        if (isset($options['customer']) && $options['customer']) {
+            $this->db->like('ucase(customer_name) ', $options['customer']);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function last_order($brand) {
+        $this->db->select('max(order_id) as max_order, count(order_id) as cnt');
+        $this->db->from('sb_orders');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $retval = 0;
+        } else {
+            $retval = $res['max_order'];
+        }
+        return $retval;
+    }
+
+    public function last_attempt($brand) {
+        $this->db->select('max(cart_id) as max_order, count(cart_id) as cnt');
+        $this->db->from('sb_cartdatas');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $retval = 0;
+        } else {
+            $retval = $res['max_order'];
+        }
+        return $retval;
+    }
+
+    public function get_online_orders($options, $order_by, $direct, $limit, $offset, $search) {
+        $this->db->select("*,sb_items.item_name as item_name", FALSE);
+        $this->db->from('sb_orders');
+        $this->db->join('sb_items', 'sb_items.item_id=sb_orders.order_item_id', 'left');
+        foreach ($options as $key => $value) {
+            $this->db->where($key, $value);
+        }
+        if (isset($search['replica']) && $search['replica']) {
+            $this->db->like('ucase(concat(order_rep,order_num)) ', strtoupper($search['replica']));
+        }
+        if (isset($search['confirm']) && $search['confirm']) {
+            $this->db->like('ucase(order_confirmation) ', strtoupper($search['confirm']));
+        }
+        if (isset($search['customer']) && $search['customer']) {
+            $this->db->like('ucase(customer_name) ', strtoupper($search['customer']));
+        }
+        if (isset($search['brand']) && $search['brand']!=='ALL') {
+            $this->db->where('sb_orders.brand', $search['brand']);
+        }
+        $this->db->order_by($order_by, $direct);
+        if ($limit) {
+            $this->db->limit($limit, $offset);
+        }
+        $result = $this->db->get()->result_array();
+        $out_arr = array();
+        foreach ($result as $row) {
+            $row['order_out_status']='NEW!';
+            $row['order_status_class']='neworder';
+            if ($row['is_void'] == 1) {
+                $row['order_out_status'] = 'VOID';
+                $row['order_status_class']='void';
+            } elseif ($row['order_status']=='Entered') {
+                $row['order_out_status'] = 'Entered';
+                $row['order_status_class']='entered';
+            }
+            if ($row['is_virtual']) {
+                $row['item_name'] = $row['virtual_item'];
+            }
+            // $order_amount=$row['item_qty']*$row['item_price']+$row['inprinting_price']+$row['shipping_price']+$row['tax']-$row['discount'];
+            $order_amount = $row['order_total'];
+            $row['order_amount'] = '';
+            if (floatval($order_amount) != 0) {
+                $row['order_amount'] = MoneyOutput($order_amount);
+            }
+            $row['order_date_show'] = date('m/d/y', strtotime($row['order_date']));
+            $out_arr[] = $row;
+        }
+        return $out_arr;
+    }
+
+    public function order_details($filter = array()) {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown order'];
+        $this->db->select("o.*,concat(coalesce(o.shipping_street1,''),' ',coalesce(o.shipping_street2,'')) as ship_street,sc.country_name as ship_cnt, sc.country_iso_code_2 as ship_cntcode", FALSE);
+        $this->db->select("concat(coalesce(o.billing_street1,''),' ',coalesce(o.billing_street2,'')) as bil_street, bc.country_name as bil_cnt,pp.payment_card_name ", FALSE);
+        $this->db->select('i.item_name as item_name, i.item_number as item_number, ss.shipping_method_name, ss.ups_code as shipping_method_code, disc.coupon_description as coupon_name');
+        $this->db->from('sb_orders o');
+        $this->db->join('sb_countries sc', 'sc.country_id=o.shipping_country_id', 'left');
+        $this->db->join('sb_countries bc', 'bc.country_id=o.billing_country_id', 'left');
+        $this->db->join('sb_payment_cards pp', 'pp.payment_card_id=o.payment_card_type', 'left');
+        $this->db->join('sb_items i', 'i.item_id=o.order_item_id', 'left');
+        $this->db->join('sb_shipping_methods ss', 'ss.shipping_method_id=o.shipping_method', 'left');
+        $this->db->join('sb_coupons disc', 'disc.coupon_id=o.coupon_id', 'left');
+        if (isset($filter['order_id']) && $filter['order_id']) {
+            $this->db->where('o.order_id', $filter['order_id']);
+        } elseif (isset($filter['order_confirmation'])) {
+            $this->db->where('o.order_confirmation', $filter['order_confirmation']);
+        }
+        $res = $this->db->get()->row_array();
+
+        if (isset($res['order_id'])) {
+            /* Handle results */
+            $this->db->select('*');
+            $this->db->from('sb_order_colors');
+            $this->db->where('order_color_orderid', $res['order_id']);
+            $colors = $this->db->get()->result_array();
+            $res['order_colors'] = '';
+            $order_itmcolors = array();
+            foreach ($colors as $crow) {
+                $res['order_colors'].=' ' . $crow['order_color_qty'] . ' ' . $crow['order_color_itemcolor'] . ',';
+                $order_itmcolors[] = $crow;
+            }
+            if (strlen($res['order_colors']) > 0) {
+                $res['order_colors'] = substr($res['order_colors'], 0, -1);
+            }
+            $res['order_itmcolors'] = $order_itmcolors;
+            /* Shipping Address */
+            $ship_adr = '';
+            $ship_adrhtml = '';
+            // $ship_adr.=' '.$res['contact_first_name'].' '.$res['contact_last_name'].PHP_EOL;
+            $ship_adr.=' ' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . PHP_EOL;
+            // $ship_adrhtml.='<p>'.$res['contact_first_name'].' '.$res['contact_last_name'].'</p>';
+            $ship_adrhtml.='<p>' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . '</p>';
+            if ($res['shipping_company'] != '' && $res['shipping_company'] != 'Company (optional)') {
+                $ship_adr.=' ' . $res['shipping_company'] . PHP_EOL;
+                $ship_adrhtml.='<p>' . $res['shipping_company'] . '</p>';
+            }
+            $ship_adr.=' ' . $res['shipping_street1'] . PHP_EOL;
+            $ship_adrhtml.='<p>' . $res['shipping_street1'] . '</p>';
+            if ($res['shipping_street2'] != '') {
+                $ship_adr.=' ' . $res['shipping_street2'] . PHP_EOL;
+                $ship_adrhtml.='<p>' . $res['shipping_street2'] . '</p>';
+            }
+            $ship_adr.=' ' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . PHP_EOL;
+            $ship_adrhtml.='<p>' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . '</p>';
+            if (!empty($res['ship_cnt']) && $res['ship_cnt'] != 'United States') {
+                $ship_adr.=' ' . $res['ship_cnt'] . PHP_EOL;
+                $ship_adrhtml.='<p>' . $res['ship_cnt'] . '</p>';
+            }
+            $res['shipping_address'] = $ship_adr;
+            $res['shipping_address_html'] = $ship_adrhtml;
+            /* Billing Address */
+            $bil_adr = '';
+            $bil_adrhtml = '';
+            $bil_adr.=' ' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . PHP_EOL;
+            $bil_adrhtml.='<p>' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . '</p>';
+            if ($res['customer_company'] != '') {
+                $bil_adr.=' ' . $res['customer_company'] . PHP_EOL;
+                $bil_adrhtml.='<p>' . $res['customer_company'] . '</p>';
+            }
+            $bil_adr.=' ' . $res['billing_street1'] . PHP_EOL;
+            $bil_adrhtml.='<p>' . $res['billing_street1'] . '</p>';
+            if ($res['billing_street2']) {
+                $bil_adr.=' ' . $res['billing_street2'] . PHP_EOL;
+                $bil_adrhtml.='<p>' . $res['billing_street2'] . '</p>';
+            }
+            $bil_adr.=' ' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . PHP_EOL;
+            $bil_adrhtml.='<p>' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . '</p>';
+            if (!empty($res['bil_cnt']) && $res['bil_cnt'] != 'United States') {
+                $bil_adr.=' ' . $res['bil_cnt'] . PHP_EOL;
+                $bil_adrhtml.='<p>' . $res['bil_cnt'] . '</p>';
+            }
+            $res['billing_address'] = $bil_adr;
+            $res['billing_address_html'] = $bil_adrhtml;
+            if ($res['is_virtual']) {
+                $res['item_name'] = $res['virtual_item'];
+                $res['item_number'] = '';
+            }
+            $res['payment_exp'] = $res['payment_card_month'] . '/' . $res['payment_card_year'];
+            $pure_price = round($res['item_qty'] * $res['item_price'], 2);
+            $res['pure_price'] = number_format($pure_price, 2);
+            $res['total'] = number_format($res['order_total'], 2);
+            /* Get Order num */
+            $out['result'] = $this->success_result;
+            $out['data'] = $res;
+        }
+        return $out;
+    }
+
+    public function finorder($order_date) {
+        /* Day BGN */
+        $d_bgn = strtotime(date('m/d/Y', strtotime($order_date)));
+        /* End of DAY */
+        $d_end = strtotime(date('Y-m-d', $d_bgn) . ' 23:59:59');
+        $this->db->select('order_id, order_num, customer_name, revenue');
+        $this->db->from('ts_ordres');
+        $this->db->where('order_date >= ', $d_bgn);
+        $this->db->where('order_date <= ', $d_end);
+        $this->db->order_by('order_num', 'desc');
+        $orddat = $this->db->get()->result_array();
+        $out = array();
+        $out[] = array(
+            'order_id' => 0,
+            'order_num' => $this->max_finorder_num() . ' NEW',
+        );
+        foreach ($orddat as $row) {
+            if (!$this->grey_order_exist($row['order_num'])) {
+                $out[] = array(
+                    'order_id' => $row['order_id'],
+                    'order_num' => $row['order_num'] . ' ' . $row['customer_name'] . ' $' . number_format($row['revenue'], 2, '.', ''),
+                );
+            }
+        }
+        return $out;
+    }
+
+    public function get_online_artwork($order_id) {
+        $this->db->select("*");
+        $this->db->from('sb_order_artworks');
+        $this->db->where('order_artwork_orderid', $order_id);
+        $this->db->order_by('order_artwork_id');
+        $result = $this->db->get()->result_array();
+        $order_art = array();
+
+        foreach ($result as $row) {
+            if (isset($row['order_artwork_face']) && $row['order_artwork_face']) {
+                $facename = str_replace('/uploads/faces/', '', $row['order_artwork_face']);
+                $facename = str_replace('.png', '', $facename);
+                if ($row['order_artwork_note'] == '') {
+                    $row['order_artwork_note'] = 'Face ' . $facename;
+                } else {
+                    $row['order_artwork_note'].='<br/>Face ' . $facename;
+                }
+            }
+            $this->db->select('order_userlogo_file, order_userlogo_filename');
+            $this->db->from('sb_order_userlogos');
+            $this->db->where('order_userlogo_artworkid', $row['order_artwork_id']);
+            $row['users_logo'] = $this->db->get()->result_array();
+            $order_art[] = $row;
+        }
+
+        return $order_art;
+    }
+
 
     public function get_nonassignorders() {
         $this->db->select('order_id, order_id, order_date, order_num, customer_name, order_items, revenue');
