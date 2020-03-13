@@ -67,7 +67,7 @@ switch($_SERVER['SERVER_NAME']){
             'smtp_host' => 'ssl://smtp.gmail.com',
             'smtp_port' => '465',
             'smtp_user'=>'logosbt@gmail.com',
-            'smtp_pass'=>'NjfJrL9cHALy',
+            'smtp_pass'=>'bYnU%u2Dqf;y6QVj',
             'smtp_timeout'=>'7',
             'validation'=>TRUE,
             'charset'=>'utf8',
