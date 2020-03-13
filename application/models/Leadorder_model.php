@@ -3819,7 +3819,8 @@ Class Leadorder_model extends My_Model {
             $oldorderddata=$this->orders_model->get_order_detail($order['order_id']);
             $compare_array=$this->get_leadorder($order['order_id'], $user_id);
         }
-        $netdata=$this->_get_netpofitweek($order['order_date']);
+        $brand = $order['brand'];
+        $netdata=$this->_get_netpofitweek($order['order_date'], $brand);
         $savepayment=0;
         if ($order_type=='new') {
             // Get Item ID, Order QTY
@@ -4873,8 +4874,8 @@ Class Leadorder_model extends My_Model {
 
 
     // Net Profit per week
-    private function _get_netpofitweek($order_date) {
-        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+    private function _get_netpofitweek($order_date, $brand) {
+        $this->db->select('np.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
         $this->db->from('netprofit np');
         $this->db->where('np.profit_month',NULL);
         $this->db->where('np.datebgn <= ',$order_date);
@@ -4897,6 +4898,7 @@ Class Leadorder_model extends My_Model {
             $total_options=array(
                 'type'=>'week',
                 'start'=>$this->config->item('netprofit_start'),
+                'brand' => $brand,
             );
             $this->load->model('balances_model');
             $rundat=$this->balances_model->get_netprofit_runs($total_options);
