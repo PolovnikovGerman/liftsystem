@@ -2,11 +2,26 @@
     <div class="maincontentmenuarea marketmenu">
         <div class="maincontentmenu">
             <?php foreach ($menu as $item) { ?>
-                <div class="maincontentmenu_item" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                <div class="maincontentmenu_item" data-link="<?= str_replace('#', '', $item['item_link']) ?>"><?= $item['item_name'] ?></div>
             <?php } ?>
         </div>
     </div>
     <div class="maincontent_view">
+        <?php if (isset($searchestimeview)) { ?>
+            <div class="marketingcontentarea" id="searchestimeview" style="display: none;"><?= $searchestimeview ?></div>
+        <?php } ?>
+        <?php if (isset($searcheswordview)) { ?>
+            <div class="marketingcontentarea" id="searcheswordview" style="display: none"><?=$searcheswordview?></div>
+        <?php } ?>
+        <?php if (isset($searchesipadrview)) { ?>
+            <div class="marketingcontentarea" id="searchesipadrview" style="display: none"><?=$searchesipadrview?></div>
+        <?php } ?>
+        <?php if (isset($signupview)) { ?>
+            <div class="marketingcontentarea" id="signupview" style="display: none"><?=$signupview?></div>
+        <?php } ?>
+        <?php if (isset($couponsview)) { ?>
+            <div class="marketingcontentarea" id="couponsview" style="display: none"><?=$couponsview?></div>
+        <?php } ?>
     </div>
 </div>
 
@@ -14,8 +29,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="artModalLabel">New message</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="pageModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>

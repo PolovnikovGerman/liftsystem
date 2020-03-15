@@ -1,26 +1,26 @@
 <!-- Search panel -->
-<input type="hidden" id="perpage"  value="<?= $perpage ?>"/>
-<input type="hidden" id="totalrec" value="<?= $total_rec ?>"/>
-<input type="hidden" id='orderby' value="<?= $order_by ?>"/>
-<input type="hidden" id="direction" value="<?= $direction ?>"/>
-<input type="hidden" id="curpage" value="<?= $cur_page ?>"/>
+<input type="hidden" id="artordperpage"  value="<?= $perpage ?>"/>
+<input type="hidden" id="artordtotalrec" value="<?= $total_rec ?>"/>
+<input type="hidden" id='artordorderby' value="<?= $order_by ?>"/>
+<input type="hidden" id="artorddirection" value="<?= $direction ?>"/>
+<input type="hidden" id="artordcurpage" value="<?= $cur_page ?>"/>
 <div class="generealorder_content">
     <div class="headrow">
         <div class="searchform">
             <img src="/img/icons/magnifier.png">
-            <input placeholder="Enter order #, customer, email" value="" class="generealorder_search" id="monitorsearch"/>
-            <div class="findall" id="find_ord">&nbsp;</div>
-            <div class="clearsrch" id="clear_ord">&nbsp;</div>
+            <input placeholder="Enter order #, customer, email" value="" class="generealorder_search" id="artordsearch"/>
+            <div class="findall" id="artordfind_ord">&nbsp;</div>
+            <div class="clearsrch" id="artordclear_ord">&nbsp;</div>
         </div>
         <div class="filtersarea">
             <div class="sorting_select">
-                <select class="filter_select" id="generalorder_options" name="order_options">
+                <select class="filter_select" id="artorder_options">
                     <option value="" selected="selected">All Orders</option>
                     <option value="1">Show Only Rush</option>
                 </select>
             </div>
             <div class="sorting_select">
-                <select class="filter_select" id="generalfilter_options" name="filter_options">
+                <select class="filter_select" id="artordfilter_options">
                     <option value="" selected="selected">All Orders</option>
                     <option value="1">Waiting on Customer's Approval</option>
                     <option value="2">Need to Make Proof</option>
@@ -36,7 +36,6 @@
         <div class="monitor_pagesviews">
             <div class="artOrderPagination"></div>
         </div>
-
     </div>
     <div class="tablehead">
         <div class="date">Date</div>
@@ -55,4 +54,8 @@
         <div class="salesrepl">Sales Rep</div>
     </div>
     <div class="tabledata">&nbsp;</div>
+</div>
+<input type="hidden" id="artordersviewbrand" value="<?=$brand?>"/>
+<div id="artordersviewbrandmenu">
+    <?=$top_menu?>
 </div>

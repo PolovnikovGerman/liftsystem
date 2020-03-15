@@ -8,7 +8,7 @@
 <container><?=$content_view?></container>
 <footer></footer>
 <!-- loader -->
-<div style="position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; background: url(/img/page_view/overlay.png); text-align: center; z-index: 200; display: none;" id="loader">
+<div style="position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; background: url(/img/page_view/overlay.png); text-align: center; z-index: 1100; display: none;" id="loader">
     <div style="width:100%;z-index: 15;" id="loaderimg">
         <div style="float: none; width:100%;z-index: 100;margin-top: 356px;">
             <img src="/img/page_view/loader.gif">

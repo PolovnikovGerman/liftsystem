@@ -1,0 +1,69 @@
+.searchipaddres_content {
+    clear: both;
+    margin-left: 10px;
+    width: 1003px;
+}
+.searchipaddres_content input {
+    font-size: 13px;
+    font-family: arial, verdana, sans-serif;
+}
+.searchipaddres_head {
+    clear: both;
+    width: 100%;
+}
+.searchipaddres_head > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searchipaddres_head .select_timesearsch {
+    margin-left: 5px;
+    width: 360px;
+}
+.searchipaddres_head .select_custom_period {
+    visibility: hidden;
+    margin-left: 10px;
+}
+.searchipaddres_head .select_custom_period > div {
+    height: 30px;
+    line-height: 30px;
+}
+.searchipaddres_head input.datesearchinpt {
+    width: 75px;
+    margin-right: 10px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+}
+.searchipaddres_head .select_custom_period .customsearchbtn {
+    cursor: pointer;
+}
+.searchipaddres_dataconatiner {
+    clear: both;
+    max-width: 996px;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+/*Table */
+.table-01-umber {
+    background-image: url("/img/marketing/tableipaddr-head-left.png");
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 38px;
+}
+.table-02-umber {
+    background-image: url("/img/marketing/tableipaddr-head-center.png");
+    background-repeat: repeat-x;
+    height: 38px;
+}
+.table-03-umber {
+    background-image: url("/img/marketing/tableipaddr-head-right.png");
+    background-repeat: no-repeat;
+    width: 92px;
+    height: 38px;
+}
+.table-04-umber {
+    background-image: url("/img/marketing/tableipaddr-number.png");
+    background-repeat: no-repeat;
+    width: 43px;
+    height: 25px;
+}

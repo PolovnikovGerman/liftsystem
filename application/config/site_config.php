@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='1.062';
-$config['css_version']='1.062';
+$config['js_version']='1.085';
+$config['css_version']='1.085';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -44,6 +44,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='http://bluetrack.sys/proofview/?doc=';
         break;
     default :
         $config['sean_email']='sean@bluetrack.com';
@@ -55,6 +56,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
         $config['developer_email']='polovnikov.g@gmail.com';
+        $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }
 switch($_SERVER['SERVER_NAME']){
@@ -64,7 +66,7 @@ switch($_SERVER['SERVER_NAME']){
             'smtp_host' => 'ssl://smtp.gmail.com',
             'smtp_port' => '465',
             'smtp_user'=>'logosbt@gmail.com',
-            'smtp_pass'=>'NjfJrL9cHALy',
+            'smtp_pass'=>'bYnU%u2Dqf;y6QVj',
             'smtp_timeout'=>'7',
             'validation'=>TRUE,
             'charset'=>'utf8',
@@ -114,6 +116,8 @@ $config['default_paysystem']='paypal';
 $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',
+    'lift.stressballs.com',
+    'lift_stressballs.local',
 );
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
@@ -140,11 +144,8 @@ $config['defqty_custom']=1000;
 // Minimal timeout of lock - 20 min
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
-if ($_SERVER['SERVER_NAME']=='brown.bluetrack.com') {
-    $config['loctimeout']=130;
-} else {
-    $config['loctimeout']=1200;
-}
+$config['loctimeout']=130;
+$config['loctimeout_local']=1200; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=151;
 $config['inventory_paymethod']=5;
@@ -211,4 +212,41 @@ $config['normal_price_base']=array(
     25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
 );
 
+$config['perpage_orders'] = ['100','150','200','250'];
+$config['leads_perpage'] = 250;
+$config['orders_perpage'] = 150;
+$config['quotes_perpage'] = 250;
+$config['item_specialchars'] = [
+    'item_size', 'item_name', 'item_description1', 'item_description2', 'item_metadescription', 'item_metakeywords', 'item_meta_title',
+];
+$config['cardflds'] = [
+    array('idx' => 'Art Upload', 'name' => 'Art Upload'),
+    array('idx' => 'order_qty', 'name' => 'Item Qty'),
+    array('idx' => 'ship_firstname', 'name' => 'Shipping:First name'),
+    array('idx' => 'ship_lastname', 'name' => 'Shipping:Last Name'),
+    array('idx' => 'ship_company', 'name' => 'Shipping:Company'),
+    array('idx' => 'ship_street1', 'name' => 'Shipping:Address 1'),
+    array('idx' => 'ship_street2', 'name' => 'Shipping:Address 2'),
+    array('idx' => 'ship_cityname', 'name' => 'Shipping:City'),
+    array('idx' => 'ship_state', 'name' => 'Shipping:State'),
+    array('idx' => 'ship_zipcode', 'name' => 'Shipping:Zip'),
+    array('idx' => 'ship_country', 'name' => 'Shipping:Country'),
+    array('idx' => 'phonenum', 'name' => 'Contact:Phone'),
+    array('idx' => 'emailaddr', 'name' => 'Contact:Email'),
+    array('idx' => 'firstname', 'name' => 'Billing:First Name'),
+    array('idx' => 'lastname', 'name' => 'Billing:Last Name'),
+    array('idx' => 'company', 'name' => 'Billing:Company'),
+    array('idx' => 'address1', 'name' => 'Billing:Address 1'),
+    array('idx' => 'address2', 'name' => 'Billing:Address 2'),
+    array('idx' => 'cityname', 'name' => 'Billing:City'),
+    array('idx' => 'state', 'name' => 'Billing:State'),
+    array('idx' => 'zipcode', 'name' => 'Billing:Zip'),
+    array('idx' => 'country', 'name' => 'Billing:Country'),
+    array('idx' => 'ship_method', 'name' => 'Shipping Method'),
+    array('idx' => 'cctype', 'name' => 'CC:Type'),
+    array('idx' => 'ccnumber', 'name' => 'CC:Number'),
+    array('idx' => 'ccexpmonth', 'name' => 'CC:Exp. month'),
+    array('idx' => 'ccexpyear', 'name' => 'CC:Exp. year'),
+    array('idx' => 'ccverification', 'name' => 'CC:CVS2'),
+];
 $config['orders_perpage'] = [100, 250, 500, ];

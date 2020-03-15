@@ -79,6 +79,11 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function leads_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('lead_id, update_date, lead_number');
+        $this->db->from('ts_leads');
     public function printshop_add_brand() {
         $brands = ['BT','SB'];
         $this->load->helper('array_helper');
@@ -103,6 +108,10 @@ Class Cronjob extends CI_Controller
             $this->db->where('onboat_container', $row['onboat_container']);
             $this->db->update('ts_printshop_onboats');
             echo 'On boat '.$row['onboat_container'].' Brand '.$webs.PHP_EOL;
+            $this->db->set('update_date', $row['update_date']);
+            $this->db->where('lead_id', $row['lead_id']);
+            $this->db->update('ts_leads');
+            echo 'Lead '.$row['lead_number'].' Brand '.$webs.PHP_EOL;
         }
     }
 
