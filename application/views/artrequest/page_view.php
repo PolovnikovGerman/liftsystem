@@ -5,6 +5,7 @@
 <input type="hidden" id="perpageproof" value="<?=$perpage?>"/>
 <input type="hidden" id="hideartproof" value="<?=(isset($hideart) ? $hideart : '')?>"/>
 <div class="proof_content">
+
     <div class="proof_select_type">
         <div class="proof_selecttype_label">Display:</div>
         <select id="proof_status" class="proof_status_select">
@@ -12,14 +13,11 @@
             <option value="" <?= ($assign == 1 ? '' : 'selected="selected"') ?>>All Proofs</option>
         </select>
         <input type="text" id="proofsearch" class="proofsearch search_input" placeholder="Req #, customer,company, email.."/>
-        <div class="leadsearch_actions">
-            <a class="find_it" id="find_proof" href="javascript:void(0);">Search It</a>
-            <a class="find_it" id="clear_proof" href="javascript:void(0);">Clear</a>
-        </div>
+        <a class="find_it" id="find_proof" href="javascript:void(0);">Search It</a>
+        <a class="find_it" id="clear_proof" href="javascript:void(0);">Clear</a>
     </div>
-    <div class="proof_pagination">
-        <div id="proofpagination"></div>
-    </div>
+    <div class="proof_pagination" id="proofpagination"></div>
+
     <div class="proof_title">
         <div class="proof_ordnum">#</div>
         <div class="proof_del">
@@ -52,7 +50,7 @@
     </div>
     <div id="proof_dialog" style="display: none; width: 895px; height: 443px;"></div>
 </div>
-<input type="hidden" id="artrequestviewbrand" value="<?=$brand?>"/>
-<div id="artrequestviewbrandmenu">
+<input type="hidden" id="proofrequestsbrand" value="<?=$brand?>"/>
+<div id="proofrequestsbrandmenu">
     <?=$top_menu?>
 </div>

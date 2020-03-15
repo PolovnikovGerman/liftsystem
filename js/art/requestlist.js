@@ -1,5 +1,5 @@
 var empty_proofsearch='Customer,company, email..';
-var main_proofurl="/art"
+var main_proofurl="/proofrequests"
 function init_proofdata() {
     $("select#proof_status").unbind('change').change(function(){
         search_proofs();
@@ -19,25 +19,24 @@ function init_proofdata() {
     /* Search actions */
     $("a#clear_proof").unbind('click').click(function(){
         $("select#proof_status").val(1);
-        $("select#proofbrand").val("");
         $("input#proofsearch").val('');
         search_proofs();
     })
     $("a#find_proof").unbind('click').click(function(){
         search_proofs();
-    })
+    });
     // Change Brand
-    $("#artrequestviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+    $("#proofrequestsbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
-        $("#artrequestviewbrand").val(brand);
-        $("#artrequestviewbrandmenu").find("div.brandchoseval").each(function(){
+        $("#proofrequestsbrand").val(brand);
+        $("#proofrequestsbrandmenu").find("div.brandchoseval").each(function(){
             var curbrand=$(this).data('brand');
             if (curbrand==brand) {
                 $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#artrequestviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+                $("#proofrequestsbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
             } else {
                 $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#artrequestviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+                $("#proofrequestsbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
             }
         });
         search_proofs();
@@ -51,7 +50,7 @@ function search_proofs() {
         search='';
     }
     var assign=$("select#proof_status").val();
-    var brand=$("input#artrequestviewbrand").val();
+    var brand=$("input#proofrequestsbrand").val();
     // var showdel=$("input#hidedelproofs").prop('checked');
     var deleted=$("select#hidedelproofs").val();
     var url=main_proofurl+"/proof_count";
@@ -97,18 +96,15 @@ function pageProofsCallback(page_index) {
     var params=new Array();
     params.push({name:'search',value:search});
     params.push({name:'assign',value:$("select#proof_status").val()});
-    params.push({name:'brand',value:$("input#artrequestviewbrand").val()});
+    params.push({name:'brand',value:$("input#proofrequestsbrand").val()});
     params.push({name:'offset',value:page_index});
     params.push({name:'limit',value:$("#perpageproof").val()});
     params.push({name:'maxval',value:$('#totalproof').val()});
     params.push({name:'order_by',value:$("#orderproof").val()});
     params.push({name:'direction',value:$("#direcproof").val()});
     params.push({name:'hideart',value:$("#hideartproof").val()});
+
     var showdel=$("input#hidedelproofs").prop('checked');
-    /* var deleted=0;
-    if (showdel==true) {
-        deleted=1;
-    }*/
     var deleted=$("select#hidedelproofs").val();
     params.push({name:'show_deleted',value:deleted})
 
@@ -120,6 +116,7 @@ function pageProofsCallback(page_index) {
             $("div.proof_tabledat").empty().html(response.data.content);
             $("#curpageproof").val(page_index);
             init_prooflistmanage();
+            $("#loader").css('display','none');
         } else {
             $("#loader").hide();
             show_error(response);
@@ -265,7 +262,7 @@ function revert_proof(proof_id, proofnum) {
 }
 
 function prooflead(mailid) {
-    var url="/art/change_status";
+    var url=main_proofurl+"/change_status";
     $.post(url, {'quest_id':mailid, 'type':'proof'}, function(response){
         if (response.errors=='') {
             $("#artModal").find('div.modal-dialog').css('width','565px');
@@ -296,7 +293,7 @@ function prooflead(mailid) {
 
 function change_leaddata() {
     var lead_id=$("#lead_id").val();
-    var url="/art/change_leadrelation";
+    var url=main_proofurl+"/change_leadrelation";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             $("div#artModal div.leaddate").empty().html(response.data.lead_date);
@@ -309,7 +306,7 @@ function change_leaddata() {
 }
 
 function update_queststatus() {
-    var url="/art/savequeststatus";
+    var url=main_proofurl+"/savequeststatus";
     var dat=$("form#msgstatus").serializeArray();
     $.post(url, dat, function(response){
         if (response.errors=='') {
@@ -326,7 +323,7 @@ function create_leadproof() {
     var mail_id=$("input#mail_id").val();
     var type='Proof';
     var leademail_id=$("input#leademail_id").val();
-    var url="/art/create_leadmessage";
+    var url=main_proofurl+"/create_leadmessage";
     $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
         if (response.errors=='') {
             $("#artModal").modal('hide');

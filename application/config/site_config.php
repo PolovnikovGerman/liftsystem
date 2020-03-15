@@ -221,3 +221,39 @@ $config['normal_price_base']=array(
 );
 
 $config['perpage_orders'] = ['100','150','200','250'];
+$config['leads_perpage'] = 250;
+$config['orders_perpage'] = 150;
+$config['quotes_perpage'] = 250;
+$config['item_specialchars'] = [
+    'item_size', 'item_name', 'item_description1', 'item_description2', 'item_metadescription', 'item_metakeywords', 'item_meta_title',
+];
+$config['cardflds'] = [
+    array('idx' => 'Art Upload', 'name' => 'Art Upload'),
+    array('idx' => 'order_qty', 'name' => 'Item Qty'),
+    array('idx' => 'ship_firstname', 'name' => 'Shipping:First name'),
+    array('idx' => 'ship_lastname', 'name' => 'Shipping:Last Name'),
+    array('idx' => 'ship_company', 'name' => 'Shipping:Company'),
+    array('idx' => 'ship_street1', 'name' => 'Shipping:Address 1'),
+    array('idx' => 'ship_street2', 'name' => 'Shipping:Address 2'),
+    array('idx' => 'ship_cityname', 'name' => 'Shipping:City'),
+    array('idx' => 'ship_state', 'name' => 'Shipping:State'),
+    array('idx' => 'ship_zipcode', 'name' => 'Shipping:Zip'),
+    array('idx' => 'ship_country', 'name' => 'Shipping:Country'),
+    array('idx' => 'phonenum', 'name' => 'Contact:Phone'),
+    array('idx' => 'emailaddr', 'name' => 'Contact:Email'),
+    array('idx' => 'firstname', 'name' => 'Billing:First Name'),
+    array('idx' => 'lastname', 'name' => 'Billing:Last Name'),
+    array('idx' => 'company', 'name' => 'Billing:Company'),
+    array('idx' => 'address1', 'name' => 'Billing:Address 1'),
+    array('idx' => 'address2', 'name' => 'Billing:Address 2'),
+    array('idx' => 'cityname', 'name' => 'Billing:City'),
+    array('idx' => 'state', 'name' => 'Billing:State'),
+    array('idx' => 'zipcode', 'name' => 'Billing:Zip'),
+    array('idx' => 'country', 'name' => 'Billing:Country'),
+    array('idx' => 'ship_method', 'name' => 'Shipping Method'),
+    array('idx' => 'cctype', 'name' => 'CC:Type'),
+    array('idx' => 'ccnumber', 'name' => 'CC:Number'),
+    array('idx' => 'ccexpmonth', 'name' => 'CC:Exp. month'),
+    array('idx' => 'ccexpyear', 'name' => 'CC:Exp. year'),
+    array('idx' => 'ccverification', 'name' => 'CC:CVS2'),
+];

@@ -5146,7 +5146,9 @@ Class Leadorder_model extends My_Model {
         $this->db->from("{$item_table}");
         $this->db->where('item_id', $item_id);
         $itmres=$this->db->get()->row_array();
-
+        if (isset($itmres['item_template'])) {
+            $itemtype = $itmres['item_template'];
+        }
         $price = 0;
         if ($itemtype==$this->normal_template) {
             $price_bases=$this->config->item('normal_price_base');

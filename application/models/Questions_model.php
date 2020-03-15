@@ -11,79 +11,82 @@ Class Questions_model extends My_Model {
         parent::__construct();
     }
 
-//    function get_count_questions($options=array()) {
-//        $this->db->select('count(e.email_id) as cnt');
-//        $this->db->from('ts_emails e');
-//        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
-//        $this->db->where('e.email_type', Questions_model::EMAIL_TYPE);
-//        if (isset($options['search'])) {
-//            $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,"") )) ',  strtoupper($options['search']));
-//        }
-//        if (isset($options['assign'])) {
-//            $this->db->where('lem.email_id is null');
-//        }
-//        if (isset($options['hideincl'])) {
-//            $this->db->where('e.email_include_lead',1);
-//        }
-//        if (isset($options['brand'])) {
-//            $this->db->where('e.email_websys',$options['brand']);
-//        }
-//        $res=$this->db->get()->row_array();
-//        return $res['cnt'];
-//    }
-//
-//    function get_questions($search,$order_by,$direct,$limit,$offset,$maxval) {
-//        $this->db->select('e.*,l.lead_number, l.lead_id');
-//        $this->db->from('ts_emails e');
-//        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
-//        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
-//        $this->db->where('e.email_type', Questions_model::EMAIL_TYPE);
-//        if (isset($search['search'])) {
-//            $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,"") )) ',  strtoupper($search['search']));
-//        }
-//        if (isset($search['hideincl'])) {
-//            $this->db->where('e.email_include_lead',1);
-//        }
-//        if (isset($search['assign'])) {
-//            $this->db->where('lem.email_id is null');
-//        }
-//        if (isset($search['brand'])) {
-//            $this->db->where('e.email_websys',$search['brand']);
-//        }
-//        $this->db->limit($limit,$offset);
-//        $this->db->order_by($order_by,$direct);
-//        $res=$this->db->get()->result_array();
-//        $out=array();
-//        if ($offset>$maxval) {
-//            $ordnum = $maxval;
-//        } else {
-//            $ordnum = $maxval - $offset;
-//        }
-//
-//        $incl_icon='<img src="/img/noninclide_lead_icon.png" alt="Include"/>';
-//        $nonincl_icon='<img src="/img/inclide_lead_icon.png" alt="Non Include"/>';
-//        foreach ($res as $row) {
-//            $row['ordnum']=$ordnum;
-//            $row['inclicon']='&nbsp';
-//            if ($row['lead_id']=='') {
-//                $row['inclicon']=($row['email_include_lead']==0 ? $nonincl_icon : $incl_icon);
-//            }
-//            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
-//            if ($row['email_sendermail']) {
-//                $row['email_sendermail']=($row['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$row['email_sendermail'].'\');return false;">'.$row['email_sendermail'].'</a>' : $row['email_sendermail']);
-//            } else {
-//                $row['email_sendermail']=Questions_model::EMAIL_EMPTY;
-//            }
-//            $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
-//            $row['assign_class']=($row['lead_number']=='' ? 'questassign' : '');
-//            $row['lead_number']=($row['lead_number']=='' ? '&nbsp;' : 'L'.$row['lead_number']);
-//            $out[]=$row;
-//            $ordnum--;
-//        }
-//        return $out;
-//    }
-//
+    public function get_count_questions($options=array()) {
+        $this->db->select('count(e.email_id) as cnt');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        if (isset($options['search'])) {
+            $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,"") )) ',  strtoupper($options['search']));
+        }
+        if (isset($options['assign'])) {
+            $this->db->where('lem.email_id is null');
+        }
+        if (isset($options['hideincl'])) {
+            $this->db->where('e.email_include_lead',1);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            // $this->db->where('e.email_websys',$options['brand']);
+            $this->db->where('e.brand', $options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_questions($search,$order_by,$direct,$limit,$offset,$maxval) {
+        $this->db->select('e.*,l.lead_number, l.lead_id');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        if (isset($search['search'])) {
+            $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,"") )) ',  strtoupper($search['search']));
+        }
+        if (isset($search['hideincl'])) {
+            $this->db->where('e.email_include_lead',1);
+        }
+        if (isset($search['assign'])) {
+            $this->db->where('lem.email_id is null');
+        }
+        if (isset($search['brand']) && $search['brand']!=='ALL') {
+            // $this->db->where('e.email_websys',$search['brand']);
+            $this->db->where('e.brand', $search['brand']);
+        }
+        $this->db->limit($limit,$offset);
+        $this->db->order_by($order_by,$direct);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        if ($offset>$maxval) {
+            $ordnum = $maxval;
+        } else {
+            $ordnum = $maxval - $offset;
+        }
+
+        $incl_icon='<img src="/img/leads/noninclide_lead_icon.png" alt="Include"/>';
+        $nonincl_icon='<img src="/img/leads/inclide_lead_icon.png" alt="Non Include"/>';
+        foreach ($res as $row) {
+            $row['ordnum']=$ordnum;
+            $row['inclicon']='&nbsp';
+            if ($row['lead_id']=='') {
+                $row['inclicon']=($row['email_include_lead']==0 ? $nonincl_icon : $incl_icon);
+            }
+            $row['email_date']=date('m/d/y',strtotime($row['email_date']));
+            if ($row['email_sendermail']) {
+                $row['email_sendermail']=($row['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$row['email_sendermail'].'\');return false;">'.$row['email_sendermail'].'</a>' : $row['email_sendermail']);
+            } else {
+                $row['email_sendermail']=$this->EMAIL_EMPTY;
+            }
+            $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
+            $row['assign_class']=($row['lead_number']=='' ? 'questassign' : '');
+            $row['lead_number']=($row['lead_number']=='' ? '&nbsp;' : 'L'.$row['lead_number']);
+            $out[]=$row;
+            $ordnum--;
+        }
+        return $out;
+    }
+
     public function get_quest_data($quest_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->INIT_ERRMSG];
         $this->db->select('e.*,lem.leademail_id, l.lead_id, l.lead_number, l.lead_date, l.lead_customer, l.lead_mail');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
@@ -91,12 +94,14 @@ Class Questions_model extends My_Model {
         $this->db->where('e.email_id',$quest_id);
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
+            $out['result']=$this->success_result;
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
             $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['chk']=($res['email_status']==0 ? 'chreplic' : '');
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
+            $out['data'] = $res;
         }
-        return $res;
+        return $out;
     }
 
 //    function save_queststatus($quest) {

@@ -22,19 +22,17 @@
 }
 .proof_selecttype_label {
     float: left;
-    width: 50px
+    width: 50px;
+    height: 24px;
+    line-height: 24px!important;
 }
 select.proof_status_select {
     float: left;
     font-size: 12px;
     margin-left: 5px;
     width: 120px;
-}
-select.proof_brandselect {
-    float: left;
-    font-size: 12px;
-    margin-left: 5px;
-    width: 152px;
+    height: 24px;
+    line-height: 24px;
 }
 input.proofsearch {
     float: left;
@@ -43,22 +41,22 @@ input.proofsearch {
     width: 206px;
     height: 24px;
     line-height: 24px;
+    padding-left: 3px;
 }
 .proof_title {
     background: none repeat scroll 0 0 #BCBCBC;
     border: 1px solid #2F2F2F;
     clear: both;
     color: #000000;
-    float: left;
     font-size: 13px;
     text-align: center;
     width: 969px;
+    margin-top: 10px;
 }
 .proof_title div {
     height: 26px;
     line-height: 26px;
 }
-
 .proof_tabledat {
     clear: both;
     float: left;

@@ -208,5 +208,11 @@ Class Vendors_model extends My_Model
         return $res;
     }
 
+    public function get_count_vendors() {
+        $this->db->select('count(vendor_id) as cnt');
+        $this->db->from('vendors');
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
 
 }
