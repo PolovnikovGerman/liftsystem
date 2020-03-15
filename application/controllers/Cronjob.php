@@ -84,6 +84,17 @@ Class Cronjob extends CI_Controller
         $this->load->helper('array_helper');
         $this->db->select('lead_id, update_date, lead_number');
         $this->db->from('ts_leads');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->set('update_date', $row['update_date']);
+            $this->db->where('lead_id', $row['lead_id']);
+            $this->db->update('ts_leads');
+            echo 'Lead '.$row['lead_number'].' Brand '.$webs.PHP_EOL;
+        }
+    }
+
     public function printshop_add_brand() {
         $brands = ['BT','SB'];
         $this->load->helper('array_helper');
