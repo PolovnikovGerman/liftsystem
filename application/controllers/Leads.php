@@ -866,8 +866,11 @@ class Leads extends My_Controller {
         $this->load->model('vendors_model');
         $this->load->model('items_model');
         // Get list of vendors
-        $datqs['vendors']=$this->vendors_model->get_vendors_list('v.vendor_name');
-        $datqs['perpage']=$this->config->item('orders_perpage');
+        $v_options = [
+            'order_by' => 'v.vendor_name',
+        ];
+        $datqs['vendors']=$this->vendors_model->get_vendors_list($v_options);
+        $datqs['perpage']=$this->PERPAGE_LEADS;
 
         $item_options = [];
         if ($brand!=='ALL') {

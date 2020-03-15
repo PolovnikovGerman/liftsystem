@@ -2816,7 +2816,11 @@ Class Leadorder_model extends My_Model {
         $custom_class=$vendor_class="";
         $custom_issues=$this->tickets_model->get_issues('C');
         $vendor_issues=$this->tickets_model->get_issues('V');
-        $vendors=$this->vendors_model->get_vendors_list('v.vendor_name','asc');
+        $v_options=[
+            'order_by' => 'v.vendor_name',
+            'direct' => 'asc',
+        ];
+        $vendors=$this->vendors_model->get_vendors_list($v_options);
         $options=array(
             'order_num'=>$order['order_num'],
         );

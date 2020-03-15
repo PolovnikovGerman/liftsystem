@@ -59,8 +59,6 @@ select.selectrecords {
 }
 .purchorder_paginator {
     float: right!important;
-    margin-top: -19px;
-    margin-bottom: -20px;
 }
 .paymethods {
     clear: both;

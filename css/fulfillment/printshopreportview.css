@@ -144,8 +144,6 @@ and open the template in the editor.
 .printshopcontent > .orderreportheadrow > .orderreport_pagination {
     float: right !important;
     margin-right: 7px;
-    margin-top: -20px;
-    margin-bottom: -20px;
 }
 .printshopcontent > .orderreporttablehead {
     clear: both;

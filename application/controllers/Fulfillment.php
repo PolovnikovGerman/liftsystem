@@ -433,8 +433,10 @@ class Fulfillment extends MY_Controller
             $error='';
             $this->load->model('orders_model');
             $this->load->model('vendors_model');
-
-            $vendors=$this->vendors_model->get_vendors_list('v.vendor_name');
+            $v_options = [
+                'order_by' => 'v.vendor_name',
+            ];
+            $vendors=$this->vendors_model->get_vendors_list($v_options);
             $methods=$this->orders_model->get_methods_edit();
             $order_id=$this->input->post('order_id');
             // Get data about order
@@ -488,7 +490,10 @@ class Fulfillment extends MY_Controller
             $this->load->model('vendors_model');
             $this->load->model('orders_model');
             $this->load->model('payments_model');
-            $vendors=$this->vendors_model->get_vendors_list('v.vendor_name');
+            $v_options = [
+                'order_by' => 'v.vendor_name',
+            ];
+            $vendors=$this->vendors_model->get_vendors_list($v_options);
             $methods=$this->orders_model->get_methods_edit();
             $lowprofit_view='';
             $editpo_view='';
@@ -2221,7 +2226,7 @@ class Fulfillment extends MY_Controller
             'oa.amount_sum-asc'=>'Amount &#9650;',
         );
 
-        $vsort='v.vendor_name';
+        $vsort=['order_by' => 'v.vendor_name'];
         $vendors=$this->vendors_model->get_vendors_list($vsort);
 
         $nonplaceview='';
