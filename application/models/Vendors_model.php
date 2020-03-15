@@ -199,15 +199,6 @@ Class Vendors_model extends My_Model
 
     }
 
-    public function get_vendors_list($order_by='v.vendor_id',$direct='asc') {
-        $this->db->select('v.*, c.calendar_name');
-        $this->db->from('vendors v');
-        $this->db->join('calendars c','c.calendar_id=v.calendar_id','left');
-        $this->db->order_by($order_by,$direct);
-        $res=$this->db->get()->result_array();
-        return $res;
-    }
-
     public function get_count_vendors() {
         $this->db->select('count(vendor_id) as cnt');
         $this->db->from('vendors');
@@ -215,4 +206,112 @@ Class Vendors_model extends My_Model
         return $res['cnt'];
     }
 
+    public function get_vendors_list($options) {
+        $this->db->select('v.*, c.calendar_name');
+        $this->db->from('vendors v');
+        $this->db->join('calendars c','c.calendar_id=v.calendar_id','left');
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['order_by'], $options['direct']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function add_vendor() {
+        $vendor=array(
+            'vendor_id'=>0,
+            'vendor_name'=>'',
+            'vendor_zipcode'=>'',
+            'calendar_id'=>'',
+        );
+        return $vendor;
+    }
+
+    public function get_vendor($vendor_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor not fpund'];
+        $this->db->select('*');
+        $this->db->from('vendors');
+        $this->db->where('vendor_id', $vendor_id);
+        $vendor = $this->db->get()->row_array();
+        if (isset($vendor['vendor_id'])) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $vendor;
+        }
+        return $out;
+    }
+
+    function save_vendor($vendor_id, $vendor_name, $vendor_zipcode, $calendar_id) {
+        $out=array('result'=>$this->error_result,'msg'=>'Error during save Vendor');
+        if (trim($vendor_name)=='') {
+            $out['msg']='Vendor name required parameter';
+        } else {
+            $this->db->select('count(*) as cnt');
+            $this->db->from('vendors');
+            $this->db->where('vendor_name',$vendor_name);
+            $this->db->where('vendor_id !=',$vendor_id);
+            $res=$this->db->get()->row_array();
+            if ($res['cnt']>0) {
+                $out['msg']='Vendor name non unique';
+            } else {
+                $this->db->set('vendor_name',$vendor_name);
+                $this->db->set('vendor_zipcode',$vendor_zipcode);
+                $this->db->set('calendar_id',($calendar_id=='' ? NULL : $calendar_id));
+                if ($vendor_id==0) {
+                    $this->db->insert('vendors');
+                    $vendor_id=$this->db->insert_id();
+                } else {
+                    $this->db->where('vendor_id',$vendor_id);
+                    $this->db->update('vendors');
+                }
+                if ($vendor_id==0) {
+                    $out['msg']='Vendors data wasn\'t saved. Please, try later';
+                } else {
+                    $out['result'] = $this->success_result;
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function delete_vendor($vendor_id) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Vendor Not Found'];
+        $this->db->select('count(vendor_id) cnt');
+        $this->db->from('vendors');
+        $this->db->where('vendor_id',$vendor_id);
+        $chkres = $this->db->get()->row_array();
+        if ($chkres['cnt']==1) {
+            $this->db->where('vendor_id',$vendor_id);
+            $this->db->delete('vendors');
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function vendor_includerep($vendor_id, $payinclude) {
+        $this->db->set('payinclude', $payinclude);
+        $this->db->where('vendor_id', $vendor_id);
+        $this->db->update('vendors');
+        return TRUE;
+    }
+
+    public function vendors_included() {
+        $this->db->select('vendor_id, vendor_name');
+        $this->db->from('vendors');
+        $this->db->where('payinclude', 1);
+        $this->db->order_by('payinclorder, vendor_name');
+        $list=$this->db->get()->result_array();
+        return $list;
+    }
 }

@@ -60,8 +60,7 @@ switch($_SERVER['SERVER_NAME']){
         break;
 }
 switch($_SERVER['SERVER_NAME']){
-    case 'tempsys.net':
-
+    case 'lift_stressballs.local':
         $config['email_setup']=array(
             'protocol' => 'smtp',
             'smtp_host' => 'ssl://smtp.gmail.com',
@@ -74,13 +73,6 @@ switch($_SERVER['SERVER_NAME']){
             'wordwrap'=> TRUE,
             'newline'=>'\r\n',
         );
-        /*
-        $config['email_setup']=array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf8',
-            'wordwrap'=> TRUE,
-        );
-        */
         $config['artorderdaily_to']='polovnikov.g@gmail.com';
         $config['artorderdaily_cc']=array(
             'polovnikov.german@gmail.com',
@@ -222,7 +214,6 @@ $config['normal_price_base']=array(
 
 $config['perpage_orders'] = ['100','150','200','250'];
 $config['leads_perpage'] = 250;
-$config['orders_perpage'] = 150;
 $config['quotes_perpage'] = 250;
 $config['item_specialchars'] = [
     'item_size', 'item_name', 'item_description1', 'item_description2', 'item_metadescription', 'item_metakeywords', 'item_meta_title',
@@ -257,3 +248,4 @@ $config['cardflds'] = [
     array('idx' => 'ccexpyear', 'name' => 'CC:Exp. year'),
     array('idx' => 'ccverification', 'name' => 'CC:CVS2'),
 ];
+$config['orders_perpage'] = [100, 250, 500, ];

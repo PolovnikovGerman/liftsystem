@@ -95,4 +95,35 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function printshop_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('printshop_instock_id');
+        $this->db->from('ts_printshop_instock');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('printshop_instock_id', $row['printshop_instock_id']);
+            $this->db->update('ts_printshop_instock');
+            echo 'Instock '.$row['printshop_instock_id'].' Brand '.$webs.PHP_EOL;
+        }
+        $this->db->select('onboat_container, count(*) as cnt');
+        $this->db->from('ts_printshop_onboats');
+        $this->db->group_by('onboat_container');
+        $this->db->order_by('onboat_container');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->where('onboat_container', $row['onboat_container']);
+            $this->db->update('ts_printshop_onboats');
+            echo 'On boat '.$row['onboat_container'].' Brand '.$webs.PHP_EOL;
+            $this->db->set('update_date', $row['update_date']);
+            $this->db->where('lead_id', $row['lead_id']);
+            $this->db->update('ts_leads');
+            echo 'Lead '.$row['lead_number'].' Brand '.$webs.PHP_EOL;
+        }
+    }
+
 }
