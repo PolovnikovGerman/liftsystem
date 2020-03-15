@@ -24,6 +24,7 @@
     <div class="itemscost"><?=MoneyOutput($row['costitem'])?></div>
     <div class="oranplate"><?=QTYOutput($row['oranplate'],1)?></div>
     <div class="blueplate"><?=QTYOutput($row['blueplate'],1)?></div>
+    <div class="beigeplate"><?=QTYOutput($row['beigeplate'],1)?></div>
     <div class="totalplate"><?=QTYOutput($row['totalplates'],1)?></div>
     <div class="platecost"><?=MoneyOutput($row['platescost'])?></div>
     <div class="totalcost"><?=MoneyOutput($row['itemstotalcost'])?></div>

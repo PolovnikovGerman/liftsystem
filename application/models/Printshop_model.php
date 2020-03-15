@@ -1366,12 +1366,13 @@ Class Printshop_model extends MY_Model
     public function get_orderreport_totals($options=array()) {
         $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
         $this->db->select('sum(oa.shipped+oa.kepted+oa.misprint)as totalqty');
-        $this->db->select('sum(oa.orangeplate+oa.blueplate) as totalplate');
+        $this->db->select('sum(oa.orangeplate+oa.blueplate+oa.beigeplate) as totalplate');
         $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*oa.extracost) as total_extra');
         $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*(oa.price+oa.extracost)) as item_cost, sum(oa.orangeplate) as oranplate');
-        $this->db->select('sum(oa.blueplate) as blueplate, sum(oa.misprint*(oa.price+oa.extracost)) as misprint_cost');
+        $this->db->select('sum(oa.blueplate) as blueplate, sum(oa.beigeplate) as beigeplate, sum(oa.misprint*(oa.price+oa.extracost)) as misprint_cost');
         $this->db->select('sum(oa.orangeplate*oa.orangeplate_price) as orangeplatecost');
         $this->db->select('sum(oa.blueplate*oa.blueplate_price) as blueplatecost');
+        $this->db->select('sum(oa.beigeplate*oa.beigeplate_price) as beigeplatecost');
         $this->db->select('sum(oa.printshop_total) as total_cost');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
@@ -1404,16 +1405,13 @@ Class Printshop_model extends MY_Model
     // Get Data with Order Reports
     public function get_orderreport_data($options) {
         // Get Cost - Blue and Orange plates
-        // $platesprice=$this->_get_plates_costs();
-        // $blueplate_price=$platesprice['blueplate_price'];
-        // $orangeplate_price=$platesprice['orangeplate_price'];
         $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num');
         $this->db->select('(oa.price+oa.extracost) as priceea');
         $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
         $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
         $this->db->select('(oa.shipped+oa.kepted+oa.misprint) as totalitem');
-        $this->db->select('(oa.orangeplate+oa.blueplate) as totalplates');
-        $this->db->select('(oa.orangeplate*oa.orangeplate_price+oa.blueplate*oa.blueplate_price) as platescost');
+        $this->db->select('(oa.orangeplate+oa.blueplate+oa.beigeplate) as totalplates');
+        $this->db->select('(oa.orangeplate*oa.orangeplate_price+oa.blueplate*oa.blueplate_price+oa.beigeplate*oa.beigeplate_price) as platescost');
         $this->db->select('oa.printshop_total as totalitemcost');
         $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
         $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
@@ -1474,6 +1472,7 @@ Class Printshop_model extends MY_Model
                 'costitem'=>round($row['costitem'],2),
                 'oranplate'=>$row['orangeplate'],
                 'blueplate'=>$row['blueplate'],
+                'beigeplate' => $row['beigeplate'],
                 'totalplates'=>$row['totalplates'],
                 'platescost'=>$row['platescost'],
                 'itemstotalcost'=>$row['totalitemcost'],
@@ -1513,6 +1512,7 @@ Class Printshop_model extends MY_Model
         $platesprice=$this->_get_plates_costs();
         $blueplate_price=$platesprice['blueplate_price'];
         $orangeplate_price=$platesprice['orangeplate_price'];
+        $beigeplate_price = $platesprice['beigeplate_price'];
         $data=array(
             'printshop_income_id'=>0,
             'printshop_date'=>time(),
@@ -1525,9 +1525,11 @@ Class Printshop_model extends MY_Model
             'extracost'=>0,
             'orangeplate'=>0,
             'blueplate'=>0,
+            'beigeplate' => 0,
             'extraitem'=>0,
             'orangeplate_price'=>$orangeplate_price,
             'blueplate_price'=>$blueplate_price,
+            'beigeplate_price' => $beigeplate_price,
             'printshop_type'=>'M',
             'order_id'=>0,
             'order_num'=>'',
@@ -1542,8 +1544,8 @@ Class Printshop_model extends MY_Model
         $costitem=$totalea*($order['shipped']+$order['kepted']+$order['misprint']);
         $misprint_proc=($order['shipped']==0 ? 0 : $order['misprint']/$order['shipped']*100);
         $misprintcost=$order['misprint']*$totalea;
-        $totalplates=$order['orangeplate']+$order['blueplate'];
-        $platescost=$order['orangeplate']*$order['orangeplate_price']+$order['blueplate']*$order['blueplate_price'];
+        $totalplates=$order['orangeplate']+$order['blueplate']+$order['beigeplate'];;
+        $platescost=$order['orangeplate']*$order['orangeplate_price']+$order['blueplate']*$order['blueplate_price']+$order['beigeplate']*$order['beigeplate_price'];
         $totalitemcost=$platescost+$costitem;
         $data=array(
             'printshop_income_id'=>$order['printshop_income_id'],
@@ -1566,6 +1568,8 @@ Class Printshop_model extends MY_Model
             'orangeplate_price'=>$order['orangeplate_price'],
             'blueplate'=>$order['blueplate'],
             'blueplate_price'=>$order['blueplate_price'],
+            'beigeplate' => $order['beigeplate'],
+            'beigeplate_price' => $order['beigeplate_price'],
             'totalplates'=>$totalplates,
             'platescost'=>$platescost,
             'itemstotalcost'=>$totalitemcost,
@@ -1579,7 +1583,7 @@ Class Printshop_model extends MY_Model
 
     // Get Data about config values (plates prices, etc)
     public function _get_plates_costs() {
-        $this->db->select('orangeplate_price, blueplate_price, repaid_cost, inv_addcost');
+        $this->db->select('orangeplate_price, blueplate_price, repaid_cost, inv_addcost, beigeplate_price');
         $this->db->from('ts_configs');
         $res=$this->db->get()->row_array();
         return $res;
@@ -1670,6 +1674,7 @@ Class Printshop_model extends MY_Model
         $this->db->set('misprint', intval($orderdata['misprint']));
         $this->db->set('orangeplate', floatval($orderdata['orangeplate']));
         $this->db->set('blueplate', floatval($orderdata['blueplate']));
+        $this->db->set('beigeplate', floatval($orderdata['beigeplate']));
         $this->db->set('price', floatval($orderdata['price']));
         $this->db->set('extracost', floatval($orderdata['extracost']));
         if ($orderdata['printshop_history']==0) {
@@ -1682,6 +1687,7 @@ Class Printshop_model extends MY_Model
             $this->db->set('order_id', $orderdata['order_id']);
             $this->db->set('orangeplate_price', $orderdata['orangeplate_price']);
             $this->db->set('blueplate_price', $orderdata['blueplate_price']);
+            $this->db->set('beigeplate_price', floatval($orderdata['beigeplate_price']));
             $this->db->set('vendor_id', $this->config->item('inventory_vendor'));
             $this->db->set('method_id', $this->config->item('inventory_paymethod'));
             $this->db->set('amount_date', time());

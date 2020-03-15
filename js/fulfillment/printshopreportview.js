@@ -180,7 +180,25 @@ function init_orderreport_page() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $("div.showorangeplate").unbind('click').click(function () {
+        var flagshow = $("input#showorangeplate").val();
+        if (flagshow==0) {
+            $("input#showorangeplate").val(1);
+            $(this).empty().html('<i class="fa fa-chevron-left" aria-hidden="true" title="Hide Orange Plate"></i>');
+            $("div.orderreporttablehead").find('div.oranplate').show();
+            $("#orderreportsummaryarea").find('div.oranplate').show();
+            $("#orderreportdataarea").css('width','1061px');
+            $("#orderreportdataarea").find('div.oranplate').show();
+        } else {
+            $("input#showorangeplate").val(0);
+            $(this).empty().html('<i class="fa fa-chevron-right" aria-hidden="true" title="Show Orange Plate"></i>');
+            $("div.orderreporttablehead").find('div.oranplate').hide();
+            $("#orderreportsummaryarea").find('div.oranplate').hide();
+            $("#orderreportdataarea").css('width','1031px');
+            $("#orderreportdataarea").find('div.oranplate').hide();
+        }
+    });
 }
 
 function edit_report_addcosts(fldname, newval) {
@@ -205,6 +223,7 @@ function edit_printshoporder(report) {
     var url="/fulfillment/orderreport_edit";
     var params=new Array();
     params.push({name:'printshop_income_id', value: report});
+    params.push({name:'showorange', value: $("#showorangeplate").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
             $(".qtip").qtip('hide');

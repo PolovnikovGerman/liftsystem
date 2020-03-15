@@ -15,9 +15,10 @@
 <div class="addlcost ">&nbsp;</div>
 <div class="totalea ">&nbsp;</div>
 <div class="totaladdlcost"><?= MoneyOutput($total_extra,0)?></div>
-<div class="itemscost "><?=MoneyOutput($item_cost,0)?></div>
-<div class="oranplate "><?= QTYOutput($oranplate,1) ?></div>
-<div class="blueplate "><?= QTYOutput($blueplate,1) ?></div>
+<div class="itemscost"><?=MoneyOutput($item_cost,0)?></div>
+<div class="oranplate"><?= QTYOutput($oranplate,1) ?></div>
+<div class="blueplate"><?= QTYOutput($blueplate,1) ?></div>
+<div class="beigeplate"><?= QTYOutput($beigeplate,1) ?></div>
 <div class="totalplate "><?= QTYOutput($totalplate) ?></div>
 <div class="platecost "><?= MoneyOutput($platecost,0) ?></div>
 <div class="totalcost "><?= MoneyOutput($total_cost,0) ?></div>

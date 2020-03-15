@@ -204,10 +204,11 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('O1','Items Cost');
         $sheet->setCellValue('P1','Oran Plate');
         $sheet->setCellValue('Q1','Blue Plate');
-        $sheet->setCellValue('R1','Total Plate');
-        $sheet->setCellValue('S1','Plate Cost');
-        $sheet->setCellValue('T1','Total Cost');
-        $sheet->setCellValue('U1','Misprint Cost');
+        $sheet->setCellValue('R1','Beige Plate');
+        $sheet->setCellValue('S1','Total Plate');
+        $sheet->setCellValue('T1','Plate Cost');
+        $sheet->setCellValue('U1','Total Cost');
+        $sheet->setCellValue('V1','Misprint Cost');
         $j=2;
         foreach ($data as $row) {
             $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
@@ -228,10 +229,11 @@ class Exportexcell_model extends CI_Model
             $sheet->setCellValue('O'.$j, round($row['costitem'],2));
             $sheet->setCellValue('P'.$j, $row['orangeplate']);
             $sheet->setCellValue('Q'.$j, $row['blueplate']);
-            $sheet->setCellValue('R'.$j, $row['totalplates']);
-            $sheet->setCellValue('S'.$j, $row['platescost']);
-            $sheet->setCellValue('T'.$j, $row['totalitemcost']);
-            $sheet->setCellValue('U'.$j, $row['misprintcost']);
+            $sheet->setCellValue('R'.$j, $row['beigeplate']);
+            $sheet->setCellValue('S'.$j, $row['totalplates']);
+            $sheet->setCellValue('T'.$j, $row['platescost']);
+            $sheet->setCellValue('U'.$j, $row['totalitemcost']);
+            $sheet->setCellValue('V'.$j, $row['misprintcost']);
             $j++;
         }
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx

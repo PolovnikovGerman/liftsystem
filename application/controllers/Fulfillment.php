@@ -1915,6 +1915,7 @@ class Fulfillment extends MY_Controller
             $this->load->model('printshop_model');
             $postdata=$this->input->post();
             $printshop_income_id=(isset($postdata['printshop_income_id']) ? $postdata['printshop_income_id'] : 0);
+            $showorange = (isset($postdata['showorange']) ? $postdata['showorange'] : 0);
             $res=$this->printshop_model->get_printshop_order($printshop_income_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
@@ -1928,6 +1929,7 @@ class Fulfillment extends MY_Controller
                 $data['items']=$items;
                 $data['colors']=$colors;
                 $data['session']=$sessionid;
+                $data['showorange'] = $showorange;
                 $mdata['content']=$this->load->view('printshop/orderreport_edit_view', $data, TRUE);
                 usersession($sessionid, $data);
             }
@@ -2418,6 +2420,7 @@ class Fulfillment extends MY_Controller
             'repaid_cost'=>$addcosts['repaid_cost'],
             'orangeplate_price'=>$addcosts['orangeplate_price'],
             'blueplate_price'=>$addcosts['blueplate_price'],
+            'beigeplate_price' => $addcosts['beigeplate_price'],
             'report_years'=>$report_years,
             'brand' => $brand,
             'top_menu' => $top_menu,

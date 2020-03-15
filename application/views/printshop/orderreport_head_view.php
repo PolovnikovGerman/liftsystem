@@ -23,7 +23,11 @@
         <div class="label">Blue Plate:</div>
         <div class="costval">
             <input type="text" class="orderreportplatecost" data-fldname="blueplate_price" value="<?=$blueplate_price?>"/>
-        </div>        
+        </div>
+        <div class="label">Baige Plate:</div>
+        <div class="costval">
+            <input type="text" class="orderreportplatecost" data-fldname="beigeplate_price" value="<?= $beigeplate_price ?>"/>
+        </div>
     </div>
     <div class="orderreport_legend">
         <div class="signlegend systeminpt"><i class="fa fa-square" aria-hidden="true"></i></div>

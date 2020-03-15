@@ -82,7 +82,7 @@ and open the template in the editor.
 }
 .printshopcontent > .orderreportheadrow > .orederreportsaddcosts > .costval {
     margin-left: 5px;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 .printshopcontent > .orderreportheadrow > .orederreportsaddcosts input.orderreportsaved {
     width: 52px;
@@ -141,13 +141,21 @@ and open the template in the editor.
     height: 25px;
     line-height: 25px;
 }
+.printshopcontent > .orderreportheadrow > .showorangeplate {
+    position: absolute;
+    top: 163px;
+    left: 787px;
+    color: #0000FF;
+    font-size: 14px;
+    cursor: pointer;
+}
 .printshopcontent > .orderreportheadrow > .orderreport_pagination {
     float: right !important;
     margin-right: 7px;
 }
 .printshopcontent > .orderreporttablehead {
     clear: both;
-    width: 1029px;
+    width: 1061px;
 }
 .printshopcontent > .orderreporttablehead > div {
     height: 26px;
@@ -241,11 +249,17 @@ and open the template in the editor.
     border-right: 1px solid #000000;
     line-height: 13px;
     width: 30px;
+    display: none;
 }
 .printshopcontent > .orderreporttablehead > .blueplate {
     border-right: 1px solid #000000;
     line-height: 13px;
     width: 36px;
+}
+.printshopcontent > .orderreporttablehead > .beigeplate {
+    border-right: 1px solid #000000;
+    line-height: 13px;
+    width: 30px;
 }
 .printshopcontent > .orderreporttablehead > .totalplate {
     border-right: 1px solid #000000;
@@ -280,12 +294,12 @@ and open the template in the editor.
     width: 1029px;
 }
 .printshopcontent > .summaryrow {
-    background: #717171 none repeat-x scroll 0 0;
     overflow-x: hidden;
-    width: 1029px;
+    width: 1061px;
 }
 .printshopcontent > .summaryrow > div {
     color: #FFFFFF;
+    background: #717171 none repeat-x scroll 0 0;
     font-size: 11px;
     font-weight: bold;
     height: 23px;
@@ -368,10 +382,15 @@ i.addnewprintshopincome {
 .printshopcontent >  .summaryrow > .oranplate {
     border-right: 1px solid #000000;
     width: 30px;
+    display: none;
 }
 .printshopcontent >  .summaryrow > .blueplate {
     border-right: 1px solid #000000;
     width: 36px;
+}
+.printshopcontent >  .summaryrow > .beigeplate {
+    border-right: 1px solid #000000;
+    width: 30px;
 }
 .printshopcontent >  .summaryrow > .totalplate {
     border-right: 1px solid #000000;
@@ -397,12 +416,12 @@ i.addnewprintshopincome {
 }
 .printshopcontent > .orderreporttablebody .datarow {
     overflow-x: hidden;
-    width: 1029px;
+    width: 1061px;
 }
 .printshopcontent > .orderreporttablebody .datarow > div {
-    height: 22px;
+    height: 23px;
     font-size: 11px;
-    line-height: 22px;
+    line-height: 23px;
     white-space: nowrap;
     overflow: hidden;
     text-align: center;
@@ -500,10 +519,15 @@ i.addnewprintshopincome {
 .printshopcontent > .orderreporttablebody .datarow > .oranplate {
     border-right: 1px solid #000000;
     width: 30px;
+    display: none;
 }
 .printshopcontent > .orderreporttablebody .datarow > .blueplate {
     border-right: 1px solid #000000;
     width: 36px;
+}
+.printshopcontent > .orderreporttablebody .datarow > .beigeplate {
+    border-right: 1px solid #000000;
+    width: 30px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .totalplate {
     border-right: 1px solid #000000;

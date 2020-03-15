@@ -52,6 +52,9 @@
 <div class="blueplate editform">
     <input type="text" class="psplateqty psorderinput" data-fldname="blueplate" value="<?=$blueplate?>"/>                
 </div>
+<div class="beigeplate editform">
+    <input type="text" class="psplateqty psorderinput" data-fldname="beigeplate" value="<?=$beigeplate?>"/>
+</div>
 <div class="totalplate editform"><?=QTYOutput($totalplates)?></div>
 <div class="platecost editform"><?=MoneyOutput($platescost)?></div>
 <div class="totalcost editform"><?=MoneyOutput($itemstotalcost)?></div>

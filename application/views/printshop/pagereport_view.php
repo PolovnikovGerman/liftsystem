@@ -4,7 +4,7 @@
         <input type="hidden" id="orderrepperpage" value="250"/>
         <input type="hidden" id="orderrepcurpage" value="0"/>
         <input type="hidden" id="report_year" value=""/>
-
+        <input type="hidden" id="showorangeplate" value="0"/>
         <div class="orderreportheadrow">
             <div class="search_orderreports">
                 <img src="/img/icons/magnifier.png">
@@ -27,7 +27,11 @@
                 <div class="labeltxt">Blue Plate:</div>
                 <div class="costval">
                     <input type="text" class="orderreportplatecost" data-fldname="blueplate_price" value="<?= $blueplate_price ?>"/>
-                </div>        
+                </div>
+                <div class="labeltxt">Baige Plate:</div>
+                <div class="costval">
+                    <input type="text" class="orderreportplatecost" data-fldname="beigeplate_price" value="<?= $beigeplate_price ?>"/>
+                </div>
             </div>
             <div class="orderreport_legend">
                 <div class="signlegend systeminpt"><i class="fa fa-square" aria-hidden="true"></i></div>
@@ -45,6 +49,9 @@
             </div>
             <div class="orderreport_export">
                 <i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Report
+            </div>
+            <div class="showorangeplate">
+                <i class="fa fa-chevron-right" aria-hidden="true" title="Show Orange Plate"></i>
             </div>
             <div class="orderreport_pagination"></div>
         </div>
@@ -67,6 +74,7 @@
             <div class="itemscost blackcel">Items Cost</div>
             <div class="oranplate greycel">Oran Plate</div>
             <div class="blueplate greycel">Blue Plate</div>
+            <div class="beigeplate greycel">Beige Plate</div>
             <div class="totalplate greycel">Total Plate</div>
             <div class="platecost blackcel">Plate Cost</div>
             <div class="totalcost blackcel">Total Cost</div>
@@ -74,9 +82,7 @@
             <div class="endtable">&nbsp;</div>
         </div>
         <div id="orderreportsummaryarea" class="summaryrow"><?= $summary ?></div>
-        <div class="orderreporttablebody">    
-            <div id="orderreportdataarea">&nbsp;</div>
-        </div>
+        <div class="orderreporttablebody" id="orderreportdataarea"></div>
         <div id="neworderprofitview" class="neworderprofitview"></div>    
     </div>
 </div>
