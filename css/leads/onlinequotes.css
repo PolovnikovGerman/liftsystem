@@ -60,8 +60,6 @@ a.find_quotebnt {
 }
 .quotes_pagination {
     float: right!important;
-    margin-top: -20px;
-    margin-bottom: -20px;
 }
 .quotes_title {
     border-bottom: 2px solid #2F2F2F;

@@ -118,8 +118,6 @@ input.lead_searchinput {
 }
 .leadlist_pagination {
     float: right!important;
-    /* width: 286px; */
-    margin: -20px 0;
 }
 /* DATA */
 .lead_dataareas {

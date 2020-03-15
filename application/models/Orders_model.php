@@ -1831,9 +1831,8 @@ Class Orders_model extends MY_Model
     }
 
     private function attempt_data($cart_id) {
-        $ci = &get_instance();
-        $ci->load->model('items_model', 'mitem');
-        $ci->load->model('itemcolors_model', 'mcolors');
+        $this->load->model('items_model');
+        $this->load->model('itemcolors_model');
         $this->db->select('*');
         $this->db->from('sb_cartdatas');
         $this->db->where('cart_id', $cart_id);
@@ -1861,8 +1860,11 @@ Class Orders_model extends MY_Model
                 $out['customer'].=$data['ship_lastname'] . ' ';
             }
             if (isset($data['item_id'])) {
-                $itemdat = $ci->mitem->get_item($data['item_id']);
-                $out['item'] = $itemdat['item_name'];
+                $res = $this->items_model->get_item($data['item_id']);
+                if ($res['result']==$this->success_result) {
+                    $itemdat = $res['data'];
+                    $out['item'] = $itemdat['item_name'];
+                }
             }
             if (isset($data['sumval']) && $data['sumval']) {
                 $out['item_qty'] = $data['sumval'];
@@ -1885,7 +1887,7 @@ Class Orders_model extends MY_Model
             }
             if (count($colors) == 1) {
                 /* Get color value */
-                $out['item_color'] = $ci->mcolors->get_colorval_item($colors[0]['color']);
+                $out['item_color'] = $this->itemcolors_model->get_colorval_item($colors[0]['color']);
             } elseif (count($colors) > 1) {
                 $out['item_color'] = 'Multy';
             }
@@ -1910,7 +1912,8 @@ Class Orders_model extends MY_Model
             }
             if (isset($data['last_updated_item']) && $data['last_updated_item']) {
                 $lastfld = '';
-                foreach ($this->cardflds as $row) {
+                $cardflds = $this->config->item('cardflds');
+                foreach ($cardflds as $row) {
                     if ($data['last_updated_item'] == $row['idx']) {
                         $lastfld = $row['name'];
                         break;
@@ -1922,11 +1925,28 @@ Class Orders_model extends MY_Model
             }
             $artsubmit = $this->count_artlogs($dat['session_id']);
             if ($artsubmit != 0) {
-                $out['artsubm'] = '<div id="artsubmitlog' . $cart_id . '" class="artsubmitlog" href="/orders/artsubmitlog?d=' . $dat['session_id'] . '"><img src="/img/art.png"/></div>';
+                $out['artsubm'] = '<div id="artsubmitlog' . $cart_id . '" class="artsubmitlog" data-content="/leads/artsubmitlog?d=' . $dat['session_id'] . '"><img src="/img/lead/art.png"/></div>';
             }
         }
 
         return $out;
+    }
+
+    public function count_artlogs($session_id) {
+        $this->db->select('count(*) as cnt');
+        $this->db->from('sb_checkout_log');
+        $this->db->where('session_id', $session_id);
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_artsubmitlog($session_id) {
+        $this->db->select('*');
+        $this->db->from('sb_checkout_log');
+        $this->db->where('session_id', $session_id);
+        $this->db->order_by('checkoutlog_date', 'desc');
+        $res = $this->db->get()->result_array();
+        return $res;
     }
 
 }

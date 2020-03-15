@@ -802,6 +802,23 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    /*Return log of art submit*/
+    public function artsubmitlog()
+    {
+        $session_id = $this->input->get('d', 0);
+        if ($session_id == 0) {
+            echo '&nbsp;';
+        }
+        $this->load->model('orders_model');
+        $log = $this->orders_model->get_artsubmitlog($session_id);
+        if (count($log) > 0) {
+            $content = $this->load->view('orders/artsubmitlog_view', array('data' => $log), TRUE);
+        } else {
+            $content = 'No ART log for this Attempt';
+        }
+        echo $content;
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();

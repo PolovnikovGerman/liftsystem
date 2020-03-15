@@ -170,7 +170,7 @@ input.attparams {
 .attempts_duedate {
     clear: both;
     float: left;
-    width: 1212px;
+    width: 1235px;
     padding: 10px;
     background: none #e8e8e8;
 }
@@ -185,10 +185,13 @@ input.attparams {
 .attempt_duedate_tablehead {
     clear: both;
     float: left;
-    width: 100%;
-    height: 16px;
-    padding-top: 2px;
     background-color: #FFF;
+    width: 100%;
+}
+.attempt_duedate_tablehead > div {
+    float: left;
+    height: 22px;
+    line-height: 22px;
     font-weight: bolder;
     text-align: center;
 }
@@ -201,46 +204,30 @@ input.attparams {
 }
 .attemptdue_tablerow {
     clear: both;
-    color: #000000;
     float: left;
-    line-height: 26px;
     width: 1199px;
+    color: #000000;
+}
+.attemptdue_tablerow > div {
+    line-height: 26px;
+    height: 26px;
+    float: left;
 }
 .orderdat {
-    color: #868686;
+    color: #868686!important;
 }
 .attemptdue_confirm {
-    float: left;
     width: 60px;
 }
 .attemptdue_customer {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
     width: 114px;
-    overflow: hidden;
-    white-space: nowrap;
-}
-.attemptdue_customer:hover{
     cursor:pointer;
 }
 .attemptdue_item {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 123px;
-}
-.attemptdue_item:hover {
     cursor:pointer;
 }
 .attemptdue_color {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 70px;
 }
 .attemptdue_qty {
@@ -254,68 +241,45 @@ input.attparams {
     text-align: center;
 }
 .attemptdue_email {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 130px;
-}
-.attemptdue_email:hover {
     cursor: pointer;
 }
 .attemptdue_phone {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 70px;
-}
-.attemptdue_phone:hover {
     cursor: pointer;
 }
 .attemptdue_location {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 198px;
-}
-.attemptdue_location:hover {
     cursor: pointer;
 }
 .attemptdue_ccdetails {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 142px;
-}
-.attemptdue_ccdetails {
     cursor: pointer;
 }
 .attemptdue_lastmodified {
-    float: left;
-    margin-left: 3px;
-    margin-right: 3px;
-    overflow: hidden;
-    white-space: nowrap;
     width: 109px;
-}
-.attemptdue_lastmodified {
     cursor: pointer;
 }
 .attemptdue_artsubmit {
     float: left;
     width: 30px;
-}
-.artsubmitlog:hover {
     cursor: pointer;
 }
 .artsubmitlog img {
     width: 24px;
     height: 24px;
+}
+.artsubmitlog_tooltip {
+    width: 520px;
+    min-width: 520px!important;
+    background: #ffffff;
+    color: #000000;
+    font-size: 14px;
+}
+.artsubmitlogdata_tooltip {
+    width: 280px;
+    min-width: 280px!important;
+    background: #ffffff;
+    color: #000000;
+    font-size: 14px;
 }

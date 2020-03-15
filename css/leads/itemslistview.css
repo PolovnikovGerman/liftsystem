@@ -94,8 +94,6 @@ select.leaditem_filterselect {
 }
 .leaditem_pagination {
     float: right!important;
-    margin-top: -19px;
-    /* width: 211px; */
 }
 .leaditem_legend {
     margin-left: 5px;
