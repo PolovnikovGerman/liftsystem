@@ -98,7 +98,7 @@ function pagePurchaseOrederCallback(page_index) {
     data.push({name:'totalnotplaced', value: $("input#totalnotplacedorders").val()});
     data.push({name:'brand', value: $("#purchaseordersbrand").val()});
     $("#loader").show();
-    $.post('/fulfillment/purchaseorderdat',data,function(response){
+    $.post('/purchaseorders/purchaseorderdat',data,function(response){
         if (response.errors=='') {
             /* Show non placed */
             if (parseInt(response.data.viewnonplace)===1) {
@@ -169,7 +169,7 @@ function init_pototalbutons() {
 
 /* Add NOT PLACED Order PO */
 function add_notplacedpo(order_id) {
-    var url="/fulfillment/purchasenotplaced_add";
+    var url="/purchaseorders/purchasenotplaced_add";
     $.post(url, {'order_id': order_id}, function(response){
         if (response.errors=='') {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
@@ -186,7 +186,7 @@ function add_notplacedpo(order_id) {
 /* Add NEW PO */
 function add_newamount() {
     var amountid=0;
-    var url="/fulfillment/purchaseorder_edit";
+    var url="/purchaseorders/purchaseorder_edit";
     $.post(url, {'amount_id': amountid}, function(response){
         if (response.errors=='') {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
@@ -203,7 +203,7 @@ function add_newamount() {
 
 /* Edit exist PO */
 function edit_purchorder(amount_id) {
-    var url="/fulfillment/purchaseorder_edit";
+    var url="/purchaseorders/purchaseorder_edit";
     $.post(url, {'amount_id':amount_id}, function(response){
         if (response.errors=='') {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
@@ -302,7 +302,7 @@ function lock_poeditflds(type) {
 
 /* Check Order # in mode ADD PO */
 function order_purchase_details(order_num) {
-    var url="/fulfillment/purchaseorder_details";
+    var url="/purchaseorders/purchaseorder_details";
     $.post(url, {'order_num':order_num}, function(response){
         if (response.errors=='') {
             $("div#orderdataarea").empty().html(response.data.content);
@@ -322,7 +322,7 @@ function show_amountsave() {
 /* Save in session AMOUNT DETAILS */
 function save_amntdetails(fldname, newval) {
     // STOPED THEIR
-    var url="/fulfillment/purchaseorder_amountchange";
+    var url="/purchaseorders/purchaseorder_amountchange";
     $.post(url, {'fld': fldname, 'value':newval}, function(response){
         if (response.errors=='') {
             if (response.data.profit_class) {
@@ -355,7 +355,7 @@ function save_amntdetails(fldname, newval) {
 }
 /* Save Amount DATA to DB */
 function save_amount() {
-    var url="/fulfillment/purchaseorder_amountsave";
+    var url="/purchaseorders/purchaseorder_amountsave";
     $("#loader").show();
     var data = new Array();
     data.push({name:'brand', value: $("#purchaseordersbrand").val()});
@@ -377,7 +377,7 @@ function delete_charge(amount_id) {
     var ordernum=$("#purchaseord"+amount_id+" div.purchase-order-ordnum-data").text();
     var amountsum=$("#purchaseord"+amount_id+" div.purchase-order-amount-data").text();
     if (confirm('Are you sure you want to delete amount '+amountsum+' PO '+ordernum+' ?')) {
-        var url="/fulfillment/purchaseorder_delete";
+        var url="/purchaseorders/purchaseorder_delete";
         var params = new Array();
         params.push({name: 'amount_id', value: amount_id});
         params.push({name:'brand', value: $("#purchaseordersbrand").val()});
@@ -407,7 +407,7 @@ function search_purchase() {
     data.push({name:'placedpo', value: $("select#showtoplaced").val()});
     data.push({name:'searchpo', value: $("input#searchpoinput").val()});
     data.push({name:'brand', value: $("#purchaseordersbrand").val()});
-    var url="/fulfillment/purchaseorder_search";
+    var url="/purchaseorders/purchaseorder_search";
     $.post(url, data, function(response){
         if (response.errors=='') {
             $("input#pototal_total").val(response.data.total);
@@ -439,7 +439,7 @@ function init_vendorpayments() {
 
 /* Show Vendors payments Totals */
 function change_totalvendors(year) {
-    var url="/fulfillment/purchase_vendortotals";
+    var url="/purchaseorders/purchase_vendortotals";
     var params = new Array();
     params.push({name: 'year', value: year});
     params.push({name: 'brand', value: $("#purchaseordersbrand").val()});

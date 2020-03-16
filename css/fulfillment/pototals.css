@@ -311,6 +311,10 @@ select.sortpurch {
 .trpo > .purchase-order-attach-data {
     width: 13px;
 }
+.trpo > .purchase-order-attach-data  img {
+    height: 16px;
+    width: 12px;
+}
 .trpo > .purchase-order-ordnum-data {
     width: 53px;
 }
