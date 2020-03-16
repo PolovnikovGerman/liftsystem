@@ -319,22 +319,6 @@ function show_templates(artid) {
         }
     }, 'json');
 }
-/* Open Template AI file */
-function openai(imgurl, imgname) {
-    if (navigator.appVersion.indexOf("Mac")!=-1) {
-        /* Mac OS*/
-        $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : imgurl, file: imgname}});
-        return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
-        window.open(imgurl, 'showfile');
-    } else {
-        var open = window.open(imgurl,imgname,'left=120,top=120,width=500,height=400');
-        if (open == null || typeof(open)=='undefined')
-            alert("Turn off your pop-up blocker!\n\nWe try to open the following url:\n"+url);
-
-    }
-
-
-}
 
 /* Init proofs Management */
 function init_proofs() {
