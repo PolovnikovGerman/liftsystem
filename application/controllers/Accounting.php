@@ -54,9 +54,13 @@ class Accounting extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/accounting/profitordesview.js');
                 $content_options['profitordesview'] = $this->_prepare_order_profit($brand, $top_menu);
             } elseif ($row['item_link']=='#profitdatesview') {
-                $head['styles'][]=array('style'=>'/css/accounting/profitdatesview.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/profitdatesview.js');
+                $head['styles'][] = array('style' => '/css/accounting/profitdatesview.css');
+                $head['scripts'][] = array('src' => '/js/accounting/profitdatesview.js');
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
+            } elseif ($row['item_link']=='#purchaseordersview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
             } elseif ($row['item_link']=='#openinvoicesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
@@ -3688,6 +3692,58 @@ class Accounting extends MY_Controller
             'top_menu' => $top_menu,
         ];
         return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
+    }
+
+    private function _prepare_purchaseorders_view($brand, $top_menu) {
+        $this->load->model('orders_model');
+        $this->load->model('payments_model');
+        $this->load->model('vendors_model');
+        // $search_form
+        $optionstotal=array(
+            'status'=>'showclosed',
+            'brand' => $brand,
+        );
+        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
+        $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
+
+        $sort_array=array(
+            'oa.amount_date-desc'=>'Date &#9660;',
+            'oa.amount_date-asc'=>'Date &#9650;',
+            'o.order_num-desc'=>'PO# &#9660;',
+            'o.order_num-asc'=>'PO# &#9650;',
+            'v.vendor_name-desc'=>'Vendor &#9660;',
+            'v.vendor_name-asc'=>'Vendor &#9650;',
+            'oa.amount_sum-desc'=>'Amount &#9660;',
+            'oa.amount_sum-asc'=>'Amount &#9650;',
+        );
+
+        $vsort=['order_by' => 'v.vendor_name'];
+        $vendors=$this->vendors_model->get_vendors_list($vsort);
+
+        $nonplaceview='';
+        if ($total_notplaced!=0) {
+            // Non placed
+            $nonplaceview=$this->load->view('fulfillment/pototals_nonplacehead_view', array(), TRUE);
+        }
+        $perpages = $this->config->item('orders_perpage');
+        $options=array(
+            'total'=>$total_rec,
+            'total_nonplaced'=>$total_notplaced,
+            'nonplacedview'=>$nonplaceview,
+            'order'=>'oa.amount_date desc',
+            'direc'=>'',
+            'curpage'=>0,
+            'curstatus'=>'showclosed',
+            'showplace'=>'show',
+            'sort'=>$sort_array,
+            'current_sort'=>'oa.amount_date-desc',
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+            'perpages' => $perpages,
+            'perpage' => $perpages[0],
+            'vendors' => $vendors,
+        );
+        return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
     }
 
 }

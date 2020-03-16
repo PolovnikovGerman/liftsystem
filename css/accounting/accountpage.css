@@ -42,8 +42,6 @@ input.search_input {
 }
 .accounting_pagination {
     float: right!important;
-    margin-top: -20px;
-    margin-bottom: -20px;
 }
 /* SORTING*/
 .activesortdesc {
