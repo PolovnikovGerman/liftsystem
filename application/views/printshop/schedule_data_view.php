@@ -1,0 +1,4 @@
+
+<?php foreach ($data as $row) {?>
+    <?=$row?>
+<?php } ?>

@@ -27,15 +27,15 @@ Class Calendars_model extends MY_Model
 //        }
 //        return $calend;
 //    }
-//
-//    function get_calendars() {
-//        $this->db->select('*');
-//        $this->db->from('calendars');
-//        $this->db->where('calendar_status',1);
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
+
+    public function get_calendars() {
+        $this->db->select('*');
+        $this->db->from('calendars');
+        $this->db->where('calendar_status',1);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 //    function get_calendar($calend_id) {
 //        if ($calend_id==0) {
 //            $calend=array(

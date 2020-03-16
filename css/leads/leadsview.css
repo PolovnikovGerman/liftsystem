@@ -1,0 +1,1327 @@
+/* Lead List view */
+.leads_content {
+    clear: both;
+    float: left;
+    width: 1016px;
+}
+.leads_headarea {
+    clear: both;
+    color: #353535;
+    font-family: Arial,Helvetica;
+    float: left;
+    font-size: 12px;
+    margin: 10px 0 0 10px;
+    width: 1001px;
+}
+.leads_headrow {
+    clear: both;
+    float: left;
+    height: 27px;
+    line-height: 25px;
+    margin-bottom: 3px;
+    width: 999px;
+}
+.leads_add {
+    background: url('/img/leads/newlead_btn.png') no-repeat transparent;
+    height: 26px;
+    width: 72px;
+    position: relative;
+    z-index: 7;
+}
+.leads_add:hover {
+    cursor: pointer;
+}
+.leads_selectreplarea {
+    float: left;
+    width: 120px;
+    position: relative;
+    z-index: 7;
+}
+.leads_legends {
+    margin-left: 234px;
+    width: 210px;
+}
+.lead_legend {
+    width: 70px;
+}
+.lead_legmapimg {
+    margin-top: 5px;
+    width: 20px;
+}
+.lead_legend_text {
+    width: 50px;
+    height: 24px;
+    line-height: 24px!important;
+}
+.leads_sortings {
+    float: right!important;
+    width: 283px;
+}
+select.leads_sortselect {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    padding-left: 2px;
+    color: #262626;
+    height: 24px;
+    float: right;
+    font-size: 12px;
+    margin-left: 6px;
+    width: 115px;
+}
+select.leads_sortselect.sortprior {
+    width: 150px;
+}
+.lead_datasearch {
+    float: left;
+    width: 440px;
+}
+.lead_datasearch img {
+    float: left;
+    margin-top: 5px;
+    width: 20px;
+}
+input.lead_searchinput {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid;
+    float: left;
+    font-size: 12px;
+    height: 21px;
+    margin-left: 5px;
+    margin-top: 2px;
+    width: 175px;
+}
+.leadsearchall {
+    background: url("/img/leads/searchall_btn.png") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    margin-left: 3px;
+    width: 87px;
+}
+.leadsearchusr {
+    background: url("/img/leads/usrreplic_search.png") no-repeat scroll 0 0 transparent;
+    color: #000000;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    margin-left: 3px;
+    text-align: center;
+    width: 87px;
+    line-height: 27px!important;
+}
+.leadsearchclear {
+    background: url('/img/leads/clean_btn.png') no-repeat transparent;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    width: 51px;
+}
+.leadlist_pagination {
+    float: right!important;
+}
+/* DATA */
+.lead_dataareas {
+    clear: both;
+    margin-bottom: 10px;
+    margin-left: 9px;
+    width: 1002px;
+}
+.lead_dataarealeft {
+    width: 554px;
+}
+.lead_listdata_head {
+    background: none #d0d0d0;
+    clear: both;
+    border: 1px solid #000000;
+    text-align: center;
+    color: #000000;
+    font-size: 12px;
+    width: 100%;
+}
+.lead_listdata_head > div {
+    height: 20px;
+    line-height: 20px!important;
+}
+.lead_listdata_head > .leadnumber {
+    border-right: 1px solid #000000;
+    width: 65px;
+}
+.lead_listdata_head > .leaddate {
+    border-right: 1px solid #000000;
+    width: 58px;
+}
+.lead_listdata_head > .leadvalue {
+    border-right: 1px solid #000000;
+    width: 50px;
+}
+.lead_listdata_head > .leadcustomer {
+    border-right: 1px solid #000000;
+    width: 123px;
+}
+.lead_listdata_head > .leadqty {
+    border-right: 1px solid #000000;
+    width: 35px;
+}
+.lead_listdata_head > .leaditem {
+    border-right: 1px solid #000000;
+    width: 177px;
+}
+.lead_listdata_head > .leadrep {
+    width: 38px;
+}
+.lead_listdata {
+    border-bottom: 1px solid #000000;
+    border-left: 1px solid #000000;
+    clear: both;
+    height: 565px;
+    overflow-y: scroll;
+    width: 557px;
+}
+/* List Data View */
+.lead_datarow {
+    clear: both;
+    color: #000000;
+    font-family: Arial,Helvetica;
+    font-size: 12px;
+    width: 541px;
+}
+.lead_datarow > div {
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.lead_datarow.separate {
+    border-top: 1px solid #000000;
+}
+.lead_datarow.error {
+    color: #AB0000;
+}
+.lead_datarow.closed {
+    background-color: #71a3ff;
+}
+.lead_datarow.dead {
+    background-color: #e947f8;
+}
+.lead_datarow > .leadpriority {
+    float: left;
+    width: 20px;
+}
+.lead_datarow > .leadnumber {
+    border-right: 1px solid;
+    float: left;
+    width: 45px;
+}
+.lead_datarow > .leaddate {
+    border-right: 1px solid;
+    float: left;
+    width: 58px;
+}
+.lead_datarow > .leadvalue {
+    border-right: 1px solid;
+    float: left;
+    width: 50px;
+}
+.lead_datarow > .leadcustomer {
+    border-right: 1px solid;
+    float: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    width: 123px;
+}
+.lead_datarow > .leadqty {
+    border-right: 1px solid;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+    width: 35px;
+}
+.lead_datarow > .leaditem {
+    border-right: 1px solid;
+    float: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    width: 177px;
+}
+.lead_datarow > .leaditem.custom {
+    font-weight: bold;
+}
+.lead_datarow > .leadrep {
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 24px;
+}
+/* Right part */
+.lead_dataarearight {
+    float: left;
+    width: 448px;
+}
+.leadclosed_label {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    margin-left: 25px;
+    margin-top: -20px;
+    width: 110px;
+}
+.closedtotal_area {
+    background: none repeat scroll 0 0 #E7E7E7;
+    border: 1px solid #000000;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 11px;
+    margin-left: 26px;
+    width: 409px;
+}
+.closedtotal_area > div {
+    height: 23px;
+    line-height: 23px;
+}
+.closedtotalshowfeature {
+    clear: both;
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    height: 15px;
+    line-height: 15px;
+    margin-left: 312px;
+    text-align: right;
+    width: 124px;
+}
+.closeprevview {
+    float: left;
+    background: url("/img/leads/closed_prev.png") no-repeat scroll 4px 5px transparent;
+    width: 15px;
+    height: 16px;
+}
+.closeprevview.active {
+    background: url('/img/leads/closed_prev_active.png') no-repeat 4px 5px transparent;
+    cursor: pointer;
+}
+.closeviewmonthlabel {
+    float: left;
+    color: #716f6f;
+    text-align: center;
+    width: 41px;
+}
+.closeviewmonthdata {
+    float: left;
+    text-align: center;
+    width: 34px;
+}
+.closenextview {
+    float: left;
+    background: url('/img/leads/closed_next.png') no-repeat 4px 5px transparent;
+    width: 15px;
+    height: 16px;
+}
+.closenextview.active {
+    background: url('/img/leads/closed_next_active.png') no-repeat 4px 5px transparent;
+    cursor: pointer;
+}
+.leadclosedreportlabel {
+    float: left;
+    font-size: 12px;
+    margin-left: 94px;
+    width: 330px;
+}
+.closeleadreplabel {
+    float: left;
+    margin-left: 10px;
+    text-align: center;
+    width: 100px;
+}
+.leadclosedreportdata {
+    float: left;
+    margin-left: 14px;
+    width: 417px;
+}
+.leadclosedreporsubtitle {
+    border-left: 1px solid #000000;
+    border-right: 1px solid;
+    border-top: 1px solid #000000;
+    width: 85px;
+    margin-right: 4px;
+    background: none #d0d0d0;
+    text-align: center;
+    color: #000000;
+    font-size: 10px;
+}
+.leadclosedreporsubtitle.leadrep {
+    width: 102px;
+}
+.leadclosedreporsubtitle > .newleads {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 36px;
+}
+.leadclosedreporsubtitle > .workleads {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 31px;
+}
+.leadclosedreporsubtitle > .outcalls {
+    float: left;
+    width: 32px;
+}
+.leadclosedreporsubtitle.orders {
+    width: 102px;
+}
+.leadclosedreporsubtitle > .ordersnum {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 34px;
+}
+.leadclosedreporsubtitle > .ordersrevenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 43px;
+}
+.leadclosedreporsubtitle > .ordersprofit {
+    float: left;
+    width: 23px;
+}
+.leadclosedreporsubtitle.goals {
+    width: 102px;
+}
+.leadclosedreporsubtitle > .curpoints {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 37px;
+}
+.leadclosedreporsubtitle > .goalpoints {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 34px;
+}
+.leadclosedreporsubtitle > .procgoals {
+    float: left;
+    width: 29px;
+}
+.leadclosedreportdatas {
+    clear: both;
+    float: left;
+    margin-left: 14px;
+    width: 432px;
+}
+.leftscroll {
+    unicode-bidi:bidi-override;
+    direction: rtl;
+    overflow: scroll;
+    overflow-x: hidden!important;
+}
+.leadclosedreportdataweeks {
+    height: 471px;
+    overflow-y: auto;
+    width: 419px;
+    overflow-x: hidden;
+}
+.weekdatarowtotal {
+    clear: both;
+    width: 412px;
+}
+.weekdatarowtotal > div {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+.weekdatarowtotal > .weekday {
+    background: none repeat scroll 0 0 #bbbbbb;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    cursor: pointer;
+    float: left;
+    width: 85px;
+}
+.weekdatarowtotal > .newleads {
+    background: none #bbbbbb;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    margin-left: 4px;
+    width: 37px;
+}
+.weekdatarowtotal > .workleads {
+    background: none #bbbbbb;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 32px;
+}
+.weekdatarowtotal > .outcalls {
+    background: none #bbbbbb;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 33px;
+}
+.weekdatarowtotal > .ordersnum {
+    background: none #bbbbbb;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    margin-left: 4px;
+    width: 35px;
+}
+.weekdatarowtotal > .ordersrevenue {
+    background: none #bbbbbb;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 43px;
+}
+.weekdatarowtotal > .ordersprofit {
+    background: none repeat scroll 0 0 #bbbbbb;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 24px;
+}
+.weekdatarowtotal > .curpoints {
+    background: none #bbbbbb;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    margin-left: 4px;
+    width: 38px;
+}
+.weekdatarowtotal > .goalpoints {
+    background: none #bbbbbb;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 34px;
+}
+.weekdatarowtotal > .procgoals {
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 30px;
+}
+.weekdatarowtotal > .procgoals.red {
+    background: none repeat scroll 0 0 #ff0000;
+    color: #ffffff;
+}
+.weekdatarowtotal > .procgoals.blue {
+    background: none repeat scroll 0 0 #0000ff;
+    color: #ffffff;
+}
+.leadclosedreportdataweeks > .weekdatarow {
+    clear: both;
+    font-size: 10px;
+    font-weight: normal;
+    width: 413px;
+}
+.leadclosedreportdataweeks > .weekdatarow > div {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+}
+.leadclosedreportdataweeks > .weekdatarow > .weekday {
+    /* border-bottom:  1px solid #000000; */
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 85px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .weekday.proj {
+    background: none #030356;
+    color: #ffffff;
+}
+
+.leadclosedreportdataweeks > .weekdatarow > .newleads {
+    /* border-bottom:  1px solid #000000; */
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    margin-left: 4px;
+    width: 37px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .workleads {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 31px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .outcalls {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 34px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .ordersnum {
+    /* border-bottom:  1px solid #000000; */
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    margin-left: 4px;
+    width: 34px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .ordersrevenue {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 43px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .ordersprofit {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 25px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .curpoints {
+    /* border-bottom:  1px solid #000000; */
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    margin-left: 4px;
+    width: 38px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .goalpoints {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    width: 35px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .procgoals {
+    /* border-bottom:  1px solid #000000; */
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    float: left;
+    width: 29px;
+}
+.leadclosedreportdataweeks > .weekdatarow > .procgoals.empty {
+    color: #716f6f;
+    background: none #e7e7e7;
+}
+.leadclosedreportdataweeks > .weekdatarow > .procgoals.red {
+    color: #ffffff;
+    background: none #ff0000;
+}
+.leadclosedreportdataweeks > .weekdatarow > .procgoals.blue {
+    color: #ffffff;
+    background: none #0000ff;
+}
+.leadclosedreportdataweeks > .weekdatadetails {
+    border-top: 1px solid #000000;
+    clear: both;
+    display: none;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.weekdetailsrow {
+    clear: both;
+    width: 100%;
+}
+.weekdetailsrow > div {
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+}
+.weekdetailsrow > .weekday {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    text-align: right;
+    padding-right: 5px;
+    float: left;
+    width: 85px;
+}
+.weekdetailsrow > .newleads {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    float: left;
+    margin-left: 4px;
+    width: 37px;
+}
+.weekdetailsrow > .workleads {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 31px;
+}
+.weekdetailsrow > .outcalls {
+    border-right: 1px solid #000000;
+    width: 34px;
+}
+.weekdetailsrow >  .ordersnum {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    float: left;
+    margin-left: 4px;
+    width: 34px;
+}
+.weekdetailsrow >  .ordersrevenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 43px;
+}
+.weekdetailsrow > .ordersprofit {
+    border-right: 1px solid #000000;
+    width: 25px;
+}
+/* Leads Popup */
+.cmpusrorderviewarea {
+    float: left;
+    height: 88px;
+    background: none #a7a7a7;
+    color: #000000;
+    font-size: 10px;
+    width: 198px;
+}
+.cmpusrorderviewtitle {
+    clear: both;
+    float: left;
+    margin-left: 39px;
+    margin-top: 5px;
+    height: 13px;
+    line-height: 13px;
+    text-align: center;
+    width: 148px;
+}
+.cmpusrorderviewtitle > .orders {
+    float: left;
+    width: 46px;
+}
+.cmpusrorderviewtitle > .revenue {
+    float: left;
+    width: 60px;
+}
+.cmpusrorderviewtitle > .points {
+    float: left;
+    width: 33px;
+}
+.cmpusrorderviewdatatotals {
+    float: left;
+    height: 19px;
+    line-height: 19px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+    width: 196px;
+}
+.cmpusrorderviewdatatotals > .totallabel {
+    float: left;
+    text-align: right;
+    padding-right: 5px;
+    width: 42px;
+}
+.cmpusrorderviewdatatotals > .orderstotals {
+    float: left;
+    background: none #ffffff;
+    border: 1px solid #000000;
+    width: 36px;
+}
+.cmpusrorderviewdatatotals > .revenuetotals {
+    float: left;
+    background: none #ffffff;
+    border: 1px solid #000000;
+    width: 69px;
+}
+.cmpusrorderviewdatatotals > .pointstotals {
+    float: left;
+    background: none #ffffff;
+    border: 1px solid #000000;
+    width: 32px;
+}
+.cmpusrorderviewdata {
+    float: left;
+    font-size: 10px;
+    height: 16px;
+    line-height: 16px;
+    margin-top: 6px;
+    text-align: center;
+    width: 196px;
+}
+.cmpusrorderviewdata > .total {
+    float: left;
+    text-align: right;
+    padding-right: 5px;
+    width: 42px;
+}
+.cmpusrorderviewdata > .orders {
+    float: left;
+    width: 36px;
+}
+.cmpusrorderviewdata > .revenue {
+    float: left;
+    width: 74px;
+}
+.cmpusrorderviewdata > .points {
+    float: left;
+    width: 32px;
+}
+/* Orders Data */
+.ordertotaldetailsarea {
+    background: none #a7a7a7;
+    float: left;
+    padding: 4px 10px 10px;
+    width: 388px;
+}
+.ordertotaldetailrow {
+    clear: both;
+    float: left;
+    height: 18px;
+    line-height: 18px;
+    width: 100%;
+}
+.ordertotallabel {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    width: 80px;
+}
+.ordertotalperiod {
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: right;
+    width: 120px;
+}
+.ordertotal_legend {
+    float: left;
+    width: 52px;
+}
+.ordertotal_legend.bad {
+    width: 35px;
+}
+.ordertotal_legend.belowavg {
+    width: 67px;
+}
+.ordertotal_legend img {
+    float: left;
+    margin-top: 3px;
+    width: 10px;
+}
+.ordertotal_legendlabel {
+    float: left;
+    font-size: 10px;
+    width: 42px;
+}
+.ordertotal_legendlabel.bad {
+    width: 25px;
+}
+.ordertotal_legendlabel.belowavg {
+    width: 55px;
+}
+.ordertotalhead {
+    clear: both;
+    font-size: 11px;
+    text-align: center;
+    width: 375px;
+}
+.ordertotalhead > .ordernum {
+    float: left;
+    width: 41px;
+}
+.ordertotalhead > .orderdate {
+    float: left;
+    width: 45px;
+}
+.ordertotalhead > .customer {
+    float: left;
+    width: 86px;
+}
+.ordertotalhead > .itemname {
+    float: left;
+    width: 107px;
+}
+.ordertotalhead > .revenue {
+    float: left;
+    width: 59px;
+}
+.ordertotalhead > .points {
+    float: left;
+    width: 34px;
+}
+.ordertotaldataarea {
+    clear: both;
+    border: 1px solid #000000;
+    float: left;
+    height: 187px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 393px;
+}
+.ordertotaldatarow {
+    clear: both;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    font-size: 11px;
+    text-align: center;
+    width: 380px;
+}
+.ordertotaldatarow .ordernum {
+    border-right: 1px solid #000000;
+    cursor: pointer;
+    float: left;
+    color: #0000ff;
+    width: 40px;
+}
+.ordertotaldatarow .orderdate {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 47px;
+}
+.ordertotaldatarow .customer {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    width: 90px;
+}
+.ordertotaldatarow .itemname {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    width: 106px;
+}
+.ordertotaldatarow .revenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 58px;
+}
+.ordertotaldatarow .points {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 31px;
+}
+/* Leads List */
+.leadtotaldetailsarea {
+    background: none #a7a7a7;
+    float: left;
+    padding: 4px 10px 10px;
+    width: 366px;
+}
+.leadtotalhead {
+    clear: both;
+    font-size: 11px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    width: 375px;
+}
+.leadtotalhead > .leadnumber {
+    float: left;
+    width: 41px;
+}
+.leadtotalhead > .leaddate {
+    float: left;
+    width: 49px;
+}
+.leadtotalhead > .leadvalue {
+    float: left;
+    width: 33px;
+}
+.leadtotalhead > .leadcustomer {
+    float: left;
+    width: 92px;
+}
+.leadtotalhead > .leadqty {
+    float: left;
+    width: 31px;
+}
+.leadtotalhead > .leaditem {
+    float: left;
+    width: 122px;
+}
+/* Lead List Area */
+.leadtotaldataarea {
+    border: 1px solid #000000;
+    clear: both;
+    float: left;
+    height: 187px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 375px;
+}
+.leadtotaldatarow {
+    clear: both;
+    float: left;
+    font-size: 11px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    width: 362px;
+}
+.leadtotaldatarow > .leadnumber {
+    border-right: 1px solid #000000;
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    width: 40px;
+}
+.leadtotaldatarow > .leaddate {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 48px;
+}
+.leadtotaldatarow > .leadvalue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 32px;
+}
+.leadtotaldatarow > .leadcustomer {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    width: 86px;
+}
+.leadtotaldatarow > .leadqty {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    width: 30px;
+}
+.leadtotaldatarow > .leaditem {
+    float: left;
+    padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    width: 109px;
+}
+.leadtotaldatarow > .leaditem.custom {
+    font-weight: bold;
+}
+/* Lead List */
+.leadcmptotaldetailsarea {
+    background: none #a7a7a7;
+    float: left;
+    padding: 4px 10px 10px;
+    width: 202px;
+}
+.leadcmptotalhead {
+    clear: both;
+    float: left;
+    font-size: 11px;
+    text-align: center;
+    width: 196px;
+}
+.leadcmptotalhead > .username {
+    float: left;
+    width: 58px;
+}
+.leadcmptotalhead > .leadtotals {
+    float: left;
+    width: 45px;
+}
+.leadcmptotaldata {
+    clear: both;
+    float: left;
+    border: 1px solid #000000;
+    width: 197px;
+}
+.leadcmptotaldatarow {
+    clear: both;
+    float: left;
+    height: 16px;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+    width: 196px;
+}
+.leadcmptotaldatarow.total {
+    background: none repeat scroll 0 0 #d0d0d0;
+    font-weight: bold;
+}
+.leadcmptotaldatarow > .username {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-right: 5px;
+    text-align: right;
+    width: 54px;
+}
+.leadcmptotaldatarow > .leadtotals {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 44px;
+}
+.leadcmptotaldatarow > .leadtotals.outcalls {
+    border-right: none;
+}
+/* Company Orders Popup */
+.companyorderviewarea {
+    background: none #a7a7a7;
+    float: left;
+    padding: 4px 10px 10px;
+    width: 395px;
+}
+.companyorderviewhead {
+    clear: both;
+    float: left;
+    font-size: 10px;
+    text-align: center;
+    width: 393px;
+}
+.companyorderviewhead > .username {
+    border-right: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 51px;
+}
+.companyorderviewhead > .ordersnum {
+    border-right: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 71px;
+}
+.companyorderviewhead > .revenue {
+    border-right: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 159px;
+}
+.companyorderviewhead > .orderspts {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 102px;
+}
+.companyorderviewhead > .ordersreg {
+    float: left;
+    width: 21px;
+}
+.companyorderviewhead > .orderscust {
+    float: left;
+    width: 22px;
+}
+.companyorderviewhead > .orderstotal {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 28px;
+}
+.companyorderviewhead > .revenuereg {
+    float: left;
+    width: 52px;
+}
+.companyorderviewhead > .revenuecust {
+    float: left;
+    width: 52px;
+}
+.companyorderviewhead > .revenuetotal {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 55px;
+}
+.companyorderviewhead > .pointsreg {
+    float: left;
+    width: 37px;
+}
+.companyorderviewhead > .pointscust {
+    float: left;
+    width: 31px;
+}
+.companyorderviewhead > .pointstotal {
+    float: left;
+    width: 40px;
+}
+.companyorderviewdata {
+    border: 1px solid #000000;
+    clear: both;
+    float: left;
+    width: 393px;
+}
+.companyorderviewrow {
+    clear: both;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    font-size: 11px;
+    text-align: center;
+    width: 392px;
+}
+.companyorderviewrow.total {
+    background: none repeat scroll 0 0 #d0d0d0;
+    font-weight: bold;
+}
+.companyorderviewrow.website {
+    color: #0000ff;
+}
+.companyorderviewrow > .username {
+    border-right: 1px solid #000000;
+    float: left;
+    padding-right: 5px;
+    text-align: right;
+    width: 45px;
+}
+.companyorderviewrow > .ordersreg {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 22px;
+}
+.companyorderviewrow > .orderscust {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 20px;
+}
+.companyorderviewrow > .orderstotal {
+    border-right: 1px solid #000000;
+    background: none repeat scroll 0 0 #d0d0d0;
+    float: left;
+    width: 27px;
+}
+.companyorderviewrow > .revenuereg {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 52px;
+}
+.companyorderviewrow > .revenuecust {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 51px;
+}
+.companyorderviewrow > .revenuetotal {
+    background: none repeat scroll 0 0 #d0d0d0;
+    border-right: 1px solid #000000;
+    float: left;
+    width: 54px;
+}
+.companyorderviewrow > .pointsreg {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 37px;
+}
+.companyorderviewrow > .pointscust {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 31px;
+}
+.companyorderviewrow > .pointstotal {
+    background: none repeat scroll 0 0 #d0d0d0;
+    float: left;
+    width: 39px;
+}
+/* end view */
+/* Year totals*/
+.leadorderyeartotalshead, .leadorderyeartotals {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 16px;
+    height: 16px;
+    text-align: center;
+    /* width: 545px; */
+}
+.leadorderyeartotals.data {
+    font-weight: normal;
+    background: none #FFFFFF;
+}
+.leadorderyeartotalshead > .leads {
+    border-right: 1px solid #000000;
+    float: left;
+    margin-left: 34px;
+    width: 99px;
+}
+.leadorderyeartotalshead > .orders {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 90px;
+}
+.leadorderyeartotalshead > .revenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 174px;
+}
+.leadorderyeartotalshead >.points {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 135px;
+}
+.leadorderyeartotals > .weeks {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 34px;
+}
+.leadorderyeartotals > .leads {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 33px;
+}
+.leadorderyeartotals > .orders {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 30px;
+}
+.leadorderyeartotals > .revenue {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 58px;
+}
+.leadorderyeartotals > .points {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 45px;
+}
+/* Tooltips */
+.curpoints_tooltip {
+    width: 198px;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.yeartodate_tooltip {
+    width: 557px;
+    max-width: 557px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.weekuserorder_tooltip {
+    width: 420px;
+    max-width: 420px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}
+.weekuserleads_tooltip {
+    width: 405px;
+    max-width: 405px;
+    float: left;
+    background: #a7a7a7;
+    border: 2px solid #000000;
+}

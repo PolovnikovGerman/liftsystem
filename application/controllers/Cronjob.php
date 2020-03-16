@@ -79,6 +79,22 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function leads_add_brand() {
+        $brands = ['BT','SB'];
+        $this->load->helper('array_helper');
+        $this->db->select('lead_id, update_date, lead_number');
+        $this->db->from('ts_leads');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $webs = random_element($brands);
+            $this->db->set('brand', $webs);
+            $this->db->set('update_date', $row['update_date']);
+            $this->db->where('lead_id', $row['lead_id']);
+            $this->db->update('ts_leads');
+            echo 'Lead '.$row['lead_number'].' Brand '.$webs.PHP_EOL;
+        }
+    }
+
     public function printshop_add_brand() {
         $brands = ['BT','SB'];
         $this->load->helper('array_helper');
@@ -103,50 +119,10 @@ Class Cronjob extends CI_Controller
             $this->db->where('onboat_container', $row['onboat_container']);
             $this->db->update('ts_printshop_onboats');
             echo 'On boat '.$row['onboat_container'].' Brand '.$webs.PHP_EOL;
-        }
-    }
-
-    public function netprofit_brand() {
-        $this->db->select('*');
-        $this->db->from('netprofit');
-        $res = $this->db->get()->result_array();
-        foreach ($res as $row) {
-            $sb_kf = rand(40, 60)/100;
-            echo 'Stressball '.$sb_kf.PHP_EOL;
-            $this->db->set('profit_id', $row['profit_id']);
-            $this->db->set('brand','SB');
-            $this->db->set('profit_operating', empty($row['profit_operating']) ? NULL : round($row['profit_operating']*$sb_kf,2));
-            $this->db->set('interest', empty($row['interest']) ? NULL : round($row['interest']*$sb_kf,2));
-            $this->db->set('profit_payroll', empty($row['profit_payroll']) ? NULL : round($row['profit_payroll']*$sb_kf,2));
-            $this->db->set('profit_advertising', empty($row['profit_advertising']) ? NULL : round($row['profit_advertising']*$sb_kf,2));
-            $this->db->set('profit_projects', empty($row['profit_projects']) ? NULL : round($row['profit_projects']*$sb_kf,2));
-            $this->db->set('profit_w9', empty($row['profit_w9']) ? NULL : round($row['profit_w9']*$sb_kf,2));
-            $this->db->set('profit_purchases', empty($row['profit_purchases']) ? NULL : round($row['profit_purchases']*$sb_kf,2));
-            $this->db->set('debtinclude', $row['debtinclude']);
-            $this->db->set('profit_saved', empty($row['profit_saved']) ? NULL : round($row['profit_saved']*$sb_kf,2));
-            $this->db->set('profit_debt', empty($row['profit_debt']) ? NULL : round($row['profit_debt']*$sb_kf,2));
-            $this->db->set('profit_owners', empty($row['profit_owners']) ? NULL : round($row['profit_owners']*$sb_kf,2));
-            $this->db->set('od2', empty($row['od2']) ? NULL : round($row['od2']*$sb_kf,2));
-            $this->db->set('weeknote', $row['weeknote']);
-            $this->db->insert('netprofit_dat');
-            $sb_kf = rand(40, 60)/100;
-            echo 'Bluetrack '.$sb_kf.PHP_EOL;
-            $this->db->set('profit_id', $row['profit_id']);
-            $this->db->set('brand','BT');
-            $this->db->set('profit_operating', empty($row['profit_operating']) ? NULL : round($row['profit_operating']*$sb_kf,2));
-            $this->db->set('interest', empty($row['interest']) ? NULL : round($row['interest']*$sb_kf,2));
-            $this->db->set('profit_payroll', empty($row['profit_payroll']) ? NULL : round($row['profit_payroll']*$sb_kf,2));
-            $this->db->set('profit_advertising', empty($row['profit_advertising']) ? NULL : round($row['profit_advertising']*$sb_kf,2));
-            $this->db->set('profit_projects', empty($row['profit_projects']) ? NULL : round($row['profit_projects']*$sb_kf,2));
-            $this->db->set('profit_w9', empty($row['profit_w9']) ? NULL : round($row['profit_w9']*$sb_kf,2));
-            $this->db->set('profit_purchases', empty($row['profit_purchases']) ? NULL : round($row['profit_purchases']*$sb_kf,2));
-            $this->db->set('debtinclude', $row['debtinclude']);
-            $this->db->set('profit_saved', empty($row['profit_saved']) ? NULL : round($row['profit_saved']*$sb_kf,2));
-            $this->db->set('profit_debt', empty($row['profit_debt']) ? NULL : round($row['profit_debt']*$sb_kf,2));
-            $this->db->set('profit_owners', empty($row['profit_owners']) ? NULL : round($row['profit_owners']*$sb_kf,2));
-            $this->db->set('od2', empty($row['od2']) ? NULL : round($row['od2']*$sb_kf,2));
-            $this->db->set('weeknote', $row['weeknote']);
-            $this->db->insert('netprofit_dat');
+            $this->db->set('update_date', $row['update_date']);
+            $this->db->where('lead_id', $row['lead_id']);
+            $this->db->update('ts_leads');
+            echo 'Lead '.$row['lead_number'].' Brand '.$webs.PHP_EOL;
         }
     }
 

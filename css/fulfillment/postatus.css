@@ -1,0 +1,98 @@
+.postatuses_content {
+    clear: both;
+    margin-top: 10px;
+    width: 1003px;
+}
+.table-status {
+    clear: both;
+    float: left;
+    margin-left: 12px;
+    width: 970px;
+}
+.table-status-title {
+    background-color: #C8C8C8;
+    border: 1px solid #919191;
+    clear: both;
+}
+.table-status-title > div {
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px!important;
+    text-align: center;
+}
+.status_orddate_title {
+    width: 90px;
+}
+.status_lastupd_title {
+    width: 100px;
+}
+.status_ordernum_title {
+    width: 90px;
+}
+.status_customer_title {
+    width: 320px;
+}
+.status_revenue_title {
+    width: 100px;
+}
+.status_name_title {
+    width: 210px;
+}
+.content-status-table {
+    clear: both;
+    float: left;
+    height: 592px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 928px;
+}
+.status_data_row {
+    clear: both;
+    float: left;
+    width: 915px;
+}
+.empty_statusdata {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    height: 22px;
+    line-height: 22px!important;
+}
+.status_data_row > div {
+    height: 22px;
+    line-height: 22px!important;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+}
+.orderstatus_rush {
+    background-color: #FF2A00;
+}
+.status_orddate {
+    width: 90px;
+}
+.status_lastupd {
+    width: 100px;
+}
+.status_ordernum {
+    width: 90px;
+}
+.status_customer {
+    width: 315px;
+    text-align: left!important;
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.status_revenue {
+    width: 95px;
+    text-align: right!important;
+    margin-right: 5px;
+}
+.status_name {
+    text-align: left!important;
+    width: 206px;
+    margin-left: 5px;
+}

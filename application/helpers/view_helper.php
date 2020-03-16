@@ -418,6 +418,94 @@ if (!function_exists('creditcard_format')) {
     }
 }
 
+if (!function_exists('formatPhoneNumber')) {
+    function formatPhoneNumber($phoneNumber)
+    {
+        $plusdig = 0;
+        if (substr($phoneNumber, 0, 1) == '+') {
+            $plusdig = 1;
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+        $areaCode = substr($phoneNumber, 0, 3);
+        $nextThree = substr($phoneNumber, 3, 3);
+        $lastFour = substr($phoneNumber, 6);
+        $phoneNumber = ($plusdig == 1 ? '+' : '') . $areaCode . '-' . $nextThree . '-' . $lastFour;
+        return $phoneNumber;
+    }
+}
+
+if (!function_exists('getVMDDueDate')) {
+    function getVMDDueDate($batch_date, $paymethod) {
+        if ($paymethod=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +1 day");
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('getAmexDueDate')) {
+    function getAmexDueDate($batch_date,$paymeth) {
+        if ($paymeth=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $weekday=date('N',$batch_date);
+            $weeknum=date('W',$batch_date);
+            $year=date('Y',$batch_date);
+            if ($weekday==1) {
+                /* Monday */
+                $duedate=strtotime($year . 'W' . $weeknum . '5 00:00:00');
+            } elseif ($weekday>1 && $weekday<5) {
+                /* Tuesday, Wednesday, Thuesday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '1 00:00:00');
+            } else {
+                /* Friday, Saturday, Sunday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '2 00:00:00');
+            }
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('businessdate')) {
+    function businessdate($date) {
+        $ci=&get_instance();
+        $ci->load->model('calendars_model');
+        $calendar=$ci->config->item('bank_calendar');
+        $holidays=$ci->calendars_model->get_calendar_holidays($calendar);
+        for ($i=1; $i<=15;$i++) {
+            if (in_array($date, $holidays)) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==6) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==7) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } else {
+                break;
+            }
+        }
+        return $date;
+    }
+}
+
+if (!function_exists('ValidEmail')) {
+    function ValidEmail($mail) {
+        if (empty($mail)) {
+            return FALSE;
+        } else {
+            return valid_email_address($mail);
+        }
+    }
+}
+
+
 if (!function_exists('BankDays')) {
     function BankDays($datbgn, $datend, $calendar_id=0) {
         $bank_days = 0;
@@ -427,19 +515,19 @@ if (!function_exists('BankDays')) {
         } else {
             $def_calendar=$calendar_id;
         }
-        
+
         $ci->load->model('calendars_model');
         $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
         $holidays=array();
         foreach ($holidays_src as $row) {
             array_push($holidays, date('Y-m-d',$row));
         }
-        
+
         $weekends=array(0,6);
-        $days = ceil(($datend - $datbgn) / 3600 / 24);        
+        $days = ceil(($datend - $datbgn) / 3600 / 24);
         for ($i = 0; $i <= $days; $i++) {
             $curr = strtotime('+' . $i . ' days', $datbgn);
-            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {            
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {
                 $bank_days++;
             }
         }
@@ -493,4 +581,14 @@ if (!function_exists('getDayOfWeek')) {
         return $day_week;
     }
 }
+if (!function_exists('getDayOfWeek')) {
+    function getDayOfWeek($_week_number, $_year = null,$weekday=1) {
+        $year = $_year ? $_year : date('Y');
+        $week_number = sprintf('%02d', $_week_number);
+        $day_week = strtotime($year . 'W' . $week_number . $weekday.' 00:00:00');
+
+        return $day_week;
+    }
+}
+
 ?>

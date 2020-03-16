@@ -22,8 +22,25 @@ function init_tasks_management() {
     })
     $("input#viewallapproved").unbind('change').change(function(){
         change_approved_view('just_approved');
-    })
+    });
+    // Change Brand
+    $("#arttasksviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#arttasksviewbrand").val(brand);
+        $("#arttasksviewbrandmenu").find("div.brandchoseval").each(function(){
+            var curbrand=$(this).data('brand');
+            if (curbrand==brand) {
+                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
+                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
+            } else {
+                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
+                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
+            }
+        });
+        init_tasks_page();
+    });
 }
+
 function init_tasks_page() {
     var inclreq=$("input#ordersproofs").prop('checked');
     var showreq=0;
@@ -48,6 +65,7 @@ function init_tasks_page() {
     params.push({name:'approved_sort',value:$("input#aproved_sort").val()});
     params.push({name:'aproved_direc',value:$("input#aproved_direc").val()});
     params.push({name:"aproved_viewall", value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_data";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -66,23 +84,16 @@ function init_tasks_page() {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").popover({
-                html: true,
-                trigger: 'hover',
-                placement: 'left'
+            $("div.taskview_order").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    'my': 'bottom center',
+                    'at': 'top center'
+                },
+                style: 'qtip_light task_detailview',
             });
-            // $("div.taskview_order").bt({
-            //     fill : '#EDEDED',
-            //     cornerRadius: 10,
-            //     width: 310,
-            //     padding: 10,
-            //     strokeWidth: '2',
-            //     positions: "top",
-            //     strokeStyle : '#FFFFFF',
-            //     strokeHeight: '18',
-            //     cssClass: 'green_tooltip',
-            //     cssStyles: {color: '#OOOOOO'}
-            // });
         } else {
             $("#loader").hide();
             show_error(response);
@@ -113,6 +124,7 @@ function change_approved_view(stage) {
         params.push({name:'task_direc',value:$("input#aproved_direc").val()});
     }
     params.push({name:'aproved_viewall', value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -130,10 +142,17 @@ function change_approved_view(stage) {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").popover({
-                html: true,
-                trigger: 'hover',
-                placement: 'left'
+            $("div.taskview_order").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    my: 'bottom right',
+                    at: 'top left',
+                },
+                style: 'qtip_light task_detailview',
+                show: 'click',
+                hide: 'click'
             });
             $("#loader").hide();
         } else {
@@ -238,6 +257,7 @@ function change_tasksort(tasktype,sorttype) {
     params.push({name:'task_sort',value:sortby});
     params.push({name:'task_direc',value:sort});
     params.push({name:'aproved_viewall', value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_stage";
     $("#loader").show();
     $.post(url,params,function(response){
@@ -259,10 +279,10 @@ function call_details(obj) {
     var objid=obj.id;
     if (objid.substr(0,3)=='ord') {
         var order_id=objid.substr(3);
-        // order_artstage(order_id);
+        order_artstage(order_id,'art_tasks');
     } else {
         var mailid=objid.substr(2);
-        // artproof_lead(mailid)
+        artproof_lead(mailid);
     }
 }
 
@@ -328,6 +348,7 @@ function searchtasks() {
     var params=new Array();
     params.push({name:'tasktype', value: $("select#tasksearchselect").val()});
     params.push({name:'tasksearch', value:$("input#tasksearch").val()});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasksearch";
     $.post(url, params, function(response){
         if (response.errors=='') {

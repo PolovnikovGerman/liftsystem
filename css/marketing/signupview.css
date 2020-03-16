@@ -1,0 +1,104 @@
+.signup_content {
+    width: 1017px;
+}
+.signup_header input {
+    background-color: #ffffff;
+    color: #494948;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+}
+.signup_header {
+    margin: 18px 22px 5px 28px;
+    width: 980px;
+}
+input.signupdate {
+    width: 70px;
+    margin-right: 10px;
+}
+.signup_header .btn {
+    padding: 3px 9px!important;
+}
+.signup_paginator {
+    float: right!important;
+}
+.signupdata_head {
+    width: 487px;
+}
+.signupdata_head > div {
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+    height: 33px;
+    line-height: 33px;
+    border-bottom: 2px solid #2f2f2f;
+}
+.signupdata_head .numpp {
+    background: url('/img/marketing/table-violet-left.png') no-repeat;
+    width: 44px;
+    height: 33px;
+}
+.signupdata_head .date {
+    background: url('/img/marketing/table-violet-center.png') repeat-x;
+    width: 69px;
+    border-left: 2px solid #2f2f2f;
+}
+.signupdata_head .name {
+    background: url('/img/marketing/table-violet-center.png') repeat-x;
+    width: 125px;
+    border-left: 2px solid #2f2f2f;
+}
+.signupdata_head .email {
+    background: url('/img/marketing/table-violet-right.png') no-repeat;
+    width: 245px;
+    border-left: 2px solid #2f2f2f;
+}
+.signup_data_container .left-table,
+.signup_data_container .right-table {
+    margin-left: 20px;
+}
+.signupdata_content {
+    overflow-x: hidden;
+    border-left: 2px solid #2f2f2f;
+    border-bottom: 2px solid #2F2F2F;
+    border-right: 2px solid #2f2f2f;
+    clear: both;
+    max-height: 510px;
+    overflow-y: auto;
+    width: 482px;
+}
+.signupdata_content .rowdata {
+    width: 480px;
+    clear: both;
+}
+.signupdata_content .rowdata.emptyvalue {
+    height: 22px;
+    line-height: 22px;
+    font-size: 14px;
+    text-align: center;
+    color: #ff0000;
+}
+.signupdata_content .rowdata > div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+}
+.signupdata_content .rowdata .numpp {
+    width: 42px;
+    text-align: center;
+}
+.signupdata_content .rowdata .date {
+    border-left: 2px solid #2f2f2f;
+    width: 69px;
+    text-align: center;
+}
+.signupdata_content .rowdata .name {
+    border-left: 2px solid #2f2f2f;
+    width: 125px;
+}
+.signupdata_content .rowdata .email {
+    border-left: 2px solid #2f2f2f;
+    padding-left: 5px;
+    width: 243px;
+}
