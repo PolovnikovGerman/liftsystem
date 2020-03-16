@@ -96,6 +96,20 @@ class Accounting extends MY_Controller
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         /*Google Chart */
         $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
+        // Order popup
+        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        // Uploader
+        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+        // File Download
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+        // Datepicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        // Select 2
+        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
 
         $options = [
             'title' => $head['title'],

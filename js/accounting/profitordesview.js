@@ -453,19 +453,43 @@ function delete_order(obj) {
 }
 
 /* Edit Order */
-function edit_order(orderid) {
-    // var orderid=obj.id.substr(3);
-    var total=$("#totalrec").val()
-    var url="/finance/orderprofitdata";
-    $.post(url, {'order':orderid, 'edit': 0}, function(response){
+function edit_order(order) {
+    var callpage = 'profitlist';
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: $("#profitordersbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            show_popup('leadorderdetailspopup');
-            $("#pop_content").empty().html(response.data.content);
-            navigation_init();
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").modal('show');
+            if (parseInt(order)==0) {
+                init_onlineleadorder_edit();
+            } else {
+                navigation_init();
+            }
         } else {
             show_error(response);
         }
-    }, 'json');
+    },'json');
+    //
+    // // var orderid=obj.id.substr(3);
+    // var total=$("#totalrec").val()
+    // var url="/finance/orderprofitdata";
+    // $.post(url, {'order':orderid, 'edit': 0}, function(response){
+    //     if (response.errors=='') {
+    //         show_popup('leadorderdetailspopup');
+    //         $("#pop_content").empty().html(response.data.content);
+    //         navigation_init();
+    //     } else {
+    //         show_error(response);
+    //     }
+    // }, 'json');
 }
 
 function inline_edit_init() {
