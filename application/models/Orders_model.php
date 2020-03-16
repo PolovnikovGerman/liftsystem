@@ -945,14 +945,12 @@ Class Orders_model extends MY_Model
         $this->db->set('goal_orders', $data['goal_orders']);
         $this->db->set('goal_revenue', $data['goal_revenue']);
         $this->db->set('goal_profit', $data['goal_profit']);
+        $this->db->set('brand', $data['brand']);
         $this->db->update('ts_goal_orders');
         $out['result']=$this->success_result;
         usersession('goaldata', NULL);
         return $out;
     }
-
-
-
 
     public function get_checkouts_by_weekday($brand) {
         $out_array = [];
@@ -2090,88 +2088,6 @@ Class Orders_model extends MY_Model
         $this->db->order_by('m.method_name');
         $res=$this->db->get()->result_array();
         return $res;
-    }
-
-    public function notify_netdebtchanged($data)
-    {
-        $this->load->model('user_model');
-        $log_options = array('olddebt' => $data['oldtotalrun'], 'newdebt' => $data['newtotalrun'], 'event' => '',);
-        $msg_subj = 'For Debt changed from ' . $data['oldtotalrun'] . ' to ' . $data['newtotalrun'];
-        $usrdat = $this->user_model->get_user_data($data['user_id']);
-        $email_body = 'The For Debt value in the Net Profit report (' . $data['weeknum'] . ') changed value from ' . $data['olddebt'] . ' to ' . $data['newdebt'];
-        $email_body .= ' at ' . date('h:i a') . ' ' . date('m/d/Y') . ' from the following event:' . PHP_EOL;
-        if (isset($data['ordercancel'])) {
-            $email_body .= 'Order ' . $data['orderdata']['order_num'] . ' for $' . number_format($data['orderdata']['revenue']) . ' ($' . number_format($data['orderdata']['profit'], 2, '.', ',') . ' profit) was cancelled by ' . $usrdat['user_name'];
-            $log_options['event'] = 'cancel_order';
-        }
-        if (isset($data['orderchange'])) {
-            if ($data['orderdata']['oldprofit'] == 0) {
-                $email_body .= 'Order ' . $data['orderdata']['order_num'] . ' for $' . number_format($data['orderdata']['revenue']) . ' ($' . number_format($data['orderdata']['profit'], 2, '.', ',') . ' profit) was added by ' . $usrdat['user_name'];
-            } else {
-                // $email_body.='Order '.$data['orderdata']['order_num'].' for $'.number_format($data['orderdata']['revenue']).' ($'.number_format($data['orderdata']['profit'],2,'.',',').' profit) was changed by '.$usrdat['user_name'].'. ';
-                // $email_body.='Old profit was $'.number_format($data['orderdata']['oldprofit'],2,'.',',');
-                $email_body .= 'The revenue on order ' . $data['orderdata']['order_num'] . ' was changed ';
-                if (isset($data['orderdata']['oldrevenue'])) {
-                    $email_body .= ' from $' . number_format($data['orderdata']['oldrevenue']);
-                }
-                if (isset($data['orderdata']['oldprofit'])) {
-                    $email_body .= ' ($' . number_format($data['orderdata']['oldprofit'], 2, '.', ',') . ' profit) ';
-                }
-                $email_body .= 'to $' . number_format($data['orderdata']['revenue'], 2, '.', '.') . ' ($' . number_format($data['orderdata']['profit'], 2, '.', ',') . ' profit)';
-                $email_body .= 'by ' . $usrdat['user_name'] . '. ';
-            }
-            $log_options['event'] = 'change_order';
-        }
-        if (isset($data['podelete'])) {
-            $email_body .= 'PO ' . $data['order_num'] . ' was deleted by ' . $usrdat['user_name'] . ' Sum $' . number_format($data['old_amount_sum'], 2, '.', '');
-            $log_options['event'] = 'PO deleted';
-        }
-        if (isset($data['pochange'])) {
-            if ($data['old_amount_sum'] == 0) {
-                $email_body .= 'PO ' . $data['order_num'] . ' was added by ' . $usrdat['user_name'] . ' Sum $' . number_format($data['amount_sum'], 2, '.', '');
-            } else {
-                $email_body .= 'PO ' . $data['order_num'] . ' was changed from $' . number_format($data['old_amount_sum'], 2, '.', '') . ' to $' . number_format($data['amount_sum'], 2, '.', '') . ' by ' . $usrdat['user_name'];
-            }
-            if (isset($data['comment']) && $data['comment'] != '') {
-                $email_body .= PHP_EOL . 'Reason ' . $data['comment'];
-            }
-            $log_options['event'] = 'PO changed';
-        }
-        if (isset($data['netproofdebt'])) {
-            if (isset($data['profit_saved'])) {
-                $email_body .= PHP_EOL . ' Saved was changed from $' . number_format($data['profit_saved']['old'], 2, '.', '') . ' to $' . number_format($data['profit_saved']['new'], 2, '.', '') . ' by ' . $usrdat['user_name'];
-                $log_options['event'] = 'profit_changed';
-            }
-            if (isset($data['profit_owners'])) {
-                $email_body .= PHP_EOL . ' For Owners was changed from $' . number_format($data['profit_owners']['old'], 2, '.', '') . ' to $' . number_format($data['profit_owners']['new'], 2, '.', '') . ' by ' . $usrdat['user_name'];
-                $log_options['event'] = 'profit_changed';
-            }
-            if (isset($data['od2'])) {
-                $email_body .= PHP_EOL . ' OD2 was changed from $' . number_format($data['od2']['old'], 2, '.', '') . ' to $' . number_format($data['od2']['new'], 2, '.', '') . ' by ' . $usrdat['user_name'];
-                $log_options['event'] = 'profit_changed';
-            }
-        }
-        $this->load->library('email');
-        $config = $this->config->item('email_setup');
-        $config['mailtype'] = 'text';
-        $this->email->initialize($config);
-        $this->email->set_newline("\r\n");
-        $mailto = $this->config->item('sean_email');
-        $this->email->to($mailto);
-        $this->email->cc($this->config->item('sage_email'));
-        $from = $this->config->item('email_notification_sender');
-        $this->email->from($from);
-        $this->email->subject($msg_subj);
-        $this->email->message($email_body);
-        $this->email->send();
-        $this->email->clear(TRUE);
-        /* Save to log */
-        $this->db->set('old_debt', $log_options['olddebt']);
-        $this->db->set('new_debt', $log_options['newdebt']);
-        $this->db->set('checngelog_event', $log_options['event']);
-        $this->db->set('user_id', $data['user_id']);
-        $this->db->insert('netprofit_changelog');
-        return TRUE;
     }
 
     function get_orders_dates($options=[]) {
@@ -4465,49 +4381,10 @@ Class Orders_model extends MY_Model
             $goal_avgprofit_perc=($goalres['goal_profit']/$goalres['goal_revenue']*100);
         }
         $out['goal_avgprofit_perc']=($goal_avgprofit_perc==0 ? '&nbsp;' : number_format($goal_avgprofit_perc,1,'.',',').'%');
-        $out['goal_profit_class']=orderProfitClass(round($goal_avgprofit_perc),0);
+        $out['goal_profit_class']=orderProfitClass(round($goal_avgprofit_perc,0));
         return $out;
     }
 
-    public function change_goal_value($data, $field, $newval) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->init_error_msg);
-        if (!isset($data[$field])) {
-            $out['msg']='Unknown field '.$field;
-            return $out;
-        }
-        $data[$field]=$newval;
-        usersession('goaldata', $data);
-        $out['result']=  $this->success_result;
-        // Count new params
-        $goal_avgprofit=$goal_avgrevenue=$goal_avgprofit_perc='&nbsp;';
-        if ($data['goal_orders']!=0) {
-            $goal_avgrevenue=($data['goal_revenue']/$data['goal_orders']);
-            $goal_avgrevenue='$'.number_format($goal_avgrevenue,2,'.',',');
-            $goal_avgprofit=($data['goal_profit']/$data['goal_orders']);
-            $goal_avgprofit='$'.number_format($goal_avgprofit,2,'.',',');
-        }
-        if ($data['goal_revenue']) {
-            $goal_avgprofit_perc=($data['goal_profit']/$data['goal_revenue']*100);
-            $goal_avgprofit_perc=number_format($goal_avgprofit_perc,1).'%';
-        }
-        $out['goalavgrevenue']=$goal_avgrevenue;
-        $out['goalavgprofit']=$goal_avgprofit;
-        $out['goalavgprofitperc']=$goal_avgprofit_perc;
-        return $out;
-    }
-
-    public function save_profitdate_goal($data) {
-        $out = array('result' => $this->error_result, 'msg' => $this->init_error_msg);
-        $this->db->where('goal_order_id', $data['goal_order_id']);
-        $this->db->set('goal_orders', $data['goal_orders']);
-        $this->db->set('goal_revenue', $data['goal_revenue']);
-        $this->db->set('goal_profit', $data['goal_profit']);
-        $this->db->set('brand', $data['brand']);
-        $this->db->update('ts_goal_orders');
-        $out['result']=$this->success_result;
-        usersession('goaldata', NULL);
-        return $out;
-    }
     // Number of records in monitor
     public function get_count_monitor($filtr) {
         $this->db->select('count(order_id) as total_rec ',FALSE);
@@ -5139,6 +5016,5 @@ Class Orders_model extends MY_Model
         $this->db->insert('netprofit_changelog');
         return TRUE;
     }
-
 
 }

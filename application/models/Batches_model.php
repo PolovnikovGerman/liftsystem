@@ -717,13 +717,6 @@ class Batches_model extends My_Model
                     break;
                 case 'o':
                     // $duedate=strtotime(date("Y-m-d", $batch_data['batch_date']) . " +1 day");
-                    $duedate=getVMDDueDate($batch_data['batch_date'],$paymethod);
-                    break;
-                case 'a':
-                    $inv_amex=round($batch_data['amount']*((100-$amex_fee)/100),2);
-                    $duedate=getAmexDueDate($batch_data['batch_date'],$paymethod);
-                    break;
-                case 'o':
                     $duedate=$batch_data['datedue'];
                     $inv_other=$batch_data['amount'];
                     break;
