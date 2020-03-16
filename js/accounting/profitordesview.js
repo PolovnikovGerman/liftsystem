@@ -417,21 +417,6 @@ function save_newcog() {
     }, 'json');
 }
 
-/* Add Order */
-function add_neworder() {
-    var orderid=0;
-    var total=$("#totalrec").val()
-    var url="/finance/orderprofitdata";
-    $.post(url, {'order_id':orderid}, function(response){
-        if (response.errors=='') {
-            show_popup('leadorderdetailspopup');
-            $("#pop_content").empty().html(response.data.content);
-            init_onlineleadorder_edit();
-        } else {
-            show_error(response);
-        }
-    }, 'json');
-}
 
 /* Delete order */
 function delete_order(obj) {
@@ -477,19 +462,48 @@ function edit_order(order) {
             show_error(response);
         }
     },'json');
-    //
-    // // var orderid=obj.id.substr(3);
-    // var total=$("#totalrec").val()
-    // var url="/finance/orderprofitdata";
-    // $.post(url, {'order':orderid, 'edit': 0}, function(response){
-    //     if (response.errors=='') {
-    //         show_popup('leadorderdetailspopup');
-    //         $("#pop_content").empty().html(response.data.content);
-    //         navigation_init();
-    //     } else {
-    //         show_error(response);
-    //     }
-    // }, 'json');
+}
+
+/* Add Order */
+function add_neworder() {
+    var url = '/accounting/order_brand';
+    $.post(url,{}, function (response) {
+        if (response.errors=='') {
+            $("#pageModalLabel").empty().html('Choose Brand for New Order');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','380px');
+            $("#pageModal").modal('show');
+            $("button#savebrand").unbind('click').click(function () {
+                var brand = $("#neworderbrand").val();
+                $("#pageModal").modal('hide');
+                add_leadorder(brand);
+            })
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function add_leadorder(brand) {
+    var callpage = 'profitlist';
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: 0});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 1});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").modal('show');
+            init_onlineleadorder_edit();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function inline_edit_init() {
