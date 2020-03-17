@@ -22,4 +22,12 @@ class Welcome extends MY_Controller {
         $this->load->view('page/page_template_view', $dat);
     }
 
+    /* Open File content */
+    public function art_openimg() {
+        $url = $this->input->post('url');
+        $filename = $this->input->post('file');
+        /* Get extension */
+        openfile($url, $filename);
+    }
+
 }

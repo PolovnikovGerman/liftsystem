@@ -1,0 +1,386 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Feb 3, 2015, 7:17:31 PM
+    Author     : polovnikov-go
+*/
+/* Quotes */
+.quote_content {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+    width: 994px;
+}
+.quote_header {
+    clear: both;
+    float: left;
+    margin-top: 14px;
+    margin-bottom: 10px;
+    width: 973px;
+}
+.quotes_selecttype_label {
+    float: left;
+    width: 50px;
+    height: 24px;
+    line-height: 24px!important;
+}
+select.quote_status_select {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 120px;
+    height: 24px;
+    line-height: 24px!important;
+}
+input.quotesearch {
+    background-color: #fff;
+    border: 1px solid #000;
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 206px;
+    height: 24px;
+    line-height: 24px!important;
+}
+a.find_quotebnt {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}
+.quotes_pagination {
+    float: right!important;
+}
+.quotes_title {
+    border-bottom: 2px solid #2F2F2F;
+    clear: both;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    /* width: 980px; */
+}
+.quotes_title > div {
+    height: 33px;
+    line-height: 33px!important;
+    background: url("/img/leads/emailtable-orange-center.png") repeat-x transparent;
+    text-align: center;
+}
+.quotes_title > .quote_ordnum {
+    background: url("/img/leads/emailtable-orange-left.png") no-repeat;
+    width: 43px;
+}
+.quotes_title > .quote_brand {
+    border-right: 1px solid #000000;
+    width: 60px;
+}
+select.quotehideincl {
+    float: left;
+    width: 60px;
+    font-size: 12px;
+    color: #FFF;
+    background: transparent;
+    border: none;
+    margin-top: 9px;
+}
+select.quotehideincl option {
+    color: #000;
+}
+.quotes_title > .quote_status {
+    border-right: 1px solid #000000;
+    width: 65px;
+}
+.quotes_title > .quote_date {
+    border-right: 1px solid #000000;
+    width: 67px;
+}
+.quotes_title > .quote_customer {
+    border-right: 1px solid #000000;
+    width: 116px;
+}
+.quotes_title > .quote_email {
+    border-right: 1px solid #000000;
+    width: 180px;
+}
+.quotes_title > .quote_phone {
+    border-right: 1px solid #000000;
+    width: 89px;
+}
+.quotes_title > .quote_type {
+    border-right: 1px solid #000000;
+    width: 54px;
+}
+.quotes_title > .quote_qty {
+    border-right: 1px solid #000000;
+    width: 54px;
+}
+.quotes_title > .quote_item {
+    border-right: 1px solid #000000;
+    width: 124px;
+}
+.quotes_title > .quote_total {
+    background: url("/img/leads/emailtable-orange-right.png") no-repeat transparent;
+    width: 119px;
+}
+/* Table data */
+.quotes_tabledat {
+    clear: both;
+    max-height: 525px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 969px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.quotes_tabrow {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    width: 100%;
+}
+.quotes_tabrow.current_row {
+    background: #bcbcbc!important;
+}
+.quotes_tabrow > div {
+    height: 21px;
+    line-height: 21px!important;
+    text-align: center;
+}
+.quotes_tabrow > .quote_ordnum {
+    border-right: 1px solid #000000;
+    width: 42px;
+}
+.quotes_tabrow > .quote_brand {
+    border-right: 1px solid #000000;
+    width: 60px;
+}
+.quotes_tabrow > .quote_status {
+    border-right: 1px solid #000000;
+    width: 65px;
+}
+.quotes_tabrow > .quote_status.quoteassign  {
+    background: url(/img/art/assign_lead_btn.png) no-repeat scroll 7px 1px transparent;
+    color: #FFFFFF;
+}
+.quotes_tabrow > .quote_status > .quote_replica {
+    text-align: center;
+    height: 21px;
+    line-height: 21px!important;
+    width: 100%;
+}
+.quotes_tabrow > .quote_date {
+    border-right: 1px solid #000000;
+    width: 67px;
+}
+.quotes_tabrow > .quote_customer {
+    border-right: 1px solid #000000;
+    width: 116px;
+    padding-left: 5px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.quotes_tabrow > .quote_email {
+    border-right: 1px solid #000000;
+    width: 180px;
+    text-align: left;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.quotes_tabrow > .quote_phone {
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 89px;
+    text-overflow: ellipsis;
+}
+.quotes_tabrow > .quote_type {
+    border-right: 1px solid #000000;
+    width: 54px;
+}
+.quotes_tabrow > .quote_qty {
+    border-right: 1px solid #000000;
+    width: 54px;
+}
+.quotes_tabrow > .quote_item {
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 124px;
+    text-overflow: ellipsis;
+}
+.quotes_tabrow > .quote_total {
+    width: 99px;
+}
+.quotes_tabrow > .quote_total > .quote_total_sum {
+    height: 21px;
+    line-height: 21px!important;
+    text-align: center;
+    width: 74px;
+}
+.quotes_tabrow > .quote_total > .quote_attachlnk {
+    height: 21px;
+    line-height: 21px!important;
+    text-align: center;
+    width: 25px;
+}
+/* Popup */
+.quote_popup_content {
+    background: url("/img/leads/quote-popup-bg.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 407px;
+    width: 728px;
+    padding: 10px;
+}
+.quote_popup_content input {
+    color: #000000;
+}
+.quote_popup_editform {
+    clear: both;
+    float: left;
+    width: 690px;
+    padding: 10px;
+}
+.quote_popup_commons {
+    clear: both;
+    float: left;
+    width: 690px;
+    color: #FFFFFF;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.quote_popup_commons strong {
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 2px 2px #464746, 0 2px 2px #464746;
+    margin:  10px 0 10px 0;
+}
+.quotedetail_date {
+    float: left;
+    width: 99px;
+    margin-right: 15px;
+}
+input.quote_dateval {
+    width: 85px;
+}
+.quotedetail_customer {
+    float: left;
+    width: 215px;
+    margin-right: 15px;
+}
+input.quote_customerval {
+    width: 210px;
+}
+.quotedetail_company {
+    float: left;
+    width: 270px;
+}
+input.quote_companyval {
+    width: 265px;
+}
+.quote_detail_email {
+    width: 294px;
+    margin-right: 15px;
+    float: left;
+}
+input.quote_emailval {
+    width: 290px;
+}
+.quote_detail_phone {
+    float: left;
+    width: 270px;
+}
+input.quote_phoneval {
+    width: 255px;
+}
+.quotedetail_itemname {
+    float: left;
+    width: 353px;
+    margin-right: 15px;
+}
+input.quote_itemnameval {
+    width: 355px;
+}
+.quotedetail_qty {
+    float: left;
+    width: 70px;
+}
+input.quote_qtyval {
+    width: 65px;
+}
+.quotedetail_color {
+    float: left;
+    width: 342px;
+    margin-right: 15px;
+}
+input.quote_colorval {
+    width: 335px;
+}
+.quotedetail_colorinpr {
+    float: left;
+    width: 175px;
+}
+input.quote_imprintval {
+    width: 173px;
+}
+.quotedetail_itemcolor {
+    float: left;
+    width: 320px;
+}
+input.quote_imprint {
+    width: 270px;
+}
+.quotedetail_itemcost {
+    float: left;
+    width: 96px;
+    margin-right: 15px;
+}
+input.quote_itemcost {
+    width: 90px;
+}
+.quotedetail_rushdays {
+    float: left;
+    width: 240px;
+    margin-right: 15px;
+}
+input.quote_rushdays {
+    width: 235px;
+}
+.quotedetail_total {
+    float: left;
+    width: 100px;
+    font-weight: bold;
+}
+input.quote_totals {
+    width: 94px;
+    font-weight: bold;
+}
+.question_tooltip {
+    width: 540px;
+    color: #2F2F2F;
+    background: #ffffff;
+    font-size: 12px;
+    text-align: center;
+    border: 2px solid #252525;
+}

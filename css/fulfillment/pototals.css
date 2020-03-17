@@ -1,0 +1,518 @@
+.purchaseordercontent {
+    clear: both;
+    margin-left: 10px;
+    width: 1013px;
+}
+.purchaseorder-head {
+    clear: both;
+    margin-left: 20px;
+    margin-top: 13px;
+    width: 975px;
+}
+.purchaseorder-head-left {
+    width: 515px;
+}
+select.showtoplacedpo {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 13px;
+    padding-left: 3px;
+    width: 155px;
+    height: 22px;
+}
+.searchpurcaheorders {
+    margin-left: 5px;
+    width: 334px;
+}
+input.searchpoinput {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 12px;
+    height: 22px;
+    margin-left: 5px;
+    width: 120px;
+}
+.pofindit {
+    background: url("/img/fulfillment/search_button_bg.png") no-repeat scroll 0 0 transparent;
+    color: #000000;
+    cursor: pointer;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px!important;
+    margin: -1px 0 0 8px;
+    text-align: center;
+    width: 92px;
+}
+.purchaseorder_selectperpage {
+    width: 164px;
+}
+select.selectrecords {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    width: 156px;
+    height: 22px;
+}
+.purchorder_paginator {
+    float: right!important;
+}
+.paymethods {
+    clear: both;
+    float: left;
+    min-width: 640px;
+}
+.showhideclosed {
+    color: #5042FF;
+    float: left;
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 13px;
+}
+.showhideclosed:hover {
+    cursor: pointer;
+}
+.pototals-legend {
+    clear: both;
+    font-size: 14px;
+    width: 626px;
+    z-index: 12;
+    margin-top: 21px;
+}
+.pototals-legend ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.pototals-legend ul li {
+    display: inline;
+    float: left;
+    padding-left: 10px;
+    height: 27px;
+    line-height: 22px;
+}
+/* Sort */
+.sort_purchase {
+    float: left;
+    width: 370px;
+    font-family: arial, verdana, sans-serif;
+    font-size: 13px;
+}
+.sort_purchase_val {
+    float: left;
+    width: 110px;
+    font-size: 12px;
+}
+select.sortpurch {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    font-size: 12px;
+    width: 107px;
+    height: 21px;
+}
+.viewing-page2 {
+    float: right;
+    font-size: 13px;
+    margin-top: 5px;
+    text-align: right;
+    width: 273px;
+}
+.purchase-order-table {
+    clear: both;
+    float: left;
+    margin-left: 10px;
+}
+.purchase-order-title {
+    clear: both;
+    background-color: #BCBCBC;
+    border: 1px solid #919191;
+    color: #000000;
+    width: 997px;
+}
+.purchase-order-title > div {
+    font-size: 13px;
+    height: 30px;
+    line-height: 30px!important;
+    text-align: center;
+}
+.purchase-order-title > .purchase-order-profit {
+    width: 78px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-profitperc {
+    width: 53px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-actions {
+    font-size: 15px;
+    width: 46px;
+}
+.purchase-order-title > .purchase-order-actions i {
+    cursor: pointer;
+    color: #5b401a;
+}
+.purchase-order-title > .purchase-order-date {
+    width: 68px;
+    cursor:pointer;
+}
+.purchase-order-title > .purchase-order-ordnum {
+    width: 53px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-amount {
+    width: 80px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-vendor {
+    width: 93px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-method {
+    width: 100px;
+    cursor: pointer;
+}
+.purchase-order-title > .purchase-order-reason {
+    width: 183px;
+}
+/* NON PLACED Orders*/
+.nonplacetablehead {
+    clear: both;
+    height: 26px;
+    line-height: 26px!important;
+    color: #010101;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.nonplacetablehead > .labeltxt {
+    text-align: center;
+    width: 327px;
+}
+.nonplacetablebody {
+    border: 2px solid #000000;
+    clear: both;
+    height: 130px;
+    margin-left: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 994px;
+}
+.nonplacetablebody > .section {
+    background-color: #000066;
+    border-right: 1px solid #FFFFFF;
+    color: #ffffff;
+    float: left;
+    font-size: 12px;
+    min-height: 130px;
+    width: 325px;
+}
+.nonplacetablebody > .section > .nonplacedrow {
+    clear: both;
+    float: left;
+    width: 323px;
+}
+.nonplacetablebody > .section > .nonplacedrow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-profit-data {
+    width: 78px;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-profitperc-data {
+    font-size: 10px;
+    width: 61px;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-actions-data {
+    cursor: pointer;
+    font-size: 13px;
+    padding-top: 3px;
+    width: 34px;
+}
+.nonplacetablebody > .section > .nonplacedrow > .purchase-order-ordnum-data {
+    width: 53px;
+}
+.purchase-order-content {
+    border-bottom: 1px solid #919191;
+    float: left;
+    /* height: 349px; */
+    max-height: 349px;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 1000px;
+}
+.tr {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    width: 1022px;
+}
+.tr.placedorders {
+    background-color: #000066;
+    color: #FFFFFF !important;
+    width: 982px;
+}
+.trpo {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    float: left;
+    width: 987px;
+}
+.trpo.printshoporder {
+    color: #0000FF;
+}
+.cancelord {
+    color: #BCBCBC !important;
+}
+.trpo > div {
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px!important;
+    text-align: center;
+}
+.trpo > .purchase-order-profit-data {
+    width: 78px;
+}
+.trpo > .purchase-order-profitperc-data {
+    width: 53px;
+}
+.trpo > .purchase-order-actions-data {
+    width: 46px;
+}
+.trpo > .purchase-order-actions-data > .subaction {
+    font-size: 15px;
+    width: 22px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+}
+.trpo > .purchase-order-actions-data > .subaction.editpodata {
+    color: #5b401a;
+}
+.trpo > .purchase-order-actions-data > .subaction.delpodata {
+    color: #010101;
+}
+
+.trpo > .purchase-order-date-data {
+    width: 55px;
+}
+.trpo > .purchase-order-attach-data {
+    width: 13px;
+}
+.trpo > .purchase-order-attach-data  img {
+    height: 16px;
+    width: 12px;
+}
+.trpo > .purchase-order-ordnum-data {
+    width: 53px;
+}
+.trpo > .purchase-order-amount-data {
+    padding-right: 13px;
+    text-align: right!important;
+    width: 67px;
+}
+.trpo > .purchase-order-vendor-data {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 93px;
+}
+.trpo > .purchase-order-method-data {
+    width: 100px;
+}
+.trpo > .purchase-order-reason-data {
+    text-align: left;
+    width: 195px;
+}
+/* Vendors Purchase per year */
+.billingbymethods {
+    clear: both;
+    float: left;
+    margin-top: 5px;
+    width: 960px;
+}
+.billingbymethods-bgn {
+    background: url(/img/fulfillment/chargemeth-bgn.png) no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 36px;
+    width: 11px;
+}
+.billingbymethods-middle {
+    background: url("/img/fulfillment/chargemeth-mdl.png") repeat-x scroll 0 0 transparent;
+    float: left;
+    height: 40px;
+    text-align: center;
+}
+.billingbymethods-middle table {
+    border: none;
+    margin-top: 5px;
+}
+.billingbymethods-middle table tr td {
+    padding: 0px 5px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 11px;
+    font-weight: normal;
+}
+select.vendpayyear {
+    background-color: #ededed;
+    border: 1px solid #000;
+    float: left;
+    width: 60px;
+}
+.billingbymethods-end {
+    background: url("/img/fulfillment/chargemeth-end.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 36px;
+    width: 11px;
+}
+.unplacecharge {
+    float: left;
+    width: 116px;
+}
+.methodcharge {
+    float: left;
+    width: 82px;
+}
+.methodname {
+    color: #1F1F1F;
+    font-size: 12px;
+}
+.methodcharge {
+    color: #3E3E3E;
+    font-size: 11px;
+}
+.orderdata_tooltip {
+    width: 315px;
+    max-width: 315px!important;
+    padding: 10px;
+    color: #000000;
+    background: #ffffff;
+    border: 1px solid #000000;
+    font-size: 14px;
+    text-align: justify;
+    line-height: 20px;
+}
+/* Popup - Edit Amount */
+/* Edit order POPUP */
+.purchaseorder_popuparea {
+    -moz-border-radius: 10px;  /* для firefox */
+    -webkit-border-radius: 10px;  /* для Safari и Chrome */
+    background-color: #ffffff;
+    border-radius: 5px;
+    color: #000;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    min-height: 182px;
+    margin-top: 4px;
+    padding: 15px;
+    width: 561px;
+}
+.purchaseorder_popuparea input {
+    font-size: 13px;
+    line-height: 16px;
+}
+.purchaseorder-title {
+    border-bottom: medium solid #000000;
+    clear: both;
+    float: left;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    width: 100%;
+}
+.purchaseorder-row {
+    clear: both;
+    float: left;
+    line-height: 23px;
+    margin-bottom: 7px;
+    margin-top: 7px;
+    width: 100%;
+}
+.poorder_label {
+    float: left;
+    width: 12%;
+}
+.poprofit-data {
+    float: left;
+    text-align: center;
+    margin-right: 10px;
+    width: 10%;
+}
+.poprofitperc {
+    float: left;
+    text-align: center;
+    width: 67px;
+}
+.poamount_label {
+    float: left;
+    width: 17%;
+}
+.poamount-dateinput {
+    float: left;
+    width: 15%;
+}
+input.poamount_date {
+    width: 87%;
+}
+.poamount-amntinput {
+    float: left;
+    width: 12%;
+}
+input.poamount_sum {
+    width: 80%;
+}
+.poamount-shippinginput {
+    float: left;
+    text-align: center;
+    width: 5%;
+}
+.poamount-vendorinput {
+    float: left;
+    width: 26%;
+}
+select.poamount_vendor {
+    /* font-size: 12px; */
+    width: 90%;
+}
+.poamount_actions {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    border-top: 2px solid #000000;
+    line-height: 22px;
+    width: 100%;
+}
+.poamount-save {
+    float: right;
+    display: none;
+    margin-top: 5px;
+    margin-right: 15px;
+    width: 15%;
+    cursor: pointer;
+}
+.poorder_reasonlabel {
+    float: left;
+    width: 46%;
+}
+textarea.poreasondata {
+    font-size: 13px;
+    height: 59px;
+    margin-left: 18%;
+    overflow-y: auto;
+    resize: none;
+    width: 446px;
+}

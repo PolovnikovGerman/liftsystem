@@ -1,0 +1,285 @@
+.attempts_content {
+    clear: both;
+    float: left;
+    margin-left: 11px;
+    margin-top: 6px;
+    width: 1005px;
+}
+.attempts_table_header {
+    clear: both;
+}
+.attempts_table_header > div {
+    height: 33px;
+    line-height: 33px;
+    background: url('/img/leads/report-head-center.png') repeat-x;
+    border-bottom: 2px solid #2f2f2f;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+.attempts_table_header > .weekname {
+    width: 104px;
+    background: url('/img/leads/report-head-left.png') no-repeat;
+}
+.attempts_table_header > .dayresult {
+    width: 111px;
+}
+.attempts_table_header > .totalresult {
+    width: 118px;
+    background: url("/img/leads/report-head-right.png") no-repeat;
+}
+.table-atempts-info {
+    clear: both;
+    float: left;
+    /* margin-left: 12px; */
+    max-height: 568px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    /* width: 995px; */
+}
+.attempts_data_week {
+    border-left: 1px solid #D0D0D0;
+    clear: both;
+    /* width: 978px; */
+}
+.attempts_data_week > div {
+    border-bottom: 1px solid #D0D0D0;
+    height: 49px;
+    line-height: 49px;
+}
+.attempts_data_week > .attempt_weekdate {
+    border-right: 2px solid #2F2F2F;
+    font-size: 14px;
+    text-align: center;
+    width: 104px;
+}
+.attempts_data_week > .attempt_dayresult {
+    float: left;
+    width: 111px;
+    border-right: 2px solid #2F2F2F;
+    cursor:pointer;
+}
+.attempts_data_week > .attempt_dayresult.weekend {
+    background-color: #E5E5E5;
+}
+.attempts_data_week > .attempt_dayresult > .attempt_daynumber {
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-top: 14px;
+    text-align: center;
+    width: 15px;
+}
+.attempts_data_week > .attempt_dayresult > .attempt_dayinfo {
+    float: left;
+    text-align: right!important;
+    width: 78px;
+}
+.attempts_data_week > .attempt_dayresult > .attempt_dayinfo > .attempt_dayinfo_data {
+    clear: both;
+    color: #494948;
+    float: left;
+    font-size: 12px;
+    text-align: right;
+    width: 79px;
+    height: 16px;
+    line-height: 16px!important;
+}
+.attempts_data_week > .attempt_totalweek {
+    background-color: #DBDBF6;
+    width: 103px;
+}
+.attempts_data_week > .attempt_totalweek > .attempt_dayinfo_data {
+    clear: both;
+    color: #494948;
+    float: left;
+    font-size: 12px;
+    text-align: right;
+    width: 79px;
+    height: 16px;
+    line-height: 16px!important;
+}
+/*
+.report_attempt_paramarea {
+    clear: both;
+    float: left;
+    width: 300px;
+    height: 133px;
+    padding: 15px;
+    background-color: #ebebeb;
+    color: #000000;
+}
+.attempt_paramtitle {
+    clear: both;
+    float: left;
+    width: 300px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.attempt_paramvalues {
+    clear: both;
+    float: left;
+    width: 300px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+.attempt_subparamvalues {
+    clear: both;
+    float: left;
+    width: 300px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #c22000;
+    margin-top: -5px;
+}
+.attempt_paramlabel {
+    float: left;
+    width: 140px;
+}
+.attempt_paramvalue {
+    float: left;
+    width: 120px;
+}
+.attempt_start {
+    background: url("../img/newitem_create_button.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    height: 26px;
+    margin-left: 213px;
+    padding-top: 6px;
+    text-align: center;
+    width: 90px;
+}
+.attempt_start:hover {
+    cursor:pointer;
+}
+input.attparams {
+    background: #fff;
+    border: 1px solid;
+    font-size: 12px;
+    width: 85px;
+}
+*/
+/* Attempt per date */
+.attempts_duedate {
+    clear: both;
+    float: left;
+    width: 1235px;
+    padding: 10px;
+    background: none #e8e8e8;
+}
+.attempt_duedate_title {
+    clear: both;
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+}
+.attempt_duedate_tablehead {
+    clear: both;
+    float: left;
+    background-color: #FFF;
+    width: 100%;
+}
+.attempt_duedate_tablehead > div {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    font-weight: bolder;
+    text-align: center;
+}
+.attemptdue_tabledat {
+    clear: both;
+    float: left;
+    height: 275px;
+    overflow-y: auto;
+    width: 100%;
+}
+.attemptdue_tablerow {
+    clear: both;
+    float: left;
+    width: 1199px;
+    color: #000000;
+}
+.attemptdue_tablerow > div {
+    line-height: 26px;
+    height: 26px;
+    float: left;
+}
+.orderdat {
+    color: #868686!important;
+}
+.attemptdue_confirm {
+    width: 60px;
+}
+.attemptdue_customer {
+    width: 114px;
+    cursor:pointer;
+}
+.attemptdue_item {
+    width: 123px;
+    cursor:pointer;
+}
+.attemptdue_color {
+    width: 70px;
+}
+.attemptdue_qty {
+    float: left;
+    width: 40px;
+    text-align: center;
+}
+.attemptdue_sum {
+    float: left;
+    width: 65px;
+    text-align: center;
+}
+.attemptdue_email {
+    width: 130px;
+    cursor: pointer;
+}
+.attemptdue_phone {
+    width: 70px;
+    cursor: pointer;
+}
+.attemptdue_location {
+    width: 198px;
+    cursor: pointer;
+}
+.attemptdue_ccdetails {
+    width: 142px;
+    cursor: pointer;
+}
+.attemptdue_lastmodified {
+    width: 109px;
+    cursor: pointer;
+}
+.attemptdue_artsubmit {
+    float: left;
+    width: 30px;
+    cursor: pointer;
+}
+.artsubmitlog img {
+    width: 24px;
+    height: 24px;
+}
+.artsubmitlog_tooltip {
+    width: 520px;
+    min-width: 520px!important;
+    background: #ffffff;
+    color: #000000;
+    font-size: 14px;
+}
+.artsubmitlogdata_tooltip {
+    width: 280px;
+    min-width: 280px!important;
+    background: #ffffff;
+    color: #000000;
+    font-size: 14px;
+}

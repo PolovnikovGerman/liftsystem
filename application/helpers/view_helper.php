@@ -418,6 +418,94 @@ if (!function_exists('creditcard_format')) {
     }
 }
 
+if (!function_exists('formatPhoneNumber')) {
+    function formatPhoneNumber($phoneNumber)
+    {
+        $plusdig = 0;
+        if (substr($phoneNumber, 0, 1) == '+') {
+            $plusdig = 1;
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+        $areaCode = substr($phoneNumber, 0, 3);
+        $nextThree = substr($phoneNumber, 3, 3);
+        $lastFour = substr($phoneNumber, 6);
+        $phoneNumber = ($plusdig == 1 ? '+' : '') . $areaCode . '-' . $nextThree . '-' . $lastFour;
+        return $phoneNumber;
+    }
+}
+
+if (!function_exists('getVMDDueDate')) {
+    function getVMDDueDate($batch_date, $paymethod) {
+        if ($paymethod=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +1 day");
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('getAmexDueDate')) {
+    function getAmexDueDate($batch_date,$paymeth) {
+        if ($paymeth=='PAYPAL') {
+            $duedate=strtotime(date('Y-m-d',$batch_date). " +2 day");
+        } else {
+            $weekday=date('N',$batch_date);
+            $weeknum=date('W',$batch_date);
+            $year=date('Y',$batch_date);
+            if ($weekday==1) {
+                /* Monday */
+                $duedate=strtotime($year . 'W' . $weeknum . '5 00:00:00');
+            } elseif ($weekday>1 && $weekday<5) {
+                /* Tuesday, Wednesday, Thuesday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '1 00:00:00');
+            } else {
+                /* Friday, Saturday, Sunday  */
+                $batch_date=strtotime(date('Y-m-d',$batch_date). " +7 day");
+                $weeknum=date('W',$batch_date);
+                $year=date('Y',$batch_date);
+                $duedate=strtotime($year . 'W' . $weeknum . '2 00:00:00');
+            }
+        }
+        return $duedate;
+    }
+}
+
+if (!function_exists('businessdate')) {
+    function businessdate($date) {
+        $ci=&get_instance();
+        $ci->load->model('calendars_model');
+        $calendar=$ci->config->item('bank_calendar');
+        $holidays=$ci->calendars_model->get_calendar_holidays($calendar);
+        for ($i=1; $i<=15;$i++) {
+            if (in_array($date, $holidays)) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==6) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==7) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } else {
+                break;
+            }
+        }
+        return $date;
+    }
+}
+
+if (!function_exists('ValidEmail')) {
+    function ValidEmail($mail) {
+        if (empty($mail)) {
+            return FALSE;
+        } else {
+            return valid_email_address($mail);
+        }
+    }
+}
+
+
 if (!function_exists('BankDays')) {
     function BankDays($datbgn, $datend, $calendar_id=0) {
         $bank_days = 0;
@@ -427,24 +515,80 @@ if (!function_exists('BankDays')) {
         } else {
             $def_calendar=$calendar_id;
         }
-        
+
         $ci->load->model('calendars_model');
         $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
         $holidays=array();
         foreach ($holidays_src as $row) {
             array_push($holidays, date('Y-m-d',$row));
         }
-        
+
         $weekends=array(0,6);
-        $days = ceil(($datend - $datbgn) / 3600 / 24);        
+        $days = ceil(($datend - $datbgn) / 3600 / 24);
         for ($i = 0; $i <= $days; $i++) {
             $curr = strtotime('+' . $i . ' days', $datbgn);
-            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {            
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {
                 $bank_days++;
             }
         }
         return $bank_days;
     }
 }
-
+if (!function_exists('short_number')) {
+    function short_number($value, $precesion=1) {
+        $base=1000;
+        $returnValue = number_format(round($value,0),0);
+        if ($value > $base) {
+            if ($value<1000000) {
+                $returnValue=number_format(round($value/1000,$precesion),$precesion).'K';
+            } else {
+                $returnValue=number_format(round($value/1000000,$precesion),$precesion).'M';
+            }
+        }
+        return $returnValue;
+    }
+}
+if (!function_exists('getNameFromNumber')) {
+    function getNameFromNumber($num) {
+        $numeric = $num % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval($num / 26);
+        if ($num2 > 0) {
+            return getNameFromNumber($num2 - 1) . $letter;
+        } else {
+            return $letter;
+        }
+    }
+}
+if (!function_exists('dates_diff')) {
+    function dates_diff($date_min, $date_max, $type='D') {
+        // if (PHP_VERSION_ID)
+        // echo date_diff(new DateTime(), new DateTime('1986-01-04 00:00:01'))->days;
+        $diff=$date_max-$date_min;
+        if ($type=='D') {
+            return max(round($diff/(24*60*60)),1);
+        } else {
+            // Weeks
+            return ceil(max(round($diff/(24*60*60)),1)/7);
+        }
+    }
+}
+if (!function_exists('getDayOfWeek')) {
+    function getDayOfWeek($_week_number, $_year = null,$weekday=1) {
+        $year = $_year ? $_year : date('Y');
+        $week_number = sprintf('%02d', $_week_number);
+        $day_week = strtotime($year . 'W' . $week_number . $weekday.' 00:00:00');
+        return $day_week;
+    }
+}
+if (!function_exists('getDatesByMonth')) {
+    function getDatesByMonth($_month_number,$_year=null) {
+        $year = $_year ? $_year : date('Y');
+        $month_number = sprintf('%02d', $_month_number);
+        $date_base = strtotime($year . '-' . $month_number . '-01 00:00:00');
+        $date_limit=strtotime(date("Y-m-d", ($date_base)) . " +1 month");
+        $date_limit=$date_limit-1;
+        return array('start_month'=>$date_base, 'end_month'=>$date_limit);
+    }
+}
 ?>

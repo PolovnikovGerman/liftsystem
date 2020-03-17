@@ -3,7 +3,8 @@
     float: left;
     margin-left: 15px;
     margin-top: 18px;
-    width: 946px;
+    width: 964px;
+    margin-bottom: 10px;
 }
 .taskview_manage {
     clear: both;
@@ -128,6 +129,7 @@ select.ordproofview {
     height: 543px;
     overflow-y: scroll;
     width: 183px;
+    overflow-x: hidden;
 }
 /* CENTERED DATA HOLDERS */
 .centerdat {
@@ -162,7 +164,7 @@ select.ordproofview {
 .taskview_seqnum {
     float: left;
     font-size: 11px;
-    line-height: 18px;
+    line-height: 18px!important;
     text-align: center;
     width: 14px;
 }
@@ -342,4 +344,14 @@ select.ordproofview {
     padding-left: 2px;
     text-align: left;
     width: 73px;
+}
+/* Popover */
+.task_detailview {
+    background-color: #EDEDED!important;
+    float: left;
+    padding: 0px;
+    font-size: 13px!important;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
 }

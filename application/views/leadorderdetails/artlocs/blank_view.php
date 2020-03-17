@@ -1,0 +1,1 @@
+<div class="blankorderlogos" style="display: <?=$view?>">BLANK</div>

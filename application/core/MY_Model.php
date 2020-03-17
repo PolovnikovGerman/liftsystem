@@ -44,6 +44,8 @@
  * @property Coupons_model coupons_model
  * @property Payments_model payments_model
  * @property Printshop_model printshop_model
+ * @property Exportexcell_model exportexcell_model
+ * @property Rates_model rates_model
  */
 
 class MY_Model extends CI_Model

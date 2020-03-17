@@ -1,0 +1,126 @@
+.monitor-head {
+    clear: both;
+    width: 998px;
+    margin-bottom: 5px;
+}
+.monitor-head.inner {
+    margin-bottom: 2px;
+}
+.adminsearchform {
+    clear: both;
+    float: left;
+    margin-left: 18px;
+    width: 958px;
+}
+.monitorsearch_form {
+    float: left;
+    width : 380px;
+}
+.monitor_pagesviews {
+    float: left;
+    width: 578px;
+}
+.monitor_pagesviews .Pagination {
+    float: right!important;
+}
+.monitorsearch_input {
+    width: 160px;
+}
+input.monitorsearch_input {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 161px;
+    color: #4c4c4c;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    height: 22px;
+    padding-left: 3px;
+}
+.search_action a.find_it {
+    background: url(/img/fulfillment/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 25px;
+    margin: 0px 0 0 8px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    line-height: 22px;
+}
+select.filter_select {
+    float: left;
+    font-size: 13px;
+    width: 150px;
+    height: 22px;
+}
+.sorting_select {
+    float: left;
+    margin-left: 5px;
+    width: 160px;
+}
+input.boatcontainerdate {
+    height: 15px;
+    margin-left: 2px;
+    width: 56px;
+    padding-left: 0px;
+}
+/* Colors */
+.projectcog {
+    color: #c22;
+}
+.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.green, .greenprofit {
+    background-color: #00e947;
+    color: #000000 !important;
+}
+.white, .whiteprofit {
+    background-color: #ffffff;
+    color: #000000 !important;
+}
+.red, .redprofit {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.black, .blackprofit {
+    background-color: #000000;
+    color: #ffffff;
+}
+.orange, .orangeprofit {
+    background-color: #ea8a0e;
+    color: #000000 !important;
+}
+.cancelprof {
+    background: #919191;
+    color: #000000;
+}
+.maroon, .maroonprofit {
+    background-color: #6d0303;
+    color: #ffffff;
+}
+/* Tooltip for Color details */
+.colordata_tooltip {
+    width: 225px;
+    max-width: 225px!important;
+    padding: 10px;
+    color: #000000;
+    background: #ffffff;
+    border: 1px solid #000000;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: justify;
+    line-height: 18px;
+}
+.orderprofit_tooltip {
+    max-width: 225px!important;
+    padding: 3px;
+    color: #000000;
+    background: #ffffff;
+    border: 2px solid #000000;
+    font-size: 14px;
+}

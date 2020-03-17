@@ -1,11 +1,11 @@
 html {
     background-color: #dfdfdf;
-    font-family: Helvetica;
+    font-family: arial, verdana, sans-serif;
 }
 body {
     margin-left: auto;
     margin-right: auto;
-    font-family: Helvetica;
+    font-family: arial, verdana, sans-serif;
     background-color: #fff;
     margin-top: 0;
 }
@@ -46,6 +46,12 @@ body {
     src: url(/fonts/helveticaneuecyr-black.otf) format("opentype");
 }
 /* Common classes */
+input {
+    font-family: arial, verdana, sans-serif!important;
+}
+button, input, select, textarea {
+    font-family: arial, verdana, sans-serif!important;
+}
 input::placeholder {
     font-style: italic;
 }
@@ -432,6 +438,11 @@ body div {
 }
 .greydatarow {
     background-color: #ededed;
+}
+.truncateoverflowtext {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .clearfix {

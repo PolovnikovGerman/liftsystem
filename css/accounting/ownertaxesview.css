@@ -1,0 +1,333 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jul 19, 2016, 1:26:06 PM
+    Author     : polovnikov-go
+    Owner taxes
+*/
+
+.ownertaxcontent {
+    clear: both;
+    color: #000000;
+    float: left;
+    margin-top: 10px;
+    margin-left: 7px;
+    margin-bottom: 15px;
+    width: 1000px;
+}
+.ownertaxcontent div {
+    float: left;
+}
+.ownertaxcontent > .ownertaxtotalsarea {
+    background-color: #D3D3D3;
+    border: 1px solid #000000;
+    height: 64px;
+    width: 569px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals {
+    width: 309px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals > .datarow > div {
+    font-size: 14px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals > .datarow > .labeltxt {
+    text-align: right;
+    width: 222px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .ownertaxtotals > .datarow > .value {
+    margin-left: 7px;
+    width: 72px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea {
+    font-size: 12px;
+    width: 257px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect {
+    width: 126px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect  > .labeltxt {
+    width: 100%;
+    color: #0000ff;
+    text-align: left;
+    height: 18px;
+    line-height: 18px;
+}
+
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect  > .periodtypeselectarea {
+    border: 1px solid #000000;
+    height: 43px;
+    width: 115px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow {
+    width: 100%;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow div {
+    height: 20px;
+    line-height: 20px;
+}
+.ownertaxcontent > .ownertaxtotalsarea > .baseperiodselectarea > .periodtypeselect > .periodtypeselectarea > .datarow > .inputplace {
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 2px;
+    text-align: center;
+    width: 20px;
+}
+
+.ownertaxcontent > .ownertaxcontentcalcarea {
+    clear: both;
+    width: 100%;
+}
+.ownertaxcontent  > .ownertaxcontentcalcarea > .calcarea {
+    margin-left: 10px;
+    width: 419px;
+}
+.ownertaxcontent  > .ownertaxcontentcalcarea > .calcarea.jointcalc {
+    margin-top: -20px;
+}
+.ownertaxcontent  > .ownertaxcontentcalcarea > .calcarea > .header {
+    color: #2e902b;
+    font-size: 16px;
+    font-weight: bold;
+    height: 31px;
+    line-height: 31px;
+    margin-left: 181px;
+    text-align: center;
+    width: 235px;
+}
+.ownertaxcontent .taxratesareaview {
+    margin-top : 7px;
+    width: 180px;
+}
+.ownertaxcontent .calcarea.jointcalc .taxratesareaview {
+    margin-top: 27px;
+}
+.ownertaxcontent .taxratesarea {
+    margin-top: 17px;
+    width: 100%;
+}
+.ownertaxcontent .taxratesarea > .header {
+    width: 163px;
+    text-align: center;
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.ownertaxcontent .taxratesarea > .tabledata {
+    width: 167px;
+    background-color: #e5e5e5;
+    border: 1px solid #000000;
+}
+.ownertaxcontent .taxratesarea > .tabledata > .tabledataheader {
+    border-bottom: 1px solid #000000;
+    width: 100%;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.ownertaxcontent .taxratesarea > .tabledata .ratevalue {
+    width: 44px;
+    text-align: center;
+}
+.ownertaxcontent .taxratesarea > .tabledata .incomevalues {
+    width: 116px;
+    text-align: center;
+}
+.ownertaxcontent .taxratesarea > .tabledata > .tabledatarow div {
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+}
+.ownertaxcontent .taxratesarea > .tabledata > .tabledatarow > .ratevalue {
+    border-right: 1px solid #000000;
+}
+.ownertaxcontent .taxratesarea > .tabledata > .tabledatarow > .incomevalues {
+    padding-left: 10px;
+    text-align: left;
+    width: 115px;
+}
+.ownertaxcontent .calcdataareadata {
+    border: 1px solid #000000;
+    padding-top: 10px;
+    width: 235px;
+}
+.ownertaxcontent .calcdataareadata > .incomedataarea {
+    height: 100px;
+    width: 100%;
+}
+.ownertaxcontent .calcdataareadata > .incomedataarea.jointcalc {
+    height: 118px;
+}
+.ownertaxcontent .calcdataareadata > .incomedataarea > .labeltxt {
+    height: 84px;
+    margin-left: 7px;
+    margin-top: 13px;
+    width: 23px;
+}
+.ownertaxcontent .calcdataareadata > .incomedataarea.jointcalc > .labeltxt {
+    margin-top: 20px;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow {
+    width: 196px;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow.totalrow  {
+    border-top: 1px solid #000000;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow > div {
+    height: 23px;
+    line-height: 23px;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow > .labeltxt {
+    text-align: right;
+    width: 111px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow > .taxvalue {
+    width: 78px;
+    margin-left: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+/* input */
+input.ownertaxdatainput {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 12px;
+    height: 17px;
+    padding-left: 3px;
+    text-align: center;
+    width: 78px;
+    float: left;
+    margin-top: 2px;
+}
+.ownertaxcontent .calcdataareadata .taxdatarow > .taxvalue.total {
+    font-weight: bold;
+}
+.ownertaxcontent .calcdataareadata > .deducatedataarea {
+    height: 113px;
+}
+.ownertaxcontent .calcdataareadata > .deducatedataarea > .labeltxt {
+    height: 91px;
+    margin-left: 7px;
+    margin-top: 3px;
+    width: 23px;
+}
+.ownertaxcontent .calcdataareadata > .taxableincome {
+    width: 100%;
+}
+.ownertaxcontent .calcdataareadata > .taxableincome div {
+    height: 25px;
+    line-height: 25px;
+}
+.ownertaxcontent .calcdataareadata > .taxableincome > .labeltxt {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: right;
+    width: 140px;
+}
+.ownertaxcontent .calcdataareadata > .taxableincome > .taxvalue {
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 5px;
+    text-align: center;
+    width: 84px;
+}
+.ownertaxcontent .calcdataareadata > .fedtaxesarea {
+    height: 98px;
+    margin-top: 5px;
+}
+.ownertaxcontent .calcdataareadata > .fedtaxesarea > .labeltxt {
+    height: 83px;
+    margin-left: 7px;
+    margin-top: 15px;
+    width: 23px;
+}
+.ownertaxcontent .calcdataareadata > .statetaxesarea {
+    height: 98px;
+    margin-top: 17px;
+}
+.ownertaxcontent .calcdataareadata > .statetaxesarea > .labeltxt {
+    height: 83px;
+    margin-left: 7px;
+    margin-top: 15px;
+    width: 23px;
+}
+.ownertaxcontent .calcdataareadata > .othertaxesrow {
+    width: 100%;
+}
+.ownertaxcontent .calcdataareadata > .othertaxesrow > div {
+    height: 53px;
+    line-height: 53px;
+}
+.ownertaxcontent .calcdataareadata > .othertaxesrow div.taxvalue {
+    margin-top: 16px;
+    height: 29px;
+}
+.ownertaxcontent .calcdataareadata > .othertaxesrow > .labeltxt {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: right;
+    width: 140px;
+}
+.ownertaxcontent .calcdataareadata > .othertaxesrow > .taxvalue {
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 5px;
+    text-align: center;
+    width: 84px;
+}
+.ownertaxcontent .calcdataareadata > .takehomedatarow {
+    width: 100%;
+}
+.ownertaxcontent .calcdataareadata > .takehomedatarow > div {
+    height: 35px;
+    line-height: 35px;
+}
+.ownertaxcontent .calcdataareadata > .takehomedatarow > .labeltxt {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: right;
+    width: 140px;
+}
+.ownertaxcontent .calcdataareadata > .takehomedatarow > .taxvalue {
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 5px;
+    text-align: center;
+    width: 84px;
+}
+.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage {
+    margin-left: 5px;
+    margin-top: 65px;
+    width: 106px;
+}
+.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage > div {
+    height: 16px;
+    line-height: 16px;
+}
+.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage > .turnoffsign {
+    width: 16px;
+    font-size: 17px;
+    cursor: pointer;
+}
+.ownertaxcontent > .ownertaxcontentcalcarea > .singlecalcmanage > .labeltxt {
+    width: 72px;
+    margin-left: 5px;
+    font-size: 11px;
+}
+.ownertaxcontent > .ownertaxessave {
+    cursor: pointer;
+    display: none;
+    margin-left: 549px;
+    margin-top: -20px;
+    width: 84px;
+}

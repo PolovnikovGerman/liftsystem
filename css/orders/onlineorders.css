@@ -1,0 +1,820 @@
+.onlineorders_content {
+    clear: both;
+    width: 982px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.onlineorders_content input {
+    padding-left: 2px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 13px;
+    border: 1px solid #868686;
+}
+.onlineorders_content > .searchbox {
+    clear: both;
+}
+.onlineorders_content > .searchbox > div {
+    height: 24px;
+    line-height: 24px!important;
+}
+.onlineorders_content > .searchbox > .srchtitle_replica {
+    width: 75px;
+}
+.onlineorders_content > .searchbox > .srchinpt_replica {
+    width: 100px;
+}
+input.onlinereplica {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .srchtitle_confirm {
+    width: 90px;
+}
+.onlineorders_content > .searchbox > .srchinpt_confirm {
+    width: 100px;
+}
+input.onlineconfirm {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .srchtitle_customer {
+    width:67px;
+}
+.onlineorders_content > .searchbox > .srchinpt_customer {
+    width: 100px;
+}
+input.onlinecustomer {
+    width: 95px;
+}
+.onlineorders_content > .searchbox > .find_online {
+    background: url(/img/orders/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 29px!important;
+    margin: 0px 0 0 8px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    cursor: pointer;
+}
+
+.online-orders-head {
+    clear: both;
+    width: 982px;
+}
+.online-orders-head > div {
+    height: 33px;
+    line-height: 33px!important;
+    background: url(/img/orders/headordertable-center.png) repeat-x;
+    border-bottom: 2px solid #2f2f2f;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+}
+.online-orders-head > .status {
+    background: url(/img/orders/headordertable-left.png) no-repeat;
+    width: 111px;
+    border-right: 2px solid #2F2F2F;
+}
+.online-orders-head > .order_number {
+    width: 63px;
+    border-right: 2px solid #2F2F2F;
+}
+.online-orders-head > .order_replica {
+    border-right: 2px solid #2F2F2F;
+    width: 52px;
+}
+.online-orders-head > .order_date {
+    border-right: 2px solid #2F2F2F;
+    width: 65px;
+}
+.online-orders-head > .order_confirm {
+    border-right: 2px solid #2F2F2F;
+    width: 94px;
+}
+.online-orders-head > .customer_name {
+    border-right: 2px solid #2F2F2F;
+    width: 117px;
+}
+.online-orders-head > .customer_company {
+    border-right: 2px solid #2F2F2F;
+    width: 136px;
+}
+.online-orders-head > .order_item {
+    border-right: 2px solid #2F2F2F;
+    width: 187px;
+}
+.online-orders-head > .order_amount {
+    border-right: 2px solid #2F2F2F;
+    width: 88px;
+}
+.online-orders-head > .order_export {
+    background: url(/img/orders/headordertable-right.png) no-repeat;
+    width: 62px;
+}
+.onlineorderslist {
+    clear: both;
+    max-height: 546px;
+    overflow-y: auto;
+    width: 974px;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+}
+.online-data-row {
+    clear: both;
+    width: 100%;
+}
+.online-data-row.emptyvalue {
+    height: 22px;
+    line-height: 22px!important;
+    color: #ff0000;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+.online-data-row > div {
+    height: 21px;
+    line-height: 21px!important;
+    color: #868686;
+    font-size: 12px;
+    text-align: center;
+}
+.online-data-row > div.neworder {
+    color:#2f2f2f;
+}
+.online-data-row > .order_numpp {
+    border-right: 2px solid #2F2F2F;
+    width: 42px;
+}
+.online-data-row > .status {
+    border-right: 2px solid #2F2F2F;
+    width: 67px;
+}
+.online-data-row > .order_number {
+    border-right: 2px solid #2F2F2F;
+    background: url(/img/orders/ordernum_listbg.png) no-repeat 4px 1px;
+    width: 63px;
+}
+.online-data-row > .order_replica {
+    border-right: 2px solid #2F2F2F;
+    background: url(/img/orders/orderrep_listbg.png) no-repeat 2px 1px;
+    width: 52px;
+}
+.online-data-row > .order_date {
+    border-right: 2px solid #2F2F2F;
+    width: 65px;
+}
+.online-data-row > .order_confirm {
+    border-right: 2px solid #2F2F2F;
+    color: #0000ff;
+    cursor: pointer;
+    width: 94px;
+}
+.online-data-row > .customer_name {
+    border-right: 2px solid #2F2F2F;
+    width: 117px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .customer_company {
+    border-right: 2px solid #2F2F2F;
+    width: 136px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .order_item {
+    border-right: 2px solid #2F2F2F;
+    width: 187px;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.online-data-row > .order_amount {
+    border-right: 2px solid #2F2F2F;
+    width: 88px;
+    padding-right: 5px;
+    text-align: right;
+}
+.online-data-row > .order_export {
+    width: 44px;
+}
+/* POPUP */
+.onlinedetailsview {
+    clear: both;
+    float:left;
+    position: relative;
+    background-image: url("/img/orders/orderdetails_bg.png");
+    width: 996px;
+    height: 645px;
+    margin: 0px auto;
+}
+.onlinedetailsview input {
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #bababa;
+    font-weight: normal;
+}
+.onlinedetailsview textarea {
+    color: #000000!important;
+    font-size: 12px!important;
+    resize: none;
+    font-weight: normal;
+}
+.onlinedetailsview > .upper-block {
+    float:left;
+    position: relative;
+    height: 34px;
+    width: 996px;
+}
+.onlinedetailsview > .upper-block > .number {
+    float:left;
+    position: relative;
+    padding-top:8px;
+    padding-left:9px;
+    margin:0px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+.onlinedetailsview > .upper-block > .conf {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    padding:7px 7px 0 10px;
+    width: 400px;
+}
+.onlinedetailsview > .upper-block > .conf > .conf-title {
+    float:left;
+    position: relative;
+    margin-right:8px;
+    padding-top:2px;
+}
+.onlinedetailsview > .upper-block > .conf > .blok-input-confirm {
+    float: left;
+    width:120px;
+}
+.onlinedetailsview > .upper-block > .conf > .blok-input-confirm input {
+    width: 106px;
+}
+.onlinedetailsview > .upper-block > .conf > .void {
+    float: left;
+    width: 120px;
+}
+.onlinedetailsview > .upper-block > .conf > .void > .void-title {
+    float: left;
+    width: 80px;
+    padding-top: 2px;
+}
+.onlinedetailsview > .upper-block > .conf > .void > input {
+    float: left;
+    width: 15px;
+}
+.onlinedetailsview > .upper-block > .or-close {
+    float:right;
+    position: relative;
+    padding:8px 14px 0 0;
+}
+.onlinedetailsview > .upper-block > .entered {
+    float:right;
+    position: relative;
+    margin:7px 8px 0 0;
+}
+.onlinedetailsview > .upper-block > .entered > .entered-title {
+    float:right;
+    position: relative;
+}
+.onlinedetailsview > .upper-block > .entered > .entered-input {
+    float:right;
+    position: relative;
+}
+.onlinedetailsview > .upper-block input.replicadat {
+    width:30px;
+    margin-right:7px;
+}
+.onlinedetailsview > .upper-block input.ordernum_input {
+    width:79px;
+    margin-right:4px;
+}
+.onlinedetailsview > .upper-block select.order_numselect {
+    width: 69px;
+    margin-right: 4px;
+}
+.onlinedetailsview > .left-blok {
+    float:left;
+    position: relative;
+    width: 257px;
+    margin-left:20px;
+}
+.onlinedetailsview .date {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    color: #ffffff;
+    margin:12px 7px 0 8px;
+    width:130px
+}
+.onlinedetailsview .date-title {
+    float:left;
+    position: relative;
+    margin-right:8px;
+    padding-top:2px;
+}
+.onlinedetailsview .contact {
+    clear: both;
+    float:left;
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    padding-top:10px;
+    width: 257px;
+}
+.onlinedetailsview .contact-info {
+    clear: both;
+    float:left;
+    position: relative;
+    padding-top:7px;
+    padding-left: 7px;
+    width: 245px;
+}
+.onlinedetailsview .contact-name,
+.onlinedetailsview .contact-tel,
+.onlinedetailsview .contact-email {
+    clear: both;
+    float:left;
+    position: relative;
+    width: 245px;
+    margin-top:4px;
+}
+.onlinedetailsview .contact-name-title {
+    float:left;
+    position: relative;
+    padding-top:2px;
+}
+.onlinedetailsview .contact-tel-title {
+    float:left;
+    position: relative;
+    padding-top:2px;
+}
+.onlinedetailsview .contact-email-title {
+    float:left;
+    position: relative;
+    padding-top:2px;
+}
+.onlinedetailsview .shipping-info,
+.onlinedetailsview .billing-info,
+.onlinedetailsview .payment-info {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    padding-top:10px;
+}
+.onlinedetailsview .paymentinfo-ccname {
+    clear: both;
+    float:left;
+    position: relative;
+    padding-top:9px;
+}
+.onlinedetailsview .paymentinfo-ccname-title {
+    float:left;
+    position: relative;
+    margin-right:4px;
+    padding-top:2px;
+}
+.onlinedetailsview .paymentinfo-ccname-input,
+.onlinedetailsview .paymentinfo-cc-input,
+.onlinedetailsview .paymentinfo-exp-input,
+.onlinedetailsview .paymentinfo-cvc-input {
+    float:left;
+    position: relative;
+    font-size: 12px;
+}
+#payment-info-details{
+    clear: both;
+    float:left;
+    margin-left:8px;
+}
+.onlinedetailsview .paymentinfo-cc,
+.onlinedetailsview .paymentinfo-exp-cvc {
+    clear: both;
+    float:left;
+    position: relative;
+    padding-top:5px;
+}
+.onlinedetailsview .paymentinfo-cc-title {
+    float:left;
+    position: relative;
+    margin-right:43px;
+    padding-top:2px;
+}
+.onlinedetailsview .paymentinfo-exp-title {
+    float:left;
+    position: relative;
+    margin-right:33px;
+    padding-top:2px;
+}
+.onlinedetailsview .paymentinfo-cvc-title {
+    float:left;
+    position: relative;
+    margin-right:8px;
+    margin-left: 7px;
+    padding-top:2px;
+}
+.onlinedetailsview .center-blok {
+    float:left;
+    position: relative;
+    width: 357px;
+    margin-left:20px;
+}
+.onlinedetailsview .details-blok {
+    float:left;
+    padding-left:10px;
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    padding-top:12px;
+    width: 334px;
+}
+.onlinedetailsview .po-event {
+    float:left;
+    position: relative;
+    width: 150px;
+}
+.onlinedetailsview .po,
+.onlinedetailsview .event {
+    float:right;
+    position: relative;
+    width: 150px;
+    margin-top:3px;
+}
+.onlinedetailsview .details-input {
+    float:right;
+    position: relative;
+    font-size: 12px;
+}
+.onlinedetailsview .details-title {
+    float:left;
+    position: relative;
+    padding-top:2px;
+}
+.onlinedetailsview .proof-ships-arrive {
+    float:left;
+    position: relative;
+    width: 163px;
+    margin-left:10px;
+}
+.onlinedetailsview .proof,
+.onlinedetailsview .ships,
+.onlinedetailsview .arrive {
+    float:right;
+    position: relative;
+    width: 165px;
+    margin-top:3px;
+}
+.onlinedetailsview .order-info {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    padding-top:9px;
+    width: 357px;
+}
+.onlinedetailsview .order-info1,
+.onlinedetailsview .order-info2 {
+    float:left;
+    position: relative;
+    padding-left:17px;
+    width: 328px;
+}
+.onlinedetailsview .order-info-title1 {
+    clear: both;
+    position: relative;
+    padding-top:2px;
+}
+.onlinedetailsview .qty {
+    float:left;
+}
+.onlinedetailsview .item {
+    float:left;
+    margin-left:5px;
+}
+.onlinedetailsview .priceea {
+    float:right;
+    margin-left:4px;
+}
+.onlinedetailsview .color-breakdown {
+    float:left;
+    width: 162px;
+    padding-top:2px;
+}
+.onlinedetailsview .order-info-title2 {
+    float:left;
+    padding-top:2px;
+}
+.onlinedetailsview .items-imprinting-shipping {
+    float:left;
+    position: relative;
+    width: 149px;
+}
+.onlinedetailsview .items,
+.onlinedetailsview .imprinting,
+.onlinedetailsview .shipping {
+    float:left;
+    clear: both;
+    position: relative;
+    margin-top:4px;
+    width: 149px;
+}
+.onlinedetailsview .order-info3 {
+    float:left;
+    position: relative;
+    padding-left:9px;
+    width: 336px;
+}
+.onlinedetailsview .prod-ship-coupon {
+    float:left;
+    position: relative;
+    width: 150px;
+}
+.onlinedetailsview .prod,
+.onlinedetailsview .ship,
+.onlinedetailsview .coupon {
+    float:right;
+    position: relative;
+    width: 150px;
+    margin-top:3px;
+}
+.onlinedetailsview .nj-discount-total {
+    float:left;
+    position: relative;
+    margin-left:11px;
+    width: 159px;
+}
+.onlinedetailsview .nj,
+.onlinedetailsview .discount {
+    float:left;
+    width: 158px;
+    margin-top:3px;
+}
+.onlinedetailsview .total {
+    float:right;
+    position: relative;
+    width: 164px;
+    margin-top:2px;
+}
+.onlinedetailsview .prod-input,
+.onlinedetailsview .nj-input,
+.onlinedetailsview .ship-input,
+.onlinedetailsview .discount-input,
+.onlinedetailsview .coupon-input,
+.onlinedetailsview .total-input {
+    float:left;
+    position: relative;
+    font-size: 12px;
+}
+.onlinedetailsview .location-info {
+    float:right;
+    position: relative;
+    padding-right:7px;
+}
+.onlinedetailsview .colors,
+.onlinedetailsview .logos,
+.onlinedetailsview .font,
+.onlinedetailsview .textt {
+    clear: both;
+    float:right;
+    position: relative;
+    font-size: 13px;
+    color: #ffffff;
+}
+.onlinedetailsview .colors-title,
+.onlinedetailsview .logos-title,
+.onlinedetailsview .text-title,
+.onlinedetailsview .notes-title {
+    float:right;
+    position: relative;
+    font-weight: bold;
+    margin-right:4px;
+    padding-top:7px;
+}
+.onlinedetailsview .font-title {
+    float:right;
+    position: relative;
+    font-weight: bold;
+    margin-right:4px;
+    padding-top:2px;
+}
+.onlinedetailsview .colors-input {
+    background-image: url("/img/orders/artwork_location1.png");
+    background-repeat: no-repeat;
+    width: 184px;
+    height: 29px;
+    font-size: 12px;
+    color: #000000;
+    float:right;
+    position: relative;
+    padding-top:5px;
+    padding-left:7px;
+}
+.onlinedetailsview .logos-input {
+    background-image: url("/img/orders/artwork_location2.png");
+    background-repeat: no-repeat;
+    width: 184px;
+    height: 60px;
+    font-size: 12px;
+    color: #0000ff;
+    float:right;
+    position: relative;
+    padding-top:5px;
+    padding-left:7px;
+    margin-top:-5px;
+}
+.onlinedetailsview .textt-input {
+    background-image: url("/img/orders/artwork_location4.png");
+    background-repeat: no-repeat;
+    color: #000000;
+    float: right;
+    font-size: 12px;
+    height: 71px;
+    margin-top: -5px;
+    padding-left: 7px;
+    padding-right: 5px;
+    padding-top: 5px;
+    position: relative;
+    width: 179px;
+}
+.onlinedetailsview .font-input {
+    background-image: url("/img/orders/artwork_location3.png");
+    background-repeat: no-repeat;
+    width: 184px;
+    height: 22px;
+    font-size: 12px;
+    color: #000000;
+    float:right;
+    position: relative;
+    margin-top:-5px;
+    padding-top:5px;
+    padding-left:7px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.onlinedetailsview .notes-input {
+    background-color: #ffffff;
+    border: 1px solid #4c4c4c;
+    width: 182px;
+    height: 38px;
+    font-size: 12px;
+    color: #000000;
+    float:right;
+    position: relative;
+    margin-bottom:5px;
+    margin-right:8px;
+}
+.onlinedetailsview .notes {
+    clear: both;
+    float:right;
+    position: relative;
+    font-size: 13px;
+    color: #ffffff;
+}
+.onlinedetailsview .one-location,
+.onlinedetailsview .two-location {
+    position: relative;
+    padding-left:20px;
+    padding-top:5px;
+}
+.onlinedetailsview .location-scroll {
+    float:right;
+    width: 357px;
+}
+.onlinedetailsview .button-save {
+    float:right;
+    position: relative;
+    padding-right:10px;
+    padding-top:6px;
+}
+.onlinedetailsview .right-blok {
+    float:left;
+    position: relative;
+    width: 328px;
+    /*height: 558px;*/
+    margin-left:8px;
+    margin-top:10px;
+    /* overflow-y:scroll;*/
+}
+#order_details_dialog {
+    width: 1010px;;
+    height:645px;
+    position:absolute;
+    display:none;
+    z-index:9999;
+    padding:20px;
+}
+.onlinedetailsview .payment-info-orders {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    color: #ffffff;
+    padding-top:10px;
+}
+.onlinedetailsview .shipping-info-orders-blok {
+    float:left;
+    position: relative;
+    padding-left:7px;
+    padding-top:11px;
+}
+.onlinedetailsview .order-ships-blind {
+    float:left;
+    position: relative;
+    padding-left:6px;
+}
+.onlinedetailsview .comments-orders {
+    float:left;
+    position: relative;
+    font-size: 13px;
+    color: #ffffff;
+    padding:10px 0 0 0;
+}
+.onlinedetailsview .customer-comments-name {
+    float:left;
+    position: relative;
+    padding: 6px 0 6px 10px;
+}
+.onlinedetailsview .our-comments-name {
+    float:left;
+    position: relative;
+    padding: 6px 0 6px 10px;
+}
+.onlinedetailsview .our-comments,
+.onlinedetailsview .customer-comments {
+    float:left;
+    position: relative;
+    padding-left:23px;
+}
+.onlinedetailsview input.blur {
+    color:#808080;
+}
+.onlinedetailsview .location-dats {
+    float: left;
+    height: 500px;
+    overflow-y: scroll;
+    position: relative;
+    width: 325px;
+}
+.onlinedetailsview .number-location-title {
+    float: left;
+    height: 24px;
+    position: relative;
+    width: 300px;
+}
+.onlinedetailsview .number-location {
+    float:left;
+    position: relative;
+    background-image: url("/img/orders/artwork_number-location.png");
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align:center;
+    padding-top:2px;
+}
+.onlinedetailsview .location-title {
+    float:left;
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align:left;
+    padding-left:15px;
+}
+.onlinedetailsview .order-imprint {
+    clear: both;
+    float:left;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align:left;
+    padding-left:15px;
+}

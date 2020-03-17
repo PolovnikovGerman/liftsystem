@@ -370,5 +370,98 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function get_leaditems_data($options) {
+        $pricelist=$options['prices'];
+        $this->db->select('i.item_number, i.item_name, i.item_template, i.vendor_name, i.vendor_item_cost, i.vendor_id, v.vendor_zipcode');
+        foreach ($pricelist as $prow) {
+            $this->db->select("i.price_{$prow},i.profit_{$prow}_sum, i.profit_{$prow}, i.profit_{$prow}_class");
+        }
+        $this->db->select('i.price_setup, i.profit_setup, i.profit_setup_sum, i.profit_setup_class');
+        $this->db->select("if(profit_25_class='empty',1,0)+if(profit_75_class='empty',1,0)+if(profit_150_class='empty',1,0)+if(profit_250_class='empty',1,0)+if(profit_500_class='empty',1,0)+if(profit_1000_class='empty',1,0)+if(profit_3000_class='empty',1,0)+if(profit_5000_class='empty',1,0)+if(profit_10000_class='empty',1,0)+if(profit_20000_class='empty',1,0)+if(profit_print_class='empty',1,0)+if(profit_setup_class='empty',1,0) as empty_sum",FALSE);
+        $this->db->select("if(profit_25_class='black',1,0)+if(profit_75_class='black',1,0)+if(profit_150_class='black',1,0)+if(profit_250_class='black',1,0)+if(profit_500_class='black',1,0)+if(profit_1000_class='black',1,0)+if(profit_3000_class='black',1,0)+if(profit_5000_class='black',1,0)+if(profit_10000_class='black',1,0)+if(profit_20000_class='black',1,0)+if(profit_print_class='black',1,0)+if(profit_setup_class='black',1,0) as black_sum",FALSE);
+        $this->db->select("if(profit_25_class='maroon',1,0)+if(profit_75_class='maroon',1,0)+if(profit_150_class='maroon',1,0)+if(profit_250_class='maroon',1,0)+if(profit_500_class='maroon',1,0)+if(profit_1000_class='maroon',1,0)+if(profit_3000_class='maroon',1,0)+if(profit_5000_class='maroon',1,0)+if(profit_10000_class='maroon',1,0)+if(profit_20000_class='maroon',1,0)+if(profit_print_class='maroon',1,0)+if(profit_setup_class='maroon',1,0) as maroon_sum,",FALSE);
+        $this->db->select("if(profit_25_class='red',1,0)+if(profit_75_class='red',1,0)+if(profit_150_class='red',1,0)+if(profit_250_class='red',1,0)+if(profit_500_class='red',1,0)+if(profit_1000_class='red',1,0)+if(profit_3000_class='red',1,0)+if(profit_5000_class='red',1,0)+if(profit_10000_class='red',1,0)+if(profit_20000_class='red',1,0)+if(profit_print_class='red',1,0)+if(profit_setup_class='red',1,0) as red_sum",FALSE);
+        $this->db->select("if(profit_25_class='orange',1,0)+if(profit_75_class='orange',1,0)+if(profit_150_class='orange',1,0)+if(profit_250_class='orange',1,0)+if(profit_500_class='orange',1,0)+if(profit_1000_class='orange',1,0)+if(profit_3000_class='orange',1,0)+if(profit_5000_class='orange',1,0)+if(profit_10000_class='orange',1,0)+if(profit_20000_class='orange',1,0)+if(profit_print_class='orange',1,0)+if(profit_setup_class='orange',1,0) as orange_sum",FALSE);
+        $this->db->select("if(profit_25_class='white',1,0)+if(profit_75_class='white',1,0)+if(profit_150_class='white',1,0)+if(profit_250_class='white',1,0)+if(profit_500_class='white',1,0)+if(profit_1000_class='white',1,0)+if(profit_3000_class='white',1,0)+if(profit_5000_class='white',1,0)+if(profit_10000_class='white',1,0)+if(profit_20000_class='white',1,0)+if(profit_print_class='white',1,0)+if(profit_setup_class='white',1,0) as white_sum",FALSE);
+        $this->db->select("if(profit_25_class='green',1,0)+if(profit_75_class='green',1,0)+if(profit_150_class='green',1,0)+if(profit_250_class='green',1,0)+if(profit_500_class='green',1,0)+if(profit_1000_class='green',1,0)+if(profit_3000_class='green',1,0)+if(profit_5000_class='green',1,0)+if(profit_10000_class='green',1,0)+if(profit_20000_class='green',1,0)+if(profit_print_class='green',1,0)+if(profit_setup_class='green',1,0) as green_sum",FALSE);
+        $this->db->from("v_stressprofits i");
+        $this->db->join('vendors v','v.vendor_id=i.vendor_id');
+        if (isset($options['vendor_id'])) {
+            $this->db->where('i.vendor_id', $options['vendor_id']);
+        }
+        if (isset($options['search'])) {
+            $this->db->like('upper(concat(i.item_number, i.item_name))', $options['search'],'both');
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->join('sb_items itm','itm.item_id=i.item_id');
+            $this->db->where('itm.brand', $options['brand']);
+        }
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['priority'])) {
+            switch($options['priority']) {
+                case 'black' :
+                    $this->db->order_by('black_sum','desc');
+                    break;
+                case 'maroon' :
+                    $this->db->order_by('maroon_sum','desc');
+                    break;
+                case 'red' :
+                    $this->db->order_by('red_sum','desc');
+                    break;
+                case 'orange' :
+                    $this->db->order_by('orange_sum','desc');
+                    break;
+                case 'white' :
+                    $this->db->order_by('white_sum','desc');
+                    break;
+                case 'green' :
+                    $this->db->order_by('green_sum','desc');
+                    break;
+            }
+        }
+        if (isset($options['order_by'])) {
+            $this->db->order_by($options['order_by']);
+        }
+        $this->db->order_by($options['order_by'],'asc');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $numpp=(isset($options['offset']) ? $options['offset'] : 0);
+        foreach ($res as $row) {
+            $numpp++;
+            $row['numpp']=$numpp;
+            foreach ($pricelist as $prow) {
+                $row['price_'.$prow]=($row['price_'.$prow]=='' ? 'n/a' : MoneyOutput($row['price_'.$prow]));
+                $row['profit_'.$prow.'_sum']=($row['profit_'.$prow.'_class']=='empty' ? 'n/a' : round($row['profit_'.$prow.'_sum']*$this->config->item('profitpts'),0).'pts');
+            }
+            $row['price_setup']=($row['price_setup']=='' ? 'n/a' : MoneyOutput($row['price_setup']));
+            $row['profit_setup_sum']=($row['profit_setup_class']=='empty' ? 'n/a' : round($row['profit_setup_sum']*$this->config->item('profitpts'),0).'pts');
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function count_lead_items($options=array()) {
+        $this->db->select('count(*) as cnt');
+        $this->db->from("v_stressprofits");
+        if (isset($options['vendor_id'])) {
+            $this->db->where('vendor_id', $options['vendor_id']);
+        }
+        if (isset($options['search'])) {
+            $this->db->like('upper(concat(item_number, item_name))', $options['search']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->join('sb_items i','i.item_id=v_stressprofits.item_id');
+            $this->db->where('i.brand',$options['brand']);
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
 
 }

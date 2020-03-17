@@ -1,0 +1,959 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : May 10, 2015, 7:39:23 PM
+    Author     : german
+    Page - Profit by Date
+*/
+.profitdates-content {
+    clear: both;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 1003px;
+}
+.profitdate-control {
+    clear: both;
+    margin-left: 16px;
+    position: relative;
+    width: 963px;
+}
+.profitdate-bookmark {
+    position: relative;
+    margin-top: 26px;
+}
+.tab1-cont {
+    background-image: url(/img/accounting/tab1-cont3.png);
+    float: left;
+    height: 43px;
+    margin-top: -25px;
+    position: relative;
+    width: 97px;
+    z-index: 5;
+}
+.tab2-cont {
+    background-image: url(/img/accounting/tab2-cont.png);
+    float: left;
+    height: 21px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: -19px;
+    position: relative;
+    width: 82px;
+    z-index: 5;
+}
+.tab3-cont {
+    background-image: url(/img/accounting/tab3-cont3.png);
+    float: left;
+    height: 43px;
+    margin-left: -14px;
+    margin-top: -25px;
+    position: relative;
+    width: 112px;
+    z-index: 5;
+}
+.style-text1 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 7px 0 0 15px;
+}
+.style-text2-nonactive {
+    color: #1F1F1F;
+    float: left;
+    font-size: 11px;
+    padding: 5px 0 0 15px;
+}
+.style-text3 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 0;
+    padding-left: 29px;
+    padding-right: 0;
+    padding-top: 7px;
+    position: relative;
+    text-align: right;
+}
+.legenddatearea {
+    color: #000000;
+    float: right!important;
+    font-size: 12px;
+    /* margin-right: 48px;
+    margin-top: -30px; */
+}
+.legenddatearea .legend {
+    float: left;
+    font-size: 14px;
+    margin-top: 9px;
+    position: relative;
+    width: 626px;
+    z-index: 18;
+}
+.caledardatas {
+    background: url(/img/profit_date/calendar_bg.png) no-repeat transparent;
+    height: 619px;
+    margin: -18px 0 10px 16px;
+    width: 963px;
+}
+.profitdate_months {
+    float: left;
+    margin: 3px 0 0 122px;
+}
+.profitdate_months ul {
+    list-style: none outside none;
+    margin: 0 auto;
+    padding: 0;
+}
+.profitdate_months li {
+    display: inline;
+    margin: 0 8px;
+}
+
+.profitdate_months li.normal {
+    color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+}
+.profitdate_months li.estimate {
+    color: #190077;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+}
+.monthselect:hover {
+    cursor: pointer;
+}
+.profitdate-info {
+    float: left;
+    margin-top: 10px;
+    width: 963px;
+}
+.profitdate-info-note {
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    margin: 0 0 0 20px;
+    width: 90px;
+}
+.profitdate-selected-month {
+    float: left;
+    margin-left: 210px;
+    width: 275px;
+}
+.profitdate-selected-monthname {
+    color: #FFFFFF;
+    float: left;
+    font-size: 29px;
+    font-weight: bold;
+    text-align: center;
+}
+.profitdate-totalmonth {
+    float: left;
+    height: 30px;
+}
+.monthtotal_bgnend {
+    float: left;
+    width: 7px;
+}
+.monthtotal_profit {
+    float: left;
+    width: 97px;
+    height: 30px;
+    background: #fefefe;
+    font-weight: bold;
+    border-top: 1px solid #474747;
+    border-bottom: 1px solid #474747;
+    border-right: 1px solid #474747;
+    padding: 4px 0 0 3px;
+    font-size: 16px;
+}
+.monthtotal_profitperc {
+    float: left;
+    width: 43px;
+    height: 30px;
+    font-weight: bold;
+    border-top: 1px solid #474747;
+    border-bottom: 1px solid #474747;
+    border-right: 1px solid #474747;
+    padding: 4px 0 0 0;
+    text-align: center;
+    font-size: 16px;
+}
+.monthtotal_orders {
+    float: left;
+    width: 83px;
+    height: 30px;
+    background: #fefefe;
+    border-top: 1px solid #474747;
+    border-bottom: 1px solid #474747;
+    border-right: 1px solid #474747;
+    padding: 6px 0 0 0;
+    text-align: center;
+    font-size: 13px;
+}
+.monthtotal_revenue {
+    float: left;
+    width: 90px;
+    height: 30px;
+    background: #fefefe;
+    font-weight: bold;
+    border-top: 1px solid #474747;
+    border-bottom: 1px solid #474747;
+    padding: 4px 0 0 10px;
+    font-size: 15px;
+}
+.table-calendar {
+    clear: both;
+    float: left;
+    margin-left: 15px;
+    width: 927px;
+}
+.table-calendar-title {
+    float: left;
+    margin-top: 5px;
+    width: 927px;
+}
+.table-calendar-titleedge {
+    float: left;
+    height: 35px;
+    width: 4px;
+}
+.calend-title-monday {
+    background: url("/img/accounting/background-calendar-title-mdl.png") repeat-x scroll 0 0 transparent;
+    height: 35px;
+    width: 108px;
+    padding-top: 8px;
+}
+.businessday {
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 8px;
+    text-align: center;
+}
+.weekend {
+    color: #7A7A7A;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 8px;
+    text-align: center;
+
+}
+.calend-title-other {
+    background: url("/img/accounting/background-calendar-title-mdl.png") repeat-x scroll 0 0 transparent;
+    height: 35px;
+    width: 113px;
+    padding-top: 8px;
+}
+
+.calend-title-weektotal {
+    background: url("/img/accounting/background-calendar-title-mdl.png") repeat-x scroll 0 0 transparent;
+    height: 35px;
+    width: 133px;
+    padding-top: 8px;
+}
+
+.cell-fon {
+    background: url("/img/accounting/background-calendar-title-mdl.png") repeat-x scroll 0 0 transparent;
+    float: left;
+    height: 27px;
+}
+.cell-02 {
+    width: 103px;
+}
+.cell-03 {
+    float: left;
+    width: 113px;
+}
+.style-text6 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 8px;
+    text-align: center
+}
+.style-text7 {
+    color: #7A7A7A;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 8px;
+    text-align: center;
+}
+.cell-weekinfo {
+    float: left;
+    width: 141px;
+    /* height: 62px; */
+    height: 54px;
+    /* background: #e2e2e2; */
+    border: 1px solid #5e5e5e;
+}
+.cell-weekinfo-profitperc {
+    float: left;
+    width: 43px;
+}
+.cell-weekinfo-profitperc-value {
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    padding-top: 23px;
+    text-align: center;
+    width: 43px;
+}
+.cell-weekinfo-data {
+    float: left;
+    width: 90px;
+}
+.cell-weekinfo-data-profit {
+    width: 90px;
+    float: left;
+    font-size: 15px;
+    text-align: right;
+    font-weight: bold;
+    padding-top: 2px;
+    padding-right: 7px;
+    color: #141414;
+}
+.cell-weekinfo-data-orders {
+    color: #5E5E5E;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 7px;
+    /* padding-top: 5px; */
+    text-align: right;
+    width: 84px;
+}
+/* Cells for Day INFO */
+.cell-dayinfo {
+    width: 112px;
+    height: 54px;
+    border: 1px solid #5e5e5e;
+}
+.cell-dayinfo:hover {
+    cursor: pointer;
+}
+.cell-dayinfo-profitperc {
+    float: left;
+    width: 43px;
+}
+.cell-dayinfo-day {
+    width: 43px;
+    float: left;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 7px;
+}
+.cell-dayinfo-profitval {
+    width: 43px;
+    float: left;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 5px;
+}
+.cell-dayinfo-profdat {
+    float: left;
+    width: 65px;
+}
+.cell-dayinfo-profval {
+    width: 62px;
+    float: left;
+    font-size: 14px;
+    text-align: right;
+    font-weight: bold;
+    padding-top: 5px;
+    padding-right: 7px;
+}
+.cell-dayinfo-orders {
+    width: 62px;
+    float: left;
+    font-size: 11px;
+    text-align: right;
+    font-weight: bold;
+    /* padding-top: 5px; */
+    padding-right: 7px;
+}
+.cell-dayinfo-revenue {
+    width: 62px;
+    float: left;
+    font-size: 12px;
+    text-align: right;
+    font-weight: bold;
+    padding-top: 2px;
+    padding-right: 7px;
+}
+.othermonth {
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: #B5B5B5;
+}
+.blue2txt {
+    color: #A6A6FF;
+}
+.bluetxt {
+    color: #001072;
+}
+.weekdays-totals {
+    float: left;
+    height: 60px;
+}
+.weekday-total {
+    float: left;
+    width: 110px;
+    height: 60px;
+    margin-right: 3px;
+}
+.total-day {
+    float: left;
+    width: 110px;
+    font-size: 12px;
+    color: #4c4c4c;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 5px;
+}
+.weekday-totaldata {
+    float: left;
+    width: 110px;
+    height: 39px;
+    margin-top: 3px;
+}
+.weekday-totaledge {
+    float: left;
+    height: 39px;
+    width: 6px;
+}
+.weekday-totalbody {
+    float: left;
+    height: 39px;
+    width: 98px;
+    background: url(/img/accounting/total-body.png) repeat-x;
+}
+.weekday-total-data {
+    float: left;
+    width: 28px;
+}
+.weekday-total-dataprofitperc {
+    color: #4E4EF9;
+    float: left;
+    font-size: 10px;
+    font-weight: bold;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 23px;
+}
+.weekday-total-dataorders {
+    color: #353535;
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    padding-left: 5px;
+    padding-top: 1px;
+    width: 23px;
+}
+.weekday-total-datasum {
+    float: right;
+    width: 60px;
+}
+.weekday-total-datasumprofit {
+    color: #4E4EF9;
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+    padding-right: 3px;
+    padding-top: 5px;
+    text-align: right;
+    width: 60px;
+}
+.weekday-total-datasumrevenue {
+    color: #353535;
+    float: right;
+    font-size: 11px;
+    font-weight: bold;
+    padding-right: 3px;
+    padding-top: 1px;
+    text-align: right;
+    width: 60px;
+}
+.emptyweek {
+    background: #e2e2e2;
+}
+
+.profitdatatotalsarea {
+    clear: both;
+    float: left;
+    margin-left: 8px;
+    margin-top: 5px;
+    width: 952px;
+}
+.profitordertotalsarea {
+    clear: both;
+    float: left;
+    height: 107px;
+    overflow-y: hidden;
+}
+.line-week-results {
+    float: left;
+    margin-right: 5px;
+    max-width: 918px;
+    overflow-x: hidden;
+}
+.profitcalend_slidermanage {
+    float: left;
+    height: 33px;
+    line-height: 33px;
+    margin-top: 59px;
+    width: 14px;
+}
+.profitcalend_slidermanage.left {
+    background: url('/img/profit_date/arrow_left.png') no-repeat transparent;
+}
+.profitcalend_slidermanage.left.active {
+    background: url('/img/profit_date/arrow_left_active.png') no-repeat transparent;
+    cursor: pointer;
+}
+.profitcalend_slidermanage.right {
+    background: url('/img/profit_date/arrow_right.png') no-repeat transparent;
+}
+.profitcalend_slidermanage.right.active {
+    background: url('/img/profit_date/arrow_right_active.png') no-repeat transparent;
+    cursor: pointer;
+}
+.profitordercalend_slidermanage {
+    float: left;
+    height: 33px;
+    line-height: 33px;
+    margin-top: 40px;
+    width: 14px;
+}
+.profitordercalend_slidermanage.left {
+    background: url('/img/profit_date/arrow_left.png') no-repeat transparent;
+}
+.profitordercalend_slidermanage.left.active {
+    background: url('/img/profit_date/arrow_left_active.png') no-repeat transparent;
+    cursor: pointer;
+}
+.profitordercalend_slidermanage.right {
+    background: url('/img/profit_date/arrow_right.png') no-repeat transparent;
+}
+.profitordercalend_slidermanage.right.active {
+    background: url('/img/profit_date/arrow_right_active.png') no-repeat transparent;
+    cursor: pointer;
+}
+.profitdatatotalarea {
+    clear: both;
+    float: left;
+    height: 131px;
+    position: relative;
+}
+.profitordertotalarea {
+    clear: both;
+    float: left;
+    height: 90px;
+    position: inherit;
+    z-index: 6;
+}
+.year-totals {
+    float: left;
+    font-size: 12px;
+    margin-right: 5px;
+    width: 125px;
+}
+.totalyear-titlerow {
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100%;
+}
+.editgoal {
+    float: right!important;
+    font-size: 10px;
+    color: #0000bd;
+    cursor: pointer;
+}
+.year-totaldataarea {
+    border: 1px solid #000000;
+    float: left;
+    height: 101px;
+    width: 123px;
+}
+.year-totaldata {
+    clear: both;
+    float: left;
+    margin-left: 7px;
+    margin-top: 3px;
+    width: 116px;
+}
+.totalyear-title {
+    float: left;
+    font-size: 11px;
+    width: 52px;
+}
+.totalyear-value {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: right;
+    width: 57px;
+}
+.year-growthtotals {
+    float: left;
+    font-size: 12px;
+    margin-right: 6px;
+    width: 99px;
+}
+.year-growthdataarea {
+    background: #c9c9c9 none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    height: 101px;
+    width: 98px;
+}
+.year-growthdata {
+    float: left;
+    font-size: 11px;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.year-growthdata > .numval {
+    float: left;
+    width: 54px;
+}
+.year-growthdata > .prcval {
+    color: #0000ff;
+    float: right;
+    text-align: right;
+    width: 34px;
+}
+.year-growthdata > .prcval.color_red {
+    color: #ff0000;
+}
+.remaining-totals {
+    float: left;
+    font-size: 12px;
+    width: 81px;
+}
+.remaining-titlerow {
+    float: left;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px;
+    width: 100%;
+}
+.remainingarea {
+    background: url('/img/profit_date/reminder_bg.png?r=1') no-repeat transparent;
+    float: left;
+    height: 101px;
+    width: 81px;
+}
+.remainingrow {
+    clear: both;
+    float: left;
+    margin-top: 2px;
+    font-size: 10px;
+    text-align: center;
+    width: 100%;
+}
+.remainingrow.title {
+    text-align: center;
+    margin-bottom: 4px;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.remainingrow.subtitle {
+    font-weight: bold;
+    margin-bottom: 0;
+    margin-top: 12px;
+}
+.remaininglabel {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: right;
+    width: 35px;
+}
+.remainingdelimiter {
+    float: left;
+    text-align: center;
+    width: 14px;
+    margin-top: -2px;
+}
+.remainingvalue {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: left;
+    width: 29px;
+}
+/* Goal Edit POPUP */
+.goaleditarea {
+    background: none repeat scroll 0 0 #ffffff;
+    border-radius: 9px;
+    color: #000;
+    font-size: 14px;
+    height: 235px;
+    padding: 10px;
+    width: 390px;
+}
+.goaledittitle {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 26px;
+    text-align: center;
+    width: 100%;
+}
+.goaleditrow {
+    clear: both;
+    float: left;
+    height: 28px;
+    line-height: 24px;
+    text-align: left;
+    width: 100%;
+}
+.goaleditlabel {
+    float: left;
+    width: 60%;
+}
+.goaleditvalue {
+    float: left;
+    width: 40%;
+}
+input.goaleditinput {
+    background: none repeat scroll 0 0 #ebebeb;
+    border: 1px solid #000;
+    float: left;
+    height: 18px;
+    width: 99px;
+}
+.goaleditsave {
+    cursor: pointer;
+    float: left;
+    margin-left: 260px;
+    width: 90px;
+}
+.showhidegrowth {
+    color: #0000ff;
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    height: 26px;
+    line-height: 26px;
+    margin-left: 18px;
+}
+.finance_date_filter {
+    float: left;
+    font-size: 12px;
+    height: 26px;
+    line-height: 26px;
+    margin-left: 10px;
+}
+.finance_month_filter {
+    display: none;
+    float: left;
+    font-size: 12px;
+    height: 26px;
+    line-height: 26px;
+    margin-left: 10px;
+}
+select.filter {
+    border: 1px solid #000;
+    background-color: #ffffff;
+    font-size: 12px;
+    height: 21px;
+}
+.profitdatatotalarea > .devider {
+    border-left: 2px solid #000000;
+    float: left;
+    height: 103px;
+    margin-right: 3px;
+    margin-top: 24px;
+    width: 1px;
+}
+.profitmonthgoal {
+    display: none;
+}
+.month-totals {
+    float: left;
+    font-size: 12px;
+    margin-right: 5px;
+    width: 125px;
+}
+.totalmonth-titlerow {
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100%;
+}
+.month-totaldataarea {
+    border: 1px solid #000000;
+    float: left;
+    height: 101px;
+    width: 123px;
+}
+.month-totaldata {
+    clear: both;
+    float: left;
+    margin-left: 7px;
+    margin-top: 3px;
+    width: 116px;
+}
+.totalmonth-title {
+    float: left;
+    font-size: 11px;
+    width: 52px;
+}
+.totalmonth-value {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: right;
+    width: 57px;
+}
+/* Day date details */
+.dayorders_tooltip {
+    width: 763px;
+    max-width: 763px!important;
+    background: #ffffff;
+    color: #000;
+}
+.orders_by_date {
+    background-color: #FFFFFF;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 12px;
+    padding: 10px;
+    width: 735px;
+}
+.orders_by_date_title {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.odrdate_tablehead {
+    background-color: #c8c8c8;
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.orddate_ordernum {
+    float: left;
+    width: 50px;
+}
+.orddate_ordernumdat {
+    float: left;
+    width: 50px;
+    text-align: center;
+}
+.orddate_customer {
+    float: left;
+    width: 180px;
+}
+.orddate_customerdat {
+    float: left;
+    width: 165px;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+}
+.orddate_qty {
+    float: left;
+    width: 60px;
+}
+.orddate_qtydat {
+    float: left;
+    width: 55px;
+    padding-right: 3px;
+    text-align: right;
+}
+.orddate_item {
+    float: left;
+    width: 180px;
+}
+.orddate_itemdat {
+    float: left;
+    width: 165px;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+}
+.orddate_revenue {
+    float: left;
+    width: 70px;
+}
+.orddate_revenuedat {
+    float: left;
+    width: 70px;
+    text-align: right;
+}
+.orddate_profit {
+    float: left;
+    width: 69px;
+}
+.orddate_profitdat {
+    float: left;
+    width: 69px;
+    text-align: right;
+}
+.orddate_profitperc {
+    float: left;
+    width: 40px;
+}
+.orddate_profitpercdat {
+    float: left;
+    width: 44px;
+    text-align: center;
+}
+.orddate_status {
+    float: left;
+    width: 83px;
+}
+.orddate_statusdat {
+    float: left;
+    width: 96px;
+    text-align: center;
+}
+.orddate_tabledat {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.odrdate_tablerow {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.odrdate_tablerow.customitem {
+    font-weight: bold;
+}

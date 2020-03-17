@@ -1,8 +1,9 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-Class Itemcolors_model extends My_Model
+class Itemcolors_model extends My_Model
 {
 
+    private $error_message = 'Unknown error. Try later';
 
     function __construct()
     {
@@ -86,20 +87,20 @@ Class Itemcolors_model extends My_Model
 //            }
 //        }
 //    }
-//
-//    function get_colorval_item($itemcolor_id) {
-//        $this->db->select('item_color_id, item_color');
-//        $this->db->from('sb_item_colors');
-//        $this->db->where('item_color_id',$itemcolor_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['item_color_id'])) {
-//            $result='';
-//        } else {
-//            $result=$res['item_color'];
-//        }
-//        return $result;
-//    }
-//
+
+    function get_colorval_item($itemcolor_id) {
+        $this->db->select('item_color_id, item_color');
+        $this->db->from('sb_item_colors');
+        $this->db->where('item_color_id',$itemcolor_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['item_color_id'])) {
+            $result='';
+        } else {
+            $result=$res['item_color'];
+        }
+        return $result;
+    }
+
 //    public function get_colorval_inventory($printshop_color_id) {
 //        $this->_DB_BROWN = $this->load->database('brown', TRUE);
 //        $this->_DB_BROWN->db_select();

@@ -1,0 +1,2104 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : May 10, 2017, 3:03:45 PM
+    Author     : polovnikov-go
+*/
+.inventsalesreport {
+    clear: both;
+    width: 965px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.inventsalesreport div {
+    float: left;
+    color: #010101;
+    text-align: left;
+    font-size: 12px;
+}
+.inventsalesreport input {
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 11px;
+    padding-left: 2px;
+    height: 18px;
+    /* width: 35px; */
+}
+.inventsalesreport .head_title {
+    float: right;
+    width: 455px;
+}
+.inventsalesreport .inventoryviewswitcher {
+    float: left;
+    background: url('/img/printshop/switchview_bg.png') no-repeat transparent;
+    height: 23px;
+    line-height: 23px;
+    font-size: 12px;
+    margin-bottom: 5px;
+    width: 157px;
+}
+.inventsalesreport .inventoryviewswitcher.empty {
+    background: none;
+}
+.inventsalesreport .inventoryviewswitcher > .label {
+    cursor: pointer;
+    text-align: center;
+    float: left;
+    color: #848484;
+    width: 78px;
+}
+.inventsalesreport .inventoryviewswitcher > .label.active {
+    float: left;
+    background: url('/img/printshop/switchview_active_bg.png') no-repeat transparent;
+    color: #FFFFFF;
+    width: 78px;
+}
+.inventsalesreport > .maxinventsum {
+    width: 312px;
+}
+.inventsalesreport > .maxinventsum > .datarow {
+    clear: both;
+}
+.inventsalesreport > .maxinventsum > .datarow > .label {
+    height: 18px;
+    line-height: 18px;
+    width: 138px;
+}
+.inventsalesreport > .maxinventsum > .datarow > .valuedata {
+    height: 18px;
+    line-height: 18px;
+    font-weight: bold;
+}
+.inventsalesreport .inventoryfilterarea {
+    float: right;
+    height: 22px;
+    line-height: 22px;
+    margin-right: 92px;
+    width: 129px;
+}
+.inventsalesreport .inventoryfilterarea > .data {
+    width: 16px;
+}
+.inventsalesreport .inventoryfilterarea > .label {
+    margin-left: 10px;
+}
+.inventsalesreport input.chkbox {
+    padding: 0;
+    width: 16px;
+}
+.inventsalesreport .on_boat {
+    width: 92px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 14px;
+    color: #0000FF;
+    float: left;
+}
+span.add_onboat {
+    cursor: pointer;
+}
+.inventsalesreport .history_low {
+    float: right;
+    margin: 3px 5px 10px 0;
+    width: 165px;
+}
+.inventsalesreport .history_low > .critical_low {
+    width: 144px;
+    height: 18px;
+    line-height: 18px;
+}
+.inventsalesreport .history_low > .critical_low > .color_critical_low {
+    width: 9px;
+    height: 9px;
+    border: 1px solid #000000;
+    background-color: #ff0000;
+    margin-right: 5px;
+}
+.inventsalesreport .history_low > .getting_low {
+    width: 124px;
+    height: 10px;
+    line-height: 13px;
+}
+.inventsalesreport .history_low > .getting_low > .color_getting_low {
+    width: 9px;
+    height: 9px;
+    border: 1px solid #000000;
+    background-color: #ff9c00;
+    margin-right: 5px;
+}
+
+.inventsalesreport  .inventoryheadrow {
+    clear: both;
+    width: 856px;
+    height: 23px;
+    line-height: 21px;
+    /* margin-bottom: 5px; */
+}
+.inventsalesreport  .inventoryheadrow > .additem {
+    background: url('/img/printshop/add_item_btn.png') no-repeat transparent;
+    cursor: pointer;
+    height: 23px;
+    width: 71px;
+}
+.inventsalesreport  .inventoryheadrow > .showonlinemaxvalue {
+    width: 70px;
+    cursor: pointer;
+    color: #0000FF;
+    margin-left: 143px;
+}
+.inventsalesreport  .inventoryheadrow > .head_text {
+    /* width: 639px; */
+    height: 40px;
+    font-weight: bold;
+    margin-top: -8px;
+    width: 448px;
+}
+.inventsalesreport  .inventoryheadrow > .head_text > .total_inventory {
+    /* margin-left: 238px; */
+    margin-left: 54px;
+    line-height: 40px;
+    font-size: 15px;
+}
+
+.inventsalesreport .inventoryheadrow > .headonboat  {
+    float: right;
+    height: 38px;
+    width: 238px;
+    overflow: hidden;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .left_arrow,
+.inventsalesreport .inventorytablehead > .headonboat > .right_arrow {
+    margin-top: 46px;
+    width: 20px;
+
+}
+.inventsalesreport .inventorytablehead > .headonboat  > .left_arrow {
+    background: url("/img/printshop/left_arrow_inv.png") no-repeat 45% 60%;
+}
+.inventsalesreport .inventorytablehead > .headonboat >.left_arrow.active {
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    background: url("/img/printshop/right_arrow_inv.png") no-repeat 45% 60%;
+    cursor: pointer;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .right_arrow {
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    background: url("/img/printshop/left_arrow_inv.png") no-repeat 45% 60%;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .right_arrow.active {
+    -webkit-transform: scaleX(1);
+    -moz-transform: scaleX(1);
+    -ms-transform: scaleX(1);
+    -o-transform: scaleX(1);
+    transform: scaleX(1);
+    background: url("/img/printshop/right_arrow_inv.png") no-repeat 45% 60%;
+    cursor: pointer;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas {
+    height: 99px;
+    width: 300px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer {
+    margin-right: 2px;
+    font-size: 12px;
+    color: #000000;
+    width: 58px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer.arrived {
+    opacity: 0.3;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .onboatmanage {
+    height: 22px;
+    line-height: 22px;
+    width: 58px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .onboatmanage span {
+    margin-left: 2px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containerdate {
+    height: 22px;
+    line-height: 22px;
+}
+input.boatcontainerdate {
+    height: 15px;
+    margin-left: 2px;
+    width: 48px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 21px;
+    line-height: 21px;
+    width: 58px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement {
+    font-size: 16px;
+    width: 27px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement > i.saveboatcontainer {
+    color: #359045;
+    cursor: pointer;
+    margin-left: 2px;
+    margin-top: 1px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .onboatmanagement > i.cancelboatcontainer {
+    color: #FF0000;
+    cursor: pointer;
+    margin-left: 2px;
+    margin-top: 1px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .arrived {
+    background: url('/img/printshop/arrived_btn.png') no-repeat transparent;
+    margin-left: 2px;
+    margin-top: 2px;
+    width: 53px;
+    height: 18px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containrermanage > .waitarrive {
+    cursor: pointer;
+    margin-left: 2px;
+    margin-top: 2px;
+    background: url('/img/printshop/waiting_btn.png') no-repeat transparent;
+    width: 53px;
+    height: 18px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas > .after_head > .onboacontainer > .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    width: 58px;
+    height: 26px;
+    line-height: 26px;
+}
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas .onboat,
+.inventsalesreport .inventorytablehead > .headonboat > .onboatareas .arrived_data {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 26px;
+    line-height: 28px;
+    width: 55px;
+    margin-right: 3px;
+}
+
+/*
+.inventsalesreport .inventoryheadrow > .head_text > .head_on_boad
+.inventsalesreport .inventoryheadrow > .head_text > .head_on_boad
+*/
+.invarriv, .arrived_data_tot {
+    float: left;
+    width: 100%;
+}
+.inventsalesreport .inventoryheadrow > .head_text > .head_on_boad > div > .invarriv > .arriving_inventory {
+    width: 55px;
+    margin-right: 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: normal;
+    height: 15px;
+    line-height: 15px;
+}
+div.add_boat {
+    text-align: center;
+    color: #FFFFFF;
+}
+.inventsalesreport .inventoryheadrow > .head_text > .head_on_boad > div > .arrived_data_tot > .arriving_data,
+.inventsalesreport .inventoryheadrow > .head_text > .head_on_boad > div > .arrived_data_tot > .arrived_data,
+.add_boat input.arriving_data {
+    height: 19px;
+    width: 53px;
+    text-align: center;
+    font-weight: normal;
+}
+
+.edit_onboat {
+    color: #5a3f1a;
+    cursor: pointer;
+}
+.arrived_data {
+    opacity: .3;
+}
+
+.inventsalesreport  .inventoryheadrow > .head_text > .north_arlington {
+    margin-left: 60px;
+    line-height: 40px;
+    font-size: 15px;
+}
+
+.inventsalesreport  .inventoryheadrow > .head_text > .little_ferry {
+    width: 50px;
+    margin-left: 38px;
+    word-wrap: break-word;
+    font-size: 15px;
+    line-height: 14px;
+}
+
+.inventsalesreport  .inventoryheadrow > .additcost {
+    float: right;
+    /* margin-top: 6px; */
+    width: 73px;
+}
+.inventsalesreport  .inventoryheadrow > .additcost > .label {
+    font-size: 11px;
+    width: 30px;
+}
+.inventsalesreport  .inventoryheadrow > .additcost > .value {
+    width: 41px;
+}
+.printshoparea input.addlcostinpt {
+    width: 35px;
+}
+.inventsalesreport .totalinventorysum {
+    clear: both;
+    height: 25px;
+    margin-top: 2px;
+    /* width: 450px; */
+}
+.inventsalesreport .totalinventorysum > div {
+    line-height: 25px;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 11px;
+    text-align: center;
+}
+.inventsalesreport .totalinventorysum > .othertotal {
+    width: 254px;
+}
+.inventsalesreport .totalinventorysum > .itempercent {
+    width: 33px;
+}
+.inventsalesreport .totalinventorysum > .maxinvent {
+    display: none;
+    /* width: 51px; */
+    width: 60px;
+}
+.inventsalesreport .totalinventorysum > .instock {
+    width: 61px;
+}
+.inventsalesreport .totalinventorysum > .reserved {
+    width: 61px;
+}
+.inventsalesreport .totalinventorysum > .available {
+    width: 61px;
+}
+.inventsalesreport .totcoseasum {
+    background-color: #000000;
+    margin-top: 2px;
+    height: 25px;
+    line-height: 25px;
+    margin-left: 282px;
+    width: 109px;
+}
+.inventsalesreport .proofstabsum {
+    background-color: #000000;
+    margin-top: 2px;
+    height: 25px;
+    line-height: 25px;
+    margin-left: 343px;
+    width: 171px;
+}
+.inventsalesreport .inventorytablehead {
+    /*background: transparent url("/img/printshop/inventory_tablehead_bg.png") no-repeat scroll 0 0;*/
+    height: 28px;
+    line-height: 28px;
+    width: 1005px;
+}
+.inventsalesreport  .inventorytablehead div {
+    height: 25px;
+    margin-top: 1px;
+    text-align: center;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory {
+    border: 1px solid #000000;
+    height: 28px;
+    margin-right: 3px;
+    width: 437px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > div {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 0px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .numpp {
+    border-right: 1px solid #f0f0f0;
+    width: 24px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .itemnum {
+    border-right: 1px solid #f0f0f0;
+    width: 38px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .itemname {
+    border-right: 2px solid #f0f0f0;
+    width: 194px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .itempercent {
+    border-right: 1px solid #f0f0f0;
+    width: 32px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .maxinvent {
+    border-right: 1px solid #f0f0f0;
+    display: none;
+    width: 57px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .instock,
+.inventsalesreport  .inventorytablehead > .totalinventory > .reserved {
+    border-right: 1px solid #f0f0f0;
+    width: 60px;
+}
+.inventsalesreport  .inventorytablehead > .totalinventory > .available {
+    width: 59px;
+}
+/* On Boat */
+.inventsalesreport  .inventorytablehead > .headonboat {
+    height: 99px;
+    margin-top: -44px;
+    width: 340px;
+}
+.inventsalesreport .inventorytablehead > .left_arrow,
+.inventsalesreport .inventorytablehead > .right_arrow {
+    width: 20px;
+}
+.inventsalesreport .inventorytablehead > .left_arrow {
+    background: url("/img/printshop/left_arrow_inv.png") no-repeat 45% 60%;
+}
+.inventsalesreport .inventorytablehead > .left_arrow.active {
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    background: url("/img/printshop/right_arrow_inv.png") no-repeat 45% 60%;
+    cursor: pointer;
+}
+.inventsalesreport .inventorytablehead > .right_arrow {
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    background: url("/img/printshop/left_arrow_inv.png") no-repeat 45% 60%;
+}
+.inventsalesreport .inventorytablehead > .right_arrow.active {
+    -webkit-transform: scaleX(1);
+    -moz-transform: scaleX(1);
+    -ms-transform: scaleX(1);
+    -o-transform: scaleX(1);
+    transform: scaleX(1);
+    background: url("/img/printshop/right_arrow_inv.png") no-repeat 45% 60%;
+    cursor: pointer;
+}
+
+.inventsalesreport  .inventorytablehead > .northarlington {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 28px;
+    line-height: 28px;
+    width: 159px;
+    margin-right: 3px;
+}
+
+.inventsalesreport  .inventorytablehead > .northarlington > .have {
+    border-right: 1px solid #f0f0f0;
+    width: 52px;
+}
+.inventsalesreport  .inventorytablehead > .northarlington > .max {
+    border-right: 2px solid #f0f0f0;
+    width: 52px;
+}
+
+.inventsalesreport  .inventorytablehead > .northarlington > .toget {
+    width: 52px;
+}
+.inventsalesreport  .inventorytablehead > .littleferry {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 28px;
+    line-height: 28px;
+    width: 52px;
+    margin-right: 3px;
+}
+.inventsalesreport  .inventorytablehead > .littleferry > .backup {
+    width: 50px;
+}
+.inventsalesreport  .inventorytablehead > .onboatareas > div > .onboat,
+.inventsalesreport  .inventorytablehead > .onboatareas > div > .arrived_data {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 26px;
+    line-height: 28px;
+    width: 55px;
+    margin-right: 3px;
+}
+
+.inventsalesreport  .inventorytablehead > .totcosea {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    height: 28px;
+    line-height: 28px;
+    margin-right: 3px;
+    width: 106px;
+}
+
+.inventsalesreport  .inventorytablehead > .devider {
+    border-right: 2px solid #f0f0f0;
+    width: 3px;
+}
+.inventsalesreport  .inventorytablehead > .onboatareas > div > .arrived_data > .onroute {
+    background: url("/img/printshop/arrived_btn.png") no-repeat 10% 50%;
+    cursor: pointer;
+    text-align: center;
+    width: 61px;
+}
+.inventsalesreport  .inventorytablehead > .onboatareas > div > .onboat > .onroute {
+    background: url("/img/printshop/waiting_btn.png") no-repeat 10% 50%;
+    cursor: pointer;
+    text-align: center;
+    width: 61px;
+}
+.inventsalesreport  .inventorytablehead > .totcosea > .costea {
+    border-right: 1px solid #f0f0f0;
+    width: 48px
+}
+.inventsalesreport  .inventorytablehead > .totcosea > .totalea {
+    width: 55px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab {
+    border: 1px solid #000000;
+    height: 28px;
+    width: 171px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab > div {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    height: 26px;
+    line-height: 13px;
+    margin-top: 0px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab > .specs {
+    line-height: 26px;
+    border-right: 1px solid #f0f0f0;
+    width: 35px;
+}
+
+.inventsalesreport  .inventorytablehead > .proofstab > .platetemp {
+    border-right: 1px solid #f0f0f0;
+    word-wrap: break-word;
+    width: 32px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab > .prooftemp {
+    border-right: 1px solid #f0f0f0;
+    word-wrap: break-word;
+    width: 32px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab > .draw {
+    border-right: 1px solid #f0f0f0;
+    line-height: 26px;
+    width: 32px;
+}
+.inventsalesreport  .inventorytablehead > .proofstab > .pics {
+    line-height: 26px;
+    width: 38px;
+}
+.inventsalesreport  .inventorytablehead > .colororder {
+    width: 24px;
+}
+.inventsalesreport  .inventorytablehead > .colordesript {
+    width: 163px;
+}
+.inventsalesreport  .inventorytablebody {
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    clear: both;
+    height: 532px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 950px;
+    margin-bottom: 15px;
+}
+.inventsalesreport  .inventorytablebody.short {
+    width: 889px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow {
+    clear: both;
+    float: left;
+    height: 23px;
+    line-height: 26px;
+    text-align: center;
+    width: 988px;
+}
+
+.inventsalesreport  .inventorytablebody > .total_inv {
+    clear: both;
+    float: left;
+    background: #000000;
+    height: 23px;
+    line-height: 26px;
+    text-align: center;
+    width: 988px;
+}
+
+.inventsalesreport  .inventorytablebody > .inventorydatarow > div.red_text {
+    color: #ff0000;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .border_b {
+    /*border-bottom: 1px solid #000000;
+    border-top: 2px solid #000000;*/
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata {
+    /* height: 26px; */
+    background-color: #6c6c6c;
+    border-bottom: 1px solid #000000;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .numpp {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 20px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .numpp > .edititem {
+    height: 20px;
+    padding-top: 6px;
+    text-align: center;
+    width: 18px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .numpp > .edititem i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 44px;
+    color: #FFFFFF;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum > .editcolor {
+    height: 19px;
+    padding-top: 4px;
+    text-align: center;
+    width: 42px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum > .editcolor i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 20px;
+    margin-left: 2px;
+    padding-top: 3px;
+    text-align: center;
+    width: 20px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemnum > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itemname {
+    /*border-bottom: 1px solid #000000;
+    border-top: 2px solid #000000;*/
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 3px;
+    width: 147px;
+    color: #FFFFFF;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .additemcolor {
+    background: transparent url("/img/printshop/additem_color_btn.png") no-repeat scroll 1px 11px;
+    /*border-bottom: 1px solid #000000;*/
+    border-right: 2px solid #000000;
+    /*border-top: 2px solid #000000;*/
+    cursor: pointer;
+    width: 12px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .coloritemname {
+    border-right: 2px solid #000000;
+    cursor: pointer;
+    padding-right: 5px;
+    text-align: right;
+    width: 157px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .coloritemname.active {
+    color: #828181;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 32px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 19px;
+    padding-top: 3px;
+    text-align: center;
+    width: 16px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .itempercent > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .instock,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .reserved {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 60px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .reserved {
+    color: #00840c;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .instock.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 10px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .instock.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .available {
+    border-right: 2px solid #000000;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+    width: 59px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata > .available,
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata > .instock,
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata > .itempercent {
+    color: #FFFFFF;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .available.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .available.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+    font-size: 11px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .devider,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .onboatarea > div > .devider {
+    border-right: 2px solid #000000;
+    border-bottom: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+    width: 3px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .have {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    text-align: center;
+    width: 51px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .max {
+    border-right: 1px solid #000000;
+    text-align: center;
+    color: #6c6c6c;
+    width: 52px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .to_get {
+    border-right: 2px solid #000000;
+    text-align: center;
+    color: #6c6c6c;
+    width: 52px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .back_up {
+    border-right: 2px solid #000000;
+    text-align: center;
+    font-weight: bold;
+    width: 50px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .onboatarea > div > .on_route {
+    border-right: 2px solid #000000;
+    text-align: center;
+    color: #0000FF;
+    width: 53px;
+    height: 23px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata > .onboatarea > div > .on_route.total_item {
+    color: #FFFFFF;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .onroute {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 62px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .costea {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 53px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .totalea {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 64px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .specs {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 34px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .specs > .specsdata,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .plate_temp > .platetempdata,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .proof_temp > .prooftempdata,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .pics > .picsdata {
+    height: 19px;
+    margin-top: 5px;
+    text-align: center;
+    width: 100%;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .specs > .specsdata i,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .plate_temp > .platetempdata i,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .proof_temp > .prooftempdata i,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .pics > .picsdata i {
+    background-color: gray;
+    cursor: pointer;
+    font-size: 13px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .specs > .specsdata i.empty,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .plate_temp > .platetempdata i.empty,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .proof_temp > .prooftempdata i.empty,
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .pics > .picsdata i.empty {
+    opacity: 0.3;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .plate_temp {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 30px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .proof_temp {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 30px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .pics {
+    text-align: center;
+    width: 30px;
+}
+
+.inventsalesreport .inventorytablebody > .inventorydatarow > .left_arrow,
+.inventsalesreport .inventorytablebody > .inventorydatarow > .right_arrow {
+    width: 23px;
+}
+
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .onboatarea {
+    width: 235px;
+    overflow: hidden;
+    height: 23px;
+    min-width: 235px;
+    /*white-space: pre-wrap;*/
+}
+
+.inventsalesreport  .inventorytablebody > .inventorydatarow.itemdata > .onboatarea > div > .on_route.arrived_data {
+    background-color: #cfcfcf;
+}
+.inventsalesreport  .inventorytablebody > .total_inv > .itempercent,
+.inventsalesreport  .inventorytablebody > .total_inv > .instock,
+.inventsalesreport  .inventorytablebody > .total_inv > .available,
+.inventsalesreport  .inventorytablebody > .total_inv > .onboatarea > div > .arrived_data,
+.inventsalesreport  .inventorytablebody > .total_inv > .onboatarea > div > .on_route {
+    color: #FFFFFF;
+}
+.inventsalesreport  .inventorytablebody > .total_inv > .onboatarea > div > .on_route.arrived_data {
+    opacity: 1;
+    background-color: #939393;
+}
+.inventsalesreport .download_excell {
+    position: absolute;
+    bottom: 0;
+    font-size: 11px;
+    color: #0000FF;
+}
+.onboatareas, .onboatdataareas {
+    width: 240px;
+    overflow: hidden;
+}
+.add_boat {
+    float: left;
+    width: 53px;
+    display: none;
+}
+.edit_onboatcol {
+    border-right: 2px solid #000000;
+    float: left;
+    width: 53px;
+    display: none;
+    height: 23px;
+    text-align: center;
+}
+
+.onboatarea > .after_head > .edit_onboatcol {
+    color: #FFFFFF;
+    text-align: center;
+}
+.add_boat input {
+    width: 90%;
+}
+.edit_onboatcol input {
+    width: 90%;
+}
+.add_boat > div > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 19px;
+    padding-top: 3px;
+    text-align: center;
+    width: 26px;
+}
+.add_boat > div > .inventorymanage.save i {
+    color: #359045;
+}
+.add_boat > div > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+
+.edit_onboatcol > div > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 19px;
+    padding-top: 3px;
+    text-align: center;
+    width: 26px;
+}
+.edit_onboatcol > div > .inventorymanage.save i {
+    color: #359045;
+}
+.edit_onboatcol > div > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+
+/*
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .colororder {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 24px;
+}
+.inventsalesreport  .inventorytablebody > .inventorydatarow > .colordesript {
+    text-align: left;
+    padding-left: 3px;
+    width: 149px;
+}*/
+.texteditarea, .platetemparea {
+    background-color: #f2f2f2;
+    clear: both;
+    float: left;
+    height: 346px;
+    width: 356px;
+}
+.texteditarea > .title {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    width: 100%;
+}
+.texteditarea > .data {
+    clear: both;
+    float: left;
+    padding: 0 10px;
+    width: 338px;
+}
+.texteditarea > .data > textarea.specfile {
+    font-size: 12px;
+    font-weight: normal;
+    height: 274px;
+    overflow-y: auto;
+    width: 318px;
+    resize: none;
+}
+.texteditarea > .savedata {
+    clear: both;
+    cursor: pointer;
+    float: left;
+    margin-left: 255px;
+    margin-top: 5px;
+    width: 84px;
+}
+
+.platetempupload_container {
+    background-color: #fff;
+    height: 160px;
+    padding: 15px;
+    width: 330px;
+}
+.platetemparea {
+    padding: 10px;
+}
+.platetempfiledat {
+    clear: both;
+    float: left;
+    width: 300px;
+    margin-top: 10px;
+}
+
+.delplatefile {
+    margin-top: 18px;
+    float: left;
+    width: 32px;
+    text-align: center;
+    display: none;
+    cursor: pointer;
+}
+
+.platetempfilename {
+    float: left;
+    width: 250px;
+    margin-left: 15px;
+    height: 24px;
+}
+
+.platetempuploads {
+    margin-top: 10px;
+    float: left;
+    width: 250px;
+    margin-left: 15px;
+    height: 24px;
+}
+
+.platetempsave_data {
+    clear: both;
+    float: left;
+    width: 80px;
+    margin-left: 125px;
+    position: absolute;
+    bottom: 167px;
+    left: 75px;
+    display: none;
+    cursor: pointer;
+}
+
+.qq-uploader {
+    position: absolute;
+    margin-left: 125px;
+    bottom: 167px;
+}
+
+.invpopup_invredcirkle {
+    background: url('/img/artpopup_redcircle.png') no-repeat transparent;
+    float: left;
+    width: 13px;
+    cursor: pointer;
+}
+.invpopup_invredcirkle img {
+    width: 13px;
+    height: 13px;
+}
+.tempupload {
+    position: absolute;
+    bottom: 163px;
+    left: -30px;
+}
+
+/*Pics*/
+.picsupload_container {
+    background-color: #fff;
+    min-height: 260px;
+    padding: 15px;
+    width: 330px;
+}
+.picsupload_data {
+    float: left;
+    color: #000;
+    font-size: 14px;
+    width: 410px;
+}
+.picsupload_title {
+    clear: both;
+    float: left;
+    width: 330px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.picsuploads {
+    clear: both;
+    float: left;
+    width: 330px;
+}
+.picsfiledat {
+    clear: both;
+    float: left;
+    width: 400px;
+}
+.picsfilename {
+    float: left;
+    width: 250px;
+    margin-left: 15px;
+    height: 24px;
+}
+.delpicsfile {
+    float: left;
+    width: 32px;
+    text-align: center;
+}
+.delpicsfile:hover {
+    cursor: pointer;
+}
+.picssave_data {
+    clear: both;
+    float: left;
+    width: 80px;
+    margin-left: 180px;
+    display: none;
+    position: absolute;
+    bottom: 75px;
+    left: 10px;
+}
+.picssave_data:hover {
+    cursor: pointer;
+}
+.picsupload {
+    position: absolute;
+    bottom: 70px;
+    left: -30px;
+}
+
+/* Transfer */
+.inventsalesreport .inventoryheadrow > .head_text > .transfered {
+    width: 65px;
+    margin-left: 94px;
+}
+.inventsalesreport .transferheadrow {
+    clear: both;
+    margin-bottom: 5px;
+}
+.inventsalesreport .transferheadrow > div {
+    height: 23px;
+    line-height: 23px;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+}
+.inventsalesreport .transferheadrow > .additem {
+    background: url('/img/printshop/add_item_btn.png') no-repeat transparent;
+    cursor: pointer;
+    height: 23px;
+    width: 71px;
+}
+.inventsalesreport .transferheadrow > .total_inventory {
+    font-size: 15px;
+    margin-left: 200px;
+    text-align: center;
+    width: 193px;
+}
+.inventsalesreport .transferheadrow > .north_arlington {
+    width: 148px;
+    text-align: center;
+}
+.inventsalesreport .transferheadrow > .transfered {
+    width: 189px;
+    text-align: center;
+}
+.inventsalesreport .transferheadrow > .transfered > .edittrasferval {
+    background: transparent url("/img/printshop/edit_invent_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    margin-left: 71px;
+    width: 54px;
+}
+.inventsalesreport .transferheadrow > .transfered > .savetransferval {
+    background: transparent url("/img/printshop/save_invent_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    margin-left: 66px;
+    width: 54px;
+}
+.inventsalesreport .transferheadrow > .little_ferry {
+    width: 79px;
+    text-align: center;
+}
+.inventsalesreport .transfertablehead {
+    height: 28px;
+    line-height: 28px;
+}
+.inventsalesreport .transfertablehead > .totalinventory {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    margin-right: 3px;
+    width: 447px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > div {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .numpp {
+    border-right: 1px solid #f0f0f0;
+    width: 21px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .itemnum {
+    border-right: 1px solid #f0f0f0;
+    width: 44px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .itemname {
+    border-right: 2px solid #f0f0f0;
+    width: 163px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .itempercent {
+    border-right: 1px solid #f0f0f0;
+    width: 32px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .instock,
+.inventsalesreport .transfertablehead > .totalinventory > .reserved {
+    border-right: 1px solid #f0f0f0;
+    width: 60px;
+}
+.inventsalesreport .transfertablehead > .totalinventory > .available {
+    width: 60px;
+}
+.inventsalesreport .transfertablehead > .northarlington {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    width: 159px;
+}
+.inventsalesreport .transfertablehead > .northarlington > div {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+.inventsalesreport .transfertablehead > .northarlington > .have,
+.inventsalesreport .transfertablehead > .northarlington > .max {
+    border-right: 1px solid #f0f0f0;
+    width: 52px;
+}
+.inventsalesreport .transfertablehead > .northarlington > .toget {
+    width: 52px;
+}
+.inventsalesreport .transfertablehead > .transferdirect {
+    width: 62px;
+}
+.inventsalesreport .transfertablehead > .transfered {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    text-align: center;
+    width: 62px;
+}
+.inventsalesreport .transfertablehead > .littleferrytransfer {
+    background: transparent url("/img/printshop/table_head.png") repeat-x scroll 0 0;
+    border: 1px solid #000000;
+    text-align: center;
+    width: 79px;
+}
+.inventsalesreport .transertablebody {
+    border-bottom: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    clear: both;
+    height: 554px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 882px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow {
+    clear: both;
+    width: 872px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > div {
+    float: left;
+    height: 23px;
+    line-height: 26px;
+    text-align: center;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > div.red_text {
+    color: #ff0000;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .border_b {
+    /*border-bottom: 1px solid #000000;
+    border-top: 2px solid #000000;*/
+}
+.inventsalesreport .transertablebody > .inventorydatarow.itemdata {
+    /* height: 26px; */
+    background-color: #6c6c6c;
+    border-bottom: 1px solid #000000;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .numpp {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 20px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .numpp > .edititem {
+    height: 20px;
+    padding-top: 6px;
+    text-align: center;
+    width: 18px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .numpp > .edititem i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 44px;
+    color: #FFFFFF;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum > .editcolor {
+    height: 19px;
+    padding-top: 4px;
+    text-align: center;
+    width: 42px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum > .editcolor i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    margin-left: 2px;
+    padding-top: 3px;
+    text-align: center;
+    width: 20px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemnum > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itemname {
+    /*border-bottom: 1px solid #000000;
+    border-top: 2px solid #000000;*/
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 3px;
+    width: 147px;
+    color: #FFFFFF;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .additemcolor {
+    background: transparent url("/img/printshop/additem_color_btn.png") no-repeat scroll 1px 11px;
+    /*border-bottom: 1px solid #000000;*/
+    border-right: 2px solid #000000;
+    /*border-top: 2px solid #000000;*/
+    cursor: pointer;
+    width: 12px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .coloritemname {
+    border-right: 2px solid #000000;
+    cursor: pointer;
+    padding-right: 5px;
+    text-align: right;
+    width: 157px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .coloritemname.active {
+    color: #828181;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 32px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 19px;
+    padding-top: 3px;
+    text-align: center;
+    width: 16px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .itempercent > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .instock,
+.inventsalesreport .transertablebody > .inventorydatarow > .available ,
+.inventsalesreport .transertablebody > .inventorydatarow > .reserved {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 60px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .reserved {
+    color: #00840c;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .instock.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 10px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .instock.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .available {
+    border-right: 2px solid #000000;
+    width: 60px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .available.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 10px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .available.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+    font-size: 10px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .devider {
+    background-color: #FFFFFF;
+    width: 3px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .have {
+    border-right: 1px solid #000000;
+    border-left: 2px solid #000000;
+    font-weight: bold;
+    text-align: center;
+    width: 51px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .max {
+    border-right: 1px solid #000000;
+    text-align: center;
+    color: #6c6c6c;
+    width: 52px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .to_get {
+    border-right: 2px solid #000000;
+    text-align: center;
+    color: #6c6c6c;
+    width: 52px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .transferitem {
+    border-bottom: medium none;
+    width: 188px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .transferdirect {
+    background-color: #FFFFFF !important;
+    width: 62px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .transferdirect.empty {
+    cursor: auto !important;
+}
+.inventsalesreport .transertablebody > .inventorydatarow .transferdirect.direct.nonactive {
+    background: url('/img/printshop/trasfer_direct_nonacive.png') no-repeat scroll 17px 0 transparent;
+    cursor: pointer;
+}
+.inventsalesreport .transertablebody > .inventorydatarow .transferdirect.direct.active {
+    background: transparent url("/img/printshop/trasfer_direct_acive.png") no-repeat scroll 17px 0;
+    cursor: pointer;
+}
+.inventsalesreport .transertablebody > .inventorydatarow .transferdirect.inverse.nonactive {
+    background: url('/img/printshop/trasfer_inverse_nonacive.png') no-repeat scroll 17px 0 transparent;
+    cursor: pointer;
+}
+.inventsalesreport .transertablebody > .inventorydatarow .transferdirect.inverse.active {
+    background: transparent url("/img/printshop/trasfer_inverse_acive.png") no-repeat scroll 17px 0;
+    cursor: pointer;
+}
+
+.inventsalesreport .transertablebody > .inventorydatarow > .transfered {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    width: 62px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow input.transferval {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 3px;
+    text-align: center;
+    width: 47px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow input.transferval.empty {
+    visibility: hidden;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .back_up {
+    border-left: 1px solid #000000;
+    font-weight: bold;
+    text-align: center;
+    width: 65px;
+}
+.inventsalesreport .transertablebody > .inventorydatarow > .back_up.changed,
+.inventsalesreport .transertablebody > .inventorydatarow > .have.changed {
+    color :#0000FF;
+}
+/* Edit form*/
+input.invitemcolordata.colorname {
+    width: 143px;
+}
+input.invitemcolordata.suggstock {
+    width: 27px;
+    /* width: 43px; */
+}
+input.invitemcolordata.suggstock.fullrow {
+    width: 46px;
+}
+input.invitemcolordata.stockval {
+    width: 48px;
+}
+input.invitemcolordata.priceea {
+    margin-left: 3px;
+    width: 34px;
+}
+input.invitemcolordata.colordescript {
+    margin-left: 3px;
+    width: 141px;
+}
+/* Item Form */
+input.invitemdataval.itemnum {
+    margin-left: 3px;
+    width: 33px;
+}
+input.invitemdataval.itemname {
+    margin-left: 3px;
+    width: 149px;
+}
+select.colororderselect {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    float: left;
+    font-size: 11px;
+    height: 19px;
+    margin-top: 1px;
+    margin-left: -12px;
+    text-align: left;
+    width: 36px;
+}
+input.addlcostinpt {
+    width: 35px;
+}
+/* In Stock Log Popup */
+.stockdataarea {
+    background: transparent url("/img/printshop/stock_log_bg.png") no-repeat scroll 0 0;
+    height: 346px;
+    margin-left: -8px;
+    margin-top: 7px;
+    width: 366px;
+}
+.stockdataarea div {
+    float: left;
+}
+.stockdataarea > .stockheaddate {
+    border-bottom: 1px solid #000000;
+    clear: both;
+    color: #010101;
+    font-size: 12px;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+    width: 358px;
+}
+.stockdataarea > .stockheaddate > .addstock {
+    padding-top: 6px;
+    width: 32px;
+}
+.stockdataarea > .stockheaddate > .addstock i {
+    color: #359045;
+    font-size: 14px;
+    cursor: pointer;
+}
+.stockdataarea > .stockheaddate > .stockdate {
+    width: 77px;
+}
+.stockdataarea > .stockheaddate > .stockdescr {
+    width: 121px;
+}
+.stockdataarea > .stockheaddate > .stockamnt {
+    width: 63px;
+}
+.stockdataarea > .stockheaddate > .stockbalance {
+    width: 62px;
+}
+.stockdataarea > .stockcontentdata {
+    clear: both;
+    height: 315px;
+    margin-left: 7px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 353px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow {
+    clear: both;
+    color: #010101;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    width: 358px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .editstock {
+    border-right: 1px solid #000;
+    cursor: pointer;
+    height: 18px;
+    padding-top: 4px;
+    text-align: center;
+    width: 23px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .viewstock {
+    border-right: 1px solid #000;
+    height: 23px;
+    width: 23px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .editstock i {
+    color: #5A3F1A;
+    font-size: 14px;
+    cursor: pointer;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockdate {
+    border-right: 1px solid #000;
+    width: 77px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockdescr {
+    border-right: 1px solid #000;
+    width: 120px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockdescr.leadorderlink {
+    color: #0000FF;
+    cursor: pointer;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockamnt {
+    border-right: 1px solid #000;
+    width: 62px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockbalance {
+    width: 62px;
+}
+.stockdataarea input.instockdata {
+    float: left;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    height: 18px;
+    font-size: 12px;
+}
+.stockdataarea input.instockdata.stockdateinpt {
+    margin-left: 3px;
+    padding-left: 0;
+    width: 67px;
+}
+.stockdataarea input.instockdata.stockdescripinpt {
+    margin-left: 3px;
+    width: 110px;
+}
+.stockdataarea input.instockdata.stockamntinpt {
+    width: 50px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockbalance > .inventorymanage {
+    cursor: pointer;
+    font-size: 14px;
+    height: 14px;
+    padding-top: 4px;
+    text-align: center;
+    width: 24px;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockbalance > .inventorymanage.save {
+    color: #359045;
+}
+.stockdataarea > .stockcontentdata > .stokdatarow > .stockbalance > .inventorymanage.cancel {
+    color: #FF0000;
+}
+
+.boat_download {
+    clear: both;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 999px;
+    height: auto;
+}
+
+.boat_download .left_block {
+    width: 465px;
+}
+
+.boat_download .boat_block {
+    width: 473px;
+}
+
+.boat_download > .onboatarea > .after_head > .download_link {
+    font-size: 11px;
+    width: 57px;
+    margin-right: 3px;
+    color: #0000FF;
+    cursor: pointer;
+}
+.edit_color, input {
+    text-align: center;
+}
+.save_cancel {
+    margin-right: 7px;
+    border: none;
+}
+.boat_download > .onboatarea {
+    overflow: hidden;
+    max-width: 240px;
+}
+/* Devider */
+.inventsalesreport  .inventorytablebody .devider {
+    border-right: 2px solid #000000;
+    border-bottom: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+    width: 3px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft {
+    width: 439px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow {
+    clear: both;
+    width: 436px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > div {
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata {
+    background-color: #6c6c6c;
+    border: 1px solid #000000;
+    width: 436px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemcolordata {
+    border-right: 1px solid #000000;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .numpp {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 24px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .numpp > .edititem {
+    height: 20px;
+    padding-top: 6px;
+    text-align: center;
+    width: 18px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .numpp > .edititem i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum {
+    border-right: 1px solid #000000;
+    color: #FFFFFF;
+    text-align: center;
+    width: 36px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .editcolor {
+    height: 19px;
+    padding-top: 4px;
+    text-align: center;
+    width: 42px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .editcolor i {
+    color: #5a3f1a;
+    font-size: 14px;
+    cursor: pointer;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 20px;
+    margin-left: 2px;
+    padding-top: 3px;
+    text-align: center;
+    width: 15px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemnum > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itemname {
+    border-right: 2px solid #000000;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 3px;
+    width: 194px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .additemcolor {
+    background: transparent url("/img/printshop/additem_color_btn.png") no-repeat scroll 1px 11px;
+    border-right: 2px solid #000000;
+    cursor: pointer;
+    width: 12px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .donotreorder {
+    color: #ff0000;
+    font-size: 10px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 11px;
+    text-align: center;
+    width: 44px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .donotreorderedit {
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 11px;
+    text-align: center;
+    opacity: 0.4;
+    width: 44px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .donotreorderedit.filled {
+    opacity: 1;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .coloritemname {
+    border-right: 2px solid #000000;
+    cursor: pointer;
+    padding-right: 5px;
+    text-align: right;
+    width: 151px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .coloritemname.active {
+    color: #828181;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 32px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .itempercent {
+    width: 31px;
+}
+/* inventorymanage */
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 20px;
+    padding-top: 3px;
+    text-align: center;
+    width: 15px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .itempercent.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .inventorymanage {
+    cursor: pointer;
+    font-size: 15px;
+    height: 19px;
+    padding-top: 3px;
+    text-align: center;
+    width: 16px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .inventorymanage.save i {
+    color: #359045;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .inventorymanage.cancel i {
+    color: #FF0000;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .maxinvent {
+    border-right: 1px solid #000000;
+    display: none;
+    text-align: center;
+    width: 57px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .instock,
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .reserved {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 60px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow >  .reserved {
+    color: #00840c;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .instock.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 10px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .instock.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .available {
+    /* border-right: 2px solid #000000; */
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    width: 60px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available {
+    width: 58px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available,
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .instock,
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .maxinvent,
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .itempercent {
+    color: #FFFFFF;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .available.outstock {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow > .available.lowstock {
+    color: #000000;
+    background-color: #ff9c00;
+    font-size: 11px;
+}
+/* On Boat Content */
+.inventsalesreport .inventorytablebody > .inventoryonboatarea {
+    width: 341px;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .left_arrow_empty,
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .right_arrow_empty {
+    width: 18px;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas {
+    height: auto;
+    width: 300px;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata {
+    border: 1px solid #000000;
+    height: auto;
+    margin-left: 2px;
+    width: 58px;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata.arrived {
+    opacity: 0.3;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata > .contanerdataval {
+    color: #0000ff;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    width: 56px;
+}
+.inventsalesreport .inventorytablebody > .inventoryonboatarea > .onboatdataareas > .after_head > .onboacontainerarea > .onboacontainerdata > .contanerdataval.itemdata {
+    background-color: #6c6c6c;
+    border: 1px solid #000000;
+    color: #FFFFFF;
+    height: 28px;
+    line-height: 28px;
+}
+input.onboatelementinput {
+    height: 15px;
+    margin-left: 2px;
+    margin-top: 2px;
+    text-align: center;
+    width: 46px;
+}
+/* Spec Content */
+.inventsalesreport .inventorytablebody > .inventorytableright {
+    /* width: 152px; */
+}
+.inventsalesreport .inventorytablebody.short > .inventorytableright {
+    /* width: 152px; */
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow {
+    clear: both;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > div {
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow.itemdata {
+    background-color: #6c6c6c;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .costea {
+    border-left: 1px solid;
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 48px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .totalea {
+    border-right: 2px solid #000000;
+    text-align: center;
+    width: 56px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .specs {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 34px;
+    border-left: 1px solid #000000;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .specs > .specsdata,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .plate_temp > .platetempdata,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .proof_temp > .prooftempdata,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .draw > .itemlabel,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .pics > .picsdata {
+    height: 19px;
+    margin-top: 5px;
+    text-align: center;
+    width: 100%;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .specs > .specsdata i,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .plate_temp > .platetempdata i,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .proof_temp > .prooftempdata i,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .draw > .itemlabel i,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .pics > .picsdata i {
+    background-color: gray;
+    cursor: pointer;
+    font-size: 13px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .specs > .specsdata i.empty,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .plate_temp > .platetempdata i.empty,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .proof_temp > .prooftempdata i.empty,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .draw > .itemlabel i.empty,
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .pics > .picsdata i.empty {
+    opacity: 0.3;
+    cursor: default;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .plate_temp {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 34px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .proof_temp {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 32px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .draw {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 31px;
+}
+.inventsalesreport .inventorytablebody > .inventorytableright > .inventorydatarow > .pics {
+    text-align: center;
+    width: 21px;
+}

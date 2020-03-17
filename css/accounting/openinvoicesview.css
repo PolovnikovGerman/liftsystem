@@ -1,0 +1,671 @@
+.paymonitor-content {
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 1003px;
+}
+.paymonitor-content select {
+    float: left;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+}
+.monitor-head {
+    clear: both;
+    float: left;
+    width: 998px;
+    margin-bottom: 5px;
+}
+.monitor-head-totals {
+    float: left;
+    width: 580px;
+}
+.total_notinvoiced {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 220px;
+}
+.total_notinvoiced_qty {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 220px;
+}
+.total_notpaid {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 300px;
+}
+.total_notpaid_qty {
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+    font-weight: bolder;
+    margin-left: 18px;
+    width: 300px;
+}
+.openinvoiceperpage {
+    float: left;
+    width: 200px;
+}
+.showpaid {
+    color: #0000FF;
+    float: left;
+    font-family: arial,verdana,sans-serif;
+    font-size: 12px;
+    margin-left: 48px;
+    margin-top: 2px;
+    width: 150px;
+}
+.showpaid > select {
+    height: 22px;
+    font-size: 12px;
+    width: 150px;
+    color: #000000;
+}
+.monitorsearch_form {
+    width : 380px;
+    margin-left: 15px;
+}
+.monitor_pagesviews {
+    float: left;
+    padding-top: 3px;
+    width: 578px;
+}
+.monitorsearch_input {
+    float: left;
+    width: 160px;
+    margin-top : 2px;
+}
+input.monitorsearch_input {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 150px;
+    color: #4c4c4c;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+}
+input.monitorsearch_input_active {
+    background-color: #ffffff;
+    border: 1px solid #434343;
+    width: 150px;
+    color: #000000;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+}
+/* Monitor table */
+.paymonitor-table {
+    clear: both;
+    float: left;
+    width: 967px;
+    margin: 0 0 0 15px;
+}
+.paymonitor-title {
+    border: 1px solid #919191;
+    float: left;
+    width: 960px;
+}
+/* Table head & rows */
+.paymonitor-title > div {
+    height: 30px;
+    line-height: 30px;
+    background-color: #bcbcbc;
+    font-size: 13px;
+    color: #000000;
+    text-align:center;
+}
+.paymonitor-title > .paymonitor-approved {
+    width: 18px;
+}
+.paymonitor-title > .paymonitor-orderdate {
+    width: 55px;
+}
+.paymonitor-title > .paymonitor-numorder {
+    width: 72px;
+}
+.paymonitor-title > .paymonitor-customer {
+    width: 165px;
+}
+.paymonitor-title > .paymonitor_ccfee {
+    width: 28px;
+}
+.paymonitor-title > .paymonitor-inv {
+    width: 30px;
+}
+.paymonitor-title > .paymonitor-revenue {
+    width: 118px;
+}
+.paymonitor-title > .paymonitor-pay {
+    width: 55px;
+}
+.paymonitor-title > .paymonitor-code {
+    width: 63px;
+}
+.sortcalclnk {
+    margin-left: 3px;
+    width: 16px;
+    margin-top: 4px;
+}
+
+.content-paymonutortable {
+    clear: both;
+    float: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 553px;
+    margin-bottom: 10px;
+    width: 961px;
+    border-left: 1px solid #919191;
+    border-bottom: 1px solid #919191;
+}
+.content-paymonutortable > .tr {
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    clear: both;
+    color: #000000;
+    width: 959px;
+}
+.content-paymonutortable > .tr > div {
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+}
+.content-paymonutortable > .tr > .paymonitor-approved-dat {
+    width: 18px;
+}
+.content-paymonutortable > .tr > .paymonitor-approved-dat img {
+    width: 16px;
+    height: 16px;
+}
+.content-paymonutortable > .tr > .paymonitor-numorder-dat {
+    color: #0000ff;
+    cursor: pointer;
+    font-weight: bold;
+    width: 72px;
+}
+.content-paymonutortable > .tr > .paymonitor-orderdate-dat {
+    width: 54px;
+}
+.content-paymonutortable > .tr > .paymonitor-customer-dat {
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+    width: 165px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content-paymonutortable > .tr > .paymonitor_ccfee_dat {
+    width: 28px;
+}
+.content-paymonutortable > .tr > .paymonitor_ccfee_dat img {
+    width: 24px;
+    height: 24px;
+}
+.content-paymonutortable > .tr > .paymonitor-revenue-dat {
+    width: 118px;
+}
+.content-paymonutortable > .tr > .paymonitor-inv-dat {
+    width: 30px;
+}
+
+.paymonitor-approved-dat.attachview:hover{
+    cursor: pointer;
+}
+.paymonitor-generalname {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 150px;
+}
+.refund {
+    float: left;
+    width: 18px;
+}
+.refund:hover {
+    cursor: pointer;
+}
+.refund img {
+    width: 16px;
+}
+.paymonitor_ccfee {
+    float: left;
+    padding-top: 1px;
+    width: 37px;
+}
+.paymonitor-pay-dat {
+    float: left;
+    padding-top: 4px;
+    width: 40px;
+}
+.paymonitor-code-dat {
+    float: left;
+    padding-top: 4px;
+    width: 28px;
+}
+.paymonitor-codedat {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 28px;
+}
+
+.paymonitorsort:hover {
+    cursor:pointer;
+}
+.paymsortactive {
+    background-color: #0000FF!important;
+    color: #FFFFFF!important;
+    height: 24px;
+}
+/* Batch Popup */
+.batchpopup {
+    clear: both;
+    background-image: url("/img/accounting/batchpopup_bg.png");
+    width: 505px;
+    height: 333px;
+    padding: 12px;
+}
+.batchpopuptitle {
+    clear: both;
+    float: left;
+    width: 500px;
+    color: #0901b1;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 7px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+.batchselectunit {
+    clear: both;
+    float: left;
+    width: 487px;
+    margin-bottom: 7px;
+}
+.batchselectunit_title {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    margin-left: 8px;
+    padding-top: 3px;
+    width: 92px;
+}
+.selectbatchunit {
+    float: left;
+    width: 92px;
+    background-color: #FFF;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.batchselectpay {
+    clear: both;
+    float: left;
+    width: 476px;
+}
+.batchpaymetod_title {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    margin-left: 8px;
+    padding-top: 3px;
+    width: 92px;
+}
+select.batchpaymetod {
+    float: left;
+    width: 170px;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    background-color: #fff;
+    margin-right: 9px;
+    height: 22px;
+}
+.batchpaymetod_amount {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    padding-left: 8px;
+    padding-top: 3px;
+    width: 61px;
+}
+input.amountvalue {
+    float: left;
+    width: 72px;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    background-color: #fff;
+}
+.batchpaynote {
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    margin-right: 5px;
+    padding-left: 7px;
+    padding-top: 3px;
+    width: 142px;
+}
+.batchpaynotelnk {
+    float: left;
+    margin-left: 3px;
+    margin-top: 2px;
+    width: 15px;
+}
+.batchpaynotelnk:hover {
+    cursor: pointer;
+}
+.batchpaynote_content {
+    color: #000000;
+    display: none;
+    float: left;
+    font-size: 13px;
+    margin-right: 5px;
+    padding-left: 32px;
+    padding-top: 3px;
+    width: 450px;
+}
+textarea.batchnote {
+    resize: none;
+    width: 445px;
+    height: 120px;
+    overflow-y: auto;
+}
+.bathpaydatedue {
+    float: left;
+    font-size: 13px;
+    padding-left: 15px;
+    padding-top: 3px;
+    width: 141px;
+    display: none;
+}
+.batchpaymentresults {
+    clear: both;
+    float: left;
+    width: 500px;
+    color: #232323;
+    font-size: 12px;
+}
+.batchpaymentresults_value {
+    float: right;
+    margin-right: 5px;
+}
+/* Batch POPUP */
+.batchdaytabledat {
+    clear: both;
+    float: left;
+    max-height: 191px;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 489px;
+}
+.batchpopmentresults_value {
+    float: right;
+    margin-right: 21px;
+}
+.batchpoptable {
+    clear: both;
+    float: left;
+    width: 473px;
+}
+.batchpoptable_title {
+    background-color: #6D6AFF;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    padding-top: 3px;
+    width: 472px;
+}
+.batchpoptable_totaltitle {
+    float: left;
+    width: 193px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 21px;
+    padding-top: 3px;
+}
+.batchpoptable_totalvalues {
+    float: left;
+    padding-top: 3px;
+    width: 272px;
+}
+.batchpoptable_totalinvoiced {
+    background-color: #808080;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    width: 472px;
+}
+.batchpoptable_notreceiv {
+    background-color: #A9A9A9;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    width: 472px;
+}
+.batchpopdetailtable_orders {
+    clear: both;
+    float: left;
+    width: 471px;
+    color: #000000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+}
+.batchpoptable_email {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpoptable_ordernum {
+    float: left;
+    width: 48px;
+    text-align: center;
+}
+.batchpoptable_customer {
+    float: left;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left;
+    white-space: nowrap;
+    width: 118px;
+}
+.batchpoptable_vmd {
+    float: left;
+    width: 60px;
+    text-align: center;
+}
+.batchpoptable_amex {
+    float: left;
+    width: 58px;
+    text-align: center;
+}
+.batchpoptable_other {
+    float: left;
+    width: 37px;
+    text-align: center;
+}
+.batchpoptable_terms {
+    float: left;
+    width: 56px;
+    text-align: center;
+}
+.batchpoptable_due {
+    float: left;
+    width: 30px;
+    text-align: center;
+}
+.batchpoptable_reach {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.savebatch {
+    background: url(/img/accounting/addnew.png) no-repeat scroll 0 0 transparent;
+    color: #ffffff;
+    float: left;
+    height: 28px;
+    margin-left: 350px;
+    margin-top: 10px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+    cursor: pointer;
+}
+.batchpaytable_vmd {
+    float: left;
+    width: 61px;
+    text-align: center;
+}
+.batchpaytable_amex {
+    float: left;
+    width: 56px;
+    text-align: center;
+}
+.batchpaytable_other {
+    float: left;
+    width: 37px;
+    text-align: center;
+}
+.batchpaytable_terms {
+    float: left;
+    width: 62px;
+    text-align: center;
+}
+.batchpaytable_due {
+    float: left;
+    width: 35px;
+    text-align: center;
+}
+.batchpaytable_reach {
+    float: left;
+    text-align: center;
+    width: 24px;
+}
+.batchpaytable_totalinvoiced {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #808080;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_totaltitle {
+    float: left;
+    width: 205px;
+    border-right: 1px solid #000;
+    font-style: italic;
+    text-align: center;
+    height: 21px;
+    padding-top: 3px;
+}
+.batchpaytable_totalvalues {
+    float: left;
+    width: 279px;
+    padding-top: 3px;
+}
+.batchpaytable_notreceiv {
+    clear: both;
+    float: left;
+    width: 487px;
+    height: 20px;
+    background-color: #a9a9a9;
+    color: #fff;
+    font-size: 11px;
+}
+.batchpaytable_orders {
+    clear: both;
+    float: left;
+    width: 487px;
+    color: #000000;
+    font-size: 11px;
+}
+/* Order Note */
+.netprofit_weeknote_form {
+    clear: both;
+    float: left;
+    width: 435px;
+    height: 320px;
+    background-color: #F2F2F2;
+}
+.netprofitweeknote_title {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 5px;
+    text-align: center;
+    width: 425px;
+}
+.netprofitweeknote_data {
+    clear: both;
+    float: left;
+    width: 425px;
+    padding: 0 10px;
+}
+textarea.weeknote {
+    width: 405px;
+    height: 246px;
+    font-size: 12px;
+    font-weight: normal;
+    overflow-y: auto;
+    text-wrap: normal;
+    resize: none;
+}
+.netprofitweeknote_bottom {
+    clear: both;
+    float: left;
+    margin-left: 280px;
+}
+.saveordernote {
+    background: url("/img/accounting/addnew.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 24px;
+    margin-top: 3px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+    color: #FFF;
+    font-size: 16px;
+    font-weight: bold;
+}
+.paymonitor_customer_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+    border: 1px solid #000000;
+    padding: 10px!important;
+    width: 290px;
+}
+.paymonitor_attachments_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+    border: 1px solid #000000;
+    padding: 10px!important;
+    width: 150px;
+}

@@ -1,0 +1,1 @@
+<input type="checkbox" title="<?=$title?>" class="artlocationinpt <?=$type?>" data-artloc="<?=$artwork_art_id?>" <?=$chk?> />

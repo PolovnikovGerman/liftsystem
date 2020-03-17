@@ -27,15 +27,15 @@ Class Calendars_model extends MY_Model
 //        }
 //        return $calend;
 //    }
-//
-//    function get_calendars() {
-//        $this->db->select('*');
-//        $this->db->from('calendars');
-//        $this->db->where('calendar_status',1);
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
+
+    public function get_calendars() {
+        $this->db->select('*');
+        $this->db->from('calendars');
+        $this->db->where('calendar_status',1);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 //    function get_calendar($calend_id) {
 //        if ($calend_id==0) {
 //            $calend=array(
@@ -232,5 +232,22 @@ Class Calendars_model extends MY_Model
 //        return $out;
 //
 //    }
+
+    public function businessdate($date) {
+        $calendar=$this->config->item('bank_calendar');
+        $holidays=$this->get_calendar_holidays($calendar);
+        for ($i=1; $i<=15;$i++) {
+            if (in_array($date, $holidays)) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==6) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } elseif (date('N',$date)==7) {
+                $date=strtotime(date('Y-m-d',$date)."+1day");
+            } else {
+                break;
+            }
+        }
+        return $date;
+    }
 
 }
