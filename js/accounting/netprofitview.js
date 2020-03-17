@@ -1,7 +1,7 @@
 function init_netprofit_area() {
     google.load('visualization', '1.0', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-    console.log('STATRT');
+
     init_netprofit();
     // Change Brand
     $("#netprofitviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
@@ -25,6 +25,7 @@ function init_netprofit_area() {
 function init_netprofit() {
     init_netprofitpage();
     init_expensive_help();
+    rebuild_w9table();
     // Init management of Chart Area
     $("select.weektotalsviewtype").unbind('change').change(function(){
         var showdetail=$(this).val();

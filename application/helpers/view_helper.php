@@ -581,5 +581,14 @@ if (!function_exists('getDayOfWeek')) {
         return $day_week;
     }
 }
-
+if (!function_exists('getDatesByMonth')) {
+    function getDatesByMonth($_month_number,$_year=null) {
+        $year = $_year ? $_year : date('Y');
+        $month_number = sprintf('%02d', $_month_number);
+        $date_base = strtotime($year . '-' . $month_number . '-01 00:00:00');
+        $date_limit=strtotime(date("Y-m-d", ($date_base)) . " +1 month");
+        $date_limit=$date_limit-1;
+        return array('start_month'=>$date_base, 'end_month'=>$date_limit);
+    }
+}
 ?>

@@ -2132,7 +2132,7 @@ class Accounting extends MY_Controller
                 $datend=strtotime($curmonth.'/01/'.$curyear.' 00:00:00');
                 $datend=strtotime(date("Y-m-d", ($datend)) . " +1 month");
                 $datend=$datend-1;
-                $data=$this->mbalanc->get_netprofit_monthdata($datbgn,$datend, $order, $direc, $this->USR_ID, $radio);
+                $data=$this->balances_model->get_netprofit_monthdata($datbgn,$datend, $order, $direc, $this->USR_ID, $radio, $brand);
             }
             if ($type=='week') {
                 $fromweek=$this->input->post('fromweek');
@@ -2165,7 +2165,7 @@ class Accounting extends MY_Controller
                     'start'=>$this->config->item('netprofit_start'),
                     'brand' => $brand,
                 );
-                $runtotal=$this->mbalanc->get_netprofit_runs($total_options, $radio);
+                $runtotal=$this->balances_model->get_netprofit_runs($total_options, $radio);
             }
             $total_view=$this->load->view('netprofit/netprofit_totals_view', $runtotal, TRUE);
             $content_options=array(

@@ -292,15 +292,13 @@ function init_onlineleadorder_edit() {
             search_leadorders();
         } else if (callpage=='profitlist') {
             search_profit_data();
+        } else if (callpage=='paymonitor') {
+            search_paymonitor();
         }
         if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
                 init_profit_orders();
-            } else if (callpage=='paymonitor') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                init_paymonitor();
             } else if (callpage=='art_order') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
