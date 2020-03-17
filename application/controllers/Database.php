@@ -35,29 +35,50 @@ class Database extends MY_Controller
         $head = [];
         $head['title'] = 'Database';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $content_options = [
+            'menu' => $menu,
+        ];
+        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+        if (count($brands)==0) {
+            redirect('/');
+        }
+        $brand = $brands[0]['brand'];
+        $left_options = [
+            'brands' => $brands,
+            'active' => $brand,
+        ];
+        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
+
         foreach ($menu as $row) {
             if ($row['item_link'] == '#categoryview') {
                 // Custom shaped
                 $head['styles'][] = array('style' => '/css/database/categories.css');
                 $head['scripts'][] = array('src' => '/js/database/categories.js');
+                $content_options['categoryview'] = $this->_content_view('categories', $brand, $left_menu);
             } elseif ($row['item_link'] == '#itempriceview') {
                 $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+                $content_options['itempriceview'] = $this->_content_view('itemprice', $brand, $left_menu);
             } elseif ($row['item_link']=='#itemcategoryview') {
                 $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+                $content_options['itemcategoryview'] = $this->_content_view('itemcategory', $brand, $left_menu);
             } elseif ($row['item_link'] == '#itemsequenceview') {
                 $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+                $content_options['itemsequenceview'] = $this->_content_view('itemsequence', $brand, $left_menu);
             } elseif ($row['item_link']=='#itemmisinfoview') {
                 $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+                $content_options['itemmisinfoview'] = $this->_content_view('itemmisinfo', $brand, $left_menu);
             } elseif ($row['item_link']=='#itemprofitview') {
                 $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+                $content_options['itemprofitview'] = $this->_content_view('itemprofit', $brand, $left_menu);
             } elseif ($row['item_link']=='#itemtemplateview') {
                 $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
+                $content_options['itemtemplateview'] = $this->_content_view('itemtemplates', $brand, $left_menu);
             }
         }
         // Add main page management
@@ -80,37 +101,25 @@ class Database extends MY_Controller
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options = [
-            'menu' => $menu,
-        ];
+
         $content_view = $this->load->view('database/page_view', $content_options, TRUE);
 
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
 
-    public function get_content_view()
-    {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $page_name = (isset($postdata['page_name']) ? $postdata['page_name'] : '');
-            $mdata=array();
-            $error='Empty Page Name';
-            if (!empty($page_name)) {
-                $error = '';
-                if ($page_name=='categories') {
-                    // $page_name_full = 'Categories';
-                    $special_content = $this->_prepare_dbpage_content($page_name);
-                    $buttons_view = $this->load->view('database/content_viewbuttons_view', [], TRUE);
-                    $options = ['buttons_view' => $buttons_view, 'special_content' => $special_content,];
-                    $mdata['content'] = $this->load->view('database/category_pagecontent_view', $options, TRUE);
-                } else {
-                    $mdata['content'] = $this->_prepare_dbpage_content($page_name);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
+    private function _content_view($page_name, $brand, $left_menu) {
+        $data = ['brand' => $brand, 'left_menu' => $left_menu, 'brandid' => $page_name.'brand', 'brandmenuid' => $page_name.'brandmenu'];
+        if ($page_name=='categories') {
+            // $page_name_full = 'Categories';
+            $special_content = $this->_prepare_dbpage_content($page_name, $brand);
+            $buttons_view = $this->load->view('database/content_viewbuttons_view', [], TRUE);
+            $options = ['buttons_view' => $buttons_view, 'special_content' => $special_content,];
+            $data['content'] = $this->load->view('database/category_pagecontent_view', $options, TRUE);
+        } else {
+            $data['content'] = $this->_prepare_dbpage_content($page_name, $brand);
         }
-        show_404();
+        return $this->load->view('database/page_content_view', $data, TRUE);
     }
 
     // Categories
@@ -260,7 +269,7 @@ class Database extends MY_Controller
                     array_push($othervend, substr($key,8));
                 }
             }
-
+            $brand = ifset($datpost,'brand', 'ALL');
             usersession('page_name','priceview');
             usersession('curpage', $pagenum);
             usersession('order_by', $order_by);
@@ -274,7 +283,7 @@ class Database extends MY_Controller
 
             if ($this->USR_ROLE=='general') {
                 $this->load->model('items_model');
-                $item_dat=$this->items_model->get_items(array(),$order_by,$direct,$limit,$offset,$search,$vendor_id);
+                $item_dat=$this->items_model->get_items(array('brand'=>$brand,),$order_by,$direct,$limit,$offset,$search,$vendor_id);
                 $data=array('item_dat'=>$item_dat,'offset'=>$offset);
                 $mdata['content'] = $this->load->view('database/dbprice_tabledat_general_view',$data, TRUE);
             } else {
@@ -283,9 +292,9 @@ class Database extends MY_Controller
                 } else {
                     $this->load->model('otherprices_model');
                     if (count($othervend)==4) {
-                        $item_dat=$this->otherprices_model->get_compared_prices($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id);
+                        $item_dat=$this->otherprices_model->get_compared_prices($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $brand);
                     } else {
-                        $item_dat=$this->otherprices_model->get_compared_pricelimit($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $othervend);
+                        $item_dat=$this->otherprices_model->get_compared_pricelimit($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $brand, $othervend);
                     }
                     $data=array('item_dat'=>$item_dat,'offset'=>$offset);
                     $mdata['content'] = $this->load->view('database/dbprice_table_dat_view',$data, TRUE);
@@ -302,8 +311,9 @@ class Database extends MY_Controller
             $error='';
             $search = $this->input->post('search');
             $vendor_id=$this->input->post('vendor_id','');
+            $brand = $this->input->post('brand');
             $this->load->model('items_model');
-            $num_rec=$this->items_model->count_searchres($search, $vendor_id);
+            $num_rec=$this->items_model->count_searchres($search, $brand, $vendor_id );
             $mdata['result']=$num_rec;
             $this->ajaxResponse($mdata,$error);
         }
@@ -443,6 +453,7 @@ class Database extends MY_Controller
             if (isset($postdata['search']) && !empty($postdata['search'])) {
                 $total_options['search']=$postdata['search'];
             }
+            $total_options['brand']=$postdata['brand'];
             $this->load->model('items_model');
             $mdata['total']=$this->items_model->get_sequence_count($total_options);
             $this->ajaxResponse($mdata, $error);
@@ -465,6 +476,7 @@ class Database extends MY_Controller
             if (isset($postdata['search']) && !empty($postdata['search'])) {
                 $options['search']=$postdata['search'];
             }
+            $options['brand'] = $postdata['brand'];
             // Get items
             $this->load->model('items_model');
             $data = $this->items_model->get_sequence_items($options);
@@ -544,6 +556,7 @@ class Database extends MY_Controller
             $direct = $this->input->post('direction','asc');
             $search = $this->input->post('search');
             $vendor_id=$this->input->post('vendor_id','');
+            $brand = $this->input->post('brand');
             usersession('page_name','misinfo');
             usersession('curpage', $offset);
             usersession('order_by', $order_by);
@@ -555,7 +568,7 @@ class Database extends MY_Controller
 
             /* Get Data about items & missing info */
             $this->load->model('items_model');
-            $item_dat=$this->items_model->get_missinginfo(array(),$order_by,$direct,$limit,$offset,$search,$vendor_id);
+            $item_dat=$this->items_model->get_missinginfo(array('brand'=>$brand),$order_by,$direct,$limit,$offset,$search,$vendor_id);
 
             $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
 
@@ -564,7 +577,7 @@ class Database extends MY_Controller
         }
     }
     // DB Item Profit
-    function profitdat() {
+    public function profitdat() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
@@ -577,7 +590,7 @@ class Database extends MY_Controller
             $search=(isset($postdata['search']) ? $postdata['search'] : '');
             $profitprefs=(isset($postdata['profitprefs']) ? $postdata['profitprefs'] : '');
             $vendor_id=(isset($postdata['vendor_id']) ? $postdata['vendor_id'] : '');
-
+            $brand = ifset($postdata, 'brand','ALL');
             usersession('page_name','profitview');
             usersession('curpage', $pagenum);
             usersession('order_by', $order_by);
@@ -591,7 +604,7 @@ class Database extends MY_Controller
 
             /* Get Data about about items & prices */
             $this->load->model('prices_model');
-            $item_dat=$this->prices_model->get_item_profitprefs($order_by,$direct,$limit,$offset,$search,$profitprefs, $vendor_id);
+            $item_dat=$this->prices_model->get_item_profitprefs($order_by,$direct,$limit,$offset,$search,$profitprefs, $vendor_id, $brand);
 
             $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
             if ($this->USR_ROLE=='general') {
@@ -618,7 +631,7 @@ class Database extends MY_Controller
             $direct = $this->input->post('direction');
             $search=$this->input->post('search');
             $vendor_id=$this->input->post('vendor_id','');
-
+            $brand = $this->input->post('brand');
             usersession('page_name','temlatesview');
             usersession('curpage', $numpage);
             usersession('order_by', $order_by);
@@ -630,7 +643,7 @@ class Database extends MY_Controller
 
             /* Get Data about about items & categories */
             $this->load->model('items_model');
-            $item_dat=$this->items_model->get_items(array(),$order_by,$direct,$limit,$offset,$search,$vendor_id);
+            $item_dat=$this->items_model->get_items(array('brand'=>$brand),$order_by,$direct,$limit,$offset,$search,$vendor_id);
             $data=array('item_dat'=>$item_dat,'order_by'=>$order_by,'direction'=>$direct,'offset'=>$offset);
             $mdata['content'] = $this->load->view('database/dbtemplate_table_data_view',$data, TRUE);
             $this->ajaxResponse($mdata, $error);
@@ -701,7 +714,7 @@ class Database extends MY_Controller
     }
 
     // Prepare pages
-    private function _prepare_dbpage_content($page_name)
+    private function _prepare_dbpage_content($page_name, $brand)
     {
         if ($page_name=='categories') {
             $this->load->model('categories_model');
@@ -724,7 +737,7 @@ class Database extends MY_Controller
                 $vendor_id = usersession('vendor_id');
             }
             $this->load->model('items_model');
-            $total_rec = $this->items_model->count_searchres($search, $vendor_id);
+            $total_rec = $this->items_model->count_searchres($search, $brand, $vendor_id);
             $this->load->model('vendors_model');
             if ($page_name=='itemprice') {
                 $this->load->model('otherprices_model');

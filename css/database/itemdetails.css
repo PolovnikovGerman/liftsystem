@@ -1,12 +1,13 @@
 .itemdata {
     background: url(/img/itemdetails/item_detailsnew_bg.png) no-repeat scroll 0 0 transparent;
     clear: both;
-    height: 713px;
+    height: 715px;
     margin-left: 25px;
     margin-top: 10px;
     width: 1024px;
     font-size: 12px;
     font-family: Arial;
+    margin-bottom: 15px;
 }
 .itemdata input {
     background-color: #fff;

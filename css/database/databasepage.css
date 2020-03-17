@@ -1,3 +1,11 @@
+.maincontentmenuarea {
+    width: calc(100% - 25px)!important;
+    margin-left: 25px!important;
+}
+.dbcontentarea {
+    clear: both;
+    width: 100%;
+}
 .statcipage_content {
     clear: both;
     float: left;

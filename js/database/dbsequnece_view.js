@@ -1,6 +1,14 @@
 var itemsperpage = 80;
 function init_dbsequence_view() {
     initSequencePagination();
+    // Change Brand
+    $("#itemsequencebrandmenu").find("div.left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itemsequencebrand").val(brand);
+        $("#itemsequencebrandmenu").find("div.left_tab").removeClass('active');
+        $("#itemsequencebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        search_sequence();
+    });
 }
 
 function initSequencePagination() {
@@ -35,6 +43,7 @@ function pageSequenceCallback(page_index) {
     params.push({name: 'vendor_id', value: $("#dbseqvendorselect").val()});
     params.push({name: 'itemperrow', value: $("#iteminrowselect").val()});
     params.push({name: 'total', value: $('#totalrecdbseq').val()});
+    params.push({name: 'brand', value: $("#itemsequencebrand").val()});
     var url = '/database/itemsequence_data';
     $("#loader").show();
     $.post(url, params, function (response) {
@@ -123,6 +132,7 @@ function search_sequence() {
     var params=new Array();
     params.push({name: 'search', value: $("#searchdbseq").val()});
     params.push({name: 'vendor_id', value: $("#dbseqvendorselect").val()});
+    params.push({name: 'brand', value: $("#itemsequencebrand").val()});
     var url = '/database/itemsequence_search';
     $.post(url, params, function(response){
         if (response.errors=='') {

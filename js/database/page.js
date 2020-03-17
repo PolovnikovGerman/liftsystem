@@ -14,25 +14,37 @@ function init_page(objid) {
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
         case 'categoryview':
-            init_contentpage('categories');
+            $("#categoryview").show();
+            init_categories_page();
             break;
         case 'itempriceview':
-            init_contentpage('itemprice');
+            $("#itempriceview").show();
+            init_dbprice_view();
             break;
         case 'itemcategoryview':
-            init_contentpage('itemcategory');
+            $("#itemcategoryview").show();
+            init_dbcategory_view();
+            // init_contentpage('itemcategory');
             break;
         case 'itemsequenceview':
-            init_contentpage('itemsequence');
+            // init_contentpage('itemsequence');
+            $("#itemsequenceview").show();
+            init_dbsequence_view();
             break;
         case 'itemmisinfoview':
-            init_contentpage('itemmisinfo');
+            // init_contentpage('itemmisinfo');
+            $("#itemmisinfoview").show();
+            init_misinfo_view();
             break;
         case 'itemprofitview':
-            init_contentpage('itemprofit');
+            // init_contentpage('itemprofit');
+            $("#itemprofitview").show();
+            init_profit_view();
             break;
         case 'itemtemplateview':
-            init_contentpage('itemtemplates');
+            // init_contentpage('itemtemplates');
+            $("#itemtemplateview").show();
+            init_templates_view();
             break;
     }
 }

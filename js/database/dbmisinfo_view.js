@@ -18,7 +18,15 @@ function init_misinfo_view() {
     })
     $("select#vendorselectmisinfo").unbind('change').change(function(){
         search_missinfodata();
-    })
+    });
+    // Change Brand
+    $("#itemmisinfobrandmenu").find("div.left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itemmisinfobrand").val(brand);
+        $("#itemmisinfobrandmenu").find("div.left_tab").removeClass('active');
+        $("#itemmisinfobrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        search_missinfodata();
+    });
 };
 
 /**
@@ -56,6 +64,7 @@ function pageMisInfoCallback(page_index, jq){
     params.push({name:'direction', value:$("#directionmisinfo").val()});
     params.push({name:'search', value:$("#searchmisinfo").val()});
     params.push({name:'vendor_id',value:$("select#vendorselectmisinfo").val()});
+    params.push({name: 'brand', value: $("#itemmisinfobrand").val()});
     $("#loader").css('display','block');
     var url='/database/misinfodat';
     $.post(url,params,function(response){
@@ -109,9 +118,12 @@ function sort_missinfo(fld) {
 }
 
 function search_missinfodata() {
-    var search=$("#searchmisinfo").val();
-    var vend=$("select#vendorselectmisinfo").val();
-    $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
+    var url = '/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: $("#searchmisinfo").val()});
+    params.push({name: 'vendor_id', value: $("select#vendorselectmisinfo").val()});
+    params.push({name: 'brand', value: $("#itemmisinfobrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagemisinfo").val(0);
             $("#totalrecmisinfo").val(response.data.result);

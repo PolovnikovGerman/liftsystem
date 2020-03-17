@@ -23,7 +23,15 @@ function init_profit_view() {
     });
     $("select#dbprofitvendorselect").unbind('change').change(function(){
         search_profitdata();
-    })
+    });
+    // Change Brand
+    $("#itemprofitbrandmenu").find("div.left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itemprofitbrand").val(brand);
+        $("#itemprofitbrandmenu").find("div.left_tab").removeClass('active');
+        $("#itemprofitbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        search_profitdata();
+    });
 };
 
 /**
@@ -62,10 +70,11 @@ function pageDbProfitCallback(page_index){
     params.push({name:'search', value:$("#searchdbprofit").val()});
     params.push({name:'profitprefs', value:$("#dbprofitprofitprefs").val()});
     params.push({name:'vendor_id',value:$("select#dbprofitvendorselect").val()});
+    params.push({name: 'brand', value: $("#itemprofitbrand").val()});
     var url="/database/profitdat";
     $("#curpage").val(page_index);
     $("#loader").css('display','block');
-    $.post(url,params,function(response){
+    $.post(url, params, function(response){
         $("#loader").css('display','none');
         if (response.errors=='') {
             $('#dbprofittabinfo').empty().append(response.data.content);
@@ -115,9 +124,12 @@ function sort_profitdata(fld) {
 }
 
 function search_profitdata() {
-    var search=$("#searchdbprofit").val();
-    var vend=$("select#dbprofitvendorselect").val();
-    $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
+    var url = '/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: $("#searchdbprofit").val()});
+    params.push({name: 'vendor_id', value: $("select#dbprofitvendorselect").val()});
+    params.push({name: 'brand', value: $("#itemprofitbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagedbprofit").val(0);
             $("#totalrecdbprofit").val(response.data.result);
@@ -130,7 +142,12 @@ function search_profitdata() {
 function clear_profitsearch() {
     $("#searchdbprofit").val('');
     $("select#dbprofitvendorselect").val('');
-    $.post('/database/searchcount', {'search':''}, function(response){
+    var url = '/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: ''});
+    params.push({name: 'vendor_id', value: ''});
+    params.push({name: 'brand', value: $("#itemprofitbrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagedbprofit").val(0);
             $("#totalrecdbprofit").val(response.data.result);

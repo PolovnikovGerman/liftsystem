@@ -9,7 +9,7 @@ Class Prices_model extends My_Model
         parent::__construct();
     }
 
-    public function get_item_profitprefs($order,$direc,$limit=0,$offset=0,$search='',$profitpref='',$vendor_id='') {
+    public function get_item_profitprefs($order,$direc,$limit=0,$offset=0,$search='',$profitpref='',$vendor_id='', $brand='ALL') {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_template, i.vendor_name, i.vendor_item_cost');
         $this->db->select('i.price_25, i.price_50, i.price_75, i.price_150');
         $this->db->select('i.price_250, i.price_500, i.price_1000, i.price_2500, i.price_3000, i.price_5000, i.price_10000');
@@ -59,6 +59,9 @@ Class Prices_model extends My_Model
                     $this->db->order_by('green_sum','desc');
                     break;
             }
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('item.brand', $brand);
         }
         $this->db->order_by($order,$direc);
         if ($limit) {

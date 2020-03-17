@@ -87,7 +87,7 @@ Class Otherprices_model extends My_Model
         return $return_prices;
     }
 
-    public function get_compared_prices($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id) {
+    public function get_compared_prices($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $brand) {
         $this->db->select('item.item_id,item.item_number,item.item_name,item.item_template');
         $this->db->select('price_25 as item_price_25, profit_25 as item_profitperc_25, profit_25_class as item_profitclass_25, profit_25_sum as item_profit_25, price_25_class');
         $this->db->select('price_50 as item_price_50, profit_50 as item_profitperc_50, profit_50_class as item_profitclass_50, profit_50_sum as item_profit_50, price_50_class');
@@ -138,6 +138,9 @@ Class Otherprices_model extends My_Model
                     $this->db->order_by('orange_sum','desc');
                     break;
             }
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('item.brand', $brand);
         }
         $this->db->order_by($order_by,$direct);
         if ($limit) {
@@ -265,7 +268,7 @@ Class Otherprices_model extends My_Model
         return $out_array;
     }
 
-    public function get_compared_pricelimit($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $othervend) {
+    public function get_compared_pricelimit($order_by, $direct, $limit, $offset, $search, $compareprefs, $vendor_id, $brand, $othervend) {
         $this->db->select('item.item_id,item.item_number,item.item_name,item.item_template');
         $this->db->select('price_25 as item_price_25, profit_25 as item_profitperc_25, profit_25_class as item_profitclass_25, profit_25_sum as item_profit_25');
         $this->db->select('price_50 as item_price_50, profit_50 as item_profitperc_50, profit_50_class as item_profitclass_50, profit_50_sum as item_profit_50');
@@ -316,6 +319,9 @@ Class Otherprices_model extends My_Model
                     $this->db->order_by('orange_sum','desc');
                     break;
             }
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('item.brand', $brand);
         }
         $this->db->order_by($order_by,$direct);
         if ($limit) {

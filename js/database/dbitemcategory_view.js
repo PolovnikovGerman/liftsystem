@@ -2,6 +2,14 @@
 var maxheight=560;
 function init_dbcategory_view() {
     initDBCategoryPagination();
+    // Change Brand
+    $("#itemcategorybrandmenu").find("div.left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itemcategorybrand").val(brand);
+        $("#itemcategorybrandmenu").find("div.left_tab").removeClass('active');
+        $("#itemcategorybrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        search_dbcategdata();
+    });
 }
 
 /**
@@ -46,7 +54,7 @@ function pageDbCategselectCallback(page_index, jq){
     params.push({name:'direction', value:$("#directiondbcateg").val()});
     params.push({name:'search', value:$("#searchdbcategory").val()});
     params.push({name:'vendor_id', value:$("select#vendordbcateg").val()});
-
+    params.push({name: 'brand', value: $("#itemcategorybrand").val()});
     $("#curpagedbcateg").val(page_index);
     $("#loader").css('display','block');
     var url='/database/categorydat';
@@ -190,28 +198,18 @@ function change_category(item_id, itemcateg_id, item_category, categ_num) {
 }
 
 function search_dbcategdata() {
-    var search=$("#searchdbcategory").val();
-    if (search=='Enter keyword or item #') {
-        search='';
-    }
-    var vend=$("select#vendordbcateg").val();
     var url='/database/searchcount';
-    $.post(url, {'search':search,'vendor_id':vend}, function(response){
-        if (response.errors=='') {
-            if (response.data.result==0) {
-                alert('No search result');
-                $("#searchdbcategory").val('');
-                $("select#vendordbcateg").val('');
-            } else {
-                $("#curpagedbcateg").val(0);
-                $("#totalrecdbcateg").val(response.data.result);
-                initDBCategoryPagination();
-            }
-
+    var params = new Array();
+    params.push({name: 'search', value: $("#searchdbcategory").val()});
+    params.push({name: 'vendor_id', value: $("select#vendordbcateg").val()});
+    params.push({name: 'brand', value: $("#itemcategorybrand").val()});
+    $.post(url, params, function (response) {
+        if (response.errors == '') {
+            $("#curpagedbcateg").val(0);
+            $("#totalrecdbcateg").val(response.data.result);
+            initDBCategoryPagination();
         }
     }, 'json');
-
-
     //
 }
 
@@ -219,7 +217,12 @@ function clearsearch_dbcategory() {
     $("#searchtemplate").val('Enter keyword or item #');
     $("#search").val('');
     $("select#vendordbcateg").val('');
-    $.post('/database/searchcount', {'search':''}, function(response){
+    var url='/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: ''});
+    params.push({name: 'vendor_id', value: ''});
+    params.push({name: 'brand', value: $("#itemcategorybrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagedbcateg").val(0);
             $("#totalrecdbcateg").val(response.data.result);

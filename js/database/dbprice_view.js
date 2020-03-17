@@ -9,6 +9,14 @@ var maroonpopover_template='<div class="popover maroon_background"  role="toolti
 
 function init_dbprice_view() {
     initDBPricePagination();
+    // Change Brand
+    $("#itempricebrandmenu").find("div.left_tab").unbind('click').click(function(){
+        var brand = $(this).data('brand');
+        $("#itempricebrand").val(brand);
+        $("#itempricebrandmenu").find("div.left_tab").removeClass('active');
+        $("#itempricebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        search_pricedata();
+    });
 }
 
 function initDBPricePagination() {
@@ -43,6 +51,7 @@ function prepare_dbpriceparams() {
     params.push({name:'search', value:$.trim($("#searchdbprice").val())});
     params.push({name:'compareprefs', value:$("#compareprefs").val()});
     params.push({name:'vendor_id', value:$("select#vendordbprice").val()});
+    params.push({name: 'brand', value: $("#itempricebrand").val()});
     $("input.pricecomparechk").each(function(){
         var dat=$(this).data('othvendor');
         var name='otherved'+dat;
@@ -218,9 +227,12 @@ function price_sortdata(fld) {
 }
 
 function search_pricedata() {
-    var search=$("#searchdbprice").val();
-    var vend=$("select#vendordbprice").val();
-    $.post('/database/searchcount', {'search':search, 'vendor_id':vend}, function(response){
+    var url = '/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: $("#searchdbprice").val()});
+    params.push({name: 'vendor_id', value: $("select#vendordbprice").val()});
+    params.push({name: 'brand', value: $("#itempricebrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagedbprice").val(0);
             $("#totalrecdbprice").val(response.data.result);
@@ -234,7 +246,12 @@ function search_pricedata() {
 function clear_pricesearch() {
     $("#searchdbprice").val('');
     $("select#vendordbprice").val('');
-    $.post('/database/searchcount', {'search':''}, function(response){
+    var url = '/database/searchcount';
+    var params = new Array();
+    params.push({name: 'search', value: ''});
+    params.push({name: 'vendor_id', value: ''});
+    params.push({name: 'brand', value: $("#itempricebrand").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("#curpagedbprice").val(0);
             $("#totalrecdbprice").val(response.data.result);

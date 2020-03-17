@@ -6,12 +6,28 @@
             <?php } ?>
         </div>
     </div>
-    <div class="maincontent_view">
-        <?php foreach ($menu as $item) { ?>
-            <div class="dbcontentarea" id="<?=str_replace('#','', $item['item_link'])?>" style="display: none;"></div>
-        <?php } ?>
-        <div class="dbcontentarea" id="itemdetailsview" style="display: none;"></div>
-    </div>
+    <?php if (isset($itempriceview)) { ?>
+        <div class="dbcontentarea" id="itempriceview" style="display: none;"><?=$itempriceview?></div>
+    <?php } ?>
+    <?php if (isset($itemcategoryview)) { ?>
+        <div class="dbcontentarea" id="itemcategoryview" style="display: none;"><?=$itemcategoryview?></div>
+    <?php } ?>
+    <?php if (isset($itemsequenceview)) { ?>
+        <div class="dbcontentarea" id="itemsequenceview" style="display: none;"><?=$itemsequenceview?></div>
+    <?php } ?>
+    <?php if (isset($itemmisinfoview)) { ?>
+        <div class="dbcontentarea" id="itemmisinfoview" style="display: none;"><?=$itemmisinfoview?></div>
+    <?php } ?>
+    <?php if (isset($itemprofitview)) { ?>
+        <div class="dbcontentarea" id="itemprofitview" style="display: none;"><?=$itemprofitview?></div>
+    <?php } ?>
+    <?php if (isset($itemtemplateview)) { ?>
+        <div class="dbcontentarea" id="itemtemplateview" style="display: none;"><?=$itemtemplateview?></div>
+    <?php } ?>
+    <?php if (isset($categoryview)) { ?>
+        <div class="dbcontentarea" id="categoryview" style="display: none;"><?=$categoryview?></div>
+    <?php } ?>
+
 </div>
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">

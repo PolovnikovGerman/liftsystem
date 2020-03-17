@@ -82,6 +82,7 @@ select.dbseqvendorselect.activevendor {
     overflow-y: auto;
     width: 1001px;
     margin-left: 10px;
+    margin-bottom: 15px;
 }
 .itemsequence_row {
     float: left;

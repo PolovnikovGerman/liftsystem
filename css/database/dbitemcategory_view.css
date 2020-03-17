@@ -101,9 +101,10 @@
 .table-categories {
     clear: both;
     width: 995px;
-    max-height: 539px;
-    overflow-y: auto;
+    max-height: 602px;
+    overflow-y: auto!important;
     margin-left: 13px;
+    margin-bottom: 15px;
 }
 .emptycategorydata {
     width: 100%;
