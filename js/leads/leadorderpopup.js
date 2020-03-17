@@ -22,7 +22,6 @@ function navigation_init() {
         $("#artModal").modal('hide');
         if ($("input#root_call_page").length>0) {
             var callpage=$("input#root_call_page").val();
-            console.log('Call Page '+callpage+'!');
             if (callpage=='artorderlist') {
                 $("#orderlist").show();
                 init_orders();
@@ -33,6 +32,8 @@ function navigation_init() {
             } else if (callpage=='orderslist') {
                 // Orders list
                 search_leadorders();
+            } else if (callpage=='profitlist') {
+                search_profit_data();
             }
         }
     })
@@ -289,15 +290,15 @@ function init_onlineleadorder_edit() {
         } else if (callpage=='orderslist') {
             // Orders list
             search_leadorders();
+        } else if (callpage=='profitlist') {
+            search_profit_data();
+        } else if (callpage=='paymonitor') {
+            search_paymonitor();
         }
         if (callpage=='finance') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
                 init_profit_orders();
-            } else if (callpage=='paymonitor') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                init_paymonitor();
             } else if (callpage=='art_order') {
                 disablePopup('leadorderdetailspopup');           
                 $("#pop_content").empty();
@@ -842,7 +843,7 @@ function init_leadorder_artmanage() {
                 }
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal('show');
-                init_artlogoupload();
+                init_imagelogoupload();
                 $("div.artlogouploadsave_data").click(function(){
                     save_newleadlogoartloc(loctype);
                 });
@@ -3967,4 +3968,38 @@ function show_chargeattempts(order) {
 //    },'json');
     
 
+}
+
+function init_imagelogoupload() {
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('file-uploader'),
+        allowedExtensions: ['jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png'],
+        action: '/artproofrequest/art_redrawattach',
+        multiple: false,
+        debug: false,
+        uploadButtonText:'',
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success) {
+                var url="/artproofrequest/art_newartupload";
+                $("ul.qq-upload-list").css('display','none');
+                $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                    if (response.errors=='') {
+                        $("#orderattachlists").empty().html(response.data.content);
+                        $(".qq-uploader").hide();
+                        $("div.artlogouploadsave_data").show();
+                        $("div.delvectofile").click(function(){
+                            $("#orderattachlists").empty();
+                            $(".qq-uploader").show();
+                            $("div.artlogouploadsave_data").hide();
+                        })
+                    } else {
+                        alert(response.errors);
+                        if(response.data.url !== undefined) {
+                            window.location.href=response.data.url;
+                        }
+                    }
+                }, 'json');
+            }
+        }
+    });
 }

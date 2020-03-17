@@ -393,6 +393,19 @@ class Orders extends MY_Controller
         }
     }
 
+    public function order_brand() {
+        if ($this->isAjax()) {
+            $brands =[
+                ['brand' => 'SB', 'label' => 'stressball.com only'],
+                ['brand' => 'BT', 'label' => 'bluetrack only'],
+            ];
+            $mdata = [
+                'content' => $this->load->view('leadorder/order_brands_view',['brands' => $brands], TRUE),
+            ];
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
 
     private function online_imprintval($typeimprint) {
         $out='';

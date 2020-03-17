@@ -933,10 +933,11 @@ Class Artlead_model extends MY_Model
     }
 
     public function save_artlocations($locations, $artwork_id, $order_items) {
-        $path_sh=$this->config->item('artwork_logo');
-        $path_fl=$this->config->item('artwork_logo_relative');
+        $path_fl=$this->config->item('artwork_logo');
+        $path_sh=$this->config->item('artwork_logo_relative');
         $preload_path_fl=$this->config->item('upload_path_preload');
         $preload_path_sh=$this->config->item('pathpreload');
+        createPath($path_sh);
         $this->load->model('artwork_model');
         foreach ($locations as $loc) {
             $location=array();

@@ -8,7 +8,10 @@ function init_ordersviewdata() {
     });
     $('select#leadorderperpage').unbind('change').change(function(){
         search_leadorders();
-    })
+    });
+    $("div.lead_neworder").unbind('click').click(function(){
+        show_brand_select();
+    });
     // $("div.lead_neworder").unbind('click').click(function(){
     //     edit_leadorder(0);
     // });
@@ -170,40 +173,46 @@ function edit_leadorder(order) {
             show_error(response);
         }
     },'json');
-
-
 }
-// function edit_leadorder(order) {
-//     var url="/orders/leadorder_edit";
-//     $.post(url, {'order_id': order}, function(response){
-//         if (response.errors=='') {
-//             show_popup('leadorderdetailspopup');
-//             $("#pop_content").empty().html(response.data.content);
-//             $("#popupContactClose").unbind('click').click(function(){
-//                 clearTimeout(timerId);
-//                 // Check - may be we close edit content
-//                 if ($("input#locrecid").length>0) {
-//                     // Clean locked record
-//                     var locrecid=$("input#locrecid").val();
-//                     var url="/leadorder/cleanlockedorder";
-//                     var params=new Array();
-//                     params.push({name: 'locrecid', value: locrecid});
-//                     $.post(url, params, function(response){
-//                     },'json');
-//                 }
-//                 $("#pop_content").empty();
-//                 disablePopup();
-//                 var curpage=$("input#leadorderpage").val();
-//                 pageLeadorderCallback(curpage);
-//             });
-//             if (parseInt(order)===0) {
-//                 init_onlineleadorder_edit();
-//             } else {
-//                 timerId = setTimeout('chklockedorder()', timeout);
-//                 navigation_init();
-//             }
-//         } else {
-//             show_error(response);
-//         }
-//     },'json');
-// }
+
+// Ask system before create new order
+function show_brand_select() {
+    var url = '/orders/order_brand';
+    $.post(url,{}, function (response) {
+        if (response.errors=='') {
+            $("#pageModalLabel").empty().html('Choose Brand for New Order');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','380px');
+            $("#pageModal").modal('show');
+            $("button#savebrand").unbind('click').click(function () {
+                var brand = $("#neworderbrand").val();
+                $("#pageModal").modal('hide');
+                add_leadorder(brand);
+            })
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function add_leadorder(brand) {
+    var callpage = 'orderslist';
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: 0});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 1});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").modal('show');
+            init_onlineleadorder_edit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
