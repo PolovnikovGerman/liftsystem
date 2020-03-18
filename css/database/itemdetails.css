@@ -1597,3 +1597,87 @@ input.imprintlocationedit {
     margin-left: 336px;
     width: 120px;
 }
+/* Item Out of Stock */
+.outofstockarea {
+    position: absolute;
+    left: 404px;
+    top: 158px;
+    float: left;
+    width: 217px;
+}
+.outofstockarea > .itemoutstock_label {
+    float: left;
+    width: 74px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.outofstockarea > .itemoutstock_value {
+    float: left;
+    width: 25px;
+    height: 16px;
+    line-height: 16px;
+}
+.outofstockarea > .itemoutstock_link {
+    float: left;
+    color: #0000FF;
+    font-size: 12px;
+    font-weight: bold;
+    width: 75px;
+    cursor: pointer;
+}
+/* Outofstock popup */
+.viewpreloadbanner {
+    clear: both;
+    float: left;
+    width: 522px;
+    height: 39px;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+.viewpreloadbanner img {
+    width: 100%;
+}
+.manegebannerupload {
+    clear: both;
+    float: left;
+    width: 522px;
+    margin-bottom: 12px;
+    margin-left: 15px;
+}
+.managelink {
+    clear: both;
+    float: left;
+    width: 518px;
+    margin-left: 11px;
+    margin-bottom: 12px;
+}
+.managelink > .outstocklnklabel {
+    float: left;
+    width: 40px;
+    heigth: 22px;
+    line-height: 22px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.managelink > .outstocklnkvalue {
+    float: left;
+    heigth: 22px;
+    line-height: 22px;
+    width: 470px;
+}
+.managelink > .outstocklnkvalue > input {
+    border: 1px solid #000000;
+    height: 20px;
+    padding-left: 3px;
+    width: 462px;
+    font-size: 12px;
+}
+.savebannercontent {
+    clear: both;
+    float: left;
+    margin-left: 444px;
+    width: 120px;
+}

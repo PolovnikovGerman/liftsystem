@@ -671,7 +671,14 @@ class Database extends MY_Controller
             $error = 'Empty Item';
             $postdata = $this->input->post();
             $item_id = ifset($postdata,'item_id',0);
+            $brand = ifset($postdata,'brand','ALL');
             if (!empty($item_id)) {
+                $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $mdata['menu']=$this->load->view('page/left_menu_view', $left_options, TRUE);
                 $res = $this->_prepare_itemdetails($item_id, 'view');
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -959,7 +966,6 @@ class Database extends MY_Controller
             $data['header']=$this->load->view('itemdetails/detailhead_view',$headoptions,TRUE);
             if ($mode=='edit') {
                 $session_data['commons']=$this->items_model->get_commonterms_item($item_id,10);
-                firephplog($session_data['commons'],'CommonTerm');
             }
             // Key Info
             $info_options = [
@@ -976,19 +982,12 @@ class Database extends MY_Controller
             }
             /* Video View */
             $item_dat['videooption']='';
-//            $videodat=$this->itemimages_model->get_item_media($item_id,'VIDEO');
-//            if (isset($videodat['itemmedia_url'])) {
-//                $video=$this->load->view('itemdetails/videodata_view',array('video'=>$videodat,'edit'=>0,'title'=>$item['item_name']),TRUE);
-//            } else {
-//                $video=$this->load->view('itemdetails/videoempty_view',array('edit'=>0),TRUE);
-//            }
-//            $audiodat=$this->itemimages_model->get_item_media($item_id,'AUDIO');
-//            if (isset($audiodat['itemmedia_url'])) {
-//                $audio=$this->load->view('itemdetails/audiodata_view',array('audio'=>$audiodat,'edit'=>0,'title'=>$item['item_name']),TRUE);
-//            } else {
-//                $audio=$this->load->view('itemdetails/audioempty_view',array('edit'=>0,),TRUE);
-//            }
-//            $faces=$this->load->view('itemdetails/faces_view',array('faces'=>$item['faces'],'edit'=>0),TRUE);
+            if ($mode=='edit') {
+                $data['outofstock'] = $this->load->view('itemdetails/outofstock_edit', $item, TRUE);
+            } else {
+                $data['outofstock'] = $this->load->view('itemdetails/outofstock_view', $item, TRUE);
+            }
+
 
             $img_options=array(
                 'images'=>$img_display,
@@ -1211,11 +1210,6 @@ class Database extends MY_Controller
             }
             $data['footer']=$this->load->view('itemdetails/itemdetfooter_view',$footer_options,TRUE);
             $content=$this->load->view('itemdetails/details_view',$data,TRUE);
-//            if ($mode=='view') {
-//                $content=$this->load->view('itemdetails/details_view',$data,TRUE);
-//            } else {
-//                $content=$this->load->view('itemdetails/details_edit',$data,TRUE);
-//            }
             if ($mode=='edit') {
                 $session_data['deleted']=[];
                 usersession($session_id, $session_data);

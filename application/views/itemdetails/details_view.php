@@ -3,6 +3,7 @@
     <div class="heading"><?= $header ?></div>
     <div class="closeitemdetails">&nbsp;</div>
     <div class="keyinfo"><?= $keyinfo ?></div>
+    <div class="outofstockarea"><?=$outofstock?></div>
     <div class="change_picture_order">Change Pictures Order</div>
     <div class="images"><?=$images?></div>
     <div class="vectorfile"><?= $vectorfiledata ?></div>

@@ -159,8 +159,8 @@ function activate_edit(item) {
     var url='/database/edit_item';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".dbcontentarea").hide();
-            $("#itemdetailsview").show().empty().html(response.data.content);
+            // $(".dbcontentarea").hide();
+            $("#itemdetailsview").find('div.right_maincontent').empty().html(response.data.content);
             init_itemdetails_edit();
         } else {
             show_error(response);
@@ -552,6 +552,92 @@ function init_itemdetails_edit() {
             }
         }, 'json');
     });
+    init_outstock_content();
+}
+
+function init_outstock_content() {
+    $("#outstock").unbind('change').change(function () {
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval=1;
+        }
+        var params=new Array();
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: 'outstock'});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'idx', value: 0});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newval==0) {
+                    $("div.itemoutstock_link").hide();
+                } else {
+                    $("div.itemoutstock_link").show();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("div.itemoutstock_link").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/itemoutstock";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('Out of Stock Banner and Link');
+                $("#editModal").find('.modal-dialog').css('width','571px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                $("#editModal").modal('show');
+                init_outstockbanner_upload();
+                $("div.savebannercontent").find('img').unbind('click').click(function () {
+                    save_outsockdetails();
+                })
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+}
+
+function init_outstockbanner_upload() {
+    var temp= '<div class="qq-uploader">' +
+        '<div class="custom_upload"><span></span></div>' +
+        '</div>';
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('uploadbannersrc'),
+        action: '/utils/save_itemimg',
+        /* template: temp,            */
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+        onComplete: function(id, fileName, responseJSON){
+            $("li.qq-upload-success").hide();
+            // $('.qq-uploader').fadeOut('100', function(){
+            // $('div#deleteviewbuttons').fadeIn('200');
+            // });
+            $('input#newbannersrc').val(responseJSON.filename);
+            $("div.viewpreloadbanner").empty().html("<img src='"+responseJSON.filename+"' />");
+            $("div.saveimgupload").show();
+        }
+    });
+}
+
+function save_outsockdetails() {
+    var params=new Array();
+    params.push({name: 'outstock_banner', value: $("#newbannersrc").val()});
+    params.push({name: 'outstock_link', value: $("#outstocklnk").val()});
+    params.push({name: 'session_id', value: $("#session_id").val()});
+    var url="/itemdetails/itemoutstock_save";
+    $.post(url, params, function (resposnse) {
+        if (resposnse.errors=='') {
+            $("#editModal").modal('hide');
+        } else {
+            show_error(resposnse);
+        }
+    },'json');
 }
 
 function init_specialcheck_manage() {

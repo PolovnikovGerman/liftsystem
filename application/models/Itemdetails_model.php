@@ -544,6 +544,27 @@ Class Itemdetails_model extends My_Model
         return $out;
     }
 
+    public function save_outstockdetails($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Empty Banner'];
+        if (isset($postdata['outstock_banner'])) {
+            $item = $session_data['item'];
+            $item['outstock_banner'] = $postdata['outstock_banner'];
+            if (isset($postdata['outstock_link']) && !empty($postdata['outstock_link'])) {
+                $out['msg'] = 'Link not correct';
+                if (valid_url($postdata['outstock_link'])) {
+                    $item['outstock_link']=$postdata['outstock_link'];
+                    $out['result']=$this->success_result;
+                }
+            } else {
+                $item['outstock_link']='';
+                $out['result']=$this->success_result;
+            }
+            $session_data['item']=$item;
+        }
+        usersession($session_id, $session_data);
+        return $out;
+    }
+
     // Save item data
     public function save_itemdata($session_data, $session_id, $user_id, $user_role) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
@@ -564,6 +585,26 @@ Class Itemdetails_model extends My_Model
             $out['msg']=$vendres['msg'];
             if ($vendres['result']==$this->success_result) {
                 $item['vendor_item_id']=$vendres['vendor_item_id'];
+                if ($item['outstock']==0) {
+                    $item['outstock_banner']=$item['outstock_link']=NULL;
+                } else {
+                    if (!empty($item['outstock_banner'])) {
+                        $pathsrc=$this->config->item('upload_path_preload');
+                        $pathsrc_sh=$this->config->item('pathpreload');
+                        $imgpath = $this->config->item('itemimages');
+                        if (stripos($item['outstock_banner'], $pathsrc_sh)!==FALSE) {
+                            $filedet=extract_filename($item['outstock_banner']);
+                            $newname='banner_'.time().'.'.$filedet['ext'];
+                            $srcbanner = str_replace($pathsrc_sh, $pathsrc, $item['outstock_banner']);
+                            $res = @copy($srcbanner, $imgpath.$newname);
+                            if (file_exists($imgpath.$newname)) {
+                                $item['outstock_banner']=$this->config->item('itemimages_relative').$newname;
+                            } else {
+                                $item['outstock_banner']=NULL;
+                            }
+                        }
+                    }
+                }
                 // Save item value
                 $res = $this->_save_iteminfo($item, $user_id);
                 $out['msg']=$res['msg'];
@@ -701,6 +742,9 @@ Class Itemdetails_model extends My_Model
         if ($detal['item_source']==$this->Inventory_Source && empty($detal['printshop_inventory_id'])) {
             $out_mgs.='Choose Inventory Item'.PHP_EOL;
         }
+        if ($detal['outstock']==1 && empty($detal['outstock_banner'])) {
+            $out_mgs.='Empty Out of Stock Banner'.PHP_EOL;
+        }
         if (!empty($out_mgs)) {
             $out['result']=$this->error_result;
             $out['msg']=$out_mgs;
@@ -753,6 +797,9 @@ Class Itemdetails_model extends My_Model
         $this->db->set('item_sale', $item['item_sale']);
         $this->db->set('printlocat_example_img', $item['printlocat_example_img']);
         $this->db->set('itemcolor_example_img', $item['itemcolor_example_img']);
+        $this->db->set('outstock', $item['outstock']);
+        $this->db->set('outstock_banner', $item['outstock_banner']);
+        $this->db->set('outstock_link', $item['outstock_link']);
         // $this->db->set('shipping_info', $item['shipping_info']);
         if ($item['item_id']==0) {
             $this->db->set('create_user', $user_id);

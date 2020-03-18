@@ -27,7 +27,10 @@
     <?php if (isset($categoryview)) { ?>
         <div class="dbcontentarea" id="categoryview" style="display: none;"><?=$categoryview?></div>
     <?php } ?>
-
+    <div class="dbcontentarea" id="itemdetailsview" style="display: none;">
+        <div class="left_maincontent"></div>
+        <div class="right_maincontent"></div>
+    </div>
 </div>
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">

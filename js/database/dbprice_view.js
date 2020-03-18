@@ -201,7 +201,8 @@ function pricetablecontent_init() {
     });
     $('.pricetable-row').find(".editcoll").unbind('click').click(function(){
         var item_id=$(this).data('item');
-        view_itemdetails(item_id);
+        var brand = $("#itempricebrand").val();
+        view_itemdetails(item_id, brand);
     })
 
 }

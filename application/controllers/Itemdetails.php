@@ -534,5 +534,42 @@ class Itemdetails extends MY_Controller
          }
          show_404();
     }
+    // Out of stock
+    public function itemoutstock() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error=$this->session_error;
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $item = $session_data['item'];
+                $mdata['content']=$this->load->view('itemdetails/outofstock_popup_view', $item, TRUE);
+                $error = '';
+                usersession($session_id, $session_data);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+    // Out of stock save
+    public function itemoutstock_save() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata = [];
+             $error=$this->session_error;
+             $session_id = ifset($postdata, 'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->save_outstockdetails($postdata, $session_data, $session_id);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                 }
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+    }
 
 }
