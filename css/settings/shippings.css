@@ -1,0 +1,230 @@
+.dbcontent {
+    clear: both;
+    float: left;
+    width: 980px;
+    margin-top: 10px;
+    margin-left: 15px;
+    /* overflow-y: auto; */
+}
+.othershiparea {
+    width: 480px;
+    margin-bottom: 20px;
+}
+.shippping-service-title {
+    clear: both;
+    float: left;
+    margin-top : 15px;
+    margin-left: 15px;
+    height: 28px;
+    border-bottom: 2px solid #000000;
+    font-size: 18px;
+    font-weight: bold;
+    color : #000000;
+    width: 450px;
+    margin-bottom: 10px;
+}
+.zone-form {
+    clear: both;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    float: left;
+    width: 340px;
+}
+.shipping-place {
+    clear: both;
+    font-size: 16px;
+    color : #0505bb;
+    font-weight: bold;
+    margin-bottom : 5px;
+}
+.shipping-service-topform {
+    background: url("/img/others/shipping_service_header.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    margin-bottom: 5px;
+    /* padding-top: 3px; */
+    width: 318px;
+}
+.shipping-service-topform > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 14px;
+    color: #000000;
+}
+.topform-service {
+    clear: both;
+    width: 194px;
+    text-align: center;
+    float: left;
+}
+.topform-percent {
+    width: 28px;
+    text-align: center;
+    float: left;
+}
+.dimension-on {
+    width: 90px;
+    text-align: center;
+    float: left;
+
+}
+.shipping-form-row {
+    clear: both;
+    float: left;
+    width: 298px;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+.shipping-form-service {
+    clear:both;
+    float: left;
+    padding-top: 3px;
+    padding-right: 3px;
+    width: 185px;
+    text-align: right;
+}
+.shipping-form-percent {
+    float: left;
+    width: 40px;
+    text-align: left;
+}
+.shipping-form-percent input {
+    background-color: #f5f3f3;
+    border : 1px solid #000;
+    width: 43px;
+}
+.shipping-form-dimension {
+    float: left;
+    width: 70px;
+    text-align: center;
+}
+.activate_btn {
+    background-image: url("/img/others/activate.png");
+    clear: both;
+    float: left;
+    height: 44px;
+    margin-left: 350px;
+    width: 131px;
+}
+.saveshipping {
+    background-image: url("/img/others/saveediting.png");
+    clear: both;
+    float: left;
+    height: 44px;
+    width: 131px;
+    margin-left: 350px;
+}
+.saveshipping:hover, .activate_btn:hover {
+}
+.activate-text {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align:center;
+    /* padding-top: 12px; */
+    cursor: pointer;
+    width: 131px;
+    line-height: 40px!important;
+}
+/*.activate-text a {
+    color: #ffffff;
+}*/
+.shipcalclogarea {
+    float: left;
+    margin-left: 13px;
+    width: 478px;
+}
+.shipcalclogtitle {
+    clear: both;
+    float: left;
+    margin-top : 15px;
+    margin-left: 15px;
+    height: 28px;
+    border-bottom: 2px solid #000000;
+    font-size: 18px;
+    font-weight: bold;
+    color : #000000;
+    width: 450px;
+    margin-bottom: 10px;
+}
+.shipcalclogtitle span {
+    float: left;
+    width: 211px;
+}
+.shipcalclogperiod {
+    float: left;
+    width: 230px;
+}
+select.shiplogmonth {
+    float: left;
+    width: 120px;
+    font-size: 13.33px;
+    font-weight: 400;
+}
+select.shiplogyear {
+    float: left;
+    margin-left: 10px;
+    width: 90px;
+    font-size: 13.33px;
+    font-weight: 400;
+}
+.shipcalclogcalend {
+    clear: both;
+    float: left;
+    width: 490px;
+}
+.shiprepweekdata {
+    border-left: 1px solid #000;
+    border-bottom: 1px solid #000;
+    clear: both;
+    float: left;
+    width: 449px;
+}
+.shiprepweekdata:first-child {
+    border-top: 1px solid #000;
+}
+.shiprepdaycell {
+    border-right:  1px solid #000;
+    float: left;
+    width: 64px;
+    height: 80px;
+}
+.shiprepdaycell.active:hover {
+    cursor: pointer;
+}
+.shiprepdaycell.weekend {
+    background-color: #cfcfcf;
+}
+.shiprepdaycelltitle {
+    float: left;
+    width: 64px;
+    margin-top: 3px;
+    text-align: center;
+}
+.shiprepdaycellcontent {
+    clear: both;
+    color: #0000FF;
+    font-size: 12px;
+    float: left;
+    line-height: 63px;
+    text-align: center;
+    width: 100%;
+}
+.shipdetailarea {
+    clear: both;
+    float: left;
+    font-size: 11px;
+    background: none #FFF;
+    padding: 10px;
+    width: 809px;
+}
+.shipdetailarea table {
+    border: 1px solid;
+    width: 100%;
+}
+.shipdetailarea table thead {
+    text-align: center;
+}
+.shiprepdaycell_tooltip {
+    width: 820px;
+    max-width: 820px!important;
+}
