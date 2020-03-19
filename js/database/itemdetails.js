@@ -482,27 +482,67 @@ function init_itemdetails_edit() {
             }
         },'json');
     });
-    $("#vendor_item_number").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: "/itemdetails/search_vendor_item",
-                dataType: "json",
-                data: {
-                    term: request.term,
-                    vendor_id : $("#vendor_item_vendor").val()
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
+    /* Autocomplete for Vendor Data */
+    $("#vendor_name").autocompleter({
+        source:'/itemdetails/search_vendor',
         minLength: 2,
-        select: function( event, ui ) {
-            $("#vendor_item_id").val(ui.item.id);
+        combine: function(params) {
+            return {
+                q: params.query
+            };
         },
+        callback: function(value, index, object) {
+            if (object.id) {
+                $("#vendor_item_vendor").val(object.id);
+            }
+        }
     });
+
+    $("#vendor_name").blur(function(){
+        var vendor_name=$("#vendor_name").val();
+        params = new Array();
+        params.push({name: 'vendor_name', value :vendor_name});
+        params.push({name: 'session_id', value: $("#session_id").val()});
+        $.post('/itemdetails/vendor_check',params,function(response){
+            if (response.errors=='') {
+                $("#vendor_item_vendor").val(response.data.vendor_id);
+                if (parseInt(response.data.showvendor)==1) {
+                    $("#vendor_name").val(response.data.vendor_name);
+                    $("#vendor_item_number").val(response.data.vendor_item_number);
+                    $("#vendor_item_number").attr('readonly',false);
+                    $("input.vendorinputvalues[data-fld='vendor_item_zipcode']").val(response.data.vendor_item_zipcode);
+                    $("textarea.vendorinputvalues[data-fld='vendor_item_notes']").val(response.data.vendor_item_notes);
+                    $(".vendorprices").empty().html(response.data.vendorprices);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+        // $.post('/itemdetails/chk_vendor',{'name':vendor_name},function(data){
+        //     $("#vendor_item_vendor").val(data.vendor_id);
+        // },'json');
+    });
+
+    $("#vendor_item_number").autocompleter({
+        source: '/itemdetails/search_vendor_item',
+        minLength: 3,
+        combine: function(params) {
+            var vendor_id = $('#vendor_item_vendor').val();
+            return {
+                q: params.query,
+                vendor_id: vendor_id
+            };
+        },
+        callback: function(value, index, object) {
+            if (object.id) {
+                $("#vendor_item_id").val(object.id);
+            }
+        }
+    });
+
     $("#vendor_item_number").blur(function(){
-        /* Check Item Number */
+        // Check Item Number
         var vendor_it_number=$("#vendor_item_number").val();
         var params = new Array();
         params.push({name: 'number', value :vendor_it_number});
@@ -529,7 +569,7 @@ function init_itemdetails_edit() {
 
                 // $("#vendor_name").val(response.data.vendor_name);
                 // if (response.data.vendor_item_vendor=='') {
-                /* New Vendor - open for edit */
+                // New Vendor - open for edit
                 // $("#vendor_name").attr('readonly',false);
                 // }
             } else {
@@ -537,6 +577,7 @@ function init_itemdetails_edit() {
             }
         },'json');
     });
+
     $(".vendorinputvalues").unbind('change').change(function() {
         var params = new Array();
         params.push({name: 'session_id', value: $("#session_id").val()});

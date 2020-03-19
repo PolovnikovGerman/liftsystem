@@ -485,6 +485,7 @@ Class Itemdetails_model extends My_Model
     public function check_vendor_item($postdata, $session_data, $session_id) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
         $vendor_item_number = ifset($postdata,'number','');
+        $this->load->model('vendors_model');
         if (empty($vendor_item_number)) {
             $data=[
                 'vendor_item_id'=>'',
@@ -501,7 +502,6 @@ Class Itemdetails_model extends My_Model
             ];
             $vendor_prices=$this->vendors_model->newitem_vendorprices();
         } else {
-            $this->load->model('vendors_model');
             $res = $this->vendors_model->chk_vendor_item($vendor_item_number);
             if (ifset($res,'vendor_item_id',0)==0) {
                 $data=[
@@ -541,6 +541,96 @@ Class Itemdetails_model extends My_Model
         $session_data['vendor_prices']=$vendor_prices;
         $out['vendor_prices']=$vendor_prices;
         usersession($session_id, $session_data);
+        return $out;
+    }
+
+    public function check_vendor($postdata, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $vendor_name = ifset($postdata,'vendor_name','');
+        $vendordat = $session_data['vendor'];
+
+        $this->load->model('vendors_model');
+        if (empty($vendor_name)) {
+            $vendordat=[
+                'vendor_item_id'=>'',
+                'vendor_item_vendor'=>'',
+                'vendor_item_number'=>'',
+                'vendor_item_name'=>'',
+                'vendor_item_blankcost'=>'',
+                'vendor_item_cost'=>'',
+                'vendor_item_exprint'=>'',
+                'vendor_item_setup'=>'',
+                'vendor_item_notes'=>'',
+                'vendor_item_zipcode'=>'',
+                'printshop_item_id'=>'',
+                'vendor_name'=>'',
+                'vendor_zipcode'=>'',
+            ];
+            $session_data['vendor']=$vendordat;
+            $session_data['vendor_prices']=$this->vendors_model->newitem_vendorprices();
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+            $out['newvendor']=1;
+        } else {
+            // Get new ID
+            $this->db->select('vendor_id, vendor_name, vendor_zipcode');
+            $this->db->from('vendors');
+            $this->db->where('vendor_name', $vendor_name);
+            $chkres = $this->db->get()->result_array();
+            if (count($chkres)>1) {
+                $out['msg']='Non Unique Vendor name';
+            } elseif (count($chkres)==1) {
+                if ($chkres[0]['vendor_id']!==$vendordat['vendor_item_vendor']) {
+                    // New Vendor
+                    $vendordat=[
+                        'vendor_item_id'=>'',
+                        'vendor_item_vendor'=>$chkres[0]['vendor_id'],
+                        'vendor_item_number'=>'',
+                        'vendor_item_name'=>'',
+                        'vendor_item_blankcost'=>'',
+                        'vendor_item_cost'=>'',
+                        'vendor_item_exprint'=>'',
+                        'vendor_item_setup'=>'',
+                        'vendor_item_notes'=>'',
+                        'vendor_item_zipcode'=>$chkres[0]['vendor_zipcode'],
+                        'printshop_item_id'=>'',
+                        'vendor_name'=>$chkres[0]['vendor_name'],
+                        'vendor_zipcode'=>'',
+                    ];
+                    $session_data['vendor']=$vendordat;
+                    $session_data['vendor_prices']=$this->vendors_model->newitem_vendorprices();
+                    $out['newvendor']=1;
+                    $out['result']=$this->success_result;
+                    usersession($session_id, $session_data);
+                } else {
+                    $out['newvendor']=0;
+                    $out['result']=$this->success_result;
+                    usersession($session_id, $session_data);
+                }
+            } else {
+                // New Vendor
+                $vendordat=[
+                    'vendor_item_id'=>'',
+                    'vendor_item_vendor'=>-1,
+                    'vendor_item_number'=>'',
+                    'vendor_item_name'=>'',
+                    'vendor_item_blankcost'=>'',
+                    'vendor_item_cost'=>'',
+                    'vendor_item_exprint'=>'',
+                    'vendor_item_setup'=>'',
+                    'vendor_item_notes'=>'',
+                    'vendor_item_zipcode'=>'',
+                    'printshop_item_id'=>'',
+                    'vendor_name'=>$vendor_name,
+                    'vendor_zipcode'=>'',
+                ];
+                $session_data['vendor']=$vendordat;
+                $session_data['vendor_prices']=$this->vendors_model->newitem_vendorprices();
+                $out['newvendor']=1;
+                $out['result']=$this->success_result;
+                usersession($session_id, $session_data);
+            }
+        }
         return $out;
     }
 

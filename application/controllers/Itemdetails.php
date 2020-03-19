@@ -465,8 +465,54 @@ class Itemdetails extends MY_Controller
         }
     }
 
+    public function search_vendor() {
+        $vend_name=$this->input->get('q');
+        $this->load->model('vendors_model');
+        $get_dat=$this->vendors_model->search_vendors($vend_name);
+        echo json_encode($get_dat);
+    }
+
+    public function vendor_check()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = $this->session_error;
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('itemdetails_model');
+                $res = $this->itemdetails_model->check_vendor($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['showvendor']=$res['newvendor'];
+                    $session_data = usersession($session_id);
+                    $vendor = $session_data['vendor'];
+                    $mdata['vendor_id']=$vendor['vendor_item_vendor'];
+                    if ($res['newvendor']==1) {
+                        $vend_options=[
+                            'vendor'=>$vendor,
+                            'vendprice'=>$session_data['vendor_prices'],
+                            'mode' => 'edit',
+                        ];
+                        $mdata['vendorprices']=$this->load->view('itemdetails/vendorpriceedit_view',$vend_options,TRUE);
+                        $mdata['vendor_item_number']=$vendor['vendor_item_number'];
+                        $mdata['vendor_item_name']=$vendor['vendor_item_name'];
+                        $mdata['vendor_item_cost']=$vendor['vendor_item_cost'];
+                        $mdata['vendor_item_exprint']=$vendor['vendor_item_exprint'];
+                        $mdata['vendor_item_setup']=$vendor['vendor_item_setup'];
+                        $mdata['vendor_item_notes']=$vendor['vendor_item_notes'];
+                        $mdata['vendor_name']=$vendor['vendor_name'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     public function search_vendor_item() {
-        $vend_it_num=$this->input->get('term');
+        $vend_it_num=$this->input->get('q');
         $vendor_id=$this->input->get('vendor_id');
         // $vendor_id='1';
         // $vend_it_num = $this->input->get('query');
