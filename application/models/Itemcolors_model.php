@@ -10,15 +10,26 @@ class Itemcolors_model extends My_Model
         parent::__construct();
     }
 
+    public function get_colors_item($item_id, $edit=0) {
+        $this->db->select('ci.*');
+        $this->db->from('sb_item_colors ci');
+        $this->db->where('ci.item_color_itemid',$item_id);
+        $result = $this->db->get()->result_array();
+        if ($edit==0) {
+            return $result;
+        } else {
+            $out_colors=array();
+            for ($i=0;$i<$this->config->item('item_colors');$i++) {
+                if (isset ($result[$i]['item_color_id'])) {
+                    $out_colors[$i]=array('item_color_id'=>$result[$i]['item_color_id'],'item_color'=>$result[$i]['item_color']);
+                } else {
+                    $out_colors[$i]=array('item_color_id'=>($i)*(-1),'item_color'=>'');
+                }
+            }
+            return $out_colors;
+        }
+    }
 
-//    function get_colors_item($item_id) {
-//        $this->db->select('ci.*');
-//        $this->db->from('sb_item_colors ci');
-//        $this->db->where('ci.item_color_itemid',$item_id);
-//        $result = $this->db->get()->result_array();
-//        return $result;
-//    }
-//
 //    function get_editcolors_item($item_id,$limit) {
 //        $this->db->select('ci.*');
 //        $this->db->from('sb_item_colors ci');
@@ -133,31 +144,29 @@ class Itemcolors_model extends My_Model
 //        return TRUE;
 //    }
 //
-//    /* Get Colors from Inventory */
-//    public function get_inventcolors_item($printshop_inventory_id) {
-//        $this->_DB_BROWN = $this->load->database('brown', TRUE);
-//        $this->_DB_BROWN->db_select();
-//        $this->_DB_BROWN->select('*');
-//        $this->_DB_BROWN->from('ts_printshop_colors');
-//        $this->_DB_BROWN->where('printshop_item_id', $printshop_inventory_id);
-//        // $this->_DB_BROWN->order_by('color');
-//        $this->_DB_BROWN->order_by('color_order');
-//        $res=$this->_DB_BROWN->get()->result_array();
-//        $out=array();
-//        foreach ($res as $row) {
-//            // Calc inStock
-//            $this->_DB_BROWN->select('sum(instock_amnt) as amnt');
-//            $this->_DB_BROWN->from('v_printshop_instock');
-//            $this->_DB_BROWN->where('printshop_color_id', $row['printshop_color_id']);
-//            $stokdat=$this->_DB_BROWN->get()->row_array();
-//            $out[]=array(
-//                'printshop_color_id'=>$row['printshop_color_id'],
-//                'color'=>$row['color'],
-//                'instock'=>QTYOutput(intval($stokdat['amnt'])),
-//                'onroutestock'=>QTYOutput($row['onroutestock']),
-//            );
-//        }
-//        return $out;
-//    }
+    /* Get Colors from Inventory */
+    public function get_inventcolors_item($printshop_inventory_id) {
+        $this->db->select('*');
+        $this->db->from('ts_printshop_colors');
+        $this->db->where('printshop_item_id', $printshop_inventory_id);
+        // $this->db->order_by('color');
+        $this->db->order_by('color_order');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            // Calc inStock
+            $this->db->select('sum(instock_amnt) as amnt');
+            $this->db->from('v_printshop_instock');
+            $this->db->where('printshop_color_id', $row['printshop_color_id']);
+            $stokdat=$this->db->get()->row_array();
+            $out[]=array(
+                'printshop_color_id'=>$row['printshop_color_id'],
+                'color'=>$row['color'],
+                'instock'=>QTYOutput(intval($stokdat['amnt'])),
+                'onroutestock'=>QTYOutput($row['onroutestock']),
+            );
+        }
+        return $out;
+    }
 
 }

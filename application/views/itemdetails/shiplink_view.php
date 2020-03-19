@@ -1,0 +1,1 @@
+<div class="shipcondinlink" data-item="<?=$item_id?>">Click here to view</div>

@@ -12,7 +12,7 @@ $config['netprofit_bank_start']=strtotime('12/29/2014 00:00:00');
 $config['balance_start']=strtotime('01/01/2000 00:00:00');
 $config['default_ccfee']=3;
 /* Short name */
-$config['system_name']="Brown System";
+$config['system_name']="Lift System";
 $config['redraw_system_name']='Redraw System';
 $config['redraw_role']='redraw';
 $config['system_permissions']='System';
@@ -171,6 +171,9 @@ $config['bonus_price']=5;
 $config['bonus_week_base']=150;
 $config['netprofit_debt_start']=-160000;
 $config['bonus_time']=strtotime('2019-03-04');
+/* Diff for pricing - in Cents */
+$config['price_diff']=3;
+$config['dbview_perpage'] = 200;
 $config['meta_title']='BLUETRACK, Inc.';
 $config['meta_keywords']='blue track, blue trac, blue trak, blutrack, blu track, blue tracks, bluetrack company';
 $config['meta_description']='BLUETRACK is an industry leading manufacturer and seller of stress balls and other promotional products. Since 2001, Blue Track has developed a long history of providing excellent quality products with exceptional customer service. Headquartered in Clifton, NJ, with close proximity to New York City, BLUETRACK serves customers in all 50 states and several countries around the world.';

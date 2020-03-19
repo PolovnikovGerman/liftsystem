@@ -1,0 +1,116 @@
+.misinfo_legend {
+    float:left;
+    width: 240px;
+    padding-left: 10px;
+}
+.dbpages_misinfovendors {
+    margin-top: 6px;
+    margin-left: 15px;
+    width: 175px;
+}
+.dbpages_misinfovendors select {
+    width: 165px;
+}
+.misinfopagination {
+    width: 210px;
+    margin-top: 7px;
+    float: right!important;
+    margin-right: 25px;
+}
+.missing_head {
+    width: 994px;
+    border-left: 1px solid #bdbdbd;
+    border-right: 1px solid #bdbdbd;
+    margin-left: 12px;
+}
+.missing_head > div {
+    height: 24px;
+    line-height: 24px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+}
+.missing_head > div.sortcell {
+    cursor: pointer;
+}
+.missing_head > .numinlist {
+    width: 30px;
+}
+.missing_head > .editcoll {
+    width:28px;
+    font-size: 11px;
+}
+.missing_head > .itemnum {
+    width:61px;
+}
+.missing_head > .itemname {
+    width:199px;
+}
+.missing_head > .missingdata {
+    width:674px;
+}
+
+.table-misinfo {
+    clear: both;
+    float: left;
+    max-height: 560px;
+    overflow-y: auto;
+    padding-left: 1px;
+    width: 990px;
+    margin-left: 12px;
+    margin-bottom: 15px;
+}
+.emptymissinfodata {
+    width: 100%;
+    text-align: center;
+    color: #FF0000;
+    font-size: 12px;
+    font-weight: bold;
+}
+.missinfodatarow {
+    width: 100%;
+    border-left: 1px solid #bdbdbd;
+    border-right: 1px solid #bdbdbd;
+}
+.missinfodatarow > div.misinfocell {
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #2c2c2c;
+    overflow: hidden;
+    border-right: 1px solid #bdbdbd;
+}
+.missinfodatarow > div.misinfocell:last-child {
+    border-right: none;
+}
+.missinfodatarow > .numinlist {
+    width: 30px;
+}
+.missinfodatarow > .editcoll {
+    width:28px;
+    cursor: pointer;
+}
+.missinfodatarow > .itemnum {
+    width: 61px;
+}
+.missinfodatarow > .itemtitle {
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+    width: 199px;
+}
+.missinfodatarow > .missingdata {
+    width:653px;
+}
+.missinfodatarow > .missingdata .misinfo_dat {
+    background-image: url(/img/database/yellow-cell.png);
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 56px;
+    margin-left: 1px;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 2px;
+    line-height: 16px;
+}

@@ -58,6 +58,9 @@ $config['invpics_relative']='/uploads/pics/';
 /*Path To Inventory Item Label PIC */
 $config['invitemlabel']=BASEPATH.'../uploads/itemlabel/';
 $config['invitemlabel_relative']='/uploads/itemlabel/';
+// Categories Images
+$config['category_images']='/uploads/categories_images/';
+$config['category_images_relative']=BASEPATH.'../uploads/categories_images/';
 /* Content Images */
 $config['contents_images']='/uploads/contents/';
 $config['contents_images_relative']=BASEPATH.'../uploads/contents/';
@@ -65,6 +68,10 @@ $config['gallery_images']='/uploads/gallery/';
 $config['gallery_images_relative']=BASEPATH.'../uploads/gallery/';
 $config['casestudy_images']='/uploads/casestudy/';
 $config['casestudy_images_relative']=BASEPATH.'../uploads/casestudy/';
+$config['imprint_images']='/uploads/items_imprint/';
+$config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
+$config['item_images']='/uploads/items_images/';
+$config['item_images_relative']=BASEPATH.'../uploads/items_images/';
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

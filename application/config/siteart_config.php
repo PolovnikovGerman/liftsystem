@@ -31,3 +31,44 @@ $config['imprint_colors']=[
     array('name'=>'Lavender (2567)','code'=>'#b69ef2','class'=>'lavender'),
     array('name'=>'Metallic Gold (871)','code'=>'#baba4f','class'=>'metallicgold'),
 ];
+$config['price_types']=[
+    array('type'=>'25','base'=>25),
+    array('type'=>'75','base'=>75),
+    array('type'=>'150','base'=>150),
+    array('type'=>'250','base'=>250),
+    array('type'=>'500','base'=>500),
+    array('type'=>'1000','base'=>1000),
+    array('type'=>'2500','base'=>2500),
+    array('type'=>'5000','base'=>5000),
+    array('type'=>'10000','base'=>10000),
+    array('type'=>'20000','base'=>20000),
+//    array('type'=>'print','base'=>1),
+//    array('type'=>'setup','base'=>1),
+];
+$config['competitors_prices'] = [
+    array('type'=>'25','base'=>25),
+    array('type'=>'75','base'=>75),
+    array('type'=>'150','base'=>150),
+    array('type'=>'250','base'=>250),
+    array('type'=>'500','base'=>500),
+    array('type'=>'1000','base'=>1000),
+    array('type'=>'2500','base'=>2500),
+    array('type'=>'5000','base'=>5000),
+    array('type'=>'10000','base'=>10000),
+    array('type'=>'20000','base'=>20000),
+    array('type'=>'print','base'=>1),
+    array('type'=>'setup','base'=>1),
+];
+$config['item_specialchars'] = [
+    'item_size',
+    'item_name',
+    'item_description1',
+    'item_description2',
+    'item_metadescription',
+    'item_metakeywords',
+    'item_meta_title',
+];
+$config['specialcheckout_prices']=10;
+$config['item_colors']=55;
+$config['similar_items']=3;
+$config['slider_images']=32;

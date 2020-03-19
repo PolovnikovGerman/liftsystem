@@ -1,0 +1,189 @@
+.profitlegend_row {
+    clear: both;
+    width: 1001px;
+    margin-bottom: 3px;
+}
+.profit_legend {
+    float:left;
+    width: 240px;
+    padding-left: 10px;
+}
+.itemprofit_classes {
+    margin-top: 6px;
+    padding-left: 1px;
+    width: 154px;
+}
+.itemprofit_classes > select {
+    width: 150px
+}
+.green_profitpref {
+    background-color: #86FF80;
+    color: #000000;
+}
+.maroon_profitpref {
+    background-color: #800000;
+    color: #FFFFFF!important;
+}
+.red_profitpref {
+    background-color: #FF0000;
+    color: #000000;
+}
+.black_profitpref {
+    background-color: #000000;
+    color: #FFFFFF!important;
+}
+.white_profitpref {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+.orange_profitpref {
+    background-color: #FFA500;
+    color: #000000;
+}
+
+.dbprofit_vendors {
+    float: left;
+    margin-top: 6px;
+    margin-left: 15px;
+    width: 175px;
+}
+.dbprofit_vendors > select {
+    width: 165px;
+}
+.dbprofitpagination {
+    float: right!important;
+    margin-top: 4px;
+    margin-right: 12px;
+}
+.profit_head {
+    margin-left: 12px;
+    width: 999px;
+}
+.profit_head > div {
+    text-align: center;
+    color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+}
+.profit_head > .sortcell {
+    cursor: pointer;
+}
+.profit_head > .numinlist {
+    width: 30px;
+}
+.profit_head > .editcoll {
+    font-size: 11px;
+    width:28px;
+}
+.profit_head > .itemnum {
+    width:62px;
+}
+.profit_head > .itemname {
+    width:193px
+}
+.profit_head > .vendorcost {
+    width:48px;
+}
+.profit_head > .vendorname {
+    width:53px;
+}
+.profit_head > .priceseparator {
+    width:4px;
+}
+.profit_head > .pricedatacell {
+    width:47px;
+}
+.profit_head > .emptyspace {
+    width: 4px;
+}
+.profit_head > .pricespecdatacell {
+    width: 43px;
+}
+.profit_head > .emptyspace1 {
+    width: 20px;
+}
+.table-profit {
+    margin-left: 12px;
+    overflow-y: auto;
+    max-height: 530px;
+    width: 1001px;
+    border-bottom: 1px solid #bdbdbd;
+}
+.profittablerow {
+    border-left: 1px solid #bdbdbd;
+}
+.profittablerow > div.profitdatacell {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-right: 1px solid #bdbdbd;
+    font-size: 12px;
+    color: #2c2c2c;
+}
+.profittablerow > .numinlist {
+    width: 30px;
+}
+.profittablerow > .editcoll {
+    width:28px;
+    cursor: pointer;
+}
+.profittablerow > .itemnum {
+    width:62px;
+}
+.profittablerow > .itemtitle {
+    width:193px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+}
+.profittablerow > .vendorcost {
+    width:48px;
+}
+.profittablerow > .vendorname {
+    width: 55px;
+    overflow: hidden;
+}
+.profittablerow > .priceseparator {
+    width: 4px;
+    background: #878484;
+}
+.profittablerow > .pricedatacell {
+    width: 47px;
+}
+.profittablerow > .emptyspace {
+    width: 4px;
+    background: #878484;
+}
+.profittablerow > .pricespecdatacell {
+    width: 43px;
+}
+.profittablerow > .pricespecdatacell.empty,
+.profittablerow > .pricedatacell.empty {
+    color: #959595;
+}
+.profittablerow > .pricespecdatacell.green,
+.profittablerow > .pricedatacell.green {
+    background-color: #86FF80;    
+}
+.profittablerow > .pricespecdatacell.maroon,
+.profittablerow > .pricedatacell.maroon {
+    background-color: #800000;
+    color: #FFFFFF!important;
+}
+.profittablerow > .pricespecdatacell.red,
+.profittablerow > .pricedatacell.red {
+    background-color: #FF0000;
+}
+.profittablerow > .pricespecdatacell.black,
+.profittablerow > .pricedatacell.black {
+    background-color: #000000;
+    color: #FFFFFF!important;
+}
+.profittablerow > .pricespecdatacell.white,
+.profittablerow > .pricedatacell.white {
+    background-color: #FFFFFF;
+}
+.profittablerow > .pricespecdatacell.orange,
+.profittablerow > .pricedatacell.orange {
+    background-color: #FFA500;
+}

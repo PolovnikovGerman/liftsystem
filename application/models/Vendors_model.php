@@ -168,7 +168,7 @@ Class Vendors_model extends My_Model
         $this->db->select('vendor_item_number as label,vendor_item_id as id');
         $this->db->from('sb_vendor_items');
         $this->db->like('upper(vendor_item_number)',  strtoupper($vend_it_num));
-        if (intval($vendor_id)!=0) {
+        if (intval($vendor_id)>0) {
             $this->db->where('vendor_item_vendor', $vendor_id);
         }
         $this->db->order_by('vendor_item_number');
@@ -313,5 +313,14 @@ Class Vendors_model extends My_Model
         $this->db->order_by('payinclorder, vendor_name');
         $list=$this->db->get()->result_array();
         return $list;
+    }
+
+    public function search_vendors($vend_name) {
+        $this->db->select('vendor_name as label, vendor_id as id');
+        $this->db->from("vendors");
+        $this->db->like('upper(vendor_name)',  strtoupper($vend_name));
+        $this->db->order_by('vendor_name');
+        $result=$this->db->get()->result_array();
+        return $result;
     }
 }

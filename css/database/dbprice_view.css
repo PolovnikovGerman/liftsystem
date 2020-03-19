@@ -1,0 +1,234 @@
+.dbpricelegend-left {
+    width: 440px;
+    margin-left: 5px;
+}
+.dbpricelegend-right {
+    /* margin-top: 15px; */
+    /* width: 519px; */
+}
+.pricecompare-area {
+    clear: both;
+    float: left;
+    width: 545px;
+    font-size: 14px;
+    font-weight: normal;
+}
+.pricecompare_label {
+    float: left;
+    padding-top: 4px;
+    width: 136px;
+}
+.pricecompare_value {
+    float: left;
+    width: 408px;
+}
+.priceotherfiltr {
+    clear: both;
+    float: left;
+    width: 583px;
+}
+.profit_classes {
+    float: left;
+    margin-top: 6px;
+    width: 129px;
+}
+.profit_classes.orange {
+    background: #ffcc00;
+    color: #000000;
+}
+.profit_classes.red {
+    background: #ff0000!important;
+    color: #FFFFFF;
+}
+.profit_classes.pink {
+    background: #fe3cd7!important;
+    color: #FFFFFF;
+}
+.profit_classes.white {
+    background: #ffffff;
+    color: #000000;
+}
+.dbpages_vendors_dbprice {
+    float: left;
+    margin-top: 6px;
+    width: 121px;
+}
+select.vendorselectdbprice {
+    background: none repeat scroll 0 0 #ffffff;
+    font-size: 12px;
+    height: 20px;
+    width: 117px;
+}
+select.compareprefs {
+    background: none repeat scroll 0 0 #ffffff;
+    font-size: 12px;
+    height: 19px;
+    width: 124px;
+}
+.dbpricepagination {
+    float: right!important;
+    width: 186px;
+    margin-left: 7px;
+    margin-top: 5px;
+}
+.othvendname {
+    float: left;
+    width: 102px;
+}
+.table-price {
+    clear: both;
+    float: left;
+    width: 998px;
+    padding-left: 10px;
+    height: 620px;
+}
+.dbpricetabinfo {
+    float: left;
+    max-height: 541px;
+    overflow-y: auto;
+    /* width: 993px; */
+    width: 987px;
+}
+.table_head {
+    text-align: center;
+    background-color: #ffffff;
+    height:24px;
+}
+.table-price-header {
+    clear: both;
+    text-align: center;
+    color: #ffffff;
+}
+.table-price-header > div {
+    height:24px;
+    line-height: 24px!important;
+}
+.table-price-header .numinlist {
+    width: 30px;
+}
+.table-price-header .editcoll {
+    width:26px;
+    font-size: 11px;
+}
+.table-price-header .itemnumber {
+    width: 61px;
+}
+.table-price-header .itemname {
+    width:179px;
+}
+.table-price-header .competitor {
+    width: 85px;
+}
+.table-price-header .itemprice {
+    width: 48px;
+}
+.table-price-header .priceseparator {
+    width: 10px;
+}
+.table-price-header .lastupdate {
+    width: 68px;
+}
+.table-price-header .cellsort {
+    cursor: pointer;
+}
+.pricetable-row {
+    width: 100%;
+}
+.pricetable-row > div.pricedatacell {
+    height: 20px;
+    line-height: 20px;
+    color: #2c2c2c;
+    font-size: 12px;
+    border-right: 1px solid #bdbdbd;
+    text-align: center;
+}
+.pricetable-row > div:first-child {
+    border-left: 1px solid #bdbdbd;
+}
+.pricetable-row > .numlist {
+    width: 30px;
+}
+.pricetable-row > .editcoll {
+    width: 25px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.pricetable-row > .itemnumber {
+    width: 62px;
+}
+.pricetable-row > .itemtitle {
+    width:171px;
+    padding-left: 5px;
+    margin-right: 7px;
+    text-align: left!important;
+}
+.pricetable-row > .competitor {
+    width:84px;
+}
+.pricetable-row > .competitor.vendor_empty {
+    color: #959595;
+}
+.pricetable-row > .competitor.vendor_multi {
+    color: #FF0101;
+}
+.pricetable-row > .pricevalcell {
+    width: 48px;
+}
+.pricetable-row > .priceseparator {
+    width:10px;
+    background: #878484;
+}
+.pricetable-row > .updatetime {
+    background-color: #030356;
+    color: #FFFFFF!important;
+    width: 55px;
+    text-align: left!important;
+    padding-left: 3px;
+}
+/* Table columns */
+.pricetable-row.last_row {
+    border-bottom: 1px solid #bdbdbd;
+}
+.pricetable-row > div.pricedatacell.empty {
+    color: #959595;
+}
+.green_tooltip {
+    background-color: #86FF80;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.white_tooltip {
+    background-color: #FFFFFF;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.red_tooltip {
+    background-color: #FF0000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.orange_tooltip {
+    background-color: #FFA500;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #000;
+    text-align: justify;
+}
+.black_tooltip {
+    background-color: #000000;
+    float: left;
+    padding: 0px;
+    font-size: 15px;
+    color: #FFFFFF;
+    text-align: justify;
+}

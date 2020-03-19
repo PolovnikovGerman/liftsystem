@@ -1,0 +1,166 @@
+.category_filters {
+    clear: both;
+    width: 1001px;
+}
+.category_legend {
+    float:left;
+    width: 240px;
+    padding-left: 10px;
+}
+.category_legend img {
+    margin-right: 5px;
+}
+.pagemanage {
+    float: left;
+    margin-top: 4px;
+    padding-left: 14px;
+}
+.pagemanage a {
+    color: #FFFFFF;
+}
+.pagelocked {
+    width: 102px;
+    height: 31px;
+    background-image: url(/img/database/button-pagelocked.png);
+    background-repeat: no-repeat;
+    font-size: 13px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-top: -3px;
+    line-height: 26px!important;
+    cursor: pointer;
+}
+.pageunlocked {
+    width: 102px;
+    height: 31px;
+    background-image: url("/img/database/button-pageunlocked.png");
+    background-repeat: no-repeat;
+    font-size: 13px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-top: -3px;
+    line-height: 26px!important;
+    cursor: pointer;
+}
+.dbpages_categoryvendors {
+    margin-top: 6px;
+    margin-left: 15px;
+    width: 175px;
+}
+.dbpages_categoryvendors > select {
+    width: 165px;
+}
+.dbcategorypagination {
+    float: right!important;
+    width: 210px; margin-right: 10px;
+    margin-top: 7px;
+}
+/*  */
+.dbcategory_table_head {
+    clear: both;
+    width: 995px;
+    margin-left: 13px;
+}
+.dbcategory_table_head > div {
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+.dbcategory_table_head > div:first-child {
+    border-left: 1px solid #bdbdbd;
+}
+.dbcategory_table_head > div:last-child {
+    border-right: 1px solid #bdbdbd;
+}
+.dbcategory_table_head > .sortcell {
+    cursor: pointer;
+}.dbcategory_table_head > .numinlist {
+    width: 32px;
+}
+.dbcategory_table_head > .editcoll {
+    width:25px;
+    font-size: 11px;
+}
+.dbcategory_table_head > .itemnum {
+    width:61px;
+}
+.dbcategory_table_head > .itemname {
+    width:202px;
+}
+.dbcategory_table_head > .cntcategories {
+    width: 26px;
+}
+.dbcategory_table_head > .categoryname {
+    width: 102px;
+}
+.dbcategory_table_head > .emptyspace {
+    width: 10px;
+}
+.table-categories {
+    clear: both;
+    width: 995px;
+    max-height: 602px;
+    overflow-y: auto!important;
+    margin-left: 13px;
+    margin-bottom: 15px;
+}
+.emptycategorydata {
+    width: 100%;
+    color: #FF0000;
+    font-size: 12px;
+}
+.categorydatarow {
+    width: 100%;
+}
+.categorydatarow > div.categdatacell {
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: #2c2c2c;
+    border-right: 1px solid #bdbdbd;
+}
+.categorydatarow > div.categdatacell:first-child {
+    border-left: 1px solid #bdbdbd;
+}
+.categorydatarow > .numinlist {
+    width:30px;
+}
+.categorydatarow > .editcoll {
+    width:28px;
+    cursor: pointer;
+}
+.categorydatarow > .itemnum {
+    width:60px;
+    font-size: 11px;
+}
+.categorydatarow > .itemtitle {
+    width: 202px;
+    padding-left: 5px;
+    padding-right: 3px;
+    text-align: left!important;
+}
+.categorydatarow > .cntcategories {
+    width: 52px;
+}
+.categorydatarow > .categoryname {
+    width: 100px;
+}
+.categorydatarow select.category_empty {
+    width: 99px;
+    font-size: 11px;
+    background-color: #bdbdbd;
+    color:#000;
+    height: 22px;
+}
+.categorydatarow select.category_exist {
+    width: 99px;
+    font-size: 11px;
+    background-color: #005d16;
+    color:#FFF;
+    height: 22px;
+}
+.categorydatarow > .emptyspace {
+    width: 7px;
+}

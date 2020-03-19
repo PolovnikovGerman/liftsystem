@@ -292,7 +292,7 @@ body div {
 .left_maincontent {
     float: left;
     width: 25px;
-    margin-top: 30px;
+    /* margin-top: 30px; */
 }
 .left_maincontent > .left_tab {
     background: url('/img/page_view/nonactive_side_tab.png');
@@ -315,6 +315,8 @@ body div {
 }
 .maincontent {
     width: 100%;
+    background: #000000;
+    float: left;
 }
 .maincontent div {
     float: left;
@@ -443,4 +445,8 @@ body div {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.clearfix {
+    clear: both;
 }
