@@ -12,6 +12,9 @@
     <?php if (isset($calendarsview)) { ?>
         <div class="settingcontentarea" id="calendarsview" style="display: none;"><?=$calendarsview?></div>
     <?php } ?>
+    <?php if (isset($notificationsview)) { ?>
+        <div class="settingcontentarea" id="notificationsview" style="display: none;"><?=$notificationsview?></div>
+    <?php } ?>
 </div>
 
 <div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="pageModalLabel">

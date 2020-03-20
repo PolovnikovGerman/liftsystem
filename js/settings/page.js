@@ -21,5 +21,9 @@ function init_page(objid) {
             $("#calendarsview").show();
             init_calendars_page();
             break;
+        case 'notificationsview':
+            $("#notificationsview").show();
+            init_notifications_page();
+            break;
     }
 }

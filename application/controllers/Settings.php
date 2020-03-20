@@ -55,6 +55,10 @@ class Settings extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/calendars.css');
                 $head['scripts'][] = array('src' => '/js/settings/calendars.js');
                 $content_options['calendarsview'] = $this->_prepare_calendars_view($brand, $left_menu);
+            } elseif ($row['item_link']=='#notificationsview') {
+                $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
+                $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
+                $content_options['notificationsview'] = $this->_prepare_notifications_view($brand, $left_menu);
             }
         }
 
@@ -352,6 +356,118 @@ class Settings extends MY_Controller
         $content=$this->load->view('settings/calendars_view',$options,TRUE);
         return $content;
 
+    }
+    // Notifications
+    public function emailnotificationdat() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            /* 'offset':page_index,'limit':perpage,'order_by':order_by,'direction':direction,'maxval':maxval */
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','desc');
+            $maxval=$this->input->post('maxval');
+            $brand = $this->input->post('brand');
+            $ordoffset=$offset*$limit;
+            $offset=$offset*$limit;
+
+            /* Fetch data about prices */
+            $this->load->model('email_model');
+            $email_dat=$this->email_model->get_notification_emails($order_by,$direct,$limit,$offset, $brand);
+
+            /* Get data about Competitor prices */
+            if ($ordoffset>$maxval) {
+                $ordnum = $maxval;
+            } else {
+                $ordnum = $maxval - $ordoffset;
+            }
+            $data=array('emails'=>$email_dat,'offset'=>$offset,'ordnum'=>$ordnum);
+            $mdata['content'] = $this->load->view('settings/notification_tabledat_view',$data, TRUE);
+
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function notification() {
+        if ($this->isAjax()) {
+            $this->load->model('email_model');
+            $mdata=array();
+            $error='';
+            $notification_id=$this->input->post('notification_id',0);
+            if ($notification_id==0) {
+                $data=array(
+                    'notification_id'=>0,
+                    'notification_system'=>'',
+                    'notification_email'=>'',
+                );
+                $mdata['title']='Add Notification';
+            } else {
+                $data=$this->email_model->get_notification($notification_id);
+            }
+            if (!isset($data['notification_id'])) {
+                $error='Unknown notification record';
+            } else {
+                $data['notification_systems']=$this->config->item('notification_systems');
+                $mdata['content']=$this->load->view('settings/notificationform_view',$data,TRUE);
+                $mdata['title']='Edit Notification';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function save_notification() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('email_model');
+            $notification_id=$this->input->post('notification_id',0);
+            $notification_system=$this->input->post('notification_system','');
+            $notification_email=$this->input->post('notification_email','');
+            $brand = $this->input->post('brand');
+            $res=$this->email_model->savenotification($notification_id, $notification_system, $notification_email, $brand);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function deletenotification() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('email_model');
+            $notification_id=$this->input->post('notification_id');
+            $brand = $this->input->post('brand');
+            $res=$this->email_model->delete_notification($notification_id);
+            if ($res==0) {
+                $error='Can\'t delete notification. Please try again';
+            } else {
+                $options = ['brand'=>$brand];
+                $mdata['totals']=$this->email_model->get_count_notifications($options);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_notifications_view($brand, $left_menu) {
+        $this->load->model('email_model');
+        $totals=$this->email_model->get_count_notifications();
+        // $survay_data=$this->memails->get_surveydata();
+        $options=array(
+            'total'=>$totals,
+            'order_by'=>'notification_system',
+            'direction'=>'asc',
+            'cur_page'=>0,
+            'brand' => $brand,
+            'left_menu' => $left_menu,
+            // 'dialog'=>$this->load->view('otherpages/detail_notifications_view',array(),TRUE),
+            // 'surveyid'=>$survay_data['survey_apiid'],
+            // 'surveyshow'=>$survay_data['survey_show'],
+        );
+        return $this->load->view('settings/notifications_view',$options,TRUE);
     }
 
 }

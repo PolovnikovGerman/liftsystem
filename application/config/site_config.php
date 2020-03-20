@@ -252,3 +252,13 @@ $config['cardflds'] = [
     array('idx' => 'ccverification', 'name' => 'CC:CVS2'),
 ];
 $config['orders_perpage'] = [100, 250, 500, ];
+$config['notification_systems'] = [
+    'New Orders',
+    'Emails - Questions',
+    'Emails - Custom SB',
+    'Emails - Leads',
+    'Emails - Testimonials',
+    'Emails - Signups',
+    'Emails - Proof Requests',
+    'Researcher Report',
+];
