@@ -1,0 +1,8 @@
+.maincontentmenuarea {
+    width: calc(100% - 25px)!important;
+    margin-left: 25px!important;
+}
+.settingcontentarea {
+    clear: both;
+    width: 100%;
+}

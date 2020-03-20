@@ -1,0 +1,193 @@
+.notificationscontent {
+    clear: both;
+    margin-top: 23px;
+    margin-left: 20px;
+    position: relative;
+    min-height: 565px;
+}
+.emailnotification_main {
+    border: 2px solid #2E2E2E;
+    clear: both;
+    float: left;
+    margin-left: 15px;
+    margin-top: 25px;
+    width: 740px;
+    height: 29px;
+    background-color: #fcd113;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+.notification_acltions {
+    padding-top: 2px;
+    float: left;
+    width: 150px;
+    border-right: 2px solid #2e2e2e;
+}
+.notification_depart {
+    padding-top: 4px;
+    float: left;
+    width: 250px;
+    height: 25px;
+    border-right: 2px solid #2e2e2e;
+}
+.notification_depart.text {
+    padding-left: 5px;
+    /* padding-top: 6px; */
+    width: 250px;
+    text-align: left;
+}
+.notification_email {
+    padding-top: 4px;
+    float: left;
+    width: 250px;
+    height: 25px;
+}
+.notification_email.text {
+    padding-left: 5px;
+    padding-top: 6px;
+    width: 245px;
+    text-align: left;
+}
+.table_notification {
+    background-color: #ffffff;
+    clear: both;
+    float: left;
+    height: 546px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    width: 740px;
+}
+.emailnotification_line {
+    clear: both;
+    float: left;
+    border: 2px solid #2E2E2E;
+    width: 740px;
+    text-align: center;
+}
+.emailnotification_line > div {
+    height: 29px;
+    line-height: 29px!important;
+    font-size: 14px;
+    font-weight: normal;
+    color: black;
+}
+.emptynotifications {
+    clear: both;
+    float: left;
+    padding-top: 5px;
+    width: 740px;
+    text-align: center;
+}
+.editnotification {
+    margin-right: 20px;
+    margin-left: 40px;
+    width: 20px;
+    height: 29px;
+    line-height: 29px!important;
+}
+.deletenotification {
+    height: 29px;
+    line-height: 29px!important;
+    width: 20px;
+}
+.emailnotification_line > .typenotification {
+    padding-left: 5px;
+    width: 250px;
+    border-right: 2px solid #2e2e2e;
+    text-align: left;
+}
+.emailnotification_line > .notification_emaildata {
+    padding-left: 5px;
+    width: 250px;
+    text-align: left;
+}
+.notification_edit_content {
+    clear:both;
+    float: left;
+    width: 560px;
+    height: 214px;
+    background-color: #ffffff;
+}
+.notification_edit_content fieldset {
+    border: 2px solid;
+    color: #0000FF;
+    font-size: 16px;
+    margin: 15px;
+}
+.edit_notification_row {
+    clear: both;
+    float: left;
+    margin-bottom: 15px;
+    color: #000;
+    width: 500px;
+}
+.notification_label {
+    float: left;
+    width: 220px;
+}
+.notification_input {
+    float: left;
+    width: 278px;
+}
+.notification_input select {
+    width: 240px;
+}
+.notification_input input {
+    border: 1px solid #000;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #F8F8FF;
+    height: 18px;
+    width: 228px;
+}
+.saveediting {
+    background-image: url("/img/others/saveediting.png");
+    color: #FFFFFF;
+    float: left;
+    font-size: 16px;
+    font-weight: bold;
+    height: 40px;
+    margin-left: 60px;
+    text-align: center;
+    width: 131px;
+    line-height: 40px!important;
+}
+.saveediting:hover {
+    cursor: pointer;
+}
+.survay_area {
+    clear: both;
+    float: left;
+    font-size: 14px;
+    margin-left: 16px;
+    margin-top: 17px;
+    width: 730px;
+}
+.survaycfglabel {
+    float: left;
+    font-size: 14px;
+    line-height: 21px;
+    width: 120px;
+}
+.survaycfgvalue {
+    float: left;
+    margin-right: 12px;
+    width: 210px;
+}
+input.survayidinput {
+    border: 1px solid #000;
+    font-size: 14px;
+
+}
+.survaycfgsave {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 480px;
+    margin-top: 10px;
+    width: 140px;
+}

@@ -688,18 +688,22 @@ class Email_model extends My_Model
         return $res;
     }
 
-    function get_count_notifications()
+    function get_count_notifications($options=[])
     {
-        $this->db->select('count(*) as cnt', FALSE);
+        $this->db->select('count(*) as cnt');
         $this->db->from('sb_email_notifications');
+        if (isset($options['brand'])) {
+            $this->db->where('brand', $options['brand']);
+        }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
     }
 
-    function get_notification_emails($order_by, $direct, $limit, $offset)
+    function get_notification_emails($order_by, $direct, $limit, $offset, $brand)
     {
         $this->db->select('*');
         $this->db->from('sb_email_notifications');
+        $this->db->where('brand', $brand);
         $this->db->order_by($order_by, $direct);
         $this->db->limit($limit, $offset);
         $results = $this->db->get()->result_array();
@@ -723,22 +727,21 @@ class Email_model extends My_Model
         return $res;
     }
 
-    function savenotification($notification_id, $notification_system, $notification_email)
+    function savenotification($notification_id, $notification_system, $notification_email, $brand)
     {
-        $res = array('result' => 0, 'msg' => 'Unknow error');
-        $ci =& get_instance();
-        $ci->load->library('func');
+        $res = array('result' => $this->error_result, 'msg' => 'Unknow error');
         if ($notification_system == '') {
             $res['msg'] = 'Fill data about Notification system';
         } elseif ($notification_email == '') {
             $res['msg'] = 'Fill Email Address for Notification';
-        } elseif (!$ci->func->valid_email_address($notification_email)) {
+        } elseif (!valid_email_address($notification_email)) {
             $res['msg'] = 'Fill correct Email Address for Notification';
         } else {
             $this->db->select('count(*) as cnt');
             $this->db->from('sb_email_notifications');
             $this->db->where('notification_system', $notification_system);
             $this->db->where('notification_email', $notification_email);
+            $this->db->where('brand', $brand);
             $this->db->where('notification_id != ', $notification_id);
             $cnt = $this->db->get()->row_array();
             if ($cnt['cnt'] != 0) {
@@ -747,12 +750,13 @@ class Email_model extends My_Model
                 $this->db->set('notification_system', $notification_system);
                 $this->db->set('notification_email', $notification_email);
                 if ($notification_id == 0) {
+                    $this->db->set('brand', $brand);
                     $this->db->insert('sb_email_notifications');
-                    $res['result'] = $this->db->insert_id();
+                    $res['result'] = $this->success_result;
                 } else {
                     $this->db->where('notification_id', $notification_id);
                     $this->db->update('sb_email_notifications');
-                    $res['result'] = 1;
+                    $res['result'] = $this->success_result;
                 }
             }
         }

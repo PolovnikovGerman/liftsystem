@@ -1,0 +1,167 @@
+.configs_div {
+    clear: both;
+    float: left;
+    width: 970px;
+    margin-bottom: 15px;
+}
+.grey {
+    background-color: #E5E5E5;
+}
+.rushoptionscontent {
+    clear: both;
+    margin-top: 23px;
+    margin-left: 20px;
+    position: relative;
+    min-height: 565px;
+}
+/* Configs table */
+.configs_title {
+    clear: both;
+    float:left;
+    width: 740px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+}
+.config_title {
+    background-color: #FCD113;
+    border: 2px solid #2E2E2E;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 29px;
+    margin-left: 15px;
+    text-align: center;
+    width: 740px;
+}
+.config_acltions {
+    border-right: 2px solid #2E2E2E;
+    float: left;
+    height: 27px;
+    padding-top: 2px;
+    width: 60px;
+    text-align: center;
+}
+.config_name {
+    border-right: 2px solid #2E2E2E;
+    float: left;
+    height: 23px;
+    padding-left: 5px;
+    padding-top: 6px;
+    width: 295px;
+}
+.config_value {
+    float: left;
+    height: 25px;
+    padding-left: 5px;
+    padding-top: 4px;
+    width: 354px;
+}
+.config_tabledat {
+    clear: both;
+    float: left;
+    margin-left: 15px;
+    width: 740px;
+}
+.config_datarow {
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+    border-right: 2px solid;
+    clear: both;
+    float: left;
+    width: 740px;
+}
+.config_datarow>div.config_acltions:hover {
+    cursor: pointer;
+}
+input.config_nameedt {
+    background-color: #FFFFFF;
+    border: 1px solid;
+    color: #000000;
+    margin-top: -2px;
+    width: 286px;
+}
+input.config_valueedt {
+    background-color: #FFFFFF;
+    border: 1px solid;
+    color: #000000;
+    margin-top: -2px;
+    width: 286px;
+}
+a.saveconfig, a.closeconfig {
+    margin-top: 3px;
+}
+/* Items */
+.items_homepage {
+    clear: both;
+    float: left;
+    width: 831px;
+}
+.home_products {
+    clear: both;
+    float: left;
+    /* margin-bottom: 15px; */
+    padding: 0 0 20px;
+    /* position: relative;*/
+    width: 826px;
+    height: 425px;
+    overflow-y: auto;
+
+}
+.home_product_row {
+    clear: both;
+    float: left;
+    margin: 0;
+    padding: 0 15px 0 16px;
+    /* position: relative;*/
+    width: 776px;
+}
+.itmdata {
+    float: left;
+    margin: 10px 0 5px;
+    padding: 0 4px;
+    position: relative;
+    width: 186px;
+}
+.itmdata_img {
+    background: url("/img/product-bg01.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 162px;
+    padding: 9px;
+    text-align: center;
+    vertical-align: middle;
+    width: 168px;
+}
+.itmdata_img img {
+    width:168px;
+    height: 162px;
+}
+.itmdata-edit {
+    clear: both;
+    float: left;
+    padding-left: 15px;
+    width: 175px;
+}
+.itmdata-action {
+    float: left;
+    width: 40px;
+    height: 18px;
+    text-align: center;
+}
+.itmdata-action:hover {
+    cursor: pointer;
+}
+.itmdata-action img {
+    width: 16px;
+    height: 16px;
+}
+.itmdata-details {
+    float: left;
+    padding-left: 5px;
+    width: 130px;
+}
+select.selectitem {
+    width: 124px;
+}

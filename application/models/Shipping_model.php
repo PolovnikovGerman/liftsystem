@@ -726,4 +726,210 @@ Class Shipping_model extends MY_Model
 //        }
 //    }
 
+    public function shipcalk_stardate($brand) {
+        $this->db->select('min(calcdate) min');
+        $this->db->from('sb_shipcalc_log');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+        if (!isset($res['min'])) {
+            return time();
+        } else {
+            return $res['min'];
+        }
+    }
+
+    public function get_shipzones($options=array()) {
+        $this->db->select('*');
+        $this->db->from('sb_shipping_zones');
+        if (isset($options['zone_name'])) {
+            $this->db->where('zone_name',$options['zone_name']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            // $this->db->where('')
+        }
+        $this->db->order_by('zone_id');
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
+    /* Ship Zone - shipping methods */
+    public function get_shipzone_details($zone_id) {
+        $this->db->select('zm.zonemethod_id as id, shm.shipping_method_name as name, zm.method_percent, zm.method_dimens');
+        $this->db->from('sb_shipzone_methods zm');
+        $this->db->join('sb_shipping_methods shm','shm.shipping_method_id=zm.method_id');
+        $this->db->where('zm.shipzone_id',$zone_id);
+        $this->db->order_by('shm.sort');
+        $results=$this->db->get()->result_array();
+        return $results;
+    }
+
+    public function shipcalc_report($month, $year, $brand) {
+        $datstart=  strtotime($year.'-'.$month.'-01');
+        $datend = strtotime(date("Y-m-d", $datstart) . " +1 month");
+        /* First day of week */
+        $week1=date('W', $datstart);
+        $datcalendbgn=getDayOfWeek($week1, $year, 1);
+        $week2=date('W', $datend);
+        if (intval($week2)< intval($week1)) {
+            $datcalendend=getDayOfWeek($week2, $year+1, 7);
+        } else {
+            $datcalendend=getDayOfWeek($week2, $year, 7);
+        }
+        if ($datcalendbgn>$datcalendend) {
+            $datcalendbgn=getDayOfWeek($week1, $year-1, 1);
+        }
+        $this->db->select('scl.logdate, count(scl.shipcalclog_id) as cnt');
+        $this->db->from('sb_shipcalc_log scl');
+        $this->db->where('scl.calcdate >=',$datcalendbgn);
+        $this->db->where('scl.calcdate <', $datcalendend);
+        $this->db->group_by('scl.logdate');
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->result_array();
+        $days=array();
+        $start=$datcalendbgn;
+        for ($i=1; $i<=60; $i++) {
+            $search=date('Y-m-d', $start);
+            $clicks=0;
+            foreach ($res as $row) {
+                if ($row['logdate']==$search) {
+                    $clicks=$row['cnt'];
+                    break;
+                }
+            }
+            $link='';
+            if ($clicks!=0) {
+                $link='data-content="/settings/schipcalend_details?d='.$start.'&brand='.$brand.'"';
+            }
+            $days[]=array(
+                'id'=>$start,
+                'title'=>date('M j', $start),
+                'count'=>($clicks==0 ? '' : $clicks),
+                'type'=>(date('N',$start)<6 ? '' : 'weekend'),
+                'href'=>$link,
+                'active'=>($clicks==0 ? '' : 'active')
+            );
+            $start=strtotime(date("Y-m-d", $start) . " +1 day");
+            if ($start>$datcalendend) {
+                break;
+            }
+        }
+        return $days;
+    }
+
+    public function get_zones($options=array()) {
+        $this->db->select('*');
+        $this->db->from('sb_shipping_zones');
+        if (isset($options['zone_name'])) {
+            $this->db->where('zone_name',$options['zone_name']);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            //
+        }
+        $this->db->order_by('zone_id');
+        $result = $this->db->get()->result_array();
+        if (count($result)==1) {
+            $ret_array=$result[0];
+        } elseif (count($result)==0) {
+            $ret_array=array();
+        } else {
+            $ret_array=$result;
+        }
+        return $ret_array;
+    }
+    // List of available methods
+    public function get_shipmethodlist() {
+        $this->db->select('*');
+        $this->db->from('sb_shipzone_methods');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+    // Save data
+    public function save_zones_methods_dat($data) {
+        foreach ($data as $row) {
+            $this->db->set('method_percent',$row['method_percent']);
+            $this->db->set('method_dimens',$row['method_dimens']);
+            $this->db->where('zonemethod_id',$row['zonemethod_id']);
+            $this->db->update('sb_shipzone_methods');
+        }
+        return TRUE;
+    }
+    // Get calc details
+    public function get_shipcalcdayreport($start, $end, $brand) {
+        $this->db->select('scl.calcdate,i.item_number, i.item_name, scl.item_qty, c.country_name');
+        $this->db->select('c.country_iso_code_2 as country_code, scl.zip');
+        $this->db->select('coalesce(g.city_name,\'\') as usr_city, coalesce(g.country_name,\'\') as usr_country, scl.user_ip',FALSE);
+        $this->db->select('coalesce(g.region_code,\'\') as usr_region',FALSE);
+        $this->db->from('sb_shipcalc_log scl');
+        $this->db->join('sb_items i','i.item_id=scl.item_id');
+        $this->db->join('sb_countries c','c.country_id=scl.country_id');
+        $this->db->join('sb_geoips g','g.user_ip=scl.user_ip','left');
+        $this->db->where('scl.calcdate >=', $start);
+        $this->db->where('scl.calcdate <=', $end);
+        if ($brand!=='ALL') {
+            $this->db->where('scl.brand', $brand);
+        }
+        $this->db->order_by('scl.calcdate');
+
+        $res=$this->db->get()->result_array();
+        $out=array();
+        foreach ($res as $row) {
+            $location=(empty($row['usr_country']) ? 'N\A' : $row['usr_country']);
+            if (!empty($row['usr_region'])) {
+                $location.=', '.$row['usr_region'].',';
+            }
+            if (!empty($row['usr_city'])) {
+                $location.=' '.$row['usr_city'];
+            }
+            $out[]=array(
+                'time'=>date('H:i:s', $row['calcdate']),
+                'item'=>$row['item_number'].' '.$row['item_name'],
+                'qty'=>$row['item_qty'],
+                'country'=>$row['country_name'].'('.$row['country_code'].')',
+                'zip'=>$row['zip'],
+                'user_ip'=>$row['user_ip'],
+                'location'=>$location,
+            );
+        }
+        return $out;
+    }
+
+    /* get firsrt letters of Country Names */
+    public function get_country_search_templates() {
+        $this->db->select('distinct(substr(country_name,1,1)) as template',FALSE);
+        $this->db->from('sb_countries');
+        $this->db->order_by('template');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_countries_data($filtr,$sort, $direc) {
+        $this->db->select('*');
+        $this->db->from('sb_countries');
+        if (isset($filtr['search_template'])) {
+            $this->db->where("substr( country_name, 1, 1 ) = '{$filtr['search_template']}'");
+        }
+        $this->db->order_by('sort,country_name');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
+    public function update_countries($country_id,$options) {
+        $fl_upd=0;
+        $this->db->where('country_id',$country_id);
+        if (isset($options['shipallow'])) {
+            $this->db->set('shipallow',$options['shipallow']);
+            $fl_upd=1;
+        }
+        if ($fl_upd) {
+            $this->db->update('sb_countries');
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
 }

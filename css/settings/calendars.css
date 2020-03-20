@@ -1,0 +1,275 @@
+.calendarscontent {
+    clear: both;
+    margin-top: 23px;
+    margin-left: 20px;
+    position: relative;
+    min-height: 565px;
+}
+.calendartable-head {
+    clear: both;
+    width: 780px;
+}
+.calendar-actions {
+    text-align: center;
+    width: 95px;
+}
+.newcalend {
+    background: url("/img/others/addnew.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    height: 27px;
+    text-align: center;
+    width: 89px;
+    line-height: 27px!important;
+}
+.newcalend a {
+    color:#ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+.calendartable-head > .calendar_name {
+    font-size: 17px;
+    font-weight: bold;
+    width: 220px;
+    line-height: 27px;
+    height: 27px;
+    text-align: center;
+}
+.calendartable-head > .calendar_status {
+    font-size: 17px;
+    font-weight: bold;
+    width: 60px;
+    line-height: 27px;
+    height: 27px;
+    text-align: center;
+}
+.calendartable-data {
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    clear: both;
+    float: left;
+    height: 546px;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    width: 948px;
+}
+.calendardatarow {
+    clear: both;
+    width: 100%;
+    overflow-x: hidden;
+}
+.calendardatarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 13px;
+}
+.calendardatarow > .calendar-actions {
+    width: 55px;
+}
+.calendardatarow > .calendar-actions > .caldel,
+.calendardatarow > .calendar-actions > .caledit
+{
+    height: 22px;
+    line-height: 22px;
+    width: 27px;
+}
+.calendardatarow > .calendar-actions > .caldel i,
+.calendardatarow > .calendar-actions > .caledit i {
+    font-size: 17px;
+    cursor: pointer;
+}
+.calendardatarow > .calendar_name {
+    width: 220px;
+}
+.calendardatarow > .calendar_status {
+    width: 60px;
+}
+/* Calendar Popup */
+.calendform {
+    background: url("/img/others/background-table2.png") no-repeat transparent;
+    float: left;
+    height: 660px;
+    padding-left: 30px;
+    padding-top: 20px;
+    position: relative;
+    width: 539px;
+}
+.savecalendar {
+    background: url("/img/others/addnew.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 24px;
+    margin-left: 85px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+}
+.savecalendar a {
+    color:#FFFFFF;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+.block-1 {
+    clear: both;
+    float: left;
+    width: 263px;
+}
+.calendar {
+    clear: both;
+    float: left;
+    width: 262px;
+}
+.calendar-name {
+    clear: both;
+    color: #0000FF;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0 10px 0 0;
+    padding-top: 6px;
+    text-align: right;
+    width: 110px;
+}
+.calendar-name-input {
+    float: left;
+    width: 138px;
+}
+.calendar-name-input input {
+    width: 132px;
+    height: 21px;
+    background-color: #f5f5f5;
+    border: 1px solid #4a4a4a;
+    color: #000000;
+    font-size: 12px;
+}
+.text-days {
+    clear: both;
+    float: left;
+    width: 263px;
+}
+.calendar-form {
+    position: relative;
+    float: left;
+    margin-top: 8px;
+}
+.text {
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    color: #0b6100;
+    font-style: italic;
+    font-weight: bold;
+    margin: 6px 0 6px 0;
+}
+.list-days { /* .days */
+    position: relative;
+    float: left;
+    width: 263px;
+    text-align: left;
+    padding-left: 80px;
+}
+.block-2 {
+    float: left;
+    width: 200px;
+    margin-left: 20px;
+}
+.text-holidays {
+    clear: both;
+    float: left;
+    width: 200px;
+}
+.list-holidays {
+    clear: both;
+    float: left;
+    height: 495px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 200px;
+}
+.holiday {
+    clear: both;
+    float:left;
+    width: 195px;
+    margin-bottom: 5px;
+}
+.holiday > div {
+    line-height: 24px;
+}
+.holiday > .delete {
+    position: relative;
+    float: left;
+    text-align: center;
+    width: 35px;
+}
+.holiday > .delete i {
+    font-size: 17px;
+    cursor: pointer;
+}
+.holiday > .data-holidays {
+    position: relative;
+    float: left;
+    font-size: 12px;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.add-date {
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 200px;
+    margin-top: 10px;
+}
+.active_bisday {
+    color: #000000;
+}
+.holiday_bisday {
+    color: #d9d9d9;
+}
+
+.block {
+    clear: both;
+    float: left;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 35px;
+    width: 396px;
+}
+.block select {
+    padding-left: 10px;
+}
+.cancelsave {
+    float:left;
+    margin-left: 120px;
+    width: 100px;
+    background: url('/img/others/addnew.png') no-repeat scroll 0 0 transparent;
+    height: 24px;
+    margin-top: 2px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+}
+.cancelsave a.cancel_button {
+    text-decoration:none;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: bold;
+}
+.calendar_yearstatarea {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 15px;
+    width: 281px;
+}
+.yearstatrow {
+    clear: both;
+    height: 22px;
+    width: 100%;
+}
