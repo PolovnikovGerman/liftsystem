@@ -1,0 +1,117 @@
+.countriescontent {
+    clear: both;
+    margin-top: 23px;
+    margin-left: 20px;
+    position: relative;
+    min-height: 565px;
+}
+.search_templates {
+    clear: both;
+    float: left;
+    width: 756px;
+}
+.search_template_title {
+    float: left;
+    font-size: 16px;
+    width: 85px;
+}
+.search_template {
+    float: left;
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    width: 22px;
+    text-align: center;
+}
+.search_template:hover {
+    cursor: pointer;
+}
+.search_template.active {
+    color: #0000FF;
+}
+.search_clean {
+    float: left;
+    display: none;
+    font-size: 16px;
+    text-align: center;
+    color: #0000FF;
+    width: 85px;
+}
+.search_clean:hover {
+    cursor: pointer;
+}
+.countries_data_title {
+    background: none repeat scroll 0 0 #EBEBEB;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    height: 27px;
+    margin-left: 22px;
+    margin-top: 10px;
+    text-align: center;
+    width: 719px;
+}
+.country_name {
+    float: left;
+    margin-top: 4px;
+    width: 328px;
+}
+.country_code2, .country_code3 {
+    float: left;
+    margin-top: 4px;
+    width: 82px;
+}
+.country_shzone {
+    float: left;
+    margin-top: 4px;
+    width: 120px;
+}
+.country_shipallow {
+    float: left;
+    margin-top: 4px;
+    width: 102px;
+}
+.countries_data {
+    clear: both;
+    float: left;
+    margin-left: 22px;
+    max-height: 535px;
+    overflow-y: auto;
+    width: 718px;
+    overflow-x: hidden;
+    margin-bottom: 15px;
+}
+.countries_data_row {
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    height: 24px;
+    width: 704px;
+}
+.countries_data_row.notallowed {
+    color: #494948;
+}
+.country_name_data {
+    float: left;
+    margin-top: 4px;
+    padding-left: 5px;
+    width: 328px;
+}
+.country_code_dat {
+    float: left;
+    margin-top: 4px;
+    text-align: center;
+    width: 82px;
+}
+.country_shzone_dat {
+    float: left;
+    width: 120px;
+}
+.country_shipallow_dat {
+    float: left;
+    margin-top: 3px;
+    text-align: center;
+    width: 87px;
+}

@@ -63,6 +63,10 @@ class Settings extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
                 $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
                 $content_options['rushoptionsview'] = $this->_prepare_rushoptions_view($brand, $left_menu);
+            } elseif ($row['item_link']=='#countriesview') {
+                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
+                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
+                $content_options['countriesview'] = $this->_prepare_countries_view($brand, $left_menu);
             }
         }
 
@@ -532,5 +536,49 @@ class Settings extends MY_Controller
             'left_menu' => $left_menu,
         ];
         return $this->load->view('settings/rushoptions_view', $options, TRUE);
+    }
+    // Countries
+    public function countries_data() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('shipping_model');
+            $template=$this->input->post('search_template');
+            $sort=$this->input->post('sort');
+            $direc=$this->input->post('direc');
+            $filtr=array();
+            if ($template!='') {
+                $filtr['search_template']=$template;
+            }
+            $zones=$this->shipping_model->get_zones();
+            $data=$this->shipping_model->get_countries_data($filtr, $sort, $direc);
+            $mdata['content']=$this->load->view('settings/countries_data_view',array('data'=>$data, 'zones'=>$zones),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function countries_shipallow() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('shipping_model');
+            $country_id=$this->input->post('country_id');
+            $options=array();
+            $options['shipallow']=$this->input->post('shipallow');
+            $res=$this->shipping_model->update_countries($country_id,$options);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    private function _prepare_countries_view($brand, $left_menu) {
+        $this->load->model('shipping_model');
+        $search_templates=$this->shipping_model->get_country_search_templates();
+        $options = [
+            'brand' => $brand,
+            'left_menu' => $left_menu,
+            'search_templ' => $search_templates,
+        ];
+        $content=$this->load->view('settings/countries_view', $options,TRUE);
+        return $content;
     }
 }

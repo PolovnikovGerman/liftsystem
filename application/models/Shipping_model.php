@@ -897,4 +897,39 @@ Class Shipping_model extends MY_Model
         return $out;
     }
 
+    /* get firsrt letters of Country Names */
+    public function get_country_search_templates() {
+        $this->db->select('distinct(substr(country_name,1,1)) as template',FALSE);
+        $this->db->from('sb_countries');
+        $this->db->order_by('template');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_countries_data($filtr,$sort, $direc) {
+        $this->db->select('*');
+        $this->db->from('sb_countries');
+        if (isset($filtr['search_template'])) {
+            $this->db->where("substr( country_name, 1, 1 ) = '{$filtr['search_template']}'");
+        }
+        $this->db->order_by('sort,country_name');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
+    public function update_countries($country_id,$options) {
+        $fl_upd=0;
+        $this->db->where('country_id',$country_id);
+        if (isset($options['shipallow'])) {
+            $this->db->set('shipallow',$options['shipallow']);
+            $fl_upd=1;
+        }
+        if ($fl_upd) {
+            $this->db->update('sb_countries');
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
 }

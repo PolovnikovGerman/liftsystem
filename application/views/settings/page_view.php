@@ -18,6 +18,9 @@
     <?php if (isset($rushoptionsview)) { ?>
         <div class="settingcontentarea" id="rushoptionsview" style="display: none;"><?=$rushoptionsview?></div>
     <?php } ?>
+    <?php if (isset($countriesview)) { ?>
+        <div class="settingcontentarea" id="countriesview" style="display: none;"><?=$countriesview?></div>
+    <?php } ?>
 </div>
 
 <div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="pageModalLabel">

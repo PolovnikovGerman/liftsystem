@@ -1,11 +1,11 @@
 function init_rushoptions_page() {
     init_settings();
     // Change Brand
-    $("#calendarsviewbrandmenu").find("div.left_tab").unbind('click').click(function(){
+    $("#rushoptionsviewbrandmenu").find("div.left_tab").unbind('click').click(function(){
         var brand = $(this).data('brand');
-        $("#calendarsviewbrand").val(brand);
-        $("#calendarsviewbrandmenu").find("div.left_tab").removeClass('active');
-        $("#calendarsviewbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+        $("#rushoptionsviewbrand").val(brand);
+        $("#rushoptionsviewbrandmenu").find("div.left_tab").removeClass('active');
+        $("#rushoptionsviewbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
         init_settings();
     });
 }

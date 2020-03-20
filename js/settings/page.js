@@ -29,6 +29,9 @@ function init_page(objid) {
             $("#rushoptionsview").show();
             init_rushoptions_page();
             break;
-
+        case 'countriesview':
+            $("#countriesview").show();
+            init_countries();
+            break;
     }
 }
