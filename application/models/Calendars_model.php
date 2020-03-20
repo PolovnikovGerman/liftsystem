@@ -10,23 +10,15 @@ Class Calendars_model extends MY_Model
         parent::__construct();
     }
 
-//    function get_calendars_list($websys) {
-//        $this->db->select('*');
-//        $this->db->from('calendars');
-//        $res=$this->db->get()->result_array();
-//        $calend=array();
-//        foreach ($res as $row) {
-//            foreach ($websys as $wrow) {
-//                if ($row['websystem_id']==$wrow['websystem_id']) {
-//                    $row['ws_'.$wrow['websystem_id']]='Available';
-//                } else {
-//                    $row['ws_'.$wrow['websystem_id']]='';
-//                }
-//            }
-//            $calend[]=$row;
-//        }
-//        return $calend;
-//    }
+    public function get_calendars_list($brand) {
+        $this->db->select('*');
+        $this->db->from('calendars');
+        if ($brand!=='ALL') {
+
+        }
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
     public function get_calendars() {
         $this->db->select('*');
@@ -34,6 +26,17 @@ Class Calendars_model extends MY_Model
         $this->db->where('calendar_status',1);
         $res=$this->db->get()->result_array();
         return $res;
+    }
+
+    public function count_calendars($brand) {
+        $this->db->select('count(calendar_id) as cnt');
+        $this->db->from('calendars');
+        $this->db->where('calendar_status',1);
+        if ($brand!=='ALL') {
+            //
+        }
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
     }
 
 //    function get_calendar($calend_id) {
@@ -59,16 +62,16 @@ Class Calendars_model extends MY_Model
 //        }
 //        return $calend;
 //    }
-//
-//    function get_calendar_lines($calend_id) {
-//        $this->db->select('*');
-//        $this->db->from('calendar_lines');
-//        $this->db->where('calendar_id',$calend_id);
-//        $this->db->order_by('line_date');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
-//
+
+    public function get_calendar_lines($calend_id) {
+        $this->db->select('*');
+        $this->db->from('calendar_lines');
+        $this->db->where('calendar_id',$calend_id);
+        $this->db->order_by('line_date','desc');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
 //    function savecalend($options) {
 //        /* Check unique name */
 //        $out=array('res'=>'','msg'=>'');
@@ -182,56 +185,54 @@ Class Calendars_model extends MY_Model
         return $holidays;
     }
 
-//    public function get_calendar_edit($calend_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if ($calend_id==0) {
-//            $out['result']=$this->success_result;
-//            $out['data']=array(
-//                'calendar_id'=>0,
-//                'calendar_name'=>'',
-//                'calendar_status'=>0,
-//                'websystem_id'=>'',
-//                'mon_work'=>1,
-//                'tue_work'=>1,
-//                'wed_work'=>1,
-//                'thu_work'=>1,
-//                'fri_work'=>1,
-//                'sat_work'=>0,
-//                'sun_work'=>0,
-//            );
-//
-//        } else {
-//            $this->db->select('*');
-//            $this->db->from('calendars');
-//            $this->db->where('calendar_id',$calend_id);
-//            $calend=$this->db->get()->row_array();
-//            if (!isset($calend['calendar_id'])) {
-//                $out['msg']='Calendar Not Found';
-//                return $out;
-//            }
-//            $out['data']=$calend;
-//            $out['result']=$this->success_result;
-//        }
-//        // Calc Business Days, Elapsed, Remaining
-//        $now=strtotime(date('Y-m-d'));
-//        $yearbgn=strtotime(date('Y').'-01-01');
-//        $nxtyear=strtotime(date("Y-m-d", $yearbgn) . " +1year")-1;
-//        if ($out['data']['calendar_id']==0) {
-//            $total_bankdays=BankDays($yearbgn, $nxtyear, -1);
-//            $elaps_bankdays=BankDays($yearbgn, $now, -1);
-//            $reman_bankdays=($total_bankdays-$elaps_bankdays);
-//        } else {
-//            $total_bankdays=BankDays($yearbgn, $nxtyear, $calend_id);
-//            $elaps_bankdays=BankDays($yearbgn, $now, $calend_id);
-//            $reman_bankdays=($total_bankdays-$elaps_bankdays);
-//        }
-//        $out['total_days']=$total_bankdays;
-//        $out['elaps_days']=$elaps_bankdays;
-//        $out['remin_days']=$reman_bankdays;
-//
-//        return $out;
-//
-//    }
+    public function get_calendar_edit($calend_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if ($calend_id==0) {
+            $out['result']=$this->success_result;
+            $out['data']=array(
+                'calendar_id'=>0,
+                'calendar_name'=>'',
+                'calendar_status'=>0,
+                'websystem_id'=>'',
+                'mon_work'=>1,
+                'tue_work'=>1,
+                'wed_work'=>1,
+                'thu_work'=>1,
+                'fri_work'=>1,
+                'sat_work'=>0,
+                'sun_work'=>0,
+            );
+
+        } else {
+            $this->db->select('*');
+            $this->db->from('calendars');
+            $this->db->where('calendar_id',$calend_id);
+            $calend=$this->db->get()->row_array();
+            if (!isset($calend['calendar_id'])) {
+                $out['msg']='Calendar Not Found';
+                return $out;
+            }
+            $out['data']=$calend;
+            $out['result']=$this->success_result;
+        }
+        // Calc Business Days, Elapsed, Remaining
+        $now=strtotime(date('Y-m-d'));
+        $yearbgn=strtotime(date('Y').'-01-01');
+        $nxtyear=strtotime(date("Y-m-d", $yearbgn) . " +1year")-1;
+        if ($out['data']['calendar_id']==0) {
+            $total_bankdays=BankDays($yearbgn, $nxtyear, -1);
+            $elaps_bankdays=BankDays($yearbgn, $now, -1);
+            $reman_bankdays=($total_bankdays-$elaps_bankdays);
+        } else {
+            $total_bankdays=BankDays($yearbgn, $nxtyear, $calend_id);
+            $elaps_bankdays=BankDays($yearbgn, $now, $calend_id);
+            $reman_bankdays=($total_bankdays-$elaps_bankdays);
+        }
+        $out['total_days']=$total_bankdays;
+        $out['elaps_days']=$elaps_bankdays;
+        $out['remin_days']=$reman_bankdays;
+        return $out;
+    }
 
     public function businessdate($date) {
         $calendar=$this->config->item('bank_calendar');
@@ -248,6 +249,87 @@ Class Calendars_model extends MY_Model
             }
         }
         return $date;
+    }
+
+    public function add_holiday($session_data, $holiday, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Error duaring add a holiday'];
+        $calend_lines = $session_data['calend_lines'];
+        $minidx = count($calend_lines)+1;
+        $newline = [];
+        $newline[] = [
+            'calendar_line_id' => $minidx*(-1),
+            'line_date' => $holiday,
+        ];
+        $newdata = array_merge($newline, $calend_lines);
+        $session_data['calend_lines']=$newdata;
+        $out['result']=$this->success_result;
+        $out['calend_lines']=$newdata;
+        usersession($session_id, $session_data);
+        return $out;
+    }
+
+    public function delete_calendline($session_data, $line, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Holiday date not found'];
+        $calend_lines = $session_data['calend_lines'];
+        $deleted = $session_data['deleted'];
+        $found = 0;
+        $newdata = [];
+        foreach ($calend_lines as $row) {
+            if ($row['calendar_line_id']==$line) {
+                $found=1;
+                if ($line>0) {
+                    $deleted[]=$line;
+                }
+            } else {
+                $newdata[]=$row;
+            }
+        }
+        if ($found==1) {
+            $session_data['calend_lines']=$newdata;
+            $session_data['deleted']=$deleted;
+            $out['result']=$this->success_result;
+            $out['calend_lines']=$newdata;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
+    public function save_calendar($session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Holiday date not found'];
+        $calend = $session_data['calend'];
+        $calend_lines = $session_data['calend_lines'];
+        $deleted = $session_data['deleted'];
+        $this->db->set('calendar_status', $calend['calendar_status']);
+        $this->db->set('calendar_name', $calend['calendar_name']);
+        $this->db->set('mon_work', $calend['mon_work']);
+        $this->db->set('tue_work', $calend['tue_work']);
+        $this->db->set('wed_work', $calend['wed_work']);
+        $this->db->set('thu_work', $calend['thu_work']);
+        $this->db->set('fri_work', $calend['fri_work']);
+        $this->db->set('sat_work', $calend['sat_work']);
+        $this->db->set('sun_work', $calend['sun_work']);
+        if ($calend['calendar_id']>0) {
+            $this->db->where('calendar_id', $calend['calendar_id']);
+            $this->db->update('calendars');
+            $calend_id = $calend['calendar_id'];
+        } else {
+            $this->db->insert('calendars');
+            $calend_id = $this->db->insert_id();
+        }
+        foreach ($calend_lines as $row) {
+            if ($row['calendar_line_id']<0) {
+                $this->db->set('line_date', $row['line_date']);
+                $this->db->set('calendar_id', $calend_id);
+                $this->db->insert('calendar_lines');
+            }
+        }
+        foreach ($deleted as $row) {
+            $this->db->where('calendar_line_id', $row);
+            $this->db->delete('calendar_lines');
+        }
+        $out['result']=$this->success_result;
+        usersession($session_id, null);
+        return $out;
     }
 
 }

@@ -17,5 +17,9 @@ function init_page(objid) {
             $("#shippingview").show();
             init_shiipings_page();
             break;
+        case 'calendarsview':
+            $("#calendarsview").show();
+            init_calendars_page();
+            break;
     }
 }

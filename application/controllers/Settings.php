@@ -5,6 +5,8 @@ class Settings extends MY_Controller
 {
 
     private $pagelink = '/settings';
+    protected $PERPAGE=1000;
+    private $session_error = 'Edit session lost. Please, reload page';
 
     public function __construct()
     {
@@ -49,6 +51,10 @@ class Settings extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/shippings.css');
                 $head['scripts'][] = array('src' => '/js/settings/shippings.js');
                 $content_options['shippingview'] = $this->_prepare_shipping_view($brand, $left_menu);
+            } elseif ($row['item_link'] == '#calendarsview') {
+                $head['styles'][] = array('style' => '/css/settings/calendars.css');
+                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
+                $content_options['calendarsview'] = $this->_prepare_calendars_view($brand, $left_menu);
             }
         }
 
@@ -57,6 +63,12 @@ class Settings extends MY_Controller
         $head['scripts'][] = array('src' => '/js/settings/page.js');
         $head['styles'][] = array('style' => '/css/settings/settingpage.css');
         // Utils
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        // Datepicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
@@ -184,6 +196,160 @@ class Settings extends MY_Controller
             'left_menu' => $left_menu,
         ];
         $content=$this->load->view('settings/shippings_view',$options,TRUE);
+        return $content;
+    }
+
+    // Calendars
+    public function calenddata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $offset=$this->input->post('offset',0);
+            $limit=$this->input->post('limit',10);
+            $order_by=$this->input->post('order_by');
+            $direct = $this->input->post('direction','asc');
+            // $searchval=$this->input->post('search','');
+            $brand = $this->input->post('brand');
+            $this->load->model('calendars_model');
+            $calends=$this->calendars_model->get_calendars_list($brand);
+            $mdata['content']=$this->load->view('settings/calendars_tabledat_view',array('calendars'=>$calends,),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function calendar_edit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $calend_id=$this->input->post('calend_id');
+            $this->load->model('calendars_model');
+            $calenddat=$this->calendars_model->get_calendar_edit($calend_id);
+            $error=$calenddat['msg'];
+            if ($calenddat['result']==$this->success_result) {
+                $error = '';
+                $calend=$calenddat['data'];
+                $mdata['title']='Edit Business Calendar '.$calend['calendar_name'];
+                $calend_lines=$this->calendars_model->get_calendar_lines($calend_id);
+                $session_id = 'calend'.uniq_link('14');
+                $session_data = [
+                    'calend' => $calend,
+                    'calend_lines' => $calend_lines,
+                    'deleted' => [],
+                ];
+                usersession($session_id, $session_data);
+                $holidays=$this->load->view('settings/holidaylist_view',array('calendar_lines'=>$calend_lines),TRUE);
+
+                $elaps_proc=round($calenddat['elaps_days']/$calenddat['total_days']*100,1);
+                $remin_proc=100-$elaps_proc;
+                $date=array(
+                    'session_id' => $session_id,
+                    'calendar'=>$calend,
+                    'holidaylist'=>$holidays,
+                    'total_days'=>$calenddat['total_days'],
+                    'elaps_days'=>$calenddat['elaps_days'],
+                    'elaps_proc'=>$elaps_proc.'%',
+                    'remin_days'=>$calenddat['remin_days'],
+                    'remin_proc'=>$remin_proc.'%',
+                    'year'=>date('Y'),
+                );
+                $mdata['content']=$this->load->view('settings/calendarform_view',$date,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function calendar_addholliday() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata =[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata, 'session','defsession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $error = 'Empty New Date';
+                $newdate = ifset($postdata,'newdate','');
+                if (!empty($newdate)) {
+                    $holiday = $newdate/1000;
+                    // $holiday = date('m/d/Y',strtotime($newdate));
+                    $this->load->model('calendars_model');
+                    $res = $this->calendars_model->add_holiday($session_data, $holiday, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $calend_lines = $res['calend_lines'];
+                        $mdata['content']=$this->load->view('settings/holidaylist_view',array('calendar_lines'=>$calend_lines),TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function calendar_delline() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata =[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata, 'session','defsession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $error = 'Empty Date';
+                $line = ifset($postdata,'line','');
+                if (!empty($line)) {
+                    $this->load->model('calendars_model');
+                    $res = $this->calendars_model->delete_calendline($session_data, $line, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $calend_lines = $res['calend_lines'];
+                        $mdata['content']=$this->load->view('settings/holidaylist_view',array('calendar_lines'=>$calend_lines),TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function calendar_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata =[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata, 'session','defsession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('calendars_model');
+                $res = $this->calendars_model->save_calendar($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_calendars_view($brand, $left_menu) {
+        $this->load->model('calendars_model');
+        $totals = $this->calendars_model->count_calendars($brand);
+        $orderby='calendar_id';
+        $direc='asc';
+
+        $options=array(
+            'brand' => $brand,
+            'left_menu' => $left_menu,
+            'total'=>$totals,
+            'perpage'=>$this->PERPAGE,
+            'orderby'=>$orderby,
+            'direct'=>$direc,
+        );
+
+        $content=$this->load->view('settings/calendars_view',$options,TRUE);
         return $content;
 
     }

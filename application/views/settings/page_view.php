@@ -9,6 +9,9 @@
     <?php if (isset($shippingview)) { ?>
         <div class="settingcontentarea" id="shippingview" style="display: none;"><?=$shippingview?></div>
     <?php } ?>
+    <?php if (isset($calendarsview)) { ?>
+        <div class="settingcontentarea" id="calendarsview" style="display: none;"><?=$calendarsview?></div>
+    <?php } ?>
 </div>
 
 <div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="pageModalLabel">
@@ -16,7 +19,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="artModalLabel">New message</h4>
+                <h4 class="modal-title" id="pageModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>
