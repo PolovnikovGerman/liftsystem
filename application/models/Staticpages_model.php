@@ -1232,5 +1232,33 @@ Class Staticpages_model extends MY_Model
         return $out_key;
     }
 
+    function get_configs() {
+        $this->db->select('*');
+        $this->db->from('sb_configs');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    function get_config_data($config_id) {
+        $this->db->select('*');
+        $this->db->from('sb_configs');
+        $this->db->where('config_id',$config_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    function save_config($config_id,$config_alias,$config_value) {
+        $out=array('result'=>0, 'msg'=>'Unknown error');
+        $this->db->select('*');
+        $this->db->from('sb_configs');
+        $this->db->where('config_id',$config_id);
+        $res=$this->db->get()->row_array();
+        $this->db->set('config_alias',$config_alias);
+        $this->db->set('config_value',$config_value);
+        $this->db->where('config_id',$config_id);
+        $this->db->update('sb_configs');
+        $out['result']=1;$out['msg']='';
+        return $out;
+    }
 
 }

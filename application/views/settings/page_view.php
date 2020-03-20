@@ -15,6 +15,9 @@
     <?php if (isset($notificationsview)) { ?>
         <div class="settingcontentarea" id="notificationsview" style="display: none;"><?=$notificationsview?></div>
     <?php } ?>
+    <?php if (isset($rushoptionsview)) { ?>
+        <div class="settingcontentarea" id="rushoptionsview" style="display: none;"><?=$rushoptionsview?></div>
+    <?php } ?>
 </div>
 
 <div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="pageModalLabel">

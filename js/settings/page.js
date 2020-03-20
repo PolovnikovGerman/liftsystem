@@ -25,5 +25,10 @@ function init_page(objid) {
             $("#notificationsview").show();
             init_notifications_page();
             break;
+        case 'rushoptionsview':
+            $("#rushoptionsview").show();
+            init_rushoptions_page();
+            break;
+
     }
 }

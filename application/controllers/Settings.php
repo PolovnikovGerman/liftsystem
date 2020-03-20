@@ -59,6 +59,10 @@ class Settings extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
                 $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
                 $content_options['notificationsview'] = $this->_prepare_notifications_view($brand, $left_menu);
+            } elseif ($row['item_link']=='#rushoptionsview') {
+                $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
+                $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
+                $content_options['rushoptionsview'] = $this->_prepare_rushoptions_view($brand, $left_menu);
             }
         }
 
@@ -469,5 +473,64 @@ class Settings extends MY_Controller
         );
         return $this->load->view('settings/notifications_view',$options,TRUE);
     }
+    // Rush options
+    public function settingsdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('staticpages_model');
+            $configs=$this->staticpages_model->get_configs();
+            $mdata['content']=$this->load->view('settings/configs_view',array('configs'=>$configs),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
 
+    public function edit_config() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $config_id=$this->input->post('config_id');
+            $this->load->model('staticpages_model');
+            $conf=$this->staticpages_model->get_config_data($config_id);
+            if (!isset($conf['config_id'])) {
+                $error='Unknown Config parameter';
+            } else {
+                $mdata['content']=$this->load->view('settings/configedit_view',$conf,TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function saveconfig() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('staticpages_model');
+            $config_alias=$this->input->post('config_alias');
+            $config_value=$this->input->post('config_value');
+            $config_id=$this->input->post('config_id');
+            if (empty($config_alias) || empty($config_value)) {
+                $error='Enter config data';
+            } else {
+                $res=$this->staticpages_model->save_config($config_id,$config_alias,$config_value);
+                if (!$res['result']) {
+                    $error=$res['msg'];
+                } else {
+                    $configs=$this->staticpages_model->get_configs();
+                    $mdata['content']=$this->load->view('settings/configs_view',array('configs'=>$configs),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    private function _prepare_rushoptions_view($brand, $left_menu) {
+        $options = [
+            'brand' => $brand,
+            'left_menu' => $left_menu,
+        ];
+        return $this->load->view('settings/rushoptions_view', $options, TRUE);
+    }
 }
