@@ -131,7 +131,7 @@ Class Cronjob extends CI_Controller
         $this->db->from('netprofit');
         $res = $this->db->get()->result_array();
         foreach ($res as $row) {
-            $sb_kf = rand(40, 60)/100;
+            /*$sb_kf = rand(40, 60)/100;
             echo 'Stressball '.$sb_kf.PHP_EOL;
             $this->db->set('profit_id', $row['profit_id']);
             $this->db->set('brand','SB');
@@ -149,7 +149,8 @@ Class Cronjob extends CI_Controller
             $this->db->set('od2', empty($row['od2']) ? NULL : round($row['od2']*$sb_kf,2));
             $this->db->set('weeknote', $row['weeknote']);
             $this->db->insert('netprofit_dat');
-            $sb_kf = rand(40, 60)/100;
+            $sb_kf = rand(40, 60)/100;*/
+            $sb_kf = 1;
             echo 'Bluetrack '.$sb_kf.PHP_EOL;
             $this->db->set('profit_id', $row['profit_id']);
             $this->db->set('brand','BT');

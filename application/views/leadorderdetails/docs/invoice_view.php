@@ -280,7 +280,7 @@ td.paymentvalue {
                 <tr>
                     <td style="width: 409px;">
                         <!-- <div class="logo">&nbsp;</div> -->
-                        <img src="<?=$_SERVER['DOCUMENT_ROOT']?>/img/invoice/invoice_logo_new.png" alt="Logo"/>
+                        <img src="<?=$_SERVER['DOCUMENT_ROOT']?>/img/invoice/logo_invoice.png" alt="Logo"/>
                     </td>
                     <td>
                         <div class="invoicenum">

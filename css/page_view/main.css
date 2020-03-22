@@ -367,8 +367,9 @@ body div {
 }
 .maincontent_view {
     background: #ffffff;
-    margin: 15px;
-    width: calc(100% - 30px);
+    /* margin: 15px;
+    width: calc(100% - 30px);*/
+    width: 100%;
     min-height: 640px;
 }
 .databrands {
