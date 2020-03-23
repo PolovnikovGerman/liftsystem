@@ -38,6 +38,9 @@ class Login extends CI_Controller
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $mdata['url']='welcome';
+                $usrdat = $res['usrdat'];
+                $this->load->model('useractivity_model');
+                $this->useractivity_model->userlog($usrdat['user_id'],'Sign in', 1);
             }
             $this->ajaxResponse($mdata, $error);
         }

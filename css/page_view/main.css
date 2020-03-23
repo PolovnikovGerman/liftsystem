@@ -194,6 +194,7 @@ body div {
     width: 90px;
     margin-right: 4px;
     float: right!important;
+    cursor: pointer;
 }
 .infoalerts .alerticon {
     /* padding-left: 12px;*/

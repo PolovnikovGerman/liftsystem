@@ -236,6 +236,7 @@ Class User_model extends MY_Model
         $this->db->from('users u');
         $this->db->join('roles r','r.role_id=u.role_id', 'left');
         $this->db->join("({$lastactiv_qty}) act",'act.user_id=u.user_id', 'left');
+        $this->db->where('u.user_status != ', $this->delete_status);
         if (isset($options['user_status'])) {
             $this->db->where('u.user_status', $options['user_status']);
         }
@@ -259,7 +260,18 @@ Class User_model extends MY_Model
         $numpp=1;
         foreach ($res as $row) {
             $row['numpp']=$numpp;
-            $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
+            $row['last_activity']= 'n/a';
+            if (!empty($row['lastactivity'])) {
+                $row['last_activity']=substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']);
+            }
+            // $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
+            if ($row['user_status']==$this->user_active) {
+                $row['status_txt'] = 'Active';
+            } else {
+                $row['status_txt'] = 'Non-Active';
+            }
+
+
             $data[]=$row;
             $numpp++;
         }
@@ -280,6 +292,27 @@ Class User_model extends MY_Model
             $out['data']=$res[0];
         }
         return $out;
+    }
+
+    public function new_user() {
+        $data = [
+            'user_id' => 0,
+            'user_email' =>'',
+            'user_name'=>'',
+            'user_status'=>'0',
+            'user_id'=>0,
+            'user_leadrep'=>0,
+            'user_leadname'=>'',
+            'user_initials'=>'',
+            'time_restrict'=>0,
+            'user_page'=>'',
+            'redmine_executor'=>'NO',
+            'personal_email'=>'',
+            'email_signature'=>'',
+            'finuser'=>0,
+            'profit_view'=>'Points',
+        ];
+        return $data;
     }
 
     public function get_user_data($user_id) {
@@ -352,6 +385,52 @@ Class User_model extends MY_Model
         return $res;
     }
 
+    public function delete_usr($user_id, $executor_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'User not found'];
+        $chkres = $this->get_user_details($user_id);
+        if ($chkres['result']==$this->success_result) {
+            $this->db->set('user_status', $this->delete_status);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('users');
+            $out['result'] = $this->success_result;
+            $this->userlog($executor_id,'Delete User '.$user_id, 1);
+        }
+        return $out;
+    }
+
+    public function update_userstatus($user_id, $curstatus, $executor_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'User not found'];
+        $chkres = $this->get_user_details($user_id);
+        if ($chkres['result']==$this->success_result) {
+            if ($curstatus==$this->user_active) {
+                $this->db->set('user_status', $this->user_paused);
+            } else {
+                $this->db->set('user_status', $this->user_active);
+            }
+            $this->db->where('user_id', $user_id);
+            $this->db->update('users');
+            $out['result'] = $this->success_result;
+            if ($curstatus==$this->user_active) {
+                $this->userlog($executor_id,'Pause User '.$user_id, 1);
+                $out['user_status'] = $this->user_paused;
+                $out['status_txt'] = 'Non-Active';
+            } else {
+                $this->userlog($executor_id,'Activate User '.$user_id, 1);
+                $out['user_status'] = $this->user_active;
+                $out['status_txt'] = 'Active';
+            }
+        }
+        return $out;
+    }
+
+    function get_user_iprestrict($user_id) {
+        $this->db->select('*');
+        $this->db->from('user_restrictions');
+        $this->db->where('user_id',$user_id);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
 
 

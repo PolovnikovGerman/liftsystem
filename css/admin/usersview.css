@@ -1,0 +1,224 @@
+.userslistcontent {
+    margin-left: 20px;
+    margin-top: 20px;
+    clear: both;
+    width: 980px;
+}
+.users_filters {
+
+}
+.userdata_head {
+    clear: both;
+    width: 100%;
+}
+.userdata_head > div {
+    height: 30px;
+    line-height: 30px;
+    background: #0000ff;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: center;
+}
+.userdata_head > .actions {
+    width: 93px;
+}
+button.addnewusers {
+    padding: 4px!important;
+    font-size: 12px;
+    margin-top: -1px;
+}
+.userdata_head > .username {
+    width: 130px;
+}
+.userdata_head > .userstatus {
+    width: 82px;
+}
+.userdata_head > .userrealname {
+    width: 180px;
+}
+.userdata_head > .useremail {
+    width: 190px;
+}
+.userdata_head > .userlevel {
+    width: 100px;
+}
+.userdata_head > .userlastactivity {
+    width: 198px;
+}
+.usertabledata {
+    clear: both;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 565px;
+    margin-bottom: 15px;
+    border-left: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    width: 972px;
+}
+.usertabledata > .userdatarow {
+}
+.userdatarow {
+    clear: both;
+    width: 100%;
+}
+.userdatarow > div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    color: #000;
+    text-align: left;
+}
+.userdatarow > .actions {
+    border-right: 1px solid #000000;
+}
+.userdatarow .edituser,
+.userdatarow .deleteuser,
+.userdatarow .userstatus
+{
+    height: 22px;
+    line-height: 22px;
+    width: 31px;
+    text-align: center;
+}
+.userdatarow .edituser i,
+.userdatarow .deleteuser i,
+.userdatarow .userstatus i
+{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.userdatarow > .username {
+    padding-left: 5px;
+    width: 130px;
+    border-right: 1px solid #000000;
+}
+.userdatarow > .status {
+    text-align: center;
+    width: 82px;
+    border-right: 1px solid #000000;
+}
+.userdatarow > .userrealname {
+    padding-left: 5px;
+    width: 180px;
+    border-right: 1px solid #000000;
+}
+.userdatarow > .useremail {
+    padding-left: 5px;
+    width: 190px;
+    border-right: 1px solid #000000;
+}
+.userdatarow > .userlevel {
+    padding-left: 5px;
+    width: 100px;
+    border-right: 1px solid #000000;
+}
+.userdatarow > .userlastactivity {
+    padding-left: 5px;
+    width: 179px;
+}
+/* Popup edit form */
+.userpersondata {
+    float: left;
+    width: 376px;
+}
+.userpersondata fieldset {
+    width: 370px;
+    border: 2px solid #0000ff;
+}
+.userpersondata fieldset legend {
+    font-size: 16px;
+    font-weight: bold;
+    width: auto;
+    margin-bottom: 0;
+    border-bottom: none;
+    margin-left: 93px;
+}
+.input_row {
+    clear: both;
+    float: left;
+    width: 373px;
+    margin-bottom: 7px;
+}
+.input_row .labeltxt {
+    clear: both;
+    float: left;
+    font-weight: bold;
+    line-height: 18px;
+    padding-right: 10px;
+    padding-top: 2px;
+    text-align: right;
+    width: 145px;
+}
+.input_row .inputval {
+    float: left;
+    width: 202px;
+    text-align: left;
+}
+.inputval input.large {
+    width: 194px;
+}
+.inputval input.medium {
+    width: 200px;
+}
+.inputval input.short {
+    width: 120px;
+}
+textarea.emailsignature {
+    float: left;
+    height: 64px;
+    overflow-y: auto;
+    resize: none;
+    width: 215px;
+}
+.permisselect {
+    width: 209px;
+}
+.saveuser {
+    float: left;
+    margin-left: 350px;
+    background: url(/img/admin/addnew.png) no-repeat;
+    width: 89px;
+    height: 28px;
+    text-align: center;
+    line-height: 28px!important;
+}
+.saveuser a {
+    color:#FFFFFF;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+.retypepasswd {
+    display: none;
+}
+.permissionsdata {
+    float: left;
+    margin-left: 7px;
+    margin-top: 0;
+    text-align: left;
+    width: 427px;
+}
+.permissionsdata fieldset {
+    width: 424px;
+    border: 2px solid #0000ff;
+}
+.permissionsdata fieldset legend {
+    font-size: 16px;
+    font-weight: bold;
+    width: auto;
+    margin-bottom: 0;
+    border-bottom: none;
+    margin-left: 93px;
+}
+.permissioninfo {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    height: 428px;
+    margin-top: 5px;
+    overflow-y: auto;
+    width: 419px;
+    padding: 7px;
+}

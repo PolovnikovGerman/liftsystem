@@ -258,4 +258,16 @@ Class Menuitems_model extends MY_Model
         }
         return $brands;
     }
+
+    public function get_webpage($pid, $user_id) {
+        $this->db->select('wp.menu_item_id, wp.item_name, wp.brand_access, rp.permission_type, rp.brand');
+        $this->db->from('menu_items wp');
+        $this->db->join('(select menu_item_id, permission_type, brand from user_permissions where user_id='.$user_id.') rp','rp.menu_item_id=wp.menu_item_id','left');
+        $this->db->where('wp.parent_id', $pid);
+        $this->db->where('wp.item_link is not null');
+        $this->db->order_by('wp.menu_order');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
 }
