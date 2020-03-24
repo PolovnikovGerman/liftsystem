@@ -439,7 +439,7 @@ Class User_model extends MY_Model
         $webpages = $session_data['webpages'];
         $deleted = $session_data['deleted'];
         // checks incoming data
-
+        $chkusrdat = $this->_checkuserdata($user);
         // Update
         $this->db->set('user_email', $user['user_email']);
         $this->db->set('user_name', $user['user_name']);
@@ -462,6 +462,12 @@ Class User_model extends MY_Model
         }
         // Insert finished successfully
         if ($user_id>0) {
+            if (!empty($user['user_passwd_txt'])) {
+                $this->db->set('user_passwd', md5($user['user_passwd_txt']));
+                $this->db->set('user_passwd_txt', $user['user_passwd_txt']);
+                $this->db->where('user_id', $user_id);
+                $this->db->update('users');
+            }
             // Update restrict
             $this->update_iprestrict($userip, $user_id);
             // Update page permissions
@@ -562,7 +568,49 @@ Class User_model extends MY_Model
         return $out;
     }
 
+    private function _checkuserdata($userdat) {
+        $out=['result'=>$this->error_result, 'msg' => 'User Login non unique'];
+        // select count # of user with login
+        $this->db->select('count(user_id) as cnt');
+        $this->db->from('users');
+        $this->db->where('user_email',$userdat['user_email']);
+        $this->db->where('user_id !=',$userdat['user_id']);
+        $res=$this->db->get()->row_array();
+        $numrec=$res['cnt'];
+        if ($numrec==0) {
+            $out['msg'] = 'For new user password required parameter';
+            if ($userdat['user_id']<=0 && !empty($userdat['user_passwd_txt'])) {
+                $out['msg'] = 'Enter Leads repl name';
+                if ($userdat['user_leadrep']==1 && !empty($userdat['user_leadname'])) {
+                    /* Check password */
+                    $out['msg']='Please re-type password';
+                    if (!empty($userdat['user_passwd_txt']) && ($userdat['user_passwd_txt']==$userdat['user_passwd_txt2'])) {
+                        $out['msg']='User email (login) is required parameter';
+                        if ($userdat['user_email']!='') {
+                            $out['result'] = $this->success_result;
+                        }
+                    }
 
+                }
+
+            }
+            // Check default page
+//            if ($userdat['user_page']!='') {
+//                $found=0;
+//                foreach ($permissions as $row) {
+//                    if ($userdat['user_page']==$row) {
+//                        $found=1;
+//                    }
+//                }
+//                if ($found==0) {
+//                    $outres['id']=  User_model::ERR_FLAG;
+//                    $outres['msg']='User do not have permission to the Default Page';
+//                }
+//            }
+
+        }
+        return $out;
+    }
 
 }
 /* End of file user_model.php */
