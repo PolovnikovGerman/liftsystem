@@ -1,9 +1,11 @@
 .jquery-tree {
     list-style: none;
+	padding-inline-start: 10px;
 }
 
 .jquery-tree ul {
     list-style: none;
+	padding-inline-start: 15px;
 }
 
 .jquery-tree-handle {
@@ -35,7 +37,8 @@
 }
 
 .jquery-tree-leaf {
-    padding-left: 20px;
+    /* padding-left: 20px; */
+	padding-left: 5px;
 }
 
 .jquery-tree-node {

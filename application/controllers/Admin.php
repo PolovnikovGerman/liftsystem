@@ -6,6 +6,7 @@ class Admin extends MY_Controller
 
     private $pagelink = '/admin';
     protected $PERPAGE=1000;
+    private $restore_session_error='Edit Connection Lost. Please, recall form';
 
     public function __construct()
     {
@@ -146,14 +147,24 @@ class Admin extends MY_Controller
             }
 
             if ($error=='') {
-                $wpages=$this->tree(null, 0, 0);
+                $wpages=$this->tree(null, 0, $user_id);
                 $pagepermiss=$this->load->view('admin/webpage_tree_view',array('pages'=>$wpages),TRUE);
-
-                $options = [
+                $iprestricts = $this->load->view('admin/user_iprestrict_view',['userip'=>$userip], TRUE);
+                $session_data = [
                     'user' => $data,
                     'userip' => $userip,
-                    'webpages' => $pagepermiss,
+                    'webpages' => $wpages,
+                    'deleted' => [],
                 ];
+                $session_id = 'userdata'.uniq_link(10);
+                usersession($session_id, $session_data);
+                $options = [
+                    'user' => $data,
+                    'iprestricts' => $iprestricts,
+                    'webpages' => $pagepermiss,
+                    'session' => $session_id,
+                ];
+
                 $mdata['content'] = $this->load->view('admin/user_details_view', $options, TRUE);
                 $mdata['footer'] = $this->load->view('admin/user_savedata_view',[], TRUE);
             }
@@ -175,7 +186,7 @@ class Admin extends MY_Controller
                 $label.='&nbsp;'.$this->_sitemenu_useraccess($wrow, $user_id);
             }
             $id=$wrow['menu_item_id'];
-            $value=($wrow['permission_type']=='' ? 0 : 1);
+            $value=($wrow['permission_type']=='' ? 0 : $wrow['permission_type']);
             $elem=$this->tree($id, $lvl--,$user_id);
             if ($elem==array()) {
                 $elem=$wrow['permission_type'];
@@ -185,6 +196,7 @@ class Admin extends MY_Controller
                 'id'=>$id,
                 'element'=>$elem,
                 'value'=>$value,
+                'brand' => $wrow['brand'],
             );
         }
         return $out;
@@ -209,6 +221,136 @@ class Admin extends MY_Controller
 
     }
 
+    public function changepagepermission() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $menuitem = ifset($postdata, 'menuitem', 0);
+                $newval = ifset($postdata,'newval', 0);
+                $res = $this->menuitems_model->update_userpage_permission($session_data, $menuitem, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['child'] = $res['child'];
+                    $mdata['child_count'] = count($res['child']);
+                    $mdata['newval'] = ($newval==0 ? '' : 'ALL');
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function changesiteaccess() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $menuitem = ifset($postdata, 'menuitem', 0);
+                $newval = ifset($postdata,'newval', '');
+                $res = $this->menuitems_model->update_userpage_siteaccess($session_data, $menuitem, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userip_restrict_add() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->user_model->userip_restrict_add($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'userip' => $res['userip'],
+                    ];
+                    $mdata['content'] = $this->load->view('admin/user_iprestrict_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userip_restrict_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $user_restriction_id = ifset($postdata,'id',0);
+                $newval = ifset($postdata,'newval','');
+                $res = $this->user_model->userip_restrict_edit($user_restriction_id, $newval, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userip_restrict_delete() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $user_restriction_id = ifset($postdata,'id',0);
+                $res = $this->user_model->userip_restrict_delete($user_restriction_id, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'userip' => $res['userip'],
+                    ];
+                    $mdata['content'] = $this->load->view('admin/user_iprestrict_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userdata_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->user_model->update_userdata($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 
     private function _prepare_users_view() {
         $total=$this->user_model->get_count_user(['status'=> [1,2]]);

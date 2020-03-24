@@ -109,16 +109,14 @@ function change_status(user_id, action) {
 
 
 function save_user() {
-    var dat=$("form#userdat").serializeArray();
-    var url="/admin/user_save";
-    $.post(url, dat, function(response){
+    // var dat=$("form#userdat").serializeArray();
+    var url="/admin/userdata_save";
+    var params = new Array();
+    params.push({name: 'session', value: $("#session").val()});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            disablePopup();
-            if (parseInt(response.data.reload)==1) {
-                location.reload();
-            } else {
-                initUserPagination();
-            }
+            $("#pageModal").modal('hide');
+            initUserPagination();
         } else {
             show_error(response);
         }
@@ -147,7 +145,11 @@ function user_edit_init() {
     $("#saveusr").click(function(){
         save_user();
     });
-    $("#user_passwd_txt").change(function(){
+    user_edit_manage();
+}
+
+function user_edit_manage() {
+    $("#user_passwd_txt").unbind('change').change(function(){
         if ($.trim($("#user_passwd_txt"))!='') {
             $("div.retypepasswd").css('display','block');
             $("input#user_passwd_txt2").focus();
@@ -162,27 +164,94 @@ function user_edit_init() {
         if ($(this).prop('checked')==true) {
             newval=1;
         }
-        if (newval==1) {
-            $("select.sitesaccessselect[data-menuitem='"+menuitem+"']").val('ALL');
-        } else {
-            $("select.sitesaccessselect[data-menuitem='"+menuitem+"']").val('');
-        }
-        console.log('Menu '+menuitem+' NewVal '+newval);
+        // Update menu
+        var url = '/admin/changepagepermission';
+        var params = new Array();
+        params.push({name: 'menuitem', value: menuitem});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'session', value: $("#session").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                var child = response.data.child;
+                for (i=0; i<response.data.child_count; i++) {
+                    $('select.sitesaccessselect[data-menuitem="'+child[i]+'"]').val(response.data.newval);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
     $('select.sitesaccessselect').unbind('change').change(function(){
         var menuitem = $(this).data('menuitem');
         var newacc = $(this).val();
-        if (newacc=='') {
-            $('input[type=checkbox][data-menuitem="'+menuitem+'"]').prop('checked',false);
-        } else {
-            $('input[type=checkbox][data-menuitem="'+menuitem+'"]').prop('checked',false);
-        }
-        console.log('New Site Access '+newacc+' MenuItem '+menuitem);
+        var url = '/admin/changesiteaccess';
+        var params = new Array();
+        params.push({name: 'menuitem', value: menuitem});
+        params.push({name: 'newval', value: newacc});
+        params.push({name: 'session', value: $("#session").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newacc=='') {
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').prop('checked',false);
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').parent('label.jquery-tree-title').removeClass('jquery-tree-checked').addClass('jquery-tree-unchecked');
+                } else {
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').prop('checked',true);
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').parent('label.jquery-tree-title').removeClass('jquery-tree-unchecked').addClass('jquery-tree-checked');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
     /* IP RESTRICT */
-    $("input#usrrestrict").click(function(){
-        edit_restrict();
-    })
+    $("div.addrestict").unbind('click').click(function(){
+        var url = '/admin/userip_restrict_add';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#iprestrictarea").empty().html(response.data.content);
+                user_edit_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.iprestrict").unbind('change').change(function () {
+        var key = $(this).data('key');
+        var url = '/admin/userip_restrict_edit';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'id', value: key});
+        params.push({name: 'newval', value: $(this).val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+                if(typeof response.data.oldval !== "undefined" ) {
+                    $("input.iprestrict[data-key='"+key+"']").val(response.data.oldval);
+                }
+
+            }
+        },'json');
+    });
+    $("div.removerestrict").unbind('click').click(function(){
+        if (confirm('Delete IP restriction?')==true) {
+            var key = $(this).data('key');
+            var url = '/admin/userip_restrict_delete';
+            var params = new Array();
+            params.push({name: 'session', value: $("#session").val()});
+            params.push({name: 'id', value: key});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#iprestrictarea").empty().html(response.data.content);
+                    user_edit_manage();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function add_user() {

@@ -222,3 +222,24 @@ textarea.emailsignature {
     width: 419px;
     padding: 7px;
 }
+.addrestict {
+    clear: both;
+    float: left;
+    cursor: pointer;
+}
+.inputrestrictip {
+    float: left;
+    width: 174px;
+}
+.inputrestrictip input {
+    width: 173px!important;
+}
+.removerestrict {
+    float: left;
+    width: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+.removerestrict i {
+    font-size: 18px;
+}

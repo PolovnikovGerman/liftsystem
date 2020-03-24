@@ -1,9 +1,6 @@
 <div class="userdata">
-    <form id="userdat">
-        <input type="hidden" id="user_id" name="user_id" value="<?=$user['user_id']?>"/>
-        <?php foreach ($userip as $row) {?>
-            <input type="hidden" id="userip_<?=$row['key']?>" name="userip_<?=$row['key']?>" value="<?=$row['value']?>"/>
-        <?php } ?>
+    <!-- <form id="userdat"> -->
+        <input type="hidden" id="session" value="<?=$session?>"/>
         <div class="userpersondata">
             <fieldset>
                 <legend>User Personal Data</legend>
@@ -79,15 +76,10 @@
                 </div>
                 <div class="input_row">
                     <div class="labeltxt">IP Restrict:</div>
-                    <?php foreach ($userip as $row) { ?>
-                        <div class="inputval">
-                            <input type="text" class="large iprestrict" data-key="<?=$row['user_restriction_id']?>"  value="<?=$row['ip_address']?>"/>
-                        </div>
-                        <div class="removerestrict" data-key="<?=$row['user_restriction_id']?>">
-                            <i class="fa fa-trash-o" aria-hidden="true"></i>
-                        </div>
-                    <?php } ?>
-                    <div class="addrestict"><i class="fa fa-plus" aria-hidden="true"></i> Add Restrict</div>
+                    <div class="inputval">
+                        <div id="iprestrictarea"><?=$iprestricts?></div>
+                        <div class="addrestict"><i class="fa fa-plus" aria-hidden="true"></i> Add Restrict</div>
+                    </div>
                 </div>
                 <div class="input_row">
                     <div class="labeltxt">From Email:</div>
@@ -124,5 +116,5 @@
                 </div>
             </fieldset>
         </div>
-    </form>
+    <!-- </form> -->
 </div>

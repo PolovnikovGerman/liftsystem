@@ -432,6 +432,125 @@ Class User_model extends MY_Model
         return $res;
     }
 
+    public function update_userdata($session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during update user'];
+        $user = $session_data['user'];
+        $userip = $session_data['userip'];
+        $webpages = $session_data['webpages'];
+        $deleted = $session_data['deleted'];
+        // checks incoming data
+
+        // Update
+        $this->db->set('user_email', $user['user_email']);
+        $this->db->set('user_name', $user['user_name']);
+        $this->db->set('user_status', $user['user_status']);
+        $this->db->set('user_leadrep', $user['user_leadrep']);
+        $this->db->set('finuser', $user['finuser']);
+        $this->db->set('user_leadname', $user['user_leadname']);
+        $this->db->set('user_initials', $user['user_initials']);
+        $this->db->set('time_restrict', $user['time_restrict']);
+        $this->db->set('personal_email', $user['personal_email']);
+        $this->db->set('email_signature', $user['email_signature']);
+        $this->db->set('profit_view', $user['profit_view']);
+        if ($user['user_id']==0) {
+            $this->db->insert('users');
+            $user_id = $this->db->inserted_id();
+        } else {
+            $this->db->where('user_id', $user['user_id']);
+            $this->db->update('users');
+            $user_id = $user['user_id'];
+        }
+        // Insert finished successfully
+        if ($user_id>0) {
+            // Update restrict
+            $this->update_iprestrict($userip, $user_id);
+            // Update page permissions
+            $this->load->model('menuitems_model');
+            $this->menuitems_model->save_userpermissions($webpages, $user_id);
+            foreach ($deleted as $row) {
+                $this->db->where('user_restriction_id', $row);
+                $this->db->delete('user_restrictions');
+            }
+            $out['result']=$this->success_result;
+            usersession($session_id, NULL);
+        }
+        return $out;
+    }
+
+    public function update_iprestrict($userip, $user_id) {
+        foreach ($userip as $row) {
+            if ($row['user_restriction_id']<0) {
+                $this->db->set('user_id', $user_id);
+                $this->db->set('ip_address', $row['ip_address']);
+                $this->db->insert('user_restrictions');
+            }
+        }
+        return true;
+    }
+
+    public function userip_restrict_add($session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict'];
+        $ip_restrict = $session_data['userip'];
+        $newkey = count($ip_restrict)+1;
+        $ip_restrict[] = [
+            'user_restriction_id' => $newkey*(-1),
+            'ip_address' => '',
+        ];
+        $session_data['userip']=$ip_restrict;
+        usersession($session_id, $session_data);
+        $out['result']=$this->success_result;
+        $out['userip']=$ip_restrict;
+        return $out;
+    }
+
+    public function userip_restrict_edit($user_restriction_id, $newval, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict', 'oldval'=>''];
+        $found = 0;
+        $idx=0;
+        $ip_restrict = $session_data['userip'];
+        foreach ($ip_restrict as $row) {
+            if ($row['user_restriction_id']==$user_restriction_id) {
+                $ip_restrict[$idx]['ip_address'] = $newval;
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $session_data['userip']=$ip_restrict;
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function userip_restrict_delete($user_restriction_id, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict', 'oldval'=>''];
+        $found = 0;
+        $idx=0;
+        $ip_restrict = $session_data['userip'];
+        $deleted = $session_data['deleted'];
+        $newip = [];
+        foreach ($ip_restrict as $row) {
+            if ($row['user_restriction_id']==$user_restriction_id) {
+                $found = 1;
+                if ($user_restriction_id>0) {
+                    $deleted[]=$user_restriction_id;
+                }
+            } else {
+                $newip[] = $row;
+            }
+        }
+        if ($found==1) {
+            $session_data['userip']=$newip;
+            $session_data['deleted']=$deleted;
+            usersession($session_id, $session_data);
+            $out['userip'] = $newip;
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
 
 
 }
