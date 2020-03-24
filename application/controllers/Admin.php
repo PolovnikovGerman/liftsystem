@@ -334,6 +334,27 @@ class Admin extends MY_Controller
         show_404();
     }
 
+    public function userdata_change() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $item = ifset($postdata, 'item', '');
+                $newval = ifset($postdata, 'newval', '');
+                $res = $this->user_model->userdata_edit($item, $newval, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function userdata_save() {
         if ($this->isAjax()) {
             $mdata = [];

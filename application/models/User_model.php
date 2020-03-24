@@ -527,7 +527,6 @@ Class User_model extends MY_Model
     public function userip_restrict_delete($user_restriction_id, $session_data, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict', 'oldval'=>''];
         $found = 0;
-        $idx=0;
         $ip_restrict = $session_data['userip'];
         $deleted = $session_data['deleted'];
         $newip = [];
@@ -546,6 +545,18 @@ Class User_model extends MY_Model
             $session_data['deleted']=$deleted;
             usersession($session_id, $session_data);
             $out['userip'] = $newip;
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function userdata_edit($item, $newval, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Item',];
+        $user = $session_data['user'];
+        if (array_key_exists($item, $user)) {
+            $user[$item] = $newval;
+            $session_data['user']=$user;
+            usersession($session_id, $session_data);
             $out['result']=$this->success_result;
         }
         return $out;

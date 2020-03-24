@@ -252,6 +252,49 @@ function user_edit_manage() {
             },'json');
         }
     });
+    $("input.userpersdata").unbind('change').change(function () {
+        var url = '/admin/userdata_change';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'item', value: $(this).data('name')});
+        params.push({name: 'newval', value: $(this).val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("select.userpersdata").unbind('change').change(function () {
+        var url = '/admin/userdata_change';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'item', value: $(this).data('name')});
+        params.push({name: 'newval', value: $(this).val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.userpersdatachk").unbind('change').change(function () {
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        var url = '/admin/userdata_change';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'item', value: $(this).data('name')});
+        params.push({name: 'newval', value: newval});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function add_user() {
