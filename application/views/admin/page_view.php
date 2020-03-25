@@ -10,6 +10,9 @@
         <?php if (isset($usersview)) { ?>
             <div class="admincontentarea" id="usersview" style="display: none;"><?=$usersview?></div>
         <?php } ?>
+        <?php if (isset($parseremailsview)) { ?>
+            <div class="admincontentarea" id="parseremailsview" style="display: none;"><?=$parseremailsview?></div>
+        <?php } ?>
     </div>
 </div>
 

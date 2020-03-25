@@ -17,5 +17,9 @@ function init_page(objid) {
             $("#usersview").show();
             init_users();
             break;
+        case 'parseremailsview':
+            $("#parseremailsview").show();
+            init_parsedemails_content();
+            break;
     }
 }

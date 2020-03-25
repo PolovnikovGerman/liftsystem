@@ -612,6 +612,23 @@ Class User_model extends MY_Model
         return $out;
     }
 
+    public function get_users($options=[]) {
+        $this->db->select('*');
+        $this->db->from('users');
+        if (isset($options['user_status'])) {
+            $this->db->where('user_status', $options['user_status']);
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direction'])) {
+                $this->db->order_by($options['order_by'], $options['direction']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 }
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */

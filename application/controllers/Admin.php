@@ -38,6 +38,10 @@ class Admin extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/admin/usersview.css');
                 $head['scripts'][]=array('src'=>'/js/admin/usersview.js');
                 $content_options['usersview'] = $this->_prepare_users_view();
+            } elseif ($row['item_link']=='#parseremailsview') {
+                $head['styles'][]=array('style'=>'/css/admin/parseremailsview.css');
+                $head['scripts'][]=array('src'=>'/js/admin/parseremailsview.js');
+                $content_options['parseremailsview'] = $this->_prepare_parseremail_view();
             }
         }
 
@@ -387,5 +391,141 @@ class Admin extends MY_Controller
         return $content;
     }
 
+    // Parse emails
+    public function whitelistdata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('email_model');
+            $options = [
+                'order_by' => 'sender',
+                'direction' => 'asc',
+            ];
+            $senders=$this->email_model->get_whitelist($options);
+            $mdata['content']=$this->load->view('admin/whitelist_tabledat_view',array('senders'=>$senders),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+
+    }
+
+    public function whitelist_delete() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('email_model');
+            $res=$this->email_model->delete_whitelist($email_id);
+            if (!$res) {
+                $error='Delete ended unsuccessfully';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function whitelist_edit() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('email_model');
+            $mail_dat=$this->email_model->get_whitelist_data($email_id);
+            if (!isset($mail_dat['email_id'])) {
+                $error='White List data not found';
+            } else {
+                $usr_opt=array(
+                    'order_by'=>'user_name',
+                    'direction'=>'asc',
+                    'user_status'=>1,
+                );
+                $mail_dat['users']=$this->user_model->get_users($usr_opt);
+                $mdata['content']=$this->load->view('admin/whitelist_edit_view',$mail_dat,TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function whitelist_new() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $usr_opt=array(
+                'order_by'=>'user_name',
+                'direction'=>'asc',
+                'user_status'=>1,
+            );
+            $users=$this->user_model->get_users($usr_opt);
+            $options = [
+                'users' => $users,
+                'sender' => '',
+                'user_id' => 0,
+            ];
+            $mdata['content']=$this->load->view('admin/whitelist_edit_view', $options,TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function whitelist_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $sender=$this->input->post('sender');
+            $user_id=$this->input->post('user_id');
+            $email_id=$this->input->post('email_id',0);
+            $this->load->model('email_model');
+            $res=$this->email_model->save_whitelist($sender, $user_id, $email_id);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function parsedemaildata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+            $datelog=ifset($postdata,'date','');
+            $filtr=ifset($postdata, 'filtr','');
+            $search=array();
+            if ($datelog!='') {
+                $search['datestart']=strtotime($datelog);
+                $search['dateend']=strtotime(date("Y-m-d", strtotime($datelog)) . " +1 day");
+            }
+            if ($filtr!='') {
+                $search['filtr']=strtoupper($filtr);
+            }
+            $order_by=ifset($postdata,'order_by', 'parsed_date');
+            $direct=ifset($postdata,'','desc');
+            $pagenum = ifset($postdata,'offset',0);
+            $limit = ifset($postdata, 'limit', $this->PERPAGE);
+            $offset = $pagenum * $limit;
+            $this->load->model('email_model');
+            $logdata=$this->email_model->get_parserlogdata($search, $order_by, $direct, $offset, $limit);
+            if (count($logdata)==0) {
+                $content=$this->load->view('admin/parselog_emptydata_view',array(),TRUE);
+            } else {
+                $content=$this->load->view('admin/parselog_data_view',array('data'=>$logdata),TRUE);
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    private function _prepare_parseremail_view() {
+        $this->load->model('email_model');
+        $total = $this->email_model->get_count_parsedemails();
+        $orderby='parsed_date';
+        $direc='desc';
+        $options=array(
+            'total'=>$total,
+            'perpage'=>$this->PERPAGE,
+            'orderby'=>$orderby,
+            'direct'=>$direc,
+        );
+        $content=$this->load->view('admin/parsedemails_head_view',$options,TRUE);
+        return $content;
+
+    }
 
 }
