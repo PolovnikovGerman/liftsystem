@@ -228,10 +228,10 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_itemsubmenu($user_id, $root_lnk) {
-        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link');
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access, u.brand');
         $this->db->from('menu_items mm');
         $this->db->join('menu_items m','m.parent_id=mm.menu_item_id');
-        $this->db->join('user_permissions u','on m.menu_item_id = u.menu_item_id');
+        $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
         $this->db->where('u.user_id', $user_id);
         $this->db->where('u.permission_type > 0');
         $this->db->where('mm.item_link', $root_lnk);
@@ -257,6 +257,30 @@ Class Menuitems_model extends MY_Model
             ];
         }
         return $brands;
+    }
+
+    public function get_brand_pagepermisions($brand_access, $brand) {
+        if ($brand_access=='SITE') {
+            if ($brand=='ALL') {
+                $brands =[
+                    ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All brands'],
+                    ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
+                    ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
+                ];
+            } elseif ($brand=='SB') {
+                $brands =[
+                    ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
+                ];
+            } elseif ($brand=='BT') {
+                $brands =[
+                    ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
+                ];
+            } else {
+                $brands=[];
+            }
+        }
+        return $brands;
+
     }
 
     public function get_webpage($pid, $user_id) {

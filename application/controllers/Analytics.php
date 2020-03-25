@@ -35,25 +35,35 @@ class Analytics extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
 
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
-        $brand = $brands[0]['brand'];
-        $top_options = [
-            'brands' => $brands,
-            'active' => $brand,
-        ];
-        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#reportsalestypeview') {
                 // Taks View
                 $head['styles'][] = ['style' => '/css/analytics/salestypes.css'];
                 $head['scripts'][] = ['src' => '/js/analytics/salestypes.js'];
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['reportsalestypeview'] = $this->_prepare_salestype_view($brand, $top_menu);
             } elseif ($row['item_link']=='#reportitemsoldyearview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemsales.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemsales.js'];
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $options=[
                     'brand' => $brand,
                     'top_menu' => $top_menu,
@@ -62,10 +72,30 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales($brand, $top_menu);
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['checkoutreportview']=$this->_prepare_checkout_report($brand, $top_menu);
             }
         }
