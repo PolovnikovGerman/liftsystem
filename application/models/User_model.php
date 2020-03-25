@@ -236,6 +236,7 @@ Class User_model extends MY_Model
         $this->db->from('users u');
         $this->db->join('roles r','r.role_id=u.role_id', 'left');
         $this->db->join("({$lastactiv_qty}) act",'act.user_id=u.user_id', 'left');
+        $this->db->where('u.user_status != ', $this->delete_status);
         if (isset($options['user_status'])) {
             $this->db->where('u.user_status', $options['user_status']);
         }
@@ -259,7 +260,18 @@ Class User_model extends MY_Model
         $numpp=1;
         foreach ($res as $row) {
             $row['numpp']=$numpp;
-            $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
+            $row['last_activity']= 'n/a';
+            if (!empty($row['lastactivity'])) {
+                $row['last_activity']=substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']);
+            }
+            // $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
+            if ($row['user_status']==$this->user_active) {
+                $row['status_txt'] = 'Active';
+            } else {
+                $row['status_txt'] = 'Non-Active';
+            }
+
+
             $data[]=$row;
             $numpp++;
         }
@@ -280,6 +292,27 @@ Class User_model extends MY_Model
             $out['data']=$res[0];
         }
         return $out;
+    }
+
+    public function new_user() {
+        $data = [
+            'user_id' => 0,
+            'user_email' =>'',
+            'user_name'=>'',
+            'user_status'=>'0',
+            'user_id'=>0,
+            'user_leadrep'=>0,
+            'user_leadname'=>'',
+            'user_initials'=>'',
+            'time_restrict'=>0,
+            'user_page'=>'',
+            'redmine_executor'=>'NO',
+            'personal_email'=>'',
+            'email_signature'=>'',
+            'finuser'=>0,
+            'profit_view'=>'Points',
+        ];
+        return $data;
     }
 
     public function get_user_data($user_id) {
@@ -352,8 +385,249 @@ Class User_model extends MY_Model
         return $res;
     }
 
+    public function delete_usr($user_id, $executor_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'User not found'];
+        $chkres = $this->get_user_details($user_id);
+        if ($chkres['result']==$this->success_result) {
+            $this->db->set('user_status', $this->delete_status);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('users');
+            $out['result'] = $this->success_result;
+            $this->userlog($executor_id,'Delete User '.$user_id, 1);
+        }
+        return $out;
+    }
 
+    public function update_userstatus($user_id, $curstatus, $executor_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'User not found'];
+        $chkres = $this->get_user_details($user_id);
+        if ($chkres['result']==$this->success_result) {
+            if ($curstatus==$this->user_active) {
+                $this->db->set('user_status', $this->user_paused);
+            } else {
+                $this->db->set('user_status', $this->user_active);
+            }
+            $this->db->where('user_id', $user_id);
+            $this->db->update('users');
+            $out['result'] = $this->success_result;
+            if ($curstatus==$this->user_active) {
+                $this->userlog($executor_id,'Pause User '.$user_id, 1);
+                $out['user_status'] = $this->user_paused;
+                $out['status_txt'] = 'Non-Active';
+            } else {
+                $this->userlog($executor_id,'Activate User '.$user_id, 1);
+                $out['user_status'] = $this->user_active;
+                $out['status_txt'] = 'Active';
+            }
+        }
+        return $out;
+    }
 
+    function get_user_iprestrict($user_id) {
+        $this->db->select('*');
+        $this->db->from('user_restrictions');
+        $this->db->where('user_id',$user_id);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function update_userdata($session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during update user'];
+        $user = $session_data['user'];
+        $userip = $session_data['userip'];
+        $webpages = $session_data['webpages'];
+        $deleted = $session_data['deleted'];
+        // checks incoming data
+        $chkusrdat = $this->_checkuserdata($user);
+        // Update
+        $this->db->set('user_email', $user['user_email']);
+        $this->db->set('user_name', $user['user_name']);
+        $this->db->set('user_status', $user['user_status']);
+        $this->db->set('user_leadrep', $user['user_leadrep']);
+        $this->db->set('finuser', $user['finuser']);
+        $this->db->set('user_leadname', $user['user_leadname']);
+        $this->db->set('user_initials', $user['user_initials']);
+        $this->db->set('time_restrict', $user['time_restrict']);
+        $this->db->set('personal_email', $user['personal_email']);
+        $this->db->set('email_signature', $user['email_signature']);
+        $this->db->set('profit_view', $user['profit_view']);
+        if ($user['user_id']==0) {
+            $this->db->insert('users');
+            $user_id = $this->db->inserted_id();
+        } else {
+            $this->db->where('user_id', $user['user_id']);
+            $this->db->update('users');
+            $user_id = $user['user_id'];
+        }
+        // Insert finished successfully
+        if ($user_id>0) {
+            if (!empty($user['user_passwd_txt'])) {
+                $this->db->set('user_passwd', md5($user['user_passwd_txt']));
+                $this->db->set('user_passwd_txt', $user['user_passwd_txt']);
+                $this->db->where('user_id', $user_id);
+                $this->db->update('users');
+            }
+            // Update restrict
+            $this->update_iprestrict($userip, $user_id);
+            // Update page permissions
+            $this->load->model('menuitems_model');
+            $this->menuitems_model->save_userpermissions($webpages, $user_id);
+            foreach ($deleted as $row) {
+                $this->db->where('user_restriction_id', $row);
+                $this->db->delete('user_restrictions');
+            }
+            $out['result']=$this->success_result;
+            usersession($session_id, NULL);
+        }
+        return $out;
+    }
+
+    public function update_iprestrict($userip, $user_id) {
+        foreach ($userip as $row) {
+            if ($row['user_restriction_id']<0) {
+                $this->db->set('user_id', $user_id);
+                $this->db->set('ip_address', $row['ip_address']);
+                $this->db->insert('user_restrictions');
+            }
+        }
+        return true;
+    }
+
+    public function userip_restrict_add($session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict'];
+        $ip_restrict = $session_data['userip'];
+        $newkey = count($ip_restrict)+1;
+        $ip_restrict[] = [
+            'user_restriction_id' => $newkey*(-1),
+            'ip_address' => '',
+        ];
+        $session_data['userip']=$ip_restrict;
+        usersession($session_id, $session_data);
+        $out['result']=$this->success_result;
+        $out['userip']=$ip_restrict;
+        return $out;
+    }
+
+    public function userip_restrict_edit($user_restriction_id, $newval, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict', 'oldval'=>''];
+        $found = 0;
+        $idx=0;
+        $ip_restrict = $session_data['userip'];
+        foreach ($ip_restrict as $row) {
+            if ($row['user_restriction_id']==$user_restriction_id) {
+                $ip_restrict[$idx]['ip_address'] = $newval;
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $session_data['userip']=$ip_restrict;
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function userip_restrict_delete($user_restriction_id, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Add Restrict', 'oldval'=>''];
+        $found = 0;
+        $ip_restrict = $session_data['userip'];
+        $deleted = $session_data['deleted'];
+        $newip = [];
+        foreach ($ip_restrict as $row) {
+            if ($row['user_restriction_id']==$user_restriction_id) {
+                $found = 1;
+                if ($user_restriction_id>0) {
+                    $deleted[]=$user_restriction_id;
+                }
+            } else {
+                $newip[] = $row;
+            }
+        }
+        if ($found==1) {
+            $session_data['userip']=$newip;
+            $session_data['deleted']=$deleted;
+            usersession($session_id, $session_data);
+            $out['userip'] = $newip;
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function userdata_edit($item, $newval, $session_data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Item',];
+        $user = $session_data['user'];
+        if (array_key_exists($item, $user)) {
+            $user[$item] = $newval;
+            $session_data['user']=$user;
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    private function _checkuserdata($userdat) {
+        $out=['result'=>$this->error_result, 'msg' => 'User Login non unique'];
+        // select count # of user with login
+        $this->db->select('count(user_id) as cnt');
+        $this->db->from('users');
+        $this->db->where('user_email',$userdat['user_email']);
+        $this->db->where('user_id !=',$userdat['user_id']);
+        $res=$this->db->get()->row_array();
+        $numrec=$res['cnt'];
+        if ($numrec==0) {
+            $out['msg'] = 'For new user password required parameter';
+            if ($userdat['user_id']<=0 && !empty($userdat['user_passwd_txt'])) {
+                $out['msg'] = 'Enter Leads repl name';
+                if ($userdat['user_leadrep']==1 && !empty($userdat['user_leadname'])) {
+                    /* Check password */
+                    $out['msg']='Please re-type password';
+                    if (!empty($userdat['user_passwd_txt']) && ($userdat['user_passwd_txt']==$userdat['user_passwd_txt2'])) {
+                        $out['msg']='User email (login) is required parameter';
+                        if ($userdat['user_email']!='') {
+                            $out['result'] = $this->success_result;
+                        }
+                    }
+
+                }
+
+            }
+            // Check default page
+//            if ($userdat['user_page']!='') {
+//                $found=0;
+//                foreach ($permissions as $row) {
+//                    if ($userdat['user_page']==$row) {
+//                        $found=1;
+//                    }
+//                }
+//                if ($found==0) {
+//                    $outres['id']=  User_model::ERR_FLAG;
+//                    $outres['msg']='User do not have permission to the Default Page';
+//                }
+//            }
+
+        }
+        return $out;
+    }
+
+    public function get_users($options=[]) {
+        $this->db->select('*');
+        $this->db->from('users');
+        if (isset($options['user_status'])) {
+            $this->db->where('user_status', $options['user_status']);
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direction'])) {
+                $this->db->order_by($options['order_by'], $options['direction']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
 
 }
 /* End of file user_model.php */

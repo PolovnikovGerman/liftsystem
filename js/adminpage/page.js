@@ -7,7 +7,10 @@ $(document).ready(function () {
         if (confirm('You want to sign out?')==true) {
             window.location.href='/login/logout';
         }
-    })
+    });
+    $("#admin").unbind('click').click(function(){
+        window.location.href='/admin';
+    });
 })
 
 function show_error(response) {

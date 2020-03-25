@@ -209,6 +209,125 @@ Class Artproof_model extends MY_Model
         return $cfgdat;
     }
 
+    /* Change ALERT STATUS */
+    public function save_taskalert($data) {
+        $out=array('result'=>  $this->error_result, 'msg'=>'Unknow Type of Alert');
+        switch ($data['alert_id']) {
+            case 'noart_alert':
+                $this->db->set('noart_alert',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'redraw_alert':
+                $this->db->set('redraw_alert',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'toproof_alert':
+                $this->db->set('toproof_alert',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'needapproval_alert':
+                $this->db->set('needapproval_alert',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            default :
+                break;
+        }
+        return $out;
+    }
+    /* Change Alert Time */
+    public function save_taskalerttime($data) {
+        $out=array('result'=>  $this->error_result, 'msg'=>'Unknow Type of Alert');
+        switch ($data['alert_time']) {
+            case 'noart_common_days':
+                $this->db->set('noart_common_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'noart_common_hours':
+                $this->db->set('noart_common_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'noart_rush_days':
+                $this->db->set('noart_rush_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'noart_rush_hours':
+                $this->db->set('noart_rush_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'redraw_common_days':
+                $this->db->set('redraw_common_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'redraw_common_hours':
+                $this->db->set('redraw_common_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'redraw_rush_days':
+                $this->db->set('redraw_rush_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'redraw_rush_hours':
+                $this->db->set('redraw_rush_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'toproof_common_days':
+                $this->db->set('toproof_common_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'toproof_common_hours':
+                $this->db->set('toproof_common_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'toproof_rush_days':
+                $this->db->set('toproof_rush_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'toproof_rush_hours':
+                $this->db->set('toproof_rush_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'needapproval_common_days':
+                $this->db->set('needapproval_common_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'needapproval_common_hours':
+                $this->db->set('needapproval_common_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'needapproval_rush_days':
+                $this->db->set('needapproval_rush_days',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            case 'needapproval_rush_hours':
+                $this->db->set('needapproval_rush_hours',intval($data['value']));
+                $this->db->update('ts_configs');
+                $out['result']=$this->success_result;
+                break;
+            /*   */
+            default :
+                break;
+        }
+        return $out;
+    }
 
     private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less=0, $brand, $viewall) {
         $daylimit=24*60*60;

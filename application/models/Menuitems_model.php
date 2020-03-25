@@ -258,4 +258,153 @@ Class Menuitems_model extends MY_Model
         }
         return $brands;
     }
+
+    public function get_webpage($pid, $user_id) {
+        $this->db->select('wp.menu_item_id, wp.item_name, wp.brand_access, rp.permission_type, rp.brand');
+        $this->db->from('menu_items wp');
+        $this->db->join('(select menu_item_id, permission_type, brand from user_permissions where user_id='.$user_id.') rp','rp.menu_item_id=wp.menu_item_id','left');
+        $this->db->where('wp.parent_id', $pid);
+        $this->db->where('wp.item_link is not null');
+        $this->db->order_by('wp.menu_order');
+        $result=$this->db->get()->result_array();
+        return $result;
+    }
+
+    public function update_userpage_permission($session_data, $menuitem, $newval, $session_id) {
+        $out=['result' => $this->error_result,'msg'=>'Page Not found'];
+        if ($menuitem>0) {
+            $webpages = $session_data['webpages'];
+            $found = 0;
+            $child = [];
+            $idx = 0;
+            foreach ($webpages as $row) {
+                if ($row['id']==$menuitem) {
+                    array_push($child, $row['id']);
+                    $found = 1;
+                    $webpages[$idx]['value']=$newval;
+                };
+                if (is_array($row['element'])) {
+                    $eidx = 0;
+                    foreach ($row['element'] as $erow) {
+                        if ($erow['id']==$menuitem || $row['id']==$menuitem) {
+                            $found=1;
+                            array_push($child, $erow['id']);
+                            $webpages[$idx]['element'][$eidx]['value']=$newval;
+                        }
+                        $eidx++;
+                    }
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $out['child'] = $child;
+                $session_data['webpages']=$webpages;
+                usersession($session_id, $session_data);
+            }
+        }
+        return $out;
+    }
+
+    public function update_userpage_siteaccess($session_data, $menuitem, $newval, $session_id) {
+        $out=['result' => $this->error_result,'msg'=>'Page Not found'];
+        if ($menuitem>0) {
+            $webpages = $session_data['webpages'];
+            $found = 0;
+            $idx = 0;
+            foreach ($webpages as $row) {
+                if ($row['id']==$menuitem) {
+                    $found = 1;
+                    $webpages[$idx]['brand']=$newval;
+                    if ($newval=='') {
+                        $webpages[$idx]['value']=0;
+                    } else {
+                        $webpages[$idx]['value']=1;
+                    }
+                };
+                if (is_array($row['element'])) {
+                    $eidx = 0;
+                    foreach ($row['element'] as $erow) {
+                        if ($erow['id']==$menuitem) {
+                            $found=1;
+                            $webpages[$idx]['element'][$eidx]['brand']=$newval;
+                            if ($newval=='') {
+                                $webpages[$idx]['element'][$eidx]['value']=0;
+                            } else {
+                                $webpages[$idx]['element'][$eidx]['value']=1;
+                            }
+                        }
+                        $eidx++;
+                    }
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $session_data['webpages']=$webpages;
+                usersession($session_id, $session_data);
+            }
+        }
+        return $out;
+    }
+
+    public function save_userpermissions($webpages, $user_id) {
+        foreach ($webpages as $row) {
+            $res = $this->_chkuserpermission($row['id'], $user_id);
+            $this->db->set('permission_type', $row['value']);
+            if ($row['value']==0) {
+                $this->db->set('brand', NULL);
+            } else {
+                if (empty($row['brand'])) {
+                    $this->db->set('brand', NULL);
+                } else {
+                    $this->db->set('brand', $row['brand']);
+                }
+            }
+            $this->db->where('user_permission_id', $res);
+            $this->db->update('user_permissions');
+            if (is_array($row['element'])) {
+                $elements = $row['element'];
+                foreach ($elements as $erow) {
+                    $eres = $this->_chkuserpermission($erow['id'], $user_id);
+                    $this->db->set('permission_type', $erow['value']);
+                    if ($erow['value']==0) {
+                        $this->db->set('brand', NULL);
+                    } else {
+                        if (empty($erow['brand'])) {
+                            $this->db->set('brand', NULL);
+                        } else {
+                            $this->db->set('brand', $erow['brand']);
+                        }
+                    }
+                    $this->db->where('user_permission_id', $eres);
+                    $this->db->update('user_permissions');
+                    if ($erow['value']==1) {
+                        $this->db->set('permission_type', 1);
+                        $this->db->where('user_permission_id', $res);
+                        $this->db->update('user_permissions');
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private function _chkuserpermission($menu_item_id, $user_id) {
+        $this->db->select('max(user_permission_id) as user_permission_id, count(user_permission_id) as cnt');
+        $this->db->from('user_permissions');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('menu_item_id', $menu_item_id);
+        $dat = $this->db->get()->row_array();
+        if ($dat['cnt']==0) {
+            $this->db->set('user_id', $user_id);
+            $this->db->set('menu_item_id', $menu_item_id);
+            $this->db->insert('user_permissions');
+            $result = $this->db->insert_id();
+        } else {
+            $result = $dat['user_permission_id'];
+        }
+        return $result;
+    }
+
 }

@@ -9,7 +9,7 @@ class Email_model extends My_Model
 {
 
     private $INIT_MSG = 'Unknown error. Try later';
-
+    private $empty_html_content = '&nbsp;';
     function __construct()
     {
         parent::__construct();
@@ -1285,6 +1285,133 @@ class Email_model extends My_Model
             $ordnum--;
         }
         return ['left' => $email_dat_left, 'right' => $email_dat_right];
+    }
+
+    public function get_count_parsedemails($options=[]) {
+        $this->db->select('count(parsmessage_log_id) as cnt');
+        $this->db->from('ts_parsmessage_log');
+        // Filters
+        if (isset($options['datestart'])) {
+            $this->db->where('unix_timestamp(parsed_date) >= ',$options['datestart']);
+        }
+        if (isset($options['dateend'])) {
+            $this->db->where('unix_timestamp(parsed_date) < ',$options['dateend']);
+        }
+        if (isset($options['filtr'])) {
+            $this->db->like('upper(concat(message_from, message_subject))',$options['filtr']);
+        }
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_parserlogdata($search, $order_by, $direct, $offset, $limit) {
+        $this->db->select('*');
+        $this->db->from('ts_parsmessage_log');
+        if (isset($search['datestart'])) {
+            $this->db->where('unix_timestamp(parsed_date) >= ',$search['datestart']);
+        }
+        if (isset($search['dateend'])) {
+            $this->db->where('unix_timestamp(parsed_date) < ',$search['dateend']);
+        }
+        if (isset($search['filtr'])) {
+            $this->db->like('upper(concat(message_from, message_subject))',$search['filtr']);
+        }
+        $this->db->order_by($order_by, $direct);
+        $this->db->limit($limit, $offset);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        foreach ($res as $row) {
+            if (empty($row['message_subject'])) {
+                $row['message_subject']=$this->empty_html_content;
+            }
+            $row['out_parsed_date']=date('m/d/y',strtotime($row['parsed_date']));
+            if ($row['parsed_result']==1) {
+                $row['out_parsed_result']='<span class=\'successparseed\'>SUCCESS</span>';
+            } else {
+                $row['out_parsed_result']='<span class=\'errorparsed\'>'.$row['parsed_error'].'</span>';
+            }
+            $out[]=$row;
+        }
+        return $out;
+
+    }
+
+    public function get_whitelist($options) {
+        $this->db->select('wl.email_id, wl.sender, u.user_name');
+        $this->db->from('ts_whitelist_emails wl');
+        $this->db->join('users u','u.user_id=wl.user_id');
+        if (isset($options['order_by'])) {
+            if (isset($options['direction'])) {
+                $this->db->order_by($options['order_by'], $options['direction']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function delete_whitelist($email_id) {
+        $this->db->where('email_id',$email_id);
+        $this->db->delete('ts_whitelist_emails');
+        if ($this->db->affected_rows()==0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function get_whitelist_data($email_id) {
+        $this->db->select('*');
+        $this->db->from('ts_whitelist_emails');
+        $this->db->where('email_id',$email_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function save_whitelist($sender, $user_id, $email_id) {
+        $out=array('result'=> $this->error_result, 'msg'=> 'Error during update');
+        if ($sender=='') {
+            $out['msg']='Sender Email Empty';
+        } elseif (!valid_email_address($sender)) {
+            $out['msg']='Enter correct Email Address';
+        } elseif($this->isWhiteListExist($sender, $email_id)) {
+            $out['msg']='Enter Unique Email Address';
+        } elseif ($user_id=='') {
+            $out['msg']='Select User';
+        } else {
+            $this->db->set('sender',$sender);
+            $this->db->set('user_id',$user_id);
+            if ($email_id==0) {
+                $this->db->insert('ts_whitelist_emails');
+                if ($this->db->insert_id()!=0) {
+                    $out['result']=$this->success_result;
+                } else {
+                    $out['msg']='Unknown Error. Try Later';
+                }
+            } else {
+                $this->db->where('email_id',$email_id);
+                $this->db->update('ts_whitelist_emails');
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    private function isWhiteListExist($sender, $email_id) {
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_whitelist_emails');
+        $this->db->where('sender',$sender);
+        if ($email_id) {
+            $this->db->where('email_id != ', $email_id);
+        }
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
     }
 
 }
