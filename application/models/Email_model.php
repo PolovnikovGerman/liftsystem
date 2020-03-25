@@ -1291,6 +1291,15 @@ class Email_model extends My_Model
         $this->db->select('count(parsmessage_log_id) as cnt');
         $this->db->from('ts_parsmessage_log');
         // Filters
+        if (isset($options['datestart'])) {
+            $this->db->where('unix_timestamp(parsed_date) >= ',$options['datestart']);
+        }
+        if (isset($options['dateend'])) {
+            $this->db->where('unix_timestamp(parsed_date) < ',$options['dateend']);
+        }
+        if (isset($options['filtr'])) {
+            $this->db->like('upper(concat(message_from, message_subject))',$options['filtr']);
+        }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
     }

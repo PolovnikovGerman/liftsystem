@@ -2,6 +2,18 @@ function init_parsedemails_content() {
     // get list of senders
     show_senders_list();
     initParsedemailsPagination();
+    $("#wldate").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    $(".findwparse[data-typeid='find_wl']").unbind('click').click(function(){
+        search_parsedemails();
+    });
+    $(".findwparse[data-typeid='clear_wl']").unbind('click').click(function(){
+        $("#wldate").val('');
+        $("#wlsearch").val('');
+        search_parsedemails();
+    });
 }
 
 function show_senders_list() {
@@ -101,6 +113,25 @@ function add_sender() {
     },'json')
 }
 
+function search_parsedemails() {
+    var url = '/admin/parsedemailsearch';
+    var params = new Array();
+    params.push({name: 'date', value: $("#wldate").val()});
+    params.push({name: 'filtr', value: $("#wlsearch").val()});
+    $("#loader").show();
+    $.post(url,params,function(response){
+        if (response.errors=='') {
+            $("#loader").hide();
+            $('#whitelisttotal').val(response.data.totals);
+            initParsedemailsPagination();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+
+}
+
 function initParsedemailsPagination() {
     // count entries inside the hidden content
     var num_entries = $('#whitelisttotal').val();
@@ -137,8 +168,10 @@ function pageWhitelistCallback(page_index) {
     params.push({name: 'order_by', value:$("#whitelistorder").val()});
     params.push({name: 'direction', value :direction});
     params.push({name: 'maxval', value :maxval});
+    params.push({name: 'date', value: $("#wldate").val()});
+    params.push({name: 'filtr', value: $("#wlsearch").val()});
     $("#loader").show();
-    $.post(url,{},function(response){
+    $.post(url,params,function(response){
         if (response.errors=='') {
             $("#loader").hide();
             $("div.whitelist_parselog_data").empty().html(response.data.content);
@@ -159,6 +192,16 @@ function init_parsedlog_content() {
             my: 'bottom right',
             at: 'top left',
         },
-        style: 'qtip-light'
+        style: 'qtip-light parserlog_tooltip'
+    });
+    $(".wlparse_subject").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light parserlog_tooltip'
     });
 }

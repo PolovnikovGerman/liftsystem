@@ -203,3 +203,9 @@ span.successparseed {
 span.errorparsed {
     color: #990000;
 }
+.parserlog_tooltip {
+    background: #ffffff!important;
+    font-size: 13px!important;
+    max-width: 580px!important;
+    border: 1px solid #000000!important;
+}

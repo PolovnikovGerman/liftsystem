@@ -53,6 +53,9 @@ class Admin extends MY_Controller
         // Utils
         $head['scripts'][]=array('src'=>'/js/admin/jQuery.Tree.js');
         $head['styles'][]=array('style'=>'/css/admin/jQuery.Tree.css');
+        // Datepicker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
 
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -476,6 +479,29 @@ class Admin extends MY_Controller
             if ($res['result']==$this->success_result) {
                 $error='';
             }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function parsedemailsearch() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+            $datelog=ifset($postdata,'date','');
+            $filtr=ifset($postdata, 'filtr','');
+            $search=array();
+            if ($datelog!='') {
+                $search['datestart']=strtotime($datelog);
+                $search['dateend']=strtotime(date("Y-m-d", strtotime($datelog)) . " +1 day");
+            }
+            if ($filtr!='') {
+                $search['filtr']=strtoupper($filtr);
+            }
+
+            $this->load->model('email_model');
+            $totals=$this->email_model->get_count_parsedemails($search);
+            $mdata['totals']=$totals;
             $this->ajaxResponse($mdata,$error);
         }
     }
