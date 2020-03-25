@@ -35,13 +35,6 @@ class Marketing extends MY_Controller
         if (count($brands)==0) {
             redirect('/');
         }
-        $brand = $brands[0]['brand'];
-        $top_options = [
-            'brands' => $brands,
-            'active' => $brand,
-        ];
-
-        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
 
         $content_options = [];
         foreach ($menu as $row) {
@@ -49,26 +42,76 @@ class Marketing extends MY_Controller
                 // Search results by time
                 $head['styles'][]=array('style'=>'/css/marketing/searchestimeview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchestimeview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand, $top_menu);
             } elseif ($row['item_link']=='#searcheswordview') {
                 // Search Results by Keywords
                 $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand, $top_menu);
             } elseif ($row['item_link']=='#searchesipadrview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searchesipadrview'] = $this->_prepare_searckipaddress($brand, $top_menu);
             } elseif ($row['item_link']=='#signupview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/signupview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/signupview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['signupview'] = $this->_prepare_signup($brand, $top_menu);
             } elseif ($row['item_link']=='#couponsview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['couponsview'] = $this->_prepare_couponsview($brand, $top_menu);
             }
         }
