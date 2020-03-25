@@ -24,7 +24,12 @@ function init_orders() {
     });
 
     $("div.addneworder").unbind('click').click(function(){
-        show_brand_select();
+        var brand = $("#artordersviewbrand").val();
+        if (brand=='ALL') {
+            show_brand_select();
+        } else {
+            order_artstage(0,'artorderlist', brand);
+        }
     });
     // Change Brand
     $("#artordersviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
