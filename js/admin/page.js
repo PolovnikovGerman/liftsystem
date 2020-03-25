@@ -21,5 +21,9 @@ function init_page(objid) {
             $("#parseremailsview").show();
             init_parsedemails_content();
             break;
+        case 'artalertsview':
+            $("#artalertsview").show();
+            init_taskalertsys();
+            break;
     }
 }

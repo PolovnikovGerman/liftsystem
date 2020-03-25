@@ -13,6 +13,9 @@
         <?php if (isset($parseremailsview)) { ?>
             <div class="admincontentarea" id="parseremailsview" style="display: none;"><?=$parseremailsview?></div>
         <?php } ?>
+        <?php if (isset($artalertsview)) { ?>
+            <div class="admincontentarea" id="artalertsview" style="display: none;"><?=$artalertsview?></div>
+        <?php } ?>
     </div>
 </div>
 

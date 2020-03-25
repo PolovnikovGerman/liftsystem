@@ -1,0 +1,49 @@
+.arttaskalertcontent {
+    clear: both;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.taskalert_head {
+    clear: both;
+    color: #0E0E0E;
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    height: 26px;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: middle;
+    width: 940px;
+}
+.taskalert_name {
+    float: left;
+    width: 120px;
+}
+.taskalert_check {
+    float: left;
+    width: 20px;
+    padding-top: 5px;
+}
+.taslalert_times {
+    float: left;
+    width: 274px;
+}
+.taskalert_timeday {
+    float: left;
+    margin-left: 5px;
+    width: 79px;
+}
+.taskalert_timedaylabel {
+    float: left;
+    margin-left: 7px;
+    width: 40px;
+}
+.taskalert_row {
+    clear: both;
+    float: left;
+    font-size: 17px;
+    line-height: 30px;
+    margin-bottom: 3px;
+    vertical-align: middle;
+    width: 940px;
+}

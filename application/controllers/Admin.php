@@ -42,6 +42,12 @@ class Admin extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/admin/parseremailsview.css');
                 $head['scripts'][]=array('src'=>'/js/admin/parseremailsview.js');
                 $content_options['parseremailsview'] = $this->_prepare_parseremail_view();
+            } elseif ($row['item_link']=='#artalertsview') {
+                $head['styles'][]=array('style'=>'/css/admin/artalertsview.css');
+                $head['scripts'][]=array('src'=>'/js/admin/artalertsview.js');
+                $head['styles'][]=array('style'=>'/css/admin/jquery.spinnercontrol.css');
+                $head['scripts'][]=array('src'=>'/js/admin/jquery.spinnercontrol.js');
+                $content_options['artalertsview'] = $this->_prepare_artalert_view();
             }
         }
 
@@ -552,6 +558,43 @@ class Admin extends MY_Controller
         $content=$this->load->view('admin/parsedemails_head_view',$options,TRUE);
         return $content;
 
+    }
+
+    /* Save alert value */
+    public function taskalert_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('artproof_model');
+            $data=$this->input->post();
+            $res=$this->artproof_model->save_taskalert($data);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    /* Save Alert time Value */
+    public function taskalerttime_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('artproof_model');
+            $data=$this->input->post();
+            $res=$this->artproof_model->save_taskalerttime($data);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    private function _prepare_artalert_view() {
+        $this->load->model('artproof_model');
+        $cfg=$this->artproof_model->get_taskalert_config();
+        $content=$this->load->view('admin/taskalert_setup_view',$cfg,TRUE);
+        return $content;
     }
 
 }
