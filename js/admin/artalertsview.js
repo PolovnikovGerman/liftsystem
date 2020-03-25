@@ -24,7 +24,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#noart_common_days").val())
     });
@@ -36,7 +36,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#noart_common_hours").val())
     });
@@ -48,7 +48,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#noart_rush_days").val())
     });
@@ -60,7 +60,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#noart_rush_hours").val())
     });
@@ -102,7 +102,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#redraw_common_days").val())
     });
@@ -114,7 +114,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#redraw_common_hours").val())
     });
@@ -126,7 +126,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#redraw_rush_days").val())
     });
@@ -138,7 +138,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#redraw_rush_hours").val())
     });
@@ -179,7 +179,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#toproof_common_days").val())
     });
@@ -191,7 +191,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#toproof_common_hours").val())
     });
@@ -203,7 +203,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#toproof_rush_days").val())
     });
@@ -215,7 +215,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#toproof_rush_hours").val())
     });
@@ -256,7 +256,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#needapproval_common_days").val())
     });
@@ -268,7 +268,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#needapproval_common_hours").val())
     });
@@ -280,7 +280,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#needapproval_rush_days").val())
     });
@@ -292,7 +292,7 @@ function init_taskalertsys() {
             interval: 1,
             decimalplaces:0
         },
-        width: '25px',
+        width: '35px',
         looping:true,
         defaultVal:parseInt($("#needapproval_rush_hours").val())
     });
