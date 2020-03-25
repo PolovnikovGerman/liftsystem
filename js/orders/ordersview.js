@@ -10,7 +10,12 @@ function init_ordersviewdata() {
         search_leadorders();
     });
     $("div.lead_neworder").unbind('click').click(function(){
-        show_brand_select();
+        var brand = $("input#ordersviewbrand").val();
+        if (brand=='ALL') {
+            show_brand_select();
+        } else {
+            add_leadorder(brand);
+        }
     });
     // $("div.lead_neworder").unbind('click').click(function(){
     //     edit_leadorder(0);
