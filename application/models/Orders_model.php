@@ -874,12 +874,15 @@ Class Orders_model extends MY_Model
 
     /* List of Items */
     public function get_item_list($options=array()) {
-        $this->db->select('*');
-        $this->db->from('v_itemsearch');
+        $this->db->select('v.*');
+        $this->db->from('v_itemsearch v');
         if (isset($options['exclude'])) {
-            $this->db->where_not_in('item_id', $options['exclude']);
+            $this->db->where_not_in('v.item_id', $options['exclude']);
         }
-        $this->db->order_by('item_number');
+        if (isset($options['brand'])) {
+            $this->db->where('(v.brand = \''.$options['brand'].'\' or v.brand=\'\' )');
+        }
+        $this->db->order_by('v.item_number');
         $res=$this->db->get()->result_array();
         $out=array();
         foreach ($res as $row) {

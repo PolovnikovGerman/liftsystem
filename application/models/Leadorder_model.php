@@ -2267,12 +2267,12 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
+                $order=$leadorder['order'];
                 $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
                     return $out;
                 } else {
-                    $order=$leadorder['order'];
                     $leadorder['order']=$order;
                     $rates=$cntres['ships'];
                     $shipcost=$shipaddr[$shipidx]['shipping_costs'];

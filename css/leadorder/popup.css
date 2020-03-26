@@ -318,7 +318,7 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_input {
     float:left;
-    height: 12px;
+    height: 16px;
     font-size: 12px !important;
     margin: 2px 2px;
 }
@@ -390,7 +390,7 @@ input.order_itemqty_input {
     width: 73px;
 }
 .items_content_item2.short {
-    width: 52px;
+    width: 57px;
 }
 .items_content_item2.text_green {
     cursor: pointer;
@@ -552,7 +552,7 @@ input.order_itemqty_input {
 }
 .itemdiscounticon {
     float: left;
-    margin-top: 3px;
+    margin-top: 1px;
     width: 13px;
 }
 .itemdiscountvalue {
@@ -580,18 +580,18 @@ input.order_itemqty_input {
 .items_input1 {
     float: right;
     width: 214px;
-    height: 12px;
+    height: 16px;
     margin: 3px 0px 0px 3px;
 }
 .items_input2 {
     float: right;
     width: 156px;    
-    height: 12px;
+    height: 16px;
     margin: 3px 0px 0px 3px;
 }
 .items_input3 {
     float: right !important;
-    height: 12px;
+    height: 16px;
     margin: 3px 0 0 3px;
     width: 70px;
 }
@@ -763,7 +763,7 @@ select.shiprashselect {
     width: 145px;
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
-    height: 16px;
+    height: 18px;
     width: 45px;    
 }
 .ship_tax_container {
@@ -861,10 +861,11 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     margin-left: 6px;
 }
 input.ship_tax_textareainpt {
-    height: 14px;
+    height: 17px;
     font-size: 11px;
     margin-left: 6px;
     width: 171px;
+    margin-bottom: 1px;
 }
 .ship_tax_cont_bl1 {
     float: left;
@@ -938,14 +939,14 @@ span.taxemptyview {
 .ship_tax_input1 {
     float: left;
     font-size: 11px;
-    height: 15px;
+    height: 19px;
     margin: 3px 0 0 3px;
     width: 77px;
 }
 .ship_tax_input2 {
     float: left;
     font-size: 11px;
-    height: 15px;
+    height: 19px;
     margin: 3px 0 0 6px;
     width: 39px;
 }
@@ -1074,21 +1075,21 @@ span.taxemptyview {
     float: left;
     width: 316px;
     line-height: 20px;
-    padding-top: 3px;
+    padding-top: 2px;
 }
 .billing_input1 {
     float: left;
     width: 113px;
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
 }
 .billing_input2 {
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
     width: 111px;
 }
 .billing_input3 {
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
     width: 38px;
 }
@@ -1101,13 +1102,13 @@ span.taxemptyview {
 .billing_input4 {
     float: left;
     width: 148px;
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
 }
 .billing_input5 {
     float: left;
     width: 108px;
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
 }
 .billingstateselectarea {
@@ -1117,7 +1118,7 @@ span.taxemptyview {
 .billing_input6 {
     float: left;
     width: 41px;
-    height: 15px;
+    height: 19px;
     margin: 0 0 0 3px;
 }
 .billing_input7 {
@@ -2212,7 +2213,7 @@ select.orderitemcolors {
     width: 90px;
 }
 input.orderitem_input {
-    height: 12px;
+    height: 16px;
     margin: 2px 2px;
 }
 input.orderitem_description {

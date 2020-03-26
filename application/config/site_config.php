@@ -145,7 +145,7 @@ $config['defqty_custom']=1000;
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
 $config['loctimeout']=130;
-$config['loctimeout_local']=1200; //1200;
+$config['loctimeout_local']=6000; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=151;
 $config['inventory_paymethod']=5;

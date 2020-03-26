@@ -594,7 +594,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -673,7 +673,7 @@ class Leadorder extends MY_Controller
                     }
                 }
             }
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -704,7 +704,7 @@ class Leadorder extends MY_Controller
                 $error='';
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -754,7 +754,7 @@ class Leadorder extends MY_Controller
                     $mdata['newtitle'] = $discnt_title;                }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -786,7 +786,7 @@ class Leadorder extends MY_Controller
                 $error='';
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -809,13 +809,13 @@ class Leadorder extends MY_Controller
                     $error=$locres['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
-
+                $order=$leadorder['order'];
                 $this->load->model('orders_model');
                 $dboptions=array(
                     'exclude'=>array(-4, -5, -2),
+                    'brand' => $order['brand'],
                 );
                 $items=$this->orders_model->get_item_list($dboptions);
-                $order=$leadorder['order'];
                 $options=array(
                     'item_id'=>$order['item_id'],
                     'items_list'=>$items,
@@ -827,7 +827,7 @@ class Leadorder extends MY_Controller
                 $mdata['showother']=($order['item_id']<0 ? 1 : 0);
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -936,7 +936,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1074,7 +1074,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1145,7 +1145,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1201,7 +1201,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1261,7 +1261,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1296,7 +1296,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1381,7 +1381,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1417,7 +1417,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1462,7 +1462,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
     }
@@ -1497,7 +1497,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1555,7 +1555,7 @@ class Leadorder extends MY_Controller
                 }
             }
             // Calc new period for lock
-            $mdata['loctime']=(time()+$this->config->item('loctimeout'))*1000;
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -4696,5 +4696,13 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
+    private function _leadorder_locktime() {
+        if ($this->input->ip_address()=='127.0.0.1') {
+            $timeout=(time()+$this->config->item('loctimeout_local'))*1000;
+        } else {
+            $timeout=(time()+$this->config->item('loctimeout'))*1000;
+        }
+        return $timeout;
+    }
 
 }
