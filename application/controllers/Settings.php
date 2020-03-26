@@ -96,10 +96,10 @@ class Settings extends MY_Controller
             if (!empty($brand)) {
                 $error = '';
                 $this->load->model('shipping_model');
-                $zones = $this->shipping_model->get_shipzones(['brand'=>$brand]);
+                $zones = $this->shipping_model->get_shipzones();
                 $cont_arr=array();
                 foreach ($zones as $row) {
-                    $details=$this->shipping_model->get_shipzone_details($row['zone_id']);
+                    $details=$this->shipping_model->get_shipzone_details($row['zone_id'], $brand);
                     $content=$this->load->view('settings/shipzone_method_view',array('zone'=>$row['zone_name'],'shipdat'=>$details),TRUE);
                     $cont_arr[]=$content;
                 }

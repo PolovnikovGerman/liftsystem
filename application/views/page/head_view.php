@@ -9,7 +9,7 @@
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>
-<link rel="stylesheet" href="/css/page_view/jquery.qtip.css">;
+<link rel="stylesheet" href="/css/page_view/jquery.qtip.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script src="/js/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>

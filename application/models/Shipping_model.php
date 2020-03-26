@@ -746,20 +746,18 @@ Class Shipping_model extends MY_Model
         if (isset($options['zone_name'])) {
             $this->db->where('zone_name',$options['zone_name']);
         }
-        if (isset($options['brand']) && $options['brand']!=='ALL') {
-            // $this->db->where('')
-        }
         $this->db->order_by('zone_id');
         $result = $this->db->get()->result_array();
         return $result;
     }
 
     /* Ship Zone - shipping methods */
-    public function get_shipzone_details($zone_id) {
+    public function get_shipzone_details($zone_id, $brand) {
         $this->db->select('zm.zonemethod_id as id, shm.shipping_method_name as name, zm.method_percent, zm.method_dimens');
         $this->db->from('sb_shipzone_methods zm');
         $this->db->join('sb_shipping_methods shm','shm.shipping_method_id=zm.method_id');
         $this->db->where('zm.shipzone_id',$zone_id);
+        $this->db->where('zm.brand', $brand);
         $this->db->order_by('shm.sort');
         $results=$this->db->get()->result_array();
         return $results;

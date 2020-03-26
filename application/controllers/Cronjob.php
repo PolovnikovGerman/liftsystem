@@ -170,4 +170,18 @@ Class Cronjob extends CI_Controller
             $this->db->insert('netprofit_dat');
         }
     }
+
+    public function shipzones() {
+        $this->db->select('*');
+        $this->db->from('sb_shipzone_methods');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            $this->db->set('shipzone_id',$row['shipzone_id']);
+            $this->db->set('method_id', $row['method_id']);
+            $this->db->set('method_percent',0);
+            $this->db->set('method_dimens',0);
+            $this->db->set('brand','SB');
+            $this->db->insert('sb_shipzone_methods');
+        }
+    }
 }
