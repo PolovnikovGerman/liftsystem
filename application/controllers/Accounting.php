@@ -37,49 +37,120 @@ class Accounting extends MY_Controller
         $head = [];
         $head['title'] = 'Accounting';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
-        $brand = $brands[0]['brand'];
-        $top_options = [
-            'brands' => $brands,
-            'active' => $brand,
-        ];
-        $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#profitordesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/profitordesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitordesview'] = $this->_prepare_order_profit($brand, $top_menu);
             } elseif ($row['item_link']=='#profitdatesview') {
                 $head['styles'][] = array('style' => '/css/accounting/profitdatesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/profitdatesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
             } elseif ($row['item_link']=='#purchaseordersview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
             } elseif ($row['item_link']=='#openinvoicesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand, $top_menu);
             } elseif ($row['item_link']=='#financebatchesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/financebatchesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['financebatchesview'] = $this->_prepare_batches_view($brand, $top_menu);
             } elseif ($row['item_link']=='#netprofitview') {
                 $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand, $top_menu);
             } elseif ($row['item_link']=='#ownertaxesview') {
                 $head['styles'][] = array('style' => '/css/accounting/ownertaxesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/ownertaxesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_view($brand, $top_menu);
             } elseif ($row['item_link']=='#expensesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/expensesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/expensesview.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['expensesview'] = $this->_prepare_expensives_view($brand, $top_menu);
             }
         }

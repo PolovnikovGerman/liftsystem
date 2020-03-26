@@ -23,9 +23,10 @@ select.profitorder-filtrer {
     width: 154px;
 }
 .profit_filterdate_area {
-    width: 351px;
+    /* width: 351px; */
     height: 22px;
     float: right!important;
+    width: 670px;
 }
 .profit_filterdate_area.adminview {
     width: 740px;
