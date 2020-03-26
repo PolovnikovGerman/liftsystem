@@ -471,7 +471,7 @@ Class Shipping_model extends MY_Model
         return $out_val;
     }
 
-    public function count_shiprates($items, $shipaddr, $deliv_date, $default_ship_method='') {
+    public function count_shiprates($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $outrate=array();
         $ratekey=array();
@@ -565,7 +565,7 @@ Class Shipping_model extends MY_Model
                 'charge_pereach'=>(isset($row['charge_pereach']) ? $row['charge_pereach'] : 0),
             );
             /* Recalc Rates */
-            $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$cntdat['country_iso_code_2'], $shipaddr['country_id']);
+            $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$brand, $cntdat['country_iso_code_2'], $shipaddr['country_id']);
 
             foreach ($shiplast as $key=>$row) {
                 if ($key!='deliv') {
@@ -594,13 +594,14 @@ Class Shipping_model extends MY_Model
     }
 
 
-    public function get_ship_methods($country_id,$option='all') {
+    public function get_ship_methods($country_id, $brand, $option='all') {
 
         $this->db->select('m.shipping_method_id, m.shipping_method_name, m.ups_code, m.default_rate, m.minimal_rate,
             m.shipping_method_available, zm.method_dimens,zm.method_percent');
         $this->db->from('sb_countries cnt');
         $this->db->join('sb_shipzone_methods zm','cnt.zone_id=zm.shipzone_id');
         $this->db->join('sb_shipping_methods m','m.shipping_method_id=zm.method_id');
+        $this->db->where('zm.brand', $brand);
         $this->db->where('cnt.country_id',$country_id);
         if ($option=='not_null') {
             $this->db->where('m.default_rate != ',0);

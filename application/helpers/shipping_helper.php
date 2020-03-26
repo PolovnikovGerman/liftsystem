@@ -15,6 +15,7 @@ if (!function_exists('calculate_shipcost')) {
         $item_height = (isset($options['item_height']) ? $options['item_height'] : 0);
         $ship = $options['ship'];
         $cnt_code = (isset($options['cnt_code']) ? $options['cnt_code'] : 'US');
+        $brand = ifset($options,'ALL');
         /* Calculate REST of full cartoon */
         if (intval($numinpack) == 0) {
             $ci->load->config('shipping');
@@ -428,11 +429,11 @@ if (!function_exists('calculate_shipcost')) {
 }
 
 if (!function_exists('recalc_rates')) {
-    function recalc_rates($ship,$item,$qty,$cnt_code='US', $country_id='223') {
+    function recalc_rates($ship,$item,$qty, $brand, $cnt_code='US', $country_id='223') {
         $ci=&get_instance();
         $ci->load->model('shipping_model');
 
-        $methods=$ci->shipping_model->get_ship_methods($country_id);
+        $methods=$ci->shipping_model->get_ship_methods($country_id, $brand);
 
         $idxmethods=array();
         foreach ($methods as $row) {

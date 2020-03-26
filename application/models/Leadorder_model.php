@@ -893,7 +893,7 @@ Class Leadorder_model extends My_Model {
                                 }
                             }
                         }
-                        $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                        $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                         if ($cntres['result']==$this->error_result) {
                             $out['msg']=$cntres['msg'];
                             return $out;
@@ -1318,7 +1318,7 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
                     usersession($ordersession, $leadorder);
@@ -1458,7 +1458,7 @@ Class Leadorder_model extends My_Model {
             $out['rush_price']=$shipping['rush_price'];
         }
         /* Params - order_items shipping, shipping_address */
-        $shpres=$this->_recalc_shipping($neworder, $shipping, $shipping_address);
+        $shpres=$this->_recalc_shipping($neworder, $shipping, $shipping_address, $order['brand']);
 
         if ($shpres['result']==$this->success_result) {
             $shipping=$shpres['shipping'];
@@ -1719,7 +1719,7 @@ Class Leadorder_model extends My_Model {
                             }
                         }
                     }
-                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                     if ($cntres['result']==$this->error_result) {
                         $out['msg']=$cntres['msg'];
                         usersession($ordersession, $leadorder);
@@ -2267,7 +2267,7 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
                     return $out;
@@ -3427,7 +3427,7 @@ Class Leadorder_model extends My_Model {
                             }
                         }
                     }
-                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $default_ship_method);
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                     if ($cntres['result']==$this->error_result) {
                         $out['msg']=$cntres['msg'];
                         return $out;
@@ -3540,7 +3540,7 @@ Class Leadorder_model extends My_Model {
     }
 
     // Change shipping Address
-    public function change_multishiporder_address($shipdata, $shipadr, $fldname, $newval, $shipsession) {
+    public function change_multishiporder_address($shipdata, $shipadr, $fldname, $newval, $brand, $shipsession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $shipping_address=$shipdata['shipping_address'];
 
@@ -3681,7 +3681,7 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$idx], $shipping['shipdate'], $default_ship_method);
+                $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$idx], $shipping['shipdate'], $brand, $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
                     return $out;
@@ -6821,7 +6821,7 @@ Class Leadorder_model extends My_Model {
                             }
                         }
                     }
-                    $cntres=$this->shipping_model->count_shiprates($neworder_items, $adrrow, $shipping['shipdate'], $default_ship_method);
+                    $cntres=$this->shipping_model->count_shiprates($neworder_items, $adrrow, $shipping['shipdate'], $order['brand'], $default_ship_method);
                     if ($cntres['result']==$this->success_result) {
                         $rates=$cntres['ships'];
                     } else {
@@ -7358,7 +7358,7 @@ Class Leadorder_model extends My_Model {
         return $billing;
     }
 
-    private function _recalc_shipping($order_items, $shipping, $shipping_address) {
+    private function _recalc_shipping($order_items, $shipping, $shipping_address, $brand) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         if (count($order_items)==0) {
             // change shipping and address
@@ -7397,7 +7397,7 @@ Class Leadorder_model extends My_Model {
                             }
                         }
                     }
-                    $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$shipidx], $shipping['shipdate'], $default_ship_method);
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipping_address[$shipidx], $shipping['shipdate'], $brand, $default_ship_method);
                     if ($cntres['result']==$this->success_result) {
                         $rates=$cntres['ships'];
                         $shipcost=$shipping_address[$shipidx]['shipping_costs'];

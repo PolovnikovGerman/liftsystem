@@ -3807,7 +3807,8 @@ class Leadorder extends MY_Controller
                     $shipadr=$postdata['shipadr'];
                     $fldname=$postdata['fldname'];
                     $newval=$postdata['newval'];
-                    $res=$this->leadorder_model->change_multishiporder_address($multishipping, $shipadr, $fldname, $newval, $shipsession);
+                    $order=$multishipping['order'];
+                    $res=$this->leadorder_model->change_multishiporder_address($multishipping, $shipadr, $fldname, $newval, $order['brand'], $shipsession);
                     if ($res['result']==$this->error_result) {
                         $error=$res['msg'];
                     } else {
@@ -3815,7 +3816,6 @@ class Leadorder extends MY_Controller
                         $mdata['taxdata']=0;
                         $multishipping=usersession($shipsession);
                         $shipping_address=$multishipping['shipping_address'];
-                        $order=$multishipping['order'];
                         $order_qty=$order['order_qty'];
                         $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
                         $adridx=0;
