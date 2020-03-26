@@ -156,18 +156,19 @@ function search_leadorders() {
 // Edit Order
 function edit_leadorder(order) {
     var callpage = 'orderslist';
+    var brand = $("input#ordersviewbrand").val();
     var url="/leadorder/leadorder_change";
     var params = new Array();
     params.push({name: 'order', value: order});
     params.push({name: 'page', value: callpage});
     params.push({name: 'edit', value: 0});
-    params.push({name: 'brand', value: $("input#ordersviewbrand").val()});
+    params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
-            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#artModal").modal('show');
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
@@ -213,7 +214,7 @@ function add_leadorder(brand) {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
-            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/>');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#artModal").modal('show');
             init_onlineleadorder_edit();
         } else {

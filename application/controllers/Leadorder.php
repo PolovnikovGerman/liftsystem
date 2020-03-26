@@ -41,7 +41,7 @@ class Leadorder extends MY_Controller
                 $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
                 $edit=1;
             } else {
-                $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID);
+                $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
                 $edit=(isset($postdata['edit']) ? $postdata['edit'] : 0);
             }
             $error=$res['msg'];
@@ -190,13 +190,15 @@ class Leadorder extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $order_id=$this->input->post('order');
-            $ordersession=$this->input->post('ordersession');
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order');
+            $ordersession = ifset($postdata, 'ordersession','updsession');
+            $brand = ifset($postdata,'brand','ALL');
             // Remove from session
             usersession($ordersession,NULL);
             // Generate new session
             $leadsession='leadorder'.uniq_link(15);
-            $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID);
+            $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
             if ($res['result']==$this->error_result) {
                 $error=$res['msg'];
             } else {
@@ -4483,12 +4485,13 @@ class Leadorder extends MY_Controller
                             $mdata['color']=$printshop['inventcolor'];
                         }
                     }
-                    // Get Data about Engaded records                    
+                    // Get Data about Engaded records
                     $order_id=$res['order_id'];
                     if (isset($res['popupmsg'])) {
                         $mdata['popupmsg']=$res['popupmsg'];
                     }
-                    $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID);
+                    $brand = ifset($postdata, 'brand', 'ALL');
+                    $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
                     $error=$res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error='';

@@ -713,6 +713,7 @@ Class Artlead_model extends MY_Model
         // Full and Short proofs
         $fullpath=$this->config->item('artwork_proofs');
         $shrtpath=$this->config->item('artwork_proofs_relative');
+        $shortpreload = $this->config->item('pathpreload');
         $fullpreload=$this->config->item('upload_path_preload');
         $numpp=1;
         foreach ($proofs as $row) {
@@ -740,12 +741,13 @@ Class Artlead_model extends MY_Model
                 $saverow=0;
                 if ($row['artwork_proof_id']<0) {
                     // Artwork Folder
-                    if (file_exists($row['src'])) {
+                    $proofdocsrc = str_replace($shortpreload, $fullpreload, $row['src']);
+                    if (file_exists($proofdocsrc)) {
                         $this->_artworkfolder($fullpath, $artwork_id);
                         // New Proof Doc
-                        $purename=  str_replace($fullpreload, '', $row['src']);
+                        $purename=  str_replace($fullpreload, '', $proofdocsrc);
                         $target_file=$fullpath.$artwork_id.'/'.$purename;
-                        $cpres=@copy($row['src'],$target_file);
+                        $cpres=@copy($proofdocsrc,$target_file);
                         if ($cpres) {
                             $saverow=1;
                             $row['src']=$shrtpath.$artwork_id.'/'.$purename;

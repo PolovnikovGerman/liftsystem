@@ -7,18 +7,21 @@ function navigation_init() {
     $("div.moveprvorder").unbind('click');
     $("div.movenxtorder").unbind('click');
     $("div.moveprvorder.active").click(function(){
-        var order=$(this).data('order');        
-        order_navigate(order);
+        var order=$(this).data('order');
+        var brand = $("#root_brand").val();
+        order_navigate(order, brand);
     });
     $("div.movenxtorder.active").click(function(){
-        var order=$(this).data('order');        
-        order_navigate(order);
+        var order=$(this).data('order');
+        var brand = $("#root_brand").val();
+        order_navigate(order, brand);
     });  
     $("div.button_edit_text").unbind('click').click(function(){
         edit_currentorder();
     });
     $("#artModal").find('button.close').unbind('click').click(function () {
         // Check - may be we close edit content
+        $("#artModal").find('div.modal-body').empty();
         $("#artModal").modal('hide');
         if ($("input#root_call_page").length>0) {
             var callpage=$("input#root_call_page").val();
@@ -189,9 +192,10 @@ function chklockedorder() {
 }
 
 // Show Next / Previous Order
-function order_navigate(order) {    
+function order_navigate(order, brand) {
     var params=new Array();
     params.push({name: 'order', value: order});
+    params.push({name: 'brand', value: brand});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     var url="/leadorder/leadordernavigate";
     $.post(url,params, function(response){
@@ -3709,6 +3713,7 @@ function save_leadorderdata() {
     }
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     params.push({name: 'callpage', value: callpage});
+    params.push({name: 'brand', value: $("#root_brand").val()});
     $.post(url,params,function(response){
         if (response.errors=='') {       
             clearTimeout(timerId);

@@ -327,7 +327,7 @@ Class Leadorder_model extends My_Model {
 
 
     // Get Data about Lead Order
-    public function get_leadorder($order_id, $user_id) {
+    public function get_leadorder($order_id, $user_id, $brand='ALL') {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('orders_model');
         $this->load->model('creditapp_model');
@@ -379,8 +379,8 @@ Class Leadorder_model extends My_Model {
         }
         $res['newappcreditlink']=0;
         $out['result']=$this->success_result;
-        $out['prvorder']=$this->_get_previous_order($order_id);
-        $out['nxtorder']=$this->_get_next_order($order_id);
+        $out['prvorder']=$this->_get_previous_order($order_id, $brand);
+        $out['nxtorder']=$this->_get_next_order($order_id, $brand);
         $out['order_system_type']=($res['order_system']=='new' ? 'new' : 'old');
 
         $payments=$this->get_leadorder_payments($order_id);
@@ -5061,11 +5061,14 @@ Class Leadorder_model extends My_Model {
     }
 
     // Get Previous Order
-    private function _get_previous_order($order_id) {
+    private function _get_previous_order($order_id, $brand) {
         $order=0;
         $this->db->select('order_id, order_num');
         $this->db->from('ts_orders');
         $this->db->where('order_id < ', $order_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         // $this->db->where('is_canceled',0);
         $this->db->order_by('order_id', 'desc');
         $prvres=$this->db->get()->row_array();
@@ -5076,11 +5079,14 @@ Class Leadorder_model extends My_Model {
     }
 
     // Get Next Order
-    private function _get_next_order($order_id) {
+    private function _get_next_order($order_id, $brand) {
         $order=0;
         $this->db->select('order_id, order_num');
         $this->db->from('ts_orders');
         $this->db->where('order_id > ', $order_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         // $this->db->where('is_canceled',0);
         $this->db->order_by('order_id', 'asc');
         $nxtres=$this->db->get()->row_array();
