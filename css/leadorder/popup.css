@@ -1593,8 +1593,10 @@ span.taxemptyview {
     width: 97px;
     padding-top: 1px;
 }
-input.artrepeat {    
-    width: 32px;    
+input.artrepeat {
+    width: 43px;
+    height: 19px;
+    margin-top: 2px;
 }
 .redrawmsgarea, .customertext {
     background: url('/img/leadorder/grey_square.png') no-repeat transparent;
