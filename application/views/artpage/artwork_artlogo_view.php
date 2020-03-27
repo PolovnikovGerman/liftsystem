@@ -2,7 +2,7 @@
     <div class="artworkdata_content">
         <div class="artworkdata <?=$location_state?>" data-artworkartid="<?=$artwork_art_id?>">
             <div class="artworklabel" data-artworkartid="<?=$artwork_art_id?>"><?=$artlabel?></div>
-            <div class="artworksource <?=$imagesourceclass?>" data-artworkartid="<?=$artwork_art_id?>" data-viewsrc="<?=$imagesourceview?>">
+            <div class="artworksource <?=$imagesourceclass?>  truncateoverflowtext" data-artworkartid="<?=$artwork_art_id?>" data-viewsrc="<?=$imagesourceview?>">
                 <?=$logo_src?>
             </div>
             <div class="artworkredraw" data-artworkartid="<?=$artwork_art_id?>">
@@ -11,7 +11,7 @@
             <div class="artworkrush" data-artworkartid="<?=$artwork_art_id?>">
                 <?=$rushchk?>
             </div>
-            <div class="artworkvector" data-artworkartid="<?=$artwork_art_id?>"><?=$logo_vectorized?></div>
+            <div class="artworkvector truncateoverflowtext" data-artworkartid="<?=$artwork_art_id?>"><?=$logo_vectorized?></div>
             <div class="artworkrdrnote" data-artworkartid="<?=$artwork_art_id?>">
                 <?=$redrawicon?>
             </div>

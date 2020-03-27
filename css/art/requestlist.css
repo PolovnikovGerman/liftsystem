@@ -349,6 +349,7 @@ select.proofhideproof {
     clear: both;
     float: left;
     width: 980px;
+    margin-bottom: 15px;
 }
 .quest_tablefoot_left {
     background: url("/img/art/tableend-messages-left.png") no-repeat scroll 0 0 transparent;

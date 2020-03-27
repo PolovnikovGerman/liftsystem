@@ -7,7 +7,7 @@
         <div class="lead_quoteseparat">&mdash;</div>
         <div class="lead_quoteprice"><?=$row['email_total']?></div>
         <div class="lead_popup_quotechck" id="qutview<?=$row['email_id']?>">
-            <img src="/img/list.png" alt="View Quest" title="Click to view Quote"/>
+            <img src="/img/leads/list.png" alt="View Quest" title="Click to view Quote"/>
         </div>
     </div>
 <?php } ?>

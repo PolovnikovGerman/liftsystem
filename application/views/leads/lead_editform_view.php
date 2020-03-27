@@ -46,7 +46,7 @@
             <div class="lead_popup_neadbys">
                 <div class="lead_popup_neadbytitle">Need by</div>
                 <div class="lead_popup_calendar">
-                    <?=($display=='' ? '<img class="leadcalendbtn" src="./img/calendar.gif" alt="Calendar" id="calendar_btn"/>' : '&nbsp;')?>
+                    <?=($display=='' ? '<img class="leadcalendbtn" src="/img/leads/calendar.gif" alt="Calendar" id="calendar_btn"/>' : '&nbsp;')?>
                 </div>
                 <div class="lead_popup_neadbyinpt">
                     <input type="text" <?=$read?> class="lead_needby" id="lead_needby" name="lead_needby" value="<?= $data['lead_needby'] ?>"/>
@@ -110,7 +110,7 @@
                     <textarea id="other_item_name" class="other_item_name" name="other_item_name"><?=$data['other_item_name']?></textarea>
                 </div>
                 <div class="lead_popup_addrequest">
-                    <img src="/img/add_proofrequest_btn.png" alt="Add Proof Request"/>
+                    <img src="/img/leads/add_proofrequest_btn.png" alt="Add Proof Request"/>
                 </div>
             </div>
         </div>
@@ -138,7 +138,7 @@
             <div class="savelead">
                 <?php if ($save_available==1) {?>
                     <a href="javascript:void(0);" class="saveleaddat">
-                        <img alt="Save" src="./img/saveticket.png">
+                        <img alt="Save" src="/img/leads/saveticket.png">
                     </a>
                 <?php } else {?>
                     &nbsp;

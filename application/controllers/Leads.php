@@ -149,9 +149,19 @@ class Leads extends My_Controller {
         // Add main page management
         $head['scripts'][] = array('src' => '/js/leads/page.js');
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
+        // Lead popup
+        $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+        // Artwork popup
+        $head['scripts'][]=array('src'=>'/js/artwork/artpopup.js');
+        $head['styles'][]=array('style'=>'/css/artwork/artpopup.css');
+        // Uploader
+        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+        // File Download
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
 
         // Searchable
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];

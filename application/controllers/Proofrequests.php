@@ -5,6 +5,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Proofrequests extends MY_Controller
 {
+    protected $timeout_dead=1209600;
+    /* Statuses - DEAD & CLOSED */
+    protected $LEAD_DEAD=3;
+    protected $LEAD_CLOSED=4;
+    private $restore_orderdata_error='Connection Lost. Please, recall form';
 
     public function __construct()
     {
@@ -320,6 +325,138 @@ class Proofrequests extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    /* Prepare content for edit */
+    public function edit_lead() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $lead_id=$this->input->post('lead_id');
+            $dead_av=1;
+            $this->load->model('leads_model');
+            $this->load->model('questions_model');
+            $this->load->model('quotes_model');
+            $this->load->model('artproof_model');
+            if ($lead_id==0) {
+                // $replicas=$this->muser->get_user_leadreplicas(1);
+                $lead_data=$this->leads_model->get_empty_lead();
+                $dead_av=0;
+                $lead_data['lead_id']=0;
+                $lead_data['lead_type']=2;
+                $lead_data['lead_number']=$this->leads_model->get_leadnum();
+                $lead_history=array();
+                $lead_usr=array();
+            } else {
+                // $replicas=$this->muser->get_user_leadreplicas(0);
+                $lead_data=$this->leads_model->get_lead($lead_id);
+                if (isset($lead_data['create_date'])) {
+                    $crtime=strtotime($lead_data['create_date']);
+                    // Temporary COMMENTED
+                    /*if (time()-$crtime<$this->timeout_dead) {
+                        $dead_av=0;
+                    }*/
+                }
+                $lead_history=$this->leads_model->get_lead_history($lead_id);
+                $lead_usr=$this->leads_model->get_lead_users($lead_id);
+            }
+            $lead_tasks=$this->leads_model->get_lead_tasks($lead_id);
+
+            $save_av=1;
+
+            /* */
+            if (count($lead_usr)==0) {
+                array_push($lead_usr, $this->USR_ID);
+            }
+            $lead_replic=array();
+            // foreach ($replicas as $row) {
+            //     $row['value']=0;
+            foreach ($lead_usr as $row) {
+                $usr=$this->user_model->get_user_data($row);
+                $lead=array(
+                    'user_id'=>$row,
+                    'user_leadname'=>$usr['user_leadname'],
+                    'value'=>1,
+                );
+                $lead_replic[]=$lead;
+            }
+            // $leadrepl=1;
+            if ($lead_data['lead_type']==$this->LEAD_CLOSED || $lead_data['lead_type']==$this->LEAD_DEAD) {
+                // $leadrepl=0;
+                $replic=$this->load->view('leads/lead_replicalock_view',array('repl'=>$lead_replic),TRUE);
+            } else {
+                if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin' || $this->USR_ID==$lead_data['create_user']) {
+                    $replic=$this->load->view('leads/lead_replicaselect_view',array('repl'=>$lead_replic),TRUE);
+                } else {
+                    $replic=$this->load->view('leads/lead_replicareadonly_view',array('repl'=>$lead_replic),TRUE);
+                }
+            }
+            // Save User Lead into session
+            $session_id='leadusers'.uniq_link(10);
+            usersession($session_id, $lead_replic);
+            $lead_data['other_item_label']='';
+            if ($lead_data['lead_item']=='Other') {
+                $lead_data['other_item_label']='Type Other Item Here:';
+            } elseif ($lead_data['lead_item']=='Multiple') {
+                $lead_data['other_item_label']='Type Multiple Items Here:';
+            } elseif ($lead_data['lead_item']=='Custom Shaped Stress Balls') {
+                $lead_data['other_item_label']='Type Custom Items Here:';
+            }
+
+            $history=$this->load->view('leads/lead_history_view',array('data'=>$lead_history,'cnt'=>count($lead_history)),TRUE);
+            $lead_tasks['edit']=$save_av;
+
+            // $tasks=$this->load->view('leads/lead_tasks_view',$lead_tasks,TRUE);
+            $tasks='';
+
+            $qdat=$this->questions_model->get_lead_questions($lead_id);
+            if (count($qdat)==0) {
+                $questions='';
+            } else {
+                $questions=$this->load->view('leads/lead_questions_view',array('quests'=>$qdat),TRUE);
+            }
+
+            $qdat=$this->quotes_model->get_lead_quotes($lead_id);
+            if (count($qdat)==0) {
+                $quotes='';
+            } else {
+                $quotes=$this->load->view('leads/lead_quotes_view',array('quotes'=>$qdat),TRUE);
+            }
+
+            $qdat=$this->artproof_model->get_lead_proofs($lead_id);
+            if (count($qdat)==0) {
+                $onlineproofs='';
+            } else {
+                $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
+            }
+            $dead_option='';
+            if ($dead_av==1) {
+                $dead_selected=($lead_data['lead_type'] == 3 ? 'selected="selected"' : '');
+                $dead_option="<option value=\"3\" ".$dead_selected.">Dead</option>";
+            } else {
+                $dead_option='';
+            }
+            /* Get Available Items */
+            $items_list=$this->leads_model->items_list($lead_data['brand']);
+            // $itemslist=$this->m
+            $options=array(
+                'data'=>$lead_data,
+                'history'=>$history,
+                'replica'=>$replic,
+                'tasks'=>$tasks,
+                'quotes'=>$quotes,
+                'questions'=>$questions,
+                'onlineproofs'=>$onlineproofs,
+                'save_available'=>$save_av,
+                'dead_option'=>$dead_option,
+                'items' => $items_list,
+                'session_id'=>$session_id,
+            );
+            $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
+            $mdata['title'] = 'Lead '.$lead_data['lead_number'].' Details';
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
 
 
 }

@@ -1,0 +1,593 @@
+/* POPUP view */
+/* Popup Window */
+.lead_popup_content {
+    background: url('/img/leads/lead_popupbg.png?r=233') no-repeat transparent;
+    clear: both;
+    float: left;
+    width: 941px;
+    height: 720px;
+    padding: 10px 10px 5px 10px;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+.lead_popupform_row {
+    clear: both;
+    float: left;
+    width: 925px;
+    margin-top: 7px;
+}
+.lead_popupform_row input {
+    font-size: 14px;
+    color: #000000;
+    background-color: #ffffff;
+    padding-left: 5px;
+    height: 19px;
+    font-size: 14px;
+    text-align: left;
+}
+.lead_popup_status {
+    float: left;
+    /* width: 166px; */
+    width: 256px;
+}
+.lead_popup_number {
+    float: left;
+    width: 112px;
+    font-size: 14px;
+    font-weight: bold;
+    padding-top: 7px;
+}
+.lead_popup_statustitle {
+    float: left;
+    width: 55px;
+    font-weight: bold;
+    padding-top: 6px;
+}
+.lead_popup_statusvalue {
+    float: left;
+    /* width: 110px; */
+    padding-top: 3px;
+    width: 195px;
+}
+select.leadpopstatus {
+    height: 23px;
+    /* width: 90px; */
+    font-size: 14px;
+    color: #232323;
+    /* text-align: center; */
+    width: 170px;
+}
+.lead_popup_replicas {
+    float: left;
+    /* width: 638px; */
+    width: 549px;
+}
+.lead_popup_replicatiltle {
+    float: left;
+    width: 46px;
+    padding-top: 6px;
+    font-weight: bold;
+}
+.lead_popup_replicausrbgn {
+    float: left;
+    background: url('/img/leads/lead_replbgn.png') no-repeat transparent;
+    width: 5px;
+    height: 30px;
+}
+.lead_popup_replicausrarea {
+    background: url('/img/leads/lead_replbg.png') repeat-x transparent;
+    float: left;
+    /* width: 70px; */
+    font-size: 15px;
+    font-weight: bold;
+    color: #232323;
+    height: 30px;
+}
+.lead_popup_replicausrchk {
+    cursor: pointer;
+    float: left;
+    padding-top: 5px;
+    text-align: center;
+    width: 20px;
+}
+.lead_popup_replicausrchk img {
+    height: 18px;
+}
+.lead_popup_addreplica {
+    float: left;
+    width: 64px;
+    cursor: pointer;
+}
+input.usrrepliccheck {
+    float: left;
+    width: 15px;
+    height: 15px;
+    background-color: #FFFFFF;
+    margin: 3px 5px 0 0;
+}
+.lead_popup_replicausrname {
+    float: left;
+    min-width: 50px;
+    padding-top: 5px;
+    margin-right: 3px;
+}
+.lead_popup_replicausrend {
+    float: left;
+    background: url('/img/leads/lead_replend.png') no-repeat transparent;
+    width: 5px;
+    height: 30px;
+}
+.lead_popup_usrdatas {
+    float: left;
+    width: 286px;
+}
+.lead_popup_usrdat_title {
+    float: left;
+    width: 70px;
+    margin-right: 5px;
+    text-align: right;
+    font-weight: bold;
+    padding-top: 5px;
+}
+.lead_popup_companyinpt {
+    float: left;
+    width: 204px;
+}
+input.lead_company {
+    width: 193px;
+}
+
+.lead_popup_usrcontacts {
+    float: left;
+    width: 262px;
+}
+.lead_popup_usrphone_title {
+    float: left;
+    width: 80px;
+    font-weight: bold;
+    padding-top: 5px;
+}
+.lead_popup_phoneinpt {
+    float: left;
+    width: 180px;
+}
+input.lead_phone {
+    width: 164px;
+}
+.lead_popup_values {
+    float: left;
+    width: 140px;
+}
+.lead_popup_value_title {
+    float: left;
+    width: 52px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.lead_popup_valueinpt {
+    float: left;
+    width: 88px;
+}
+input.lead_value {
+    width: 72px;
+}
+.lead_popup_neadbys {
+    float: left;
+    width: 225px;
+}
+.lead_popup_neadbytitle {
+    float: left;
+    width: 61px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.lead_popup_calendar {
+    float: left;
+    padding-top: 6px;
+    width: 25px;
+}
+.lead_popup_neadbyinpt {
+    float: left;
+    width: 125px;
+}
+input.lead_needby {
+    width: 135px;
+}
+.lead_popup_mailtitle {
+    float: left;
+    width: 47px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.lead_popup_mailinpt {
+    float: left;
+    width: 210px;
+}
+input.lead_email {
+    width: 198px;
+}
+.lead_popup_qtytitle {
+    float: left;
+    width: 30px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.lead_popup_qtyinpt {
+    float: left;
+    width: 95px;
+}
+input.lead_qty {
+    width: 93px;
+}
+.lead_popup_itemtitle {
+    float: left;
+    width: 36px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.lead_popup_iteminpt {
+    float: left;
+    width: 184px;
+}
+/*input.lead_item {
+    width: 187px;
+}*/
+select.lead_item_select {
+    font-size: 14px;
+    height: 23px;
+    width: 182px;
+}
+.lead_popup_iteminpt select {
+    font-size: 14px;    
+}
+.lead_popup_notearea {
+    float: left;
+    width: 467px;
+}
+.lead_popup_notetitle {
+    clear: both;
+    float: left;
+    font-weight: bold;
+    width: 459px;
+}
+.lead_popup_notetitle span {
+    font-size: 12px;
+}
+.lead_popup_noteinpt {
+    clear: both;
+    float: left;
+    width: 460px;
+}
+textarea.lead_note {
+    color: #000000;
+    font-size: 14px;
+    height: 407px;
+    overflow-y: auto;
+    resize: none;
+    width: 454px;
+}
+.lead_popup_statusarea {
+    float: left;
+    width: 266px;
+}
+.lead_popup_statuses {
+    clear: both;
+    float: left;
+    width: 120px;
+    font-weight: bold;
+}
+.lead_popup_statusinpt {
+    clear: both;
+    float: left;
+    width: 270px;
+}
+textarea.lead_statuses {
+    color: #000000;
+    font-size: 11px;
+    height: 70px;
+    overflow-y: auto;
+    resize: none;
+    width: 255px;
+}
+.lead_popup_history {
+    clear: both;
+    float: left;
+    width: 120px;
+    font-weight: bold;
+}
+.lead_history {
+    background-color: #ffffff;
+    height: 318px;
+    overflow-y: auto;
+    width: 264px;
+}
+.lead_popup_taskarea {
+    float: left;
+    width: 179px;
+}
+.lead_popup_addrequest {
+    clear: both;
+    float: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 17px;
+    text-align: center;
+    width: 200px;
+}
+.lead_popup_addrequest img:hover {
+    cursor: pointer;
+}
+.item_otheritemarea {
+    float: left;
+    width: 200px;
+    display: none;
+}
+.item_otheritem_label {
+    float: left;
+    font-weight: bold;
+    width: 184px;
+}
+textarea.other_item_name {
+    height: 140px;
+    width: 181px;
+    resize: none;
+    font-size: 13px;
+}
+.lead_popup_tasks {
+    clear: both;
+    float: left;
+    width: 120px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.lead_popup_taskrow {
+    clear: both;
+    float: left;
+    width: 177px;
+}
+.lead_popup_taskchk {
+    float: left;
+    width: 20px;
+}
+.lead_popup_taskname {
+    float: left;
+    width: 150px;
+    font-size: 13px;
+    font-weight: bold;
+}
+textarea.lead_othertask {
+    font-size: 14px;
+    color: #000000;
+    resize: none;
+    overflow-y: auto;
+    width: 173px;
+    height: 78px;
+}
+.lead_popup_questarea {
+    float: left;
+    width: 100px;
+}
+.lead_popup_questitle {
+    clear: both;
+    float: left;
+    font-weight: bold;
+    width: 269px;
+}
+.lead_popup_arttitle {
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    width: 30px;
+}
+.lead_popup_quescontent {
+    clear: both;
+    background: url('/img/leads/questions_bg.png');
+    width: 92px;
+    height: 102px;
+    padding-top: 5px;
+}
+.lead_popup_questrow {
+    clear: both;
+    float: left;
+    width: 92px;
+}
+.lead_popup_questdate {
+    color: #262626;
+    float: left;
+    font-size: 13px;
+    margin-left: 9px;
+    width: 59px;
+}
+.lead_popup_questchck {
+    float: left;
+    width: 20px;
+}
+.lead_popup_questchck:hover {
+    cursor: pointer;
+}
+.lead_popup_quotechck {
+    float: left;
+    width: 20px;
+}
+.lead_popup_quotechck:hover {
+    cursor: pointer;
+}
+.lead_onlinequotesarea {
+    float: left;
+    width: 353px;
+}
+.lead_onlinequotcontent {
+    clear: both;
+    background: url('/img/leads/onlinequotes_bg.png') no-repeat transparent;
+    float: left;
+    width: 347px;
+    height: 107px;
+    padding-top: 5px;
+    padding-left: 9px;
+}
+.lead_onlinequotrow {
+    clear: both;
+    float: left;
+    width: 323px;
+    font-size: 13px;
+    color: #262626;
+}
+.lead_quotedate {
+    float: left;
+    margin-top: 5px;
+    width: 46px;
+}
+.lead_quoteqty {
+    float: left;
+    margin-top: 5px;
+    text-align: center;
+    width: 24px;
+}
+.lead_quoteitem {
+    float: left;
+    width: 125px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.lead_quoteseparat {
+    float: left;
+    margin-top: 5px;
+    text-align: center;
+    width: 13px;
+}
+.lead_quoteprofnum {
+    float: left;
+    margin-top: 5px;
+    width: 56px;
+    color: #0000FF;
+    cursor: pointer;
+}
+.lead_proofartdata {
+    float: left;
+    height: 23px !important;
+    padding-top: 3px;
+    text-align: center;
+    width: 30px;
+}
+.lead_profapprove {
+    float:left;
+    width: 24px;
+}
+.lead_profapprove.proofed {
+    cursor: pointer;
+}
+.lead_quoteprice {
+    float: left;
+    width: 56px;
+}
+.lead_onlineproofsarea {
+    float: left;
+    width: 457px;
+}
+.lead-onlineprofcontent {
+    background: url("/img/leads/onlineproofs_bg.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 107px;
+    max-height: 103px;
+    overflow-y: auto;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 457px;
+}
+.lead_onlineproofrow {
+    float: left;
+    font-size: 12px;
+    color: #262626;
+    width: 436px;
+}
+.lead_proofitem {
+    float: left;
+    margin-right: 6px;
+    margin-top: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100px;
+}
+.lead_duplicate {
+    float: left;
+    width: 126px;
+    color: #c1bbbb;
+    font-size: 14px;
+}
+.lead_duplicate:hover {
+    cursor: pointer;
+}
+.savelead {
+    float:left;
+    margin-left: 831px;
+    margin-top: -25px;
+    width: 140px;
+}
+table.historytable {
+    border: none;
+    float: left;
+    width: 249px;
+}
+td.historydat_head {
+    background-color: #FFDBCA;
+    color: #1E1E1E;
+    font-family: arial;
+    font-size: 11px;
+    font-weight: bold;
+}
+td.historydat_msg {
+    color: #1E1E1E;
+    font-size: 11px;
+    font-weight: normal;
+    text-indent: 20px;
+}
+img.leadcalendbtn:hover {
+    cursor: pointer;
+}
+/* Add Lead replic view */
+.leadreplicaddarea {
+    background: #ffffff none repeat scroll 0 0;
+    border-radius: 5px;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    padding: 12px;
+    width: 536px;
+}
+.leadreplicaddtitle {
+    border-bottom: 1px solid #000000;
+    clear: both;
+    float: left;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+}
+.leadreplicadddata {
+    clear: both;
+    float: left;  
+    margin-bottom: 12px;
+    width: 100%;    
+}
+.leadreplicadddatarow {
+    clear: both;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    text-align: left;
+    width: 100%;
+}
+.leadreplicadddatarow span {
+    margin-left: 10px;
+}
+.leadreplicadddatasave {
+    clear: both;
+    cursor: pointer;
+    float: right;
+    margin-right: 15px;
+    width: 90px;
+}

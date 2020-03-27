@@ -336,12 +336,14 @@ function create_leadproof() {
 }
 
 function profedit_lead(lead_id) {
-    var url="/leads/edit_lead";
+    var url=main_proofurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             // POPUP
-            // show_popup('leadpopupdat');
-            // $("div#pop_content").empty().html(response.data.content);
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','970px');
+            $("#pageModal").modal('show');
             // init_edits();
         } else {
             show_error(response);
