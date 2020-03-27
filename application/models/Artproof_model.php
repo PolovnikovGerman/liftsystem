@@ -818,5 +818,20 @@ Class Artproof_model extends MY_Model
         return TRUE;
     }
 
+    public function get_approved($email_id) {
+        $this->db->select('artwork_proof_id, aproof.proof_name');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_artworks a','a.mail_id=e.email_id','left');
+        $this->db->join('ts_artwork_proofs aproof','aproof.artwork_id=a.artwork_id and aproof.approved=1','left');
+        $this->db->where('e.email_id',$email_id);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $artpath=$this->config->item('artwork_proofs_relative');
+        foreach ($res as $row) {
+            $row['file_name']=  str_replace($artpath, '', $row['proof_name']);
+            $out[]=$row;
+        }
+        return $out;
+    }
 
 }

@@ -466,6 +466,7 @@ Class Leads_model extends MY_Model
             $this->db->set('lead_type',$leadpost['lead_type']);
             if ($leadpost['lead_id']==0) {
                 /* New Record */
+                $this->db->set('brand', $leadpost['brand']);
                 $this->db->set('lead_date',time());
                 $this->db->set('lead_assign_time',time());
                 $this->db->set('create_user',$usr_id);
@@ -533,100 +534,98 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
-//    /* Add New PR request */
-//    public function add_proof_request($leadpost, $usr_id, $usr_name) {
-//        $out=array('result'=>  Leads_model::ERR_FLAG, 'msg'=>  Leads_model::INIT_ERRMSG);
-//
-//        $ci=&get_instance();
-//        $ci->load->model('artwork_model');
-//        /* Create record in TS_EMAILS */
-//        $item_name=NULL;
-//        $item_num=NULL;
-//        $itemdata=$this->search_itemid($leadpost['lead_item_id']);
-//        if ($itemdata['result']==Leads_model::SUCCESS_RESULT) {
-//            $item_name=$itemdata['item_name'];
-//            $item_num=$itemdata['item_number'];
-//        }
-//        // Get Proof Num
-//        $proof_num=$this->get_new_proofnum();
-//        $this->db->set('email_type','Art_Submit');
-//        $this->db->set('proof_num',$proof_num);
-//        $this->db->set('proof_updated',  time());
-//        $this->db->set('email_sender',$leadpost['lead_company']);
-//        $this->db->set('email_sendermail',$leadpost['lead_mail']);
-//        $this->db->set('email_senderphone',$leadpost['lead_phone']);
-//        $this->db->set('email_sendercompany',$leadpost['lead_customer']);
-//        $this->db->set('email_webpage', 'Sales');
-//        $this->db->set('email_item_name',$item_name);
-//        $this->db->set('email_item_number',$item_num);
-//        $this->db->insert('ts_emails');
-//        $newrec=$this->db->insert_id();
-//        if (!$newrec) {
-//            // Oops - record wasn't added
-//            $out['msg']='Error during Add Proof Request. Try later';
-//            return $out;
-//        }
-//        $out['result']=  Leads_model::SUCCESS_RESULT;
-//        $out['email_id']=$newrec;
-//        // Add relation with lead
-//        $this->db->set('lead_id',$leadpost['lead_id']);
-//        $this->db->set('email_id',$newrec);
-//        $this->db->insert('ts_lead_emails');
-//        // Add artwork, Artwork history
-//        $this->db->select('*');
-//        $this->db->from('ts_emails');
-//        $this->db->where('email_id',$newrec);
-//        $maildat=$this->db->get()->row_array();
-//        $artw=array(
-//            'artwork_id'=>0,
-//            'order_id'=>NULL,
-//            'mail_id'=>$newrec,
-//            'user_id'=>$usr_id,
-//            'customer'=>$leadpost['lead_company'],
-//            'customer_phone'=>$maildat['email_senderphone'],
-//            'customer_email'=>$maildat['email_sendermail'],
-//            'customer_contact'=>$leadpost['lead_customer'],
-//            'item_name'=>$maildat['email_item_name'],
-//            'other_item'=>$leadpost['other_item_name'],
-//            'item_number'=>$maildat['email_item_number'],
-//            'item_color'=>$maildat['email_special_requests'],
-//            'item_qty'=>$maildat['email_qty'],
-//            'item_id'=>$leadpost['lead_item_id'],
-//        );
-//        $art_id=$ci->artwork_model->artwork_update($artw);
-//        if ($art_id) {
-//            // All OK - add history
-//            $history_msg='Proof Request was created '.date('m/d/Y H:i:s',  strtotime($maildat['email_date'])).' manually by '.$usr_name;
-//            $this->db->set('artwork_id',$art_id);
-//            $this->db->set('message',$history_msg);
-//            $this->db->insert('ts_artwork_history');
-//        }
-//        return $out;
-//    }
-//    /* New Proof Number */
-//    private function get_new_proofnum() {
-//        $this->db->select('max(proof_num) as proof');
-//        $this->db->from('ts_emails');
-//        $this->db->where('email_type', 'Art_Submit');
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['proof']) || $res['proof']=='') {
-//            $part1=0;
-//            $part2=0;
-//        } else {
-//            $mailarr=explode('-', $res['proof']);
-//            $part1=intval($mailarr[1]);
-//            $part2=intval($mailarr[0]);
-//        }
-//        $part1++;
-//        if ($part1==999) {
-//            $part2++;
-//            $part1=0;
-//        }
-//        $new_proof=str_pad($part2, 3, '0', STR_PAD_LEFT).'-'.str_pad($part1, 3, '0', STR_PAD_LEFT);
-//        return $new_proof;
-//
-//    }
-//
+    /* Add New PR request */
+    public function add_proof_request($leadpost, $usr_id, $usr_name) {
+        $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
+        $this->load->model('artwork_model');
+        /* Create record in TS_EMAILS */
+        $item_name=NULL;
+        $item_num=NULL;
+        $itemdata=$this->search_itemid($leadpost['lead_item_id']);
+        if ($itemdata['result']==$this->success_result) {
+            $item_name=$itemdata['item_name'];
+            $item_num=$itemdata['item_number'];
+        }
+        // Get Proof Num
+        $proof_num=$this->get_new_proofnum();
+        $this->db->set('email_type','Art_Submit');
+        $this->db->set('proof_num',$proof_num);
+        $this->db->set('proof_updated',  time());
+        $this->db->set('email_sender',$leadpost['lead_company']);
+        $this->db->set('email_sendermail',$leadpost['lead_mail']);
+        $this->db->set('email_senderphone',$leadpost['lead_phone']);
+        $this->db->set('email_sendercompany',$leadpost['lead_customer']);
+        $this->db->set('email_webpage', 'Sales');
+        $this->db->set('email_item_name',$item_name);
+        $this->db->set('email_item_number',$item_num);
+        $this->db->insert('ts_emails');
+        $newrec=$this->db->insert_id();
+        if (!$newrec) {
+            // Oops - record wasn't added
+            $out['msg']='Error during Add Proof Request. Try later';
+            return $out;
+        }
+        $out['result']=  $this->success_result;
+        $out['email_id']=$newrec;
+        // Add relation with lead
+        $this->db->set('lead_id',$leadpost['lead_id']);
+        $this->db->set('email_id',$newrec);
+        $this->db->insert('ts_lead_emails');
+        // Add artwork, Artwork history
+        $this->db->select('*');
+        $this->db->from('ts_emails');
+        $this->db->where('email_id',$newrec);
+        $maildat=$this->db->get()->row_array();
+        $artw=array(
+            'artwork_id'=>0,
+            'order_id'=>NULL,
+            'mail_id'=>$newrec,
+            'user_id'=>$usr_id,
+            'customer'=>$leadpost['lead_company'],
+            'customer_phone'=>$maildat['email_senderphone'],
+            'customer_email'=>$maildat['email_sendermail'],
+            'customer_contact'=>$leadpost['lead_customer'],
+            'item_name'=>$maildat['email_item_name'],
+            'other_item'=>$leadpost['other_item_name'],
+            'item_number'=>$maildat['email_item_number'],
+            'item_color'=>$maildat['email_special_requests'],
+            'item_qty'=>$maildat['email_qty'],
+            'item_id'=>$leadpost['lead_item_id'],
+        );
+        $art_id=$this->artwork_model->artwork_update($artw);
+        if ($art_id) {
+            // All OK - add history
+            $history_msg='Proof Request was created '.date('m/d/Y H:i:s',  strtotime($maildat['email_date'])).' manually by '.$usr_name;
+            $this->db->set('artwork_id',$art_id);
+            $this->db->set('message',$history_msg);
+            $this->db->insert('ts_artwork_history');
+        }
+        return $out;
+    }
+    /* New Proof Number */
+    private function get_new_proofnum() {
+        $this->db->select('max(proof_num) as proof');
+        $this->db->from('ts_emails');
+        $this->db->where('email_type', 'Art_Submit');
+        $res=$this->db->get()->row_array();
+        if (!isset($res['proof']) || $res['proof']=='') {
+            $part1=0;
+            $part2=0;
+        } else {
+            $mailarr=explode('-', $res['proof']);
+            $part1=intval($mailarr[1]);
+            $part2=intval($mailarr[0]);
+        }
+        $part1++;
+        if ($part1==999) {
+            $part2++;
+            $part1=0;
+        }
+        $new_proof=str_pad($part2, 3, '0', STR_PAD_LEFT).'-'.str_pad($part1, 3, '0', STR_PAD_LEFT);
+        return $new_proof;
+
+    }
+
 //    public function remove_proof_request($email_id, $user_id) {
 //        $out=array('result'=>  Leads_model::ERR_FLAG, 'msg'=>  Leads_model::INIT_ERRMSG);
 //        $this->db->where('email_id',$email_id);
@@ -971,43 +970,43 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
-//    /* Duplicate Lead */
-//    function duplicate_lead($lead_id,$user_id) {
-//        /* Select Lead */
-//        $this->db->select('*');
-//        $this->db->from('ts_leads');
-//        $this->db->where('lead_id',$lead_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['lead_id'])) {
-//            $retval=array('lead_id'=>0);
-//        } else {
-//            /* Change Lead data */
-//            // Made new Lead status - Open
-//            $res['lead_type']=2;
-//            // $lead_usr=$this->get_lead_users($lead_id);
-//            $lead_usr=[];
-//            array_push($lead_usr, $user_id);
-//            $lead_tasks=$this->get_lead_tasks($lead_id);
-//            if (isset($lead_tasks['leadtask_id'])) {
-//                $lead_tasks['leadtask_id']=0;
-//                $lead_tasks['lead_id']=0;
-//            }
-//
-//            $res['create_date']=date('Y-m-d H:i:s');
-//            $res['lead_date']=time();
-//            $res['lead_status']='';
-//            $res['lead_id']=0;
-//            $leaddat=$this->save_leads($lead_usr, $lead_tasks, $res, $user_id);
-//            // $leaddat['result']=0;
-//            if ($leaddat['result']==Leads_model::ERR_FLAG) {
-//                $retval=array('lead_id'=>0);
-//            } else {
-//                $retval=$this->get_lead($leaddat['result']);
-//            }
-//        }
-//        return $retval;
-//    }
-//
+    /* Duplicate Lead */
+    function duplicate_lead($lead_id,$user_id) {
+        /* Select Lead */
+        $this->db->select('*');
+        $this->db->from('ts_leads');
+        $this->db->where('lead_id',$lead_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['lead_id'])) {
+            $retval=array('lead_id'=>0);
+        } else {
+            /* Change Lead data */
+            // Made new Lead status - Open
+            $res['lead_type']=2;
+            // $lead_usr=$this->get_lead_users($lead_id);
+            $lead_usr=[];
+            array_push($lead_usr, $user_id);
+            $lead_tasks=$this->get_lead_tasks($lead_id);
+            if (isset($lead_tasks['leadtask_id'])) {
+                $lead_tasks['leadtask_id']=0;
+                $lead_tasks['lead_id']=0;
+            }
+
+            $res['create_date']=date('Y-m-d H:i:s');
+            $res['lead_date']=time();
+            $res['lead_status']='';
+            $res['lead_id']=0;
+            $leaddat=$this->save_leads($lead_usr, $lead_tasks, $res, $user_id);
+            // $leaddat['result']=0;
+            if ($leaddat['result']==$this->error_result) {
+                $retval=array('lead_id'=>0);
+            } else {
+                $retval=$this->get_lead($leaddat['result']);
+            }
+        }
+        return $retval;
+    }
+
 //    function get_user_scores($user_id=0) {
 //        $out=array(
 //            'close_30'=>'',
@@ -1134,23 +1133,24 @@ Class Leads_model extends MY_Model
         return $result;
     }
 
-//    public function search_itemid($item_id) {
-//        $out=array('result'=>Leads_model::ERR_FLAG, 'msg'=>Leads_model::INIT_ERRMSG);
-//        // Search
-//        $this->db->select('item_number, item_name');
-//        $this->db->from('v_itemsearch');
-//        $this->db->where('item_id',$item_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['item_number'])) {
-//            $out['msg']='Item Not Found';
-//        } else {
-//            $out['result']=Leads_model::SUCCESS_RESULT;
-//            $out['msg']='';
-//            $out['item_name']=$res['item_name'];
-//            $out['item_number']=$res['item_number'];
-//        }
-//        return $out;
-//    }
+    public function search_itemid($item_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->INIT_ERRMSG);
+        // Search
+        $this->db->select('item_number, item_name');
+        $this->db->from('v_itemsearch');
+        $this->db->where('item_id',$item_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['item_number'])) {
+            $out['msg']='Item Not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $out['msg']='';
+            $out['item_name']=$res['item_name'];
+            $out['item_number']=$res['item_number'];
+        }
+        return $out;
+    }
+
     /* Check relation with lead */
     public function check_leadrelation($quest_id) {
         $this->db->select('count(*) as cnt');

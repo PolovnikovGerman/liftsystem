@@ -344,7 +344,7 @@ function profedit_lead(lead_id) {
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal('show');
-            // init_edits();
+            init_leadpopupedit();
         } else {
             show_error(response);
         }
