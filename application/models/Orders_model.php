@@ -795,6 +795,20 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function max_finorder_num() {
+        $dbname = 'ts_orders';
+        $this->db->select('max(order_num) as maxnum');
+        $this->db->from($dbname);
+        $res = $this->db->get()->row_array();
+        if (!isset($res['maxnum'])) {
+            $maxnum = 1;
+        } else {
+            $maxnum = $res['maxnum'] + 1;
+        }
+        return $maxnum;
+    }
+
+
     public function get_online_artwork($order_id) {
         $this->db->select("*");
         $this->db->from('sb_order_artworks');
