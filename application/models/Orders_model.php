@@ -5034,4 +5034,239 @@ Class Orders_model extends MY_Model
         return TRUE;
     }
 
+    public function export_artsync() {
+        $this->db->select('o.order_num, o.order_date, o.order_id, s.artdata_sync_id, s.customer, s.item_descript, s.rush, s.blank');
+        $this->db->select('s.art_stage, s.redraw_stage, s.vector_stage, s.proof_stage, s.approv_stage');
+        $this->db->from('ts_artdata_sync s');
+        $this->db->join('ts_orders o','o.order_id=s.order_id');
+        $this->db->where('s.sended',0);
+        $datares=$this->db->get()->result_array();
+        var_dump($datares);die();
+
+        foreach ($datares as $row) {
+            $postdata=array(
+                'sync'=>'data',
+                'af_order_id'=>$row['order_num'],
+            );
+            // Get first contact row
+            $this->db->select('*');
+            $this->db->from('ts_order_contacts');
+            $this->db->where('order_id', $row['order_id']);
+            $this->db->order_by('order_contact_id');
+            $this->db->limit(1);
+            $contactres=$this->db->get()->row_array();
+            $note='';
+            if (!empty($contactres['contact_emal'])) {
+                $note.='Email:'.$contactres['contact_emal'].' ';
+            }
+            if (!empty($contactres['contact_phone'])) {
+                $note.='Tel: '.$contactres['contact_phone'].' ';
+            }
+            if (!empty($contactres['contact_name'])) {
+                $note.='Contact:'.addslashes($contactres['contact_name']);
+            }
+            if (!empty($note)) {
+                $postdata['contact_info']=$note;
+            }
+            // Email: xxxxxxxx@xxxxxxxxxx.com   Tel: xxx-xxx-xxxx xxxx  Contact:
+            if (!empty($row['customer'])) {
+                $postdata['af_cust']= addslashes($row['customer']);
+            }
+            if (!empty($row['item_descript'])) {
+                $postdata['af_desc']= addslashes($row['item_descript']);
+            }
+            if ($row['rush']>=0) {
+                $postdata['af_rush_ck']=$row['rush'];
+            }
+            if ($row['blank']>=0) {
+                $postdata['order_blank']=$row['blank'];
+            }
+            // ART Stages
+            $postdata['af_art_ck']=$row['art_stage'];
+            $postdata['af_redraw_ck']=$row['redraw_stage'];
+            $postdata['af_vector_ck']=$row['vector_stage'];
+            $postdata['af_proof_ck']=$row['proof_stage'];
+            $postdata['af_appr_ck']=$row['approv_stage'];
+            $postdata['order_date']=$row['order_date'];
+
+            $curl = curl_init(); //Init
+            if ($this->config->item('netexportsecure')==1) {
+                curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+            }
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
+            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+            curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+            $res = curl_exec($curl);
+
+            // In case of Error - print error message
+            if(!$res) {
+                $error = curl_error($curl).'('.curl_errno($curl).')';
+                echo $error;
+            } else {
+                $array = json_decode($res);
+
+                if ($array->result==1) {
+                    // echo 'Export '.$row['order_num'].' Success '.PHP_EOL;
+                    $this->db->set('sended',1);
+                    $this->db->set('sendtime', time());
+                    $this->db->where('artdata_sync_id', $row['artdata_sync_id']);
+                    $this->db->update('ts_artdata_sync');
+                } else {
+                    echo 'Error '.$array->error.PHP_EOL;
+                }
+            }
+            curl_close($curl);
+        }
+
+        // Get documents - added to system
+        $this->db->select('s.artdoc_sync_id, s.operation, o.order_num');
+        $this->db->from('ts_artdoc_sync s');
+        $this->db->join('ts_orders o','o.order_id=s.order_id');
+        $this->db->where('s.sended',0);
+        $this->db->order_by('s.artdoc_sync_id');
+        $sdoc=$this->db->get()->result_array();
+        foreach ($sdoc as $docrow) {
+            if ($docrow['operation']=='add') {
+                $this->db->select('o.order_num, p.source_name,p.proof_name, s.artdoc_sync_id');
+                $this->db->from('ts_artdoc_sync s');
+                $this->db->join('ts_orders o','o.order_id=s.order_id');
+                $this->db->join('ts_artworks a','a.order_id=s.order_id');
+                $this->db->join('ts_artwork_proofs p','p.artwork_proof_id=s.artwork_proof_id');
+                $this->db->where('s.artdoc_sync_id',$docrow['artdoc_sync_id']);
+                $docres=$this->db->get()->row_array();
+                $postdata=array(
+                    'sync'=>'doc',
+                    'operation'=>'add',
+                    'af_order_id'=>$docres['order_num'],
+                    'source_name'=>$docres['source_name'],
+                    'source_lnk'=> 'http://'.$_SERVER['SERVER_NAME'].addslashes($docres['proof_name']),
+                );
+            } else {
+                // Get documents - delete from system
+                $this->db->select('o.order_num, s.artdoc_sync_id, s.proofdoc_link');
+                $this->db->from('ts_artdoc_sync s');
+                $this->db->join('ts_orders o','o.order_id=s.order_id');
+                $this->db->where('s.artdoc_sync_id',$docrow['artdoc_sync_id']);
+                $delres=$this->db->get()->row_array();
+                $postdata=array(
+                    'sync'=>'doc',
+                    'operation'=>'delete',
+                    'af_order_id'=>$delres['order_num'],
+                    'source_name'=>$delres['proofdoc_link'],
+                );
+            }
+
+            $curl = curl_init(); //Init
+            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
+            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+            curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+            $res = curl_exec($curl);
+
+            // In case of Error - print error message
+            if(!$res) {
+                $error = curl_error($curl).'('.curl_errno($curl).')';
+                echo $error;
+            } else {
+                $array = json_decode($res);
+                if (!is_object($array)) {
+                    var_dump($postdata);
+                    var_dump($res);
+                } else {
+                    if ($array->result==1) {
+                        echo 'Export '.  strtoupper($docrow['operation']).', DOC '.$docrow['order_num'].' Success '.PHP_EOL;
+                        $this->db->set('sended',1);
+                        $this->db->set('sendtime', time());
+                        $this->db->where('artdoc_sync_id', $docrow['artdoc_sync_id']);
+                        $this->db->update('ts_artdoc_sync');
+                    } else {
+                        echo 'Error '.$array->error.PHP_EOL;
+                    }
+
+                }
+            }
+            curl_close($curl);
+        }
+
+//
+//        foreach ($docres as $drow) {
+//            $postdata=array(
+//                'sync'=>'doc',
+//                'operation'=>'add',
+//                'af_order_id'=>$drow['order_num'],
+//                'source_name'=>$drow['source_name'],
+//                'source_lnk'=> 'http://'.$_SERVER['SERVER_NAME'].$drow['proof_name'],
+//            );
+//            $curl = curl_init(); //Init
+//            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+//            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+//            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
+//            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+//            curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+//            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+//            curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+//            $res = curl_exec($curl);
+//            // In case of Error - print error message
+//            if(!$res) {
+//                $error = curl_error($curl).'('.curl_errno($curl).')';
+//                echo $error;
+//            } else {
+//                $array = json_decode($res);
+//                if ($array->result==1) {
+//                    echo 'Export ADD DOC '.$drow['order_num'].' Success '.PHP_EOL;
+//                    $this->db->set('sended',1);
+//                    $this->db->set('sendtime', time());
+//                    $this->db->where('artdoc_sync_id', $drow['artdoc_sync_id']);
+//                    $this->db->update('ts_artdoc_sync');
+//                } else {
+//                    echo 'Error '.$array->error.PHP_EOL;
+//                }
+//            }
+//            curl_close($curl);
+//        }
+//
+//
+//        foreach ($delres as $drow) {
+//            $postdata=array(
+//                'sync'=>'doc',
+//                'operation'=>'delete',
+//                'af_order_id'=>$drow['order_num'],
+//                'source_name'=>$drow['proofdoc_link'],
+//            );
+//            $curl = curl_init(); //Init
+//            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+//            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+//            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
+//            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+//            curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+//            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+//            curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+//            $res = curl_exec($curl);
+//            // In case of Error - print error message
+//            if(!$res) {
+//                $error = curl_error($curl).'('.curl_errno($curl).')';
+//                echo $error;
+//            } else {
+//                $array = json_decode($res);
+//                if ($array->result==1) {
+//                    echo 'Export DELETE '.$drow['order_num'].' Success '.PHP_EOL;
+//                    $this->db->set('sended',1);
+//                    $this->db->set('sendtime', time());
+//                    $this->db->where('artdoc_sync_id', $drow['artdoc_sync_id']);
+//                    $this->db->update('ts_artdoc_sync');
+//                } else {
+//                    echo 'Error '.$array->error.PHP_EOL;
+//                }
+//            }
+//            curl_close($curl);
+//        }
+
+    }
+
 }

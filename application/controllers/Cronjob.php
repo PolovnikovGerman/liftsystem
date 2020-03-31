@@ -531,5 +531,11 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function artexportdata() {
+        $this->load->model('orders_model');
+        $res=$this->orders_model->export_artsync();
+    }
+
+
 
 }
