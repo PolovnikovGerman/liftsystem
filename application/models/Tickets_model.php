@@ -381,39 +381,41 @@ Class Tickets_model extends My_Model
 //        return $out;
 //    }
 //
-//    public function get_ticketreport_overview() {
-//        $this->db->select('quarter(from_unixtime(ticket_date)) as tickquat, date_format(from_unixtime(ticket_date),\'%Y\') as tickyear, count(ticket_id) as cnt', FALSE);
-//        $this->db->from('ts_tickets');
-//        $this->db->where('ticket_date is not null');
-//        $this->db->where('ticket_closed',0);
-//        $this->db->order_by('ticket_date');
-//        $this->db->group_by('tickquat, tickyear');
-//        $res=$this->db->get()->result_array();
-//        $out=array();
-//        $curyear=0;
-//        foreach ($res as $row) {
-//            if ($curyear==$row['tickyear']) {
-//                $row['out_tickyear']='';
-//            } else {
-//                $curyear=$row['tickyear'];
-//                $row['out_tickyear']=$curyear;
-//            }
-//            $out[]=$row;
-//        }
-//        return $out;
-//    }
-//
-//    public function get_ticketreport_details($quater, $year) {
-//        $this->db->select('t.ticket_date, t.ticket_num, t.order_num, t.customer, v.vendor_name, unix_timestamp(t.updated) as lastupdate');
-//        $this->db->from('ts_tickets t');
-//        $this->db->join('vendors v','v.vendor_id=t.vendor_id','left');
-//        $this->db->where('t.ticket_closed',0);
-//        $this->db->where('quarter(from_unixtime(ticket_date))', $quater);
-//        $this->db->where("date_format(from_unixtime(ticket_date), '%Y')={$year}");
-//        $this->db->order_by('ticket_date');
-//        $res=$this->db->get()->result_array();
-//        return $res;
-//    }
+    public function get_ticketreport_overview($brand) {
+        $this->db->select('quarter(from_unixtime(ticket_date)) as tickquat, date_format(from_unixtime(ticket_date),\'%Y\') as tickyear, count(ticket_id) as cnt', FALSE);
+        $this->db->from('ts_tickets');
+        $this->db->where('ticket_date is not null');
+        $this->db->where('ticket_closed',0);
+        $this->db->where('brand', $brand);
+        $this->db->order_by('ticket_date');
+        $this->db->group_by('tickquat, tickyear');
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $curyear=0;
+        foreach ($res as $row) {
+            if ($curyear==$row['tickyear']) {
+                $row['out_tickyear']='';
+            } else {
+                $curyear=$row['tickyear'];
+                $row['out_tickyear']=$curyear;
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function get_ticketreport_details($quater, $year, $brand) {
+        $this->db->select('t.ticket_date, t.ticket_num, t.order_num, t.customer, v.vendor_name, unix_timestamp(t.updated) as lastupdate');
+        $this->db->from('ts_tickets t');
+        $this->db->join('vendors v','v.vendor_id=t.vendor_id','left');
+        $this->db->where('t.ticket_closed',0);
+        $this->db->where('quarter(from_unixtime(ticket_date))', $quater);
+        $this->db->where("date_format(from_unixtime(ticket_date), '%Y')={$year}");
+        $this->db->where('t.brand', $brand);
+        $this->db->order_by('ticket_date');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
     public function add_newticket($options=array()) {
         $tik_n=$this->get_last_ticknum();

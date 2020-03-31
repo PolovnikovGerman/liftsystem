@@ -488,5 +488,44 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function tickets_report() {
+        $this->load->model('tickets_model');
+        // Prepare Overview
+        $brands = ['BT', 'SB'];
+        foreach ($brands as $brand) {
+            $overview=$this->tickets_model->get_ticketreport_overview($brand);
+            $msgdata='';
+            foreach ($overview as $row) {
+                $details=$this->tickets_model->get_ticketreport_details($row['tickquat'],$row['tickyear'], $brand);
+                // Create date with Moth day - Number of quater
+                $datconv=strtotime(date('Y-m').'-0'.$row['tickquat']);
+                $msgdata.=$this->load->view('messages/ticket_report_data',array('quater'=>$row['tickquat'],'year'=>$row['tickyear'],'data'=>$details,'titledate'=>$datconv), TRUE);
+            }
+            $headrep=$this->load->view('messages/ticket_report_head', array('totals'=>$overview),TRUE);
+            $msgbody=$this->load->view('messages/ticket_report', array('head'=>$headrep,'data'=>$msgdata),TRUE);
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype']='html';
+            $config['wordwrap'] = TRUE;
+            $this->email->initialize($config);
+            $email_from=$this->config->item('email_notification_sender');
+            $email_to=$this->config->item('sean_email');
+            // $email_to='polovnikov.german@gmail.com';
+            // $email_cc=array($this->config->item('sage_email'), 'darrell.martin@bluetrack.com','Alex.Pfisterer@bluetrack.com');
+            $email_cc='to_german@yahoo.com';
+
+            $this->email->from($email_from);
+            $this->email->to($email_to);
+            $this->email->cc($email_cc);
+
+            $title=date('D - M d, Y').' - Issues Report';
+            $this->email->subject($title);
+            $this->email->message($msgbody);
+            $this->email->send();
+            $this->email->clear(TRUE);
+
+        }
+    }
+
 
 }
