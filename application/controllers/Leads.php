@@ -151,6 +151,7 @@ class Leads extends My_Controller {
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
         // Lead popup
         $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
+        $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -648,6 +649,29 @@ class Leads extends My_Controller {
             $this->ajaxResponse($mdata,$error);
         }
     }
+
+    /* Show Quote Details from Lead Form */
+    function show_quote_detail() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $this->load->model('quotes_model');
+            $quote_id=$this->input->post('quote_id');
+            $res=$this->quotes_model->get_quote_dat($quote_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $quote = $res['data'];
+                if ($quote['email_quota_link']) {
+                    $mdata['url']=$quote['email_quota_link'];
+                    $error='';
+                } else {
+                    $error='Quote in Process Stage';
+                }
+            }
+            // $mdata['content']=$this->load->view('onlinequotes/details_view',$quote,TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     public function change_status() {
         if ($this->isAjax()) {

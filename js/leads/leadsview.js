@@ -29,7 +29,12 @@ function init_leads_management() {
         initLeadClosed();
     });
     $("div.leads_add").unbind('click').click(function(){
-        add_lead();
+        var brand = $("#leadsveiwbrand").val();
+        if (brand=='ALL') {
+
+        } else {
+            add_lead(brand);
+        }
     });
     $("div.leadsearchall").unbind('click').click(function(){
         search_leads();
@@ -448,14 +453,17 @@ function show_quotedetails(obj) {
 
 function show_questdetails(obj) {
     var quest_id=obj.id.substr(7);
-    var url="/leads/show_question_detail";
+    var url="/proofrequests/show_question_detail";
     var formdat=$("form#leadeditform").serializeArray();
     formdat.push({name: "quest_id", value: quest_id});
     $.post(url, formdat, function(response){
         if (response.errors=='') {
-            $("div#pop_content").empty().html(response.data.content);
-            $("div#popupContact").css('width','727px');
-            $("a#popupContactClose").unbind('click').click(function(){
+            $("#pageModal").modal('hide');
+            $("#pageModalLabel").empty().html('View Question');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','727px');
+            $("#pageModal").modal('show');
+            $("#pageModal").find('button.close').unbind('click').click(function(){
                 restore_leadform();
             })
         } else {
@@ -466,14 +474,17 @@ function show_questdetails(obj) {
 
 function show_proofdetails(obj) {
     var proof_id=obj.id.substr(6);
-    var url="/leads/show_proof_details";
+    var url="/proofrequests/show_proof_details";
     var formdat=$("form#leadeditform").serializeArray();
     formdat.push({name: "proof_id", value: proof_id});
     $.post(url, formdat, function(response){
         if (response.errors=='') {
-            $("div#pop_content").empty().html(response.data.content);
-            $("div#popupContact").css('width','889px');
-            $("a#popupContactClose").unbind('click').click(function(){
+            $("#pageModal").modal('hide');
+            $("#pageModalLabel").empty().html('View Question');
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','889px');
+            $("#pageModal").modal('show');
+            $("#pageModal").find('button.close').unbind('click').click(function(){
                 restore_leadform();
             })
         } else {

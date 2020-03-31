@@ -4,6 +4,7 @@
 <form id="leadeditform">
     <input type="hidden" id="lead_id" name="lead_id" value="<?=$data['lead_id']?>"/>
     <input type="hidden" id="lead_item_id" value="<?=$data['lead_item_id']?>"/>
+    <input type="hidden" id="brand" name="brand" value="<?=$data['brand']?>"/>
     <input type="hidden" id="session" value="<?=$session_id?>"/>
     <div class="lead_popup_content">
         <div class="lead_popupform_row">

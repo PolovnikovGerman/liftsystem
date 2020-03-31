@@ -127,7 +127,7 @@ input.usrrepliccheck {
     margin-right: 5px;
     text-align: right;
     font-weight: bold;
-    padding-top: 5px;
+    /* padding-top: 5px; */
 }
 .lead_popup_companyinpt {
     float: left;
@@ -145,7 +145,7 @@ input.lead_company {
     float: left;
     width: 80px;
     font-weight: bold;
-    padding-top: 5px;
+    /* padding-top: 5px; */
 }
 .lead_popup_phoneinpt {
     float: left;
@@ -161,7 +161,7 @@ input.lead_phone {
 .lead_popup_value_title {
     float: left;
     width: 52px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: bold;
 }
 .lead_popup_valueinpt {
@@ -178,12 +178,12 @@ input.lead_value {
 .lead_popup_neadbytitle {
     float: left;
     width: 61px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: bold;
 }
 .lead_popup_calendar {
     float: left;
-    padding-top: 6px;
+    /* padding-top: 6px; */
     width: 25px;
 }
 .lead_popup_neadbyinpt {
@@ -196,7 +196,7 @@ input.lead_needby {
 .lead_popup_mailtitle {
     float: left;
     width: 47px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: bold;
 }
 .lead_popup_mailinpt {
@@ -209,7 +209,7 @@ input.lead_email {
 .lead_popup_qtytitle {
     float: left;
     width: 30px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: bold;
 }
 .lead_popup_qtyinpt {
@@ -222,7 +222,7 @@ input.lead_qty {
 .lead_popup_itemtitle {
     float: left;
     width: 36px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: bold;
 }
 .lead_popup_iteminpt {
@@ -299,7 +299,7 @@ textarea.lead_statuses {
     background-color: #ffffff;
     height: 318px;
     overflow-y: auto;
-    width: 264px;
+    width: 256px;
 }
 .lead_popup_taskarea {
     float: left;
@@ -332,6 +332,7 @@ textarea.other_item_name {
     width: 181px;
     resize: none;
     font-size: 13px;
+    color: #000000;
 }
 .lead_popup_tasks {
     clear: both;
@@ -383,7 +384,7 @@ textarea.lead_othertask {
     clear: both;
     background: url('/img/leads/questions_bg.png');
     width: 92px;
-    height: 102px;
+    height: 107px;
     padding-top: 5px;
 }
 .lead_popup_questrow {
@@ -488,7 +489,7 @@ textarea.lead_othertask {
     background: url("/img/leads/onlineproofs_bg.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 107px;
-    max-height: 103px;
+    /* max-height: 103px; */
     overflow-y: auto;
     padding-left: 5px;
     padding-top: 5px;
