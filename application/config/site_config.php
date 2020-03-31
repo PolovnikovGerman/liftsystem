@@ -35,6 +35,7 @@ $config['minimal_profitperc']=20;
 switch($_SERVER['SERVER_NAME']){
     case 'tempsys.net':
     case 'tempsys.golden-team.org':
+    case 'lift.stressballs.com':
         $config['sean_email']='polovnikov.g@gmail.com';
         $config['sage_email']='to_german@yahoo.com';
         $config['taisen_email']='polovnikov.german@gmail.com';
