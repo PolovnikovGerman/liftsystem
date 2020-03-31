@@ -5041,7 +5041,6 @@ Class Orders_model extends MY_Model
         $this->db->join('ts_orders o','o.order_id=s.order_id');
         $this->db->where('s.sended',0);
         $datares=$this->db->get()->result_array();
-        var_dump($datares);die();
 
         foreach ($datares as $row) {
             $postdata=array(
