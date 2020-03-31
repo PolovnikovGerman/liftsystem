@@ -774,7 +774,7 @@ Class Orders_model extends MY_Model
         /* End of DAY */
         $d_end = strtotime(date('Y-m-d', $d_bgn) . ' 23:59:59');
         $this->db->select('order_id, order_num, customer_name, revenue');
-        $this->db->from('ts_ordres');
+        $this->db->from('ts_orders');
         $this->db->where('order_date >= ', $d_bgn);
         $this->db->where('order_date <= ', $d_end);
         $this->db->order_by('order_num', 'desc');
