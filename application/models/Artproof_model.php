@@ -840,27 +840,27 @@ Class Artproof_model extends MY_Model
         $this->db->from('v_order_statuses');
         switch ($stage) {
             case 'noart':
-                $this->db->where('order_proj_status', Artproof_model::NO_ART);
+                $this->db->where('order_proj_status', $this->NO_ART);
                 break;
             case 'redrawn':
                 $this->db->select('order_art_update, art_day_diff, art_hour_diff');
-                $this->db->where('order_proj_status', Artproof_model::REDRAWN);
+                $this->db->where('order_proj_status', $this->REDRAWN);
                 break;
             case 'vectored':
                 $this->db->select('order_redrawn_update, redrawn_day_diff, redrawn_hour_diff');
-                $this->db->where_in('order_proj_status', Artproof_model::NO_VECTOR);
+                $this->db->where_in('order_proj_status', $this->NO_VECTOR);
                 break;
             case 'need_proof':
                 $this->db->select('order_vectorized_update, vectorized_day_diff, vectorized_hour_diff');
-                $this->db->where('order_proj_status', Artproof_model::TO_PROOF);
+                $this->db->where('order_proj_status', $this->TO_PROOF);
                 break;
             case 'need_approve':
                 $this->db->select('order_proofed_update, proofed_hour_diff, proofed_day_diff');
-                $this->db->where('order_proj_status', Artproof_model::NEED_APPROVAL);
+                $this->db->where('order_proj_status', $this->NEED_APPROVAL);
                 break;
             case 'just_approved':
                 $this->db->select('order_approved_update, approved_hour_diff, approved_day_diff');
-                $this->db->where('order_proj_status',  Artproof_model::JUST_APPROVED);
+                $this->db->where('order_proj_status',  $this->JUST_APPROVED);
                 // $this->db->where('order_approved_view',0);
                 $this->db->where('order_cog is null');
                 if ($inclreq==0) {
