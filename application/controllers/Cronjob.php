@@ -518,12 +518,16 @@ Class Cronjob extends CI_Controller
             $this->email->to($email_to);
             $this->email->cc($email_cc);
 
-            $title=date('D - M d, Y').' - Issues Report';
+            $title=date('D - M d, Y').' - Issues Report ';
+            if ($brand=='BT') {
+                $title.='(Bluetrack.com)';
+            } elseif ($brand=='SB') {
+                $title.='(Stressball.com)';
+            }
             $this->email->subject($title);
             $this->email->message($msgbody);
             $this->email->send();
             $this->email->clear(TRUE);
-
         }
     }
 
