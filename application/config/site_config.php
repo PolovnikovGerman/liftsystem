@@ -79,7 +79,7 @@ switch($_SERVER['SERVER_NAME']){
             'to_german@yahoo.com',
         );
         break;
-    case 'tempsys.golden-team.org':
+    case 'lift.stressballs.com':
         $config['email_setup']=array(
             'protocol'=>'sendmail',
             'charset'=>'utf8',

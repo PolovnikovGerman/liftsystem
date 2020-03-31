@@ -184,4 +184,113 @@ Class Cronjob extends CI_Controller
             $this->db->insert('sb_shipzone_methods');
         }
     }
+
+    // public function
+    public function artorder_daily() {
+        //$min_ordernum = '30561';
+        $dat_bgn=time();
+        $email_to = $this->config->item('artorderdaily_to');
+        $email_cc = $this->config->item('artorderdaily_cc');
+        $email_from = 'fulfillment@bluetrack.com';
+        /* step 1 count # of project orders */
+        $brands = ['BT', 'SB'];
+        foreach ($brands as $brand) {
+            $this->db->select('count(order_id) as cnt');
+            $this->db->from('v_order_statuses');
+            $this->db->where('status_type','O');
+            $this->db->where('brand', $brand);
+            // $this->db->where('order_num >= ',$min_ordernum);
+            $res = $this->db->get()->row_array();
+            if ($res['cnt'] == 0) {
+                $message_body = $this->load->view('messages/artorder_empty_view', array(), TRUE);
+            } else {
+                /* Begin analize */
+                /* Not Placed */
+                $options = array(
+                    'notplaced' => '',
+                    'notredr' => '',
+                    'notvector' => '',
+                    'notprof' => '',
+                    'notapprov' => '',
+                    'noart' => '',
+                );
+                $this->load->model('artproof_model');
+                $taskview='orders';
+                $inclreq='0';
+                $aproved_sort='time';
+                $aproved_direc='desc';
+                $nonart_sort='time';
+                $nonart_direc='desc';
+                $redraw_sort='time';
+                $redraw_direc='desc';
+                $proof_sort='time';
+                $proof_direc='desc';
+                $needapr_sort='time';
+                $needapr_direc='desc';
+
+                $data_aproved=$this->artproof_model->get_tasks_reportstage('just_approved', $taskview, $inclreq, $aproved_sort, $aproved_direc, $brand);
+                if (count($data_aproved) > 0) {
+                    $options['notplaced'] = $this->load->view('messages/artorder_data_view', array('title' => 'Not Placed', 'orders' => $data_aproved), TRUE);
+                } else {
+                    $options['notplaced'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Not Placed'), TRUE);
+                }
+                $data_redraw=$this->artproof_model->get_tasks_reportstage('redrawn', $taskview, $inclreq, $redraw_sort, $redraw_direc, $brand);
+                if (count($data_redraw) > 0) {
+                    $options['notredr'] = $this->load->view('messages/artorder_data_view', array('title' => 'Need to Send Ravi', 'orders' => $data_redraw), TRUE);
+                } else {
+                    $options['notredr'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Need to Send Ravi'), TRUE);
+                }
+                $data_vector=$this->artproof_model->get_tasks_reportstage('vectored', $taskview, $inclreq, $redraw_sort, $redraw_direc, $brand);
+                if (count($data_vector) > 0) {
+                    $options['notvector'] = $this->load->view('messages/artorder_data_view', array('title' => 'Waiting for Ravi Redraw', 'orders' => $data_vector), TRUE);
+                } else {
+                    $options['notvector'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Waiting for Ravi Redraw'), TRUE);
+                }
+                $data_needproof=$this->artproof_model->get_tasks_reportstage('need_proof',$taskview, $inclreq, $needapr_sort, $needapr_direc, $brand);
+                if (count($data_needproof)>0) {
+                    $options['needprof'] = $this->load->view('messages/artorder_data_view', array('title' => 'Need Proof', 'orders' => $data_needproof), TRUE);
+                } else {
+                    $options['needprof'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Need Proof'), TRUE);
+                }
+
+                $data_needapr=$this->artproof_model->get_tasks_reportstage('need_approve', $taskview, $inclreq, $needapr_sort, $needapr_direc, $brand);
+                if (count($data_needapr)>0) {
+                    $options['notapprov'] = $this->load->view('messages/artorder_data_view', array('title' => 'Waiting on Customer\'s Approval', 'orders' => $data_needapr), TRUE);
+                } else {
+                    $options['notapprov'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Waiting on Customer\'s Approval'), TRUE);
+                }
+                $data_not_art=$this->artproof_model->get_tasks_reportstage('noart', $taskview, $inclreq, $nonart_sort, $nonart_direc, $brand);
+                if (count($data_not_art)>0) {
+                    $options['noart'] = $this->load->view('messages/artorder_data_view', array('title' => 'Waiting on Customer Art', 'orders' => $data_not_art), TRUE);
+                } else {
+                    $options['noart'] = $this->load->view('messages/artorder_emptydata_view', array('title' => 'Waiting on Customer Art'), TRUE);
+                }
+
+                $message_body = $this->load->view('messages/artorder_list_view', $options, TRUE);
+            }
+            $this->load->library('email');
+            $email_conf = array(
+                'protocol' => 'sendmail',
+                'charset' => 'utf-8',
+                'wordwrap' => TRUE,
+                'mailtype' => 'html',
+            );
+            $this->email->initialize($email_conf);
+            $this->email->to($email_to);
+            $this->email->cc($email_cc);
+
+            $this->email->from($email_from);
+            $mail_subj = 'Orders in PROJ stage ' . date('m/d/Y');
+            if ($brand=='BT') {
+                $mail_subj.=' (Bluetrack.com)';
+            } elseif ($brand=='SB') {
+                $mail_subj.=' (Stressball.com)';
+            }
+            $this->email->subject($mail_subj);
+            $this->email->message($message_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+    }
+
 }

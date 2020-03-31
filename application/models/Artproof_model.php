@@ -834,4 +834,156 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    function get_tasks_reportstage($stage, $taskview, $inclreq, $order_by, $direction, $brand) {
+        $this->db->select('order_disp_id, order_num, order_rush as order_rush_val, specialdiff, commondiff, update_date ');
+        $this->db->select('day_diff, hour_diff, customer_name, item_name, item_number, order_date, revenue, order_qty');
+        $this->db->from('v_order_statuses');
+        switch ($stage) {
+            case 'noart':
+                $this->db->where('order_proj_status', Artproof_model::NO_ART);
+                break;
+            case 'redrawn':
+                $this->db->select('order_art_update, art_day_diff, art_hour_diff');
+                $this->db->where('order_proj_status', Artproof_model::REDRAWN);
+                break;
+            case 'vectored':
+                $this->db->select('order_redrawn_update, redrawn_day_diff, redrawn_hour_diff');
+                $this->db->where_in('order_proj_status', Artproof_model::NO_VECTOR);
+                break;
+            case 'need_proof':
+                $this->db->select('order_vectorized_update, vectorized_day_diff, vectorized_hour_diff');
+                $this->db->where('order_proj_status', Artproof_model::TO_PROOF);
+                break;
+            case 'need_approve':
+                $this->db->select('order_proofed_update, proofed_hour_diff, proofed_day_diff');
+                $this->db->where('order_proj_status', Artproof_model::NEED_APPROVAL);
+                break;
+            case 'just_approved':
+                $this->db->select('order_approved_update, approved_hour_diff, approved_day_diff');
+                $this->db->where('order_proj_status',  Artproof_model::JUST_APPROVED);
+                // $this->db->where('order_approved_view',0);
+                $this->db->where('order_cog is null');
+                if ($inclreq==0) {
+                    $this->db->where('status_type','O');
+                } else {
+                    switch ($taskview) {
+                        case 'orders':
+                            $this->db->where('status_type','O');
+                            break;
+                        case 'proofs':
+                            $this->db->where('status_type','R');
+                            break;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        if ($stage!='just_approved') {
+            switch ($taskview) {
+                case 'orders':
+                    $this->db->where('status_type','O');
+                    break;
+                case 'proofs':
+                    $this->db->where('status_type','R');
+                    break;
+            }
+        }
+        if ($order_by=='time') {
+            if ($direction=='desc') {
+                $this->db->order_by('order_rush desc, status_type asc, specialdiff desc, commondiff desc');
+            } else {
+                $this->db->order_by('order_rush desc, status_type asc, specialdiff asc, commondiff asc');
+            }
+        } elseif ($order_by=='order') {
+            if ($direction=='desc') {
+                $this->db->order_by('order_rush desc, status_type asc, order_num desc');
+            } else {
+                $this->db->order_by('order_rush desc, status_type asc, order_num asc');
+            }
+        }
+        $this->db->where('brand', $brand);
+        $res=$this->db->get()->result_array();
+        $out=array();
+        $rushimg="<img src='/img/art/task_rushicon.png' alt='Rush'/>";
+        foreach ($res as $row) {
+            switch ($stage) {
+                case 'noart':
+                    if ($row['update_date']==0) {
+                        $diff='';
+                    } else {
+                        $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                    }
+                    break;
+                case 'redrawn':
+                    if ($row['order_art_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['art_day_diff']==0 ? $row['art_hour_diff'].' h' : $row['art_day_diff'].' d '.($row['art_hour_diff']-($row['art_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'vectored':
+                    /* , , redrawn_hour_diff */
+                    if ($row['order_redrawn_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['redrawn_day_diff']==0 ? $row['redrawn_hour_diff'].' h' : $row['redrawn_day_diff'].' d '.($row['redrawn_hour_diff']-($row['redrawn_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'need_approve':
+                    if ($row['order_proofed_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['proofed_day_diff']==0 ? $row['proofed_hour_diff'].' h' : $row['proofed_day_diff'].' d '.($row['proofed_hour_diff']-($row['proofed_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'need_proof':
+                    if ($row['order_vectorized_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['vectorized_day_diff']==0 ? $row['vectorized_hour_diff'].' h' : $row['vectorized_day_diff'].' d '.($row['vectorized_hour_diff']-($row['vectorized_day_diff']*24)).'h');
+                    }
+                    break;
+                case 'just_approved':
+                    if ($row['order_approved_update']==0) {
+                        if ($row['update_date']==0) {
+                            $diff='';
+                        } else {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        }
+                    } else {
+                        $diff=($row['approved_day_diff']==0 ? $row['approved_hour_diff'].' h' : $row['approved_day_diff'].' d '.($row['approved_hour_diff']-($row['approved_day_diff']*24)).'h');
+                    }
+                    break;
+            }
+            $row['diff']=$diff;
+            $row['order_rush']=($row['order_rush_val']==1 ? $rushimg : '&nbsp;');
+            $row['task_title']=($row['customer_name'] ? 'Customer - '.$row['customer_name'].'<br/>' : '');
+            $row['task_title'].=($row['item_name'] ? 'Item - '.$row['item_name'] : '');
+            $row['itemname_class']='';
+            if ($row['item_number']=='00-ZZ000') {
+                $row['itemname_class']="font-weight:bold;";
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+
 }
