@@ -3,7 +3,7 @@
 <?php foreach ($repl as $row) {?>
     <div class="lead_popup_replicausrarea">
         <div class="lead_popup_replicausrchk" data-user="<?=($row['user_id'])?>" data-replic="<?=$row['user_leadname']?>">
-            <img src="/img/delete-artloc.png"/>
+            <img src="/img/leads/delete-artloc.png"/>
         </div>
         <div class="lead_popup_replicausrname"><?=$row['user_leadname']?></div>
     </div>

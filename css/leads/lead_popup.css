@@ -299,7 +299,7 @@ textarea.lead_statuses {
     background-color: #ffffff;
     height: 318px;
     overflow-y: auto;
-    width: 264px;
+    width: 256px;
 }
 .lead_popup_taskarea {
     float: left;
@@ -332,6 +332,7 @@ textarea.other_item_name {
     width: 181px;
     resize: none;
     font-size: 13px;
+    color: #000000;
 }
 .lead_popup_tasks {
     clear: both;

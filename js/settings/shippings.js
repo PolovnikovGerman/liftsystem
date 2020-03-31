@@ -105,9 +105,9 @@ function init_shipcalccalend() {
         show: {
             event: 'click'
         },
-        hide: {
-            event: 'click',
-        },
+        // hide: {
+        //     event: 'click',
+        // },
         position: {
             my: 'bottom left',
             at: 'top right',

@@ -445,7 +445,7 @@ Class Leads_model extends MY_Model
                 } else {
                     /* Get DATA about Item */
                     $itemdat=$this->search_itemid($leadpost['lead_item_id']);
-                    if ($itemdat['result']==Leads_model::ERR_FLAG) {
+                    if ($itemdat['result']==$this->error_result) {
                         $leadpost['lead_item']='';
                         $leadpost['lead_item_id']=NULL;
                     } else {
@@ -940,6 +940,7 @@ Class Leads_model extends MY_Model
             'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
             'lead_status'=>'',
             'lead_type'=>$this->init_lead_type,
+            'brand' => $maildat['brand'],
         );
         $lead_tasks=array(
             'send_quote'=>0,
@@ -951,7 +952,9 @@ Class Leads_model extends MY_Model
         );
         $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
         $out['msg']=$res['msg'];
-        if ($res['result']==$this->success_result) {
+        if ($res['result']==$this->error_result) {
+            $out['msg'] = $res['msg'];
+        } else {
             $out['result']=$res['result'];
             /* Create relations between Mail and Leads */
             $this->db->set('lead_id',$res['result']);

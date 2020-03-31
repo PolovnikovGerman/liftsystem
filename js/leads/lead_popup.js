@@ -1,21 +1,30 @@
+var mainurl = '/leadmanagement';
 function show_new_lead(lead_id,type) {
-    var url="/proofrequests/edit_lead";
+    var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
-            disablePopup();
-            show_popup('leadpopupdat');
-            $("div#pop_content").empty().html(response.data.content);
-            init_edits();
-            $("a#popupContactClose").unbind('click').click(function(){
-                disablePopup();
-                if (type=='quote') {
-                    initQuotesPagination();
-                } else if (type=='question') {
-                    initQuestionPagination();
-                } else {
-                    initProofPagination();
-                }
+            // disablePopup();
+            // show_popup('leadpopupdat');
+            // $("div#pop_content").empty().html(response.data.content);
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").find('div.modal-dialog').css('width','970px');
+            $("#pageModal").modal('show');
+            $("select#lead_item").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#pageModal')
             });
+            init_leadpopupedit();
+            // $("a#popupContactClose").unbind('click').click(function(){
+            //     disablePopup();
+            //     if (type=='quote') {
+            //         initQuotesPagination();
+            //     } else if (type=='question') {
+            //         initQuestionPagination();
+            //     } else {
+            //         initProofPagination();
+            //     }
+            // });
             /* Save Button */
             
             $("a.saveleaddat").unbind('dblclick');
@@ -39,13 +48,17 @@ function show_new_lead(lead_id,type) {
 /* New lead */
 function add_lead(brand) {
     var lead_id=0;
-    var url="/proofrequests/edit_lead";
+    var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id, brand: brand}, function(response){
         if (response.errors=='') {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal('show');
+            $("select#lead_item").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#pageModal')
+            });
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -55,13 +68,35 @@ function add_lead(brand) {
 /* Edit Lead */
 function edit_lead(lead_id) {
     // var lead_id=obj.id.substr(7);
-    var url="/proofrequests/edit_lead";
+    var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal('show');
+            $("select#lead_item").select2({
+                dropdownParent: $('#pageModal'),
+                minimumInputLength: 3
+            }).on("change", function(e){
+                var newid = $(this).val();
+                var url=mainurl+"/lead_itemchange"
+                $.post(url, {'item_id': newid}, function(response){
+                    if (response.errors=='') {
+                        // $("input#lead_item").val(response.data.item_name);
+                        if (response.data.other==1) {
+                            $("div.item_otheritemarea").show();
+                            $("div.item_otheritem_label").empty().html(response.data.other_label);
+                        } else {
+                            $("div.item_otheritemarea").hide();
+                            $("textarea#other_item_name").val('');
+                        }
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+
+            });
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -100,14 +135,9 @@ function init_leadpopupedit() {
         }
     }
     // $("select#lead_item").searchable();
-    $("select#lead_item").select2({
-        minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-        dropdownParent: $('#pageModal')
-    });
-
-    $("select#lead_item").unbind('change').change(function(){
+    /*$("select#lead_item").unbind('change').change(function(){
         lead_itemchange();
-    })
+    }) */
 
     $("input.usrrepliccheck").unbind('change').change(function(){
         var value=1;
@@ -148,7 +178,7 @@ function init_leadpopupedit() {
         var lead_id=$("input#lead_id").val();
         var dat=$("form#leadeditform").serializeArray();
         dat.push({name:'session_id', value: $("#session").val()});
-        var url="/profrequests/lead_proofrequest";
+        var url=mainurl+"/lead_proofrequest";
         $.post(url, dat, function(response){
             if (response.errors=='') {
                 show_artdata(mail_id, lead_id,'old');
@@ -159,7 +189,7 @@ function init_leadpopupedit() {
     })
     $("div.proofed").unbind('click').click(function(){
         var mail_id=$(this).data('leadid');
-        var url="/proofrequests/lead_approvedshow";
+        var url=mainurl+"/lead_approvedshow";
         $.post(url,{'email_id':mail_id},function(response){
             if (response.errors=='') {
                 var data=response.data.approved;
@@ -183,11 +213,11 @@ function init_leadpopupedit() {
             var data=new Array();
             data.push({name: 'user', value: user});
             data.push({name: 'session_id', value: $("#session").val()});
-            var url="/proofrequests/lead_remove_rep";
+            var url=mainurl+"/lead_remove_rep";
             $.post(url,data, function(response){
                 if (response.errors=='') {
                     $("div.lead_popup_replicas").empty().html(response.data.content);
-                    init_edits();
+                    init_leadpopupedit();
                 } else {
                     show_error(response);
                 }
@@ -196,10 +226,10 @@ function init_leadpopupedit() {
     });
     $("div.lead_popup_addreplica").unbind('click').click(function(){
         // editmail_form        
-        var url="/proofrequests/lead_addrep_view";
+        var url=mainurl+"/lead_addrep_view";
         $.post(url, {'session_id':$("#session").val()}, function(response){
             if (response.errors=='') {
-                $("#artNextModalLabel").empty().html('Users');
+                $("#artNextModalLabel").empty().html('Add Lead Rep');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").find('div.modal-dialog').css('width','570px');
                 $("#artNextModal").modal('show');
@@ -226,7 +256,7 @@ function addnewleaderpl() {
         $("#artNextModal").modal('hide');
     } else {
         params.push({name:'session_id', value: $("#session").val()});
-        var url="/profrequests/lead_addrep_save";
+        var url=mainurl+"lead_addrep_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.lead_popup_replicas").empty().html(response.data.content);
@@ -249,7 +279,7 @@ function add_proofrequest() {
     var lead_num=$("div.lead_popup_number").text();
     var msg="You will now save the updates of the "+lead_num+" by creating the proof request.  Ok?";
     if (confirm(msg)==true) {
-        var url="/proofrequests/lead_addproofrequst";
+        var url=mainurl+"/lead_addproofrequst";
         var dat=$("form#leadeditform").serializeArray();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
@@ -287,8 +317,11 @@ function show_artdata(mail_id, lead_id,relation_type) {
     var url="/art/proof_artdata";
     $.post(url,{'proof_id':mail_id},function(response){
         if (response.errors==='') {
-            show_popup('popup_area');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").modal('hide');
+            $("#artModalLabel").empty().html('Artwork Edit');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','928px');
+            $("#artModal").modal('show');
             /* SAVE, EMAIL, etc buttons */
             init_artpopupcontent(lead_id, mail_id,relation_type);
         } else {
@@ -300,11 +333,12 @@ function show_artdata(mail_id, lead_id,relation_type) {
 
 function init_artpopupcontent(lead_id, mail_id,relation_type) {
     init_popupcontent();
-    $("a#popupContactClose").unbind('click').click(function(){
+    $("#artModal").find('button.close').unbind('click').click(function(){
         if (relation_type=='new') {
             // disablePopup();
             /* Delete proof */
-            $.post("/leads/lead_deleteproof",{'email_id':mail_id},function(response){
+            var url = mainurl+"/lead_deleteproof";
+            $.post(url,{'email_id':mail_id},function(response){
                 if (response.errors=='') {
                     restore_leadform();
                 } else {
@@ -318,9 +352,10 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
     })
     $("div.artpopup_save").unbind('click').click(function(){
         var dat=$("form#artdetailsform").serializeArray();
-        var url="/art/artwork_save";
+        var url="/artproofrequest/artwork_save";
         $.post(url, dat, function(response){
             if (response.errors=='') {
+                $("#artModal").modal('hide');
                 restore_leadform();
             } else {
                 show_error(response);
@@ -331,7 +366,7 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
 }
 
 function restore_leadform() {
-    var url="/proofrequests/restore_ledform";
+    var url=mainurl+"/restore_ledform";
     $.post(url, {}, function(response){
         if (response.errors=='') {
             $("#pageModalLabel").empty().html(response.data.title);
@@ -349,9 +384,9 @@ function restore_leadform() {
 }
 
 
-function lead_itemchange() {
-    var url="/proofrequests/lead_itemchange"
-    var item_id=$("select#lead_item").val();
+function lead_itemchange(item_id) {
+    var url=mainurl+"/lead_itemchange"
+    // var item_id=$("select#lead_item").val();
     $.post(url, {'item_id':item_id}, function(response){
         if (response.errors=='') {
             // $("input#lead_item").val(response.data.item_name);
@@ -375,7 +410,7 @@ function duplicatelead() {
    dat.push({name:'session_id', value: $("#session").val()});
    var lead_number=$("div.lead_popup_number").text();
    if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
-       var url="/proofrequests/dublicatelead";
+       var url=mainurl+"/dublicatelead";
        $.post(url, dat, function(response){
             if (response.errors=='') {
                 $("#pageModal").modal('hide');
@@ -398,9 +433,11 @@ function save_lead() {
    var dat=$("form#leadeditform").serializeArray();
    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
    dat.push({name: 'session_id', value: $("#session").val()});
-   var url="/proofrequests/save_lead";
+   var url=mainurl+"/save_lead";
    $.post(url, dat, function(response){
        if (response.errors=='') {
+           initLeaddataPagination();
+           initProofPagination();
            $("#loader").hide();
            $("#pageModal").modal('hide');
            /* Read currrent tab */

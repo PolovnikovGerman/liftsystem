@@ -281,7 +281,7 @@ function prooflead(mailid) {
             $("a.savequest").click(function(){
                 update_queststatus();
             })
-            $("div#pop_content div.leads_addnew").click(function(){
+            $("div.leads_addnew").click(function(){
                 create_leadproof();
             })
         } else {
@@ -328,7 +328,7 @@ function create_leadproof() {
         if (response.errors=='') {
             $("#artModal").modal('hide');
             // POPUP
-            // show_new_lead(response.data.leadid, 'proof');
+            show_new_lead(response.data.leadid, 'proof');
         } else {
             show_error(response);
         }
@@ -336,7 +336,7 @@ function create_leadproof() {
 }
 
 function profedit_lead(lead_id) {
-    var url=main_proofurl+"/edit_lead";
+    var url="/leadmanagement/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             // POPUP
@@ -344,6 +344,28 @@ function profedit_lead(lead_id) {
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal('show');
+            $("select#lead_item").select2({
+                dropdownParent: $('#pageModal')
+            }).on("change", function(e){
+                var newid = $(this).val();
+                var url=mainurl+"/lead_itemchange"
+                // var item_id=$("select#lead_item").val();
+                $.post(url, {'item_id': newid}, function(response){
+                    if (response.errors=='') {
+                        // $("input#lead_item").val(response.data.item_name);
+                        if (response.data.other==1) {
+                            $("div.item_otheritemarea").show();
+                            $("div.item_otheritem_label").empty().html(response.data.other_label);
+                        } else {
+                            $("div.item_otheritemarea").hide();
+                            $("textarea#other_item_name").val('');
+                        }
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+
+            });
             init_leadpopupedit();
         } else {
             show_error(response);
