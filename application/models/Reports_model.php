@@ -6248,5 +6248,261 @@ Class Reports_model extends My_Model
 
     }
 
+    public function artproof_daily_report($datestart, $dateend, $brand) {
+        $this->db->select('a.order_id, a.mail_id, l.artwork_id, u.user_name, o.brand as order_brand, e.brand as email_brand, count(l.proofdoclog_id) as cnt');
+        $this->db->from('ts_proofdoc_log l');
+        $this->db->join('ts_artworks a','a.artwork_id=l.artwork_id');
+        $this->db->join('users u','u.user_id=l.user_id');
+        $this->db->join('ts_orders o','o.order_id=a.order_id','left');
+        $this->db->join('ts_emails e','e.email_id=a.mail_id','left');
+        $this->db->where('l.work','Send Proof');
+        $this->db->where('unix_timestamp(l.create_time) >= ', $datestart);
+        $this->db->where('unix_timestamp(l.create_time) < ', $dateend);
+        $this->db->where('(o.brand=\''.$brand.'\' or e.brand=\''.$brand.'\')');
+        $this->db->group_by('a.order_id, a.mail_id, l.artwork_id, u.user_name, o.brand, e.brand');
+        $this->db->order_by('u.user_name');
+        $res=$this->db->get()->result_array();
+        $out=[];
+        $outtype=[];
+        $total=[
+            'orders_first'=>0,
+            'orders_first_attach'=>0,
+            'request_first'=>0,
+            'request_first_attach'=>0,
+            'all_first'=>0,
+            'all_first_attach'=>0,
+            'orders_resend'=>0,
+            'orders_resend_attach'=>0,
+            'request_resend'=>0,
+            'request_resend_attach'=>0,
+            'all_resend'=>0,
+            'all_resend_attach'=>0,
+            'all'=>0,
+            'all_attach'=>0,
+        ];
+        $totaltype=[
+            'orders_reg_first'=>0,
+            'orders_reg_first_attach'=>0,
+            'request_reg_first'=>0,
+            'request_reg_first_attach'=>0,
+            'all_reg_first'=>0,
+            'all_reg_first_attach'=>0,
+            'orders_reg_resend'=>0,
+            'orders_reg_resend_attach'=>0,
+            'request_reg_resend'=>0,
+            'request_reg_resend_attach'=>0,
+            'all_reg_resend'=>0,
+            'all_reg_resend_attach'=>0,
+            'orders_cust_first'=>0,
+            'orders_cust_first_attach'=>0,
+            'request_cust_first'=>0,
+            'request_cust_first_attach'=>0,
+            'all_cust_first'=>0,
+            'all_cust_first_attach'=>0,
+            'orders_cust_resend'=>0,
+            'orders_cust_resend_attach'=>0,
+            'request_cust_resend'=>0,
+            'request_cust_resend_attach'=>0,
+            'all_cust_resend'=>0,
+            'all_cust_resend_attach'=>0,
+        ];
+        $user_key=[];
+        foreach ($res as $row) {
+            // Search User
+            $key=array_search($row['user_name'], $user_key);
+            if ($key===FALSE) {
+                // Add key
+                array_push($user_key, $row['user_name']);
+                $usrdata= explode(' ', $row['user_name']);
+                $user_name=(isset($usrdata[0]) ? $usrdata[0] : $row['user_name']);
+                $out[]=[
+                    'user'=>$user_name,
+                    'orders_first'=>0,
+                    'orders_first_attach'=>0,
+                    'request_first'=>0,
+                    'request_first_attach'=>0,
+                    'all_first'=>0,
+                    'all_first_attach'=>0,
+                    'orders_resend'=>0,
+                    'orders_resend_attach'=>0,
+                    'request_resend'=>0,
+                    'request_resend_attach'=>0,
+                    'all_resend'=>0,
+                    'all_resend_attach'=>0,
+                    'all'=>0,
+                    'all_attach'=>0,
+                ];
+                $outtype[]=[
+                    'user'=>$user_name,
+                    'orders_reg_first'=>0,
+                    'orders_reg_first_attach'=>0,
+                    'request_reg_first'=>0,
+                    'request_reg_first_attach'=>0,
+                    'all_reg_first'=>0,
+                    'all_reg_first_attach'=>0,
+                    'orders_reg_resend'=>0,
+                    'orders_reg_resend_attach'=>0,
+                    'request_reg_resend'=>0,
+                    'request_reg_resend_attach'=>0,
+                    'all_reg_resend'=>0,
+                    'all_reg_resend_attach'=>0,
+                    'orders_cust_first'=>0,
+                    'orders_cust_first_attach'=>0,
+                    'request_cust_first'=>0,
+                    'request_cust_first_attach'=>0,
+                    'all_cust_first'=>0,
+                    'all_cust_first_attach'=>0,
+                    'orders_cust_resend'=>0,
+                    'orders_cust_resend_attach'=>0,
+                    'request_cust_resend'=>0,
+                    'request_cust_resend_attach'=>0,
+                    'all_cust_resend'=>0,
+                    'all_cust_resend_attach'=>0,
+                ];
+                $key=count($user_key)-1;
+            }
+            // Lets go - check other
+            $custom=0;
+            if (!empty($row['order_id'])) {
+                $this->db->select('item_id');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $row['order_id']);
+                $ordres=$this->db->get()->row_array();
+                if ($ordres['item_id']<0) {
+                    $custom=1;
+                }
+            } else {
+                $this->db->select('email_item_id');
+                $this->db->from('ts_emails');
+                $this->db->where('email_id', $row['mail_id']);
+                $ordres=$this->db->get()->row_array();
+                if ($ordres['email_item_id']<0) {
+                    $custom=1;
+                }
+            }
+            $out[$key]['all']+=1;
+            $out[$key]['all_attach']+=$row['cnt'];
+            $total['all']+=1;
+            $total['all_attach']+=$row['cnt'];
+            // Check - if artwork was sended in previous time
+            $this->db->select('count(proofdoclog_id) as cnt');
+            $this->db->from('ts_proofdoc_log');
+            $this->db->where('artwork_id', $row['artwork_id']);
+            $this->db->where('unix_timestamp(create_time) < ', $datestart);
+            $chkres=$this->db->get()->row_array();
+            if ($chkres['cnt']==0) {
+                // This document sends first time
+                if (!empty($row['order_id'])) {
+                    // Artwork related with order
+                    $out[$key]['orders_first']+=1;
+                    $out[$key]['orders_first_attach']+=$row['cnt'];
+                    $total['orders_first']+=1;
+                    $total['orders_first_attach']+=$row['cnt'];
+                    if ($custom==0) {
+                        $outtype[$key]['orders_reg_first']+=1;
+                        $outtype[$key]['orders_reg_first_attach']+=$row['cnt'];
+                        $totaltype['orders_reg_first']+=1;
+                        $totaltype['orders_reg_first_attach']+=$row['cnt'];
+                    } else {
+                        $outtype[$key]['orders_cust_first']+=1;
+                        $outtype[$key]['orders_cust_first_attach']+=$row['cnt'];
+                        $totaltype['orders_cust_first']+=1;
+                        $totaltype['orders_cust_first_attach']+=$row['cnt'];
+                    }
+                } else {
+                    // Artwork related with request
+                    $out[$key]['request_first']+=1;
+                    $out[$key]['request_first_attach']+=$row['cnt'];
+                    $total['request_first']+=1;
+                    $total['request_first_attach']+=$row['cnt'];
+                    if ($custom==0) {
+                        $outtype[$key]['request_reg_first']+=1;
+                        $outtype[$key]['request_reg_first_attach']+=$row['cnt'];
+                        $totaltype['request_reg_first']+=1;
+                        $totaltype['request_reg_first_attach']+=$row['cnt'];
+                    } else {
+                        $outtype[$key]['request_cust_first']+=1;
+                        $outtype[$key]['request_cust_first_attach']+=$row['cnt'];
+                        $totaltype['request_cust_first']+=1;
+                        $totaltype['request_cust_first_attach']+=$row['cnt'];
+                    }
+                }
+                $out[$key]['all_first']+=1;
+                $out[$key]['all_first_attach']+=$row['cnt'];
+                $total['all_first']+=1;
+                $total['all_first_attach']+=$row['cnt'];
+                if ($custom==0) {
+                    $outtype[$key]['all_reg_first']+=1;
+                    $outtype[$key]['all_reg_first_attach']+=$row['cnt'];
+                    $totaltype['all_reg_first']+=1;
+                    $totaltype['all_reg_first_attach']+=$row['cnt'];
+                } else {
+                    $outtype[$key]['all_cust_first']+=1;
+                    $outtype[$key]['all_cust_first_attach']+=$row['cnt'];
+                    $totaltype['all_cust_first']+=1;
+                    $totaltype['all_cust_first_attach']+=$row['cnt'];
+                }
+            } else {
+                // Re send
+                if (!empty($row['order_id'])) {
+                    // Artwork related with order
+                    $out[$key]['orders_resend']+=1;
+                    $out[$key]['orders_resend_attach']+=$row['cnt'];
+                    $total['orders_resend']+=1;
+                    $total['orders_resend_attach']+=$row['cnt'];
+                    if ($custom==0) {
+                        $outtype[$key]['orders_reg_resend']+=1;
+                        $outtype[$key]['orders_reg_resend_attach']+=$row['cnt'];
+                        $totaltype['orders_reg_resend']+=1;
+                        $totaltype['orders_reg_resend_attach']+=$row['cnt'];
+                    } else {
+                        $outtype[$key]['orders_cust_resend']+=1;
+                        $outtype[$key]['orders_cust_resend_attach']+=$row['cnt'];
+                        $totaltype['orders_cust_resend']+=1;
+                        $totaltype['orders_cust_resend_attach']+=$row['cnt'];
+                    }
+                } else {
+                    // Artwork related with request
+                    $out[$key]['request_resend']+=1;
+                    $out[$key]['request_resend_attach']+=$row['cnt'];
+                    $total['request_resend']+=1;
+                    $total['request_resend_attach']+=$row['cnt'];
+                    if ($custom==0) {
+                        $outtype[$key]['request_reg_resend']+=1;
+                        $outtype[$key]['request_reg_resend_attach']+=$row['cnt'];
+                        $totaltype['request_reg_resend']+=1;
+                        $totaltype['request_reg_resend_attach']+=$row['cnt'];
+                    } else {
+                        $outtype[$key]['request_cust_resend']+=1;
+                        $outtype[$key]['request_cust_resend_attach']+=$row['cnt'];
+                        $totaltype['request_cust_resend']+=1;
+                        $totaltype['request_cust_resend_attach']+=$row['cnt'];
+                    }
+                }
+                $out[$key]['all_resend']+=1;
+                $out[$key]['all_resend_attach']+=$row['cnt'];
+                $total['all_resend']+=1;
+                $total['all_resend_attach']+=$row['cnt'];
+                if ($custom==0) {
+                    $outtype[$key]['all_reg_resend']+=1;
+                    $outtype[$key]['all_reg_resend_attach']+=$row['cnt'];
+                    $totaltype['all_reg_resend']+=1;
+                    $totaltype['all_reg_resend_attach']+=$row['cnt'];
+                } else {
+                    $outtype[$key]['all_cust_resend']+=1;
+                    $outtype[$key]['all_cust_resend_attach']+=$row['cnt'];
+                    $totaltype['all_cust_resend']+=1;
+                    $totaltype['all_cust_resend_attach']+=$row['cnt'];
+                }
+            }
+        }
+        return [
+            'out' => $out,
+            'total' => $total,
+            'outtype' => $outtype,
+            'totaltype' => $totaltype,
+        ];
+    }
+
 
 }
