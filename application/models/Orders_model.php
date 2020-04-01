@@ -5440,4 +5440,53 @@ Class Orders_model extends MY_Model
         return ['out'=>$out, 'totals'=>$total];
     }
 
+    public function orderdiscount_msg($start_time, $end_time, $brand) {
+
+        $event = ['Misc Charge','Misc Charge (row 1)','Misc Charge (row 2)','Discount Value','Order Item Cost','Order Item Imprint Cost'];
+        $this->db->select('o.order_num, u.first_name, u.last_name, mischrg_label1, mischrg_label2, discount_descript');
+        $this->db->select('hd.parameter_name, hd.parameter_oldvalue, hd.parameter_newvalue');
+        $this->db->from('ts_artwork_historydetails hd');
+        $this->db->join('ts_artwork_history h','h.artwork_history_id=hd.artwork_history_id');
+        $this->db->join('ts_artworks a','a.artwork_id=h.artwork_id');
+        $this->db->join('ts_orders o','o.order_id=a.order_id');
+        $this->db->join('users u','u.user_id=h.user_id');
+        $this->db->where('h.created_time >= ', $start_time);
+        $this->db->where('h.created_time < ', $end_time);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.brand', $brand);
+        $this->db->order_by('o.order_num, h.created_time');
+        $res = $this->db->get()->result_array();
+        $out=[];
+        foreach ($res as $row) {
+            if (in_array($row['parameter_name'], $event)) {
+                if ($row['parameter_name']=='Order Item Cost' || $row['parameter_name']=='Order Item Imprint Cost') {
+                    $out[]=[
+                        'user' => $row['first_name'].' '.$row['last_name'],
+                        'order' => $row['order_num'],
+                        'parameter' => $row['parameter_name'],
+                        'old_value' => $row['parameter_oldvalue'],
+                        'new_value' => $row['parameter_newvalue'],
+                        'description' => '',
+                    ];
+                } else {
+                    $descr = $row['mischrg_label1'];
+                    if ($row['parameter_name']=='Misc Charge (row 2)') {
+                        $descr = $row['mischrg_label2'];
+                    } elseif ($row['parameter_name']=='Discount Value') {
+                        $descr = $row['discount_descript'];
+                    }
+                }
+                $out[]=[
+                    'user' => $row['first_name'].' '.$row['last_name'],
+                    'order' => $row['order_num'],
+                    'parameter' => $row['parameter_name'],
+                    'old_value' => $row['parameter_oldvalue'],
+                    'new_value' => $row['parameter_newvalue'],
+                    'description' => $descr,
+                ];
+            }
+        }
+        return $out;
+    }
+
 }

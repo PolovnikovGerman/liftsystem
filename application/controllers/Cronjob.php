@@ -808,5 +808,39 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function orderdiscount_msg() {
+        $end_time = strtotime(date('Y-m-d'));
+        $start_time = strtotime(date('Y-m-d', strtotime(date('Y-m-d',$end_time). ' - 1 day')));
+        $this->load->model('orders_model');
+        $brands = ['BT','SB'];
+        foreach ($brands as $brand) {
+            $out = $this->orders_model->orderdiscount_msg($start_time, $end_time, $brand);
+
+            $msgbody = 'No orders with changes';
+            if (count($out)>0) {
+                $msgbody = $this->load->view('messages/order_discountalert_view',['data'=>$out], TRUE);
+            }
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype']='html';
+            $config['wordwrap'] = TRUE;
+            $this->email->initialize($config);
+            $email_from=$this->config->item('email_notification_sender');
+            $email_to=[$this->config->item('sean_email'), $this->config->item('sage_email')];
+            $this->email->from($email_from);
+            $this->email->to($email_to);
+            $this->email->cc('polovnikov.g@gmail.com');
+
+            $title=date('D - M d, Y', $start_time).' - Discount Orders';
+
+            $this->email->subject($title);
+            $this->email->message($msgbody);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        
+    }
+
+
 
 }
