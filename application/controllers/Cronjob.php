@@ -609,7 +609,7 @@ Class Cronjob extends CI_Controller
         // $date='2018-07-30';
         // $sunday=strtotime('monday this week', strtotime($date));
         $sunday=strtotime('monday this week', time());
-        $start= time()-(24*60*60);
+        $start= $sunday-(24*60*60);
         echo 'Start '.date('d.m.Y', $start).PHP_EOL;
         $date=date('Y-m-d',$start);
         $monday=strtotime('monday this week', strtotime($date));
