@@ -552,7 +552,8 @@ Class Cronjob extends CI_Controller
 
     // Art Proof Report
     public function artproof_daily_report() {
-        $dateend=strtotime(date('Y-m-d'));
+        // $dateend=strtotime(date('Y-m-d'));
+        $dateend = strtotime('2020-03-26');
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
         $brands = ['BT', 'SB'];
