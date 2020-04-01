@@ -612,7 +612,8 @@ Class Cronjob extends CI_Controller
         $start= time()-(24*60*60);
         $date=date('Y-m-d',$start);
         $monday=strtotime('monday this week', strtotime($date));
-
+        echo 'Monday '.date('m/d/Y', $monday).' Sunday '.date('d/m/Y',$sunday).PHP_EOL;
+        die();
         $options=[
             'weekbgn'=>$monday,
             'weekend'=>$sunday,
