@@ -5268,4 +5268,59 @@ Class Orders_model extends MY_Model
 
     }
 
+    public function get_week_quotes($options) {
+        $out=['result'=> $this->success_result, 'msg'=> 'Start date empty'];
+        if (isset($options['weekbgn']) && !empty($options['weekbgn'])) {
+            $date=$options['weekbgn'];
+            $out['msg']='Finish date empty';
+            if (isset($options['weekend']) && !empty($options['weekend'])) {
+                $weekend=$options['weekend'];
+                $data=[];
+                do {
+                    $i=1;
+                    $newdate = strtotime(date("Y-m-d", $date) . " +".$i."days");
+                    // count quotes
+                    $this->db->select('count(email_id) as cnt');
+                    $this->db->from('ts_emails');
+                    $this->db->where('unix_timestamp(email_date) >= ', $date);
+                    $this->db->where('unix_timestamp(email_date) < ', $newdate);
+                    $this->db->where('email_type','Leads');
+                    $this->db->where('email_subtype','Quote');
+                    $this->db->where('email_status != ',4);
+                    $this->db->where('brand', $options['brand']);
+                    $quotes=$this->db->get()->row_array();
+                    // count proof requests
+                    $this->db->select('count(email_id) as cnt');
+                    $this->db->from('ts_emails');
+                    $this->db->where('unix_timestamp(email_date) >= ', $date);
+                    $this->db->where('unix_timestamp(email_date) < ', $newdate);
+                    $this->db->where('email_type','Art_Submit');
+                    $this->db->where('email_status != ',4);
+                    $this->db->where('brand', $options['brand']);
+                    $proofreq=$this->db->get()->row_array();
+                    // count orders
+                    $this->db->select('count(order_id) as cnt');
+                    $this->db->from('ts_orders');
+                    $this->db->where('order_date >= ', $date);
+                    $this->db->where('order_date < ', $newdate);
+                    $this->db->where('brand', $options['brand']);
+                    $this->db->where('is_canceled',0);
+                    $orders=$this->db->get()->row_array();
+                    if ($orders['cnt']!=0 || $quotes['cnt']!=0 || $proofreq['cnt']!=0) {
+                        $data[]=[
+                            'date'=>date('m/d/Y',$date),
+                            'quotes'=>$quotes['cnt'],
+                            'proofreq'=>$proofreq['cnt'],
+                            'orders'=>$orders['cnt'],
+                        ];
+                    }
+                    $date=$newdate;
+                } while ($newdate<$weekend);
+                $out['data']=$data;
+                $out['result']= $this->success_result;
+            }
+        }
+        return $out;
+    }
+
 }
