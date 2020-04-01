@@ -560,6 +560,7 @@ Class Cronjob extends CI_Controller
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
             $out = $data['out'];
+            echo $brand.' data count '.count($out).PHP_EOL;
             if (!empty($out)) {
                 // Prepare report
                 $title=date('D - M d, Y', $datestart).' - Art Proof Report ';
