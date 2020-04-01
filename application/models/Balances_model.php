@@ -2705,31 +2705,34 @@ class Balances_model extends My_Model
         }
     }
 
-//    public function _check_current_month($user_id) {
-//        $curmonth=date('m');
-//        $curyear=date('Y');
-//        $this->db->select('count(profit_id) as cnt');
-//        $this->db->from('netprofit');
-//        $this->db->where('profit_month', $curmonth);
-//        $this->db->where('profit_year', $curyear);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-////            $dat_end=date('Y-m-d', strtotime("Sunday this week", time())).' 23:59:59';
-////            $datend=strtotime($dat_end);
-////            $dat_start=date('Y-m-d', strtotime("Monday this week", time())).'0:0:0';
-////            $datbegin=strtotime($dat_start);
-//
-//            $dats=$this->func->getDatesByMonth($curmonth, $curyear);
-//            $this->db->set('profit_month',$curmonth);
-//            $this->db->set('profit_year',$curyear);
-//            $this->db->set('datebgn',$dats['start_month']);
-//            $this->db->set('dateend',$dats['end_month']);
-//            $this->db->set('create_user',$user_id);
-//            $this->db->set('create_date',date('Y-m-d H:i:s'));
-//            $this->db->set('update_user',$user_id);
-//            $this->db->insert('netprofit');
-//        }
-//    }
+    public function _check_current_month($user_id) {
+        $curmonth=date('m');
+        $curyear=date('Y');
+        $this->db->select('count(profit_id) as cnt');
+        $this->db->from('netprofit');
+        $this->db->where('profit_month', $curmonth);
+        $this->db->where('profit_year', $curyear);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $dats=getDatesByMonth($curmonth, $curyear);
+            $this->db->set('profit_month',$curmonth);
+            $this->db->set('profit_year',$curyear);
+            $this->db->set('datebgn',$dats['start_month']);
+            $this->db->set('dateend',$dats['end_month']);
+            $this->db->set('create_user',$user_id);
+            $this->db->set('create_date',date('Y-m-d H:i:s'));
+            $this->db->set('update_user',$user_id);
+            $this->db->insert('netprofit');
+            $newprofit = $this->db->insert_id();
+            // Insrt into Netprofit Dat
+            $this->db->set('profit_id', $newprofit);
+            $this->db->set('brand','SB');
+            $this->db->insert('netprofit_dat');
+            $this->db->set('profit_id', $newprofit);
+            $this->db->set('brand','BT');
+            $this->db->insert('netprofit_dat');
+        }
+    }
 
     public function get_onpacecompare($options) {
         // Get Elapsed Days

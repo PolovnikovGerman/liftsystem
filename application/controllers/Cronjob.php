@@ -536,6 +536,20 @@ Class Cronjob extends CI_Controller
         $res=$this->orders_model->export_artsync();
     }
 
+    public function check_netprofit_week() {
+        $this->load->model('balances_model');
+        $user_id=1;
+        $this->balances_model->_check_current_week($user_id);
+        $this->load->model('reports_model');
+        $this->reports_model->_check_current_week($user_id);
+    }
+
+    public function check_netprofit_month() {
+        $this->load->model('balances_model');
+        $user_id=1;
+        $this->balances_model->_check_current_month($user_id);
+    }
+
 
 
 }
