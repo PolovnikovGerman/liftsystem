@@ -5323,4 +5323,121 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function user_weekproof_reportdata($user_id, $brand) {
+        $cur_year=date('Y');
+        $datebonusbgn=$this->config->item('bonus_time');
+        // Get start
+        $this->db->select('datebgn, dateend, profit_week');
+        $this->db->from('netprofit');
+        $this->db->where('profit_year', $cur_year);
+        $this->db->where('profit_week is not NULL');
+        $this->db->order_by('datebgn desc');
+        $weekres=$this->db->get()->result_array();
+        $out=[];
+        $total=[
+            'orders_500'=>0,
+            'orders_1000'=>0,
+            'orders_1200'=>0,
+            'total_500'=>0,
+            'total_1000'=>0,
+            'total_1200'=>0,
+            'total_orders'=>0,
+            'week_base'=>0,
+            'bonuses'=>0,
+            'prize'=>0,
+            'week_pay'=>0,
+            'cancel_orders'=>0,
+            'cancel_points'=>0,
+            'cancel_values'=>0,
+        ];
+        foreach ($weekres as $wrow) {
+            $this->db->select('order_usr_repic, order_qty');
+            $this->db->from('ts_orders');
+            $this->db->where('order_date >= ', $wrow['datebgn']);
+            $this->db->where('order_date < ', $wrow['dateend']);
+            $this->db->where('is_canceled',0);
+            $this->db->where('brand', $brand);
+            $this->db->where('order_usr_repic', $user_id);
+            $res=$this->db->get()->result_array();
+            $ord_500=$ord_1000=$ord_1200=0;
+            foreach ($res as $row) {
+                if ($row['order_qty']<500) {
+                    $ord_500+=1;
+                } elseif ($row['order_qty']<1000) {
+                    $ord_1000+=1;
+                } else {
+                    $ord_1200+=1;
+                }
+            }
+            // Get canceled
+            $this->db->select('order_usr_repic, order_qty');
+            $this->db->from('ts_orders');
+            $this->db->where('order_date >= ', $wrow['datebgn']);
+            $this->db->where('order_date < ', $wrow['dateend']);
+            $this->db->where('is_canceled',1);
+            $this->db->where('brand', $brand);
+            $this->db->where('order_usr_repic', $user_id);
+            $cancres=$this->db->get()->result_array();
+            $canc_500=$canc_1000=$canc_1200=0;
+            foreach ($cancres as $row) {
+                if ($row['order_qty']<500) {
+                    $canc_500+=1;
+                } elseif ($row['order_qty']<1000) {
+                    $canc_1000+=1;
+                } else {
+                    $canc_1200+=1;
+                }
+            }
+
+            $week_bonuses=($ord_500*$this->config->item('bonus_500')+$ord_1000*$this->config->item('bonus_1000')+$ord_1200*$this->config->item('bonus_1200'));
+            $cancel_bonuses=($canc_500*$this->config->item('bonus_500')+$canc_1000*$this->config->item('bonus_1000')+$canc_1200*$this->config->item('bonus_1200'));
+            $week_prize=$week_bonuses*$this->config->item('bonus_price');
+            $cancel_values=$cancel_bonuses*$this->config->item('bonus_price');
+            $weekbgn_month=date('m', $wrow['datebgn']);
+            $weekend_month=date('m', $wrow['dateend']);
+            if ($weekbgn_month!=$weekend_month) {
+                $week_name=date('M',$wrow['datebgn']).'/'.date('M', $wrow['dateend']).' ';
+            } else {
+                $week_name=date('M', $wrow['datebgn']).' ';
+            }
+            $week_name.=date('d',$wrow['datebgn']).'-'.date('d',$wrow['dateend']).','.$cur_year;
+            $out[]=[
+                'dates'=>$week_name,
+                'orders_500'=>$ord_500,
+                'orders_1000'=>$ord_1000,
+                'orders_1200'=>$ord_1200,
+                'total_500'=>$ord_500*$this->config->item('bonus_500'),
+                'total_1000'=>$ord_1000*$this->config->item('bonus_1000'),
+                'total_1200'=>$ord_1200*$this->config->item('bonus_1200'),
+                'total_orders'=>($ord_500+$ord_1000+$ord_1200),
+                'week_base'=>$this->config->item('bonus_week_base'),
+                'bonuses'=>$week_bonuses,
+                'prize'=>$week_prize,
+                'week_pay'=>$week_prize+$this->config->item('bonus_week_base'),
+                'cancel_orders'=>($canc_500+$canc_1000+$canc_1200),
+                'cancel_points'=>$cancel_bonuses,
+                'cancel_values'=>$cancel_values,
+                'show_user'=>($wrow['datebgn']>=$datebonusbgn ? 1 : 0),
+                'admin_break'=>($wrow['datebgn']==$datebonusbgn ? 1 : 0),
+            ];
+            if ($wrow['datebgn']>=$datebonusbgn) {
+                $total['orders_500']+=$ord_500;
+                $total['orders_1000']+=$ord_1000;
+                $total['orders_1200']+=$ord_1200;
+                $total['total_500']+=$ord_500*$this->config->item('bonus_500');
+                $total['total_1000']+=$ord_1000*$this->config->item('bonus_1000');
+                $total['total_1200']+=$ord_1200*$this->config->item('bonus_1200');
+                $total['total_orders']+=($ord_500+$ord_1000+$ord_1200);
+                $total['week_base']+=$this->config->item('bonus_week_base');
+                $total['bonuses']+=$week_bonuses;
+                $total['prize']+=$week_prize;
+                $total['week_pay']+=$week_prize+$this->config->item('bonus_week_base');
+                $total['cancel_orders']+=($canc_500+$canc_1000+$canc_1200);
+                $total['cancel_points']+=$cancel_bonuses;
+                $total['cancel_values']+=$cancel_values;
+            }
+        }
+        return ['out'=>$out, 'totals'=>$total];
+    }
+
 }

@@ -660,62 +660,73 @@ Class Cronjob extends CI_Controller
 
     public function bonus_report() {
         $user_id=23; // Shanequa Hall
-        $this->load->model('order_model');
-        $results=$this->order_model->user_weekproof_reportdata($user_id);
-        $out=$results['out'];
-        $total=$results['totals'];
-        $dateend=strtotime(date('m/d/Y'));
-        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+        $this->load->model('orders_model');
+        $brands = ['BT', 'SB'];
+        foreach ($brands as $brand) {
+            $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
+            $out=$results['out'];
+            $total=$results['totals'];
+            $dateend=strtotime(date('m/d/Y'));
+            $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
 
-        $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
-        $email_to=$this->config->item('sean_email');
-        $email_cc=$this->config->item('sage_email');
-        // $email_to='polovnikov.g@gmail.com';
-        $this->email->from($email_from);
-        $this->email->to($email_to);
-        $this->email->cc($email_cc);
-        $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version)';
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype']='html';
+            $config['wordwrap'] = TRUE;
+            $this->email->initialize($config);
+            $email_from=$this->config->item('email_notification_sender');
+            $email_to=$this->config->item('sean_email');
+            $email_cc=$this->config->item('sage_email');
 
-        $this->email->subject($title);
-        $body_options=[
-            'data'=>$out,
-            'total'=>$total,
-            'admin'=>1,
-            'price_500'=>$this->config->item('bonus_500'),
-            'price_1000'=>$this->config->item('bonus_1000'),
-            'price_1200'=>$this->config->item('bonus_1200'),
-            'bonus_price'=>$this->config->item('bonus_price'),
-        ];
-        $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
-        $this->email->message($body);
-        $this->email->send();
-        $this->email->clear(TRUE);
-        // Send report to user
-        $this->email->from($email_from);
-        $this->email->to('shanequa.hall@bluetrack.com');
-        // $this->email->to('to_german@yahoo.com');
-        $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall)';
-        // $title=$cur_year.' year - Sales Report (Shanequa Hall)';
-        $this->email->subject($title);
-        $body_options=[
-            'data'=>$out,
-            'total'=>$total,
-            'admin'=>0,
-            'price_500'=>$this->config->item('bonus_500'),
-            'price_1000'=>$this->config->item('bonus_1000'),
-            'price_1200'=>$this->config->item('bonus_1200'),
-            'bonus_price'=>$this->config->item('bonus_price'),
-        ];
-        $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
-        $this->email->message($body);
-        $this->email->send();
-        $this->email->clear(TRUE);
-        echo 'Report was send succesfully '.PHP_EOL;
+            $this->email->from($email_from);
+            $this->email->to($email_to);
+            $this->email->cc($email_cc);
+            $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
+            if ($brand=='BT') {
+                $title.='(Bluetrack.com)';
+            } elseif ($brand=='SB') {
+                $title.='(Stressballs.com)';
+            }
+            $this->email->subject($title);
+            $body_options=[
+                'data'=>$out,
+                'total'=>$total,
+                'admin'=>1,
+                'price_500'=>$this->config->item('bonus_500'),
+                'price_1000'=>$this->config->item('bonus_1000'),
+                'price_1200'=>$this->config->item('bonus_1200'),
+                'bonus_price'=>$this->config->item('bonus_price'),
+            ];
+            $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
+            $this->email->message($body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+            // Send report to user
+            $this->email->from($email_from);
+            // $this->email->to('shanequa.hall@bluetrack.com');
+            $this->email->to('to_german@yahoo.com');
+            $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
+            if ($brand=='BT') {
+                $title.='(Bluetrack.com)';
+            } elseif ($brand=='SB') {
+                $title.='(Stressballs.com)';
+            }
+            $this->email->subject($title);
+            $body_options=[
+                'data'=>$out,
+                'total'=>$total,
+                'admin'=>0,
+                'price_500'=>$this->config->item('bonus_500'),
+                'price_1000'=>$this->config->item('bonus_1000'),
+                'price_1200'=>$this->config->item('bonus_1200'),
+                'bonus_price'=>$this->config->item('bonus_price'),
+            ];
+            $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
+            $this->email->message($body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+            echo $brand.' Report was send succesfully '.PHP_EOL;
+        }
     }
 
 }
