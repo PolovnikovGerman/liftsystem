@@ -16,7 +16,7 @@
                 </div>
                 <div class="logos">
                     <div class="logos-input">
-                        <?php if (count($row['users_logo']!=0)) {?>
+                        <?php if (count($row['users_logo'])!=0) {?>
                             <ul style="padding:0; margin:0; list-style:none;">
                                 <?php foreach ($row['users_logo'] as $logos) { ?>
                                     <li><a href="<?=$logos['order_userlogo_filename']?>" class="uplattach"><?=$logos['order_userlogo_file']?></a></li>
