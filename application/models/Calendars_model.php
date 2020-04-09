@@ -468,8 +468,8 @@ Class Calendars_model extends MY_Model
         $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
         $this->db->from("sb_items i");
         $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("{$this->vendor_db} v","v.vendor_id=vi.vendor_item_vendor");
-        $this->db->join("{$this->calendar_db} c","c.calendar_id=v.calendar_id");
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("calendars c","c.calendar_id=v.calendar_id");
         $this->db->where('i.item_id',$item_id);
         $leads = $this->db->get()->row_array();
 
