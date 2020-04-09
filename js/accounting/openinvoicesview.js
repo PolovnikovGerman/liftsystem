@@ -719,7 +719,7 @@ function edit_paymonitororder(order) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');            $("#artModal").modal('show');
-            init_onlineleadorder_edit();
+            navigation_init();
         } else {
             show_error(response);
         }
