@@ -332,4 +332,316 @@ Class Calendars_model extends MY_Model
         return $out;
     }
 
+    public function parse_rushcalend($item_id) {
+        $start=date("Y-m-d");// current date
+        /* Check Current Day - may be it is weekend or holiday */
+        $start_time=strtotime($start);
+        if ($this->chk_business_day($start_time, $item_id)==0) {
+            $start_time=$this->get_business_date($start_time, 1, $item_id);
+            $start=date('Y-m-d',$start_time);
+        }
+
+        $proof_date=$start_time;
+
+        $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("calendars c","c.calendar_id=v.calendar_id");
+        $this->db->where('i.item_id',$item_id);
+        $leads = $this->db->get()->row_array();
+
+        /* Rebuild as array */
+        if (!isset($leads['item_lead_a'])) {
+            $leads['item_lead_a']=0;
+        }
+        if (!isset($leads['item_lead_b'])) {
+            $leads['item_lead_b']=0;
+        }
+        if (!isset($leads['item_lead_c'])) {
+            $leads['item_lead_c']=0;
+        }
+        if (!isset($leads['calendar_id'])) {
+            $this->db->select('min(calendar_id) as calendar_id');
+            $this->db->from("calendars");
+            $dat=$this->db->get()->row_array();
+            $leads['calendar_id']=$dat['calendar_id'];
+        }
+
+        $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
+
+        if ($leads['item_lead_b']>0) {
+            $min=$leads['item_lead_b'];
+            $ship_array[]=array(
+                'min'=>$min,
+                'max'=>$leads['item_lead_a'],
+                'price'=>$this->_get_config_value('rush_3days'),
+                'rush_term'=>$leads['item_lead_b'].' Day Rush',
+            );
+        }
+
+        if ($leads['item_lead_c']>0) {
+            $min=$leads['item_lead_c'];
+            $ship_array[]=array(
+                'min'=>$min,
+                'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
+                'price'=>$this->_get_config_value('rush_next_day'),
+                'rush_term'=>$leads['item_lead_c'].' Day Rush',
+            );
+        }
+
+        $ship_array[]=array(
+            'min'=>$min,
+            'max'=>1000,
+            'price'=>0,
+            'rush_term'=>'Standard',
+        );
+        $cicle_min=$leads['item_lead_a']+120;
+
+        $last_date=strtotime(date("Y-m-d", $proof_date) . " +".$cicle_min." days");
+
+        // Select limitation of data
+        $this->db->select('line_date',FALSE);
+        $this->db->from("calendar_lines");
+        $this->db->where('calendar_id',$leads['calendar_id']);
+        $this->db->where("line_date between '".$proof_date."' and '".$last_date."'");
+        $cal=$this->db->get()->result_array();
+
+        $calend=array();
+        foreach ($cal as $row) {
+            array_push($calend, $row['line_date']);
+        }
+
+        $i=0;$cnt=1;
+        $rush=array();$current_rush=0;
+        while ($i <= $cicle_min) {
+            $current=0;
+            $dat=strtotime(date("Y-m-d", $proof_date) . " +".$cnt." days");
+            $day=$dat;
+            if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($day, $calend)) {
+                $prefix=-1;
+                $i++;
+                foreach ($ship_array as $row) {
+                    if ($i>=$row['min'] && $i<$row['max']) {
+                        $prefix=$row['price'];
+                        $rushterm=$row['rush_term'];
+                        break;
+                    }
+                }
+                if ($prefix>=0) {
+                    if ($i==$leads['item_lead_a']) {
+                        $current=1;
+                        $current_rush=$prefix;
+                    }
+                    // Wed-Apr 27 (+$100 - 1 Day Rush)
+                    $rush[]=array(
+                        'id'=>$dat.'-'.$prefix,
+                        'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
+                        'current'=>$current,
+                        'rushterm'=>$rushterm,
+                        'date'=>$dat,
+                        'price'=>$prefix
+                    );
+                }
+            }
+            $cnt++;
+        }
+        return array('rush'=>$rush,'current_rush'=>$current_rush);
+    }
+
+    public function parse_rushblankcalend($item_id) {
+        $start=date("Y-m-d");// current date
+        /* Check Current Day - may be it is weekend or holiday */
+        $start_time=strtotime($start);
+        if ($this->chk_business_day($start_time, $item_id)==0) {
+            while (1==1) {
+                $start_time=$this->get_business_date($start_time, 1, $item_id);
+                if ($this->chk_business_day($start_time, $item_id)==1) {
+                    break;
+                }
+            }
+            $start=date('Y-m-d',$start_time);
+        }
+
+        $proof_date=$start_time;
+
+        $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("{$this->vendor_db} v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("{$this->calendar_db} c","c.calendar_id=v.calendar_id");
+        $this->db->where('i.item_id',$item_id);
+        $leads = $this->db->get()->row_array();
+
+        $min=1;
+        $ship_array[]=array(
+            'min'=>$min,
+            'max'=>1000,
+            'price'=>0,
+            'rush_term'=>'Standard',
+        );
+        $cicle_min=$leads['item_lead_a']+120;
+
+        $last_date=strtotime(date("Y-m-d", $proof_date) . " +".$cicle_min." days");
+
+        /* Select limitation of data */
+        $this->db->select('line_date',FALSE);
+        $this->db->from("calendar_lines");
+        $this->db->where('calendar_id',$leads['calendar_id']);
+        $this->db->where("line_date between '".$proof_date."' and '".$last_date."'");
+        $cal=$this->db->get()->result_array();
+
+        $calend=array();
+        foreach ($cal as $row) {
+            array_push($calend, $row['line_date']);
+        }
+
+        $i=0;$cnt=1;
+        $rush=array();$current_rush=0;
+        while ($i <= $cicle_min) {
+            if ($cnt==1) {
+                $current=1;
+            } else {
+                $current=0;
+            }
+            $dat=strtotime(date("Y-m-d", $proof_date) . " +".$cnt." days");
+            $day=$dat;
+            if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($day, $calend)) {
+                $prefix=-1;
+                $i++;
+                foreach ($ship_array as $row) {
+                    if ($i>=$row['min'] && $i<$row['max']) {
+                        $prefix=$row['price'];
+                        $rushterm=$row['rush_term'];
+                        break;
+                    }
+                }
+                if ($prefix>=0) {
+                    $rush[]=array(
+                        'id'=>$dat.'-'.$prefix,
+                        'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
+                        'current'=>$current,
+                        'rushterm'=>$rushterm,
+                        'date'=>$dat,
+                        'price'=>$prefix
+                    );
+                }
+            }
+            $cnt++;
+        }
+        return array('rush'=>$rush,'current_rush'=>$current_rush);
+    }
+
+    public function chk_business_day($start_time, $item_id) {
+        /* Extract Date from Start Time */
+        $start_date=strtotime(date('Y-m-d',$start_time));
+        /* Get Weekdate */
+        $dayweek=date('w',$start_date);
+        /* Get weekends */
+        $this->db->select('item_id, c.calendar_id as calendar_id, c.mon_work, c.tue_work, c.wed_work, c.thu_work, c.fri_work, c.sat_work, c.sun_work',FALSE);
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("calendars c","c.calendar_id=v.calendar_id");
+        $this->db->where('i.item_id',$item_id);
+        $cal = $this->db->get()->row_array();
+        switch ($dayweek) {
+            case 0:
+                $workday=$cal['sun_work'];
+                break;
+            case 1:
+                $workday=$cal['mon_work'];
+                break;
+            case 2:
+                $workday=$cal['tue_work'];
+                break;
+            case 3:
+                $workday=$cal['wed_work'];
+                break;
+            case 4:
+                $workday=$cal['thu_work'];
+                break;
+            case 5:
+                $workday=$cal['fri_work'];
+                break;
+            case 6:
+                $workday=$cal['sat_work'];
+                break;
+        }
+        if ($workday==1) {
+            /* Get Holiday */
+            $this->db->select('count(calendar_line_id) cnt');
+            $this->db->from('calendar_lines');
+            $this->db->where('calendar_id',$cal['calendar_id']);
+            $this->db->where('line_date',$start_date);
+            $res=$this->db->get()->row_array();
+            if ($res['cnt']==0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return $workday;
+        }
+    }
+
+    public function get_business_date($startdate,$diffday,$item_id) {
+        // Get a dates of resting during year
+        // Select calendar for check bussiness day
+        $this->db->select('item_id, c.calendar_id as calendar_id',FALSE);
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("calendars c","c.calendar_id=v.calendar_id");
+        $this->db->where('i.item_id',$item_id);
+        $cal = $this->db->get()->row_array();
+        $calendar_id=($cal['calendar_id']==NULL ? '0' : $cal['calendar_id']);
+
+        $start=date("Y-m-d",$startdate);
+        $last_date=strtotime(date("Y-m-d", strtotime($start)) . " +365 days");
+        $this->db->select('line_date as date',FALSE);
+        $this->db->from("calendar_lines");
+        $this->db->where('calendar_id',$calendar_id);
+        $this->db->where("line_date between '".strtotime($start)."' and '".$last_date."'");
+        $cal=$this->db->get()->result_array();
+        $calend=array();
+        foreach ($cal as $row) {
+            array_push($calend, $row['date']);
+        }
+        $dat=strtotime(date("Y-m-d", strtotime($start)));
+        $i=1;$cnt=1;
+        while ($i <= $diffday) {
+            $dat=strtotime(date("Y-m-d", strtotime($start)) . " +".$cnt." days");
+            $day=$dat;
+            if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($day, $calend)) {
+                $i++;
+            }
+            $cnt++;
+        }
+        return $dat;
+    }
+
+    private function _get_config_value($config_name) {
+        $this->db->select('*');
+        $this->db->from('sb_configs');
+        $this->db->where('config_name',$config_name);
+        $res=$this->db->get()->row_array();
+        $out_val=FALSE;
+        switch ($res['config_type']) {
+            case 'INT':
+                $out_val=intval($res['config_value']);
+                break;
+            case 'FLOAT':
+                $out_val=floatval($res['config_value']);
+                break;
+            case 'DATE':
+                $out_val=strtotime($res['config_value']);
+                break;
+            default:
+                $out_val=$res['config_value'];
+                break;
+        }
+        return $out_val;
+    }
+
 }

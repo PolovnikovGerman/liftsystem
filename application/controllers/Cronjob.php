@@ -845,6 +845,9 @@ Class Cronjob extends CI_Controller
 
     }
 
-
+    public function order_autoparse() {
+        $this->load->model('orders_model');
+        $this->orders_model->order_autoparse();
+    }
 
 }

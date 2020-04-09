@@ -400,6 +400,79 @@ Class Prices_model extends My_Model
         return $out;
     }
 
+    public function get_item_pricebytype($item_id,$price_type) {
+        switch ($price_type) {
+            case 'setup':
+                $select_fld='item_price_setup as price,item_sale_setup as sale';
+                break;
+            case 'imprint':
+                $select_fld='item_price_print as price,item_sale_print as sale';
+                break;
+            default :
+                $select_fld='item_price_'.$price_type.' as price,item_sale_'.$price_type.' as sale';
+                break;
+
+        }
+        $select_fld.=', item_price_itemid as item_id';
+        $this->db->select($select_fld,FALSE);
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid',$item_id);
+        $res=$this->db->get()->row_array();
+        $retprice = 0;
+        if (isset($res['item_id'])) {
+            if (floatval($res['sale'])>0) {
+                $retprice = $res['sale'];
+            } elseif ($res['sale']===0.00) {
+                $retprice = 0;
+            } elseif (floatval($res['price'])>0) {
+                $retprice=$res['price'];
+            }
+        }
+        return $retprice;
+    }
+
+    function get_item_pricebyval($item_id,$itemval) {
+        $retprice=0;
+        $this->db->select('*');
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid',$item_id);
+        $res = $this->db->get()->row_array();
+        $retprice = 0;
+        $minval=25;
+        $itemprice=array();$findlimit=0;
+        foreach ($this->price_types as $row) {
+            if (floatval($res['item_price_'.$row['type']])!=0 || floatval($res['item_sale_'.$row['type']])!=0) {
+                if (floatval($res['item_sale_'.$row['type']])>0) {
+                    $retprice=$res['item_sale_'.$row['type']];
+                } elseif (floatval($res['item_price_'.$row['type']])>0) {
+                    $retprice=$res['item_price_'.$row['type']];
+                }
+                if ($row['type']>$itemval) {
+                    $findlimit=1;
+                    break;
+                }
+                $itemprice[]=array(
+                    'min'=>$minval,
+                    'max'=>$row['base'],
+                    'price'=>$retprice,
+                );
+                $minval=$row['base'];
+            }
+        }
+        if ($findlimit==0) {
+            $itemprice[]=array(
+                'min'=>$minval,
+                'max'=>9999999999999999,
+                'price'=>$retprice,
+            );
+        }
+
+        $maxidx=count($itemprice);
+        if ($maxidx>0) {
+            $retprice=$itemprice[$maxidx-1]['price'];
+        }
+        return $retprice;
+    }
 
 
 }
