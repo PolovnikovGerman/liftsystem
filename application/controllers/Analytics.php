@@ -659,12 +659,14 @@ class Analytics extends MY_Controller
             $curentyear=$postdata['current_year'];
             $prevyear=$postdata['prev_year'];
             $itemchk=usersession('itemsaleschk');
+            $brand = ifset($postdata,'brand', 'ALL');
             $options=array(
                 'item_id'=>$item_id,
                 'current_year'=>$curentyear,
                 'prev_year'=>$prevyear,
                 'calc_year'=>$year,
                 'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                'brand' => $brand,
             );
             $res=$this->reports_model->itemsale_data($options);
             $error=$res['msg'];
