@@ -1,9 +1,9 @@
 <div class="differences_area_title">
-    <div class="label">
+    <div class="labeltxt">
         Difference
     </div>
     <div class="yearselect">
-        <div class="label">Compare:</div>
+        <div class="labeltxt">Compare:</div>
         <div class="dataselect">
             <select class="yearselect" data-type="<?=$type?>" data-year="compare" data-profit="<?=$profit_type?>">
                 <?php foreach ($years_from as $row) { ?>
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="yearselect">
-        <div class="label">To:</div>
+        <div class="labeltxt">To:</div>
         <div class="dataselect">
             <select class="yearselect" data-type="<?=$type?>" data-year="to" data-profit="<?=$profit_type?>">
                 <?php foreach ($years_to as $row) { ?>

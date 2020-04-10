@@ -516,6 +516,7 @@ class Analytics extends MY_Controller
                     'calc_year'=>$postdata['calc_year'],
                     'vendor'=>$vendor,
                     'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
+                    'brand' => ifset($postdata, 'brand','ALL'),
                 );
                 if (isset($postdata['search']) && !empty($postdata['search'])) {
                     $toptions['search']=strtoupper($postdata['search']);
@@ -554,6 +555,7 @@ class Analytics extends MY_Controller
                 'vendor'=>(isset($postdata['vendor']) ? $postdata['vendor'] : ''),
                 'vendor_cost'=>(isset($postdata['vendor_cost']) ? $postdata['vendor_cost'] : 'high'),
                 'order_by'=>(isset($postdata['order_by']) ? $postdata['order_by'] : 'curyearqty'),
+                'brand' => ifset($postdata,'brand','ALL'),
             );
             if (isset($postdata['search']) && !empty($postdata['search'])) {
                 $contoptions['search']=$postdata['search'];
@@ -603,7 +605,7 @@ class Analytics extends MY_Controller
             $totalchk=$this->reports_model->itemsale_change_itemcheck($item_id, $chkres);
             $mdata['totals']=$totalchk;
             if ($totalchk>0) {
-                $itemchk=$this->func->session('itemsaleschk');
+                $itemchk=usersession('itemsaleschk');
                 $options=array(
                     'current_year'=>$postdata['current_year'],
                     'prev_year'=>$postdata['prev_year'],
@@ -1344,6 +1346,7 @@ class Analytics extends MY_Controller
                 'checked'=>$itemchk,
                 'vendor'=>$defvenfor,
                 'vendor_cost'=>(isset($options['vendor_cost']) ? $options['vendor_cost'] : 'high'),
+                'brand' => $brand,
             );
             if (isset($options['search']) && !empty($options['search'])) {
                 $totaloptions['search']=$options['search'];

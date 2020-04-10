@@ -1029,7 +1029,7 @@ Class Reports_model extends My_Model
             $this->db->where('brand', $brand);
             $goalres=$this->db->get()->row_array();
         }
-        $out=$this->_prepare_newdata($hits, $hit_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'HIT');
+        $out=$this->_prepare_newdata($hits, $hit_keys, $goalres, $year, $month, $days, $pacekf, $prvtotals, $brand, 'HITS');
         return $out;
     }
 
@@ -2650,7 +2650,7 @@ Class Reports_model extends My_Model
                 $this->db->join("(select item_id, sum(qtysale) as qtysale, sum(revenue) as revenue, sum(shipsale) as shipsale, sum(ordsale) as ordsale, sum(cogsale) as cogsale from v_itemsales where yearsale={$options['prev_year']} group by item_id) saleprev", 'saleprev.item_id=i.item_id','left');
             } else {
                 $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['current_year']} and brand='{$options['brand']}') salecur", 'salecur.item_id=i.item_id','left');
-                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['prev_year']} and brand='{$options['brand']}) saleprev", 'saleprev.item_id=i.item_id','left');
+                $this->db->join("(select item_id, qtysale, revenue, shipsale, ordsale, cogsale from v_itemsales where yearsale={$options['prev_year']} and brand='{$options['brand']}') saleprev", 'saleprev.item_id=i.item_id','left');
             }
         } else {
             if ($options['brand']=='ALL') {

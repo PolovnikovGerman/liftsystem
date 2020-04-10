@@ -319,7 +319,7 @@
     color: #0d01b3;
     width: 89px;
 }
-.differences_area > .differences_area_title > .label {
+.differences_area > .differences_area_title > .labeltxt {
     font-size: 14px;
     font-weight: bold;
     text-align: center;
@@ -328,7 +328,7 @@
 .differences_area > .differences_area_title > .yearselect {
     width: 44px;
 }
-.differences_area > .differences_area_title > .yearselect > .label {
+.differences_area > .differences_area_title > .yearselect > .labeltxt {
     font-size: 8px;
     text-align: center;
     width: 100%;
@@ -603,7 +603,7 @@
 }
 .salesgoaldataarea {
     float: left;
-    width: 75px;
+    width: 72px;
 }
 .salesgoaldata {
     border: 2px solid #000000;
@@ -652,7 +652,7 @@
     float: left;
     width: 65px;
 }
-.salesavgtitle > .label {
+.salesavgtitle > .labeltxt {
     color: #0101b4;
     float: left;
     font-size: 13px;

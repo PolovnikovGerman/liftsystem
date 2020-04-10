@@ -82,7 +82,7 @@ input.itemmonth_searchdata {
 }
 .itemmonthpagination {
     float: right!important;
-    width: 160px;
+    /* width: 160px; */
 }
 /* Table Head */
 .itemmonth_head {

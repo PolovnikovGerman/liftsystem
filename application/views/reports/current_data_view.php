@@ -89,7 +89,7 @@
         <?php } ?>
     </div>
     <div class="salesavgtitle">
-        <div class="label">Need to Avg:</div>
+        <div class="labeltxt">Need to Avg:</div>
     </div>
     <div class="salesavgarea" style="width: 197px">
         <div class="head"><?=$data['days']?> Days Left (<?=$elapsed?> Days Past)</div>
