@@ -1226,85 +1226,86 @@ Class Printshop_model extends MY_Model
         return $data;
     }
 
-//    public function new_colorinstock($printshop_color_id) {
-//        $stock=array();
-//        $fields = $this->db->list_fields('ts_printshop_instock');
-//        foreach ($fields as $row) {
-//            if ($row=='printshop_color_id') {
-//                $stock[$row]=$printshop_color_id;
-//            } elseif ($row=='printshop_instock_id') {
-//                $stock[$row]=-1;
-//            } elseif ($row=='instock_date') {
-//                $stock[$row]=time();
-//            } else {
-//                $stock[$row]='';
-//            }
-//        }
-//        return $stock;
-//    }
-//
-//    // Edit exist data
-//    public function invitem_color_stockdata($printshop_instock_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        $this->db->select('*');
-//        $this->db->from('ts_printshop_instock');
-//        $this->db->where('printshop_instock_id', $printshop_instock_id);
-//        $res=$this->db->get()->row_array();
-//        if (!isset($res['printshop_instock_id'])) {
-//            $out['msg']='Stock Log Row not Found';
-//        } else {
-//            $out['result']=$this->success_result;
-//            $out['data']=$res;
-//        }
-//        return $out;
-//    }
-//
-//
-//    // Change Stock Data
-//    public function invcolor_stock_change($stockdata, $postdata) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (!array_key_exists('fldname',$postdata) || !array_key_exists('newval', $postdata)) {
-//            $out['msg']='No All Data sended';
-//            return $out;
-//        }
-//        $fldname=$postdata['fldname'];
-//        $newval=$postdata['newval'];
-//        if (!array_key_exists($fldname,$stockdata)) {
-//            $out['msg']='Unknown Parameter '.$fldname;
-//            return $out;
-//        }
-//        if ($fldname=='instock_date') {
-//            $newval=  strtotime($newval);
-//        }
-//        $stockdata[$fldname]=$newval;
-//        $out['result']=$this->success_result;
-//        $this->func->session('stockdata',$stockdata);
-//        return $out;
-//    }
-//
-//    // Save New Stock
-//    public function invitem_color_stocksave($stockdata) {
-//        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-//        if (empty($stockdata['instock_descrip'])) {
-//            $out['msg']='Enter Stock Description';
-//            return $out;
-//        }
-//        // Add / Update
-//        $this->db->set('instock_date', $stockdata['instock_date']);
-//        $this->db->set('instock_descrip', $stockdata['instock_descrip']);
-//        $this->db->set('instock_amnt', intval($stockdata['instock_amnt']));
-//        if ($stockdata['printshop_instock_id']<=0) {
-//            $this->db->set('printshop_color_id', $stockdata['printshop_color_id']);
-//            $this->db->insert('ts_printshop_instock');
-//        } else {
-//            $this->db->where('printshop_instock_id',$stockdata['printshop_instock_id']);
-//            $this->db->update('ts_printshop_instock');
-//        }
-//        $this->func->session('stockdata', NULL);
-//        $out['result']=$this->success_result;
-//        $out['printshop_color_id']=$stockdata['printshop_color_id'];
-//        return $out;
-//    }
+    public function new_colorinstock($printshop_color_id) {
+        $stock=array();
+        $fields = $this->db->list_fields('ts_printshop_instock');
+        foreach ($fields as $row) {
+            if ($row=='printshop_color_id') {
+                $stock[$row]=$printshop_color_id;
+            } elseif ($row=='printshop_instock_id') {
+                $stock[$row]=-1;
+            } elseif ($row=='instock_date') {
+                $stock[$row]=time();
+            } else {
+                $stock[$row]='';
+            }
+        }
+        return $stock;
+    }
+
+    // Edit exist data
+    public function invitem_color_stockdata($printshop_instock_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('*');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('printshop_instock_id', $printshop_instock_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['printshop_instock_id'])) {
+            $out['msg']='Stock Log Row not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $out['data']=$res;
+        }
+        return $out;
+    }
+
+
+    // Change Stock Data
+    public function invcolor_stock_change($stockdata, $postdata) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists('fldname',$postdata) || !array_key_exists('newval', $postdata)) {
+            $out['msg']='No All Data sended';
+            return $out;
+        }
+        $fldname=$postdata['fldname'];
+        $newval=$postdata['newval'];
+        if (!array_key_exists($fldname,$stockdata)) {
+            $out['msg']='Unknown Parameter '.$fldname;
+            return $out;
+        }
+        if ($fldname=='instock_date') {
+            $newval=  strtotime($newval);
+        }
+        $stockdata[$fldname]=$newval;
+        $out['result']=$this->success_result;
+        usersession('stockdata',$stockdata);
+        return $out;
+    }
+
+    // Save New Stock
+    public function invitem_color_stocksave($stockdata, $brand) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (empty($stockdata['instock_descrip'])) {
+            $out['msg']='Enter Stock Description';
+            return $out;
+        }
+        // Add / Update
+        $this->db->set('instock_date', $stockdata['instock_date']);
+        $this->db->set('instock_descrip', $stockdata['instock_descrip']);
+        $this->db->set('instock_amnt', intval($stockdata['instock_amnt']));
+        if ($stockdata['printshop_instock_id']<=0) {
+            $this->db->set('printshop_color_id', $stockdata['printshop_color_id']);
+            $this->db->set('brand', $brand);
+            $this->db->insert('ts_printshop_instock');
+        } else {
+            $this->db->where('printshop_instock_id',$stockdata['printshop_instock_id']);
+            $this->db->update('ts_printshop_instock');
+        }
+        usersession('stockdata', NULL);
+        $out['result']=$this->success_result;
+        $out['printshop_color_id']=$stockdata['printshop_color_id'];
+        return $out;
+    }
 
     // Check Unique Item #
     private function _check_invitem($printshop_item_id, $item_num) {

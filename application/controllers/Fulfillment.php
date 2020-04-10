@@ -1279,14 +1279,14 @@ class Fulfillment extends MY_Controller
                 $stock=$this->printshop_model->new_colorinstock($printshop_color_id);
             } else {
                 $res=$this->printshop_model->invitem_color_stockdata($printshop_instock_id);
-                if ($res['result']==Fulfillment::ERR_FLAG) {
+                if ($res['result']==$this->error_result) {
                     $error=$res['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
                 $stock=$res['data'];
             }
             $mdata['content']=$this->load->view('printshop/instock_data_edit', $stock,TRUE);
-            $this->session('stockdata', $stock);
+            usersession('stockdata', $stock);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1296,11 +1296,11 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $stockdata=$this->session('stockdata');
+            $stockdata=usersession('stockdata');
             $postdata=$this->input->post();
             $this->load->model('printshop_model');
             $res=$this->printshop_model->invcolor_stock_change($stockdata, $postdata);
-            if ($res['result']==Fulfillment::ERR_FLAG) {
+            if ($res['result']==$this->error_result) {
                 $error=$res['msg'];
             }
             $this->ajaxResponse($mdata, $error);
@@ -1312,16 +1312,16 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-
+            $brand = $this->input->post('brand');
             $this->load->model('printshop_model');
-            $stockdata=$this->session('stockdata');
-            $res=$this->printshop_model->invitem_color_stocksave($stockdata);
-            if ($res['result']==Fulfillment::ERR_FLAG) {
+            $stockdata=usersession('stockdata');
+            $res=$this->printshop_model->invitem_color_stocksave($stockdata, $brand);
+            if ($res['result']==$this->error_result) {
                 $error=$res['msg'];
             } else {
                 $printshop_color_id=$res['printshop_color_id'];
-                $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id);
-                $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res),TRUE);
+                $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+                $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res, 'brand' => $brand),TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -1334,9 +1334,10 @@ class Fulfillment extends MY_Controller
             $error='';
             $this->load->model('printshop_model');
             $printshop_color_id=$this->input->post('printshop_color_id');
-            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id);
-            $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res),TRUE);
-            $this->session('stockdata', NULL);
+            $brand = $this->input->post('brand');
+            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+            $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res, 'brand' => $brand),TRUE);
+            usersession('stockdata', NULL);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

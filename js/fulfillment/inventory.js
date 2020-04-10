@@ -881,7 +881,7 @@ function save_stockedit(color, brand) {
         var params=new Array();
         params.push({name: 'fldname', value: $(this).data('fldname')});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'brand', })
+        params.push({name: 'brand', brand})
         var url="/fulfillment/invcolor_stock_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -893,6 +893,7 @@ function save_stockedit(color, brand) {
     $("div.inventorymanage.cancel").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'printshop_color_id', value: color});
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
         var url="/fulfillment/inventory_colorstock_data";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -905,9 +906,12 @@ function save_stockedit(color, brand) {
     });
     $("div.inventorymanage.save").unbind('click').click(function(){
         var url="/fulfillment/inventory_colorstock_save";
-        $.post(url, {}, function(response){
+        var params = new Array();
+        params.push({name: 'brand', value: $("#printshopinventbrand").val()});
+        $.post(url, params, function(response){
             if (response.errors=='') {
-                $("#printshopinventor").find("div.stockcontentdata").empty().html(response.data.content);
+                // $("#printshopinventor").find("div.stockcontentdata").empty().html(response.data.content);
+                $("div.stockcontentdata").empty().html(response.data.content);
                 init_inventdatastock(color);
             } else {
                 show_error(response);
