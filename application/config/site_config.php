@@ -45,7 +45,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['developer_email']='polovnikov.g@gmail.com';
-        $config['newprooflnk']='http://bluetrack.sys/proofview/?doc=';
+        $config['newprooflnk']='http://bluetrack.com/proofview/?doc=';
         break;
     default :
         $config['sean_email']='sean@bluetrack.com';
