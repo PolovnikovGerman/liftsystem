@@ -558,6 +558,7 @@ Class Leads_model extends MY_Model
         $this->db->set('email_webpage', 'Sales');
         $this->db->set('email_item_name',$item_name);
         $this->db->set('email_item_number',$item_num);
+        $this->db->set('brand', $leadpost['brand']);
         $this->db->insert('ts_emails');
         $newrec=$this->db->insert_id();
         if (!$newrec) {
@@ -626,20 +627,20 @@ Class Leads_model extends MY_Model
 
     }
 
-//    public function remove_proof_request($email_id, $user_id) {
-//        $out=array('result'=>  Leads_model::ERR_FLAG, 'msg'=>  Leads_model::INIT_ERRMSG);
-//        $this->db->where('email_id',$email_id);
-//        // $this->db->set('email_status',2);
-//        $this->db->delete('ts_emails');
-//        if ($this->db->affected_rows()==0) {
-//            $out['msg']='Request wasn\'t deleted';
-//        } else {
-//            $out['result']=  Leads_model::SUCCESS_RESULT;
-//            $out['msg']='';
-//        }
-//        return $out;
-//
-//    }
+    public function remove_proof_request($email_id, $user_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        $this->db->where('email_id',$email_id);
+        // $this->db->set('email_status',2);
+        $this->db->delete('ts_emails');
+        if ($this->db->affected_rows()==0) {
+            $out['msg']='Request wasn\'t deleted';
+        } else {
+            $out['result']= $this->success_result;
+            $out['msg']='';
+        }
+        return $out;
+    }
+
 //    /* Get data for special acc reminder */
 //    function get_specialacc($options=array()) {
 //        $this->db->select('*');

@@ -1139,10 +1139,91 @@ Class Artwork_model extends MY_Model
             if ($assign_order) {
                 $this->_prepare_sync($artdata, $oldproofdocs, $user_id);
             }
-
         }
         return $out;
     }
+
+    private function _prepare_sync($artdata, $oldproofdocs, $user_id) {
+        $artwork_id=$artdata['artwork_id'];
+        $order_id=$artdata['order_id'];
+        $this->db->select('*');
+        $this->db->from('ts_orders o');
+        $this->db->where('order_id', $order_id);
+        $order=$this->db->get()->row_array();
+        if (isset($order['order_id'])) {
+            $artsync=array(
+                'user_id'=>$user_id,
+                'order_id'=>$order_id,
+                'blank'=>$order['order_blank'],
+                'rush'=>$order['order_rush'],
+                'customer'=>$order['customer_name'],
+                'item_descript'=>$order['order_items'],
+                'art_stage'=>0,
+                'redraw_stage'=>0,
+                'vector_stage'=>0,
+                'proof_stage'=>0,
+                'approv_stage'=>0,
+            );
+            if ($order['order_blank']==1) {
+                $artsync['art_stage']=1;
+                $artsync['redraw_stage']=1;
+                $artsync['vector_stage']=1;
+                $artsync['proof_stage']=1;
+                $artsync['approv_stage']=1;
+            } else {
+                $this->load->model('artlead_model');
+                $artsync=$this->artlead_model->art_common_changestage($order, $artdata, $artwork_id, $artsync, $user_id);
+            }
+            // Add Artsync Data
+            $this->db->set('user_id', $artsync['user_id']);
+            $this->db->set('order_id', $artsync['order_id']);
+            $this->db->set('customer', $artsync['customer']);
+            $this->db->set('item_descript', $artsync['item_descript']);
+            $this->db->set('rush', $artsync['rush']);
+            $this->db->set('blank', $artsync['blank']);
+            $this->db->set('art_stage', $artsync['art_stage']);
+            $this->db->set('redraw_stage', $artsync['redraw_stage']);
+            $this->db->set('vector_stage', $artsync['vector_stage']);
+            $this->db->set('proof_stage', $artsync['proof_stage']);
+            $this->db->set('approv_stage', $artsync['approv_stage']);
+            $this->db->insert('ts_artdata_sync');
+            // $newproofdocs=$this->get_artproofs($artwork_id);
+            $artsyncdoc=array();
+            // Build Artdoc Sync
+            // Get a list of
+            $this->db->select('o.order_id, p.artwork_proof_id');
+            $this->db->from('ts_artwork_proofs p');
+            $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+            $this->db->join('ts_orders o','o.order_id=a.order_id');
+            $this->db->where('p.approved',1);
+            $this->db->where('o.order_id', $order_id);
+            $docres=$this->db->get()->result_array();
+            foreach ($docres as $drow) {
+                $artsyncdoc[]=array(
+                    'user_id'=>$user_id,
+                    'order_id'=>$order_id,
+                    'operation'=>'add',
+                    'artwork_proof_id'=>$drow['artwork_proof_id'],
+                );
+            }
+
+            foreach ($artsyncdoc as $row) {
+                $this->db->set('user_id', $row['user_id']);
+                $this->db->set('order_id', $row['order_id']);
+                if (!empty($row['artwork_proof_id'])) {
+                    $this->db->set('artwork_proof_id', $row['artwork_proof_id']);
+                }
+                $this->db->set('operation', $row['operation']);
+                if (!empty($row['proofdoc_link'])) {
+                    $this->db->set('proofdoc_link', $row['proofdoc_link']);
+                }
+                $this->db->insert('ts_artdoc_sync');
+            }
+        }
+        return TRUE;
+
+    }
+
 
     private function assign_order($proof_id, $order_id, $oldartwork_id, $newartid) {
         /* change name of logos */
@@ -2038,7 +2119,7 @@ Class Artwork_model extends MY_Model
         $path_sh = $this->config->item('pathpreload');
         $prefix = ($artdata['order_num'] == '' ? $artdata['proof_num'] : $artdata['order_num']);
         if (file_exists($path_full.$file)) {
-            $newsrc = str_replace($path_full, $path_sh, $file);
+            $newsrc = $path_sh.$file;
             $numpp++;
             $idxproof++;
             $proof_id = ($idxproof) * (-1);
@@ -2291,12 +2372,12 @@ Class Artwork_model extends MY_Model
                         }
                         @unlink($srclocation);
                         $newsrc=$path_proofsh.$proofname;
-                        $newlink=$this->func->uniq_link(20);
+                        $newlink=uniq_link(20);
                         $proof['proof_name']=$newsrc;
                         $proof['proofdoc_link']=$newlink;
                     } else {
                         if (empty($row['proofdoc_link'])) {
-                            $newlink=$this->func->uniq_link(20);
+                            $newlink=uniq_link(20);
                             $proof['proofdoc_link']=$newlink;
                             $artdata['proofs'][$idxproofs]['proofdoc_link']=$newlink;
                         }
@@ -2359,100 +2440,104 @@ Class Artwork_model extends MY_Model
                         }
                     }
                 }
-
-                // Send message
-                $this->load->library('email');
-                $config['protocol'] = 'sendmail';
-                $config['charset'] = 'utf8';
-                $config['wordwrap'] = TRUE;
-                $config['mailtype'] = 'text';
-
-                $this->email->initialize($config);
-
-                $this->email->from($data['from']);
-                $this->email->to($data['customer']);
-                if ($data['cc']!='') {
-                    $cc=$data['cc'];
-                    foreach ($lead_cc as $row) {
-                        $cc.=','.$row;
-                    }
-                    $this->email->cc($cc);
-                } else {
-                    if (count($lead_cc)>0) {
-                        $this->email->cc($lead_cc);
-                    }
-                }
-                if (!empty($other_cc)) {
-                    $this->email->bcc($other_cc);
-                }
-                $this->email->subject($data['subject']);
-
-                if (count($attachments)==1) {
-                    $message='Below you will find a link to your art proof.  Please click on the link to view it:'.PHP_EOL;
-                    $message.=''.PHP_EOL;
-                    $message.=$attachments[0];
-                } else {
-                    $message='Below you will find links to your art proofs.  Please click on each link to view the different pages:'.PHP_EOL;;
-                    $message.=''.PHP_EOL;
-                    foreach ($attachments as $row) {
-                        $message.=$row.PHP_EOL;
-                    }
-                }
-
-                $smessage=  str_replace('<<links>>', $message, $data['message']);
-
-                $this->email->message($smessage);
                 $histmsg='Art proof sent - ';
                 $histmsg.=''.count($attachments).' attachments';
                 $details='';
                 foreach ($attachments as $row) {
                     $details.=$row.'<br/>'.PHP_EOL;
                 }
-                $this->email->send();
-                $this->email->clear(TRUE);
-                $logoptions=array(
-                    'from'=>$data['from'],
-                    'to'=>$data['customer'],
-                    'subject'=>$data['subject'],
-                    'message'=>$data['message'],
-                    'user_id'=>$user_id,
-                );
-                if (!empty($data['cc'])) {
-                    $logoptions['cc']=$data['cc'];
-                }
-                if (count($attachments)>0) {
-                    $logoptions['attachments']=$attachments;
-                }
-                $this->email_model->logsendmail($logoptions);
-                // Get Lead related with order / proof requests
-                if ($artdata['proofs_id']) {
-                    $this->db->select('u.user_email, l.lead_number');
-                    $this->db->from('users u');
-                    $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
-                    $this->db->join('ts_lead_emails le','le.lead_id=lu.lead_id');
-                    $this->db->join('ts_leads l','l.lead_id=le.lead_id');
-                    $this->db->where('le.email_id', $artdata['proofs_id']);
-                    $this->db->where('u.user_status',1);
-                    $notemails=$this->db->get()->result_array();
-                    if (count($notemails)>0) {
-                        // Send message
-                        $list=array();
-                        $leadnum='';
-                        foreach ($notemails as $row) {
-                            array_push($list, $row['user_email']);
-                            $leadnum=$row['lead_number'];
+
+                if ($this->input->ip_address()!=='127.0.0.1') {
+                    // Send message
+                    $this->load->library('email');
+                    $config['protocol'] = 'sendmail';
+                    $config['charset'] = 'utf8';
+                    $config['wordwrap'] = TRUE;
+                    $config['mailtype'] = 'text';
+
+                    $this->email->initialize($config);
+
+                    $this->email->from($data['from']);
+                    $this->email->to($data['customer']);
+                    if ($data['cc']!='') {
+                        $cc=$data['cc'];
+                        foreach ($lead_cc as $row) {
+                            $cc.=','.$row;
                         }
-                        $this->email->to($list);
-                        $this->email->from($data['from']);
-                        $notesubj='Proof sent to '.$artdata['customer_name'];
-                        $this->email->subject($notesubj);
-                        $msgnote='The Art Dept sent '.$artdata['customer_name'].' '.count($attachments).' proofs today ('.date('m/d/y g:i a').') for Lead # '.$leadnum.' '.$artdata['item_name'].':'.PHP_EOL;
-                        foreach ($attachments as $row) {
-                            $msgnote.=' - '.str_replace($path_prooffull,'', $row).PHP_EOL;
+                        $this->email->cc($cc);
+                    } else {
+                        if (count($lead_cc)>0) {
+                            $this->email->cc($lead_cc);
                         }
-                        $this->email->message($msgnote);
-                        $this->email->clear(TRUE);
                     }
+                    if (!empty($other_cc)) {
+                        $this->email->bcc($other_cc);
+                    }
+                    $this->email->subject($data['subject']);
+
+                    if (count($attachments)==1) {
+                        $message='Below you will find a link to your art proof.  Please click on the link to view it:'.PHP_EOL;
+                        $message.=''.PHP_EOL;
+                        $message.=$attachments[0];
+                    } else {
+                        $message='Below you will find links to your art proofs.  Please click on each link to view the different pages:'.PHP_EOL;;
+                        $message.=''.PHP_EOL;
+                        foreach ($attachments as $row) {
+                            $message.=$row.PHP_EOL;
+                        }
+                    }
+
+                    $smessage=  str_replace('<<links>>', $message, $data['message']);
+
+                    $this->email->message($smessage);
+                    $this->email->send();
+                    $this->email->clear(TRUE);
+                    $logoptions=array(
+                        'from'=>$data['from'],
+                        'to'=>$data['customer'],
+                        'subject'=>$data['subject'],
+                        'message'=>$data['message'],
+                        'user_id'=>$user_id,
+                    );
+                    if (!empty($data['cc'])) {
+                        $logoptions['cc']=$data['cc'];
+                    }
+                    if (count($attachments)>0) {
+                        $logoptions['attachments']=$attachments;
+                    }
+                    $this->email_model->logsendmail($logoptions);
+                    // Get Lead related with order / proof requests
+                    if ($artdata['proofs_id']) {
+                        $this->db->select('u.user_email, l.lead_number');
+                        $this->db->from('users u');
+                        $this->db->join('ts_lead_users lu', 'lu.user_id=u.user_id');
+                        $this->db->join('ts_lead_emails le', 'le.lead_id=lu.lead_id');
+                        $this->db->join('ts_leads l', 'l.lead_id=le.lead_id');
+                        $this->db->where('le.email_id', $artdata['proofs_id']);
+                        $this->db->where('u.user_status', 1);
+                        $notemails = $this->db->get()->result_array();
+                        if (count($notemails) > 0) {
+                            // Send message
+                            $list = array();
+                            $leadnum = '';
+                            foreach ($notemails as $row) {
+                                array_push($list, $row['user_email']);
+                                $leadnum = $row['lead_number'];
+                            }
+                            $this->email->to($list);
+                            $this->email->from($data['from']);
+                            $notesubj = 'Proof sent to ' . $artdata['customer_name'];
+                            $this->email->subject($notesubj);
+                            $msgnote = 'The Art Dept sent ' . $artdata['customer_name'] . ' ' . count($attachments) . ' proofs today (' . date('m/d/y g:i a') . ') for Lead # ' . $leadnum . ' ' . $artdata['item_name'] . ':' . PHP_EOL;
+                            foreach ($attachments as $row) {
+                                $msgnote .= ' - ' . str_replace($path_prooffull, '', $row) . PHP_EOL;
+                            }
+                            $this->email->message($msgnote);
+                            $this->email->clear(TRUE);
+                        }
+                    }
+                }
+                if ($artdata['proofs_id']) {
                     // Update lead history and lead update status
                     $this->db->select('l.lead_number, l.lead_id');
                     $this->db->from('ts_leads l');
@@ -2481,10 +2566,8 @@ Class Artwork_model extends MY_Model
                     $this->db->set('message_details', $details);
                     $this->db->insert('ts_artwork_history');
                 }
-
             }
             usersession($artsession, $artdata);
-
             $proofdat=array();
             $proofnum=1;
             $approvenum=1;

@@ -1326,3 +1326,25 @@ input.lead_searchinput {
     background: #a7a7a7;
     border: 2px solid #000000;
 }
+/* Beauty Tips */
+.green_tooltip {
+    background-color: #EDEDED;
+    float: left;
+    padding: 0px;
+    font-size: 13px;
+    color: #000;
+    text-align: justify;
+}
+.green_background {
+    background: #1DCD19!important;
+}
+.art_lastmessage {
+    background-color: #1DCD19!important;
+    float: left;
+    padding: 0px;
+    font-size: 13px!important;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+}

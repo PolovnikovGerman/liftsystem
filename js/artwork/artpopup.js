@@ -205,7 +205,9 @@ function assign_order(artid) {
     params.push({name: 'artwork_id', value: artid});
     $.post(url, params, function(response){
         if (response.errors == '') {
+            $("#artNextModal").find('div.modal-dialog').css('width','722px');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModalLabel").empty().html('Assign Order');
             $("#artNextModal").modal('show');
             $("div.orderdata").click(function () {
                 var order_id = $(this).data('orderid');
@@ -343,9 +345,6 @@ function init_proofs() {
         },
         allowedExtensions: ['pdf','PDF'],
         onComplete: function(id, fileName, responseJSON){
-            console.log(id+' ID '+fileName+' FileName');
-            console.log('Response');
-            console.log(responseJSON);
             if (responseJSON.success==true) {
                 var artwork_id = $("#uploadproofdoc").data("artworkid");
                 var url="/artproofrequest/art_saveproofload";
@@ -462,8 +461,11 @@ function approve_mail(artid) {
         var url="/artproofrequest/art_approvemail";
         $.post(url, params , function(response){
             if (response.errors=='') {
+                $("#artNextModal").find('div.modal-dialog').css('width', '388px');
+                $("#artNextModalLabel").empty().html('Send Proof Message');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal('show');
+
                 // $("div#popupwin").empty().html(response.data.content);
                 $("div.addbccapprove").click(function(){
                     var bcctype=$(this).data('applybcc');
@@ -575,7 +577,7 @@ function show_proof(proof) {
     var url="/artproofrequest/art_approvedshow";
     $.post(url,params,function(response){
         if (response.errors=='') {
-            $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
+            $.fileDownload('/artproofrequest/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
             return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
             window.open(response.data.url, 'showfile');
         } else {
@@ -870,21 +872,23 @@ function init_locations() {
         trigger: 'hover',
         placement: 'left'
     });
-    $("div.artworksource.viewsource").hover(
-        function () {
-            var e = $(this);
-            $.get(e.data('viewsrc'), function (d) {
-                e.popover({
-                    content: d,
-                    placement: 'left',
-                    html: true
-                }).popover('show');
-            });
+    $("div.artworksource.viewsource").qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
         },
-        function () {
-            $(this).popover('hide');
-        }
-    );
+        // style: 'art_lastmessage'
+    });
 }
 function change_usertxt(art_id) {
     var params=new Array();
@@ -990,7 +994,7 @@ function show_file(art_id, file_type) {
     var url="/artproofrequest/art_showfile";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
+            $.fileDownload('/artproofrequest/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
             return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
             window.open(response.data.url, 'showfile');
         } else {
@@ -1181,7 +1185,7 @@ function reinit_artworkpopup() {
             }
             $.post(url,params,function(resp){
                 if (resp.errors=='') {
-                    $("div#pop_content").empty().html(resp.data.content);
+                    $("div#artModal").find('div.modal-body').empty().html(resp.data.content);
                     init_popupcontent();
                     $("#loader").hide();
                 } else {

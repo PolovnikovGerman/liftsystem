@@ -109,13 +109,12 @@ function init_leadpopupedit() {
     if (lead_id==0) {
         $("input#lead_company").focus();
     }
-    /* Calendar img - call calendar */
-    // var cal_bgn=Calendar.setup({
-     //    inputField : "lead_needby",
-     //    trigger    : "calendar_btn",
-     //    onSelect   : function() {this.hide()},
-	// dateFormat : "%m/%d/%Y"
-     //  });
+    $("img.leadcalendbtn").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e) {
+        $("#lead_needby").val(e.format(0,"dd/mm/yyyy"));
+    });
     /* Check box other */
     $("#other_task").unbind('change').change(function(){
         var chk=$("#other_task").prop('checked');
@@ -375,7 +374,11 @@ function restore_leadform() {
             $("#pageModal").modal('show');
             $("#pageModal").find('button.close').unbind('click').click(function(){
                 $("#pageModal").modal('hide');
-            })
+            });
+            $("select#lead_item").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#pageModal')
+            });
             init_leadpopupedit();
         } else {
             show_error(response);

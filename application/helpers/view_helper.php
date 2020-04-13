@@ -319,7 +319,7 @@ if (!function_exists('profit_bgclass')) {
 
 if (!function_exists('openfile')) {
     function openfile($url, $filename) {
-        $filenamedetails = $this->extract_filename($filename);
+        $filenamedetails = extract_filename($filename);
         switch ($filenamedetails['ext']) {
             case 'jpg':
                 header('Content-type: images/jpeg');

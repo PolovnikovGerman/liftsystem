@@ -339,6 +339,7 @@ class Leadmanagement extends MY_Controller
                     'session_id'=>$session_id,
                 );
                 $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
+                $mdata['title'] = 'Lead L'.$lead_data['lead_number'].' Details';
                 $error = '';
             }
             $this->ajaxResponse($mdata, $error);
@@ -412,7 +413,7 @@ class Leadmanagement extends MY_Controller
             $usr_id=$this->USR_ID;
             $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
             $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
+            if ($res['result']!=$this->error_result) {
                 $lead_id=$leadpost['lead_id'];
                 /* Duplicate Lead */
                 $lead=$this->leads_model->duplicate_lead($lead_id,$this->USR_ID);
@@ -505,14 +506,14 @@ class Leadmanagement extends MY_Controller
             $usr_id=$this->USR_ID;
             $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
             $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
+            if ($res['result']!=$this->error_result) {
                 $error = '';
                 $lead_id=$res['result'];
                 $mdata['lead_id']=$res['result'];
                 // Get new value of Lead
                 $lead_data=$this->leads_model->get_lead($lead_id);
                 usersession('leaddata',$lead_data);
-                $resrequest=$this->leads_model->add_proof_request($lead_data, $usr_id, $this->USR_NAME);
+                $resrequest=$this->leads_model->add_proof_request($lead_data, $usr_id, $this->USER_NAME);
                 $error=$resrequest['msg'];
                 if ($resrequest['result']==$this->success_result) {
                     $error = '';
@@ -520,6 +521,19 @@ class Leadmanagement extends MY_Controller
                 }
             }
             $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function lead_deleteproof() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $email_id=$this->input->post('email_id');
+            $res=$this->leads_model->remove_proof_request($email_id, $this->USER_NAME);
+            if ($res['result']==$this->error_result) {
+                $error=$res['msg'];
+            }
+            $this->ajaxResponse($mdata, $error);
         }
     }
 
@@ -664,7 +678,7 @@ class Leadmanagement extends MY_Controller
             $usr_id=$this->USR_ID;
             $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
             $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
+            if ($res['result']!=$this->error_result) {
                 $error='';
             }
             /* Get # of new messages */

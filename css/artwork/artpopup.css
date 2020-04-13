@@ -1583,3 +1583,156 @@ table.table-fontpopular td.fontdat div.fontshow {
 .font_button_select.active:hover {
     cursor: pointer;
 }
+/* Order Assign */
+.orderassign_content {
+    background-color: #FFFFFF;
+    clear: both;
+    float: left;
+    height: 379px;
+    margin-top: 9px;
+    width: 698px;
+}
+.orderassigndata_content {
+    clear: both;
+    float: left;
+    margin: 10px 8px 10px 11px;
+    width: 678px;
+}
+.orderassign_row {
+    clear: both;
+    float: left;
+    text-align: left;
+    margin-bottom: 11px;
+    width: 664px;
+}
+.orderdatatitle {
+    background-color: #787878;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    margin-bottom: 0;
+    padding-top: 4px;
+    text-align: center;
+    width: 677px;
+}
+.orderdata {
+    font-size: 13px;
+    height: 21px;
+    margin-bottom: 0;
+    padding-top: 4px;
+}
+.orderassign_row.orderdata:hover {
+    background-color: #a9a9a9;
+    cursor: pointer;
+}
+.orderassigndata_info {
+    clear: both;
+    float: left;
+    height: 340px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 677px;
+}
+.orderassign_num {
+    float: left;
+    text-align: center;
+    width: 60px;
+}
+.orderassign_date {
+    float: left;
+    text-align: center;
+    width: 65px;
+}
+.orderassign_customer {
+    float: left;
+    font-size: 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 230px;
+}
+.orderassign_item {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 240px;
+}
+.orderassign_itemqty {
+    float: left;
+    width: 35px;
+}
+.orderassign_total {
+    float: left;
+    text-align: center;
+    width: 68px;
+}
+/* Approve mail */
+.aprovemail_content {
+    background: url("/img/artpage/artpopup_approveemail_bg.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    float: left;
+    height: 442px;
+    margin-top: 9px;
+    width: 356px;
+}
+.approvemaildata_content {
+    clear: both;
+    float: left;
+    margin: 10px 8px 10px 11px;
+    width: 345px;
+}
+.approvemail_row {
+    clear: both;
+    float: left;
+    text-align: left;
+    margin-bottom: 11px;
+    width: 331px;
+}
+.approvemail_label {
+    color: #1A1A1A;
+    float: left;
+    font-size: 12px;
+    padding-top: 4px;
+    text-align: left;
+    width: 46px;
+}
+.approvemail_data {
+    float: left;
+    width: 285px;
+}
+.addbccapprove {
+    text-align: left;
+    color: #0e02ff;
+    font-size: 11px;
+    text-decoration: none;
+    font-style: italic;
+}
+.addbccapprove:hover {
+    cursor: pointer;
+}
+input.aprovemail_input {
+    float: left;
+    border: 1px solid #000000;
+    color: #000;
+    font-size: 12px;
+    width: 283px;
+}
+textarea.aprovemail_message {
+    float: left;
+    height: 241px;
+    margin-top: -6px;
+    overflow-y: auto;
+    resize: none;
+    width: 323px;
+    color: #000;
+    font-size: 12px;
+}
+.approvemail_send {
+    float: left;
+    margin-left: 271px;
+    margin-top: -6px;
+    width: 60px;
+}
+.approvemail_send:hover {
+    cursor: pointer;
+}
