@@ -77,7 +77,7 @@ function init_netprofit() {
                 $("#pageModal").find('div.modal-dialog').css('width','470px');
                 $("#pageModalLabel").empty().html('Edit Categories');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_manage_categories();
             } else {
                 show_error(response)
@@ -424,7 +424,7 @@ function init_netprofitdetails_edit() {
                 $("#pageModal").find('div.modal-dialog').css('width','966px');
                 $("#pageModalLabel").empty().html(response.data.title);
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_netprofitdetails_popup();
                 // init_purchase_edit();
             } else {
@@ -732,7 +732,7 @@ function edit_profitnotes(obj) {
             $("#pageModal").find('div.modal-dialog').css('width','470px');
             $("#pageModalLabel").empty().html('Edit Note');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {

@@ -186,7 +186,7 @@ function show_brand_select() {
             $("#artModalLabel").empty().html('Choose Brand for New Order');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','380px');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("button#savebrand").unbind('click').click(function () {
                 var brand = $("#neworderbrand").val();
                 $("#artModal").modal('hide');

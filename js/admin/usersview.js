@@ -131,7 +131,7 @@ function edit_user(user_id) {
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#pageModal").find('div.modal-dialog').css('width','845px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Init save button */
             user_edit_init();
         } else {

@@ -266,7 +266,7 @@ function edit_goalsvalue(year) {
             $("#pageModal").find('div.modal-dialog').css('width','480px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("input.goaleditinput").unbind('change').change(function(){
                 var fld=$(this).prop('id');
                 var newval=parseFloat($(this).val());

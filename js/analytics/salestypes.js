@@ -141,7 +141,7 @@ function edit_salestype_goal(goal) {
             $("#pageModalLabel").empty().html('Goal Edit');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','445px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("input.goaleditinput").unbind('change').change(function(){
                 var fld=$(this).prop('id');
                 var newval=parseFloat($(this).val());
@@ -195,7 +195,7 @@ function show_monthsalesdetails(month, year, saletype) {
             $("#pageModalLabel").empty().html('Month Sales');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','685px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (response.data.countdata<20) {
                 // $("div.dataarea").children('div.datarow').css('width','620px');
             }

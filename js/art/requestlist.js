@@ -268,7 +268,7 @@ function prooflead(mailid) {
             $("#artModal").find('div.modal-dialog').css('width','565px');
             $("#artModalLabel").empty().html('Lead Assign');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Activate close */
             $("select#lead_id").select2({
                 minimumInputLength: 3, // only start searching when the user has input 3 or more characters
@@ -344,7 +344,7 @@ function profedit_lead(lead_id) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
                 dropdownParent: $('#pageModal')
             }).on("change", function(e){
@@ -381,7 +381,7 @@ function edit_note(mailid) {
             $("#artModalLabel").empty().html(response.data.title);
             $("#artModal").find('div.modal-dialog').css('width','569px');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div#artModal div.saveordernote").click(function(){
                 save_proofnote();
             });

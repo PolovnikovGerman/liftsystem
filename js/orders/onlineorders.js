@@ -114,7 +114,7 @@ function showorderdetails(objid) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
 
             $("a.uplattach").click(function(){
                 var linkHref = $(this).attr('href');

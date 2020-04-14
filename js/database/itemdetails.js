@@ -95,7 +95,7 @@ function show_bottom_text(item) {
             $("#editModalLabel").empty().html('View Bottom Text');
             $("#editModal").find('.modal-dialog').css('width','492px');
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
-            $("#editModal").modal('show');
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }
@@ -113,7 +113,7 @@ function show_common_terms(item) {
             $("#editModalLabel").empty().html('View Common Terms');
             $("#editModal").find('.modal-dialog').css('width','352px');
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
-            $("#editModal").modal('show');
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }
@@ -129,7 +129,7 @@ function show_checkout_special(item) {
             $("#editModalLabel").empty().html('View Checkout Specials');
             $("#editModal").find('.modal-dialog').css('width','564px');
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
-            $("#editModal").modal('show');
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }
@@ -145,7 +145,7 @@ function show_shipping(item) {
             $("#editModalLabel").empty().html('View Shipping Details');
             $("#editModal").find('.modal-dialog').css('width','468px');
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
-            $("#editModal").modal('show');
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }
@@ -232,7 +232,7 @@ function init_itemdetails_edit() {
                 $("#editModalLabel").empty().html('Edit Checkout Specials');
                 $("#editModal").find('.modal-dialog').css('width','564px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                $("#editModal").modal('show');
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_specialcheck_manage();
             } else {
                 show_error(response);
@@ -248,7 +248,7 @@ function init_itemdetails_edit() {
                 $("#editModalLabel").empty().html('Edit Bottom Text');
                 $("#editModal").find('.modal-dialog').css('width','492px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                $("#editModal").modal('show');
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_bottomtext_manage();
             } else {
                 show_error(response);
@@ -264,7 +264,7 @@ function init_itemdetails_edit() {
                 $("#editModalLabel").empty().html('Edit Shipping Details');
                 $("#editModal").find('.modal-dialog').css('width','468px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                $("#editModal").modal('show');
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 shipping_manage();
             } else {
                 show_error(response);
@@ -281,7 +281,7 @@ function init_itemdetails_edit() {
                 $("#editModalLabel").empty().html('Edit Common Terms');
                 $("#editModal").find('.modal-dialog').css('width','352px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                $("#editModal").modal('show');
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 commonterms_manage();
             } else {
                 show_error(response);
@@ -323,7 +323,7 @@ function init_itemdetails_edit() {
             $("#editModalLabel").empty().html('Edit Imprint Location');
             $("#editModal").find('.modal-dialog').css('width','493px');
             $("#editModal").find('div.modal-body').empty().html(response.data.content);
-            $("#editModal").modal('show');
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
             itemlocation_manage();
         },'json');
     });
@@ -630,7 +630,7 @@ function init_outstock_content() {
                 $("#editModalLabel").empty().html('Out of Stock Banner and Link');
                 $("#editModal").find('.modal-dialog').css('width','571px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                $("#editModal").modal('show');
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_outstockbanner_upload();
                 $("div.savebannercontent").find('img').unbind('click').click(function () {
                     save_outsockdetails();

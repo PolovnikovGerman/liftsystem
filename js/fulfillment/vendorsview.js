@@ -89,7 +89,7 @@ function add_vendor() {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Init save button */
             $("#savevendor").click(function(){
                 save_vendor();
@@ -107,7 +107,7 @@ function edit_vendor(vendor_id) {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Init save button */
             $("#savevendor").click(function(){
                 save_vendor();

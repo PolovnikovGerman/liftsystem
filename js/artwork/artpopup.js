@@ -10,7 +10,7 @@ function order_artstage(order_id, callpage, brand) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(order_id)==0) {
                 init_onlineleadorder_edit();
             } else {
@@ -33,7 +33,7 @@ function artproof_lead(mailid, callpage) {
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             // $("div#pop_content").empty().html(response.data.content);
             /* SAVE, EMAIL, etc buttons */
             init_popupcontent();
@@ -208,7 +208,7 @@ function assign_order(artid) {
             $("#artNextModal").find('div.modal-dialog').css('width','722px');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModalLabel").empty().html('Assign Order');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div.orderdata").click(function () {
                 var order_id = $(this).data('orderid');
                 var ordernum = $(this).find('div.orderassign_num').text();
@@ -314,7 +314,7 @@ function show_templates(artid) {
         if (response.errors=='') {
             $("#artNextModal").find('div.modal-dialog').css('width','640px');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             // $("div#popupwin").empty().html(response.data.content);
         } else {
             show_error(response);
@@ -464,7 +464,7 @@ function approve_mail(artid) {
                 $("#artNextModal").find('div.modal-dialog').css('width', '388px');
                 $("#artNextModalLabel").empty().html('Send Proof Message');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").modal('show');
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
 
                 // $("div#popupwin").empty().html(response.data.content);
                 $("div.addbccapprove").click(function(){
@@ -683,7 +683,7 @@ function add_location(artwork,art_type) {
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").find('.modal-title').empty().html('New Logo Location');
                 $("#artNextModal").find('.modal-dialog').css('width','305px');
-                $("#artNextModal").modal('show');
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_artlogoupload();
                 $("div.artlogouploadsave_data").click(function(){
                     save_newlogoartloc(art_type);
@@ -696,7 +696,7 @@ function add_location(artwork,art_type) {
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").find('.modal-title').empty().html('New Repeat Location');
                 $("#artNextModal").find('.modal-dialog').css('width','305px');
-                $("#artNextModal").modal('show');
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("div.orderarchive_save").click(function(){
                     var order_num=$("input#archiveord").val();
                     var artwork_id=$("input#newartid").val();
@@ -900,7 +900,7 @@ function change_usertxt(art_id) {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").find('.modal-title').empty().html('Edit Text Location');
             $("#artNextModal").find('.modal-dialog').css('width','470px');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div.vectorsave_data").show();
             $("div.vectorsave_data").click(function(){
                 save_usertext(art_id);
@@ -937,7 +937,7 @@ function change_font(value, art_id) {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").find('.modal-title').empty().html('Select Font');
             $("#artNextModal").find('.modal-dialog').css('width','1010px');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
@@ -1029,7 +1029,7 @@ function edit_rdnote(art_id) {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").find('.modal-title').empty().html('Redraw Note');
             $("#artNextModal").find('.modal-dialog').css('width','459px');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div#popupwin").empty().html(response.data.content);
             $("div.vectorsave_data").show();
             $("div.vectorsave_data").click(function(){
@@ -1088,7 +1088,7 @@ function edit_color(art_id, color_num) {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").find('.modal-title').empty().html('Edit Color');
             $("#artNextModal").find('.modal-dialog').css('width','1004px');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             // show_popup1('colorchoicearea');
             // $("div#popupwin").empty().html(response.data.content);
             /* save color choice */
@@ -1208,7 +1208,7 @@ function show_art_history() {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").find('.modal-title').empty().html('View History');
             $("#artNextModal").find('.modal-dialog').css('width','395px');
-            $("#artNextModal").modal('show');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }

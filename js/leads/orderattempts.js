@@ -49,7 +49,7 @@ function init_attempts_details() {
                 $("#pageModalLabel").empty().html('Online Checkouts');
                 $("#pageModal").find('div.modal-dialog').css('width','1267px');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("div.artsubmitlog").qtip({
                     content: {
                         text: function(event, api) {

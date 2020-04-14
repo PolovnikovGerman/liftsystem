@@ -115,7 +115,7 @@ function edit_coupon(coupon) {
             $("#pageModalLabel").empty().html(response.data.label);
             $("#pageModal").find('div.modal-dialog').css('width','533px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $('#coupon_ispublic').bootstrapToggle({
                 'size' : 'mini',
                 'style' : 'ios'

@@ -93,7 +93,7 @@ function edit_ordernote(obj) {
             $("#pageModal").find('div.modal-dialog').css('width','470px');
             $("#pageModalLabel").empty().html('Order Note');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div.saveordernote").unbind('click').click(function(){
                 save_ordernote();
             });
@@ -261,7 +261,7 @@ function paybatch(obj) {
             $("#pageModal").find('div.modal-dialog').css('width','535px');
             $("#pageModalLabel").empty().html('Would you like to add a payment to the batch?');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Init Calend */
             $("input#batchselect").datepicker({
                 autoclose: true,
@@ -491,7 +491,7 @@ function edit_payment(obj) {
             $("#pageModal").find('div.modal-dialog').css('width','245px');
             $("#pageModalLabel").empty().html('Edit Payment');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
 
             // show_popup('editpayment');
             // $("div#pop_content div.editcogform").empty().html(response.data.content);
@@ -718,7 +718,8 @@ function edit_paymonitororder(order) {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
-            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');            $("#artModal").modal('show');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             navigation_init();
         } else {
             show_error(response);

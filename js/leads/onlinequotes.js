@@ -148,7 +148,7 @@ function change_quotereplic(quote_id) {
             $("#pageModalLabel").empty().html('Change Quote Status');
             $("#pageModal").find('div.modal-dialog').css('width','590px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Activate close */
             $("select#lead_id").select2({
                 minimumInputLength: 2, // only start searching when the user has input 3 or more characters
@@ -216,7 +216,7 @@ function showquotedetails(quote_id) {
             $("#pageModalLabel").empty().html('View Online Quote');
             $("#pageModal").find('div.modal-dialog').css('width','753px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }

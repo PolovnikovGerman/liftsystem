@@ -87,7 +87,7 @@ function edit_calend(calend_id) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','565px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_calendedit_content();
         } else {
             show_error(response);

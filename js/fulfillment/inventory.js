@@ -147,7 +147,7 @@ function init_inventory_view() {
                             $("#pageModal").find('div.modal-dialog').css('width','390px');
                             $("#pageModalLabel").empty().html('Edit Color Description');
                             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                            $("#pageModal").modal('show');
+                            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                             $('div.savedata').unbind('click').click(function(){
                                 specfile = $("textarea.specfile").val();
                                 $("#pageModal").modal('hide');
@@ -263,7 +263,7 @@ function init_inventory_view() {
                             $("#pageModal").find('div.modal-dialog').css('width','390px');
                             $("#pageModalLabel").empty().html('Edit Color Description');
                             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                            $("#pageModal").modal('show');
+                            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                             $('div.savedata').unbind('click').click(function(){
                                 var params = {
                                     'fldname' : 'specfile',
@@ -306,7 +306,7 @@ function init_inventory_view() {
                 $("#pageModal").find('div.modal-dialog').css('width','390px');
                 $("#pageModalLabel").empty().html('Inventory Color Stock');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_inventdatastock(color);
             } else {
                 show_error(response);
@@ -529,7 +529,7 @@ function add_pics() {
             $("#pageModal").find('div.modal-dialog').css('width','390px');
             $("#pageModalLabel").empty().html('Inventory Color Images');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_inventpics();
             init_uploadpics_manage();
             $("div.picssave_data").unbind('click').click(function(){
@@ -865,7 +865,7 @@ function invetory_exitorder(color) {
                 $("#pageModal").find('div.modal-dialog').css('width','390px');
                 $("#pageModalLabel").empty().html('Inventory Color Stock');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_inventdatastock(color);
             } else {
                 show_error(response);
@@ -1125,7 +1125,7 @@ function add_platetemp(plate_temp, proof_temp, item_label, format) {
             $("#pageModal").find('div.modal-dialog').css('width','390px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (response.data.filename==null) {
                 $("div.delplatefile").css('display', 'none');
                 $("div#file-uploader").css('visibility','visible');

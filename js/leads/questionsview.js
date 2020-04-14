@@ -164,7 +164,7 @@ function change_questreplic(quest_id) {
             $("#artModal").find('div.modal-dialog').css('width','565px');
             $("#artModalLabel").empty().html('Lead Assign');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Change Lead data */
             $("select#lead_id").select2({
                 minimumInputLength: 3, // only start searching when the user has input 3 or more characters
@@ -282,7 +282,7 @@ function showquestdetails(question) {
             $("#pageModalLabel").empty().html('View Question');
             $("#pageModal").find('div.modal-dialog').css('width','753px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {

@@ -367,7 +367,7 @@ function edit_batchnote(obj) {
             $("#pageModal").find('div.modal-dialog').css('width','470px');
             $("#pageModalLabel").empty().html('Order Note');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("div.savebatchnote").click(function(){
                 save_batchnote();
             })

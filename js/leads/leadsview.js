@@ -462,7 +462,7 @@ function show_questdetails(obj) {
             $("#pageModalLabel").empty().html('View Question');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','727px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#pageModal").find('button.close').unbind('click').click(function(){
                 restore_leadform();
             })
@@ -483,7 +483,7 @@ function show_proofdetails(obj) {
             $("#pageModalLabel").empty().html('View Question');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','889px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#pageModal").find('button.close').unbind('click').click(function(){
                 restore_leadform();
             })

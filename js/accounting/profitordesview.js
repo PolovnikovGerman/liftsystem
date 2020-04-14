@@ -453,7 +453,7 @@ function edit_order(order) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
             } else {
@@ -473,7 +473,7 @@ function add_neworder() {
             $("#pageModalLabel").empty().html('Choose Brand for New Order');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','380px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("button#savebrand").unbind('click').click(function () {
                 var brand = $("#neworderbrand").val();
                 $("#pageModal").modal('hide');
@@ -499,7 +499,7 @@ function add_leadorder(brand) {
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','1004px');
             $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_onlineleadorder_edit();
         } else {
             show_error(response);
@@ -767,7 +767,7 @@ function prepare_export() {
             $("#pageModal").find('div.modal-dialog').css('width','480px');
             $("#pageModalLabel").empty().html('Select Field for Export');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#exportflds").unbind('click').click(function(){
                 init_prepare_export();
             });

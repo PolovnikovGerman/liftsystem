@@ -293,7 +293,7 @@ function call_reminder(task_id) {
         if (response.errors=='') {
             $("#artModalLabel").empty().html('New Remind Message');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_remindermanage(task_id)
         } else {
             show_error(response);

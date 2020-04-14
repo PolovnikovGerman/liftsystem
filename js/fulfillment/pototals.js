@@ -175,7 +175,7 @@ function add_notplacedpo(order_id) {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_poedit();
         } else {
             show_error(response);
@@ -192,8 +192,8 @@ function add_newamount() {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // $("div#pop_content").empty().html(response.data.content);
             init_poedit();
         } else {
             show_error(response);
@@ -209,8 +209,8 @@ function edit_purchorder(amount_id) {
             $("#pageModal").find('div.modal-dialog').css('width','625px');
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal('show');
-            $("div#pop_content").empty().html(response.data.content);
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // $("div#pop_content").empty().html(response.data.content);
             init_poedit();
         } else {
             show_error(response);

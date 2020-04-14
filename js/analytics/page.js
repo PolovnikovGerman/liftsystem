@@ -39,7 +39,7 @@ function show_vendoritem_prices(item) {
             $("#pageModalLabel").empty().html('Sales Month Details');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','685px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
         } else {
             show_error(response);
         }

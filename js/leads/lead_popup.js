@@ -10,7 +10,7 @@ function show_new_lead(lead_id,type, brand) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
                 minimumInputLength: 3, // only start searching when the user has input 3 or more characters
                 dropdownParent: $('#pageModal')
@@ -44,7 +44,7 @@ function add_lead(brand) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
                 minimumInputLength: 3, // only start searching when the user has input 3 or more characters
                 dropdownParent: $('#pageModal')
@@ -64,7 +64,7 @@ function edit_lead(lead_id) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
                 dropdownParent: $('#pageModal'),
                 minimumInputLength: 3
@@ -221,7 +221,7 @@ function init_leadpopupedit() {
                 $("#artNextModalLabel").empty().html('Add Lead Rep');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").find('div.modal-dialog').css('width','570px');
-                $("#artNextModal").modal('show');
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("div.leadreplicadddatasave").unbind('click').click(function(){
                     addnewleaderpl();
                 });
@@ -310,7 +310,7 @@ function show_artdata(mail_id, lead_id,relation_type) {
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal('show');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* SAVE, EMAIL, etc buttons */
             init_artpopupcontent(lead_id, mail_id,relation_type);
         } else {
@@ -361,7 +361,7 @@ function restore_leadform() {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal('show');
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#pageModal").find('button.close').unbind('click').click(function(){
                 $("#pageModal").modal('hide');
             });
@@ -411,7 +411,7 @@ function duplicatelead() {
                 $("#pageModalLabel").empty().html(response.data.title);
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
                 $("#pageModal").find('div.modal-dialog').css('width','970px');
-                $("#pageModal").modal('show');
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_leadpopupedit();
             } else {
                 show_error(response);
