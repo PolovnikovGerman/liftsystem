@@ -272,14 +272,14 @@ input.attparams {
 .artsubmitlog_tooltip {
     width: 520px;
     min-width: 520px!important;
-    background: #ffffff;
-    color: #000000;
-    font-size: 14px;
+    background: #ffffff!important;
+    color: #000000!important;
+    font-size: 14px!important;
 }
 .artsubmitlogdata_tooltip {
     width: 280px;
     min-width: 280px!important;
-    background: #ffffff;
-    color: #000000;
-    font-size: 14px;
+    background: #ffffff!important;
+    color: #000000!important;
+    font-size: 14px!important;
 }
