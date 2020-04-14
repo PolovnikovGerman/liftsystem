@@ -863,7 +863,7 @@ Class Artlead_model extends MY_Model
         $fullpath=$this->config->item('artwork_proofs');
         $shrtpath=$this->config->item('artwork_proofs_relative');
         $fullpreload=$this->config->item('upload_path_preload');
-
+        $shrtpereload = $this->config->item('pathpreload');
         if ($proofdoc['deleted'] != '') {
             if ($proofdoc['artwork_proof_id'] > 0) {
                 $this->db->where('artwork_proof_id', $proofdoc['artwork_proof_id']);
@@ -875,12 +875,13 @@ Class Artlead_model extends MY_Model
         $saverow = 0;
         if ($proofdoc['artwork_proof_id'] < 0) {
             // Artwork Folder
-            if (file_exists($proofdoc['src'])) {
+            $proofdocsrc = $fullpreload. str_replace([$shrtpereload, $fullpreload], '', $proofdoc['src']);
+            if (file_exists($proofdocsrc)) {
                 $this->_artworkfolder($fullpath, $artwork_id);
                 // New Proof Doc
-                $purename = str_replace($fullpreload, '', $proofdoc['src']);
+                $purename = str_replace([$fullpreload, $shrtpereload], '', $proofdoc['src']);
                 $target_file = $fullpath . $artwork_id . '/' . $purename;
-                $cpres = @copy($proofdoc['src'], $target_file);
+                $cpres = @copy($proofdocsrc, $target_file);
                 if ($cpres) {
                     $saverow = 1;
                     $proofdoc['src'] = $shrtpath . $artwork_id . '/' . $purename;
