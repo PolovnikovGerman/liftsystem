@@ -722,7 +722,52 @@ class Leads extends My_Controller {
     }
 
     public function create_leadmessage() {
-
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='This Request Related with Lead. Please, reload page';
+            $this->load->model('leads_model');
+            $email_id=$this->input->post('mail_id');
+            $leademail_id=$this->input->post('leademail_id');
+            $type=$this->input->post('type');
+            $chkrel=$this->leads_model->check_leadrelation($email_id);
+            if ($chkrel==0) {
+                switch ($type) {
+                    case 'Question':
+                        $this->load->model('questions_model');
+                        $maildat = $this->questions_model->get_quest_data($email_id);
+                        $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
+                        break;
+                    case 'Quote':
+                        $this->load->model('quotes_model');
+                        $maildat = $this->quotes_model->get_quote_dat($email_id);
+                        $res['msg'] = $maildat['msg'];
+                        if ($maildat['result']==$this->success_result) {
+                            $res = $this->leads_model->create_leadquote($maildat['data'], $leademail_id, $this->USR_ID);
+                        }
+                        break;
+                    case 'Proof';
+                        $this->load->model('artproof_model');
+                        $maildat = $this->artproof_model->get_proof_data($email_id);
+                        $res = $this->leads_model->create_leadproof($maildat, $leademail_id, $this->USR_ID);
+                        break;
+                    default:
+                        break;
+                }
+                $error = $res['msg'];
+                if ($res['result'] != $this->error_result) {
+                    $error = '';
+                    // $mdata['total_proof'] = $this->proofs->get_count_proofs(array('assign' => 1));
+                    // $mdata['total_quote'] = $this->mquotes->get_count_quotes(array('assign' => 1));
+                    // $mdata['total_quest'] = $this->mquests->get_count_questions(array('assign' => 1));
+                    // $mdata['sumquote'] = $this->mquotes->get_todays();
+                    // $mdata['sumproofs'] = $this->mproofs->get_todays();
+                    // $mdata['sumquest'] = $this->mquests->get_todays();
+                    $mdata['leadid'] = $res['result'];
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
     }
 
     public function quote_include() {

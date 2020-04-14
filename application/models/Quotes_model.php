@@ -82,15 +82,14 @@ Class Quotes_model extends My_Model {
             }
             $row['email_sender']=($row['email_sender']=='' ? '&nbsp;' : $row['email_sender']);
             $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
-            switch ($row['brand']) {
-                case 'BT':
-                    $row['email_quota_link']=$this->bt_main.$row['email_quota_link'];
-                    break;
-                case 'SB':
-                    $row['email_quota_link']=$this->sb_main.$row['email_quota_link'];
-                    break;
-            }
-            // $row['email_attach']='<a href="'.$row['email_quota_link'].'" target="_new" ><img src="/img/list.png"/></a>';
+//            switch ($row['brand']) {
+//                case 'BT':
+//                    $row['email_quota_link']=$this->bt_main.$row['email_quota_link'];
+//                    break;
+//                case 'SB':
+//                    $row['email_quota_link']=$this->sb_main.$row['email_quota_link'];
+//                    break;
+//            }
             $row['assign_class']=($row['lead_number']=='' ? 'quoteassign' : '');
             $row['lead_number']=($row['lead_number']=='' ? '&nbsp;' : 'L'.$row['lead_number']);
             $out[]=$row;

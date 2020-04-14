@@ -803,9 +803,9 @@ Class Leads_model extends MY_Model
 
         $leadpost=array(
             'lead_id'=>0,
-            'lead_company'=>($maildat['email_sendercompany']=='' ? NULL : $maildat['email_sendercompany']),
-            'lead_phone'=>($maildat['email_senderphone']=='' ? NULL : $maildat['email_senderphone']),
-            'lead_value'=>(floatval($maildat['email_total'])==0 ? NULL : $maildat['email_total']),
+            'lead_company'=>ifset($maildat, 'email_sendercompany', NULL),
+            'lead_phone'=>ifset($maildat, 'email_senderphone', NULL),
+            'lead_value'=>ifset($maildat, 'email_total' , NULL ),
             'lead_needby'=>($maildat['email_due']=='' ? NULL : $maildat['email_due']),
             'lead_customer'=>($maildat['email_sender']=='' ? NULL : $maildat['email_sender']),
             'lead_mail'=>($maildat['email_sendermail']=='' ? NULL : $maildat['email_sendermail']),
@@ -815,6 +815,7 @@ Class Leads_model extends MY_Model
             'lead_note'=>($maildat['email_text']=='' ? NULL : $maildat['email_text']),
             'lead_status'=>'',
             'lead_type'=>$this->init_lead_type,
+            'brand' => $maildat['brand'],
         );
         $lead_tasks=array(
             'send_quote'=>1,
@@ -826,7 +827,7 @@ Class Leads_model extends MY_Model
         );
         $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
         $out['msg']=$res['msg'];
-        if ($res['result']==$this->success_result) {
+        if ($res['result']!=$this->error_result) {
             $out['result']=$res['result'];
             /* Create relations between Mail and Leads */
             $this->db->set('lead_id',$res['result']);

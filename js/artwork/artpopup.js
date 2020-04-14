@@ -730,11 +730,11 @@ function init_artlogoupload() {
                 $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
                     if (response.errors=='') {
                         $("#orderattachlists").empty().html(response.data.content);
-                        $(".qq-uploader").hide();
+                        $("#file-uploader").hide();
                         $("div.artlogouploadsave_data").show();
                         $("div.delvectofile").click(function(){
                             $("#orderattachlists").empty();
-                            $(".qq-uploader").show();
+                            $("#file-uploader").show();
                             $("div.artlogouploadsave_data").hide();
                         })
                     } else {

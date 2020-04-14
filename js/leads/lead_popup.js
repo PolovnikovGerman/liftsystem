@@ -1,11 +1,12 @@
 var mainurl = '/leadmanagement';
-function show_new_lead(lead_id,type) {
+function show_new_lead(lead_id,type, brand) {
     var url=mainurl+"/edit_lead";
-    $.post(url, {'lead_id':lead_id}, function(response){
+    console.log('View New Lead');
+    params = new Array();
+    params.push({name: 'lead_id', value :lead_id});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            // disablePopup();
-            // show_popup('leadpopupdat');
-            // $("div#pop_content").empty().html(response.data.content);
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-dialog').css('width','970px');
@@ -15,18 +16,7 @@ function show_new_lead(lead_id,type) {
                 dropdownParent: $('#pageModal')
             });
             init_leadpopupedit();
-            // $("a#popupContactClose").unbind('click').click(function(){
-            //     disablePopup();
-            //     if (type=='quote') {
-            //         initQuotesPagination();
-            //     } else if (type=='question') {
-            //         initQuestionPagination();
-            //     } else {
-            //         initProofPagination();
-            //     }
-            // });
-            /* Save Button */
-            
+            // Save Button
             $("a.saveleaddat").unbind('dblclick');
             $("a.saveleaddat").unbind('click').click(function(){
                 $("#loader").show();
@@ -255,7 +245,7 @@ function addnewleaderpl() {
         $("#artNextModal").modal('hide');
     } else {
         params.push({name:'session_id', value: $("#session").val()});
-        var url=mainurl+"lead_addrep_save";
+        var url=mainurl+"/lead_addrep_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.lead_popup_replicas").empty().html(response.data.content);

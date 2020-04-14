@@ -145,13 +145,15 @@ function change_quotereplic(quote_id) {
     var url="/leads/change_status";
     $.post(url, {'quest_id':quote_id,'type':'quote'}, function(response){
         if (response.errors=='') {
-            // <div id="editmail_form" style="display:none; width: 568px; height: 330px;"></div>
             $("#pageModalLabel").empty().html('Change Quote Status');
-            $("#pageModal").find('div.modal-content').css('width','590px');
+            $("#pageModal").find('div.modal-dialog').css('width','590px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal('show');
             /* Activate close */
-            // $("select#lead_id").searchable();
+            $("select#lead_id").select2({
+                minimumInputLength: 2, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#pageModal')
+            });
             /* Change Lead data */
             $("select#lead_id").change(function(){
                 change_leaddata();
@@ -159,7 +161,7 @@ function change_quotereplic(quote_id) {
             $("a.savequest").click(function(){
                 update_queststatus();
             })
-            $("div#pop_content div.leads_addnew").click(function(){
+            $("div.updatequest_status").find("div.leads_addnew").click(function(){
                 create_leadquote();
             })
         } else {
@@ -172,15 +174,16 @@ function change_quotereplic(quote_id) {
 function create_leadquote() {
     var mail_id=$("input#mail_id").val();
     var type='Quote';
+    var brand = $("#onlinequotesbrand").val();
     var leademail_id=$("input#leademail_id").val();
     var url="/leads/create_leadmessage";
     $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
         if (response.errors=='') {
-            disablePopup();
-            $("div#newartproofs").empty().html(response.data.total_proof);
-            $("div#newonlinequotes").empty().html(response.data.total_quote);
-            $("div#newquestions").empty().html(response.data.total_quest);
-            show_new_lead(response.data.leadid,'quote');
+            $("#pageModal").modal('hide');
+            // $("div#newartproofs").empty().html(response.data.total_proof);
+            // $("div#newonlinequotes").empty().html(response.data.total_quote);
+            // $("div#newquestions").empty().html(response.data.total_quest);
+            show_new_lead(response.data.leadid,'quote', brand);
         } else {
             show_error(response);
         }
@@ -211,7 +214,7 @@ function showquotedetails(quote_id) {
     $.post(url,{'quote_id':quote_id},function(response){
         if (response.errors=='') {
             $("#pageModalLabel").empty().html('View Online Quote');
-            $("#pageModal").find('div.modal-content').css('width','753px');
+            $("#pageModal").find('div.modal-dialog').css('width','753px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal('show');
         } else {

@@ -328,6 +328,7 @@ function create_leadproof() {
         if (response.errors=='') {
             $("#artModal").modal('hide');
             // POPUP
+            // Add Brand
             show_new_lead(response.data.leadid, 'proof');
         } else {
             show_error(response);

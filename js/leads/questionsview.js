@@ -326,6 +326,7 @@ function create_leadquest() {
             } else {
                 $("a#questionslnk").addClass('curmail');
             }
+            // Add Brand
             show_new_lead(response.data.leadid,'question');
         } else {
             show_error(response);
