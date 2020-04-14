@@ -235,17 +235,17 @@ class Proofrequests extends MY_Controller
             }
 
             switch ($type) {
-                case 'Question':
-                    $this->load->model('questions_model');
-                    $dat = $this->questions_model->get_quest_data($email_id);
-                    $maildat = $dat['data'];
-                    $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
-                    break;
-                case 'Quote':
-                    $this->load->model('quotes_model');
-                    $maildat = $this->quotes_model->get_quote_dat($email_id);
-                    $res = $this->leads_model->create_leadquote($maildat, $leademail_id, $this->USR_ID);
-                    break;
+//                case 'Question':
+//                    $this->load->model('questions_model');
+//                    $dat = $this->questions_model->get_quest_data($email_id);
+//                    $maildat = $dat['data'];
+//                    $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
+//                    break;
+//                case 'Quote':
+//                    $this->load->model('quotes_model');
+//                    $maildat = $this->quotes_model->get_quote_dat($email_id);
+//                    $res = $this->leads_model->create_leadquote($maildat, $leademail_id, $this->USR_ID);
+//                    break;
                 case 'Proof';
                     $this->load->model('artproof_model');
                     $maildat = $this->artproof_model->get_proof_data($email_id);

@@ -324,12 +324,12 @@ function create_leadproof() {
     var type='Proof';
     var leademail_id=$("input#leademail_id").val();
     var url=main_proofurl+"/create_leadmessage";
+    var brand = $("#proofrequestsbrand").val();
     $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
         if (response.errors=='') {
             $("#artModal").modal('hide');
             // POPUP
-            // Add Brand
-            show_new_lead(response.data.leadid, 'proof');
+            show_new_lead(response.data.leadid, 'proof', brand);
         } else {
             show_error(response);
         }

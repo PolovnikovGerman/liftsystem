@@ -376,11 +376,3 @@ input.quote_totals {
     width: 94px;
     font-weight: bold;
 }
-.question_tooltip {
-    width: 540px;
-    color: #2F2F2F;
-    background: #ffffff;
-    font-size: 12px;
-    text-align: center;
-    border: 2px solid #252525;
-}

@@ -735,7 +735,7 @@ class Leads extends My_Controller {
                     case 'Question':
                         $this->load->model('questions_model');
                         $maildat = $this->questions_model->get_quest_data($email_id);
-                        $res = $this->leads_model->create_leadquest($maildat, $leademail_id, $this->USR_ID);
+                        $res = $this->leads_model->create_leadquest($maildat['data'], $leademail_id, $this->USR_ID);
                         break;
                     case 'Quote':
                         $this->load->model('quotes_model');

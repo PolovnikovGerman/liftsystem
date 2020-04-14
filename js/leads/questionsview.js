@@ -109,9 +109,7 @@ function init_questions_content() {
             my: 'right center',
             at: 'center left',
         },
-        style: {
-            classes: 'question_tooltip'
-        }
+        style: 'question_tooltip'
     });
     $("div.quest_tabrow").hover(
         function(){
@@ -163,21 +161,22 @@ function change_questreplic(quest_id) {
     var url="/leads/change_status";
     $.post(url, {'quest_id':quest_id,'type':'question'}, function(response){
         if (response.errors=='') {
-            show_popup('editmail_form');
-            $("div#pop_content").empty().html(response.data.content);
-            /* Activate close */
-            $("a#popupContactClose").click(function(){
-                disablePopup();
-            })
+            $("#artModal").find('div.modal-dialog').css('width','565px');
+            $("#artModalLabel").empty().html('Lead Assign');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").modal('show');
             /* Change Lead data */
-            $("select#lead_id").searchable();
+            $("select#lead_id").select2({
+                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
+                dropdownParent: $('#artModal')
+            });
             $("select#lead_id").change(function(){
                 change_leaddata();
             })
             $("a.savequest").click(function(){
                 update_queststatus();
             })
-            $("div#pop_content div.leads_addnew").click(function(){
+            $("div.updatequest_status").find("div.leads_addnew").unbind('click').click(function(){
                 create_leadquest();
             })
         } else {
@@ -209,25 +208,25 @@ function update_queststatus() {
     var dat=$("form#msgstatus").serializeArray();
     $.post(url, dat, function(response){
         if (response.errors=='') {
-            disablePopup();
-            $("div#newartproofs").empty().html(response.data.total_proof);
-            $("div#newonlinequotes").empty().html(response.data.total_quote);
-            $("div#newquestions").empty().html(response.data.total_quest);
-            if (response.data.sumquote=='') {
-                $("a#onlinequotelnk").removeClass('curmail');
-            } else {
-                $("a#onlinequotelnk").addClass('curmail');
-            }
-            if (response.data.sumproofs=='') {
-                $("a#onlineprooflnk").removeClass('curmail');
-            } else {
-                $("a#onlineprooflnk").addClass('curmail');
-            }
-            if (response.data.sumquest=='') {
-                $("a#questionslnk").removeClass('curmail');
-            } else {
-                $("a#questionslnk").addClass('curmail');
-            }
+            $("#artModal").modal('hide');
+            // $("div#newartproofs").empty().html(response.data.total_proof);
+            // $("div#newonlinequotes").empty().html(response.data.total_quote);
+            // $("div#newquestions").empty().html(response.data.total_quest);
+            // if (response.data.sumquote=='') {
+            //     $("a#onlinequotelnk").removeClass('curmail');
+            // } else {
+            //     $("a#onlinequotelnk").addClass('curmail');
+            // }
+            // if (response.data.sumproofs=='') {
+            //     $("a#onlineprooflnk").removeClass('curmail');
+            // } else {
+            //     $("a#onlineprooflnk").addClass('curmail');
+            // }
+            // if (response.data.sumquest=='') {
+            //     $("a#questionslnk").removeClass('curmail');
+            // } else {
+            //     $("a#questionslnk").addClass('curmail');
+            // }
             if (response.data.type=='Leads') {
                 initQuotesPagination();
             } else if (response.data.type=='Art_Submit') {
@@ -235,7 +234,6 @@ function update_queststatus() {
             } else {
                 initQuestionPagination();
             }
-            /*  */
         } else {
             show_error(response);
         }
@@ -282,7 +280,7 @@ function showquestdetails(question) {
     $.post(url, {'quest_id':question}, function(response){
         if (response.errors=='') {
             $("#pageModalLabel").empty().html('View Question');
-            $("#pageModal").find('div.modal-content').css('width','753px');
+            $("#pageModal").find('div.modal-dialog').css('width','753px');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal('show');
         } else {
@@ -304,30 +302,30 @@ function create_leadquest() {
     var mail_id=$("input#mail_id").val();
     var type='Question';
     var leademail_id=$("input#leademail_id").val();
+    var brand = $("#questionsviewbrand").val();
     var url="/leads/create_leadmessage";
     $.post(url, {'mail_id':mail_id, 'type':type,'leadmail_id':leademail_id}, function(response){
         if (response.errors=='') {
-            disablePopup();
-            $("div#newartproofs").empty().html(response.data.total_proof);
-            $("div#newonlinequotes").empty().html(response.data.total_quote);
-            $("div#newquestions").empty().html(response.data.total_quest);
-            if (response.data.sumquote=='') {
-                $("a#onlinequotelnk").removeClass('curmail');
-            } else {
-                $("a#onlinequotelnk").addClass('curmail');
-            }
-            if (response.data.sumproofs=='') {
-                $("a#onlineprooflnk").removeClass('curmail');
-            } else {
-                $("a#onlineprooflnk").addClass('curmail');
-            }
-            if (response.data.sumquest=='') {
-                $("a#questionslnk").removeClass('curmail');
-            } else {
-                $("a#questionslnk").addClass('curmail');
-            }
-            // Add Brand
-            show_new_lead(response.data.leadid,'question');
+            $("#artModal").modal('hide');
+            // $("div#newartproofs").empty().html(response.data.total_proof);
+            // $("div#newonlinequotes").empty().html(response.data.total_quote);
+            // $("div#newquestions").empty().html(response.data.total_quest);
+            //if (response.data.sumquote=='') {
+            //    $("a#onlinequotelnk").removeClass('curmail');
+            // } else {
+            //    $("a#onlinequotelnk").addClass('curmail');
+            // }
+            // if (response.data.sumproofs=='') {
+            //     $("a#onlineprooflnk").removeClass('curmail');
+            // } else {
+            //     $("a#onlineprooflnk").addClass('curmail');
+            // }
+            // if (response.data.sumquest=='') {
+            //     $("a#questionslnk").removeClass('curmail');
+            // } else {
+            //     $("a#questionslnk").addClass('curmail');
+            // }
+            show_new_lead(response.data.leadid,'question', brand);
         } else {
             show_error(response);
         }
