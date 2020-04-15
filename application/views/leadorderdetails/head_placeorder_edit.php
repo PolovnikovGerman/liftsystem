@@ -1,5 +1,5 @@
 <div class="block_1 text_style_2">
-    <div class="block_1_text">
+    <div class="block_1_text orderdatechange">
         <input type="text" readonly="readonly" class="calendarinpt" id="order_date" value="<?=date('D - M j, Y',$order_date)?>" data-order="<?=date('Y,m,d',$order_date)?>"/>
     </div>
 </div>

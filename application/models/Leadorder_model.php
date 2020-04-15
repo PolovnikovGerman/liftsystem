@@ -7060,12 +7060,10 @@ Class Leadorder_model extends My_Model {
     // Show Imprint Location
     public function get_leadorder_imprintloc($imprint_loc_id) {
         $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-        $this->_DB_GREY = $this->load->database('grey', TRUE);
-        $this->_DB_GREY->db_select();
-        $this->_DB_GREY->select('i.item_inprint_id, i.item_inprint_view');
-        $this->_DB_GREY->from('sb_item_inprints i');
-        $this->_DB_GREY->where('i.item_inprint_id', $imprint_loc_id);
-        $res=$this->_DB_GREY->get()->row_array();
+        $this->db->select('i.item_inprint_id, i.item_inprint_view');
+        $this->db->from('sb_item_inprints i');
+        $this->db->where('i.item_inprint_id', $imprint_loc_id);
+        $res=$this->db->get()->row_array();
         if (!isset($res['item_inprint_id'])) {
             $out['msg']='Image Not Found';
             return $out;
@@ -7106,7 +7104,6 @@ Class Leadorder_model extends My_Model {
         $out['result']=$this->success_result;
         $out['viewoptions']=$viewopt;
         return $out;
-
     }
 
     // Show Item Picture

@@ -12,8 +12,8 @@ function show_new_lead(lead_id,type, brand) {
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#pageModal')
+                dropdownParent: $('#pageModal'),
+                matcher: matchStart
             });
             init_leadpopupedit();
             // Save Button
@@ -46,8 +46,8 @@ function add_lead(brand) {
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#pageModal')
+                dropdownParent: $('#pageModal'),
+                matcher: matchStart
             });
             init_leadpopupedit();
         } else {
@@ -67,7 +67,7 @@ function edit_lead(lead_id) {
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
                 dropdownParent: $('#pageModal'),
-                minimumInputLength: 3
+                matcher: matchStart
             }).on("change", function(e){
                 var newid = $(this).val();
                 var url=mainurl+"/lead_itemchange"
@@ -103,7 +103,7 @@ function init_leadpopupedit() {
         autoclose: true,
         todayHighlight: true
     }).on('changeDate', function (e) {
-        $("#lead_needby").val(e.format(0,"dd/mm/yyyy"));
+        $("#lead_needby").val(e.format(0,"mm/dd/yyyy"));
     });
     /* Check box other */
     $("#other_task").unbind('change').change(function(){
@@ -366,8 +366,8 @@ function restore_leadform() {
                 $("#pageModal").modal('hide');
             });
             $("select#lead_item").select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#pageModal')
+                dropdownParent: $('#pageModal'),
+                matcher: matchStart
             });
             init_leadpopupedit();
         } else {

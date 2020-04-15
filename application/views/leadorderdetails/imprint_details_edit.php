@@ -137,7 +137,7 @@
                     <div class="numpp"><?=$numpp?></div>
                     <div class="locatname"><?=$row['item_inprint_location']?></div>
                     <div class="locatsize"><?=$row['item_inprint_size']?></div>
-                    <div class="locattempl active" href="/leadorder/viewimprintloc?id=<?=$row['item_inprint_id']?>">&nbsp;</div>
+                    <div class="locattempl active" data-content="/leadorder/viewimprintloc?id=<?=$row['item_inprint_id']?>">&nbsp;</div>
                 </div>
                 <?php $numpp++;?>
                 <?php } ?>

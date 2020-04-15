@@ -352,33 +352,31 @@ function init_onlineleadorder_edit() {
         todayHighlight: true
     });
     var order_date=$("input.calendarinpt").data('order');
-    
-    $("input.calendarinpt").datepicker({
-        // date: $(this).data('order'),
-        defaultDate:new Date(order_date),
-        onSelect: function(date) {
-            var params=new Array();
-            params.push({name: 'entity', value:'order'});
-            params.push({name: 'fldname', value: 'order_date'});
-            params.push({name: 'newval', value: date});
-            params.push({name: 'ordersession', value: $("input#ordersession").val()});
-            var url="/leadorder/change_leadorder_item";
-            $("#loader").show();
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    // $("input.calendarinpt").val(response.data.order_items);
-                    $("div.orderdatechange").empty().html(response.data.order_dateview);
-                    $("input#loctimeout").val(response.data.loctime);
-                    init_onlineleadorder_edit();
-                    $("#loader").hide();
-                } else {
-                    $("#loader").hide();
-                    show_error(response);
-                }
-            },'json');
-
-        }
-    })
+    $("#order_date").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e){
+        var newdate = e.format(0,"yyyy-mm-dd");
+        var params=new Array();
+        params.push({name: 'entity', value:'order'});
+        params.push({name: 'fldname', value: 'order_date'});
+        params.push({name: 'newval', value: newdate});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_item";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // $("input.calendarinpt").val(response.data.order_items);
+                $("div.orderdatechange").empty().html(response.data.order_dateview);
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
     // $("select.order_itemnumber_select").searchable();
     $("select.order_itemnumber_select").unbind('change').change(function(){
         var params=new Array();        
@@ -768,8 +766,8 @@ function show_leadorditemsearch() {
             }
             // $("select#orderitem_id").searchable();
             $('#orderitem_id').select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#artNextModal')
+                dropdownParent: $('#artNextModal'),
+                matcher: matchStart,
             });
             // $("select#orderitem_id").focus();
             $("select#orderitem_id").change(function(){
@@ -1755,23 +1753,27 @@ function init_imprint_details() {
         },'json');
     });
     // View Location
-    $("div.locattempl.active").hover(
-        function(){
-            $(".popover").hide();
-            $(".art_tooltip").hide();
-            var e=$(this);
-            $.get(e.attr('href'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'left',
-                    html: true
-                }).popover('show');
-            });
+    $("div.locattempl.active").qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('content') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
         },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light'
+    });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $("#artNextModal").modal('hide');

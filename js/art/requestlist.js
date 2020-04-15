@@ -271,8 +271,8 @@ function prooflead(mailid) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Activate close */
             $("select#lead_id").select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#artModal')
+                dropdownParent: $('#artModal'),
+                matcher: matchStart
             });
             /* Change Lead data */
             $("select#lead_id").change(function(){
@@ -346,7 +346,8 @@ function profedit_lead(lead_id) {
             $("#pageModal").find('div.modal-dialog').css('width','970px');
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("select#lead_item").select2({
-                dropdownParent: $('#pageModal')
+                dropdownParent: $('#pageModal'),
+                matcher: matchStart
             }).on("change", function(e){
                 var newid = $(this).val();
                 var url=mainurl+"/lead_itemchange"

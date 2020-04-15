@@ -151,8 +151,8 @@ function change_quotereplic(quote_id) {
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Activate close */
             $("select#lead_id").select2({
-                minimumInputLength: 2, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#pageModal')
+                dropdownParent: $('#pageModal'),
+                matcher: matchStart
             });
             /* Change Lead data */
             $("select#lead_id").change(function(){

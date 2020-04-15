@@ -167,8 +167,8 @@ function change_questreplic(quest_id) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Change Lead data */
             $("select#lead_id").select2({
-                minimumInputLength: 3, // only start searching when the user has input 3 or more characters
-                dropdownParent: $('#artModal')
+                dropdownParent: $('#artModal'),
+                matcher: matchStart
             });
             $("select#lead_id").change(function(){
                 change_leaddata();
