@@ -2,7 +2,6 @@
     <input type="hidden" id="crapptotals" value="<?=$totals?>"/>
     <input type="hidden" id="crappperpage" value="<?=$perpage?>"/>
     <input type="hidden" id="crappcurrentpage" value="0"/>
-    <div class="title">Credit Account List</div>
     <div class="filterdata">
         <div class="searchtemplatedata">
             <input class="creditapptemplate" placeholder="Search Customer, Phone, Email" />
