@@ -3237,7 +3237,7 @@ function init_orderbottom_content(edit_mode) {
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("form#tickededitform").find("input#order_num").prop('readonly','readonly');
                 // $("form#tickededitform").find("select#type").prop('disabled',true);
-                $("div#popupwin a.saveticketdat").unbind('click').click(function(){
+                $("a.saveticketdat").unbind('click').click(function(){
                     save_orderticket();
                 });
                 init_ticketupload();
@@ -4233,3 +4233,182 @@ function init_creditappapproveedit(creditapp) {
         },'json');
     });
 }
+/* Ticket */
+function init_ticketupload() {
+    $("input#ticket_date").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    $("select#type").change(function(){
+        change_custompart();
+    })
+    $("input#order_num").change(function(){
+        change_custompart();
+        // Update Customer
+        update_ticket_customer();
+    })
+    $("input#customer").change(function(){
+        change_custompart();
+    })
+    $("select#custom_issue_id").change(function(){
+        change_custompart();
+    })
+    $("textarea#custom_description").change(function(){
+        change_custompart();
+    })
+    $("textarea#custom_history").change(function(){
+        change_custompart();
+    })
+    $("input#cost").change(function(){
+        change_vendorpart();
+    })
+    $("select#vendor_id").change(function(){
+        if ($("select#vendor_id").val()=='-') {
+            $("select#vendor_id").val('-1');
+            $("input#other_vendor").prop('readonly',false);
+        } else if ($("select#vendor_id").val()=='-1') {
+            $("input#other_vendor").prop('readonly',false);
+        } else {
+            $("input#other_vendor").prop('readonly',true);
+        }
+        change_vendorpart();
+    })
+    $("select#vendor_issue_id").change(function(){
+        change_vendorpart();
+    })
+    $("textarea#vendor_description").change(function(){
+        change_vendorpart();
+    })
+    $("textarea#vendor_history").change(function(){
+        change_vendorpart();
+    })
+    /* Lock customer part */
+    var custlock=$("#custom_closed").prop('checked');
+    if (custlock==true) {
+        custom_lock();
+    }
+    $("#custom_closed").change(function(){
+        if ($("#custom_closed").prop('checked')==true) {
+            custom_lock();
+        } else {
+            custom_unlock();
+        }
+    })
+    $("#vendor_closed").change(function(){
+        if ($("#vendor_closed").prop('checked')==true) {
+            vendor_lock();
+        } else {
+            vendor_unlock();
+        }
+    })
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('file-tickuploader'),
+        action: '/artproofrequest/proofattach',
+        allowedExtensions: ['jpg', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx','JPG', 'JPEG', 'PDF', 'AI', 'EPS','DOC', 'DOCX'],
+        uploadButtonText: '',
+        action: '/utils/ticketattach',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                var url = "/tickets/saveattach";
+                var ticket_id = $("#ticket_id").val();
+                var session = $("#ticketattach").val();
+                $("ul.qq-upload-list").css('display', 'none');
+                $.post(url, {
+                    'filename': responseJSON.filename,
+                    'doc_name': fileName,
+                    'ticket_id': ticket_id,
+                    'session' : session,
+                }, function (response) {
+                    if (response.errors == '') {
+                        $("#ticketattachlists").empty().html(response.data.content);
+                        $("div.attachactions").click(function () {
+                            delete_attach(this);
+                        })
+                    } else {
+                        alert(response.errors);
+                        if (response.data.url !== undefined) {
+                            window.location.href = response.data.url;
+                        }
+                    }
+                }, 'json');
+            }
+        }
+    });
+}
+
+function change_custompart() {
+    var order_num=$("input#order_num").val();
+    var customer=$("input#customer").val();
+    var customer_issue=$("select#custom_issue_id").val();
+    var descrip=$("textarea#custom_description").val();
+    var histor=$("textarea#custom_history").val();
+    if (order_num=='' && customer=='' && customer_issue=='' && descrip=='' && histor=='') {
+        $("div.ticket_custom_part").removeClass('colored');
+    } else {
+        $("div.ticket_custom_part").addClass('colored');
+    }
+}
+
+function change_vendorpart() {
+    var cost=$("input#cost").val();
+    var vendor=$("select#vendor_id").val()
+    var vend_iss=$("select#vendor_issue_id").val();
+    var descr=$("textarea#vendor_description").val();
+    var histor=$("textarea#vendor_history").val();
+    if (cost=='' && vendor=='' && vend_iss=='' && descr=='' && histor=='') {
+        $("div.ticket_vendr_part").removeClass('colored');
+    } else {
+        $("div.ticket_vendr_part").addClass('colored');
+    }
+}
+
+function update_ticket_customer() {
+    var order_num=$("input#order_num").val();
+    var url="/tickets/ticket_ordercustomer";
+    $.post(url, {'order_num': order_num}, function(response){
+        if (response.errors=='') {
+            $("input#customer").val(response.data.customer);
+        }
+    },'json');
+}
+
+function vendor_unlock() {
+    $("input#cost").attr('readonly', false);
+    $("select#vendor_id").attr('readonly', false);
+    $("select#vendor_issue_id").attr('readonly', false);
+    $("textarea#vendor_description").attr('readonly', false);
+    $("textarea#vendor_history").attr('readonly', false);
+}
+
+function vendor_lock() {
+    $("input#cost").attr('readonly', true);
+    $("select#vendor_id").attr('readonly', true);
+    $("select#vendor_issue_id").attr('readonly', true);
+    $("textarea#vendor_description").attr('readonly', true);
+    $("textarea#vendor_history").attr('readonly', true);
+}
+
+function custom_unlock() {
+    $("input#order_num").attr('readonly', false);
+    $("input#customer").attr('readonly', false);
+    $("textarea#custom_description").attr('readonly', false);
+    $("textarea#custom_history").attr('readonly', false);
+    $("select#custom_issue_id").attr('readonly', false);
+}
+
+function custom_lock() {
+    $("input#order_num").attr('readonly', true);
+    $("input#customer").attr('readonly', true);
+    $("textarea#custom_description").attr('readonly', true);
+    $("textarea#custom_history").attr('readonly', true);
+    $("select#custom_issue_id").attr('readonly', true);
+}
+

@@ -25,6 +25,7 @@ class United_parcel_service
     private $ups_transit_url;
     private $ups_rate_url;
     private $ups_address_valid;
+    private $ups_track_url;
     private $_CI;
     private $_error_message;
 
@@ -39,6 +40,7 @@ class United_parcel_service
         $this->ups_rate_url=$this->_CI->config->item('ups_rate_url');
         $this->ups_transit_url=$this->_CI->config->item('ups_transit_url');
         $this->ups_address_valid=$this->_CI->config->item('ups_address_valid');
+        $this->ups_track_url = $this->_CI->config->item('ups_track_url');
         $this->_error_message='The zip code you entered is invalid.  Please enter a new one '.PHP_EOL.'or'.PHP_EOL.' call us at 1-800-790-6090 if you continue to experience problems.';
     }
 

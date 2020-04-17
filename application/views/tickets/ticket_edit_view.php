@@ -65,7 +65,7 @@
             <div class="ticket_attachments_dat"><?=$attachment?></div>
             <div class="saveticket">
                 <a class="saveticketdat" href="javascript:void(0);">
-                    <img src="/img/saveticket.png" alt="Save"/>
+                    <img src="/img/tickets/saveticket.png" alt="Save"/>
                 </a>
             </div>
         </div>

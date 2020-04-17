@@ -109,7 +109,7 @@ Class Tickets_model extends My_Model
     }
 
     function save_ticket($data,$user_id) {
-        $out=array('result'=>0,'msg'=>$this->INIT_ERRMSG);
+        $out=array('result'=>$this->error_result,'msg'=>$this->INIT_ERRMSG);
 
         $ticket_id=$data['ticket_id'];
         $type=($data['type']=='' ? NULL : $data['type']);
@@ -117,14 +117,14 @@ Class Tickets_model extends My_Model
         $customer=($data['customer']=='' ? NULL : $data['customer']);
         $custom_issue_id=($data['custom_issue_id']=='' ? NULL : $data['custom_issue_id']);
         $custom_description=($data['custom_description']=='' ? NULL : $data['custom_description']);
-        $custom_close=(isset($data['custom_close']) ? $data['custom_close'] : 0);
+        $custom_close=ifset($data, 'custom_closed',0);
         $custom_history=($data['custom_history']=='' ? NULL : $data['custom_history']);
         $cost=($data['cost']=='' ? NULL : $data['cost']);
         $vendor_id=($data['vendor_id']=='' ? NULL : $data['vendor_id']);
         $vendor_issue_id=($data['vendor_issue_id']=='' ? NULL : $data['vendor_issue_id']);
         $vendor_description=($data['vendor_description']=='' ? NULL : $data['vendor_description']);
-        $vendor_close=(isset($data['vendor_close']) ? $data['vendor_close'] : 0);
-        $vendor_history=($data['vendor_history']=='' ? NULL : $data['vendor_history']);
+        $vendor_close=ifset($data, 'vendor_closed',0);
+        $vendor_history=ifset($data, 'vendor_history', NULL);
         $other_vendor=($data['other_vendor']=='' ? NULL : $data['other_vendor']);
         $ticket_adjast=(isset($data['ticket_adjast']) ? $data['ticket_adjast'] : 0);
         $ticket_date=$data['ticket_date'];
@@ -195,16 +195,18 @@ Class Tickets_model extends My_Model
                 $this->db->insert('ts_tickets');
                 $result=$this->db->insert_id();
                 if ($result!=0) {
-                    $out['result']=$result;
+                    $out['result']=$this->success_result;
                     $out['msg']='';
+                    $out['ticket'] = $result;
                 } else {
                     $out['msg']='Add of ticket ended with error';
                 }
             } else {
                 $this->db->where('ticket_id',$ticket_id);
                 $this->db->update('ts_tickets');
-                $out['result']=1;
+                $out['result']=$this->success_result;
                 $out['msg']='';
+                $out['ticket'] = $ticket_id;
             }
         }
         return $out;
@@ -251,13 +253,13 @@ Class Tickets_model extends My_Model
         return $res;
     }
 
-//    function save_uploadattach($filename,$doc_name,$sess_id) {
-//        $this->db->set('doc_name',$doc_name);
-//        $this->db->set('doc_link',$filename);
-//        $this->db->set('session_id',$sess_id);
-//        $this->db->insert('ts_ticket_docs');
-//        return $this->db->insert_id();
-//    }
+    function save_uploadattach($filename,$doc_name,$sess_id) {
+        $this->db->set('doc_name',$doc_name);
+        $this->db->set('doc_link',$filename);
+        $this->db->set('session_id',$sess_id);
+        $this->db->insert('ts_ticket_docs');
+        return $this->db->insert_id();
+    }
 
     function save_attach($ticket_id,$sess_id) {
         /* Delete files which was marked as deleted */
@@ -276,6 +278,10 @@ Class Tickets_model extends My_Model
             $this->db->delete('ts_ticket_docs');
         }
         /* Update uploaded docs */
+        $pathdest=$this->config->item('upload_path_preload');
+        $pathtarg=$this->config->item('ticketattach');
+        $pathsh = $this->config->item('ticketattach_path');
+        createPath($pathsh);
         $this->db->select('*');
         $this->db->from('ts_ticket_docs');
         $this->db->where('session_id',$sess_id);
@@ -283,8 +289,6 @@ Class Tickets_model extends My_Model
         $result=$this->db->get()->result_array();
         foreach ($result as $row) {
             /* Move file to ticket attachment folder */
-            $pathdest=$this->config->item('upload_path_preload');
-            $pathtarg=$this->config->item('ticketattach');
             $fileTarget=str_replace($pathdest, $pathtarg, $row['doc_link']);
             /* Move file to new destinition */
             $res1 = copy($row['doc_link'],  $fileTarget);

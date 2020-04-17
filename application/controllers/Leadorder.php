@@ -2971,10 +2971,12 @@ class Leadorder extends MY_Controller
                 } else {
                     $ticket=$res['ticket'];
                     $attachment_list=$res['ticket_attach'];
+                    $session_id = 'attach'.uniq_link(10);
+                    usersession('ticketattach',$session_id);
                     $options=array(
                         'ticket_id'=>$ticket['ticket_id'],
                         'list'=>$attachment_list,
-                        'cnt'=>count($attachment_list)
+                        'cnt'=>count($attachment_list),
                     );
                     $attachlist=$this->load->view('tickets/ticket_attachlist_view',$options,TRUE);
                     $ticket['attachment']=$this->load->view('tickets/ticket_attach_view',array('attach_list'=>$attachlist),TRUE);
@@ -3017,15 +3019,11 @@ class Leadorder extends MY_Controller
                 $this->load->model('tickets_model');
 
                 $res=$this->tickets_model->save_ticket($tickdata,$user_id);
-                if (!$res['result']) {
-                    $error=$res['msg'];
-                } else {
-                    if ($tickdata['ticket_id']==0) {
-                        $ticket_id=$res['result'];
-                    } else {
-                        $ticket_id=$tickdata['ticket_id'];
-                    }
-                    $sess_id=$this->session->userdata('session_id');
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $ticket_id=$res['ticket'];
+                    $sess_id=usersession('ticketattach');
                     $this->tickets_model->save_attach($ticket_id,$sess_id);
                     // Get data about open tickets   
                     $res=$this->leadorder_model->get_opentickets_data($leadorder, $ordersession);

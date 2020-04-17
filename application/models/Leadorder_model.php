@@ -2851,7 +2851,7 @@ Class Leadorder_model extends My_Model {
                 $ticket_id=$res['ticket_id'];
                 $ticket=$this->tickets_model->get_ticket_data($ticket_id);
                 /* Get attachment */
-                $sess_id=$this->session->userdata('session_id');
+                // $sess_id='';
                 /* Change is_delete */
                 $this->tickets_model->attach_init($ticket_id);
                 if ($ticket['other_vendor']) {
@@ -2859,7 +2859,7 @@ Class Leadorder_model extends My_Model {
                 }
                 $ticket['custom_class']=$custom_class;
                 $ticket['vendor_class']=$vendor_class;
-                $attachment_list=$this->tickets_model->get_attachments($ticket_id,$sess_id);
+                $attachment_list=$this->tickets_model->get_attachments($ticket_id, 'unkn');
                 if (!empty($ticket['custom_issue_id'])) {
                     $ticket['custom_class']='colored';
                 }

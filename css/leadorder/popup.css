@@ -4285,7 +4285,7 @@ textarea.reviewnotes {
     width: 938px;
     height: 398px;
     /* background-color: #ffdeaf; */
-    background: url("/img/ticketedit_bg.png");
+    background: url("/img/tickets/ticketedit_bg.png");
 }
 .ticket_title {
     clear: both;
@@ -4320,6 +4320,7 @@ textarea.reviewnotes {
     float: left;
     height: 371px;
     width: 421px;
+    margin-left: 2px;
 }
 .ticket_custom_part.colored {
     background-color: #F6FF00;
@@ -4416,10 +4417,12 @@ textarea.description {
 }
 .closed_value {
     float: right;
-    margin-right: 5px;
+    /* margin-right: 5px; */
+    margin-left: 10px;
     margin-top: -2px;
     width: 17px;
     height: 17px;
+
 }
 .ticket_ticket_adjast {
     clear: both;
@@ -4471,6 +4474,8 @@ textarea.historydat {
     font-size: 13px;
     margin-bottom: 10px;
     width: 131px;
+    margin-top: 22px;
+    text-align: center;
 }
 
 .ticketattachactions {
@@ -4598,7 +4603,7 @@ input.ticketsearch_input {
     width: 200px;
 }
 a.find_it {
-    background: url("/img/search_button_bg.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/tickets/search_button_bg.png") no-repeat scroll 0 0 transparent;
     color: #000000;
     float: left;
     font-size: 14px;

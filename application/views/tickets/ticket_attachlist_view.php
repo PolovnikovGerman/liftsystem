@@ -7,10 +7,10 @@
     </div>
     <?php foreach($list as $row) {?>    
         <div class="ticketattach_row">
-            <div class="ticketattachactions" id="delatt<?=$row['ticket_doc_id']?>">
-                <img src="/img/cancel.png"/>
+            <div class="ticketattachactions" data-ticketdoc="<?=$row['ticket_doc_id']?>">
+                <img src="/img/icons/cancel.png"/>
             </div>        
-            <div class="ticketattachdocname">
+            <div class="ticketattachdocname truncateoverflowtext">
                 <a href="<?=$row['doc_link']?>" target="_blank"><?=$row['doc_name']?></a>        
             </div>
         </div>
