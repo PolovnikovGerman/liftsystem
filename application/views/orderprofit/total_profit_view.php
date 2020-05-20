@@ -5,6 +5,7 @@
         <div class="qty"><?= $qty ?></div>
         <div class="itemcolors">&nbsp;</div>
         <div class="revenue" title="<?= $revenue ?>"><?= $show_revenue ?></div>
+        <div class="balance" title="<?= $balance ?>"><?= $show_balance ?></div>
         <div class="shipping" title="<?= $shipping ?>"><?= $show_shipping ?></div>
         <div class="shipdate">&nbsp;</div>
         <div class="tax" title="<?= $tax ?>"><?= $show_tax ?></div>

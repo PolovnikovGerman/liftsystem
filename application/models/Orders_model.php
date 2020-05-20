@@ -2122,11 +2122,18 @@ Class Orders_model extends MY_Model
     }
 
     public function orders_profit_tolals($filtr) {
+        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $balancesql = $this->db->get_compiled_select();
+
         $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
             sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
-            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit, sum(p.batchsum) as batchsum",FALSE);
         $this->db->from("ts_orders o");
         $this->db->where('o.is_canceled',0);
+        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
                 $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -2187,6 +2194,7 @@ Class Orders_model extends MY_Model
             'numorders'=>intval($totalres['numorders']),
             'qty'=>intval($totalres['qty']),
             'revenue'=>floatval($totalres['revenue']),
+            'balance' => floatval($totalres['revenue']) - floatval($totalres['batchsum']),
             'shipping'=>floatval($totalres['shipping']),
             'tax'=>floatval($totalres['tax']),
             'cog'=>floatval($totalres['order_cog']),
@@ -2222,6 +2230,18 @@ Class Orders_model extends MY_Model
                 $sum_array['qty_detail_repeatperc']=round($sum_array['qty_repeat']/$sum_array['qty']*100,0);
                 $sum_array['qty_detail_blankperc']=round($sum_array['qty_blank']/$sum_array['qty']*100,0);
             }
+            // Balance
+            $sum_array['balance_new']=$sum_array['balance_detail_new']=floatval($totals_new['balance']);
+            $sum_array['balance_repeat']=$sum_array['balance_detail_repeat']=floatval($totals_repeat['balance']);
+            $sum_array['balance_blank']=$sum_array['balance_detail_blank']=floatval($totals_blank['balance']);
+            // Percent Revenue
+            $sum_array['balance_detail_newproc']=$sum_array['balance_detail_repeatproc']=$sum_array['balance_detail_blankproc']='';
+            if ($sum_array['balance']!=0) {
+                $sum_array['balance_detail_newproc']=round($sum_array['balance_new']/$sum_array['balance']*100,0);
+                $sum_array['balance_detail_repeatproc']=round($sum_array['balance_repeat']/$sum_array['balance']*100,0);
+                $sum_array['balance_detail_blankproc']=round($sum_array['balance_blank']/$sum_array['balance']*100,0);
+            }
+            // Revenue
             $sum_array['revenue_new']=$sum_array['revenue_detail_new']=floatval($totals_new['revenue']);
             $sum_array['revenue_repeat']=$sum_array['revenue_detail_repeat']=floatval($totals_repeat['revenue']);
             $sum_array['revenue_blank']=$sum_array['revenue_detail_blank']=floatval($totals_blank['revenue']);
@@ -2288,6 +2308,8 @@ Class Orders_model extends MY_Model
             $sum_array['profit_class']=profitClass($profit_perc);
         }
         $sum_array['show_revenue']=($sum_array['revenue']==0 ? '-' : '$'.short_number($sum_array['revenue'],2));
+        $sum_array['show_balance']=($sum_array['balance']==0 ? '-' : ($sum_array['balance']<0 ? '$'.short_number($sum_array['balance']) : '-$'.short_number(abs($sum_array['balance']))));
+        $sum_array['balance']=($sum_array['balance']==0 ? '-' : MoneyOutput($sum_array['balance'],0));
         $sum_array['revenue']=($sum_array['revenue']==0 ? '-' : MoneyOutput($sum_array['revenue'],0));
         $sum_array['show_shipping']=($sum_array['shipping']==0 ? '-' : '$'.short_number($sum_array['shipping'],2));
         $sum_array['shipping']=($sum_array['shipping']==0 ? '-' : MoneyOutput($sum_array['shipping'],0));
@@ -2303,10 +2325,17 @@ Class Orders_model extends MY_Model
     }
 
     private function _profit_totals($filtr, $addtype) {
+        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $balancesql = $this->db->get_compiled_select();
+
         $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
             sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
-            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit, sum(p.batchsum) as batchsum",FALSE);
         $this->db->from("ts_orders o");
+        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.is_canceled',0);
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
@@ -2366,6 +2395,7 @@ Class Orders_model extends MY_Model
             }
         }
         $totalres=$this->db->get()->row_array();
+        $totalres['balance'] = floatval($totalres['revenue']) - floatval($totalres['batchsum']);
         return $totalres;
     }
 
@@ -2373,14 +2403,22 @@ Class Orders_model extends MY_Model
         $this->load->model('user_model');
         $usrdat=$this->user_model->get_user_data($user_id);
         $item_dbtable='sb_items';
+        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $balancesql = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand, o.order_num, o.customer_name, o.customer_email, o.revenue,
             o.shipping,o.is_shipping, o.tax, o.cc_fee, o.order_cog, o.profit, o.profit_perc, o.is_canceled,
             o.reason, itm.item_name, o.item_id, o.order_items, finance_order_amountsum(o.order_id) as cnt_amnt',FALSE);
         $this->db->select('o.order_blank, o.arttype');
         $this->db->select('o.order_qty, o.shipdate, o.order_confirmation');
+        $this->db->select('p.batchcnt, p.batchsum');
         $this->db->from('ts_orders o');
         // $this->db->join('brands b','b.brand_id=o.brand_id','left');
         $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
+        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id', 'left');
         if ($admin_mode==0) {
             $this->db->where('o.is_canceled',0);
         }
@@ -2469,6 +2507,22 @@ Class Orders_model extends MY_Model
             }
 
             $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
+            $balance = $row['revenue'];
+            if ($row['batchcnt']>0) {
+                $balance = $row['revenue'] - $row['batchsum'];
+            }
+            if ($balance == 0) {
+                $balance_view = 'PAID';
+                $balance_class = 'balancepaid';
+            } elseif ($balance > 0) {
+                $balance_view = MoneyOutput($balance);
+                $balance_class = 'balancepositive';
+            } elseif ($balance < 0 ) {
+                $balance_view = MoneyOutput(abs($balance));
+                $balance_class = 'balancenegative';
+            }
+            $row['balance'] = $balance_view;
+            $row['balance_class'] = $balance_class;
             $row['revenue']=(intval($row['revenue'])==0 ? '-' : MoneyOutput($row['revenue'],2));
             $row['shipping']=(intval($row['shipping'])==0 ? '-' : MoneyOutput($row['shipping'],2));
             $row['tax']=(intval($row['tax'])==0 ? '-' : MoneyOutput($row['tax'],2));

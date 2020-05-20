@@ -7,6 +7,7 @@
         <div class="orders-blank"><?= $data['numorders_blank'] ?> (<?=$data['numorders_detail_blankperc']?>%)</div>
         <div class="qty profitotaltooltip"  data-viewsrc="<?=$qty_tooltip?>"><?= $data['qty'] ?></div>
         <div class="revenue profitotaltooltip"  data-viewsrc="<?=$revenue_tooltip?>" ><?= $data['show_revenue'] ?></div>
+        <div class="balance profitotaltooltip"  data-viewsrc="<?=$balance_tooltip?>" ><?= $data['show_balance'] ?></div>
         <div class="shipping profitotaltooltip" data-viewsrc="<?=$shipping_tooltip?>" ><?= $data['show_shipping'] ?></div>
         <div class="tax profitotaltooltip" data-viewsrc="<?=$tax_tooltip?>"><?= $data['show_tax'] ?></div>
         <div class="cog profitotaltooltip" data-viewsrc="<?=$cog_tooltip?>"><?= $data['show_cog'] ?></div>

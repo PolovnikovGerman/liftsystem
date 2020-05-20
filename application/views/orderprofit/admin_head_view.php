@@ -101,12 +101,13 @@
         <div class="profitorder_date">Date</div>
         <div class="profitorder_action">&nbsp;</div>
         <div class="profitorder_numorder activesortdesc">Order #</div>
-        <div class="profitorder_confirm">Conf #</div>
+        <!-- <div class="profitorder_confirm">Conf #</div> -->
         <div class="profitorder_customer">Customer</div>
         <div class="profitorder_qty">QTY</div>
         <div class="profitorder_item">Item</div>
         <div class="profitorder_color">Color</div>
         <div class="profitorder_revenue">Revenue</div>
+        <div class="profitorder_balance">Balance</div>
         <div class="profitorder_shipping">Shipping</div>
         <div class="profitorder_shipdate">Date</div>
         <div class="profitorder_tax">Tax</div>

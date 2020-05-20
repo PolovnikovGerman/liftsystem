@@ -290,6 +290,19 @@ class Accounting extends MY_Controller
                     'blank_perc'=> $totalord['revenue_detail_blankproc'],
                 ];
                 $revenue_tooltip = $this->load->view('orderprofit/total_tooltip_view', $revenue_tool_options, TRUE);
+                // Balance
+                $balance_tool_options = [
+                    'title' => 'Balance',
+                    'type' => 'money',
+                    'new_val' => $totalord['balance_detail_new'],
+                    'repeat_val' => $totalord['balance_detail_repeat'],
+                    'blank_val' => $totalord['balance_detail_blank'],
+                    'new_perc' => $totalord['balance_detail_newproc'],
+                    'repeat_perc' => $totalord['balance_detail_repeatproc'],
+                    'blank_perc'=> $totalord['balance_detail_blankproc'],
+                ];
+                $balance_tooltip = $this->load->view('orderprofit/total_tooltip_view', $balance_tool_options, TRUE);
+
                 $shipping_tool_options = [
                     'title' => 'Shipping',
                     'type' => 'money',
@@ -343,6 +356,7 @@ class Accounting extends MY_Controller
                     'tax_tooltip' => $tax_tooltip,
                     'cog_tooltip' => $cog_tooltip,
                     'profit_tooltip' => $profi_tooltip,
+                    'balance_tooltip' => $balance_tooltip,
                 ];
                 $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
                 $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',[],TRUE);

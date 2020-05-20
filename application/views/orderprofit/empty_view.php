@@ -1,1 +1,1 @@
-<div class="tr grey"><div class="proof_emptydiv">No records</div></div>
+<div class="tr greydatarow"><div class="proof_emptydiv">No records</div></div>

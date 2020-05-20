@@ -138,7 +138,7 @@ select.profitorder-filtrer {
 }
 .totalallrow-title {
     float: right!important;
-    width: 802px;
+    width: 832px;
 }
 .totalallrow-title div {
     height: 18px;
@@ -160,13 +160,16 @@ select.profitorder-filtrer {
 }
 .totalallrow-title .qty {
     width: 77px;
-    margin-right: 28px;
+    /* margin-right: 28px; */
 }
 .totalallrow-title .itemcolors {
     width: 209px;
 }
 .totalallrow-title .revenue {
     width: 68px;
+}
+.totalallrow-title .balance {
+    width: 70px;
 }
 .totalallrow-title .shipping {
     width: 61px;
@@ -185,7 +188,7 @@ select.profitorder-filtrer {
 }
 /* All Totals */
 .orders-profitalltotal-row {
-    width: 913px;
+    width: 941px; /* 913px; */
 }
 .orders-profitalltotal-row .profitorder_total {
     margin-left: 0;
@@ -203,7 +206,7 @@ select.profitorder-filtrer {
     font-size: 13px;
     height: 24px;
     border: 1px solid #a4a4a4;
-    width: 800px;
+    width: 832px;
     float: right;
 }
 .orders-profitalltotal-row .profitorder_totaldata div {
@@ -227,13 +230,17 @@ select.profitorder-filtrer {
 }
 .orders-profitalltotal-row .profitorder_totaldata .qty {
     width: 77px;
-    margin-right: 28px;
+    /* margin-right: 28px; */
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .itemcolors {
     width: 195px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .revenue {
+    width: 70px;
+    cursor: pointer;
+}
+.orders-profitalltotal-row .profitorder_totaldata .balance {
     width: 70px;
     cursor: pointer;
 }
@@ -304,6 +311,9 @@ select.profitorder-filtrer {
 }
 .orders-table-title > .profitorder_revenue {
     width: 70px;
+}
+.orders-table-title > .profitorder_balance {
+    width: 60px;
 }
 .orders-table-title > .profitorder_shipping {
     width: 71px;
@@ -429,6 +439,25 @@ select.profitorder-filtrer {
     border-right: 1px solid #000000;
     float: left;
     width: 70px;
+}
+.profitorder_balance_data {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 60px;
+}
+.profitorder_balance_data.balancepaid {
+    font-weight: bold;
+    color: #000000;
+}
+.profitorder_balance_data.balancepositive {
+    font-weight: bold;
+    color: #FFFFFF!important;
+    background: #0000ff;
+}
+.profitorder_balance_data.balancenegative {
+    font-weight: bold;
+    color: #FF0000!important;
+    background: #000000;
 }
 .profitorder_shipping_calc {
     /* border-right: 1px solid #000000; */
