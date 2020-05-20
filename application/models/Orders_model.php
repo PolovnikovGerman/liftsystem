@@ -2606,10 +2606,10 @@ Class Orders_model extends MY_Model
 
     public function get_profitexport_fields() {
         $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
-            'field_order_items', 'field_revenue','field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
+            'field_order_items', 'field_revenue', 'field_balance', 'field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
             'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new'];
         $labels=['Date', 'Order#', 'Canceled', 'Customer', 'QTY', 'Colors', 'Item #',
-            'Item Name', 'Revenue','Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
+            'Item Name', 'Revenue', 'Balance', 'Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
             'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat'];
         $data=[];
         $idx=0;
@@ -2674,11 +2674,11 @@ Class Orders_model extends MY_Model
 
             $select_flds=[];
             foreach ($fields as $row) {
-                if (!in_array($row,['colors','vendor_dates', 'vendor_name', 'vendor_cog','rush_days','shipping_state','order_new'])) {
+                if (!in_array($row,['colors','vendor_dates', 'vendor_name', 'vendor_cog','rush_days','shipping_state','order_new','balance'])) {
                     array_push($select_flds, $row);
                 }
             }
-            $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype');
+            $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue');
             foreach ($select_flds as $select_fld) {
                 $this->db->select("o.{$select_fld}");
             }
@@ -2853,6 +2853,18 @@ Class Orders_model extends MY_Model
                         $row['order_new']=ucfirst($row['arttype']);
                     }
                 }
+                if (in_array('balance', $fields)) {
+                    $this->db->select('count(batch_id) batchcnt, sum(batch_amount) batchsum');
+                    $this->db->from('ts_order_batches');
+                    $this->db->where('order_id', $row['order_id']);
+                    $this->db->where('batch_term',0);
+                    $balanceres = $this->db->get()->row_array();
+                    $balance = $row['revenue'];
+                    if ($balanceres['batchcnt']>0) {
+                        $balance = $row['revenue'] - $balanceres['batchsum'];
+                    }
+                    $row['balance']=$balance;
+                }
                 $datarow=[];
                 foreach ($fields as $frow) {
                     $datarow[$frow]=$row[$frow];
@@ -2900,6 +2912,8 @@ Class Orders_model extends MY_Model
                 array_push($labels,'Item Name');
             } elseif ($frow=='revenue') {
                 array_push($labels,'Revenue');
+            } elseif ($frow=='balance') {
+                array_push($labels,'Balance');
             } elseif ($frow=='shipping') {
                 array_push($labels,'Shipping');
             } elseif ($frow=='tax') {
