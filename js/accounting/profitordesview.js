@@ -16,37 +16,37 @@ function init_profit_orders() {
         }
     });
 
-    $("#find_profit").click(function(){
+    $("#find_profit").unbind('click').click(function(){
         search_profit_data();
     });
 
-    $("#clear_profit").click(function(){
+    $("#clear_profit").unbind('click').click(function(){
         clear_profit_search();
     });
 
-    $(".profitorder_date").click(function(){
+    $(".profitorder_date").unbind('click').click(function(){
         change_profit_sort('o.order_date','profitorder_date');
     })
-    $(".profitorder_brand").click(function(){
+    $(".profitorder_brand").unbind('click').click(function(){
         change_profit_sort('b.brand_name','profitorder_brand');
     })
-    $(".profitorder_numorder").click(function(){
+    $(".profitorder_numorder").unbind('click').click(function(){
         change_profit_sort('o.order_num','profitorder_numorder');
     })
-    $(".profitorder_customer").click(function(){
+    $(".profitorder_customer").unbind('click').click(function(){
         change_profit_sort('o.customer_name','profitorder_customer');
     })
-    $(".profitorder_revenue").click(function(){
+    $(".profitorder_revenue").unbind('click').click(function(){
         change_profit_sort('o.revenue','profitorder_revenue');
     })
     /* */
-    $(".profitorder_profit").click(function(){
+    $(".profitorder_profit").unbind('click').click(function(){
         change_profit_sort('o.profit','profitorder_profit');
     })
-    $(".profitorder_profitperc").click(function(){
+    $(".profitorder_profitperc").unbind('click').click(function(){
         change_profit_sort('o.profit_perc','profitorder_profitperc');
     })
-    $("select#order_filtr").change(function(){
+    $("select#order_filtr").unbind('change').change(function(){
         search_profit_data();
     })
     $("select#perpage_profitorders").unbind('change').change(function(){
@@ -191,7 +191,15 @@ function search_profit_data() {
                     at: 'middle left',
                 },
                 style: {
-                    classes: 'curpoints_tooltip'
+                    classes: 'qtip-dark curpoints_tooltip'
+                },
+                show: {
+                    effect: function() { $(this).fadeIn(250); }
+                },
+                hide: {
+                    delay: 200,
+                    fixed: true, // <--- add this
+                    effect: function() { $(this).fadeOut(250); }
                 },
             });
             initProfitOrderPagination();
@@ -286,7 +294,7 @@ function init_profitorder_manage() {
             at: 'center left',
         },
         style: {
-            classes: 'lowprofit_tooltip'
+            classes: 'qtip-dark lowprofit_tooltip'
         }
     });
     $("div.profitorder_shipping_calc").find('i').unbind('click').click(function(){
@@ -314,7 +322,7 @@ function init_profitorder_manage() {
             at: 'middle left',
         },
         style: {
-            classes : 'lowprofit_tooltip',
+            classes : 'qtip-dark lowprofit_tooltip',
         }
     });
 }

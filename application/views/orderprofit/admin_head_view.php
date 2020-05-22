@@ -8,6 +8,7 @@
         <div>
             <select id="order_filtr" class="profitorder-filtrer">
                 <option value="0">Display All</option>
+                <option value="9">Orders with Balances Only</option>
                 <option value="1">Display Projected Only</option>
                 <option value="2">Green Profit Only</option>
                 <option value="3">White Profit Only</option>

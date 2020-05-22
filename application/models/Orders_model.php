@@ -42,6 +42,14 @@ Class Orders_model extends MY_Model
 
     public function get_count_orders($filtr=array()) {
         $this->db->select('count(o.order_id) as cnt',FALSE);
+        $this->db->from('ts_orders o');
+        if (isset($filtr['filter']) && $filtr['filter']==9) {
+            $paidsql = 'select order_id, sum(batch_amount) as batch_amount from ts_order_batches where batch_term=0 group by order_id';
+            $this->db->join('('.$paidsql.') p','p.order_id=o.order_id','left');
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('coalesce(o.revenue,0) != coalesce(p.batch_amount,0) ');
+            $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
+        }
         if (isset($filtr['artfilter'])) {
             $this->db->join('v_order_statuses vo','vo.order_id=o.order_id and vo.status_type="O"','left');
         }
@@ -57,7 +65,6 @@ Class Orders_model extends MY_Model
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
             $this->db->where('o.brand', $filtr['brand']);
         }
-        $this->db->from('ts_orders o');
         if (isset($filtr['filter']) && $filtr['filter']==7) {
             $this->db->where('o.is_canceled',1);
         } else {
@@ -2130,10 +2137,13 @@ Class Orders_model extends MY_Model
 
         $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
             sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
-            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit, sum(p.batchsum) as batchsum",FALSE);
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
         $this->db->from("ts_orders o");
-        $this->db->where('o.is_canceled',0);
-        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
+        $type_filter = intval(ifset($filtr,'filter',0));
+        if ($type_filter!==7) {
+            $this->db->where('o.is_canceled',0);
+        }
+        // $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
                 $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -2152,25 +2162,29 @@ Class Orders_model extends MY_Model
                 // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($filtr['search']));
                 $this->db->like("concat(ucase(customer_name),' ',ucase(customer_email),' ',order_num,' ', coalesce(order_confirmation,''), ' ', ucase(order_items), ucase(order_itemnumber), revenue ) ",strtoupper($filtr['search']));
             }
-            if (isset($filtr['filter'])) {
-                if ($filtr['filter']==1) {
-                    $this->db->where('o.order_cog is null');
-                } elseif ($filtr['filter']==2) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=40');
-                } elseif ($filtr['filter']==3) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=30 and round(o.profit_perc,0)<40');
-                } elseif ($filtr['filter']==4) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=20 and round(o.profit_perc,0)<30');
-                } elseif ($filtr['filter']==5) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=10 and round(o.profit_perc,0)<20');
-                } elseif ($filtr['filter']==6) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)<=0');
-                } elseif ($filtr['filter']==7) {
-                    $this->db->where('o.is_canceled',1);
-                } elseif ($filtr['filter']==8) {
-                    $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>0 and round(o.profit_perc,0)<10');
-                }
+
+            if ($type_filter == 1) {
+                $this->db->where('o.order_cog is null');
+            } elseif ($type_filter == 2) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=40');
+            } elseif ($type_filter == 3) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=30 and round(o.profit_perc,0)<40');
+            } elseif ($type_filter == 4) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=20 and round(o.profit_perc,0)<30');
+            } elseif ($type_filter == 5) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=10 and round(o.profit_perc,0)<20');
+            } elseif ($type_filter == 6) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)<=0');
+            } elseif ($type_filter == 7) {
+                $this->db->where('o.is_canceled', 1);
+            } elseif ($type_filter == 8) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>0 and round(o.profit_perc,0)<10');
+            } elseif ($type_filter == 9) {
+                $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
+                $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
+                $this->db->where('coalesce(o.revenue,0) != coalesce(p.batchsum,0) ');
             }
+
             // Dates
             if (isset($filtr['date_bgn'])) {
                 $this->db->where('o.order_date >= ', $filtr['date_bgn']);
@@ -2190,11 +2204,12 @@ Class Orders_model extends MY_Model
             }
         }
         $totalres=$this->db->get()->row_array();
+        $balance = $this->count_totalbalance($filtr);
         $sum_array=array(
             'numorders'=>intval($totalres['numorders']),
             'qty'=>intval($totalres['qty']),
             'revenue'=>floatval($totalres['revenue']),
-            'balance' => floatval($totalres['revenue']) - floatval($totalres['batchsum']),
+            'balance' => $balance,
             'shipping'=>floatval($totalres['shipping']),
             'tax'=>floatval($totalres['tax']),
             'cog'=>floatval($totalres['order_cog']),
@@ -2308,7 +2323,7 @@ Class Orders_model extends MY_Model
             $sum_array['profit_class']=profitClass($profit_perc);
         }
         $sum_array['show_revenue']=($sum_array['revenue']==0 ? '-' : '$'.short_number($sum_array['revenue'],2));
-        $sum_array['show_balance']=($sum_array['balance']==0 ? '-' : ($sum_array['balance']<0 ? '$'.short_number($sum_array['balance']) : '-$'.short_number(abs($sum_array['balance']))));
+        $sum_array['show_balance']=($sum_array['balance']==0 ? '-' : ($sum_array['balance']<0 ? '-$'.short_number(abs($sum_array['balance'])) : '$'.short_number($sum_array['balance'])));
         $sum_array['balance']=($sum_array['balance']==0 ? '-' : MoneyOutput($sum_array['balance'],0));
         $sum_array['revenue']=($sum_array['revenue']==0 ? '-' : MoneyOutput($sum_array['revenue'],0));
         $sum_array['show_shipping']=($sum_array['shipping']==0 ? '-' : '$'.short_number($sum_array['shipping'],2));
@@ -2325,18 +2340,23 @@ Class Orders_model extends MY_Model
     }
 
     private function _profit_totals($filtr, $addtype) {
-        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
-        $this->db->from('ts_order_batches');
-        $this->db->where('batch_term',0);
-        $this->db->group_by('order_id');
-        $balancesql = $this->db->get_compiled_select();
-
         $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
             sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
-            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit, sum(p.batchsum) as batchsum",FALSE);
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
         $this->db->from("ts_orders o");
-        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
-        $this->db->where('o.is_canceled',0);
+        if (isset($filtr['filter']) && $filtr['filter']!=7) {
+            $this->db->where('o.is_canceled',0);
+        }
+        if (isset($filtr['filter']) && $filtr['filter']==9) {
+            $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
+            $this->db->from('ts_order_batches');
+            $this->db->where('batch_term',0);
+            $this->db->group_by('order_id');
+            $paidsql = $this->db->get_compiled_select();
+            $this->db->join('('.$paidsql.') p','p.order_id=o.order_id','left');
+            $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
+            $this->db->where('coalesce(o.revenue,0) != coalesce(p.batch_amount,0) ');
+        }
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
                 $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -2390,12 +2410,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $addtype);
             }
-            if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-                $this->db->where('o.brand', $filtr['brand']);
-            }
         }
         $totalres=$this->db->get()->row_array();
-        $totalres['balance'] = floatval($totalres['revenue']) - floatval($totalres['batchsum']);
+        $totalres['balance'] = $this->count_totalbalance($filtr, $addtype);
         return $totalres;
     }
 
@@ -2414,7 +2431,7 @@ Class Orders_model extends MY_Model
             o.reason, itm.item_name, o.item_id, o.order_items, finance_order_amountsum(o.order_id) as cnt_amnt',FALSE);
         $this->db->select('o.order_blank, o.arttype');
         $this->db->select('o.order_qty, o.shipdate, o.order_confirmation');
-        $this->db->select('p.batchcnt, p.batchsum');
+        $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
         $this->db->from('ts_orders o');
         // $this->db->join('brands b','b.brand_id=o.brand_id','left');
         $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
@@ -2451,6 +2468,11 @@ Class Orders_model extends MY_Model
             }
             if (isset($filtr['filter']) && $filtr['filter']==7) {
                 $this->db->where('is_canceled',1);
+            }
+            if (isset($filtr['filter']) && $filtr['filter']==9) {
+                $this->db->having('balance != ',0);
+                $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
+                $this->db->where('o.is_canceled',0);
             }
             if (isset($filtr['start_date'])) {
                 $this->db->where('o.order_date >= ', $filtr['start_date']);
@@ -2505,24 +2527,28 @@ Class Orders_model extends MY_Model
             } else {
                 $row['cancellnk']='<a class="cancord" data-order="'.$row['order_id'].'" href="javascript:void(0);"><img src="/img/accounting/cancel_order.png"/></a>';
             }
-
-            $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
-            $balance = $row['revenue'];
-            if ($row['batchcnt']>0) {
-                $balance = $row['revenue'] - $row['batchsum'];
-            }
-            if ($balance == 0) {
-                $balance_view = 'PAID';
-                $balance_class = 'balancepaid';
-            } elseif ($balance > 0) {
-                $balance_view = MoneyOutput($balance);
-                $balance_class = 'balancepositive';
-            } elseif ($balance < 0 ) {
-                $balance_view = MoneyOutput(abs($balance));
-                $balance_class = 'balancenegative';
+            if ($row['is_canceled']==1) {
+                $balance_class='';
+                $balance_view='-';
+            } elseif ($row['order_date']<$this->config->item('netprofit_start')) {
+                $balance_class='';
+                $balance_view='-';
+            } else {
+                $balance = $row['balance'];
+                if ($balance == 0) {
+                    $balance_view = 'PAID';
+                    $balance_class = 'balancepaid';
+                } elseif ($balance > 0) {
+                    $balance_view = MoneyOutput($balance);
+                    $balance_class = 'balancepositive';
+                } elseif ($balance < 0 ) {
+                    $balance_view = MoneyOutput(abs($balance));
+                    $balance_class = 'balancenegative';
+                }
             }
             $row['balance'] = $balance_view;
             $row['balance_class'] = $balance_class;
+            $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
             $row['revenue']=(intval($row['revenue'])==0 ? '-' : MoneyOutput($row['revenue'],2));
             $row['shipping']=(intval($row['shipping'])==0 ? '-' : MoneyOutput($row['shipping'],2));
             $row['tax']=(intval($row['tax'])==0 ? '-' : MoneyOutput($row['tax'],2));
@@ -6362,6 +6388,80 @@ Class Orders_model extends MY_Model
         $this->db->insert($db_table);
         $res = $this->db->insert_id();
         return $res;
+    }
+
+    public function count_totalbalance($filtr, $addtype='') {
+        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $balancesql = $this->db->get_compiled_select();
+
+        $this->db->select("sum(o.revenue) as revenue, sum(p.batchsum) as batchsum",FALSE);
+        $this->db->from("ts_orders o");
+        $this->db->join('('.$balancesql.') p','p.order_id=o.order_id','left');
+        $type_filer = intval(ifset($filtr,'filter',0));
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
+        if (count($filtr)>0) {
+            if (isset($filtr['shipping_country'])) {
+                $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
+                if (isset($filtr['shipping_state'])) {
+                    $shipsql.=" where state_id=".$filtr['shipping_state'];
+                } else {
+                    if (intval($filtr['shipping_country'])>0) {
+                        $shipsql.=" where country_id = ".$filtr['shipping_country'];
+                    } else {
+                        $shipsql.=" where country_id not in (223,39)";
+                    }
+                }
+            }
+            if (isset($filtr['search']) && $filtr['search']) {
+                // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue) ",strtoupper($filtr['search']));
+                $this->db->like("concat(ucase(customer_name),' ',ucase(customer_email),' ',order_num,' ', coalesce(order_confirmation,''), ' ', ucase(order_items), ucase(order_itemnumber), revenue ) ",strtoupper($filtr['search']));
+            }
+            if ($type_filer == 1) {
+                $this->db->where('o.order_cog is null');
+            } elseif ($type_filer == 2) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=40');
+            } elseif ($type_filer == 3) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=30 and round(o.profit_perc,0)<40');
+            } elseif ($type_filer == 4) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=20 and round(o.profit_perc,0)<30');
+            } elseif ($type_filer == 5) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>=10 and round(o.profit_perc,0)<20');
+            } elseif ($type_filer == 6) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)<=0');
+            } elseif ($type_filer == 7) {
+                // $this->db->where('o.is_canceled', 1);
+            } elseif ($type_filer == 8) {
+                $this->db->where('o.order_cog is not null and round(o.profit_perc,0)>0 and round(o.profit_perc,0)<10');
+            }
+            // Dates
+            if (isset($filtr['date_bgn'])) {
+                $this->db->where('o.order_date >= ', $filtr['date_bgn']);
+            }
+            if (isset($filtr['date_end'])) {
+                $this->db->where('o.order_date < ', $filtr['date_end']);
+            }
+            if (isset($filtr['shipping_country'])) {
+                $this->db->join("({$shipsql}) as s" ,'s.order_id=o.order_id');
+            }
+            if (isset($filtr['order_type'])) {
+                $this->db->where('o.order_blank',0);
+                $this->db->where('o.arttype', $filtr['order_type']);
+            }
+        }
+        if (!empty($addtype)) {
+            if ($addtype=='blank') {
+                $this->db->where('o.order_blank',1);
+            } else {
+                $this->db->where('o.order_blank',0);
+                $this->db->where('o.arttype', $addtype);
+            }
+        }
+        $totalres=$this->db->get()->row_array();
+        return floatval($totalres['revenue']) - floatval($totalres['batchsum']);
     }
 
 }

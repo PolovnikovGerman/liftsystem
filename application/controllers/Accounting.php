@@ -1314,7 +1314,7 @@ class Accounting extends MY_Controller
         $years_options=[];
         $years_options[]=['key'=>0, 'label'=>'All time'];
         $select_year=$years['max_year'];
-        for ($i=0; $i<20; $i++) {
+        for ($i=0; $i<100; $i++) {
             $years_options[]=['key'=>$select_year,'label'=>$select_year];
             $select_year=intval($select_year)-1;
             if ($select_year<$years['min_year']) {
