@@ -459,7 +459,7 @@ div.add_boat {
 }
 .needinventlist  .inventorytablehead > .totalinventory > .instock {
     /* border-right: 1px solid #f0f0f0; */
-    width: 53px;
+    width: 52px;
 }
 .needinventlist  .inventorytablehead > .totalinventory > .available {
     width: 60px;
@@ -628,7 +628,7 @@ div.add_boat {
     width: 36px;
 }
 .needinventlist  .inventorytablehead > .proofstab > .pics {
-    width: 42px;
+    width: 41px;
 }
 
 .needinventlist  .inventorytablehead > .colororder {

@@ -107,22 +107,22 @@ input.boatcontainerdate {
 .colordata_tooltip {
     width: 225px;
     max-width: 225px!important;
-    padding: 10px;
-    color: #000000;
-    background: #ffffff;
-    border: 1px solid #000000;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: justify;
-    line-height: 18px;
+    padding: 10px!important;
+    color: #000000!important;
+    background: #ffffff!important;
+    border: 2px solid #000000!important;
+    font-size: 16px!important;
+    font-weight: bold!important;
+    text-align: justify!important;
+    line-height: 20px!important;
 }
 .orderprofit_tooltip {
     max-width: 225px!important;
-    padding: 3px;
-    color: #000000;
-    background: #ffffff;
-    border: 2px solid #000000;
-    font-size: 14px;
+    padding: 3px!important;
+    color: #000000!important;
+    background: #ffffff!important;
+    border: 2px solid #000000!important;
+    font-size: 14px!important;
 }
 /* In Stock Log Popup */
 .stockdataarea {

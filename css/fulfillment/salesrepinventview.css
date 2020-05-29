@@ -456,7 +456,7 @@ div.add_boat {
     width: 60px;
 }
 .inventsalesreport  .inventorytablehead > .totalinventory > .available {
-    width: 59px;
+    width: 58px;
 }
 /* On Boat */
 .inventsalesreport  .inventorytablehead > .headonboat {
@@ -606,7 +606,7 @@ div.add_boat {
 }
 .inventsalesreport  .inventorytablehead > .proofstab > .pics {
     line-height: 26px;
-    width: 38px;
+    width: 37px;
 }
 .inventsalesreport  .inventorytablehead > .colororder {
     width: 24px;
@@ -1825,7 +1825,7 @@ input.addlcostinpt {
     font-weight: bold;
     font-size: 13px;
     text-align: center;
-    width: 60px;
+    width: 59px;
 }
 .inventsalesreport .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available {
     width: 58px;

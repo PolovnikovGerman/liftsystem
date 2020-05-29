@@ -286,6 +286,10 @@ body div {
     background: #228927;
     color: #ffffff;
 }
+.activemenubutton.resourcesbtn {
+    background: #cc28c2;
+    color: #ffffff;
+}
 /* Classes for left tabs */
 .page_container {
     float: left; width: 100%; background: #000000;
