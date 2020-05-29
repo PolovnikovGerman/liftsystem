@@ -805,6 +805,18 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function grey_order_exist($order_num) {
+        $this->db->select('count(order_id) as cnt');
+        $this->db->from('sb_orders');
+        $this->db->where('order_num', $order_num);
+        $res = $this->db->get()->row_array();
+        if ($res['cnt'] == 0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
     public function max_finorder_num() {
         $dbname = 'ts_orders';
         $this->db->select('max(order_num) as maxnum');
