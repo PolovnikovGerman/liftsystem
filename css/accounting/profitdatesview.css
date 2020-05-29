@@ -848,7 +848,7 @@ select.filter {
     float: left;
     font-size: 12px;
     padding: 10px;
-    width: 735px;
+    width: 761px;
 }
 .orders_by_date_title {
     clear: both;
@@ -856,6 +856,8 @@ select.filter {
     font-size: 14px;
     font-weight: bold;
     text-align: center;
+    height: 20px;
+    line-height: 20px;
     width: 100%;
 }
 .odrdate_tablehead {
@@ -865,83 +867,72 @@ select.filter {
     text-align: center;
     width: 100%;
 }
-.orddate_ordernum {
+.odrdate_tablehead > div {
+    height: 18px;
+    line-height: 18px;
     float: left;
+}
+.orddate_ordernum {
     width: 50px;
 }
 .orddate_ordernumdat {
-    float: left;
     width: 50px;
     text-align: center;
 }
 .orddate_customer {
-    float: left;
     width: 180px;
 }
 .orddate_customerdat {
-    float: left;
-    width: 165px;
+    width: 179px;
     padding-left: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-align: left;
 }
 .orddate_qty {
-    float: left;
     width: 60px;
 }
 .orddate_qtydat {
-    float: left;
-    width: 55px;
+    width: 60px;
     padding-right: 3px;
     text-align: right;
 }
 .orddate_item {
-    float: left;
     width: 180px;
 }
 .orddate_itemdat {
-    float: left;
-    width: 165px;
+    width: 180px;
     padding-left: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-align: left;
 }
 .orddate_revenue {
-    float: left;
     width: 70px;
 }
 .orddate_revenuedat {
-    float: left;
     width: 70px;
     text-align: right;
 }
 .orddate_profit {
-    float: left;
     width: 69px;
 }
 .orddate_profitdat {
-    float: left;
     width: 69px;
     text-align: right;
 }
 .orddate_profitperc {
-    float: left;
-    width: 40px;
+    width: 44px;
 }
 .orddate_profitpercdat {
-    float: left;
     width: 44px;
     text-align: center;
 }
 .orddate_status {
-    float: left;
     width: 83px;
 }
 .orddate_statusdat {
-    float: left;
-    width: 96px;
+    width: 83px;
     text-align: center;
 }
 .orddate_tabledat {
@@ -953,6 +944,11 @@ select.filter {
     clear: both;
     float: left;
     width: 100%;
+}
+.odrdate_tablerow > div {
+    height: 18px;
+    line-height: 18px;
+    float: left;
 }
 .odrdate_tablerow.customitem {
     font-weight: bold;

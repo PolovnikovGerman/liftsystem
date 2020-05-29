@@ -192,14 +192,21 @@ function show_curent_calend() {
                     }
                 },
                 show: {
-                    event: 'click'
+                    event: 'click',
+                    effect: function() { $(this).fadeIn(250); }
                 },
+                // hide: {
+                //     delay: 200,
+                //     fixed: true, // <--- add this
+                //     effect: function() { $(this).fadeOut(250); }
+                // },
                 position: {
                     my: 'bottom center',
                     at: 'middle center',
+                    viewport: $(window),
                 },
                 style: {
-                    classes: 'dayorders_tooltip'
+                    classes: 'qtip-dark dayorders_tooltip'
                 },
             });
             init_profit_date();
