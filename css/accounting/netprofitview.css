@@ -1146,11 +1146,12 @@ select.selectcompareyears {
     width: 351px;
 }
 .shownote_tooltip {
-    padding: 10px;
-    width: 600px;
+    padding: 10px!important;
+    width: 600px!important;
     min-width: 600px!important;
-    background: #ffffff;
-    color: #000000;
+    background: #ffffff!important;
+    color: #000000!important;
+    border: 1px solid #000000!important;
 }
 .expenseweekdetailsarea {
     clear: both;

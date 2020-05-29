@@ -112,7 +112,7 @@ input.monitorsearch_input_active {
 .paymonitor-title {
     border: 1px solid #919191;
     float: left;
-    width: 960px;
+    /* width: 960px; */
 }
 /* Table head & rows */
 .paymonitor-title > div {
@@ -650,14 +650,14 @@ textarea.weeknote {
     font-weight: bold;
 }
 .paymonitor_customer_tooltip {
-    background-color: #FFFFFF;
+    background-color: #FFFFFF!important;
     float: left;
-    font-size: 13px;
-    color: #000;
-    text-align: justify;
-    border: 1px solid #000000;
+    font-size: 13px!important;
+    color: #000!important;
+    text-align: justify!important;
+    border: 1px solid #000000!important;
     padding: 10px!important;
-    width: 290px;
+    width: 290px!important;
 }
 .paymonitor_attachments_tooltip {
     background-color: #FFFFFF;

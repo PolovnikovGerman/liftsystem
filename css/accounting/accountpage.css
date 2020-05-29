@@ -89,57 +89,57 @@ input.search_input {
     color: #000000;
 }
 .green_tooltip {
-    background-color: #86FF80;
+    background-color: #86FF80!important;
     float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
 }
 .white_tooltip {
-    background-color: #FFFFFF;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
+    background-color: #FFFFFF!important;
+    float: left!important;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
 }
 .red_tooltip {
-    background-color: #FF0000;
-    float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
+    background-color: #FF0000!important;
+    float: left!important;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
 }
 .orange_tooltip {
-    background-color: #FFA500;
+    background-color: #FFA500!important;
     float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #000;
-    text-align: justify;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
 }
 .black_tooltip {
-    background-color: #000000;
+    background-color: #000000!important;
     float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #FFFFFF;
-    text-align: justify;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #FFFFFF!important;
+    text-align: justify!important;
 }
 .deepblue_tooltip {
-    background-color: #001072;
+    background-color: #001072!important;
     float: left;
-    padding: 0px;
-    font-size: 15px;
-    color: #ffffff;
-    text-align: justify;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #ffffff!important;
+    text-align: justify!important;
 }
 .paymonitor_ordernum_tooltip {
     width: 140px;
-    line-height: 18px;
-    border: 1px solid #000000;
+    line-height: 18px!important;
+    border: 1px solid #000000!important;
     padding: 10px!important;
 }
 /*
