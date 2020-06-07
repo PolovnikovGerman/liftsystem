@@ -35,7 +35,6 @@ $config['minimal_profitperc']=20;
 switch($_SERVER['SERVER_NAME']){
     case 'tempsys.net':
     case 'tempsys.golden-team.org':
-    case 'lift.stressballs.com':
         $config['sean_email']='polovnikov.g@gmail.com';
         $config['sage_email']='to_german@yahoo.com';
         $config['taisen_email']='polovnikov.german@gmail.com';
@@ -80,18 +79,6 @@ switch($_SERVER['SERVER_NAME']){
             'to_german@yahoo.com',
         );
         break;
-    case 'lift.stressballs.com':
-        $config['email_setup']=array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf8',
-            'wordwrap'=> TRUE,
-        );
-        $config['artorderdaily_to']='polovnikov.g@gmail.com';
-        $config['artorderdaily_cc']=array(
-            'polovnikov.german@gmail.com',
-            'to_german@yahoo.com',
-        );
-        break;
     default :
         $config['email_setup']=array(
             'protocol'=>'sendmail',
@@ -117,7 +104,6 @@ $config['default_paysystem']='paypal';
 $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',
-    'lift.stressballs.com',
     'lift_stressballs.local',
 );
 $config['salestax']=7;
