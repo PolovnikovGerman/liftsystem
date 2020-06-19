@@ -97,6 +97,11 @@ switch($_SERVER['SERVER_NAME']) {
         $db['default']['password']='fDQa0ral9KJm'; //
         $db['default']['database']='stressball_liftnew';
         break;
+    case 'lift.bluetrack.com':
+        $db['default']['username']='bluetrack_liftnew';
+        $db['default']['password']='fDQa0ral9KJm'; //
+        $db['default']['database']='bluetrack_liftnew';
+        break;
     default:
         $db['default']['username']='stressballs';
         $db['default']['password']='stressballs';
