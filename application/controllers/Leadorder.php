@@ -1217,17 +1217,16 @@ class Leadorder extends MY_Controller
     public function saveartnewlocation() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error=$this->restore_orderdata_error;
             firephplog('Step 1');
             $postdata=$this->input->post();
+            firephplog(ENVIRONMENT,'Env');
             firephplog($postdata,'POST');
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
             firephplog($leadorder,'data');
             firephplog($ordersession,'KEY');
-            if (empty($leadorder)) {
-                $error=$this->restore_orderdata_error;
-            } else {
+            if (!empty($leadorder)) {
                 // Lock Edit Record
                 $locres=$this->_lockorder($leadorder);
                 if ($locres['result']==$this->error_result) {
@@ -1241,9 +1240,9 @@ class Leadorder extends MY_Controller
                 $this->load->model('artlead_model');
 
                 $res=$this->artlead_model->add_location($leadorder, $data, $loctype, $ordersession);
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                     $locat=$res['artlocations'];
 
                     $locat_view='';
