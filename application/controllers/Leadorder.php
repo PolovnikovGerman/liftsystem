@@ -1218,6 +1218,7 @@ class Leadorder extends MY_Controller
             $mdata=array();
             $error='';
             $postdata=$this->input->post();
+            firephplog($postdata,'POST');
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
             firephplog($leadorder,'data');
