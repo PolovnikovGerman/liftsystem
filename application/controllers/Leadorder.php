@@ -1213,8 +1213,7 @@ class Leadorder extends MY_Controller
     }
 
 
-    // public function artnewlocation_save() {
-    public function saveartnewlocation() {
+    public function artnewlocation_save() {
         if ($this->isAjax()) {
             $mdata=array();
             $error=$this->restore_orderdata_error;

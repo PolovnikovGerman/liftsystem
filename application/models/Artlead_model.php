@@ -137,8 +137,9 @@ Class Artlead_model extends MY_Model
             $preload_path_sh=$this->config->item('pathpreload');
             $logopath=$data['logo'];
             /* Make Filename */
-            $file_name=str_replace($preload_path_fl, '', $logopath);
-            $logosrc_path=$preload_path_sh.$file_name;
+            // $file_name=str_replace($preload_path_fl, '', $logopath);
+            // $logosrc_path=$preload_path_sh.$file_name;
+            $logosrc_path=$preload_path_sh.$logopath;
             $newlocation['logo_src']=$logosrc_path;
             // Checks
             $inptopt=array(

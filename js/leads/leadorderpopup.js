@@ -1449,11 +1449,9 @@ function remove_leadartlocat(artloc) {
 function save_newleadlogoartloc(loctype) {
     var params=new Array();
     params.push({name: 'logo', value:$("input#filename").val()});
-    // params.push({name: 'logo', value:'/uploads/preload/Nto24cKBjfu1.jpg'});
     params.push({name: 'loctype', value: loctype});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    // var url="/leadorder/artnewlocation_save";
-    var url="/leadorder/saveartnewlocation";
+    var url="/leadorder/artnewlocation_save";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
@@ -3991,7 +3989,8 @@ function init_imagelogoupload() {
             if (responseJSON.success) {
                 var url="/artproofrequest/art_newartupload";
                 $("ul.qq-upload-list").css('display','none');
-                $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                // $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                $.post(url, {'filename':responseJSON.uplsource, 'doc_name':fileName}, function(response){
                     if (response.errors=='') {
                         $("#orderattachlists").empty().html(response.data.content);
                         $(".qq-uploader").hide();

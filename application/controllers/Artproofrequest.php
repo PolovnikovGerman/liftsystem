@@ -188,7 +188,7 @@ class Artproofrequest extends MY_Controller
                 exit();
             } else {
                 $file->save($path . $filename . '.' . $ext);
-                echo (json_encode(array('success' => true, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                echo (json_encode(array('success' => true, 'uplsource' => $filename . '.' . $ext, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
                 exit();
             }
         } else {
