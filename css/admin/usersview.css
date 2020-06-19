@@ -116,7 +116,7 @@ button.addnewusers {
 }
 .userdatarow > .userlastactivity {
     padding-left: 5px;
-    width: 179px;
+    max-width: 173px;
 }
 /* Popup edit form */
 .userpersondata {
