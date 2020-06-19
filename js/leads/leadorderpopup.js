@@ -846,7 +846,7 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_imagelogoupload();
-                $("div.artlogouploadsave_data").click(function(){
+                $("div.artlogouploadsave_data").unbind('click').click(function(){
                     save_newleadlogoartloc(loctype);
                 });
                 $("input#loctimeout").val(response.data.loctime);
