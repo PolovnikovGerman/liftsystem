@@ -1213,16 +1213,14 @@ class Leadorder extends MY_Controller
     }
 
 
-    public function artnewlocation_save() {
+    // public function artnewlocation_save() {
+    public function saveartnewlocation() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
+            firephplog('Step 1');
             $postdata=$this->input->post();
             firephplog($postdata,'POST');
-            if (empty($postdata)) {
-                $postdata = $this->input->get();
-                firephplog($postdata,'POST AS GET');
-            }
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
             firephplog($leadorder,'data');

@@ -1451,7 +1451,8 @@ function save_newleadlogoartloc(loctype) {
     params.push({name: 'logo', value:$("input#filename").val()});
     params.push({name: 'loctype', value: loctype});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    var url="/leadorder/artnewlocation_save";
+    // var url="/leadorder/artnewlocation_save";
+    var url="/leadorder/saveartnewlocation";
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
