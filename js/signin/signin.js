@@ -27,6 +27,21 @@ function init_signin() {
             }
         },'json');
     });
+    $("input.signinformelement").keypress(function(event){
+        if (event.which == 13) {
+            var params=new Array();
+            params.push({name: 'username', value: $("#email").val()});
+            params.push({name: 'passwd', value: $("#passwd").val()});
+            var url='/login/signin';
+            $.post(url, params, function (resposne) {
+                if (resposne.errors=='') {
+                    window.location.href=resposne.data.url;
+                } else {
+                    show_errors(resposne);
+                }
+            },'json');
+        }
+    });
 }
 
 // function show_error(response) {
