@@ -174,10 +174,6 @@ Class Artlead_model extends MY_Model
         $leadorder['order']=$order;
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
-        firephplog($leadorder,'NewData');
-        firephplog($ordersession,'Key');
-        $test = usersession($ordersession);
-        firephplog($test,'Check After Save');
         $this->load->model('artwork_model');
         $this->artwork_model->_artlocation_log($newlocation['artwork_id'], $newlocation['artwork_art_id'], 'Add New Location');
         $outloc=array();

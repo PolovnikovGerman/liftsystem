@@ -1189,6 +1189,8 @@ class Leadorder extends MY_Controller
                     if ($res['result']==$this->error_result) {
                         $error=$res['msg'];
                     } else {
+                        $test = usersession($ordersession);
+                        firephplog($test,'Check After Save');
                         $locat=$res['artlocations'];
                         $locat_view='';
                         foreach ($locat as $row) {
