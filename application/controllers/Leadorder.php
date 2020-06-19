@@ -1271,8 +1271,9 @@ class Leadorder extends MY_Controller
             // Calc new period for lock
             $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
+        } else {
+            show_404();
         }
-        show_404();
     }
 
     // Change Art location parameter
