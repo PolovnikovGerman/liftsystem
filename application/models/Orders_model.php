@@ -378,7 +378,7 @@ Class Orders_model extends MY_Model
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
             $artlastupdat="artlastmessageview";
-            $row['lastmsg']='/artorders/order_lastmessage?d='.$row['order_id'];
+            $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
             $row['out_code']=($row['order_code']=='' ? '&nbsp;' : $row['order_code']);
             $row['rush_class']=($row['order_rush']==0 ? '' : 'rushorder');
