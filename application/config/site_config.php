@@ -1,5 +1,5 @@
 <?php
-$config['js_version']='1.14';
+$config['js_version']='1.141';
 $config['css_version']='1.140';
 /* Default Profit percent */
 $config['default_profit']=40;

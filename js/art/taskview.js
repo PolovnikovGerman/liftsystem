@@ -354,7 +354,8 @@ function searchtasks() {
         if (response.errors=='') {
             $("div.taskview_datacontent").empty().html(response.data.content);
             if (response.data.type=='order') {
-                general_view_init();
+                // general_view_init();
+                initGeneralPagination();
             } else {
                 init_prooflistmanage();
             }
