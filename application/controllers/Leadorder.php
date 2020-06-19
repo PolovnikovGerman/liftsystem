@@ -1218,6 +1218,7 @@ class Leadorder extends MY_Controller
             $mdata=array();
             $error='';
             $postdata=$this->input->post();
+            firephplog($_POST,'DataPost');
             firephplog($postdata,'POST');
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
@@ -1271,9 +1272,8 @@ class Leadorder extends MY_Controller
             // Calc new period for lock
             $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
-        } else {
-            show_404();
         }
+        show_404();
     }
 
     // Change Art location parameter
