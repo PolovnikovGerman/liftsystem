@@ -1160,7 +1160,6 @@ class Leadorder extends MY_Controller
             $postdata=$this->input->post();
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
-            firephplog($leadorder,'DATA');
             if (empty($leadorder)) {
                 $error=$this->restore_orderdata_error;
             } else {
@@ -1175,6 +1174,8 @@ class Leadorder extends MY_Controller
                 $art_type=$this->input->post('loctype');
                 $artwork=$leadorder['artwork'];
                 if ($art_type=='Logo' || $art_type=='Reference') {
+                    $test = usersession($ordersession);
+                    firephplog($test,'Check After Save');
                     $mdata['content']=$this->load->view('artpage/upload_artlogo_view',array('artwork_id'=>$artwork['artwork_id']),TRUE);
                 } elseif ($art_type=='Repeat') {
                     /* Get Orders which was approveed */
@@ -1189,8 +1190,6 @@ class Leadorder extends MY_Controller
                     if ($res['result']==$this->error_result) {
                         $error=$res['msg'];
                     } else {
-                        $test = usersession($ordersession);
-                        firephplog($test,'Check After Save');
                         $locat=$res['artlocations'];
                         $locat_view='';
                         foreach ($locat as $row) {
