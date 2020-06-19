@@ -193,7 +193,8 @@
 .content_header {
     clear: both;
     float: left;
-    width: 1080px;
+    /* width: 1080px; */
+    width: 100%;
 }
 .legend {
     color: #646464;
