@@ -59,6 +59,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }
+$config['netexportsecure']=0;
 switch($_SERVER['SERVER_NAME']){
     case 'lift_stressballs.local':
         $config['email_setup']=array(
@@ -85,6 +86,7 @@ switch($_SERVER['SERVER_NAME']){
             'robert@bluetrack.com',
             'darrell.martin@bluetrack.com',
         );
+        $config['netexportsecure']=1;
         break;
 
 }
