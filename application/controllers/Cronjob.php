@@ -850,4 +850,9 @@ Class Cronjob extends CI_Controller
         $this->orders_model->order_autoparse();
     }
 
+    public function generate_quota() {
+        $this->load->model('email_model');
+        $this->email_model->generate_quota();
+    }
+
 }
