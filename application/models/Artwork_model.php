@@ -2724,7 +2724,7 @@ Class Artwork_model extends MY_Model
                 }
                 $logopath=$data['logo'];
                 /* Make Filename */
-                $file_name=str_replace($preload_path_fl, '', $logopath);
+                $file_name=str_replace([$preload_path_fl,$preload_path_sh], '', $logopath);
                 $file_det=extract_filename($file_name);
                 if (in_array($file_det['ext'], $this->logo_imageext)) {
                     $imagesourceclass='viewsource';

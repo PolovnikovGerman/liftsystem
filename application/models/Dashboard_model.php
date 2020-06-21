@@ -30,8 +30,8 @@ Class Dashboard_model extends MY_Model
             if ($res['cnt']==0) {
                 $options = [
                     'conversions' => 204,
-                    'sales' => 125,
-                    'revenue' => 124486,
+                    'sales' => 0,
+                    'revenue' => 0,
                 ];
             } else {
                 $options = [

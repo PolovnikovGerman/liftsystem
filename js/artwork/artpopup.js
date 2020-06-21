@@ -727,7 +727,8 @@ function init_artlogoupload() {
             if (responseJSON.success) {
                 var url="/artproofrequest/art_newartupload";
                 $("ul.qq-upload-list").css('display','none');
-                $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                // $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                $.post(url, {'filename':responseJSON.uplsource,'doc_name':fileName}, function(response){
                     if (response.errors=='') {
                         $("#orderattachlists").empty().html(response.data.content);
                         $("#file-uploader").hide();
