@@ -6484,7 +6484,7 @@ Class Orders_model extends MY_Model
         $res=$data['out_dat'];
         $attach=$data['out_attach'];
         $this->load->model('exportexcell_model');
-        $this->exportexcell_model->expot_attemptreport($res, $attach);
+        $this->exportexcell_model->expot_attemptreport($res, $attach, $filtr['starttime']);
     }
 
     public function attemptreportdata($filtr) {

@@ -206,7 +206,7 @@ class Exportexcell_model extends CI_Model
         return $this->config->item('pathpreload').$report_name;
     }
     // Export Attempts Report
-    public function expot_attemptreport($data, $attach) {
+    public function expot_attemptreport($data, $attach, $start) {
         $this->load->library('email');
         if (count($data)>0) {
             $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
