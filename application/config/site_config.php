@@ -72,6 +72,7 @@ switch($_SERVER['SERVER_NAME']){
             'polovnikov.german@gmail.com',
             'to_german@yahoo.com',
         );
+        $config['netexportdata']='http://fintool.test/controller/exportbrowndata.php';
         break;
     default :
         $config['email_setup']=array(
@@ -87,6 +88,7 @@ switch($_SERVER['SERVER_NAME']){
             'darrell.martin@bluetrack.com',
         );
         $config['netexportsecure']=1;
+        $config['netexportdata']='http://bluetrack.net/system/controller/exportbrowndata.php';
         break;
 
 }
