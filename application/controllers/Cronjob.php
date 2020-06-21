@@ -672,12 +672,11 @@ Class Cronjob extends CI_Controller
             $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
             $email_from=$this->config->item('email_notification_sender');
-            // $email_to=$this->config->item('sean_email');
-            // $email_cc=$this->config->item('sage_email');
-            $email_to = 'polovnikov.g@gmail.com';
+            $email_to=$this->config->item('sean_email');
+            $email_cc=$this->config->item('sage_email');
             $this->email->from($email_from);
             $this->email->to($email_to);
-            // $this->email->cc($email_cc);
+            $this->email->cc($email_cc);
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack.com)';
@@ -700,8 +699,8 @@ Class Cronjob extends CI_Controller
             $this->email->clear(TRUE);
             // Send report to user
             $this->email->from($email_from);
-            // $this->email->to('shanequa.hall@bluetrack.com');
-            $this->email->to('to_german@yahoo.com');
+            $this->email->to('shanequa.hall@bluetrack.com');
+            // $this->email->to('to_german@yahoo.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack.com)';
