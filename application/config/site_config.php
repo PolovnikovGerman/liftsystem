@@ -61,7 +61,6 @@ switch($_SERVER['SERVER_NAME']){
 }
 switch($_SERVER['SERVER_NAME']){
     case 'lift_stressballs.local':
-    case 'lift.bluetrack.com':
         $config['email_setup']=array(
             'protocol'=>'sendmail',
             'charset'=>'utf8',
