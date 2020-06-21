@@ -822,11 +822,11 @@ Class Cronjob extends CI_Controller
             $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
             $email_from=$this->config->item('email_notification_sender');
-            // $email_to=[$this->config->item('sean_email'), $this->config->item('sage_email')];
-            $email_to = 'polovnikov.g@gmail.com';
+            $email_to=[$this->config->item('sean_email'), $this->config->item('sage_email')];
+
             $this->email->from($email_from);
             $this->email->to($email_to);
-            // $this->email->cc('polovnikov.g@gmail.com');
+            $this->email->cc('polovnikov.g@gmail.com');
 
             $title=date('D - M d, Y', $start_time).' - Discount Orders ';
             if ($brand=='BT') {
