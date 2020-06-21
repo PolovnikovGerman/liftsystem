@@ -641,7 +641,8 @@ Class Cronjob extends CI_Controller
                 // $this->config->item('sage_email'),
                 // $this->config->item('taisenkatakura_email'),
                 // );
-                $email_to=$this->config->item('sean_email');
+                // $email_to=$this->config->item('sean_email');
+                $email_to='polovnikov.g@gmail.com';
                 // $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
                 $this->email->to($email_to);
