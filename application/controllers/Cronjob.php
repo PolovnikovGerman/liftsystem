@@ -855,4 +855,37 @@ Class Cronjob extends CI_Controller
         $this->email_model->generate_quota();
     }
 
+    public function hide_credit_cards() {
+        $last_date=strtotime(date("Y-m-d") . " -15 days");
+        $this->db->select('order_id, payment_card_number, payment_card_vn');
+        $this->db->from('sb_orders');
+        $this->db->where('ccnumb_hide',0);
+        $this->db->where('unix_timestamp(order_date) <= ',$last_date);
+        $orders=$this->db->get()->result_array();
+        foreach ($orders as $row) {
+            $cardn=$row['payment_card_number'];
+            $cclen=strlen($cardn);
+            $newcc=substr($cardn,0,1).str_repeat('X',3).'-';
+            $lenhide=$cclen-8;
+            $ngroup=0;
+            for ($i=0;$i<$lenhide;$i++) {
+                $newcc.='X';
+                $ngroup++;
+                if ($ngroup==4) {
+                    $ngroup=0;
+                    $newcc.='-';
+                }
+            }
+
+            // $cclen-5).substr($cardn,-4);
+            $newcc.=substr($cardn, -4);
+            $this->db->set('payment_card_number',$newcc);
+            $this->db->set('ccnumb_hide',1);
+            $this->db->where('order_id',$row['order_id']);
+            $this->db->update('sb_orders');
+        }
+
+    }
+
+
 }
