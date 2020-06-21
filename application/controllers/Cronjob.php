@@ -887,5 +887,19 @@ Class Cronjob extends CI_Controller
 
     }
 
+    function attempts_report() {
+        $this->load->model('orders_model');
+        /* Calculate time begin - end of previous day */
+        $start=strtotime(date("Y-m-d", time()) . " - 1 days");
+        $end=strtotime(date('m/d/Y',$start).'23:59:59');
+
+        $filtr=array(
+            'starttime'=>$start,
+            'endtime'=>$end,
+        );
+        $this->orders_model->attempts_report($filtr);
+        
+    }
+
 
 }

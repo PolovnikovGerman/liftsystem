@@ -50,19 +50,6 @@ class Exportexcell_model extends CI_Model
             $price=round($row['price'],3);
             $total=round($row['qty']*$price,2);
             // Write Row
-            // $sheet->getStyle('E'.$j)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-            /* $sheet->getStyle('F'.$j)->getNumberFormat()->setFormatCode("$0#.###");
-            $sheet->getStyle('G'.$j)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-            $sheet->getStyle('A'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('B'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('C'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('D'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('E'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('F'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('G'.$j)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
-            $objPHPExcel->setActiveSheetIndex($i)
-*/
             $sheet->setCellValue('A'.$j, $row['item_num']);
             $sheet->setCellValue('B'.$j, $row['item_name']);
             $sheet->setCellValue('C'.$j, $row['color']);
@@ -88,57 +75,7 @@ class Exportexcell_model extends CI_Model
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle($namesheet);
-        /*
-        $styleWhite = array(
-            'font' => array(
-                'bold' => false,
-            ),
-            'alignment' => array(
-                'horizontal' => Spreadsheet::HORIZONTAL_LEFT,
-            ),
-            'borders' => array(
-                'allborders' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-                )
-            ),
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_NONE
-            ),
-        );
 
-
-        $styleGray = array(
-            'font' => array(
-                'bold' => true,
-                'color' => array(
-                    'argb' => 'FFFFFFFF')
-            ),
-            'alignment' => array(
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            ),
-            'borders' => array(
-                'allborders' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-                )
-            ),
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRAY
-            ),
-        );
-
-        $sheet = $objPHPExcel->getActiveSheet();
-        $sheet->setTitle('Price Report');
-        $sheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT);
-        $sheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-        */
-        // $sheet->getColumnDimension('A')->setAutoSize(); // Item #
-        // $sheet->getColumnDimension('B')->setAutoSize(); // Shape/ Color
-        // $sheet->getColumnDimension('C')->setAutoSize(); // Color Descript
-        // $sheet->getColumnDimension('D')->setAutoSize(); // In Stock
-        // $sheet->getColumnDimension('E')->setAutoSize(); // Reserved
-        // $sheet->getColumnDimension('F')->setAutoSize(); // Available
-        // $sheet->getColumnDimension('G')->setAutoSize(); // Cost Ea
-        // $sheet->getColumnDimension('H')->setAutoSize(); // Total Ea
         $sheet->setCellValue('A1','Item #');
         $sheet->setCellValue('B1','Shape/ Color');
         $sheet->setCellValue('C1','Color Descript');
@@ -165,13 +102,6 @@ class Exportexcell_model extends CI_Model
             $sheet->setCellValue('I'.$numrow, $row['total_int']);
             $numrow++;
         }
-        /*
-        $objWriter = IOFactory::createWriter($objPHPExcel, 'Excel5');
-        $objWriter->save($filesrc);
-        $out['result']=$this->success_result;
-        $out['url']=$this->config->item('pathpreload').$filename;
-        return $out;
-        */
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx
         $report_name = 'export_inventory_' . (microtime(TRUE) * 10000) . '.xlsx';
         $filename = $this->config->item('upload_path_preload') . $report_name;
@@ -274,5 +204,132 @@ class Exportexcell_model extends CI_Model
         $filename = $this->config->item('upload_path_preload') . $report_name;
         $writer->save($filename);    // download file
         return $this->config->item('pathpreload').$report_name;
+    }
+    // Export Attempts Report
+    public function expot_attemptreport($data, $attach) {
+        $this->load->library('email');
+        if (count($data)>0) {
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1','Checkout Start');
+            $sheet->setCellValue('B1','Last Activity');
+            $sheet->setCellValue('C1','Customer');
+            $sheet->setCellValue('D1','Contact');
+            $sheet->setCellValue('E1','Address');
+            $sheet->setCellValue('F1','Item Name');
+            $sheet->setCellValue('G1','Item #');
+            $sheet->setCellValue('H1','Qty');
+            $sheet->setCellValue('I1','Item Colors');
+            $sheet->setCellValue('J1','Imprint');
+            $sheet->setCellValue('K1','Item Cost');
+            $sheet->setCellValue('L1','Imprint Cost');
+            $sheet->setCellValue('M1','Setup');
+            $sheet->setCellValue('N1','Rush Price');
+            $sheet->setCellValue('O1','Tax');
+            $sheet->setCellValue('P1','UPS code');
+            $sheet->setCellValue('Q1','Shipping');
+            $sheet->setCellValue('R1','Total');
+            $sheet->setCellValue('S1','Rush Date');
+            $sheet->setCellValue('T1','Art Upload');
+            $sheet->setCellValue('U1','User IP');
+            $sheet->setCellValue('V1','User Location');
+            $sheet->setCellValue('W1','CC details');
+            $sheet->setCellValue('X1','Last Entered');
+            $i=2;
+            foreach ($data as $row) {
+                // Write Row
+                $sheet->setCellValue('A' . $i, $row['checkout_start']);
+                $sheet->setCellValue('B' . $i, $row['last_action']);
+                $sheet->setCellValue('C' . $i, $row['user']);
+                $sheet->setCellValue('D' . $i, $row['user_contact']);
+                $sheet->setCellValue('E' . $i, $row['user_address']);
+                $sheet->setCellValue('F' . $i, $row['item_name']);
+                $sheet->setCellValue('G' . $i, $row['item_number']);
+                $sheet->setCellValue('H' . $i, ($row['item_qty']=='' ? '' : intval($row['item_qty'])));
+                $sheet->setCellValue('I' . $i, $row['item_colors']);
+                $sheet->setCellValue('J' . $i, $row['imprint']);
+                $sheet->setCellValue('K' . $i, ($row['itemcost']=='' ? '' : number_format($row['itemcost'],2,',','')));
+                $sheet->setCellValue('L' . $i, ($row['imprintval']=='' ? '' : number_format($row['imprintval'],2,',','')));
+                $sheet->setCellValue('M' . $i, ($row['setup']=='' ? '' : number_format($row['setup'],2,',','')));
+                $sheet->setCellValue('N' . $i, ($row['rushprice']=='' ? '' : number_format($row['rushprice'],2,',','')));
+                $sheet->setCellValue('O' . $i, ($row['tax']=='' ? '' : number_format($row['tax'],2,',','')));
+                $sheet->setCellValue('P' . $i, $row['ship_method']);
+                $sheet->setCellValue('Q' . $i, ($row['shipping']=='' ? '' : number_format($row['shipping'],2,',','')));
+                $sheet->setCellValue('R' . $i, ($row['total']=='' ? '' : number_format($row['total'],2,',','')));
+                $sheet->setCellValue('S' . $i, $row['rushdate']);
+                $sheet->setCellValue('T' . $i, $row['art']);
+                $sheet->setCellValue('U' . $i, $row['user_ip']);
+                $sheet->setCellValue('V'  .$i, $row['user_location']);
+                $sheet->setCellValue('W'  .$i, $row['cc_details']);
+                $sheet->setCellValue('X'  .$i, $row['last_field']);
+                $i++;
+            }
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+
+            $report_name = 'attempt_export_' . (microtime(TRUE) * 10000) . '.xlsx';
+            $filename = $this->config->item('upload_path_preload') . $report_name;
+            $writer->save($filename);    // download file
+            /* Send Mail with attach */
+            $mail_to=$this->config->item('mail_research');
+            // $mail_to='polovnikov.g@gmail.com';
+            // $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com');
+            $mail_cc=['polovnikov.german@gmail.com','to_german@yahoo.com'];
+
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+
+            $this->email->initialize($email_conf);
+            $this->email->to($mail_to);
+            $this->email->cc($mail_cc);
+            $this->email->from('no-replay@bluetrack.com');
+            $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
+            $mail_body='Report in attachment';
+            $this->email->attach($filename);
+            if (count($attach)>0) {
+                foreach ($attach as $row) {
+                    $file=  str_replace('//', '/', $this->config->item('base_upload').$row);
+                    if (file_exists($file)) {
+                        $this->email->attach($file);
+                    }
+                }
+            }
+            $this->email->message($mail_body);
+            $this->email->send();
+            // echo $ci->email->print_debugger();
+            $this->email->clear(TRUE);
+            unlink($filename);
+        } else {
+            $mail_to=$this->config->item('mail_research');
+
+            $this->load->library('email');
+
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+
+            $this->email->initialize($email_conf);
+            $this->email->to($mail_to);
+            $this->email->from('no-replay@bluetrack.com');
+            $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
+            $mail_body='All checkouts ended successfully';
+            $this->email->message($mail_body);
+            $this->email->send();
+        }
+        $this->email->clear();
+        $this->email->to('polovnikov.g@gmail.com');
+        $this->email->from('no-replay@bluetrack.com');
+        $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
+        $mail_body='Report sends successfully';
+        $this->email->message($mail_body);
+        $this->email->send();
+        $this->email->clear();
+        return TRUE;
     }
 }

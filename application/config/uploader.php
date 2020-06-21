@@ -1,5 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /* Path for save files */
+$config['base_upload']=BASEPATH.'../';
 $config['upload_path_preload']=BASEPATH.'../uploads/preload/';
 $config['pathpreload']='/uploads/preload/';
 $config['orderattach']=BASEPATH.'/../uploads/orderattach/';

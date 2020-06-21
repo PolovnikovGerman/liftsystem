@@ -30,6 +30,9 @@ Class Orders_model extends MY_Model
     private $default_profit_perc = 40;
     private $default_ccfee = 3;
 
+    private $art_sendlater = "I'll send it later";
+    private $art_sendbefore = "I already sent it";
+
     /* Start date for check email 03/28/2013 */
     protected $req_email_date = 1364421600;
 
@@ -6475,5 +6478,236 @@ Class Orders_model extends MY_Model
         $totalres=$this->db->get()->row_array();
         return floatval($totalres['revenue']) - floatval($totalres['batchsum']);
     }
+
+    public function attempts_report($filtr) {
+        $data = $this->attemptreportdata($filtr);
+        $res=$data['out_dat'];
+        $attach=$data['out_attach'];
+        $this->load->model('exportexcell_model');
+        $this->exportexcell_model->expot_attemptreport($res, $attach);
+    }
+
+    public function attemptreportdata($filtr) {
+        $this->load->model('shipping_model');
+        $this->db->select('*');
+        $this->db->from('sb_cartdatas');
+        $this->db->where('last_activity is not NULL');
+        if (isset($filtr['starttime']) && $filtr['starttime']) {
+            $this->db->where('created_date >= ', $filtr['starttime']);
+        }
+
+        if (isset($filtr['endtime']) && $filtr['endtime']) {
+            $this->db->where('created_date <= ', $filtr['endtime']);
+        }
+
+        $this->db->order_by('last_activity');
+        $res = $this->db->get()->result_array();
+
+        $out_dat = array();
+        $out_attach = array();
+        foreach ($res as $row) {
+            $cart = unserialize($row['cart']);
+            $artdata = 'No ART';
+            $arts = array();
+            if ($row['arts'] != '') {
+                $arts = unserialize($row['arts']);
+            } elseif (isset($cart['art1'])) {
+                /* Get Data about art */
+                $artdet = $this->get_uploadart($cart['art1']);
+                if (!empty($artdet)) {
+                    $arts['art1'] = $artdet;
+                }
+                if (isset($cart['art2'])) {
+                    $artdet = $this->get_uploadart($cart['art2']);
+                    if (!empty($artdet)) {
+                        $arts['art2'] = $artdet;
+                    }
+                }
+            }
+            if (!empty($arts)) {
+                $artdata = '';
+                $art_order = 1;
+
+                foreach ($arts as $artrow) {
+                    $artadd = 'Imprint Location ' . $art_order . ' ';
+                    if ($artrow['order_artwork_note'] == $this->art_sendlater) {
+                        $artadd.=$this->art_sendlater;
+                    } elseif ($artrow['order_artwork_note'] == $this->art_sendbefore) {
+                        $artadd.=$this->art_sendbefore;
+                    } else {
+                        $artadd.=$artrow['order_artwork_printloc'] . PHP_EOL;
+                        if (isset($artrow['order_artwork_logo']) && $artrow['order_artwork_logo']) {
+                            $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['order_artwork_logo'] . PHP_EOL;
+                            array_push($out_attach, $artrow['order_artwork_logo']);
+                        } elseif (isset($artrow['order_userlogo_filename']) && !empty($artrow['order_userlogo_filename'])) {
+                            $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['order_userlogo_filename'] . PHP_EOL;
+                            array_push($out_attach, $artrow['order_userlogo_filename']);
+                        }
+                        if (!empty($artrow['order_artwork_text'])) {
+                            $artadd.=' User Text ' . $artrow['order_artwork_text'] . PHP_EOL;
+                        }
+                        if (!empty($artrow['order_artwork_colors'])) {
+                            $artadd.=' Colors - ' . $artrow['order_artwork_colors'] . PHP_EOL;
+                        }
+                        if (!empty($artrow['order_artwork_font'])) {
+                            $artadd.=' Font ' . $artrow['order_artwork_font'] . PHP_EOL;
+                        }
+                    }
+                    $art_order++;
+                    $artdata.=$artadd;
+                }
+            }
+
+            $user = '';
+            if (isset($cart['ship_firstname'])) {
+                $user.=$cart['ship_firstname'];
+            }
+            if (isset($cart['ship_lastname'])) {
+                $user.=' ' . $cart['ship_lastname'];
+            }
+            $user_contact = '';
+            if (isset($cart['emailaddr'])) {
+                $user_contact.='Email ' . $cart['emailaddr'] . PHP_EOL;
+            }
+            if (isset($cart['phonenum'])) {
+                $user_contact.=' Phone ' . $cart['phonenum'];
+            }
+
+            $user_address = '';
+            if (isset($cart['ship_country'])) {
+                $user_address.='Country ' . $cart['ship_country'] . ' ' . PHP_EOL;
+            }
+            if (isset($cart['ship_cityname'])) {
+                $user_address.='City ' . $cart['ship_cityname'] . ' ';
+            }
+            if (isset($cart['ship_street1']) && $cart['ship_street1']) {
+                $user_address.=$cart['ship_street1'] . ' ';
+            }
+            if (isset($cart['ship_street2']) && $cart['ship_street2']) {
+                $user_address.=$cart['ship_street2'] . ' ';
+            }
+            $item_number = '';
+            $item_name = '';
+            if (isset($cart['item_id']) && $cart['item_id']) {
+                $this->db->select('i.item_number, i.item_name');
+                $this->db->from('sb_items i');
+                $this->db->where('item_id', $cart['item_id']);
+                $itm = $this->db->get()->row_array();
+                if (isset($itm['item_number'])) {
+                    $item_number = $itm['item_number'];
+                    $item_name = $itm['item_name'];
+                }
+            }
+            $item_color = '';
+            $item_color_id = '';
+            for ($i = 1; $i < 5; $i++) {
+                if (isset($cart['col' . $i]) && $cart['col' . $i]) {
+                    if ($item_color_id == '') {
+                        $item_color_id = $cart['col' . $i];
+                    } else {
+                        $item_color = 'assorted';
+                        break;
+                    }
+                }
+            }
+            if ($item_color == '' && $item_color_id) {
+                $this->db->select('item_color');
+                $this->db->from('sb_item_colors');
+                $this->db->where('item_color_id', $item_color_id);
+                $itmc = $this->db->get()->row_array();
+            }
+            $imprint = '';
+            if (isset($cart['imprint'])) {
+                if ($cart['imprint'] == 0) {
+                    $imprint = 'Blank - No imprint';
+                } else {
+                    $imprint = 'Imprint locations - ' . $cart['imprint'];
+                }
+            }
+            /* Geo IP */
+            $user_location = (isset($cart['customer_location']) ? $cart['customer_location'] : '');
+            $user_ip = (isset($cart['customer_ip']) ? $cart['customer_ip'] : '');
+
+            if ($user_ip && $user_location == '') {
+                $ipdat = $this->shipping_model->ipdata_exist($user_ip);
+                if ($ipdat['result']) {
+                    $user_location.=($ipdat['city_name'] == '-' ? '' : $ipdat['city_name'] . ', ');
+                    $user_location.=($ipdat['region_name'] == '-' ? '' : $ipdat['region_name'] . ', ');
+                    $user_location.=($ipdat['country_code'] == '-' ? '' : $ipdat['country_name']);
+                } else {
+                    $ipdat = $this->shipping_model->get_geolocation($user_ip);
+                    if (isset($ipdat['country_code']) && $ipdat['country_code'] != '-') {
+                        $this->shipping_model->update_geoip($ipdat, $user_ip);
+                        $user_location.=($ipdat['city_name'] == '-' ? '' : $ipdat['city_name'] . ', ');
+                        $user_location.=($ipdat['region_name'] == '-' ? '' : $ipdat['region_name'] . ', ');
+                        $user_location.=($ipdat['country_code'] == '-' ? '' : $ipdat['country_name']);
+                    }
+                }
+            }
+            $rushval = (isset($cart['rushval']) ? intval($cart['rushval']) : 0);
+            $cc_card = '';
+            if (isset($cart['cctype']) && $cart['cctype'] != '') {
+                $cc_card.=$cart['cctype'] . ' ';
+            }
+            if (isset($cart['ccnumber']) && $cart['ccnumber']) {
+                $cc_card.=$cart['ccnumber'] . '';
+            }
+            if (isset($cart['ccexpmonth']) && $cart['ccexpmonth']) {
+                $cc_card.=$cart['ccexpmonth'] . '/';
+            }
+            if (isset($cart['ccexpyear']) && $cart['ccexpyear']) {
+                $cc_card.=$cart['ccexpyear'];
+            }
+            $lastfld = '';
+            if (isset($cart['last_updated_item']) && $cart['last_updated_item']) {
+                foreach ($this->cardflds as $fldrow) {
+                    if ($cart['last_updated_item'] == $fldrow['idx']) {
+                        $lastfld = $fldrow['name'];
+                        break;
+                    }
+                }
+            }
+
+            $out_dat[] = array(
+                'checkout_start' => date('m/d/Y H:i:s', $row['created_date']),
+                'last_action' => date('m/d/Y H:i:s', strtotime($row['last_activity'])),
+                'art' => $artdata,
+                'item_number' => $item_number,
+                'item_name' => $item_name,
+                'item_qty' => (isset($cart['sumval']) ? $cart['sumval'] : ''),
+                'item_colors' => $item_color,
+                'imprint' => $imprint,
+                'rushdate' => ($rushval == 0 ? '' : date('m/d/Y', $rushval)),
+                'rushprice' => (isset($cart['rushprice']) ? $cart['rushprice'] : ''),
+                'rushdays' => (isset($cart['rushdays']) ? $cart['rushdays'] : ''),
+                'itemcost' => (isset($cart['itemcost']) ? $cart['itemcost'] : ''),
+                'imprintval' => (isset($cart['imprintval']) ? $cart['imprintval'] : ''),
+                'setup' => (isset($cart['setup']) ? $cart['setup'] : ''),
+                'tax' => (isset($cart['tax']) ? $cart['tax'] : ''),
+                'total' => (isset($cart['total']) ? $cart['total'] : ''),
+                'ship_method' => (isset($cart['ship_method']) ? $cart['ship_method'] : ''),
+                'shipping' => (isset($cart['shipping']) ? $cart['shipping'] : ''),
+                'user' => $user,
+                'user_contact' => $user_contact,
+                'user_address' => $user_address,
+                'user_ip' => $user_ip,
+                'user_location' => $user_location,
+                'cc_details' => $cc_card,
+                'last_field' => $lastfld,
+            );
+        }
+        $retval = array('out_dat' => $out_dat, 'out_attach' => $out_attach);
+        return $retval;
+    }
+
+    public function get_uploadart($art_id) {
+        $this->db->select('aw.*,l.order_userlogo_filename');
+        $this->db->from('sb_order_artworks aw');
+        $this->db->join('sb_order_userlogos l', 'l.order_userlogo_artworkid=aw.order_artwork_id', 'left');
+        $this->db->where('aw.order_artwork_id', $art_id);
+        $res = $this->db->get()->row_array();
+        return $res;
+    }
+
 
 }

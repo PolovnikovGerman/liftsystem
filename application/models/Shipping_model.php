@@ -931,4 +931,95 @@ Class Shipping_model extends MY_Model
         }
     }
 
+    public function update_geoip($ipdata, $user_ip) {
+        $usrdata=$this->ipdata_exist($user_ip);
+        if (!$usrdata['result']) {
+            // Get Code of region
+            $this->db->set('user_ip',$ipdata['ip']);
+            $this->db->set('country_code',(isset($ipdata['country_code']) ? $ipdata['country_code'] : NULL));
+            $this->db->set('country_name',(isset($ipdata['country_name']) ? $ipdata['country_name'] : NULL));
+            $this->db->set('city_name',(isset($ipdata['city_name'])  ? $ipdata['city_name'] : NULL ));
+            if (isset($ipdata['region_name'])) {
+                $this->db->set('region_name',$ipdata['region_name']);
+                $this->db->set('region_code',$this->get_statecode_byname($ipdata['region_name']));
+            }
+            $this->db->set('latitude',(isset($ipdata['latitude']) ? $ipdata['latitude'] : NULL));
+            $this->db->set('longitude',(isset($ipdata['longitude']) ? $ipdata['longitude'] : NULL));
+            if (isset($ipdata['zipcode'])) {
+                $this->db->set('zipcode',($ipdata['zipcode']=='-' ? NULL : $ipdata['zipcode']));
+            }
+            $this->db->insert('sb_geoips');
+        }
+    }
+
+    public function ipdata_exist($userip) {
+        $this->db->select('gi.*, cntr.country_id');
+        $this->db->from('sb_geoips gi');
+        $this->db->join('sb_countries cntr','cntr.country_iso_code_2=gi.country_code','left');
+        $this->db->where('gi.user_ip',$userip);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['user_ip'])) {
+            $out=array('result'=>FALSE);
+        } else {
+            $out=$res;
+            $out['result']=TRUE;
+        }
+        return $out;
+    }
+
+    public function get_statecode_byname($state_name) {
+        $this->db->select('*');
+        $this->db->from('sb_states');
+        $this->db->where('state_name',$state_name);
+        $res=$this->db->get()->row_array();
+        if (isset($res['state_code'])) {
+            return $res['state_code'];
+        } else {
+            return '';
+        }
+    }
+
+
+    public function get_geolocation($ip) {
+        // $>load->model('shippzones_model','mship');
+        $api_key = $this->config->item('geo_apikey');
+        $d = file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$ip&format=json");
+
+        //Use backup server if cannot make a connection
+        if (!$d) {
+            return false; // Failed to open connection
+        } else {
+            $result = json_decode($d);
+            $country_id='';
+            if ($result->countryCode) {
+                $cntr=$this->get_country_bycode2($result->countryCode);
+                if (isset($cntr['country_id']) && $cntr['country_id']) {
+                    $country_id=$cntr['country_id'];
+                }
+            }
+            $out_array = array(
+                'ip' => $ip,
+                'country_code' => $result->countryCode,
+                'country_name' => $result->countryName,
+                'city_name' => $result->cityName,
+                'region_name' => $result->regionName,
+                'latitude' => $result->latitude,
+                'longitude' => $result->longitude,
+                'country_id' => $country_id,
+                'zipcode' => $result->zipCode,
+            );
+            return $out_array;
+        }
+    }
+
+    public function get_country_bycode2($country_code) {
+        $this->db->select('*');
+        $this->db->from('ts_countries');
+        $this->db->where('country_iso_code_2',$country_code);
+        $result=$this->db->get()->row_array();
+        return $result;
+    }
+
+
+
 }
