@@ -61,17 +61,11 @@ switch($_SERVER['SERVER_NAME']){
 }
 switch($_SERVER['SERVER_NAME']){
     case 'lift_stressballs.local':
+    case 'lift.bluetrack.com':
         $config['email_setup']=array(
-            'protocol' => 'smtp',
-            'smtp_host' => 'ssl://smtp.gmail.com',
-            'smtp_port' => '465',
-            'smtp_user'=>'logosbt@gmail.com',
-            'smtp_pass'=>'bYnU%u2Dqf;y6QVj',
-            'smtp_timeout'=>'7',
-            'validation'=>TRUE,
+            'protocol'=>'sendmail',
             'charset'=>'utf8',
             'wordwrap'=> TRUE,
-            'newline'=>'\r\n',
         );
         $config['artorderdaily_to']='polovnikov.g@gmail.com';
         $config['artorderdaily_cc']=array(
