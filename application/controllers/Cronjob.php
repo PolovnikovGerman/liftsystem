@@ -509,10 +509,8 @@ Class Cronjob extends CI_Controller
             $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
             $email_from=$this->config->item('email_notification_sender');
-            // $email_to=$this->config->item('sean_email');
-            $email_to='polovnikov.german@gmail.com';
-            // $email_cc=array($this->config->item('sage_email'), 'darrell.martin@bluetrack.com','Alex.Pfisterer@bluetrack.com');
-            $email_cc='to_german@yahoo.com';
+            $email_to=$this->config->item('sean_email');
+            $email_cc=array($this->config->item('sage_email'), 'darrell.martin@bluetrack.com','Alex.Pfisterer@bluetrack.com');
 
             $this->email->from($email_from);
             $this->email->to($email_to);
