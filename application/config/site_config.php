@@ -263,7 +263,6 @@ switch ($_SERVER['SERVER_NAME']) {
     case 'germanzp.ml':
     case 'www.bluetrack.golden-team.org':
     case 'front.stressballs.com':
-    case 'lift.bluetrack.com':
         $config['mail_research']='to_german@yahoo.com';
         $config['mail_sales']='sales@golden-team.org';
         $config['mail_direct_from']='direct@golden-team.org';
