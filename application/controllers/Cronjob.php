@@ -884,7 +884,7 @@ Class Cronjob extends CI_Controller
 
     }
 
-    function attempts_report() {
+    public function attempts_report() {
         $this->load->model('orders_model');
         /* Calculate time begin - end of previous day */
         $start=strtotime(date("Y-m-d", time()) . " - 1 days");
@@ -895,6 +895,50 @@ Class Cronjob extends CI_Controller
             'endtime'=>$end,
         );
         $this->orders_model->attempts_report($filtr);
+    }
+
+    public function searchresults_weekreport() {
+        $brands = ['BT','SB'];
+        $dat_mon = strtotime('last week Monday');
+        $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
+        foreach ($brands as $brand) {
+            $this->db->select('search_text, count(search_result_id) as cnt');
+            $this->db->from('sb_search_results');
+            $this->db->where('search_result',0);
+            $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
+            $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
+            $this->db->where('brand', $brand);
+            $this->db->group_by('search_text');
+            $this->db->order_by('cnt desc, search_text asc');
+            $res = $this->db->get()->result_array();
+
+            $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
+
+            $this->load->library('email');
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+            $this->email->initialize($email_conf);
+            // $mail_to=array('sean@bluetrack.com');
+            $mail_to='polovnikov.g@gmail.com';
+            // $mail_cc=array('sage@bluetrack.com');
+            $mail_cc=array('to_german@yahoo.com');
+
+            $this->email->to($mail_to);
+            $this->email->cc($mail_cc);
+
+            $this->email->from('no-replay@bluetrack.com');
+            $title = 'Weekly Report about Unsuccessful Searches '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
+            $this->email->subject($title);
+            $this->email->message($mail_body);
+            $res=$this->email->send();
+
+            $this->email->clear(TRUE);
+
+        }
 
     }
 
