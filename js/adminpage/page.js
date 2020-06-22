@@ -11,6 +11,14 @@ $(document).ready(function () {
     $("#admin").unbind('click').click(function(){
         window.location.href='/admin';
     });
+    $("#publicsearch_template").keypress(function (event) {
+        if (event.which == 13) {
+            liftsite_search();
+        }
+    });
+    $(".publicsearch_btn").unbind('click').click(function () {
+        liftsite_search();
+    })
 })
 
 function show_error(response) {
@@ -58,4 +66,20 @@ function matchStart(params, data) {
 
     // Return `null` if the term should not be displayed
     return null;
+}
+
+function liftsite_search() {
+    var params = new Array();
+    params.push({name: 'search_type', value: $("select.publicsearch_type").val()});
+    params.push({name: 'search_template', value: $("#publicsearch_template").val()});
+    var url="/welcome/liftsite_search";
+    $.post(url, params, function(response) {
+        if (response.errors=='') {
+            if (response.data.url!=='') {
+                window.location.href=response.data.url;
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

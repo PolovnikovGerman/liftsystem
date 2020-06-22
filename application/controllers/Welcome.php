@@ -30,4 +30,26 @@ class Welcome extends MY_Controller {
         openfile($url, $filename);
     }
 
+    // Lift search
+    public function liftsite_search() {
+        if ($this->isAjax()) {
+            $mdata =[
+                'url' => '',
+            ];
+            $error = '';
+            $postdata = $this->input->post();
+            $search_type = ifset($postdata,'search_type','unk');
+            $search_template = ifset($postdata,'search_template','');
+            if ($search_type=='Orders') {
+                $mdata['url'] = '/orders';
+                usersession('liftsearch', $search_template);
+            } elseif ($search_type=='Items') {
+                $mdata['url'] = '/database';
+                usersession('liftsearch', $search_template);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

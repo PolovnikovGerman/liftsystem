@@ -31,7 +31,8 @@ class Orders extends MY_Controller
         $head['title'] = 'Orders';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
-
+        $search = usersession('liftsearch');
+        usersession('liftsearch', NULL);
         foreach ($menu as $row) {
             if ($row['item_link']=='#ordersview') {
                 // Orders
@@ -47,7 +48,7 @@ class Orders extends MY_Controller
                     'active' => $brand,
                 ];
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['ordersview'] = $this->_prepare_orders_view($brand, $top_menu);
+                $content_options['ordersview'] = $this->_prepare_orders_view($brand, $top_menu, $search);
             } elseif ($row['item_link']=='#orderlistsview') {
                 $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
@@ -437,19 +438,19 @@ class Orders extends MY_Controller
         return $out;
     }
 
-    private function _prepare_orders_view($brand, $top_menu) {
+    private function _prepare_orders_view($brand, $top_menu, $liftsearch) {
         $datqs=[
             'brand' => $brand,
             'top_menu' => $top_menu,
             'perpage' => $this->config->item('perpage_orders'),
-            'activesearch' => ''
+            'activesearch' => '',
         ];
         $this->load->model('orders_model');
         $users=$this->user_model->get_user_leadreplicas();
 
         $options=[];
-
-        $ordertemplate=usersession('searchordertemplate');
+        // $ordertemplate=usersession('searchordertemplate');
+        $ordertemplate=$liftsearch;
         if (!empty($ordertemplate)) {
             // Check, that such order exits and # of orders==1
             $res=$this->orders_model->get_orderbynum($ordertemplate);
@@ -458,7 +459,7 @@ class Orders extends MY_Controller
             }
             $options['search']=strtoupper($ordertemplate);
             $datqs['search']=$ordertemplate;
-            usersession('searchordertemplate',NULL);
+            // usersession('searchordertemplate',NULL);
         } else {
             $datqs['search']='';
         }
