@@ -18,6 +18,14 @@ $(document).ready(function () {
     });
     $(".publicsearch_btn").unbind('click').click(function () {
         liftsite_search();
+    });
+    $("select.publicsearch_type").unbind('change').change(function(){
+        var newval = $(this).val();
+        if (newval=='Orders') {
+            $("#publicsearch_template").attr('placeholder','Find Orders');
+        } else if (newval=='Items') {
+            $("#publicsearch_template").attr('placeholder','Find Items');
+        }
     })
 })
 

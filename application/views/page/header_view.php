@@ -15,7 +15,7 @@
         <div class="publicsearch">
             <select class="publicsearch_type">
                 <option value="Orders">Orders</option>
-                <option value="Customers">Customers</option>
+                <!-- <option value="Customers">Customers</option> -->
                 <option value="Items">Items</option>
             </select>
             <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>

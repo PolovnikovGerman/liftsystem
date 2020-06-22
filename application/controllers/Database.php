@@ -48,37 +48,38 @@ class Database extends MY_Controller
             'active' => $brand,
         ];
         $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
-
+        $search = usersession('liftsearch');
+        usersession('liftsearch', NULL);
         foreach ($menu as $row) {
             if ($row['item_link'] == '#categoryview') {
                 // Custom shaped
                 $head['styles'][] = array('style' => '/css/database/categories.css');
                 $head['scripts'][] = array('src' => '/js/database/categories.js');
-                $content_options['categoryview'] = $this->_content_view('categories', $brand, $left_menu);
+                $content_options['categoryview'] = $this->_content_view('categories', $brand, $left_menu, $search);
             } elseif ($row['item_link'] == '#itempriceview') {
                 $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
-                $content_options['itempriceview'] = $this->_content_view('itemprice', $brand, $left_menu);
+                $content_options['itempriceview'] = $this->_content_view('itemprice', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemcategoryview') {
                 $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
-                $content_options['itemcategoryview'] = $this->_content_view('itemcategory', $brand, $left_menu);
+                $content_options['itemcategoryview'] = $this->_content_view('itemcategory', $brand, $left_menu, $search);
             } elseif ($row['item_link'] == '#itemsequenceview') {
                 $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
-                $content_options['itemsequenceview'] = $this->_content_view('itemsequence', $brand, $left_menu);
+                $content_options['itemsequenceview'] = $this->_content_view('itemsequence', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemmisinfoview') {
                 $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
-                $content_options['itemmisinfoview'] = $this->_content_view('itemmisinfo', $brand, $left_menu);
+                $content_options['itemmisinfoview'] = $this->_content_view('itemmisinfo', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemprofitview') {
                 $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
-                $content_options['itemprofitview'] = $this->_content_view('itemprofit', $brand, $left_menu);
+                $content_options['itemprofitview'] = $this->_content_view('itemprofit', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemtemplateview') {
                 $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
-                $content_options['itemtemplateview'] = $this->_content_view('itemtemplates', $brand, $left_menu);
+                $content_options['itemtemplateview'] = $this->_content_view('itemtemplates', $brand, $left_menu, $search);
             }
         }
         // Add main page management
@@ -108,7 +109,7 @@ class Database extends MY_Controller
         $this->load->view('page/page_template_view', $dat);
     }
 
-    private function _content_view($page_name, $brand, $left_menu) {
+    private function _content_view($page_name, $brand, $left_menu, $search='') {
         $data = ['brand' => $brand, 'left_menu' => $left_menu, 'brandid' => $page_name.'brand', 'brandmenuid' => $page_name.'brandmenu'];
         if ($page_name=='categories') {
             // $page_name_full = 'Categories';
@@ -117,7 +118,7 @@ class Database extends MY_Controller
             $options = ['buttons_view' => $buttons_view, 'special_content' => $special_content,];
             $data['content'] = $this->load->view('database/category_pagecontent_view', $options, TRUE);
         } else {
-            $data['content'] = $this->_prepare_dbpage_content($page_name, $brand);
+            $data['content'] = $this->_prepare_dbpage_content($page_name, $brand, $search);
         }
         return $this->load->view('database/page_content_view', $data, TRUE);
     }
@@ -721,7 +722,7 @@ class Database extends MY_Controller
     }
 
     // Prepare pages
-    private function _prepare_dbpage_content($page_name, $brand)
+    private function _prepare_dbpage_content($page_name, $brand, $search='')
     {
         if ($page_name=='categories') {
             $this->load->model('categories_model');
@@ -733,7 +734,7 @@ class Database extends MY_Controller
             $cur_page = 0;
             $order_by = 'item_number';
             $direction = 'asc';
-            $search = '';
+            // $search = '';
             $vendor_id = '';
             $current_pagename = usersession('page_name');
             if ($current_pagename == $page_name) {
