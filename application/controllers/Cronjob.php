@@ -922,10 +922,8 @@ Class Cronjob extends CI_Controller
                 'mailtype'=>'html',
             );
             $this->email->initialize($email_conf);
-            // $mail_to=array('sean@bluetrack.com');
-            $mail_to='polovnikov.g@gmail.com';
-            // $mail_cc=array('sage@bluetrack.com');
-            $mail_cc=array('to_german@yahoo.com');
+            $mail_to=array('sean@bluetrack.com');
+            $mail_cc=array('sage@bluetrack.com');
 
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
