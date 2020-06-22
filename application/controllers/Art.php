@@ -48,8 +48,6 @@ class Art extends MY_Controller {
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View
-                $head['styles'][]=array('style'=>'/css/art/taskview.css');
-                $head['scripts'][]=array('src'=>'/js/art/taskview.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -62,8 +60,6 @@ class Art extends MY_Controller {
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['taskview'] = $this->_prepare_task_view($brand, $top_menu);
             } elseif ($row['item_link']=='#orderlist') {
-                $head['styles'][]=array('style'=>'/css/art/orderslist.css');
-                $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -76,8 +72,6 @@ class Art extends MY_Controller {
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['orderlist'] = $this->_prepare_orderlist_view($brand, $top_menu);
             } elseif ($row['item_link']=='#requestlist') {
-                $head['styles'][]=array('style'=>'/css/art/requestlist.css');
-                $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -93,6 +87,13 @@ class Art extends MY_Controller {
         }
         $content_options['menu']=$menu;
         $content_view = $this->load->view('artpage/page_view', $content_options, TRUE);
+        // Add Page Management
+        $head['styles'][]=array('style'=>'/css/art/orderslist.css');
+        $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
+        $head['styles'][]=array('style'=>'/css/art/taskview.css');
+        $head['scripts'][]=array('src'=>'/js/art/taskview.js');
+        $head['styles'][]=array('style'=>'/css/art/requestlist.css');
+        $head['scripts'][]=array('src'=>'/js/art/requestlist.js');
         // Add main page management
         $head['scripts'][]=array('src'=>'/js/art/page.js');
         $head['styles'][] = array('style'=> '/css/art/artpage.css');
