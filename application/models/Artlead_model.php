@@ -561,7 +561,8 @@ Class Artlead_model extends MY_Model
             }
         }
 
-        $smessage = str_replace('<<links>>', $message, $data['message']);
+        // $smessage = str_replace('<<links>>', $message, $data['message']);
+        $smessage = str_replace('&lt;<links>>', $message, $data['message']);
 
         $this->email->message($smessage);
 
