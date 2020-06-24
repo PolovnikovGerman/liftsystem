@@ -38,7 +38,6 @@ $(document).ready(function () {
 function autocollapse(resize) {
     var tabs = $("#mainmenutabs");
     var tabsHeight = parseInt(tabs.innerHeight());
-    console.log("new height "+tabsHeight);
     if (tabsHeight > 34) {
         $("#lastTab").show();
         var i=0;
@@ -68,17 +67,6 @@ function autocollapse(resize) {
                 }
             },'json');
         }
-        // console.log('Small row');
-        // $("#lastTab").hide();
-        // if ($("#collapsed").children('li').length > 0) {
-        //     var collaptab = $("#collapsed");
-        //     var children=collaptab.children('li');
-        //     var count = children.length;
-        //     for(i=0; i< count ; i++) {
-        //         children[i].prepe
-        //     }
-        //     console.log('count '+count);
-        // }
     }
 
 }
