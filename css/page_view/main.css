@@ -457,13 +457,11 @@ body div {
 .clearfix {
     clear: both;
 }
-.mainmenulasttab {
-    display: none;
-}
 li.mainmenulasttab {
     height: 23px;
     line-height: 23px!important;
     padding: 0!important;
+    display: none;
 }
 li.mainmenulasttab > a {
     color: #ffffff;

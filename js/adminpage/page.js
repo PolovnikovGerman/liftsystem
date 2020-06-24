@@ -1,6 +1,9 @@
 $(document).ready(function () {
-    autocollapse(); // when document first loads
-    $(window).on('resize', autocollapse); // when window is resized
+    autocollapse(0); // when document first loads
+    // $(window).on('resize', autocollapse); // when window is resized
+    $(window).resize(function() {
+        autocollapse(1);
+    });
 
     $(".menubutton").unbind('click').click(function () {
         var url=$(this).data('menulink');
@@ -32,16 +35,15 @@ $(document).ready(function () {
     })
 });
 
-function autocollapse() {
+function autocollapse(resize) {
     var tabs = $("#mainmenutabs");
-    var tabsHeight = tabs.innerHeight();
+    var tabsHeight = parseInt(tabs.innerHeight());
+    console.log("new height "+tabsHeight);
     if (tabsHeight > 45) {
         $("#lastTab").show();
         var i=0;
         while (tabsHeight > 45) {
-            //console.log("new"+tabsHeight);
             var children = tabs.children('li.menubutton:not(:last-child)');
-            console.log(children.data('menulink'));
             var count = children.size();
             $(children[count - 1]).prependTo('#collapsed');
             tabsHeight = tabs.innerHeight();
@@ -51,7 +53,32 @@ function autocollapse() {
             }
         }
     } else {
-        $("#lastTab").hide();
+        if (resize==1) {
+            var params=new Array();
+            params.push({name: 'activelnk', value: $("#mainmenuactivelnk").val()});
+            var url = '/welcome/restore_main_menu'
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $(".menurow").empty().html(response.data.content);
+                    $(".menubutton").unbind('click').click(function () {
+                        var url=$(this).data('menulink');
+                        window.location.href=url;
+                    });
+                    autocollapse(0);
+                }
+            },'json');
+        }
+        // console.log('Small row');
+        // $("#lastTab").hide();
+        // if ($("#collapsed").children('li').length > 0) {
+        //     var collaptab = $("#collapsed");
+        //     var children=collaptab.children('li');
+        //     var count = children.length;
+        //     for(i=0; i< count ; i++) {
+        //         children[i].prepe
+        //     }
+        //     console.log('count '+count);
+        // }
     }
 
 }

@@ -52,4 +52,5 @@
         <?php } ?>
     </div>
     <div class="datarow menurow"><?=$menu_view?></div>
+    <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
 </div>

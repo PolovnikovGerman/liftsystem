@@ -56,4 +56,21 @@ class Welcome extends MY_Controller {
         $this->load->view('test/test',[]);
     }
 
+    public function restore_main_menu() {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $activelnk = ifset($postdata,'activelnk', '');
+            $this->load->model('menuitems_model');
+            $menu_options = [
+                'activelnk'=>$activelnk,
+                'permissions' => $this->menuitems_model->get_user_permissions($this->USR_ID),
+            ];
+            $mdata['content'] = $this->load->view('page/menu_view', $menu_options, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
