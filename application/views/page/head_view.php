@@ -5,7 +5,7 @@
 <link href='/css/page_view/bootstrap.min.css' rel='stylesheet' type='text/css'>
 <!-- <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'> -->
 <link rel="stylesheet" href="/css/page_view/font-awesome.min.css">
-<link rel="stylesheet" href="/css/page_view/main.css">
+<link rel="stylesheet" href="/css/page_view/main.css?v=<?=getsitecssversion()?>">
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>

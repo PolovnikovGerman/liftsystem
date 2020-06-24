@@ -52,4 +52,8 @@ class Welcome extends MY_Controller {
         show_404();
     }
 
+    public function testtabs() {
+        $this->load->view('test/test',[]);
+    }
+
 }
