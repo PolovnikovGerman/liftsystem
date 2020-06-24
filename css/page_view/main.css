@@ -68,7 +68,8 @@ body div {
     /* height: 66px;
     background: #252525;
     padding: 7px 5px; */
-    height: 73px;
+    /* height: 73px; */
+    float: left;
     background: #252525;
     padding: 7px 10px;
 }
@@ -220,6 +221,9 @@ body div {
     padding-top: 4px;
     padding-left: 20px;
 }
+.nav-tabs {
+    border-bottom: none!important;
+}
 .menubutton {
     min-width: 92px;
     height: 23px;
@@ -323,6 +327,7 @@ body div {
     width: 100%;
     background: #000000;
     float: left;
+    margin-top: -7px;
 }
 .maincontent div {
     float: left;

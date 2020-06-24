@@ -39,10 +39,10 @@ function autocollapse(resize) {
     var tabs = $("#mainmenutabs");
     var tabsHeight = parseInt(tabs.innerHeight());
     console.log("new height "+tabsHeight);
-    if (tabsHeight > 45) {
+    if (tabsHeight > 34) {
         $("#lastTab").show();
         var i=0;
-        while (tabsHeight > 45) {
+        while (tabsHeight > 34) {
             var children = tabs.children('li.menubutton:not(:last-child)');
             var count = children.size();
             $(children[count - 1]).prependTo('#collapsed');
