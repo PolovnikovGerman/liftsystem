@@ -221,7 +221,7 @@ body div {
     padding-left: 20px;
 }
 .menubutton {
-    /* width: 92px; */
+    min-width: 92px;
     height: 23px;
     line-height: 23px!important;
     cursor: pointer;
@@ -231,6 +231,7 @@ body div {
     text-align: center;
     font-weight: bold;
     padding: 0 13px;
+    margin-bottom: 0!important;
 }
 .menubutton.adminbutton {
     background: #ff1c1c;
@@ -455,4 +456,22 @@ body div {
 
 .clearfix {
     clear: both;
+}
+.mainmenulasttab {
+    display: none;
+}
+li.mainmenulasttab {
+    height: 23px;
+    line-height: 23px!important;
+    padding: 0!important;
+}
+li.mainmenulasttab > a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0 10px!important;
+}
+li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
+    color: #ffffff;
+    text-decoration: none;
+    background: none!important;
 }
