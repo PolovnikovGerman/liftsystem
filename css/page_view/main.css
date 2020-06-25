@@ -477,4 +477,5 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     color: #ffffff;
     text-decoration: none;
     background: none!important;
+    border: none!important;
 }
