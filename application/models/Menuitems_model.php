@@ -230,15 +230,61 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_itemsubmenu($user_id, $root_lnk) {
-        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access, u.brand');
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access');
         $this->db->from('menu_items mm');
         $this->db->join('menu_items m','m.parent_id=mm.menu_item_id');
-        $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
-        $this->db->where('u.user_id', $user_id);
-        $this->db->where('u.permission_type > 0');
         $this->db->where('mm.item_link', $root_lnk);
         $this->db->order_by('m.menu_order, m.menu_section');
-        return $res=$this->db->get()->result_array();
+        $res=$this->db->get()->result_array();
+        $menuitems = [];
+        foreach ($res as $row) {
+            $this->db->select('brand');
+            $this->db->from('user_permissions');
+            $this->db->where('menu_item_id', $row['menu_item_id']);
+            $this->db->where('user_id', $user_id);
+            $this->db->where('permission_type > 0');
+            if ($row['brand_access']=='BRAND') {
+                $userperm = $this->db->get()->result_array();
+                if (count($userperm)>0) {
+                    $newbrand = [];
+                    foreach ($userperm as $permrow) {
+                        array_push($newbrand, $permrow);
+                    }
+                    $menuitems[] = [
+                        'menu_item_id' => $row['menu_item_id'],
+                        'item_name' => $row['item_name'],
+                        'menu_section' => $row['menu_section'],
+                        'item_link' => $row['item_link'],
+                        'brand_access' => $row['brand_access'],
+                        'brand' => $newbrand,
+                    ];
+                }
+            } else {
+                $userperm = $this->db->get()->row_array();
+                if ($row['brand_access']=='NONE') {
+                    $menuitems[] = [
+                        'menu_item_id' => $row['menu_item_id'],
+                        'item_name' => $row['item_name'],
+                        'menu_section' => $row['menu_section'],
+                        'item_link' => $row['item_link'],
+                        'brand_access' => $row['brand_access'],
+                        'brand' => null,
+                    ];
+                } else {
+                    if (ifset($userperm,'brand','')!=='') {
+                        $menuitems[] = [
+                            'menu_item_id' => $row['menu_item_id'],
+                            'item_name' => $row['item_name'],
+                            'menu_section' => $row['menu_section'],
+                            'item_link' => $row['item_link'],
+                            'brand_access' => $row['brand_access'],
+                            'brand' => $userperm['brand'],
+                        ];
+                    }
+                }
+            }
+        }
+        return $menuitems;
     }
 
     public function get_brand_permisions($user_id, $pagelink) {
@@ -257,6 +303,29 @@ Class Menuitems_model extends MY_Model
                 ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'],
                 ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'],
             ];
+        }
+        return $brands;
+    }
+
+    public function get_menubrands_permisions($brand_list) {
+        $brands = [];
+        // Universal
+        foreach ($brand_list as $row) {
+            if ($row['brand']=='All') {
+                $brands[] = ['brand' => 'ALL', 'logo' => $this->all_logo, 'label' => 'All brands'];
+            }
+        }
+        // SB
+        foreach ($brand_list as $row) {
+            if ($row['brand']=='SB') {
+                $brands[] = ['brand' => 'SB', 'logo' => $this->sb_logo, 'label' => 'stressball.com only'];
+            }
+        }
+        // BT
+        foreach ($brand_list as $row) {
+            if ($row['brand']=='BT') {
+                $brands[] = ['brand' => 'BT', 'logo' => $this->bt_logo, 'label' => 'bluetrack only'];
+            }
         }
         return $brands;
     }

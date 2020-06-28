@@ -38,45 +38,85 @@ class Database extends MY_Controller
         $content_options = [
             'menu' => $menu,
         ];
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
-        $brand = $brands[0]['brand'];
-        $left_options = [
-            'brands' => $brands,
-            'active' => $brand,
-        ];
-        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
         foreach ($menu as $row) {
             if ($row['item_link'] == '#categoryview') {
-                // Custom shaped
+                // Item Categories
+                $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][] = array('style' => '/css/database/categories.css');
                 $head['scripts'][] = array('src' => '/js/database/categories.js');
                 $content_options['categoryview'] = $this->_content_view('categories', $brand, $left_menu, $search);
             } elseif ($row['item_link'] == '#itempriceview') {
+                // Item Price
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
                 $content_options['itempriceview'] = $this->_content_view('itemprice', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemcategoryview') {
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
                 $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
                 $content_options['itemcategoryview'] = $this->_content_view('itemcategory', $brand, $left_menu, $search);
             } elseif ($row['item_link'] == '#itemsequenceview') {
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
                 $content_options['itemsequenceview'] = $this->_content_view('itemsequence', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemmisinfoview') {
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
                 $content_options['itemmisinfoview'] = $this->_content_view('itemmisinfo', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemprofitview') {
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
                 $content_options['itemprofitview'] = $this->_content_view('itemprofit', $brand, $left_menu, $search);
             } elseif ($row['item_link']=='#itemtemplateview') {
+                $brands = $this->menuitems_model->get_menubrands_permisions($row['brand']);
+                $brand = $brands[0]['brand'];
+                $left_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
                 $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
                 $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
                 $content_options['itemtemplateview'] = $this->_content_view('itemtemplates', $brand, $left_menu, $search);
