@@ -191,7 +191,7 @@ class Admin extends MY_Controller
         $out=array();
         foreach ($wpages as $wrow){
             $lvl++;
-            $label=$wrow['item_name'];
+            $label='<span class="usrpermissionlabel">'.$wrow['item_name'].'</span>';
             // 'brand_access' => $wrow['brand_access'],
             // 'brand' => $wrow['brand'],
 
@@ -216,12 +216,16 @@ class Admin extends MY_Controller
     }
 
     private function _sitemenu_useraccess($wrow, $user_id) {
-        if ($wrow['brand_access']=='SITES') {
-
-        } else {
-            $brands = [];
+        $brands = [];
+        if ($wrow['brand_access']=='SITE') {
             $brands[] = ['key' => '', 'value' => 'None'];
             $brands[] = ['key' => 'ALL', 'value' => 'All'];
+            $brands[] = ['key' => 'SB', 'value' => 'Stressball.com only'];
+            $brands[] = ['key' => 'BT', 'value' => 'Bluetrack only'];
+        } elseif ($wrow['brand_access']=='BRAND') {
+            $brands = $wrow['brand'];
+        } else {
+            $brands[] = ['key' => '', 'value' => 'None'];
             $brands[] = ['key' => 'SB', 'value' => 'Stressball.com only'];
             $brands[] = ['key' => 'BT', 'value' => 'Bluetrack only'];
         }
@@ -230,7 +234,12 @@ class Admin extends MY_Controller
             'brands'=>$brands,
             'menu_item' => $wrow['menu_item_id'],
         );
-        return $this->load->view('admin/sitemenu_access_view', $options, TRUE);
+        if ($wrow['brand_access']=='BRAND') {
+            return $this->load->view('admin/sitemenu_multyaccess_view', $options, TRUE);
+        } else {
+            return $this->load->view('admin/sitemenu_access_view', $options, TRUE);
+        }
+
 
     }
 
@@ -272,6 +281,33 @@ class Admin extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function changebrandaccess() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session','emptysession');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $menuitem = ifset($postdata, 'menuitem', 0);
+                $brand = ifset($postdata,'brand', '');
+                $res = $this->menuitems_model->update_userpage_brandaccess($session_data, $menuitem, $brand, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($res['newval']==0) {
+                        $mdata['content']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+                    } else {
+                        $mdata['content']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                    }
+                    $mdata['newacc'] = $res['newacc'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

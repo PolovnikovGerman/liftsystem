@@ -201,7 +201,7 @@ textarea.emailsignature {
     width: 427px;
 }
 .permissionsdata fieldset {
-    width: 424px;
+    width: 525px;
     border: 2px solid #0000ff;
 }
 .permissionsdata fieldset legend {
@@ -219,8 +219,18 @@ textarea.emailsignature {
     height: 428px;
     margin-top: 5px;
     overflow-y: auto;
-    width: 419px;
+    width: 518px;
     padding: 7px;
+}
+span.usrpermissionlabel {
+    float: left;
+    margin-right: 4px;
+}
+.brandmultiaccsessarea .brandname {
+    float: left;
+}
+.brandmultiaccsessarea .brandname i {
+    font-size: 15px;
 }
 .addrestict {
     clear: both;

@@ -6,7 +6,6 @@ Class Menuitems_model extends MY_Model
     private $sb_logo = '/img/page_view/sb_lefttab_logo.png';
     private $bt_logo = '/img/page_view/bt_lefttab_logo.png';
     private $all_logo = '/img/page_view/universal_lefttab_logo.png';
-
     public function __construct()
     {
         parent::__construct();
@@ -200,15 +199,18 @@ Class Menuitems_model extends MY_Model
 
     public function get_menuitem($lnk='', $menu_id=0) {
         $out=['result'=>$this->error_result,'msg'=>'Menu Item Not Found'];
-        if ($lnk) {
-            $this->db->select('*');
-            $this->db->from('menu_items');
+        $this->db->select('*');
+        $this->db->from('menu_items');
+        if (!empty($lnk)) {
             $this->db->where('item_link', $lnk);
-            $res = $this->db->get()->row_array();
-            if (!empty($res) && array_key_exists('menu_item_id', $res)) {
-                $out['result']=$this->success_result;
-                $out['menuitem'] = $res;
-            }
+        }
+        if (!empty($menu_id)) {
+            $this->db->where('menu_item_id', $menu_id);
+        }
+        $res = $this->db->get()->row_array();
+        if (!empty($res) && array_key_exists('menu_item_id', $res)) {
+            $out['result'] = $this->success_result;
+            $out['menuitem'] = $res;
         }
         return $out;
     }
@@ -284,14 +286,87 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_webpage($pid, $user_id) {
-        $this->db->select('wp.menu_item_id, wp.item_name, wp.brand_access, rp.permission_type, rp.brand');
+        $system_brands = [];
+        $system_brands[] = ['key'=> 'All','label'=>'Univ'];
+        $system_brands[] = ['key' => 'SB', 'label'=> 'Stressball'];
+        $system_brands[] = ['key' => 'BT', 'label' => 'Bluetrack'];
+        $this->db->select('wp.menu_item_id, wp.item_name, wp.brand_access');
         $this->db->from('menu_items wp');
-        $this->db->join('(select menu_item_id, permission_type, brand from user_permissions where user_id='.$user_id.') rp','rp.menu_item_id=wp.menu_item_id','left');
         $this->db->where('wp.parent_id', $pid);
         $this->db->where('wp.item_link is not null');
         $this->db->order_by('wp.menu_order');
         $result=$this->db->get()->result_array();
-        return $result;
+        // , rp.permission_type, rp.brand
+        // $this->db->join('(select menu_item_id, permission_type, brand from user_permissions where user_id='.$user_id.') rp','rp.menu_item_id=wp.menu_item_id','left');
+        $out = [];
+        foreach ($result as $row) {
+            $this->db->select('user_permission_id, menu_item_id, permission_type, brand');
+            $this->db->from('user_permissions');
+            $this->db->where('user_id', $user_id);
+            $this->db->where('menu_item_id', $row['menu_item_id']);
+            if ($row['brand_access']=='BRAND') {
+                $permres = $this->db->get()->result_array();
+            } else {
+                $permres = $this->db->get()->row_array();
+            }
+
+            if ($row['brand_access']=='NONE') {
+                $out[] = [
+                    'menu_item_id' => $row['menu_item_id'],
+                    'item_name' => $row['item_name'],
+                    'brand_access' => $row['brand_access'],
+                    'permission_type' => isset($permres['permission_type']) ? $permres['permission_type'] : '',
+                    'brand' => NULL,
+                ];
+            } elseif ($row['brand_access']=='SITE') {
+                $out[] = [
+                    'menu_item_id' => $row['menu_item_id'],
+                    'item_name' => $row['item_name'],
+                    'brand_access' => $row['brand_access'],
+                    'permission_type' => isset($permres['permission_type']) ? $permres['permission_type'] : '',
+                    'brand' => isset($permres['brand']) ? $permres['brand'] : NULL,
+                ];
+            } else {
+                $newbrand = [];
+                $idx = 1;
+                foreach ($system_brands as $brow) {
+                    $found = 0;
+                    $pidx = 0;
+                    foreach ($permres as $prow) {
+                        if ($prow['brand']==$brow['key']) {
+                            $found=1;
+                            break;
+                        }
+                        $pidx++;
+                    }
+                    if ($found==1) {
+                        $newbrand[] = [
+                            'user_permission_id' => $permres[$pidx]['user_permission_id'],
+                            'permission_type' => 1,
+                            'brand' => $brow['key'],
+                            'label' => $brow['label'],
+                            'checkval' => 1,
+                        ];
+                    } else {
+                        $newbrand[] = [
+                            'user_permission_id' => $idx * (-1),
+                            'permission_type' => 0,
+                            'brand' => $brow['key'],
+                            'label' => $brow['label'],
+                            'checkval' => 0,
+                        ];
+                    }
+                }
+                $out[] = [
+                    'menu_item_id' => $row['menu_item_id'],
+                    'item_name' => $row['item_name'],
+                    'brand_access' => $row['brand_access'],
+                    'permission_type' => count($newbrand)==0 ? '' : 1,
+                    'brand' => $newbrand,
+                ];
+            }
+        }
+        return $out;
     }
 
     public function update_userpage_permission($session_data, $menuitem, $newval, $session_id) {
@@ -372,41 +447,129 @@ Class Menuitems_model extends MY_Model
         return $out;
     }
 
+    public function update_userpage_brandaccess($session_data, $menuitem, $brand, $session_id) {
+        $out=['result' => $this->error_result,'msg'=>'Page Not found'];
+        if ($menuitem>0 && !empty($brand)) {
+            $webpages = $session_data['webpages'];
+            $found = 0;
+            $idx = 0;
+            foreach ($webpages as $row) {
+                if ($row['id']==$menuitem) {
+                    $found = 1;
+                    // $webpages[$idx]['brand']=$newval;
+                    // if ($newval=='') {
+                    //     $webpages[$idx]['value']=0;
+                    // } else {
+                    //     $webpages[$idx]['value']=1;
+                    // }
+                };
+                if (is_array($row['element'])) {
+                    $eidx = 0;
+                    foreach ($row['element'] as $erow) {
+                        if ($erow['id']==$menuitem) {
+                            $found=1;
+                            $bidx = 0;
+                            $newval = 0;
+                            $brandacc = 0;
+                            foreach ($erow['brand'] as $brrow) {
+                                if ($brrow['brand']==$brand) {
+                                    $newval=($brrow['checkval']==1 ? 0 : 1);
+                                    $webpages[$idx]['element'][$eidx]['brand'][$bidx]['checkval']=$newval;
+                                    $brandacc+=$newval;
+                                } else {
+                                    $brandacc+=$brrow['checkval'];
+                                }
+                                $bidx++;
+                            }
+                            if ($brandacc==0) {
+                                $webpages[$idx]['element'][$eidx]['value']=0;
+                            } else {
+                                $webpages[$idx]['element'][$eidx]['value']=1;
+                            }
+                            $out['newval']=$newval;
+                            $out['newacc'] = $brandacc;
+                        }
+                        $eidx++;
+                    }
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $session_data['webpages']=$webpages;
+                usersession($session_id, $session_data);
+            }
+        }
+        return $out;
+
+    }
+
     public function save_userpermissions($webpages, $user_id) {
         foreach ($webpages as $row) {
-            $res = $this->_chkuserpermission($row['id'], $user_id);
-            $this->db->set('permission_type', $row['value']);
-            if ($row['value']==0) {
-                $this->db->set('brand', NULL);
-            } else {
-                if (empty($row['brand'])) {
-                    $this->db->set('brand', NULL);
+            $menuchk = $this->get_menuitem('', $row['id']);
+            if ($menuchk['result']==$this->success_result) {
+                $menuitem = $menuchk['menuitem'];
+                if ($menuitem['brand_access']=='BRAND') {
+                    //
                 } else {
-                    $this->db->set('brand', $row['brand']);
-                }
-            }
-            $this->db->where('user_permission_id', $res);
-            $this->db->update('user_permissions');
-            if (is_array($row['element'])) {
-                $elements = $row['element'];
-                foreach ($elements as $erow) {
-                    $eres = $this->_chkuserpermission($erow['id'], $user_id);
-                    $this->db->set('permission_type', $erow['value']);
-                    if ($erow['value']==0) {
+                    $res = $this->_chkuserpermission($row['id'], $user_id);
+                    $this->db->set('permission_type', $row['value']);
+                    if ($row['value']==0) {
                         $this->db->set('brand', NULL);
                     } else {
-                        if (empty($erow['brand'])) {
+                        if (empty($row['brand'])) {
                             $this->db->set('brand', NULL);
                         } else {
-                            $this->db->set('brand', $erow['brand']);
+                            $this->db->set('brand', $row['brand']);
                         }
                     }
-                    $this->db->where('user_permission_id', $eres);
+                    $this->db->where('user_permission_id', $res);
                     $this->db->update('user_permissions');
-                    if ($erow['value']==1) {
-                        $this->db->set('permission_type', 1);
-                        $this->db->where('user_permission_id', $res);
-                        $this->db->update('user_permissions');
+                }
+                if (is_array($row['element'])) {
+                    $elements = $row['element'];
+                    foreach ($elements as $erow) {
+                        $elmenuchk = $this->get_menuitem('', $erow['id']);
+                        if ($elmenuchk['result']==$this->success_result) {
+                            $elmenuitem = $elmenuchk['menuitem'];
+                            if ($elmenuitem['brand_access']=='BRAND') {
+                                $elbrands = $erow['brand'];
+                                foreach ($elbrands as $rbrand) {
+                                    // New Item Access
+                                    if ($rbrand['user_permission_id']<0 && $rbrand['checkval']==1) {
+                                        $this->db->set('user_id', $user_id);
+                                        $this->db->set('menu_item_id', $erow['id']);
+                                        $this->db->set('permission_type', 1);
+                                        $this->db->set('brand', $rbrand['brand']);
+                                        $this->db->insert('user_permissions');
+                                    }
+                                    // Delete Unchecked Access
+                                    if ($rbrand['user_permission_id']>0 && $rbrand['checkval']==0) {
+                                        $this->db->where('user_permission_id', $rbrand['user_permission_id']);
+                                        $this->db->delete('user_permissions');
+                                    }
+                                }
+                            } else {
+                                $eres = $this->_chkuserpermission($erow['id'], $user_id);
+                                $this->db->set('permission_type', $erow['value']);
+                                if ($erow['value']==0) {
+                                    $this->db->set('brand', NULL);
+                                } else {
+                                    if (empty($erow['brand'])) {
+                                        $this->db->set('brand', NULL);
+                                    } else {
+                                        $this->db->set('brand', $erow['brand']);
+                                    }
+                                }
+                                $this->db->where('user_permission_id', $eres);
+                                $this->db->update('user_permissions');
+                                if ($erow['value']==1) {
+                                    $this->db->set('permission_type', 1);
+                                    $this->db->where('user_permission_id', $res);
+                                    $this->db->update('user_permissions');
+                                }
+                            }
+                        }
                     }
                 }
             }

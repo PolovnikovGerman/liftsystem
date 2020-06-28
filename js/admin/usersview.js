@@ -130,7 +130,7 @@ function edit_user(user_id) {
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
-            $("#pageModal").find('div.modal-dialog').css('width','845px');
+            $("#pageModal").find('div.modal-dialog').css('width','948px');
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* Init save button */
             user_edit_init();
@@ -198,6 +198,31 @@ function user_edit_manage() {
                     $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').prop('checked',true);
                     $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').parent('label.jquery-tree-title').removeClass('jquery-tree-unchecked').addClass('jquery-tree-checked');
                 }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Click on check box
+    $("div.brandaccesscheckfld").unbind('click').click(function () {
+        var menuitem = $(this).data('menuitem');
+        var brand = $(this).data('brand')
+        var url = '/admin/changebrandaccess';
+        var params = new Array();
+        params.push({name: 'menuitem', value: menuitem});
+        params.push({name: 'brand', value: brand});
+        params.push({name: 'session', value: $("#session").val()});
+        console.log(params);
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (parseInt(response.data.newacc)==0) {
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').prop('checked',false);
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').parent('label.jquery-tree-title').removeClass('jquery-tree-checked').addClass('jquery-tree-unchecked');
+                } else {
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').prop('checked',true);
+                    $('input.pageuseraccess[data-menuitem="'+menuitem+'"]').parent('label.jquery-tree-title').removeClass('jquery-tree-unchecked').addClass('jquery-tree-checked');
+                }
+                $("div.brandaccesscheckfld[data-menuitem='"+menuitem+"'][data-brand='"+brand+"']").empty().html(response.data.content);
             } else {
                 show_error(response);
             }
