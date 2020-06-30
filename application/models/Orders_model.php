@@ -2355,13 +2355,6 @@ Class Orders_model extends MY_Model
     }
 
     private function _profit_totals($filtr, $addtype) {
-        $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
-            sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
-            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
-        $this->db->from("ts_orders o");
-        if (isset($filtr['filter']) && $filtr['filter']!=7) {
-            $this->db->where('o.is_canceled',0);
-        }
         if (isset($filtr['filter']) && $filtr['filter']==9) {
             $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
             $this->db->from('ts_order_batches');
@@ -2370,7 +2363,14 @@ Class Orders_model extends MY_Model
             $paidsql = $this->db->get_compiled_select();
             $this->db->join('('.$paidsql.') p','p.order_id=o.order_id','left');
             $this->db->where('o.order_date >= ', $this->config->item('netprofit_start'));
-            $this->db->where('coalesce(o.revenue,0) != coalesce(p.batch_amount,0) ');
+            $this->db->where('coalesce(o.revenue,0) != coalesce(p.batchsum,0) ');
+        }
+        $this->db->select("count(o.order_num) as numorders, sum(o.order_qty) as qty, sum(o.revenue) as revenue,
+            sum(o.shipping*o.is_shipping) as shipping, sum(o.tax) as tax, sum(o.cc_fee) as cc_fee,
+            sum(coalesce(o.order_cog,0)) as order_cog, sum(o.profit) as profit",FALSE);
+        $this->db->from("ts_orders o");
+        if (isset($filtr['filter']) && $filtr['filter']!=7) {
+            $this->db->where('o.is_canceled',0);
         }
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
