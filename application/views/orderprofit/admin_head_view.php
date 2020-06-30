@@ -3,6 +3,7 @@
     <input type="hidden" id="directiontab1" value="<?=$direc?>"/>
     <input type="hidden" id="totaltab1" value="<?=$total?>"/>
     <input type="hidden" id="curpagetab1" value="<?=$curpage;?>"/>
+    <input type="hidden" id="quickbookexclude" value="1"/>
     <div class="profitorder-head-row">
         <div class="legend"><?=$legend?></div>
         <div>
@@ -34,6 +35,10 @@
     <div class="profitorder-head-row">
         <div class="profit_filterdate_area <?= $adminview == 1 ? 'adminview' : '' ?>">
             <div class="labeltxt">Display:</div>
+            <div class="checkpint" id="hidequickboxcheck">
+                <i class="fa fa-check-square-o" aria-hidden="true"></i>
+            </div>
+            <div class="excludeorderqbooklabel">Exclude Orders Found in Quickbooks</div>
             <div class="checkpint">
                 <input type="radio" id="profitdatetypechoise1" name="profitdatetypechoise" value="yearcheck"
                        checked="checked"/>
@@ -56,9 +61,7 @@
             <div class="checkpint">
                 <input type="radio" id="profitdatetypechoise2" name="profitdatetypechoise" value="datecheck">
             </div>
-            <div class="dateslabel">
-                Custom
-            </div>
+            <div class="dateslabel">Custom</div>
             <div class="datesinpt">
                 <input type="text" class="profitorder_dateinpt" id="customdatebgn" autocomplete="off" disabled="disabled"/>
             </div>

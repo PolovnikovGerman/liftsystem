@@ -123,6 +123,21 @@ function init_profit_orders() {
         // Years totals
         totalyears();
     });
+    // Change include quickbox
+    $("div#hidequickboxcheck").unbind('click').click(function(){
+        var url="/accounting/exclude_quickbook";
+        var params=new Array();
+        params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("div#hidequickboxcheck").empty().html(response.data.content);
+                $("input#quickbookexclude").val(response.data.newval);
+                search_profit_data();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function change_profit_sort(sortname,sortclass) {
@@ -213,7 +228,7 @@ function initProfitOrderPagination() {
     // count entries inside the hidden content
     var num_entries = $('#totaltab1').val();
     // var perpage = itemsperpage;
-    var perpage = $("#perpagetab1").val();
+    var perpage = $("#perpage_profitorders").val();
     if (parseInt(num_entries) < parseInt(perpage)) {
         $("#profitorders_pagination").empty();
         pageProfitOrederCallback(0);
@@ -744,6 +759,7 @@ function profile_filter_get() {
     var params = new Array();
     params.push({name:'search', value: search});
     params.push({name:'filter', value:$("#order_filtr").val()});
+    params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
     if ($("input#profitdatetypechoise1").prop('checked')==true) {
         params.push({name: 'show_year', value: 1});
         params.push({name: 'year', value: $(".selectorderyeardat").val()});
@@ -811,6 +827,7 @@ function init_prepare_export() {
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
     params.push({name: 'brand', value: $("#profitordersbrand").val()});
+    params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
     var url='/accounting/orderprofit_export';
     $.post(url,params, function (response){
         if (response.errors=='') {

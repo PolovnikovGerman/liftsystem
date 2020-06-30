@@ -75,6 +75,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.is_canceled',0);
             }
         }
+        if (ifset($filtr,'exclude_quickbook',0)==1) {
+            $this->db->where('o.order_system','new');
+        }
         /*  */
         if (count($filtr)>0) {
             if (isset($filtr['hideart']) && $filtr['hideart']==1) {
@@ -2178,6 +2181,10 @@ Class Orders_model extends MY_Model
                 $this->db->like("concat(ucase(customer_name),' ',ucase(customer_email),' ',order_num,' ', coalesce(order_confirmation,''), ' ', ucase(order_items), ucase(order_itemnumber), revenue ) ",strtoupper($filtr['search']));
             }
 
+            if (ifset($filtr,'exclude_quickbook',0)==1) {
+                $this->db->where('o.order_system','new');
+            }
+
             if ($type_filter == 1) {
                 $this->db->where('o.order_cog is null');
             } elseif ($type_filter == 2) {
@@ -2372,6 +2379,9 @@ Class Orders_model extends MY_Model
         if (isset($filtr['filter']) && $filtr['filter']!=7) {
             $this->db->where('o.is_canceled',0);
         }
+        if (ifset($filtr,'exclude_quickbook',0)==1) {
+            $this->db->where('o.order_system','new');
+        }
         if (count($filtr)>0) {
             if (isset($filtr['shipping_country'])) {
                 $shipsql = "select distinct(order_id) as order_id from ts_order_shipaddres ";
@@ -2454,7 +2464,9 @@ Class Orders_model extends MY_Model
         if ($admin_mode==0) {
             $this->db->where('o.is_canceled',0);
         }
-
+        if (ifset($filtr,'exclude_quickbook',0)==1) {
+            $this->db->where('o.order_system','new');
+        }
         if (count($filtr)>0) {
             if (isset($filtr['search']) && $filtr['search']) {
                 // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue,' ',ucase(o.order_items)) ",strtoupper($filtr['search']));
@@ -2726,6 +2738,9 @@ Class Orders_model extends MY_Model
             $this->db->from('ts_orders o');
 
             if (count($search)>0) {
+                if (ifset($postdata,'exclude_quickbook',0)==1) {
+                    $this->db->where('o.order_system','new');
+                }
                 if (isset($search['search']) && $search['search']) {
                     $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), ucase(o.order_itemnumber), o.revenue ) ",strtoupper($search['search']));
                 }

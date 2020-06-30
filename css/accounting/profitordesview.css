@@ -29,7 +29,8 @@ select.profitorder-filtrer {
     width: 670px;
 }
 .profit_filterdate_area.adminview {
-    width: 740px;
+    /* width: 740px; */
+    width: 1000px;
 }
 .profit_filterdate_area div {
     float: left;
@@ -45,6 +46,16 @@ select.profitorder-filtrer {
     margin-top: 3px;
     width: 17px;
     margin-left: 5px;
+}
+.profit_filterdate_area .checkpint i {
+    font-size: 17px;
+    cursor: pointer;
+}
+.profit_filterdate_area .excludeorderqbooklabel {
+    width: 220px;
+    text-align: right;
+    font-size: 13px;
+    margin-right: 3px;
 }
 .profit_filterdate_area .selectorderyear {
 

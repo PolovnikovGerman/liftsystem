@@ -243,6 +243,7 @@ class Accounting extends MY_Controller
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $options['order_type']=$postdata['order_type'];
             }
+            $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
             /* count number of orders */
             $options['admin_mode']=0;
             if ($this->USR_ROLE=='masteradmin') {
@@ -468,6 +469,8 @@ class Accounting extends MY_Controller
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                 $search['brand'] = $postdata['brand'];
             }
+            $search['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+
             $ordersdat=$this->orders_model->get_profit_orders($search,$order_by,$direct,$limit,$offset, $admin_mode, $this->USR_ID);
 
             if (count($ordersdat)==0) {
@@ -1287,6 +1290,7 @@ class Accounting extends MY_Controller
         /* Calc total orders */
         $options=[];
         $options['brand'] = $brand;
+        $options['exclude_quickbook']=1;
         $total_rec=$this->orders_model->get_count_orders($options);
         $options=array();
         /* Prepare per page view */
@@ -2952,6 +2956,26 @@ class Accounting extends MY_Controller
             $content=$this->load->view('netprofit/w9purchase_expenses_view', $options, TRUE);
             echo $content;
         }
+    }
+
+    public function exclude_quickbook() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='';
+            $postdata = $this->input->post();
+            $newval = 1;
+            if (ifset($postdata,'exclude_quickbook',0)==1) {
+                $newval = 0;
+            }
+            if ($newval==1) {
+                $mdata['content'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+            } else {
+                $mdata['content'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+            }
+            $mdata['newval'] = $newval;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
