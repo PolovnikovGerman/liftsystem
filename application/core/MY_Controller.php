@@ -48,18 +48,47 @@ if (!defined('BASEPATH'))
  * @property Printshop_model printshop_model
  * @property Exportexcell_model exportexcell_model
  * @property Rates_model rates_model
+ * @property Seo_model seo_model
 */
 
 
 class Base_Controller extends CI_Controller
 {
+    public $success_result =1;
+    public $error_result = 0;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('seo_model');
+        $user_ip = $this->input->ip_address();
+        if ($user_ip != '127.0.0.1') {
+            $chres = $this->seo_model->check_geoip($user_ip);
+            if ($chres['cnt'] == 0) {
+                $ipdat = $this->seo_model->get_geolocation($user_ip);
+                if ($ipdat['result']==$this->success_result) {
+                    $geodata = $ipdat['geodata'];
+                    $this->seo_model->update_geoip($geodata, $user_ip);
+                    if ($geodata['country_code'] == 'CN') {
+                        // China User
+                        show_403();
+                    }
+                }
+            } else {
+                if ($chres['country_code'] == 'CN') {
+                    // China User
+                    show_403();
+                }
+            }
+
+        }
+
+    }
 }
 
 class MY_Controller extends Base_Controller
 {
 
-    public $success_result =1;
-    public $error_result = 0;
     public $USR_ROLE='';
     public $USR_ID='';
     public $USER_NAME='';

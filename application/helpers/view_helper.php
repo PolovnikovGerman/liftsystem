@@ -591,4 +591,18 @@ if (!function_exists('getDatesByMonth')) {
         return array('start_month'=>$date_base, 'end_month'=>$date_limit);
     }
 }
+
+if ( ! function_exists('show_403'))
+{
+    function show_403()
+    {
+        $_error =& load_class('Exceptions', 'core');
+        $heading = $message = 'Forbidden';
+        $template = 'error_403';
+        $status_code = 403;
+        echo $_error->show_error($heading, $message, $template, $status_code);
+        exit;
+    }
+}
+
 ?>

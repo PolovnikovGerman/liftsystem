@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends CI_Controller
+class Login extends Base_Controller
 {
     public $success_result =1;
     public $error_result = 0;
