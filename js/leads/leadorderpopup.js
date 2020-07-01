@@ -3033,7 +3033,7 @@ function init_leadorder_billing() {
         },'json');        
     });
     // Change state
-    $("select.billing_select1").unbind('click').click(function(){
+    $("select.billing_select1").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:'billing'});
         params.push({name: 'fldname', value: 'state_id'});
