@@ -9,6 +9,7 @@ Class Cronjob extends CI_Controller
         if (!defined('CRONJOB')) {
             return FALSE;
         }
+        date_default_timezone_set('America/New_York');
     }
 
     public function index() {
