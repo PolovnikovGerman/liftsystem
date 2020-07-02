@@ -278,10 +278,11 @@ td.paymentvalue {
         <div class="content">
             <table cellpadding="0" style="width:750px; padding: 0;">
                 <tr>
-                    <td style="width: 409px;">
+                    <td style="width: 394px;">
                         <!-- <div class="logo">&nbsp;</div> -->
-                        <img src="<?=$_SERVER['DOCUMENT_ROOT']?>/img/invoice/logo_invoice.png" alt="Logo"/>
+                        <img src="<?=$_SERVER['DOCUMENT_ROOT']?>/img/invoice/invoice_logo_bluetrack-stressballs.jpg" alt="Logo" style="width: 100%"/>
                     </td>
+                    <td style="width: 15px">&nbsp;</td>
                     <td>
                         <div class="invoicenum">
                             <table>
