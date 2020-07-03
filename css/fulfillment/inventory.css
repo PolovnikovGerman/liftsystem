@@ -2,7 +2,7 @@
     clear: both;
     float: left;
     padding: 10px 0 0 10px;
-    width: 1023px;
+    width: 1012px;
 }
 .printshopinventor div {
     float: left;
@@ -1883,7 +1883,7 @@ input.onboatelementinput {
 }
 /* Spec Content */
 .printshopinventor .inventorytablebody > .inventorytableright {
-    width: 262px;
+    width: 257px;
 }
 .printshopinventor .inventorytablebody.short > .inventorytableright {
     width: 153px;
