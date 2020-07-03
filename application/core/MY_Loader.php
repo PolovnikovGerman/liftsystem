@@ -23,7 +23,7 @@ class MY_Loader extends CI_Loader {
 
             if (in_array($db->platform(), array('mysql', 'mysqli')))
             {
-                $db->query("SET time_zone = '".date('P')."'");
+                // $db->query("SET time_zone = '".date('P')."'");
             }
 
             return $db;
@@ -35,7 +35,7 @@ class MY_Loader extends CI_Loader {
 
             if (in_array($CI->db->platform(), array('mysql', 'mysqli')))
             {
-                $CI->db->query("SET time_zone = '-05:00'");
+                // $CI->db->query("SET time_zone = '-05:00'");
             }
 
             return $this;
