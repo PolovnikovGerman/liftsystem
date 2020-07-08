@@ -309,13 +309,13 @@ select.profitorder-filtrer {
 }
 .orders-table-title > .profitorder_customer {
     cursor:pointer;
-    width: 162px;
+    width: 132px;
 }
 .orders-table-title > .profitorder_qty {
     width: 35px;
 }
 .orders-table-title > .profitorder_item {
-    width: 161px;
+    width: 131px;
 }
 .orders-table-title > .profitorder_color {
     width: 66px;
@@ -417,7 +417,7 @@ select.profitorder-filtrer {
     text-align: left!important;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 162px;
+    width: 132px;
 }
 .profitorder_qty_data {
     border-right: 1px solid #000000;
@@ -431,7 +431,7 @@ select.profitorder-filtrer {
     text-align: left!important;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 162px;
+    width: 132px;
 }
 .profitorder_item_data.customitem {
     font-weight: bold;

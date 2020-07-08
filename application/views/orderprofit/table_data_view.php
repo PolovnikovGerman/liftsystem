@@ -5,7 +5,7 @@
         <div class="profitorder_action_data"><?=$row['cancellnk']?></div>
         <div class="profitorder_numorder_data" data-order="<?=$row['order_id']?>"><?=$row['order_num']?></div>
         <div class="profitorder_ordertype <?=$row['ordertype_class']?>"><?=$row['ordertype']=='' ? '&nbsp;' : $row['ordertype']?></div>
-        <!-- <div class="profitorder_confirm_data"><?php // =($row['order_confirmation']=='' ? 'historical' : $row['order_confirmation'])?></div> -->
+        <div class="profitorder_confirm_data"><?=($row['order_confirmation']=='' ? 'historical' : $row['order_confirmation'])?></div>
         <div class="profitorder_customer_data"><?=$row['customer_name']?></div>
         <div class="profitorder_qty_data"><?=$row['order_qty']?></div>
         <div class="profitorder_item_data <?=$row['item_class']?>"><?=$row['order_items']?></div>

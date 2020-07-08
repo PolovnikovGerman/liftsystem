@@ -39,6 +39,9 @@ function init_profit_orders() {
     $(".profitorder_revenue").unbind('click').click(function(){
         change_profit_sort('o.revenue','profitorder_revenue');
     })
+    $(".profitorder_confirm").unbind('click').click(function () {
+        change_profit_sort('o.order_confirmation','profitorder_confirm');
+    })
     /* */
     $(".profitorder_profit").unbind('click').click(function(){
         change_profit_sort('o.profit','profitorder_profit');
@@ -143,7 +146,7 @@ function init_profit_orders() {
 function change_profit_sort(sortname,sortclass) {
     var cur_sort=$("#orderbytab1").val();
     var cur_dir=$("#directiontab1").val();
-    $("div#profitorder .orders-table-title").children().each(function(i) {
+    $("div#profitordesview .orders-table-title").children().each(function(i) {
         $(this).removeClass('activesortdesc');
         $(this).removeClass('activesortasc');
     })
@@ -151,15 +154,15 @@ function change_profit_sort(sortname,sortclass) {
     if (cur_sort==sortname) {
         if (cur_dir=='asc') {
             $("#directiontab1").val('desc');
-            $("div#profitorder ."+sortclass).addClass('activesortdesc');
+            $("div#profitordesview ."+sortclass).addClass('activesortdesc');
         } else {
             $("#directiontab1").val('asc');
-            $("div#profitorder ."+sortclass).addClass('activesortasc');
+            $("div#profitordesview ."+sortclass).addClass('activesortasc');
         }
     } else {
         $("#directiontab1").val('desc');
         $("#orderbytab1").val(sortname);
-        $("div#profitorder ."+sortclass).addClass('activesortdesc');
+        $("div#profitordesview ."+sortclass).addClass('activesortdesc');
     }
     initProfitOrderPagination();
 }

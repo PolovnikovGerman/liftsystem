@@ -105,7 +105,7 @@
         <div class="profitorder_date">Date</div>
         <div class="profitorder_action">&nbsp;</div>
         <div class="profitorder_numorder activesortdesc">Order #</div>
-        <!-- <div class="profitorder_confirm">Conf #</div> -->
+        <div class="profitorder_confirm">Conf #</div>
         <div class="profitorder_customer">Customer</div>
         <div class="profitorder_qty">QTY</div>
         <div class="profitorder_item">Item</div>
