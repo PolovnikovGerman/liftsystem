@@ -2,9 +2,19 @@ $(document).ready(function () {
     autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     $(window).resize(function() {
-        autocollapse(1);
+        // autocollapse(1);
     });
-
+    $(".hasdropdownmenu").hover(function(){
+        var subid = '#dropdown-'+$(this).data('menuid');
+        $(subid).toggle();
+    }, function(){
+        var subid = '#dropdown-'+$(this).data('menuid');
+        $(subid).toggle();
+    });
+    $(".hasdropdownmenu").unbind('').click(function(){
+        var subid = '#dropdown-'+$(this).data('menuid');
+        $(subid).toggle();
+    });
     $(".menubutton").unbind('click').click(function () {
         var url=$(this).data('menulink');
         window.location.href=url;
@@ -53,19 +63,19 @@ function autocollapse(resize) {
         }
     } else {
         if (resize==1) {
-            var params=new Array();
-            params.push({name: 'activelnk', value: $("#mainmenuactivelnk").val()});
-            var url = '/welcome/restore_main_menu'
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    $(".menurow").empty().html(response.data.content);
-                    $(".menubutton").unbind('click').click(function () {
-                        var url=$(this).data('menulink');
-                        window.location.href=url;
-                    });
-                    autocollapse(0);
-                }
-            },'json');
+            // var params=new Array();
+            // params.push({name: 'activelnk', value: $("#mainmenuactivelnk").val()});
+            // var url = '/welcome/restore_main_menu'
+            // $.post(url, params, function(response){
+            //     if (response.errors=='') {
+            //         $(".menurow").empty().html(response.data.content);
+            //         $(".menubutton").unbind('click').click(function () {
+            //             var url=$(this).data('menulink');
+            //             window.location.href=url;
+            //         });
+            //         autocollapse(0);
+            //     }
+            // },'json');
         }
     }
 

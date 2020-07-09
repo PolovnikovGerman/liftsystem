@@ -224,7 +224,7 @@ body div {
 .nav-tabs {
     border-bottom: none!important;
 }
-.menubutton {
+.menubutton, .mainmenubutton {
     min-width: 92px;
     height: 23px;
     line-height: 23px!important;
@@ -237,36 +237,36 @@ body div {
     padding: 0 13px;
     margin-bottom: 0!important;
 }
-.menubutton.adminbutton {
+.menubutton.adminbutton, .mainmenubutton.adminbutton {
     background: #ff1c1c;
     background: linear-gradient(to top, #e11919, #ff2d2d);
     color: #ffffff;
 }
-.menubutton.adminbutton:hover {
+.menubutton.adminbutton:hover, .mainmenubutton.adminbutton:hover {
     background: #ff1c1c;
 }
-.menubutton.marketbtn {
+.menubutton.marketbtn, .mainmenubutton.marketbtn {
     background: #5656ff;
     background: linear-gradient(to top, #4e4ee7, #6666ff);
     color: #ffffff;
 }
-.menubutton.marketbtn:hover {
+.menubutton.marketbtn:hover, .mainmenubutton.marketbtn:hover {
     background: #5656ff;
 }
-.menubutton.databasebtn {
+.menubutton.databasebtn, .mainmenubutton.databasebtn {
     background: #228927;
     background: linear-gradient(to top, #1f7b23, #37943b);
     color: #ffffff;
 }
-.menubutton.databasebtn:hover {
+.menubutton.databasebtn:hover, .mainmenubutton.databasebtn:hover {
     background: #228927;
 }
-.menubutton.resourcesbtn {
+.menubutton.resourcesbtn, .mainmenubutton.resourcesbtn {
     background: #cc28c2;
     background: linear-gradient(to top, #b824af, #d13cc8);
     color: #ffffff;
 }
-.menubutton.resourcesbtn:hover {
+.menubutton.resourcesbtn:hover, .mainmenubutton.resourcesbtn:hover {
     background: #cc28c2;
 }
 .activemenubutton {
