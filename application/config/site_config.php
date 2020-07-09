@@ -35,6 +35,7 @@ $config['minimal_profitperc']=20;
 switch($_SERVER['SERVER_NAME']){
     case 'tempsys.net':
     case 'tempsys.golden-team.org':
+    case 'lifttest.stressballs.com':
         $config['sean_email']='polovnikov.g@gmail.com';
         $config['sage_email']='to_german@yahoo.com';
         $config['taisen_email']='polovnikov.german@gmail.com';
@@ -269,7 +270,7 @@ switch ($_SERVER['SERVER_NAME']) {
             'sean@golden-team.org'
         );
         $config['mail_research_from']='research@golden-team.org';
-        $config['email_notification_sender']='grey@golden-team.org';
+        // $config['email_notification_sender']='grey@golden-team.org';
         $config['customer_notification_sender']='sales@golden-team.org';
         $config['proofrequest_notification']='proof-req@golden-team.org';
         break;
@@ -283,7 +284,7 @@ switch ($_SERVER['SERVER_NAME']) {
             'sean@bluetrack.com'
         );
         $config['mail_research_from']='research@bluetrack.com';
-        $config['email_notification_sender']='grey@bluetrack.com';
+        // $config['email_notification_sender']='grey@bluetrack.com';
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['proofrequest_notification']='proof-req@bluetrack.com';
         break;
