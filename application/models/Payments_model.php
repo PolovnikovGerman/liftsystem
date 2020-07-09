@@ -478,6 +478,7 @@ Class Payments_model extends MY_Model {
                         'oldtotalrun'=>$outoldrundebt,
                         'newtotalrun'=>$outnewrundebt,
                     );
+                    firephplog('Start send email');
                     $this->orders_model->notify_netdebtchanged($notifoptions);
                 }
             }

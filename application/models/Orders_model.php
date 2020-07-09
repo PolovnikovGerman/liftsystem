@@ -5139,6 +5139,7 @@ Class Orders_model extends MY_Model
         if ($_SERVER['SERVER_NAME']!='tempsys.net') {
             $this->load->library('email');
             $config = $this->config->item('email_setup');
+            firephplog($config,'SEND COINFIG');
             $config['mailtype'] = 'text';
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
@@ -5151,6 +5152,7 @@ Class Orders_model extends MY_Model
             $this->email->message($email_body);
             $this->email->send();
             $this->email->clear(TRUE);
+            firephplog('Email send to '.$mailto);
         }
         /* Save to log */
         $this->db->set('old_debt',$log_options['olddebt']);
