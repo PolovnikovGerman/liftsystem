@@ -290,6 +290,7 @@ class Purchaseorders extends MY_Controller
             $brand = $this->input->post('brand');
             if (!empty($amntdata)) {
                 $amntdata['user_id']=$this->USR_ID;
+                $amntdata['brand'] = $brand;
                 $this->load->model('payments_model');
                 $res=$this->payments_model->save_poamount($amntdata);
                 $error=$res['msg'];

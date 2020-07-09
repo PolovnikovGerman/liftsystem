@@ -285,7 +285,7 @@ Class Payments_model extends MY_Model {
         $is_shipping=(isset($data['is_shipping']) ? $data['is_shipping'] : 0);
         $old_amount_sum=$data['oldamount_sum'];
         $profperc=floatval($amtdata['order']['profit_perc']);
-
+        $brand = $amtdata['brand'];
         if (!$order_id) {
             $res['msg']='Non-exist PO#';
             return $res;
@@ -410,7 +410,7 @@ Class Payments_model extends MY_Model {
             if ($old_amount_sum!=$amount_sum) {
                 $this->load->model('orders_model');
                 /* get netprofit */
-                $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+                $this->db->select('np.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
                 $this->db->from('netprofit np');
                 $this->db->where('np.profit_month',NULL);
                 $this->db->where('np.datebgn <= ',$order_date);
@@ -508,6 +508,7 @@ Class Payments_model extends MY_Model {
         $this->load->library('email');
         $config = $this->config->item('email_setup');
         $config['mailtype'] = 'text';
+        firephplog($config, 'Email Config');
         $this->email->initialize($config);
         $this->email->set_newline("\r\n");
         $this->email->to($this->config->item('sean_email'));
