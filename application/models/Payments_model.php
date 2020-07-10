@@ -410,17 +410,20 @@ Class Payments_model extends MY_Model {
             if ($old_amount_sum!=$amount_sum) {
                 $this->load->model('orders_model');
                 /* get netprofit */
-                $this->db->select('np.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
+                $this->db->select('npd.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
                 $this->db->from('netprofit np');
+                $this->db->join('netprofit_dat npd','npd.profit_id=np.profit_id');
                 $this->db->where('np.profit_month',NULL);
                 $this->db->where('np.datebgn <= ',$order_date);
                 $this->db->where('np.dateend > ',$order_date);
+                $this->db->where('npd.brand', $brand);
                 $netdat=$this->db->get()->row_array();
                 if (isset($netdat['profit_id']) && $netdat['debtinclude']==1) {
                     $this->load->model('balances_model');
                     $total_options=array(
                         'type'=>'week',
                         'start'=>$this->config->item('netprofit_start'),
+                        'brand' => $brand,
                     );
                     $rundat=$this->balances_model->get_netprofit_runs($total_options);
                     $newtotalrun=$rundat['out_debtval'];
@@ -508,7 +511,6 @@ Class Payments_model extends MY_Model {
         $this->load->library('email');
         $config = $this->config->item('email_setup');
         $config['mailtype'] = 'text';
-        firephplog($config, 'Email Config');
         $this->email->initialize($config);
         $this->email->set_newline("\r\n");
         $this->email->to($this->config->item('sean_email'));
