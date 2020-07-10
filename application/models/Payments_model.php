@@ -411,6 +411,7 @@ Class Payments_model extends MY_Model {
                 $this->load->model('orders_model');
                 /* get netprofit */
                 $this->db->select('npd.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
+                $this->db->select('np.datebgn, np.dateend');
                 $this->db->from('netprofit np');
                 $this->db->join('netprofit_dat npd','npd.profit_id=np.profit_id');
                 $this->db->where('np.profit_month',NULL);
