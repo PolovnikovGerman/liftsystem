@@ -1175,8 +1175,6 @@ class Leadorder extends MY_Controller
                 $artwork=$leadorder['artwork'];
                 if ($art_type=='Logo' || $art_type=='Reference') {
                     $test = usersession($ordersession);
-                    firephplog($test,'Check After Save');
-                    firephplog($ordersession,'KEY');
                     $mdata['content']=$this->load->view('artpage/upload_artlogo_view',array('artwork_id'=>$artwork['artwork_id']),TRUE);
                 } elseif ($art_type=='Repeat') {
                     /* Get Orders which was approveed */
@@ -1217,14 +1215,9 @@ class Leadorder extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error=$this->restore_orderdata_error;
-            firephplog('Step 1');
             $postdata=$this->input->post();
-            firephplog(ENVIRONMENT,'Env');
-            firephplog($postdata,'POST');
             $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
             $leadorder=usersession($ordersession);
-            firephplog($leadorder,'data');
-            firephplog($ordersession,'KEY');
             if (!empty($leadorder)) {
                 // Lock Edit Record
                 $locres=$this->_lockorder($leadorder);

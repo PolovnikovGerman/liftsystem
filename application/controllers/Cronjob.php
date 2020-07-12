@@ -472,6 +472,8 @@ Class Cronjob extends CI_Controller
             $this->email->from($email_from);
             $this->email->to($email_to);
             $this->email->cc($email_cc);
+            // Temporary ADD for check
+            $this->email->bcc($this->config->item('developer_email'));
             $title=date('D - M d, Y', $datestart).' - POs added to ';
             if ($brand=='BT') {
                 $title.='Bluetrack.com';
