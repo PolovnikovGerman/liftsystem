@@ -2,7 +2,7 @@
     <div class="maincontentmenuarea adminmenu">
         <div class="maincontentmenu">
             <?php foreach ($menu as $item) { ?>
-                <div class="maincontentmenu_item" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
     </div>

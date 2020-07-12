@@ -34,6 +34,7 @@ class Settings extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [
             'menu' => $menu,
+            'start' => $this->input->get('start', TRUE),
         ];
         $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
         if (count($brands)==0) {

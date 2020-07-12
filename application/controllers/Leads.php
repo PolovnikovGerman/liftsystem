@@ -57,6 +57,7 @@ class Leads extends My_Controller {
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {

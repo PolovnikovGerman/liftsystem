@@ -23,7 +23,7 @@
                 <?php } else { ?>
                     <li class="nav-item">
                     <a class="nav-link <?= $item['menu_section'] ?>" data-menulink="<?= $item['item_link'] ?>"
-                       href="javascript:void(0);">
+                       href="<?= $item['item_link'] ?>">
                         <?= $item['item_name'] ?>
                     </a>
                     </li>

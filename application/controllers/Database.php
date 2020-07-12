@@ -37,6 +37,7 @@ class Database extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [
             'menu' => $menu,
+            'start' => $this->input->get('start', TRUE),
         ];
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);

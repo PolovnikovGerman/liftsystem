@@ -45,6 +45,7 @@ class Art extends MY_Controller {
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View

@@ -300,7 +300,35 @@ a.resourcesbtn {
 a.resourcesbtn:hover {
     background: #9c2095;
 }
-
+ul.mainmenu .dropdown {
+    position: relative;
+}
+li.nav-item.dropdown.open .dropdown-menu {
+    display: block !important;
+}
+ul.mainmenu a.dropdown-item {
+    margin: 2px;
+    font-weight: 400 !important;
+}
+ul.mainmenu a.dropdown-item:hover {
+    font-weight: bold;
+}
+ul.mainmenu .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: -1.5rem;
+    z-index: 1000;
+    display: none;
+    min-width: 204px;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #fff;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
 /* Classes for left tabs */
 .page_container {
     float: left; width: 100%; background: #000000;

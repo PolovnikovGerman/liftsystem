@@ -37,6 +37,8 @@ class Marketing extends MY_Controller
         }
 
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
+
         foreach ($menu as $row) {
             if ($row['item_link']=='#searchestimeview') {
                 // Search results by time

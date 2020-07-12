@@ -38,6 +38,7 @@ class Content extends MY_Controller
         $head['title'] = 'Content';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link'] == '#customshappedview') {
                 // Custom shaped

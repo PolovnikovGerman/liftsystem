@@ -31,6 +31,7 @@ class Orders extends MY_Controller
         $head['title'] = 'Orders';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
         foreach ($menu as $row) {
