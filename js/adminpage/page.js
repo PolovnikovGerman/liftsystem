@@ -1,19 +1,8 @@
 $(document).ready(function () {
-    autocollapse(0); // when document first loads
+    // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     $(window).resize(function() {
         // autocollapse(1);
-    });
-    $(".hasdropdownmenu").hover(function(){
-        var subid = '#dropdown-'+$(this).data('menuid');
-        $(subid).toggle();
-    }, function(){
-        var subid = '#dropdown-'+$(this).data('menuid');
-        $(subid).toggle();
-    });
-    $(".hasdropdownmenu").unbind('').click(function(){
-        var subid = '#dropdown-'+$(this).data('menuid');
-        $(subid).toggle();
     });
     $(".menubutton").unbind('click').click(function () {
         var url=$(this).data('menulink');

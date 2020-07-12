@@ -2624,7 +2624,7 @@ Class Orders_model extends MY_Model
                 } else {
                     $row['profit']=MoneyOutput($row['profit'],2);
                 }
-                $row['points']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+                $row['points']=round(floatval($row['profit'])*$this->config->item('profitpts'),0).' pts';
 
                 if ($row['item_id']==$this->config->item('custom_id')) {
                     $row['item_class']='customitem';

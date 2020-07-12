@@ -221,80 +221,86 @@ body div {
     padding-top: 4px;
     padding-left: 20px;
 }
-.nav-tabs {
-    border-bottom: none!important;
+/* Main menu */
+.main-buttons {
+    display: inline-block;
+    float: right!important;
+    margin-top: 4px;
 }
-.menubutton, .mainmenubutton {
+ul.mainmenu {
+    float: left;
+    padding: 0;
+    margin-top: 8px;
+    /* margin-bottom: 8px; */
+    list-style: none;
+}
+ul.mainmenu li {
+    display: inline-block;
+}
+ul.mainmenu a {
+    display: block;
+    text-decoration: none;
+    color: #fff;
     min-width: 92px;
     height: 23px;
     line-height: 23px!important;
-    cursor: pointer;
     font-family: Arial;
     font-size: 14px;
-    margin-right: 4px;
     text-align: center;
     font-weight: bold;
+    margin-right: 4px;
     padding: 0 13px;
     margin-bottom: 0!important;
 }
-.menubutton.adminbutton, .mainmenubutton.adminbutton {
-    background: #ff1c1c;
-    background: linear-gradient(to top, #e11919, #ff2d2d);
-    color: #ffffff;
-}
-.menubutton.adminbutton:hover, .mainmenubutton.adminbutton:hover {
-    background: #ff1c1c;
-}
-.menubutton.marketbtn, .mainmenubutton.marketbtn {
-    background: #5656ff;
-    background: linear-gradient(to top, #4e4ee7, #6666ff);
-    color: #ffffff;
-}
-.menubutton.marketbtn:hover, .mainmenubutton.marketbtn:hover {
-    background: #5656ff;
-}
-.menubutton.databasebtn, .mainmenubutton.databasebtn {
-    background: #228927;
-    background: linear-gradient(to top, #1f7b23, #37943b);
-    color: #ffffff;
-}
-.menubutton.databasebtn:hover, .mainmenubutton.databasebtn:hover {
-    background: #228927;
-}
-.menubutton.resourcesbtn, .mainmenubutton.resourcesbtn {
-    background: #cc28c2;
-    background: linear-gradient(to top, #b824af, #d13cc8);
-    color: #ffffff;
-}
-.menubutton.resourcesbtn:hover, .mainmenubutton.resourcesbtn:hover {
-    background: #cc28c2;
-}
-.activemenubutton {
-    width: 92px;
+ul.mainmenu a.activelink {
     height: 30px;
     line-height: 25px!important;
-    font-family: Arial;
-    font-size: 14px;
-    font-weight: bold;
-    margin-right: 4px;
-    text-align: center;
 }
-.activemenubutton.adminbutton {
+ul.mainmenu a.activelink.adminbutton {
     background: #ff1c1c;
     color: #ffffff;
 }
-.activemenubutton.marketbtn {
+ul.mainmenu a.activelink.marketbtn {
     background: #2626ff;
     color: #ffffff;
 }
-.activemenubutton.databasebtn {
+ul.mainmenu a.activelink.databasebtn {
     background: #228927;
     color: #ffffff;
 }
-.activemenubutton.resourcesbtn {
+ul.mainmenu a.activelink.resourcesbtn {
     background: #cc28c2;
     color: #ffffff;
 }
+a.adminbutton {
+    background: #ff1c1c;
+    background: linear-gradient(to top, #e11919, #ff2d2d);
+}
+a.adminbutton:hover {
+    background: #d12525;
+}
+a.marketbtn {
+    background: #5656ff;
+    background: linear-gradient(to top, #4e4ee7, #6666ff);
+}
+a.marketbtn:hover {
+    background: #4443ce;
+}
+a.databasebtn {
+    background: #228927;
+    background: linear-gradient(to top, #1f7b23, #37943b);
+}
+a.databasebtn:hover {
+    background: #1d6e21;
+}
+a.resourcesbtn {
+    background: #cc28c2;
+    background: linear-gradient(to top, #b824af, #d13cc8);
+}
+a.resourcesbtn:hover {
+    background: #9c2095;
+}
+
 /* Classes for left tabs */
 .page_container {
     float: left; width: 100%; background: #000000;
@@ -462,7 +468,7 @@ body div {
 .clearfix {
     clear: both;
 }
-li.mainmenulasttab {
+li.mainmenulasttab  {
     height: 23px;
     line-height: 23px!important;
     padding: 0!important;
@@ -472,10 +478,25 @@ li.mainmenulasttab > a {
     color: #ffffff;
     text-decoration: none;
     padding: 0 10px!important;
+    display: none;
 }
 li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     color: #ffffff;
     text-decoration: none;
     background: none!important;
     border: none!important;
+}
+.left-box {
+    float: left;
+    width: 70%;
+}
+.right-box {
+    float: right;
+    width: 30%;
+}
+.userinfo,
+.brands-logos,
+.period_analitic_info,
+.publicsearch {
+    margin-top: 0.25rem;
 }

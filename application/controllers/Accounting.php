@@ -38,6 +38,7 @@ class Accounting extends MY_Controller
         $head['title'] = 'Accounting';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
+        $start = $this->input->get('start', TRUE);
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#profitordesview') {
@@ -155,6 +156,7 @@ class Accounting extends MY_Controller
             }
         }
         $content_options['menu'] = $menu;
+        $content_options['start'] = $start;
         $content_view = $this->load->view('accounting/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/accounting/page.js');
