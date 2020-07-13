@@ -2,7 +2,7 @@
     <ul class="navbar-nav mainmenu" id="mainmenutabs">
         <?php foreach ($permissions as $item) { ?>
             <?php if (!empty($item['item_link']) && $item['item_link'] == $activelnk) { ?>
-                <li class="nav-item">
+                <li class="activelink">
                     <a class="nav-link activelink <?= $item['menu_section'] ?>" data-menulink="<?= $item['item_link'] ?>"
                        href="javascript:void(0);">
                         <?= $item['item_name'] ?>

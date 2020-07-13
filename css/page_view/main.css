@@ -338,6 +338,7 @@ ul.mainmenu #collapsed.dropdown-menu {
     position: absolute;
     left: auto !important;
     top: auto !important;
+    padding: 1px !important;
 }
 #collapsed li.dropdown.open div.dropdown-menu {
     position: absolute;
@@ -347,6 +348,11 @@ ul.mainmenu #collapsed.dropdown-menu {
 }
 ul.mainmenu #collapsed.dropdown-menu li {
     display: block!important;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+#collapsed.dropdown-menu a {
+    margin-right: 1px !important;
 }
 /* Classes for left tabs */
 .page_container {
