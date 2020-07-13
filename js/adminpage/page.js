@@ -31,7 +31,12 @@ $(document).ready(function () {
         } else if (newval=='Items') {
             $("#publicsearch_template").attr('placeholder','Find Items');
         }
-    })
+    });
+    $('a.test').on("click", function(e){
+        $("#collapsed").toggle();
+        e.stopPropagation();
+        e.preventDefault();
+    });
 });
 
 function autocollapse(resize) {

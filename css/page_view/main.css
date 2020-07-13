@@ -277,28 +277,32 @@ a.adminbutton {
     background: linear-gradient(to top, #e11919, #ff2d2d);
 }
 a.adminbutton:hover {
-    background: #d12525;
+    background: #d12525!important;
+    color: #ffffff!important;
 }
 a.marketbtn {
     background: #5656ff;
     background: linear-gradient(to top, #4e4ee7, #6666ff);
 }
 a.marketbtn:hover {
-    background: #4443ce;
+    background: #4443ce!important;
+    color: #ffffff!important;
 }
 a.databasebtn {
     background: #228927;
     background: linear-gradient(to top, #1f7b23, #37943b);
 }
 a.databasebtn:hover {
-    background: #1d6e21;
+    background: #1d6e21!important;
+    color: #ffffff!important;
 }
 a.resourcesbtn {
     background: #cc28c2;
     background: linear-gradient(to top, #b824af, #d13cc8);
 }
 a.resourcesbtn:hover {
-    background: #9c2095;
+    background: #9c2095!important;
+    color: #ffffff!important;
 }
 ul.mainmenu .dropdown {
     position: relative;
@@ -328,6 +332,14 @@ ul.mainmenu .dropdown-menu {
     background-clip: padding-box;
     border: 1px solid rgba(0,0,0,.15);
     border-radius: .25rem;
+}
+ul.mainmenu #collapsed.dropdown-menu {
+    right: 0 !important;
+    position: absolute;
+    left: auto !important;
+}
+ul.mainmenu #collapsed.dropdown-menu li {
+    display: block!important;
 }
 /* Classes for left tabs */
 .page_container {

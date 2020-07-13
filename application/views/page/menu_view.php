@@ -30,13 +30,11 @@
                 <?php } ?>
             <?php } ?>
         <?php } ?>
-        <li id="lastTab" class="nav-item mainmenulasttab dropdown">
-            <!-- <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> -->
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-Collapsed"
-                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <li id="lastTab" class="nav-item mainmenulasttab">
+            <a class="test" href="#" id="morebtn" >
                 More <span class="caret"></span>
             </a>
-            <div class="dropdown-menu" id="collapsed" aria-labelledby="navbarDropdown-Collapsed"></div>
+            <ul class="dropdown-menu" id="collapsed"></ul>
         </li>
     </ul>
 </div>
