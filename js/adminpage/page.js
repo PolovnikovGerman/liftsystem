@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    // autocollapse(0); // when document first loads
+    autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     $(window).resize(function() {
-        // autocollapse(1);
+        autocollapse(1);
     });
     $(".menubutton").unbind('click').click(function () {
         var url=$(this).data('menulink');
@@ -39,9 +39,10 @@ function autocollapse(resize) {
     var tabsHeight = parseInt(tabs.innerHeight());
     if (tabsHeight > 34) {
         $("#lastTab").show();
+        $("#lastTab").find('a').show();
         var i=0;
         while (tabsHeight > 34) {
-            var children = tabs.children('li.menubutton:not(:last-child)');
+            var children = tabs.children('li.nav-item:not(:last-child)');
             var count = children.size();
             $(children[count - 1]).prependTo('#collapsed');
             tabsHeight = tabs.innerHeight();
@@ -52,19 +53,19 @@ function autocollapse(resize) {
         }
     } else {
         if (resize==1) {
-            // var params=new Array();
-            // params.push({name: 'activelnk', value: $("#mainmenuactivelnk").val()});
-            // var url = '/welcome/restore_main_menu'
-            // $.post(url, params, function(response){
-            //     if (response.errors=='') {
-            //         $(".menurow").empty().html(response.data.content);
-            //         $(".menubutton").unbind('click').click(function () {
-            //             var url=$(this).data('menulink');
-            //             window.location.href=url;
-            //         });
-            //         autocollapse(0);
-            //     }
-            // },'json');
+            var params=new Array();
+            params.push({name: 'activelnk', value: $("#mainmenuactivelnk").val()});
+            var url = '/welcome/restore_main_menu'
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $(".menurow").empty().html(response.data.content);
+                    $(".menubutton").unbind('click').click(function () {
+                        var url=$(this).data('menulink');
+                        window.location.href=url;
+                    });
+                    autocollapse(0);
+                }
+            },'json');
         }
     }
 
