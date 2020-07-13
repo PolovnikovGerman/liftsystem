@@ -2622,7 +2622,21 @@ Class Leadorder_model extends My_Model {
         $transres=$this->order_payment($pay_options);
         if ($transres['result']==$this->error_result) {
             $out['msg']=$transres['error_msg'];
+            $cc_options = [
+                'amount'=>$charge['amount'],
+                'cardnum'=>$cardnum,
+                'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
+                'cardcode'=>$charge['cardcode'],
+            ];
+            $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
         } else {
+            $cc_options = [
+                'amount'=>$charge['amount'],
+                'cardnum'=>$cardnum,
+                'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
+                'cardcode'=>$charge['cardcode'],
+            ];
+            $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
             // Make Current row Amount=0, Add Charge
             $this->db->set('amount',0);
             $this->db->where('order_payment_id', $row['order_payment_id']);
