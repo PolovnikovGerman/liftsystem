@@ -337,6 +337,13 @@ ul.mainmenu #collapsed.dropdown-menu {
     right: 0 !important;
     position: absolute;
     left: auto !important;
+    top: auto !important;
+}
+#collapsed li.dropdown.open div.dropdown-menu {
+    position: absolute;
+    left: auto !important;
+    right: 100%;
+    top: -11px;
 }
 ul.mainmenu #collapsed.dropdown-menu li {
     display: block!important;
