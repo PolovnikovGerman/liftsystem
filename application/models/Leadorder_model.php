@@ -2622,6 +2622,7 @@ Class Leadorder_model extends My_Model {
         $transres=$this->order_payment($pay_options);
         if ($transres['result']==$this->error_result) {
             $out['msg']=$transres['error_msg'];
+            $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg']);
         } else {
             // Make Current row Amount=0, Add Charge
             $this->db->set('amount',0);
