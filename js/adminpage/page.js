@@ -37,6 +37,13 @@ $(document).ready(function () {
         e.stopPropagation();
         e.preventDefault();
     });
+    $("li.nav-item.dropdown").hover(
+        function() {
+            $( this ).children('a').next('div.dropdown-menu').toggle();
+        }, function() {
+            $( this ).children('a').next('div.dropdown-menu').toggle();
+        }
+    )
 });
 
 function autocollapse(resize) {
