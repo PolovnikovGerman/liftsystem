@@ -177,12 +177,13 @@ Class Menuitems_model extends MY_Model
         // Get submenus
         $out=[];
         foreach ($menu as $mrow) {
-            $this->db->select('m.menu_item_id, m.item_name, m.item_link');
+            $this->db->select('m.menu_item_id, max(m.item_name) as item_name, max(m.item_link) as item_link');
             $this->db->from('menu_items m');
             $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
             $this->db->where('u.user_id', $user_id);
             $this->db->where('u.permission_type > ', 0);
             $this->db->where('m.parent_id', $mrow['menu_item_id']);
+            $this->db->group_by('m.menu_item_id');
             $this->db->order_by('m.menu_order, m.menu_section');
             $submenu = $this->db->get()->result_array();
             $out[] = [
