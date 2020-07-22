@@ -104,7 +104,7 @@ switch($_SERVER['SERVER_NAME']) {
         break;
     default:
         $db['default']['username']='stressballs';
-        $db['default']['password']='stressballs';
+        $db['default']['password']='fDQa0ral9KJm';
         $db['default']['database']='stressballs';
         break;
 }

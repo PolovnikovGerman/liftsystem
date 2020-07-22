@@ -1829,6 +1829,10 @@ input.artrepeat {
     text-align: center;
     width: 35px;
 }
+.profitdetails_tooltip {
+    width: 398px;
+    max-width: 398px!important;
+}
 .button_save {
     float: left;
     background-image: url(/img/leadorder/button_save.png);
@@ -3619,7 +3623,7 @@ a.historydetailsview {
     border: 1px solid;
     float: left;    
     padding: 10px;
-    width: 380px;    
+    width: 396px;
 }
 .ordercogdetailsviewarea.black {
     background-color: #000000;

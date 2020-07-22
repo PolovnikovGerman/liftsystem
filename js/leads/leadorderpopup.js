@@ -3267,23 +3267,40 @@ function init_orderbottom_content(edit_mode) {
         },'json');
     });
     // Profit
-    $("div.profitdetailsviewarea").hover(
-        function(){
-            $(".popover").hide();
-            $(".art_tooltip").hide();
-            var e=$(this);
-            $.get(e.attr('href'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'left',
-                    html: true
-                }).popover('show');
-            });
+    $("div.profitdetailsviewarea").qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    // url: href // Use href attribute as URL
+                    // url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                    url: $(this).data('viewsrc')
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
         },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        style: {
+            classes: 'qtip-dark profitdetails_tooltip'
+        },
+        show: {
+            effect: function() { $(this).fadeIn(250); }
+        },
+        hide: {
+           delay: 200,
+            fixed: true, // <--- add this
+           effect: function() { $(this).fadeOut(250); }
+        },
+    });
+
 }
 
 function save_orderticket() {
