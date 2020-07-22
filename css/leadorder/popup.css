@@ -3623,7 +3623,10 @@ a.historydetailsview {
     border: 1px solid;
     float: left;    
     padding: 10px;
-    width: 396px;
+    width: 406px;
+    margin-left: -8px;
+    margin-top: -4px;
+    margin-bottom: -4px;
 }
 .ordercogdetailsviewarea.black {
     background-color: #000000;
@@ -3672,7 +3675,7 @@ a.historydetailsview {
     width: 190px;
 }
 .ordercogdetailsviewarea > .title > .amountsum {
-    width: 70px;
+    width: 63px;
 }
 .ordercogdetailsviewarea > .dataarea {
     background-color: #ffffff;
@@ -3711,7 +3714,7 @@ a.historydetailsview {
 .ordercogdetailsviewarea > .dataarea > .datarow > .amountsum {
     text-align: right;
     padding-right: 3px;
-    width: 67px;
+    width: 76px;
 }
 /* Confirm new shipcost */
 .confirmshipcost_container {
