@@ -988,7 +988,7 @@ Class Cronjob extends CI_Controller
 
         $this->email->to($this->config->item('developer_email'));
 
-        $this->email->from('no-replay@bluetrack.com');
+        $this->email->from('to_german@yahoo.com');
         $title = 'Weekly Report about Unsuccessful Searches '.'(Stressballs.com)';
         $this->email->subject($title);
         $this->email->message($mail_body);
