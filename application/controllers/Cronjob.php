@@ -970,10 +970,10 @@ Class Cronjob extends CI_Controller
 
         $email_config = [
             'protocol' => 'smtp',
-            'smtp_host' => "ssl://smtp.gmail.com",
+            'smtp_host' => "smtp.gmail.com",
             'smtp_user' => 'polovnikov.german@gmail.com',
-            'smtp_pass' => 'z3Qk83zqYz2jMME',
-            'smtp_port' => "465",
+            'smtp_pass' => '***',
+            'smtp_port' => 587,
             'charset' => "utf-8",
             'newline'=> "\r",
             'crlf' => "\r",
