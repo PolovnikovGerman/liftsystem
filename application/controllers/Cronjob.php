@@ -970,16 +970,15 @@ Class Cronjob extends CI_Controller
 
         $email_config = [
             'protocol' => 'smtp',
-            'smtp_host' => "smtp.mail.yahoo.com",
-            'smtp_user' => 'to_german@yahoo.com',
-            'smtp_pass' => 'Vorrona67',
+            'smtp_host' => "ssl://smtp.gmail.com",
+            'smtp_user' => 'polovnikov.german@gmail.com',
+            'smtp_pass' => 'z3Qk83zqYz2jMME',
             'smtp_port' => "465",
             'charset' => "utf-8",
             'newline'=> "\r",
             'crlf' => "\r",
             'wordwrap'=>TRUE,
             'mailtype'=>'html',
-            'smtp_crypto' => 'ssl',
         ];
 
         $this->load->library('email');
