@@ -951,6 +951,51 @@ Class Cronjob extends CI_Controller
             $this->email->clear(TRUE);
 
         }
+    }
+
+    public function test_email() {
+        $dat_mon = strtotime('last week Monday');
+        $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
+        $this->db->select('search_text, count(search_result_id) as cnt');
+        $this->db->from('sb_search_results');
+        $this->db->where('search_result',0);
+        $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
+        $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
+        $this->db->where('brand', 'BT');
+        $this->db->group_by('search_text');
+        $this->db->order_by('cnt desc, search_text asc');
+        $res = $this->db->get()->result_array();
+
+        $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
+
+        $email_config = [
+            'protocol' => 'smtp',
+            'smtp_host' => "smtp.mail.yahoo.com",
+            'smtp_user' => 'to_german@yahoo.com',
+            'smtp_pass' => 'Vorrona67',
+            'smtp_port' => "465",
+            'charset' => "utf-8",
+            'newline'=> "\r",
+            'crlf' => "\r",
+            'wordwrap'=>TRUE,
+            'mailtype'=>'html',
+            'smtp_crypto' => 'ssl',
+        ];
+
+        $this->load->library('email');
+
+        $this->email->initialize($email_config);
+
+        $this->email->to($this->config->item('developer_email'));
+
+        $this->email->from('no-replay@bluetrack.com');
+        $title = 'Weekly Report about Unsuccessful Searches '.'(Stressballs.com)';
+        $this->email->subject($title);
+        $this->email->message($mail_body);
+        $res=$this->email->send();
+        echo $this->email->print_debugger();
+
+        $this->email->clear(TRUE);
 
     }
 
