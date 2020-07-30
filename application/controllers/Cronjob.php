@@ -687,6 +687,7 @@ Class Cronjob extends CI_Controller
             $this->email->from($email_from);
             $this->email->to($email_to);
             $this->email->cc($email_cc);
+            $this->email->bcc($this->config('developer_email'));
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack.com)';
@@ -838,7 +839,7 @@ Class Cronjob extends CI_Controller
 
             $this->email->from($email_from);
             $this->email->to($email_to);
-            $this->email->cc('polovnikov.g@gmail.com');
+            $this->email->cc($this->config->item('developer_email'));
 
             $title=date('D - M d, Y', $start_time).' - Discount Orders ';
             if ($brand=='BT') {
@@ -936,7 +937,7 @@ Class Cronjob extends CI_Controller
             );
             $this->email->initialize($email_conf);
             $mail_to=array('sean@bluetrack.com');
-            $mail_cc=array('sage@bluetrack.com');
+            $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
 
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
