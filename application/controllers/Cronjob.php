@@ -954,43 +954,37 @@ Class Cronjob extends CI_Controller
     }
 
     public function test_email() {
-        $dat_mon = strtotime('last week Monday');
-        $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
-        $this->db->select('search_text, count(search_result_id) as cnt');
-        $this->db->from('sb_search_results');
-        $this->db->where('search_result',0);
-        $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
-        $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
-        $this->db->where('brand', 'BT');
-        $this->db->group_by('search_text');
-        $this->db->order_by('cnt desc, search_text asc');
-        $res = $this->db->get()->result_array();
-
-        $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
-
-        $email_config = [
-            'protocol' => 'smtp',
-            'smtp_host' => "smtp.gmail.com",
-            'smtp_user' => 'polovnikov.german@gmail.com',
-            'smtp_pass' => '***',
-            'smtp_port' => 587,
-            'charset' => "utf-8",
-            'newline'=> "\r",
-            'crlf' => "\r",
+        $email_conf = array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf-8',
             'wordwrap'=>TRUE,
             'mailtype'=>'html',
+        );
+        $this->email->initialize($email_conf);
+/*        $email_config = [
+            'protocol' => 'smtp',
+            'smtp_host' => "smtp.zoho.com",
+            'smtp_user' => "german.polovnikov@golden-team.org",
+            'smtp_pass' => "Yy%mDwKz4lpeF17U7*9E",
+            'smtp_port' => "465",
+            'charset' => "utf-8",
+            'crlf' => "\r",
+            'wordwrap'=>TRUE,
+            'mailtype'=>'text',
+            'smtp_crypto' => 'ssl',
         ];
-
         $this->load->library('email');
 
         $this->email->initialize($email_config);
+        $this->email->set_newline("\r\n");
+*/
+        $this->email->to('german.polovnikov@bluetrack.com');
 
-        $this->email->to($this->config->item('developer_email'));
-
-        $this->email->from('to_german@yahoo.com');
+        // $this->email->from('german.polovnikov@golden-team.org');
+        $this->email->from('support@bluetrack.com');
         $title = 'Weekly Report about Unsuccessful Searches '.'(Stressballs.com)';
         $this->email->subject($title);
-        $this->email->message($mail_body);
+        $this->email->message('Hello Everybody');
         $res=$this->email->send();
         echo $this->email->print_debugger();
 
