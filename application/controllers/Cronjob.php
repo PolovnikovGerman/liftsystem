@@ -960,6 +960,7 @@ Class Cronjob extends CI_Controller
             'wordwrap'=>TRUE,
             'mailtype'=>'html',
         );
+        $this->load->library('email');
         $this->email->initialize($email_conf);
 /*        $email_config = [
             'protocol' => 'smtp',
