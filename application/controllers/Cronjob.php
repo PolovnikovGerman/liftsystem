@@ -962,23 +962,6 @@ Class Cronjob extends CI_Controller
         );
         $this->load->library('email');
         $this->email->initialize($email_conf);
-/*        $email_config = [
-            'protocol' => 'smtp',
-            'smtp_host' => "smtp.zoho.com",
-            'smtp_user' => "german.polovnikov@golden-team.org",
-            'smtp_pass' => "Yy%mDwKz4lpeF17U7*9E",
-            'smtp_port' => "465",
-            'charset' => "utf-8",
-            'crlf' => "\r",
-            'wordwrap'=>TRUE,
-            'mailtype'=>'text',
-            'smtp_crypto' => 'ssl',
-        ];
-        $this->load->library('email');
-
-        $this->email->initialize($email_config);
-        $this->email->set_newline("\r\n");
-*/
         $this->email->to('german.polovnikov@bluetrack.com');
 
         // $this->email->from('german.polovnikov@golden-team.org');
