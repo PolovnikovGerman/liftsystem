@@ -56,7 +56,8 @@ switch($_SERVER['SERVER_NAME']){
         $config['art_dept_email']="art@bluetrack.com";
         $config['customer_notification_sender']='sales@bluetrack.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
-        $config['developer_email']='polovnikov.g@gmail.com';
+        // $config['developer_email']='polovnikov.g@gmail.com';
+        $config['developer_email']='german.polovnikov@bluetrack.com';
         $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }

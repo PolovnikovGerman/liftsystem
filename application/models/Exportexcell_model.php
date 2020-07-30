@@ -271,9 +271,8 @@ class Exportexcell_model extends CI_Model
             $writer->save($filename);    // download file
             /* Send Mail with attach */
             $mail_to=$this->config->item('mail_research');
-            // $mail_to='polovnikov.g@gmail.com';
-            // $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com');
-            $mail_cc=['polovnikov.german@gmail.com','to_german@yahoo.com'];
+            $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
+
 
             $email_conf = array(
                 'protocol'=>'sendmail',
