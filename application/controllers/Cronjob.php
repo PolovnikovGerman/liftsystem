@@ -654,7 +654,7 @@ Class Cronjob extends CI_Controller
                 $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
                 $this->email->to($email_to);
-                // $this->email->cc($email_cc);
+                $this->email->cc($email_cc);
                 $this->email->subject($title);
                 $this->email->message($body);
 
