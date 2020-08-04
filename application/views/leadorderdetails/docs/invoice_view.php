@@ -313,7 +313,7 @@ td.paymentvalue {
                             </tr>
                         </table>
                         <?php if (!empty($customer_code)) { ?>
-                            <table style="margin-left: 44px;">
+                            <table style="margin-left: 54px;">
                                 <tr>
                                     <td class="customercode">
                                         <table>
