@@ -35,7 +35,7 @@
         </div>
         <div class="approvemail_row">
             <div class="approvemail_send" data-order="<?=$order_id?>">
-                <img src="/img/artpopup_approvesebd_btn.png" alt="send"/>
+                <img src="/img/art/artpopup_approvesebd_btn.png" alt="send"/>
             </div>
         </div>
 

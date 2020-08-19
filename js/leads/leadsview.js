@@ -458,14 +458,14 @@ function show_questdetails(obj) {
     formdat.push({name: "quest_id", value: quest_id});
     $.post(url, formdat, function(response){
         if (response.errors=='') {
-            $("#pageModal").modal('hide');
-            $("#pageModalLabel").empty().html('View Question');
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','727px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#pageModal").find('button.close').unbind('click').click(function(){
-                restore_leadform();
-            })
+            // $("#pageModal").modal('hide');
+            $("#artModalLabel").empty().html('View Question');
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','727px');
+            $("#artModal").modal({keyboard: false, show: true});
+            // $("#pageModal").find('button.close').unbind('click').click(function(){
+            //    restore_leadform();
+            // });
         } else {
             show_error(response);
         }
