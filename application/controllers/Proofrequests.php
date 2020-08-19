@@ -326,5 +326,33 @@ class Proofrequests extends MY_Controller
         }
     }
 
+    public function show_question_detail() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $data=$this->input->post();
+            $leaddat=array();
+            foreach ($data as $key=>$val) {
+                if ($key=='quest_id') {
+                    $quest_id=$val;
+                } else {
+                    $leaddat[$key]=$val;
+                }
+            }
+            /* Save data to session */
+            //  $this->session->set_userdata('leaddata',$leaddat);
+            $this->load->model('questions_model');
+            $res=$this->questions_model->get_quest_data($quest_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $quest = $res['data'];
+                // $mdata['content']=$this->load->view('questions/details_view',$quest,TRUE);
+                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+
 
 }

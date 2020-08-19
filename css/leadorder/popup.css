@@ -3852,7 +3852,7 @@ select.selectorderitem {
 }
 /* Aprove Email */
 .aprovemail_content {
-    background: url("/img/artpopup_approveemail_bg.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/artpage/artpopup_approveemail_bg.png") no-repeat scroll 0 0 transparent;
     clear: both;
     float: left;
     height: 442px;

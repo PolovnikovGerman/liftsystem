@@ -950,6 +950,60 @@ class Leads extends My_Controller {
         echo $content;
     }
 
+    /* Data about new lead */
+    public function change_leadrelation() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $lead_id=$this->input->post('lead_id');
+            if (!$lead_id) {
+                $error='Unknown Lead';
+            } else {
+                $this->load->model('leads_model');
+                $leaddata=$this->leads_model->get_lead($lead_id);
+                if (!isset($leaddata['lead_id'])) {
+                    $error='Lead not found';
+                } else {
+                    $mdata['lead_date']=($leaddata['lead_date']==0 ? '' : 'Date: '.date('m/d/y',$leaddata['lead_date']));
+                    $mdata['lead_customer']='Name: '.$leaddata['lead_customer'];
+                    $mdata['lead_mail']='Email: '.$leaddata['lead_mail'];
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function savequeststatus() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $quest=$this->input->post();
+            /* Get data about question */
+            $this->load->model('leads_model');
+            $res=$this->leads_model->save_leadrelation($quest);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $this->load->model('questions_model');
+                $resquest=$this->questions_model->get_quest_data($quest['mail_id']);
+                $error = $resquest['msg'];
+                if ($resquest['result']==$this->success_result) {
+                    $error = '';
+                    $data = $resquest['data'];
+                    $mdata['type']=$data['email_type'];
+                }
+                // Recalculate Totals New
+//                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
+//                $mdata['total_quote']=$this->mquotes->get_count_quotes(array('assign'=>1));
+//                $mdata['total_quest']=$this->mquests->get_count_questions(array('assign'=>1));
+//                $mdata['sumquote']=$this->mquotes->get_todays();
+//                $mdata['sumproofs']=$this->mproofs->get_todays();
+//                $mdata['sumquest']=$this->mquests->get_todays();
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();

@@ -169,9 +169,9 @@ Class Leads_model extends MY_Model
             }
             $row['lead_priority_icon']='&nbsp;';
             if ($row['lead_type']==1) {
-                $row['lead_priority_icon']='<img src="./img/leads/goldstar.png" alt="Priority"/>';
+                $row['lead_priority_icon']='<img src="/img/leads/goldstar.png" alt="Priority"/>';
             } elseif($row['lead_type']==6) {
-                $row['lead_priority_icon']='<img src="./img/leads/ordersoon.gif" alt="Soon"/>';
+                $row['lead_priority_icon']='<img src="/img/leads/ordersoon.gif" alt="Soon"/>';
             }
             $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('leadpts'),0).'pts');
             $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
@@ -1523,7 +1523,7 @@ Class Leads_model extends MY_Model
                     }
                     $perc=0;
                     if ($goals>0) {
-                        $perc=round($weeks[$idx]['points']/$goals*100,0);
+                        $perc=round(floatval($weeks[$idx]['points'])/$goals*100,0);
                     }
                     $weeks[$idx]['goals']=$goals;
                     $weeks[$idx]['goalperc']=$perc.'%';

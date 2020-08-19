@@ -159,7 +159,7 @@ function change_quotereplic(quote_id) {
                 change_leaddata();
             })
             $("a.savequest").click(function(){
-                update_queststatus();
+                update_quotestatus();
             })
             $("div.updatequest_status").find("div.leads_addnew").click(function(){
                 create_leadquote();
@@ -169,6 +169,20 @@ function change_quotereplic(quote_id) {
         }
     }, 'json');
     return false;
+}
+
+function update_quotestatus() {
+    var url="/leads/savequeststatus";
+    var dat=$("form#msgstatus").serializeArray();
+    $.post(url, dat, function(response){
+        if (response.errors=='') {
+            // disablePopup();
+            $("#pageModal").modal('hide');
+            initQuotesPagination();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
 }
 
 function create_leadquote() {
