@@ -290,3 +290,4 @@ switch ($_SERVER['SERVER_NAME']) {
         $config['proofrequest_notification']='proof-req@bluetrack.com';
         break;
 }
+$config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
