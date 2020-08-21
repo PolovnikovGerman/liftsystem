@@ -2486,11 +2486,15 @@ Class Artwork_model extends MY_Model
                             $message.=$row.PHP_EOL;
                         }
                     }
-                    if (strpos($message, '<<links>>')!==FALSE) {
+                    $smessage=  str_replace('&lt;<links>>', $message, $data['message']);
+                    /*if (strpos($message, '<<links>>')!==FALSE) {
                         $smessage=  str_replace('<<links>>', $message, $data['message']);
                     } elseif (strpos($message,'&lt;<links>>')) {
-                        $smessage=  str_replace('&lt;<links>>', $message, $data['message']);
-                    }
+                    } else {
+                        $smessage=$message;
+                    }*/
+
+
 
                     $this->email->message($smessage);
                     $this->email->send();
