@@ -2817,7 +2817,7 @@ Class Leadorder_model extends My_Model {
         $base_cost+=floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
         $base_cost+=floatval($order['tax']);
         // Revenue
-        $subtotal=$order['revenue']-$base_cost;
+        $subtotal=floatval($order['revenue'])-$base_cost;
         return $subtotal;
     }
 

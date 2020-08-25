@@ -505,7 +505,7 @@ Class Shipping_model extends MY_Model
                 'item_length'=>$cartoon_depth,
                 'item_width'=>$cartoon_width,
                 'item_height'=>$cartoon_heigh,
-                'ship'=>'',
+                'ship'=> array(),
                 'weight' =>$itemweight,
                 'cnt_code'=>$cntdat['country_iso_code_2'],
             );

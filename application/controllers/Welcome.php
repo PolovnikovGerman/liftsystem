@@ -73,4 +73,18 @@ class Welcome extends MY_Controller {
         show_404();
     }
 
+    public function ordertotalsparse() {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata = [];
+            $this->load->model('dashboard_model');
+            $res = $this->dashboard_model->get_totals('week');
+            $totals = $res['data'];
+            $mdata['sales'] = QTYOutput($totals['sales']);
+            $mdata['revenue'] = MoneyOutput($totals['revenue']);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

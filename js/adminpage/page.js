@@ -1,4 +1,7 @@
+var timerId;
+var timeLapse = 600000;
 $(document).ready(function () {
+    clearTimeout(timerId);
     autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     $(window).resize(function() {
@@ -44,6 +47,8 @@ $(document).ready(function () {
             $( this ).children('a').next('div.dropdown-menu').toggle();
         }
     )
+    // Create timer
+    timerId = setTimeout('ordertotalsparse()', timeLapse);
 });
 
 function autocollapse(resize) {
@@ -140,6 +145,19 @@ function liftsite_search() {
             if (response.data.url!=='') {
                 window.location.href=response.data.url;
             }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function ordertotalsparse() {
+    var url="/welcome/ordertotalsparse";
+    $.post(url,{}, function(response){
+        if (response.errors == '') {
+            $("#totalsales").empty().html(response.data.sales);
+            $("#totalrevenue").empty().html(response.data.revenue);
+            setTimeout('ordertotalsparse()', timeLapse);
         } else {
             show_error(response);
         }
