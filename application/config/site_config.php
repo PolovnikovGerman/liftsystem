@@ -104,6 +104,7 @@ $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',
     'lift_stressballs.local',
+    'lift.local',
 );
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');

@@ -2532,6 +2532,7 @@ Class Leadorder_model extends My_Model {
         }
         $charge=$charges[$chridx];
         $billing=$leadorder['billing'];
+        $order_data = $leadorder['order'];
         $cardnum=  str_replace('-', '', $charge['cardnum']);
         $bilchk=0;
         if (empty($billing['customer_name'])) {
@@ -2551,7 +2552,9 @@ Class Leadorder_model extends My_Model {
         } elseif (intval($charge['exp_month'])==0) {
             $out['msg']='Expire Month Incorrect';
         } elseif (intval($charge['exp_year'])==0) {
-            $out['msg']='Expire Year Incorrect';
+            $out['msg'] = 'Expire Year Incorrect';
+        } elseif (floatval($charge['amount'])>floatval($order_data['revenue'])) {
+            $out['msg'] = 'Charge Value Great than Order Total';
         } else {
             $cardtype=$this->getCCardType($cardnum);
             if (empty($cardtype)) {
