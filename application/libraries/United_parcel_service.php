@@ -668,7 +668,8 @@ class United_parcel_service
             // $this->_CI->firephp->log($resp,'Response');
             if ($resp->Response->ResponseStatus->Code == 1) {
                 
-                if (isset($resp->Candidate) && (is_array($resp->Candidate)) && count($resp->Candidate)==1) {
+                // if (isset($resp->Candidate) && (is_array($resp->Candidate)) && count($resp->Candidate)==1) {
+                if (isset($resp->Candidate)) {
                     $return_array=array(
                         'result'=>TRUE,
                         'city'=>'',
