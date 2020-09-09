@@ -4158,6 +4158,7 @@ Class Orders_model extends MY_Model
         // $this->db->where_in('order_date',$datsrch);
         $this->db->where('order_date >= ',$dat_month_bgn);
         $this->db->where('order_date <= ',$dat_month_end);
+        $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
             $this->db->where('brand', $brand);
         }
