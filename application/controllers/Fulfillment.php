@@ -218,7 +218,7 @@ class Fulfillment extends MY_Controller
                 $this->load->model('vendors_model');
                 $this->load->model('calendars_model');
                 $calendars=$this->calendars_model->get_calendars();
-                if ($vendor_id==0) {
+                if ($vendor_id<0) {
                     $error = '';
                     $data = $this->vendors_model->add_vendor();
                     $mdata['title'] = 'New Vendor';

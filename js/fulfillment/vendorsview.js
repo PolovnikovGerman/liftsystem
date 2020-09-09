@@ -82,7 +82,7 @@ function init_vendor_content() {
 
 
 function add_vendor() {
-    var vendor_id=0;
+    var vendor_id=-1;
     var url="/fulfillment/vendor_edit";
     $.post(url,{'vendor_id':vendor_id},function(response){
         if (response.errors=='') {
@@ -95,7 +95,7 @@ function add_vendor() {
                 save_vendor();
             });
         } else {
-            alert(data.error);
+            show_error(response);
         }
     },'json');
 }
