@@ -15,6 +15,7 @@
     line-height: 25px!important;
     text-align: center;
     width: 89px;
+    cursor: pointer;
 }
 .fulfillment_pagination {
     margin-top: -19px;
