@@ -8455,6 +8455,63 @@ Class Leadorder_model extends My_Model {
         }
         return $out;
     }
+
+    public function save_trackcode($order_num, $trackcode) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Order Not Found');
+        $this->db->select('order_id, order_num, is_canceled, order_system');
+        $this->db->from('ts_orders');
+        $this->db->where('order_num', $order_num);
+        $res=$this->db->get()->row_array();
+        if (isset($res['order_id'])) {
+            $out['msg']='Order was Canceled';
+            if ($res['is_canceled']==0) {
+                $order_id=$res['order_id'];
+                $out['msg']='Empty Shipping Address';
+                // Get Shipping Address and Track Packages
+                $this->db->select('p.*');
+                $this->db->from('ts_order_shipaddres s');
+                $this->db->join('ts_order_shippacks p','p.order_shipaddr_id=s.order_shipaddr_id');
+                $this->db->where('s.order_id',$order_id);
+                $packres=$this->db->get()->result_array();
+                if (count($packres)>0) {
+                    $out['msg']='Track Code Entered';
+                    $found=0;
+                    foreach ($packres as $prow) {
+                        if ($prow['track_code']==$trackcode) {
+                            $found=1;
+                            break;
+                        }
+                    }
+                    if ($found==0) {
+                        $shpadr=0;
+                        foreach ($packres as $prow) {
+                            if (empty($prow['track_code'])) {
+                                // We find Empty Track Code
+                                $this->db->set('track_code', $trackcode);
+                                $this->db->where('order_shippack_id', $prow['order_shippack_id']);
+                                $this->db->update('ts_order_shippacks');
+                                $out['msg']='';
+                                $out['result']=$this->success_result;
+                                $found=1;
+                                break;
+                            } else {
+                                $shpadr=$prow['order_shipaddr_id'];
+                            }
+                        }
+                        if ($found==0) {
+                            $this->db->set('order_shipaddr_id', $shpadr);
+                            $this->db->set('track_code', $trackcode);
+                            $this->db->insert('ts_order_shippacks');
+                            $out['msg']='';
+                            $out['result']=$this->success_result;
+                        }
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
