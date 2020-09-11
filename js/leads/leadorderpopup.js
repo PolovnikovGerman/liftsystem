@@ -2517,6 +2517,7 @@ function init_leadorder_shipping() {
                 $("#artNextModal").find('div.modal-dialog').css('width','625px');
                 $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("div.manageship.save").hide();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
