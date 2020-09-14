@@ -50,13 +50,18 @@
         <input class="custom_belowimagetext" name="custom_belowimagetext" readonly="readonly" value="<?=ifset($data,'custom_belowimagetext')?>"/>
     </div>
     <div class="content-row">
-        <div class="label custom_fivebulletpoints">5 Bullet Points:</div>
+        <div class="label custom_fivebulletpoints">Bullet Points:</div>
         <div class="custom_fivebulletpoints_area">
             <input class="custom_fivebulletpoints" name="custom_bulletpoint1" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint1')?>"/>
             <input class="custom_fivebulletpoints" name="custom_bulletpoint2" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint2')?>"/>
             <input class="custom_fivebulletpoints" name="custom_bulletpoint3" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint3')?>"/>
             <input class="custom_fivebulletpoints" name="custom_bulletpoint4" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint4')?>"/>
             <input class="custom_fivebulletpoints" name="custom_bulletpoint5" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint5')?>"/>
+            <input class="custom_fivebulletpoints" name="custom_bulletpoint6" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint6')?>"/>
+            <input class="custom_fivebulletpoints" name="custom_bulletpoint7" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint7')?>"/>
+            <input class="custom_fivebulletpoints" name="custom_bulletpoint8" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint8')?>"/>
+            <input class="custom_fivebulletpoints" name="custom_bulletpoint9" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint9')?>"/>
+            <input class="custom_fivebulletpoints" name="custom_bulletpoint10" readonly="readonly" value="<?=ifset($data,'custom_bulletpoint10')?>"/>
         </div>
     </div>
     <div class="content-row">
