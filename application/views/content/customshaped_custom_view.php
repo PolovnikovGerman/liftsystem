@@ -19,7 +19,7 @@
             <div class="custom_imagesubtitle">click image to enlarge</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(1100px x 460px)</div>
+            <div class="custom_imagesubtitlesize">(1140px х 258px)</div>
         </div>
         <div class="content-row">
             <div class="custom_mainimagesrc">
@@ -35,7 +35,7 @@
             <div class="custom_imagesubtitle">click image to enlarge</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(728px x 226px)</div>
+            <div class="custom_imagesubtitlesize">(500px x 516px)</div>
         </div>
         <div class="content-row">
             <div class="custom_homepageimagesrc">
@@ -68,10 +68,10 @@
         <div class="label custom_longerbodytext">Longer Body Text:</div>
         <textarea class="custom_longerbodytext" name="custom_longerbodytext" readonly="readonly"><?=ifset($data,'custom_longerbodytext')?></textarea>
     </div>
-    <div class="content-row">
-        <div class="label custom_abovegallerytext">Above Gallery Text:</div>
-        <input class="custom_abovegallerytext" name="custom_abovegallerytext" readonly="readonly" value="<?=ifset($data,'custom_abovegallerytext')?>">
-    </div>
+<!--    <div class="content-row">-->
+<!--        <div class="label custom_abovegallerytext">Above Gallery Text:</div>-->
+<!--        <input class="custom_abovegallerytext" name="custom_abovegallerytext" readonly="readonly" value="--><?//=ifset($data,'custom_abovegallerytext')?><!--">-->
+<!--    </div>-->
     <div class="content-row">
         <div class="label custom_gallerytitle">Gallery Title:</div>
         <input class="custom_gallerytitle" name="custom_gallerytitle" readonly="readonly" value="<?=ifset($data,'custom_gallerytitle')?>"/>
@@ -90,9 +90,9 @@
         <div class="label custom_stepprocesstitle">5 Step Process Title:</div>
         <input class="custom_stepprocesstitle" readonly="readonly" name="custom_stepprocesstitle" value="<?=ifset($data,'custom_stepprocesstitle')?>"/>
     </div>
-    <div class="content-row">
-        <div class="label custom_belowstepstext">Below Steps Text:</div>
-        <textarea class="custom_belowstepstext" readonly="readonly" name="custom_belowstepstext"><?=ifset($data,'custom_belowstepstext')?></textarea>
-    </div>
+<!--    <div class="content-row">-->
+<!--        <div class="label custom_belowstepstext">Below Steps Text:</div>-->
+<!--        <textarea class="custom_belowstepstext" readonly="readonly" name="custom_belowstepstext">--><?//=ifset($data,'custom_belowstepstext')?><!--</textarea>-->
+<!--    </div>-->
 </div>
 <?=$casestudy_view?>

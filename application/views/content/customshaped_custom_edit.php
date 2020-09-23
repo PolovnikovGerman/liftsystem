@@ -21,7 +21,7 @@
             <div class="custom_imagesubtitle">click image to enlarge</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(1100px x 460px)</div>
+            <div class="custom_imagesubtitlesize">(1140px х 258px)</div>
         </div>
         <div class="content-row">
             <div id="custom_mainimagearea">
@@ -30,9 +30,9 @@
                 <?php } else { ?>
                     <div class="custom_mainimagesrc">
                         <img src="<?=$data['custom_mainimage']?>" alt="Main Image"/>
-                        <div class="custom_mainimageremove">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </div>
+                    </div>
+                    <div class="custom_mainimageremove">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                 <?php } ?>
             </div>
@@ -44,7 +44,7 @@
             <div class="custom_imagesubtitle">click image to enlarge</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(728px x 226px)</div>
+            <div class="custom_imagesubtitlesize">(500px x 516px)</div>
         </div>
         <div class="content-row">
             <div id="custom_homepageimagearea">
@@ -55,9 +55,9 @@
                 <?php } else { ?>
                     <div class="custom_homepageimagesrc">
                         <img src="<?=$data['custom_homepageimage']?>" alt="Main Image"/>
-                        <div class="custom_homeimageremove">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </div>
+                    </div>
+                    <div class="custom_homeimageremove">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                 <?php } ?>
             </div>
@@ -86,10 +86,10 @@
         <div class="label custom_longerbodytext">Longer Body Text:</div>
         <textarea class="custom_longerbodytext" data-content="content" data-field="custom_longerbodytext"><?=ifset($data,'custom_longerbodytext')?></textarea>
     </div>
-    <div class="content-row">
-        <div class="label custom_abovegallerytext">Above Gallery Text:</div>
-        <input class="custom_abovegallerytext" data-content="content" data-field="custom_abovegallerytext" value="<?=ifset($data,'custom_abovegallerytext')?>">
-    </div>
+<!--    <div class="content-row">-->
+<!--        <div class="label custom_abovegallerytext">Above Gallery Text:</div>-->
+<!--        <input class="custom_abovegallerytext" data-content="content" data-field="custom_abovegallerytext" value="--><?//=ifset($data,'custom_abovegallerytext')?><!--">-->
+<!--    </div>-->
     <div class="content-row">
         <div class="label custom_gallerytitle">Gallery Title:</div>
         <input class="custom_gallerytitle" data-content="content" data-field="custom_gallerytitle" value="<?=ifset($data,'custom_gallerytitle')?>"/>
@@ -108,9 +108,9 @@
         <div class="label custom_stepprocesstitle">5 Step Process Title:</div>
         <input class="custom_stepprocesstitle" data-content="content" data-field="custom_stepprocesstitle" value="<?=ifset($data,'custom_stepprocesstitle')?>"/>
     </div>
-    <div class="content-row">
-        <div class="label custom_belowstepstext">Below Steps Text:</div>
-        <textarea class="custom_belowstepstext" data-content="content" data-field="custom_belowstepstext"><?=ifset($data,'custom_belowstepstext')?></textarea>
-    </div>
+<!--    <div class="content-row">-->
+<!--        <div class="label custom_belowstepstext">Below Steps Text:</div>-->
+<!--        <textarea class="custom_belowstepstext" data-content="content" data-field="custom_belowstepstext">--><?//=ifset($data,'custom_belowstepstext')?><!--</textarea>-->
+<!--    </div>-->
 </div>
 <?=$casestudy_view?>

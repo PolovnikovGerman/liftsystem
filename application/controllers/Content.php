@@ -246,7 +246,7 @@ class Content extends MY_Controller
         show_404();
     }
 
-    public function remove_customgalleryitem() {
+    public function remove_customgalleryimage() {
         if ($this->isAjax()) {
             $mdata=[];
             $error = 'Edit session lost. Please, reload page';
@@ -255,7 +255,7 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->remove_customgalleryitem($session_data, $postdata, $session_id);
+                $res = $this->staticpages_model->remove_customgalleryimage($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
                     $gallery_options = [

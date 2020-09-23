@@ -201,6 +201,7 @@ function init_customshape_editcontent() {
     });
     // Remove main image
     $(".custom_mainimageremove").unbind('click').click(function(){
+        $(".custom_mainimagesrc").unbind('click');
         if (confirm('Delete Main Image?')) {
             var params=new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
@@ -216,6 +217,8 @@ function init_customshape_editcontent() {
                     show_error(response);
                 }
             },'json');
+        } else {
+            init_customshape_editcontent();
         }
     });
     // Add main image
@@ -333,9 +336,9 @@ function init_customshape_editcontent() {
         },'json');
     });
     // Click on place for image
-    $(".custom_emptygalleryitem").each(function(){
+    $(".custom_galleryimageupload").each(function(){
         var gallery = $(this).data('gallery');
-        var img = $(this).find('div.custom_galleryitemupload').prop('id');
+        var img = $(this).prop('id');
         var uploader = new qq.FileUploader({
             element: document.getElementById(img),
             action: '/utils/save_itemimg',
@@ -365,13 +368,12 @@ function init_customshape_editcontent() {
         });
     })
     // Remove image
-    $(".custom_galleryitemdelete").unbind('click').click(function(){
+    $(".custom_galleryimagedelete").unbind('click').click(function(){
         if (confirm('Delete image from Gallery?')) {
             var params = new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
-            params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
-            var url="/content/remove_customgalleryitem";
+            var url="/content/remove_customgalleryimage";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);

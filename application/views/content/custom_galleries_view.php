@@ -9,20 +9,17 @@
         <div class="content-row">
             <div class="label custom_gallerytitle">Gallery <?=$gallery['numpp']?> Title:</div>
             <input class="custom_gallerytitle" readonly="readonly" name="gallery_name" data-gallery="<?=$gallery['custom_gallery_id']?>" value="<?=$gallery['gallery_name']?>"/>
-            <div class="custom_imagesubtitle">click image to enlarge</div>
+            <div class="gallery_collageimage">
+                <?php if (!empty($gallery['gallery_image'])) { ?>
+                    <img src="<?=$gallery['gallery_image']?>" alt="Gallery Image"/>
+                <?php } else { ?>
+                    &nbsp;
+                <?php } ?>
+            </div>
+            <div class="custom_imagesubtitle">click image to enlarge<br/> (366px x 244px)</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(450px x 450px)</div>
-        </div>
-        <div class="content-row galleryitemssources">
-            <?php foreach ($gallery['items'] as $item) { ?>
-                <div class="custom_galleryitem" data-item="<?=$item['custom_galleryitem_id']?>" data-src="<?=$item['item_source']?>" data-fancybox="gallery_<?=$gallery['custom_gallery_id']?>">
-                    <img src="<?=$item['item_source']?>" alt="Galley Item"/>
-                </div>
-            <?php } ?>
-            <?php for ($i=$gallery['count_items']; $i<$maxitems; $i++) { ?>
-                <div class="custom_emptygalleryitem" data-item="<?=$i*(-1)?>">&nbsp;</div>
-            <?php } ?>
+            <div class="custom_imagesubtitlesize"></div>
         </div>
     <?php } ?>
 </div>
