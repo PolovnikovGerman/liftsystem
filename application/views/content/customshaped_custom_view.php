@@ -95,4 +95,16 @@
 <!--        <textarea class="custom_belowstepstext" readonly="readonly" name="custom_belowstepstext">--><?//=ifset($data,'custom_belowstepstext')?><!--</textarea>-->
 <!--    </div>-->
 </div>
+<div class="galleryitemsinfotitle">
+    <div class="displaygalleryitems show">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+    <div class="title">STRESSBALLS GALLERY:</div>
+</div>
+<div class="custom_galleryitems_area">
+    <div class="content-row">
+        <div class="custom_imagesubtitle">click image to enlarge (450px x 450px)</div>
+    </div>
+    <?=$galleryitems_view?>
+</div>
 <?=$casestudy_view?>

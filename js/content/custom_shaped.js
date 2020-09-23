@@ -5,7 +5,7 @@ function init_customshape_view() {
         display_metadata();
     });
     $(".displaycontent").unbind('click').click(function () {
-        display_content()
+        display_customcontent();
     });
     $(".displaygallery").unbind('click').click(function(){
         display_gallery();
@@ -49,33 +49,33 @@ function init_customshape_view() {
 
 }
 
-function display_content() {
+function display_customcontent() {
     if ($(".displaycontent").hasClass('show')) {
         $(".customcontent-area").hide();
-        $(".displaycontent").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaycontent").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".customcontent-area").show();
-        $(".displaycontent").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaycontent").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 
 function display_gallery() {
     if ($(".displaygallery").hasClass('show')) {
         $(".custom_galleries_area").hide();
-        $(".displaygallery").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaygallery").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".custom_galleries_area").show();
-        $(".displaygallery").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaygallery").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 
 function display_casestudy() {
     if ($(".displaycasestudy").hasClass('show')) {
         $(".custom_casestudies_area").hide();
-        $(".displaycasestudy").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaycasestudy").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".custom_casestudies_area").show();
-        $(".displaycasestudy").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaycasestudy").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 

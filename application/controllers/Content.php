@@ -1093,6 +1093,7 @@ class Content extends MY_Controller
         if ($page_name == 'custom') {
             $galleries = $this->staticpages_model->get_custom_galleries($brand);
             $case_study = $this->staticpages_model->get_case_study($brand);
+            $galleryitems = $this->staticpages_model->get_galleryitems($brand);
             // Get data about categories, examples
             $gallery_options = [
                 'galleries' => $galleries,
@@ -1103,6 +1104,12 @@ class Content extends MY_Controller
             } else {
                 $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
                 $gallery_view = $this->load->view('content/custom_galleries_edit', ['gallery_view'=>$editgallery], TRUE);
+            }
+            // Examples gallery
+            if ($edit_mode == 0) {
+                $galleryitems_view = $this->load->view('content/custom_galleryitems_view', ['galleryitems'=> $galleryitems], TRUE);
+            } else {
+
             }
             // Get data about Case Study
             $casestudy_options = [
@@ -1119,6 +1126,7 @@ class Content extends MY_Controller
                 'data' => $data,
                 'gallery_view' => $gallery_view,
                 'casestudy_view' => $casestudy_view,
+                'galleryitems_view' => $galleryitems_view,
             ];
             if ($edit_mode==1) {
                 $page_options['session'] = $session;
@@ -1128,7 +1136,7 @@ class Content extends MY_Controller
             } else {
                 $content = $this->load->view('content/customshaped_custom_edit', $page_options, TRUE);
                 // Save data to session
-                $session_data = ['data' => $data, 'galleries' => $galleries, 'case_study' => $case_study];
+                $session_data = ['data' => $data, 'galleries' => $galleries, 'case_study' => $case_study, 'galleryitems' => $galleryitems];
                 usersession($session, $session_data);
             }
         } elseif ($page_name=='faq') {

@@ -265,6 +265,64 @@ input.custom_gallerytitle {
 .galleryitemssources {
     width: 838px;
 }
+.add_new_gallery {
+    background: #145224;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0 10px;
+    line-height: 24px!important;
+    font-weight: bold;
+}
+/* Below gallery inputs */
+div.custom_belowgallerrytext {
+    width: 153px;
+}
+input.custom_belowgallerrytext {
+    width: 553px;
+}
+input.custom_belowgallerrysubtext {
+    margin-left: 147px;
+    width: 553px;
+}
+div.custom_stepprocesstitle {
+    width: 159px;
+}
+input.custom_stepprocesstitle {
+    width: 407px;
+}
+div.custom_belowstepstext {
+    width: 145px;
+}
+textarea.custom_belowstepstext {
+    width: 690px;
+    height: 53px;
+}
+.galleryitemsinfotitle {
+    width: 100%;
+    height: 28px;
+    line-height: 28px!important;
+    background: #595959;
+    color: #ffffff;
+    font-size: 17px;
+    margin-top: 10px;
+}
+.galleryitemsinfotitle .displaygalleryitems {
+    width: 23px;
+    cursor: pointer;
+    margin-left: 8px;
+    margin-top: 3px;
+}
+.galleryitemsinfotitle .title {
+    margin-left: 5px;
+    line-height: 28px;
+}
+.custom_galleryitems_area {
+    margin-top: 16px;
+    padding-left: 20px;
+}
 .custom_galleryitem {
     width: 122px;
     height: 122px;
@@ -308,41 +366,6 @@ input.custom_gallerytitle {
     text-align: center;
     width: 33px;
     line-height: 22px!important;
-}
-.add_new_gallery {
-    background: #145224;
-    color: #ffffff;
-    font-size: 14px;
-    height: 24px;
-    border-radius: 3px;
-    cursor: pointer;
-    padding: 0 10px;
-    line-height: 24px!important;
-    font-weight: bold;
-}
-/* Below gallery inputs */
-div.custom_belowgallerrytext {
-    width: 153px;
-}
-input.custom_belowgallerrytext {
-    width: 553px;
-}
-input.custom_belowgallerrysubtext {
-    margin-left: 147px;
-    width: 553px;
-}
-div.custom_stepprocesstitle {
-    width: 159px;
-}
-input.custom_stepprocesstitle {
-    width: 407px;
-}
-div.custom_belowstepstext {
-    width: 145px;
-}
-textarea.custom_belowstepstext {
-    width: 690px;
-    height: 53px;
 }
 /* Case study slider */
 .casestudyinfotitle {

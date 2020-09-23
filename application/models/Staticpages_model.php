@@ -56,20 +56,23 @@ Class Staticpages_model extends MY_Model
         $out = [];
         $numpp = 1;
         foreach ($categ as $item) {
-            $this->db->select('*');
-            $this->db->from('sb_custom_galleryitems');
-            $this->db->where('custom_gallery_id', $item['custom_gallery_id']);
-            $this->db->where('item_deleted',0);
-            $this->db->order_by('item_order');
-            $dataitems = $this->db->get()->result_array();
-            $item['count_items'] = count($dataitems);
-            $item['items']=$dataitems;
             $item['numpp'] = $numpp;
             $out[]=$item;
             $numpp++;
         }
         return $out;
     }
+
+    public function get_galleryitems($brand) {
+        $this->db->select('*');
+        $this->db->from('sb_custom_galleryitems');
+        $this->db->where('item_deleted',0);
+        $this->db->where('brand', $brand);
+        $this->db->order_by('item_order');
+        $dataitems = $this->db->get()->result_array();
+        return $dataitems;
+    }
+
 
     public function get_case_study($brand) {
         $this->db->select('*');
@@ -422,7 +425,6 @@ Class Staticpages_model extends MY_Model
                         $this->db->where('custom_gallery_id', $gallery_id);
                         $this->db->update('sb_custom_galleries');
                     }
-
                 }
             }
         }
