@@ -114,7 +114,7 @@ function init_customshape_editcontent() {
         display_metadata();
     });
     $(".displaycontent").unbind('click').click(function () {
-        display_content()
+        display_customcontent();
     });
     $(".displaygallery").unbind('click').click(function(){
         display_gallery();
@@ -446,6 +446,23 @@ function init_customshape_editcontent() {
             },'json');
         }
     })
+    // Item in gallery
+    $(".custom_galleryitemdelete").unbind('click').click(function(){
+        if (confirm('Delete image from Gallery?')) {
+            var params = new Array();
+            params.push({name: 'session', value: $("#custom_session").val()});
+            params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
+            var url="/content/remove_customgalleryimage";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".custom_galleries_area").empty().html(response.data.content);
+                    init_customshape_editcontent();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
     // CaseStudy
     // Upload
     // $(".custom_casestudyimage_empty").unbind('click').click(function(){

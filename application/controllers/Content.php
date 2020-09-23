@@ -1109,7 +1109,7 @@ class Content extends MY_Controller
             if ($edit_mode == 0) {
                 $galleryitems_view = $this->load->view('content/custom_galleryitems_view', ['galleryitems'=> $galleryitems], TRUE);
             } else {
-
+                $galleryitems_view = $this->load->view('content/custom_galleryitems_edit', ['galleryitems'=> $galleryitems], TRUE);
             }
             // Get data about Case Study
             $casestudy_options = [

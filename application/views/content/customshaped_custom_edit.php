@@ -95,7 +95,15 @@
         <input class="custom_gallerytitle" data-content="content" data-field="custom_gallerytitle" value="<?=ifset($data,'custom_gallerytitle')?>"/>
     </div>
 </div>
-<?=$gallery_view?>
+<div class="galleryinfotitle">
+    <div class="displaygallery show">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+    <div class="title">GALLERY:</div>
+</div>
+<div class="custom_galleries_area">
+    <?=$gallery_view?>
+</div>
 <div class="customcontent-area">
     <div class="content-row">
         <div class="label custom_belowgallerrytext">Below Gallery Text:</div>
@@ -112,5 +120,17 @@
 <!--        <div class="label custom_belowstepstext">Below Steps Text:</div>-->
 <!--        <textarea class="custom_belowstepstext" data-content="content" data-field="custom_belowstepstext">--><?//=ifset($data,'custom_belowstepstext')?><!--</textarea>-->
 <!--    </div>-->
+</div>
+<div class="galleryitemsinfotitle">
+    <div class="displaygalleryitems show">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+    <div class="title">STRESSBALLS GALLERY:</div>
+</div>
+<div class="custom_galleryitems_area">
+    <div class="content-row">
+        <div class="custom_imagesubtitle">click image to enlarge (450px x 450px)</div>
+    </div>
+    <?=$galleryitems_view?>
 </div>
 <?=$casestudy_view?>

@@ -3,8 +3,8 @@
     <?php if ($numr==0) { ?>
         <div class="content-row">
     <?php } ?>
-    <div class="custom_galleryitem">
-        <img src="<?=$item['item_source']?>" alt="'Item" data-fancybox="gallery_main"/>
+    <div class="custom_galleryitem" data-src="<?=$item['item_source']?>" data-fancybox="gallery_main">
+        <img src="<?=$item['item_source']?>" alt="'Item"/>
     </div>
     <?php $numr++;?>
     <?php if ($numr==3) { ?>
