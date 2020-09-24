@@ -238,6 +238,35 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
+    public function remove_customgalleryitems($session_data, $postdata, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Gallery Pic Not Found'];
+        $data = $session_data['galleryitems'];
+        $found = 0;
+        $newitems = [];
+        foreach ($data as $row) {
+            if ($row['custom_galleryitem_id']==$postdata['custom_galleryitem_id']) {
+                $found = 1;
+            } else {
+                $newitems[] = $row;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $out['galleryitems'] = $newitems;
+            if ($postdata['custom_galleryitem_id']>0) {
+                $deleted = $session_data['deleted'];
+                $deleted[]=[
+                    'table' => 'sb_custom_galleryitems',
+                    'id' => $postdata['custom_galleryitem_id'],
+                ];
+                $session_data['deleted'] = $deleted;
+            }
+            $session_data['galleryitems']=$newitems;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
     public function add_customgallery($session_data, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Gallery Not Found'];
         $data = $session_data['galleries'];

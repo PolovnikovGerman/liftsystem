@@ -317,6 +317,27 @@ class Content extends MY_Controller
         }
     }
 
+    public function remove_customgalleryitem() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata=$this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_customgalleryitems($session_data, $postdata, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $galleryitems = $res['galleryitems'];
+                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', ['galleryitems' => $galleryitems], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function remove_customcasestudy() {
         if ($this->isAjax()) {
             $mdata=[];

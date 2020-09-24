@@ -131,6 +131,8 @@
     <div class="content-row">
         <div class="custom_imagesubtitle">click image to enlarge (450px x 450px)</div>
     </div>
-    <?=$galleryitems_view?>
+    <div class="content-row" id="stressballgalleryarea">
+        <?=$galleryitems_view?>
+    </div>
 </div>
 <?=$casestudy_view?>

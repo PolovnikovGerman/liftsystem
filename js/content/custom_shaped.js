@@ -451,11 +451,11 @@ function init_customshape_editcontent() {
         if (confirm('Delete image from Gallery?')) {
             var params = new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
-            params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
-            var url="/content/remove_customgalleryimage";
+            params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
+            var url="/content/remove_customgalleryitem";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
-                    $(".custom_galleries_area").empty().html(response.data.content);
+                    $("#stressballgalleryarea").empty().html(response.data.content);
                     init_customshape_editcontent();
                 } else {
                     show_error(response);
@@ -463,6 +463,37 @@ function init_customshape_editcontent() {
             },'json');
         }
     });
+    // Add New
+    // Click on place for image
+
+    var itemuploader = new qq.FileUploader({
+        element: document.getElementById('add_new_gallery'),
+        action: '/utils/save_itemimg',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $("li.qq-upload-success").hide();
+                var params=new Array();
+                params.push({name: 'session', value: $("#custom_session").val()});
+                params.push({name: 'imagetype', value: 'galleryitem_image'});
+                params.push({name: 'imagesrc', value: responseJSON.filename});
+                var url='/content/save_imageupload_custom';
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#stressballgalleryarea").empty().html(response.data.content);
+                        init_customshape_editcontent();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            }
+        }
+    });
+
+
     // CaseStudy
     // Upload
     // $(".custom_casestudyimage_empty").unbind('click').click(function(){
