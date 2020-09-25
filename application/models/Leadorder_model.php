@@ -7783,7 +7783,7 @@ Class Leadorder_model extends My_Model {
             }
 
         }
-        
+
         $shipdata=$leadorder['shipping'];
 
         if (count($biladr)==0 && count($shipping_address)==1) {

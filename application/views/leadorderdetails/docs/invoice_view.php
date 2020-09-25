@@ -340,9 +340,13 @@ td.paymentvalue {
                     <td class="deliverydate header">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td class="terms"><?=$terms?></td>
+                    <td class="terms">
+                        <?=$terms?>
+                    </td>
                     <td style="width: 13px;">&nbsp;</td>
-                    <td class="paymentdue"><?=$payment_due?></td>
+                    <td class="paymentdue">
+                        <?=$payment_due?>
+                    </td>
                     <td style="width: 71px;">&nbsp;</td>
                     <td class="shidate"><?=$shipdate?></td>
                     <td style="width: 13px">&nbsp;</td>
