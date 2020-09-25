@@ -7832,6 +7832,7 @@ Class Leadorder_model extends My_Model {
             $out['result']=$this->success_result;
             $out['html_path']=$this->config->item('pathpreload').$file_name;
             $out['doc_path']=$file_out;
+            $out['pdfcontent'] = $html;
         }
         return $out;
     }
