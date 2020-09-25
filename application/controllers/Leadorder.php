@@ -4128,6 +4128,8 @@ class Leadorder extends MY_Controller
                     $error=$res['msg'];
                 } else {
                     $mdata['docurl']=$res['html_path'];
+                    $mdata['balance_term'] = $leadorder['order']['balance_term'];
+                    $mdata['balance_due'] = $leadorder['order']['credit_appdue'];
                 }
                 $mdata['content'] = $res;
             }
