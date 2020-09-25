@@ -7735,6 +7735,7 @@ Class Leadorder_model extends My_Model {
                 }
             }
         }
+
         $shipping_address=$leadorder['shipping_address'];
         $shipadr=array();
         $idx=0;
@@ -7782,6 +7783,7 @@ Class Leadorder_model extends My_Model {
             }
 
         }
+        
         $shipdata=$leadorder['shipping'];
 
         if (count($biladr)==0 && count($shipping_address)==1) {
