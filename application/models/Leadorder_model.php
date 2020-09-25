@@ -7830,9 +7830,8 @@ Class Leadorder_model extends My_Model {
         pdf_create($html, $file_out, true);
         if (file_exists($file_out)) {
             $out['result']=$this->success_result;
-            $out['html_path']=$this->config->item('pathpreload').$file_name;
+            $out['html_path']=$this->config->item('pathpreload').$file_name.'?t='.time();
             $out['doc_path']=$file_out;
-            $out['pdfcontent'] = $html;
         }
         return $out;
     }
