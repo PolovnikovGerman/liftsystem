@@ -7806,7 +7806,7 @@ Class Leadorder_model extends My_Model {
             'invoice_message'=>$order['invoice_message'],
             'order_date'=>date('m/d/Y',$order['order_date']),
             'customer_code'=>$customer_po,
-            'terms'=>(empty($order['balance_term']) ? $this->empty_htmlcontent : $order['balance_term']),
+            'terms'=>(empty($order['balance_term']) ? $this->empty_htmlcontent : 'Net 30'), // $order['balance_term']
             'payment_due'=>((empty($order['balance_term']) && empty($order['credit_appdue'])) ? '' : date('m/d/y', $order['credit_appdue'])),
             'shipdate'=>(empty($shipdata['out_shipdate']) ? '' : $shipdata['out_shipdate']),
             'arrive'=>(empty($shipdata['out_arrivedate']) ? '' : $shipdata['out_arrivedate']),
