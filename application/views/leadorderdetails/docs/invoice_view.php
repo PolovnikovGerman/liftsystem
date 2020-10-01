@@ -65,14 +65,14 @@ td.invoicedatelabel {
     vertical-align: middle;
     font-size: 18px;
     text-align: left;
-    width: 122px;
+    width: 102px;
 }
 td.invoicedate {
     height: 28px;
     vertical-align: middle;
     font-size: 18px;
     text-align: left;
-    width: 103px;
+    width: 83px;
 }
 td.customercode {
     background: url('/img/invoice/customer_code_bg.png') no-repeat scroll left top transparent;
@@ -306,7 +306,7 @@ td.paymentvalue {
                         </table>
                     </td>
                     <td>
-                        <table style="margin-left: 44px;">
+                        <table style="margin-left: 132px;">
                             <tr>
                                 <td class="invoicedatelabel">Invoice Date:</td>
                                 <td class="invoicedate"><?=$order_date?></td>
