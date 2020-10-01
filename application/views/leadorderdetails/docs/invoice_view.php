@@ -306,14 +306,14 @@ td.paymentvalue {
                         </table>
                     </td>
                     <td>
-                        <table style="margin-left: 132px;">
+                        <table style="margin-left: 100px;">
                             <tr>
                                 <td class="invoicedatelabel">Invoice Date:</td>
                                 <td class="invoicedate"><?=$order_date?></td>
                             </tr>
                         </table>
                         <?php if (!empty($customer_code)) { ?>
-                            <table style="margin-left: 54px;">
+                            <table style="margin-left: 42px;">
                                 <tr>
                                     <td class="customercode">
                                         <table>
