@@ -1,16 +1,19 @@
 $(document).ready(function () {
     var heigth = window.innerHeight;
     $(".maincontent").css('height', heigth);
-    $("#openincome").unbind('click').click(function () {
-        $.post('/login/show_signinform',{}, function (response) {
-            if (response.errors=='') {
-                $("#form").empty().html(response.data.content);
-                init_signin();
-            } else {
-                show_errors(response);
-            }
-        },'json');
-    });
+    init_signin();
+    // var heigth = window.innerHeight;
+    // $(".maincontent").css('height', heigth);
+    // $("#openincome").unbind('click').click(function () {
+    //     $.post('/login/show_signinform',{}, function (response) {
+    //         if (response.errors=='') {
+    //             $("#form").empty().html(response.data.content);
+    //             init_signin();
+    //         } else {
+    //             show_errors(response);
+    //         }
+    //     },'json');
+    // });
 })
 
 function init_signin() {
