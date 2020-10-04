@@ -65,14 +65,14 @@ td.invoicedatelabel {
     vertical-align: middle;
     font-size: 18px;
     text-align: left;
-    width: 122px;
+    width: 102px;
 }
 td.invoicedate {
     height: 28px;
     vertical-align: middle;
     font-size: 18px;
     text-align: left;
-    width: 103px;
+    width: 83px;
 }
 td.customercode {
     background: url('/img/invoice/customer_code_bg.png') no-repeat scroll left top transparent;
@@ -306,14 +306,14 @@ td.paymentvalue {
                         </table>
                     </td>
                     <td>
-                        <table style="margin-left: 44px;">
+                        <table style="margin-left: 100px;">
                             <tr>
                                 <td class="invoicedatelabel">Invoice Date:</td>
                                 <td class="invoicedate"><?=$order_date?></td>
                             </tr>
                         </table>
                         <?php if (!empty($customer_code)) { ?>
-                            <table style="margin-left: 54px;">
+                            <table style="margin-left: 42px;">
                                 <tr>
                                     <td class="customercode">
                                         <table>
@@ -340,9 +340,13 @@ td.paymentvalue {
                     <td class="deliverydate header">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td class="terms"><?=$terms?></td>
+                    <td class="terms">
+                        <?=$terms?>
+                    </td>
                     <td style="width: 13px;">&nbsp;</td>
-                    <td class="paymentdue"><?=$payment_due?></td>
+                    <td class="paymentdue">
+                        <?=$payment_due?>
+                    </td>
                     <td style="width: 71px;">&nbsp;</td>
                     <td class="shidate"><?=$shipdate?></td>
                     <td style="width: 13px">&nbsp;</td>

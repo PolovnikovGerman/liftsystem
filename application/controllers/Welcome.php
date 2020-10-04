@@ -81,7 +81,7 @@ class Welcome extends MY_Controller {
             $res = $this->dashboard_model->get_totals('week');
             $totals = $res['data'];
             $mdata['sales'] = QTYOutput($totals['sales']);
-            $mdata['revenue'] = MoneyOutput($totals['revenue']);
+            $mdata['revenue'] = MoneyOutput($totals['revenue'],0);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

@@ -4,6 +4,7 @@ Class Shipping_model extends MY_Model
 {
     private $error_message='Unknown error. Try later';
     private $empty_htmlcontent='&nbsp;';
+    private $box_empty_weight = 25;
 
     public function __construct()
     {
@@ -495,7 +496,8 @@ Class Shipping_model extends MY_Model
             $cartoon_depth=((isset($row['cartoon_depth']) && intval($row['cartoon_depth'])>0) ? $row['cartoon_depth'] : $this->config->item('default_pack_depth'));
             $cartoon_width=((isset($row['cartoon_width']) && intval($row['cartoon_width'])>0) ? $row['cartoon_width'] : $this->config->item('default_pack_width'));
             $cartoon_heigh=((isset($row['cartoon_heigh']) && intval($row['cartoon_heigh'])>0) ? $row['cartoon_heigh'] : $this->config->item('default_pack_heigth'));
-            $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
+            // $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
+            $itemweight = (ifset($row, 'item_weigth', 0)>0 ? $row['item_weigth'] : $this->box_empty_weight / $carton_qty);
             $options=array(
                 'zip'=>$shipaddr['zip'],
                 'numinpack'=>$carton_qty,

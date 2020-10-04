@@ -7735,6 +7735,7 @@ Class Leadorder_model extends My_Model {
                 }
             }
         }
+
         $shipping_address=$leadorder['shipping_address'];
         $shipadr=array();
         $idx=0;
@@ -7782,6 +7783,7 @@ Class Leadorder_model extends My_Model {
             }
 
         }
+
         $shipdata=$leadorder['shipping'];
 
         if (count($biladr)==0 && count($shipping_address)==1) {
@@ -7804,8 +7806,8 @@ Class Leadorder_model extends My_Model {
             'invoice_message'=>$order['invoice_message'],
             'order_date'=>date('m/d/Y',$order['order_date']),
             'customer_code'=>$customer_po,
-            'terms'=>$this->empty_htmlcontent,
-            'payment_due'=>'',
+            'terms'=>(empty($order['balance_term']) ? $this->empty_htmlcontent : 'Net 30'), // $order['balance_term']
+            'payment_due'=>((empty($order['balance_term']) && empty($order['credit_appdue'])) ? '' : date('m/d/y', $order['credit_appdue'])),
             'shipdate'=>(empty($shipdata['out_shipdate']) ? '' : $shipdata['out_shipdate']),
             'arrive'=>(empty($shipdata['out_arrivedate']) ? '' : $shipdata['out_arrivedate']),
             'billing'=>$biladr,
@@ -7828,7 +7830,7 @@ Class Leadorder_model extends My_Model {
         pdf_create($html, $file_out, true);
         if (file_exists($file_out)) {
             $out['result']=$this->success_result;
-            $out['html_path']=$this->config->item('pathpreload').$file_name;
+            $out['html_path']=$this->config->item('pathpreload').$file_name.'?t='.time();
             $out['doc_path']=$file_out;
         }
         return $out;
