@@ -230,7 +230,7 @@ class Content extends MY_Controller
                             'galleries' => $res['galleries'],
                             'maxitems' => $this->config->item('max_slider_galleryitems'),
                         ];
-                        $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                        $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                     } elseif ($postdata['imagetype']=='casestudy_image') {
                         $mdata['casestudy'] = 1;
                         $casestudy_options = [
@@ -286,7 +286,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
