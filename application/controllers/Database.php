@@ -1154,10 +1154,17 @@ class Database extends MY_Controller
                             'common_prices'=>$common_prices,
                             'numprices'=> $this->MAX_PROMOPRICES-1,
                         );
-                        $data['profitdat']=$this->load->view('itemdetails/promo_profit_view', $price_options,TRUE);
-                        $data['prices_view']=$this->load->view('itemdetails/promo_itempriceedit_view',$price_options,TRUE);
+                        // $data['profitdat']=$this->load->view('itemdetails/promo_profit_view', $price_options,TRUE);
+                        // $data['prices_view']=$this->load->view('itemdetails/promo_itempriceedit_view',$price_options,TRUE);
+                        $profitdat=$this->load->view('itemdetails/promo_profit_view', $price_options,TRUE);
+                        $prices_view=$this->load->view('itemdetails/promo_itempriceedit_view',$price_options,TRUE);
                         $session_data['item_prices']=$prices;
                         $session_data['common_prices']=$common_prices;
+                        $priceview_options = [
+                            'profitdat'=>$profitdat,
+                            'pricesdata'=>$prices_view,
+                        ];
+                        $data['pricesdat']=$this->load->view('itemdetails/promoitem_pricesview_view',$priceview_options,TRUE);
                     }
                 } else {
                     $prices=$this->prices_model->get_price_itemedit($item_id);
