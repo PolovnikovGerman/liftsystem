@@ -220,7 +220,7 @@ td.itemsubtotal.header {
 td.advpicplace {
     width: 417px;
     height: 144px;
-    font-size: 16px;
+    font-size: 18px;
 }
 td.invoicetotals {
     /* background: url('/img/invoice/totals_bg.png') no-repeat scroll left top transparent; */
