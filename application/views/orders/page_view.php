@@ -1,21 +1,22 @@
 <div class="maincontent">
     <div class="maincontentmenuarea marketmenu">
         <div class="maincontentmenu">
+            <div class="title">Orders:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
-    </div>
-    <div class="maincontent_view">
-        <?php if (isset($ordersview)) { ?>
-            <div class="orderscontentarea" id="ordersview" style="display: none;"><?=$ordersview?></div>
-        <?php } ?>
-        <?php if (isset($orderlistsview)) { ?>
-            <div class="orderscontentarea" id="orderlistsview" style="display: none;"><?=$orderlistsview?></div>
-        <?php } ?>
-        <?php if (isset($onlineordersview)) { ?>
-            <div class="orderscontentarea" id="onlineordersview" style="display: none;"><?=$onlineordersview?></div>
-        <?php } ?>
+        <div class="maincontent_view">
+            <?php if (isset($ordersview)) { ?>
+                <div class="orderscontentarea" id="ordersview" style="display: none;"><?=$ordersview?></div>
+            <?php } ?>
+            <?php if (isset($orderlistsview)) { ?>
+                <div class="orderscontentarea" id="orderlistsview" style="display: none;"><?=$orderlistsview?></div>
+            <?php } ?>
+            <?php if (isset($onlineordersview)) { ?>
+                <div class="orderscontentarea" id="onlineordersview" style="display: none;"><?=$onlineordersview?></div>
+            <?php } ?>
+        </div>
     </div>
 </div>
 
