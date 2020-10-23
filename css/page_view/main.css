@@ -619,8 +619,9 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     color: #d7d7d7;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial;
     font-size: 16px;
+    font-weight: bold;
     text-align: center;
     height: 26px;
     line-height: 26px!important;
