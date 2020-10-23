@@ -12,13 +12,16 @@
                     <img src="/img/page_view/lift_logo.png"/>
                 </div>
             </div>
+            <?php if ($reportchk) { ?>
+                <div class="inforeports" id="reports">
+                    <div class="icon">
+                        <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                    </div>
+                    <div class="infotext">Reports</div>
+                </div>
+            <?php } ?>
             <div class="period_analitic_info"><?=$total_view?></div>
             <div class="publicsearch">
-                <select class="publicsearch_type">
-                    <option value="Orders">Orders</option>
-                    <!-- <option value="Customers">Customers</option> -->
-                    <option value="Items">Items</option>
-                </select>
                 <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
                 <div class="publicsearch_btn">
                     <img src="/img/page_view/search_icon_blue.png"/>
@@ -37,20 +40,20 @@
                     </div>
                 </div>
             </div>
-            <?php if ($alertchk) { ?>
-                <div class="infoalerts" id="infoalerts">
-                    <div class="alerticon">
-                        <img src="/img/icons/bell_white.svg" class="img-responsive"/>
-                    </div>
-                    <div class="alerttext">Alerts</div>
-                </div>
-            <?php } ?>
             <?php if ($adminchk) { ?>
                 <div class="infoalerts" id="admin">
                     <div class="alerticon admin">
                         <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                     </div>
                     <div class="alerttext">Admin</div>
+                </div>
+            <?php } ?>
+            <?php if ($resourcechk) { ?>
+                <div class="infoalerts resources" id="admin">
+                    <div class="alerticon">
+                        <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                    </div>
+                    <div class="alerttext">Resources</div>
                 </div>
             <?php } ?>
         </div>

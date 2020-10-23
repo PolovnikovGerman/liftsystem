@@ -95,11 +95,10 @@ body div {
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
-    /* width: 285px; */
 }
 .period_analitic_info > div {
-    height: 26px;
-    line-height: 26px;
+    height: 24px;
+    line-height: 24px;
     color: #ffffff;
 }
 .period_analitic_info > .period_name {
@@ -112,23 +111,26 @@ body div {
     text-transform: uppercase;
 }
 .period_analitic_info > .param_value_label {
-    width: 32px;
+    /* width: 32px; */
     text-align: right;
     padding-right: 7px;
     text-transform: uppercase;
     font-family: Helvetica CE;
-    font-size: 11px;
-    padding-top: 10px;
-    line-height: 12px;
-    height: 19px;
+    font-size: 12px;
+    /* padding-top: 10px; */
+    /* line-height: 12px; */
+    /* height: 19px; */
 }
 .period_analitic_info > .param_value {
-    width: 36px;
+    min-width: 26px;
     font-family: Helvetica-Bold;
     font-size: 18px;
+    padding-right: 7px;
 }
 .period_analitic_info > .param_value.money {
-    width: 82px;
+    min-width: 45px;
+    border-left: 1px solid #9b9b9b;
+    padding-left: 7px;
 }
 .publicsearch {
     margin-left: 5px;
@@ -142,8 +144,8 @@ body div {
 }
 .publicsearch > input.publicsearch_template {
     border: 1px solid #088aff;
-    height: 29px;
-    line-height: 29px;
+    height: 26px;
+    line-height: 26px;
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
@@ -153,7 +155,7 @@ body div {
     position: relative;
     float: right;
     left: -21px;
-    top: 5px;
+    top: 4px;
     cursor: pointer;
 }
 .userinfo {
@@ -188,6 +190,30 @@ body div {
     font-family: Helvetica;
     font-size: 13px;
 }
+.inforeports {
+    border: 1px solid #9b9b9b;
+    height: 26px;
+    color: #ffffff;
+    width: 105px;
+    margin: 0.25rem 4px 0 4px;
+    cursor: pointer;
+}
+.inforeports .icon {
+    width: 15px;
+    padding-top: 4px;
+    margin-left: 12px;
+}
+.inforeports .icon img {
+    width: 100%;
+    height: auto;
+}
+.inforeports .infotext {
+    padding-left: 7px;
+    font-family: Helvetica-BoldOblique;
+    font-size: 14px;
+    height: 26px;
+    line-height: 26px!important;
+}
 .infoalerts {
     border: 1px solid #9b9b9b;
     height: 26px;
@@ -197,10 +223,13 @@ body div {
     float: right!important;
     cursor: pointer;
 }
+.infoalerts.resources {
+    width: 111px!important;
+}
 .infoalerts .alerticon {
     /* padding-left: 12px;*/
     width: 15px;
-    padding-top: 4px;
+    padding-top: 6px;
     margin-left: 12px;
 }
 .infoalerts .alerticon.admin {
@@ -218,8 +247,9 @@ body div {
     line-height: 26px!important;
 }
 .menurow {
-    padding-top: 4px;
+    padding-top: 7px;
     padding-left: 20px;
+    margin-bottom: -7px;
 }
 /* Main menu */
 .main-buttons {
@@ -386,7 +416,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     width: 100%;
     background: #000000;
     float: left;
-    margin-top: -7px;
+    /* margin-top: -7px; */
 }
 .maincontent div {
     float: left;
@@ -397,15 +427,18 @@ ul.mainmenu #collapsed.dropdown-menu li {
     height: 28px;
 }
 .maincontentmenuarea.adminmenu {
-    background: #ff1c1c;
+    /* background: #ff1c1c; */
+    background: #3636ff;
     color: #ffffff;
 }
 .maincontentmenuarea.marketmenu {
-    background: #2626ff;
+    /* background: #2626ff; */
+    background: #3636ff;
     color: #ffffff;
 }
 .maincontentmenuarea.databasemenu {
-    background: #228927;
+    /* background: #228927; */
+    background: #3636ff;
     color: #ffffff;
 }
 .maincontentmenu {
@@ -552,4 +585,39 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 .period_analitic_info,
 .publicsearch {
     margin-top: 0.25rem;
+}
+/* New Menu */
+.menuitem {
+    background: #434343;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    color: #d7d7d7;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    width: 98px;
+    text-align: center;
+    height: 26px;
+    line-height: 26px!important;
+    margin-left: 7px;
+    cursor: pointer;
+}
+.menuitem.activelink {
+    background: #3636ff;
+    color: #ffffff;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+.menuitem:hover {
+    background: #000080;
+    color: #ffffff;
+}
+.contentmenusection {
+    float: right!important;
+}
+.menurow > .row {
+    width: 100%;
+}
+.marketmenusection {
+    margin-left: 40px;
 }

@@ -38,14 +38,15 @@ class Welcome extends MY_Controller {
             ];
             $error = '';
             $postdata = $this->input->post();
-            $search_type = ifset($postdata,'search_type','unk');
+            // $search_type = ifset($postdata,'search_type','unk');
+            $search_type = 'Orders';
             $search_template = ifset($postdata,'search_template','');
             if ($search_type=='Orders') {
                 $mdata['url'] = '/orders';
                 usersession('liftsearch', $search_template);
-            } elseif ($search_type=='Items') {
-                $mdata['url'] = '/database';
-                usersession('liftsearch', $search_template);
+            // } elseif ($search_type=='Items') {
+            //    $mdata['url'] = '/database';
+            //    usersession('liftsearch', $search_template);
             }
             $this->ajaxResponse($mdata, $error);
         }
