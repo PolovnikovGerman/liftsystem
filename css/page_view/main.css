@@ -149,7 +149,10 @@ body div {
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
-    width: 130px;
+    width: 111px;
+}
+.publicsearch > input.publicsearch_template::placeholder {
+    text-align: left;
 }
 .publicsearch > .publicsearch_btn {
     position: relative;
@@ -597,12 +600,12 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border: none!important;
 }
 .left-box {
-    float: left;
-    width: 70%;
+    /* float: left; */
+    /* width: 70%; */
 }
 .right-box {
-    float: right;
-    width: 30%;
+    float: right!important;
+    /* width: 30%; */
 }
 .userinfo,
 .brands-logos,
@@ -617,13 +620,14 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border-top-right-radius: 7px;
     color: #d7d7d7;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    width: 98px;
+    font-size: 16px;
     text-align: center;
     height: 26px;
     line-height: 26px!important;
     margin-left: 7px;
     cursor: pointer;
+    min-width: 60px;
+    padding: 0 16px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
     background: #3636ff;
@@ -639,8 +643,12 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     background: #000080;
     color: #ffffff;
 }
+.finmenusection {
+    margin-left: -15px;
+}
 .contentmenusection {
     float: right!important;
+    margin-right: -15px;
 }
 .menurow > .row {
     width: 100%;
