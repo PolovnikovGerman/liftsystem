@@ -1,21 +1,22 @@
 <div class="maincontent">
     <div class="maincontentmenuarea adminmenu">
         <div class="maincontentmenu">
+            <div class="title">Admin:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
-    </div>
-    <div class="maincontent_view">
-        <?php if (isset($usersview)) { ?>
-            <div class="admincontentarea" id="usersview" style="display: none;"><?=$usersview?></div>
-        <?php } ?>
-        <?php if (isset($parseremailsview)) { ?>
-            <div class="admincontentarea" id="parseremailsview" style="display: none;"><?=$parseremailsview?></div>
-        <?php } ?>
-        <?php if (isset($artalertsview)) { ?>
-            <div class="admincontentarea" id="artalertsview" style="display: none;"><?=$artalertsview?></div>
-        <?php } ?>
+        <div class="maincontent_view">
+            <?php if (isset($usersview)) { ?>
+                <div class="admincontentarea" id="usersview" style="display: none;"><?=$usersview?></div>
+            <?php } ?>
+            <?php if (isset($parseremailsview)) { ?>
+                <div class="admincontentarea" id="parseremailsview" style="display: none;"><?=$parseremailsview?></div>
+            <?php } ?>
+            <?php if (isset($artalertsview)) { ?>
+                <div class="admincontentarea" id="artalertsview" style="display: none;"><?=$artalertsview?></div>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

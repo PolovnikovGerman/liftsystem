@@ -49,7 +49,7 @@
                 </div>
             <?php } ?>
             <?php if ($resourcechk) { ?>
-                <div class="infoalerts resources" id="admin">
+                <div class="infoalerts resources" id="resources">
                     <div class="alerticon">
                         <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
                     </div>

@@ -1,24 +1,25 @@
 <div class="maincontent">
     <div class="maincontentmenuarea adminmenu">
         <div class="maincontentmenu">
+            <div class="title">Analytics:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
-    </div>
-    <div class="maincontent_view">
-        <?php if (isset($reportsalestypeview)) { ?>
-            <div class="analyticcontentarea" id="reportsalestypeview" style="display: none;"><?=$reportsalestypeview?></div>
-        <?php } ?>
-        <?php if (isset($reportitemsoldyearview)) { ?>
-            <div class="analyticcontentarea" id="reportitemsoldyearview" style="display: none;"><?=$reportitemsoldyearview?></div>
-        <?php } ?>
-        <?php if (isset($reportitemsoldmonthview)) { ?>
-            <div class="analyticcontentarea" id="reportitemsoldmonthview" style="display: none;"><?=$reportitemsoldmonthview?></div>
-        <?php } ?>
-        <?php if (isset($checkoutreportview)) { ?>
-            <div class="analyticcontentarea" id="checkoutreportview" style="display: none;"><?=$checkoutreportview?></div>
-        <?php } ?>
+        <div class="maincontent_view">
+            <?php if (isset($reportsalestypeview)) { ?>
+                <div class="analyticcontentarea" id="reportsalestypeview" style="display: none;"><?=$reportsalestypeview?></div>
+            <?php } ?>
+            <?php if (isset($reportitemsoldyearview)) { ?>
+                <div class="analyticcontentarea" id="reportitemsoldyearview" style="display: none;"><?=$reportitemsoldyearview?></div>
+            <?php } ?>
+            <?php if (isset($reportitemsoldmonthview)) { ?>
+                <div class="analyticcontentarea" id="reportitemsoldmonthview" style="display: none;"><?=$reportitemsoldmonthview?></div>
+            <?php } ?>
+            <?php if (isset($checkoutreportview)) { ?>
+                <div class="analyticcontentarea" id="checkoutreportview" style="display: none;"><?=$checkoutreportview?></div>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

@@ -23,6 +23,12 @@ $(document).ready(function () {
     $("#admin").unbind('click').click(function(){
         window.location.href='/admin';
     });
+    $("#reports").unbind('click').click(function () {
+        window.location.href='/analytics';
+    })
+    $("#resources").unbind('click').click(function () {
+        window.location.href='/resources';
+    })
     $("#publicsearch_template").keypress(function (event) {
         if (event.which == 13) {
             liftsite_search();
