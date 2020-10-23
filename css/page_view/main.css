@@ -392,7 +392,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 /* Classes for left tabs */
 .page_container {
-    float: left; width: 100%; background: #000000;
+    float: left;
+    width: 100%;
+    background: #3636ff;
 }
 .left_maincontent {
     float: left;
