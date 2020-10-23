@@ -39,6 +39,9 @@ class Login extends Base_Controller
                 $error = '';
                 $mdata['url']='welcome';
                 $usrdat = $res['usrdat'];
+                if (ifset($usrdat, 'user_page',0) > 0) {
+                   $mdata['url'] = $this->user_model->default_page($usrdat['user_page']);
+                }
                 $this->load->model('useractivity_model');
                 $this->useractivity_model->userlog($usrdat['user_id'],'Sign in', 1);
             }

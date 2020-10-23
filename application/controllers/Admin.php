@@ -163,6 +163,9 @@ class Admin extends MY_Controller
                 $wpages=$this->tree(null, 0, $user_id);
                 $pagepermiss=$this->load->view('admin/webpage_tree_view',array('pages'=>$wpages),TRUE);
                 $iprestricts = $this->load->view('admin/user_iprestrict_view',['userip'=>$userip], TRUE);
+                $pages_list=$this->menuitems_model->get_webpages();
+                $pages_select = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list, 'defpage' => $data['user_page']], TRUE);
+
                 $session_data = [
                     'user' => $data,
                     'userip' => $userip,
@@ -176,6 +179,7 @@ class Admin extends MY_Controller
                     'iprestricts' => $iprestricts,
                     'webpages' => $pagepermiss,
                     'session' => $session_id,
+                    'pages_select' => $pages_select,
                 ];
 
                 $mdata['content'] = $this->load->view('admin/user_details_view', $options, TRUE);
