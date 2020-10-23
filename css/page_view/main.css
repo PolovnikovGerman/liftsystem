@@ -198,6 +198,9 @@ body div {
     margin: 0.25rem 4px 0 4px;
     cursor: pointer;
 }
+.inforeports:hover {
+    background: #000080;
+}
 .inforeports .icon {
     width: 15px;
     padding-top: 4px;
@@ -222,6 +225,9 @@ body div {
     margin-right: 4px;
     float: right!important;
     cursor: pointer;
+}
+.infoalerts:hover {
+    background: #000080;
 }
 .infoalerts.resources {
     width: 111px!important;

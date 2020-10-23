@@ -5,17 +5,12 @@ $(document).ready(function () {
     // Calc
     var allwidth = parseInt(window.innerWidth);
     var freespace = (allwidth - (parseInt($(".finmenusection").css('width')) + parseInt($(".marketmenusection").css('width')) + parseInt($(".contentmenusection").css('width'))))/2;
-    console.log('Fin ' + parseInt($(".finmenusection").css('width')));
-    console.log('Market ' + parseInt($(".marketmenusection").css('width')));
-    console.log('Content '+parseInt($(".contentmenusection").css('width')));
-    console.log('WIN '+allwidth);
-    console.log('MarginLeft '+parseInt(freespace));
     $(".marketmenusection").css('margin-left',freespace+'px');
-    autocollapse(0); // when document first loads
+    // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
-    $(window).resize(function() {
-        autocollapse(1);
-    });
+    // $(window).resize(function() {
+    //     autocollapse(1);
+    // });
     $(".menubutton").unbind('click').click(function () {
         var url=$(this).data('menulink');
         window.location.href=url;
