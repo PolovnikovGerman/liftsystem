@@ -230,7 +230,7 @@ class Content extends MY_Controller
                             'galleries' => $res['galleries'],
                             'maxitems' => $this->config->item('max_slider_galleryitems'),
                         ];
-                        $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                        $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                     } elseif ($postdata['imagetype']=='casestudy_image') {
                         $mdata['casestudy'] = 1;
                         $casestudy_options = [
@@ -238,6 +238,12 @@ class Content extends MY_Controller
                             'maxitems' => $this->config->item('max_slider_casestudy'),
                         ];
                         $mdata['content'] = $this->load->view('content/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                    } elseif ($postdata['imagetype']=='galleryitem_image') {
+                        $mdata['galleryitem'] = 1;
+                        $item_options = [
+                            'galleryitems' => $res['items'],
+                        ];
+                        $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $item_options, TRUE);
                     }
                 }
             }
@@ -246,7 +252,7 @@ class Content extends MY_Controller
         show_404();
     }
 
-    public function remove_customgalleryitem() {
+    public function remove_customgalleryimage() {
         if ($this->isAjax()) {
             $mdata=[];
             $error = 'Edit session lost. Please, reload page';
@@ -255,14 +261,14 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
                 $this->load->model('staticpages_model');
-                $res = $this->staticpages_model->remove_customgalleryitem($session_data, $postdata, $session_id);
+                $res = $this->staticpages_model->remove_customgalleryimage($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
                     $gallery_options = [
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -286,7 +292,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -310,11 +316,32 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    public function remove_customgalleryitem() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata=$this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('staticpages_model');
+                $res = $this->staticpages_model->remove_customgalleryitems($session_data, $postdata, $session_id);
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $galleryitems = $res['galleryitems'];
+                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', ['galleryitems' => $galleryitems], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     public function remove_customcasestudy() {
@@ -1093,6 +1120,7 @@ class Content extends MY_Controller
         if ($page_name == 'custom') {
             $galleries = $this->staticpages_model->get_custom_galleries($brand);
             $case_study = $this->staticpages_model->get_case_study($brand);
+            $galleryitems = $this->staticpages_model->get_galleryitems($brand);
             // Get data about categories, examples
             $gallery_options = [
                 'galleries' => $galleries,
@@ -1101,8 +1129,14 @@ class Content extends MY_Controller
             if ($edit_mode == 0) {
                 $gallery_view = $this->load->view('content/custom_galleries_view', $gallery_options, TRUE);
             } else {
-                $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
-                $gallery_view = $this->load->view('content/custom_galleries_edit', ['gallery_view'=>$editgallery], TRUE);
+                // $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                $gallery_view = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE); // ['gallery_view'=>$editgallery]
+            }
+            // Examples gallery
+            if ($edit_mode == 0) {
+                $galleryitems_view = $this->load->view('content/custom_galleryitems_view', ['galleryitems'=> $galleryitems], TRUE);
+            } else {
+                $galleryitems_view = $this->load->view('content/custom_galleryitems_edit', ['galleryitems'=> $galleryitems], TRUE);
             }
             // Get data about Case Study
             $casestudy_options = [
@@ -1119,6 +1153,7 @@ class Content extends MY_Controller
                 'data' => $data,
                 'gallery_view' => $gallery_view,
                 'casestudy_view' => $casestudy_view,
+                'galleryitems_view' => $galleryitems_view,
             ];
             if ($edit_mode==1) {
                 $page_options['session'] = $session;
@@ -1128,7 +1163,7 @@ class Content extends MY_Controller
             } else {
                 $content = $this->load->view('content/customshaped_custom_edit', $page_options, TRUE);
                 // Save data to session
-                $session_data = ['data' => $data, 'galleries' => $galleries, 'case_study' => $case_study];
+                $session_data = ['data' => $data, 'galleries' => $galleries, 'case_study' => $case_study, 'galleryitems' => $galleryitems];
                 usersession($session, $session_data);
             }
         } elseif ($page_name=='faq') {

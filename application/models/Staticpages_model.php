@@ -56,20 +56,23 @@ Class Staticpages_model extends MY_Model
         $out = [];
         $numpp = 1;
         foreach ($categ as $item) {
-            $this->db->select('*');
-            $this->db->from('sb_custom_galleryitems');
-            $this->db->where('custom_gallery_id', $item['custom_gallery_id']);
-            $this->db->where('item_deleted',0);
-            $this->db->order_by('item_order');
-            $dataitems = $this->db->get()->result_array();
-            $item['count_items'] = count($dataitems);
-            $item['items']=$dataitems;
             $item['numpp'] = $numpp;
             $out[]=$item;
             $numpp++;
         }
         return $out;
     }
+
+    public function get_galleryitems($brand) {
+        $this->db->select('*');
+        $this->db->from('sb_custom_galleryitems');
+        $this->db->where('item_deleted',0);
+        $this->db->where('brand', $brand);
+        $this->db->order_by('item_order');
+        $dataitems = $this->db->get()->result_array();
+        return $dataitems;
+    }
+
 
     public function get_case_study($brand) {
         $this->db->select('*');
@@ -181,16 +184,8 @@ Class Staticpages_model extends MY_Model
                     $idx++;
                 }
                 if ($found==1) {
-                    $items=$data[$idx]['items'];
-                    $numitems = count($items);
-                    $items[]=[
-                        'custom_galleryitem_id' => ($numitems+1)*(-1),
-                        'custom_gallery_id' => $custom_gallery_id,
-                        'item_order'=> ($numitems+1),
-                        'item_source' => $postdata['imagesrc'],
-                    ];
-                    $data[$idx]['items']=$items;
-                    $data[$idx]['count_items']=$numitems+1;
+                    $data[$idx]['gallery_image'] = $postdata['imagesrc'];
+                    $data[$idx]['upload_new'] = time();
                     $session_data['galleries']=$data;
                     usersession($session_id, $session_data);
                     $out['result']=$this->success_result;
@@ -216,12 +211,24 @@ Class Staticpages_model extends MY_Model
                     $out['result']=$this->success_result;
                     $out['case_study']=$data;
                 }
+            } elseif ($postdata['imagetype']=='galleryitem_image') {
+                $data = $session_data['galleryitems'];
+                $newitem = (count($data) + 1) * (-1);
+                $data[] = [
+                    'custom_galleryitem_id' => $newitem,
+                    'item_source' => $postdata['imagesrc'],
+                    'newload' => 1,
+                ];
+                $session_data['galleryitems'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['items'] = $data;
             }
         }
         return $out;
     }
 
-    public function remove_customgalleryitem($session_data, $postdata, $session_id) {
+    public function remove_customgalleryimage($session_data, $postdata, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Gallery Not Found'];
         $data = $session_data['galleries'];
         $idx = 0;
@@ -234,30 +241,40 @@ Class Staticpages_model extends MY_Model
             $idx++;
         }
         if ($found==1) {
-            $items = $data[$idx]['items'];
-            $newitem = [];
-            $numpp=1;
-            foreach ($items as $item) {
-                if ($item['custom_galleryitem_id']!=$postdata['custom_galleryitem_id']) {
-                    $item['item_order']=$numpp;
-                    $newitem[]=$item;
-                    $numpp++;
-                }
-            }
-            $data[$idx]['items']=$newitem;
-            $data[$idx]['count_items']=count($newitem);
+            $data[$idx]['gallery_image']='';
             $session_data['galleries']=$data;
+            usersession($session_id, $session_data);
+            $out['result']=$this->success_result;
+            $out['galleries'] = $data;
+        }
+        return $out;
+    }
+
+    public function remove_customgalleryitems($session_data, $postdata, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Gallery Pic Not Found'];
+        $data = $session_data['galleryitems'];
+        $found = 0;
+        $newitems = [];
+        foreach ($data as $row) {
+            if ($row['custom_galleryitem_id']==$postdata['custom_galleryitem_id']) {
+                $found = 1;
+            } else {
+                $newitems[] = $row;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $out['galleryitems'] = $newitems;
             if ($postdata['custom_galleryitem_id']>0) {
                 $deleted = $session_data['deleted'];
                 $deleted[]=[
                     'table' => 'sb_custom_galleryitems',
                     'id' => $postdata['custom_galleryitem_id'],
                 ];
-                $session_data['deleted']=$deleted;
+                $session_data['deleted'] = $deleted;
             }
+            $session_data['galleryitems']=$newitems;
             usersession($session_id, $session_data);
-            $out['result']=$this->success_result;
-            $out['galleries'] = $data;
         }
         return $out;
     }
@@ -280,6 +297,7 @@ Class Staticpages_model extends MY_Model
             'numpp' => count($data)+1,
             'items' => [],
             'count_items' => 0,
+            'gallery_image' => '',
         ];
         $session_data['galleries']=$data;
         usersession($session_id, $session_data);
@@ -365,6 +383,8 @@ Class Staticpages_model extends MY_Model
         $galleries = $session_data['galleries'];
         $case_study = $session_data['case_study'];
         $deleted = $session_data['deleted'];
+        $galleriitems = $session_data['galleryitems'];
+
         // Check data
         // Save data
         // Prepare folders for galleries
@@ -419,45 +439,72 @@ Class Staticpages_model extends MY_Model
         $this->_save_page_params($data, 'custom', $brand, $user);
         // Gallery
         foreach ($galleries as $gallery) {
-            $gallery_id = $gallery['custom_gallery_id'];
-            $this->db->set('update_user', $user);
-            $this->db->set('gallery_name', $gallery['gallery_name']);
-            $this->db->set('gallery_order', $gallery['gallery_order']);
-            $this->db->set('gallery_show', $gallery['gallery_show']);
-            if ($gallery['custom_gallery_id']<0) {
-                $this->db->set('create_user', $user);
-                $this->db->set('create_date', date('Y-m-d H:i:s'));
-                $this->db->set('brand', $brand);
-                $this->db->insert('sb_custom_galleries');
-                $gallery_id = $this->db->insert_id();
-            } else {
-                $this->db->set('update_user',$user);
-                $this->db->where('custom_gallery_id', $gallery_id);
-                $this->db->update('sb_custom_galleries');
-            }
-            if ($gallery_id>0 ) {
-                // Insert / update images
-                $name = urlencode(str_replace([" ","&","'"],'',$gallery['gallery_name']));
-                $numpp=1;
-                foreach ($gallery['items'] as $item) {
-                    if ($item['custom_galleryitem_id']<0) {
-                        // New element
-                        $imagesrc = str_replace($path_preload_short, $path_preload_full, $item['item_source']);
-                        $imagedetails = extract_filename($item['item_source']);
-                        $filename = $name.'_'.$numpp.'_'.time().'.'.$imagedetails['ext'];
+            if (!empty($gallery['gallery_name'])) {
+                $gallery_id = $gallery['custom_gallery_id'];
+                $this->db->set('update_user', $user);
+                $this->db->set('gallery_name', $gallery['gallery_name']);
+                $this->db->set('gallery_order', $gallery['gallery_order']);
+                $this->db->set('gallery_show', $gallery['gallery_show']);
+                if ($gallery['custom_gallery_id']<0) {
+                    $this->db->set('create_user', $user);
+                    $this->db->set('create_date', date('Y-m-d H:i:s'));
+                    $this->db->set('brand', $brand);
+                    $this->db->insert('sb_custom_galleries');
+                    $gallery_id = $this->db->insert_id();
+                } else {
+                    $this->db->set('update_user',$user);
+                    $this->db->where('custom_gallery_id', $gallery_id);
+                    $this->db->update('sb_custom_galleries');
+                }
+                if ($gallery_id>0 ) {
+                    if (!empty($gallery['gallery_image']) && ifset($gallery,'upload_new',0)>0) {
+                        // New image
+                        $name = urlencode(str_replace([" ","&","'"],'',$gallery['gallery_name']));
+                        $imagesrc = str_replace($path_preload_short, $path_preload_full, $gallery['gallery_image']);
+                        $imagedetails = extract_filename($gallery['gallery_image']);
+                        $filename = $name.'_main_'.time().'.'.$imagedetails['ext'];
                         $res = @copy($imagesrc, $this->config->item('gallery_images_relative').$filename);
                         if ($res) {
-                            $this->db->set('custom_gallery_id', $gallery_id);
-                            $this->db->set('create_user', $user);
-                            $this->db->set('create_time', date('Y-m-d H:i:s'));
-                            $this->db->set('update_user', $user);
-                            $this->db->set('item_source', $this->config->item('gallery_images').$filename);
-                            $this->db->set('item_order', $item['item_order']);
-                            $this->db->insert('sb_custom_galleryitems');
+                            $this->db->set('gallery_image', $this->config->item('gallery_images').$filename);
+                            $this->db->where('custom_gallery_id', $gallery_id);
+                            $this->db->update('sb_custom_galleries');
                         }
                     }
-                    $numpp++;
+                    if (empty($gallery['gallery_image'])) {
+                        $this->db->set('gallery_image', NULL);
+                        $this->db->where('custom_gallery_id', $gallery_id);
+                        $this->db->update('sb_custom_galleries');
+                    }
                 }
+            }
+        }
+        // Gallery Items
+        $numpp = 1;
+        foreach ($galleriitems as $galleriitem) {
+            $item_id = $galleriitem['custom_galleryitem_id'];
+            if ($item_id < 0) {
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $galleriitem['item_source']);
+                $imagedetails = extract_filename($galleriitem['item_source']);
+                $filename = 'galleryitem_'.str_pad($numpp,4,'0', STR_PAD_LEFT).'_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('gallery_images_relative').$filename);
+                if ($res) {
+                    $this->db->set('create_user',$user);
+                    $this->db->set('create_time', date('Y-m-d H:i:s'));
+                    $this->db->set('update_user', $user);
+                    $this->db->set('item_source', $this->config->item('gallery_images').$filename);
+                    $this->db->set('item_order', $numpp);
+                    $this->db->set('brand', $brand);
+                    $this->db->insert('sb_custom_galleryitems');
+                    if ($this->db->insert_id() > 0) {
+                        $numpp++;
+                    }
+                }
+            } else {
+                $this->db->where('custom_galleryitem_id', $galleriitem['custom_galleryitem_id']);
+                $this->db->set('update_user', $user);
+                $this->db->set('item_order', $numpp);
+                $this->db->update('sb_custom_galleryitems');
+                $numpp++;
             }
         }
         // Case study
