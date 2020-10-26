@@ -465,11 +465,16 @@ function init_customshape_editcontent() {
     });
     // Add New
     // Click on place for image
+    var qq_template= '<div class="qq-uploader"><div class="add_new_gallerypic qq-upload-button">'+
+        '+ Add New Gallery Pic</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<div class="clear"></div></div>';
 
     var itemuploader = new qq.FileUploader({
         element: document.getElementById('add_new_gallery'),
         action: '/utils/save_itemimg',
         uploadButtonText: '',
+        template: qq_template,
         multiple: false,
         debug: false,
         allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],

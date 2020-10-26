@@ -19,6 +19,6 @@
     </div>
 <?php } ?>
 <div class="content-row">
-    <div class="add_new_gallery" id="add_new_gallery">Add New Gallery Pic</div>
+    <div id="add_new_gallery"></div>
 </div>
 

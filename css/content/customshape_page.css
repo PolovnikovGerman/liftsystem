@@ -276,6 +276,19 @@ input.custom_gallerytitle {
     line-height: 24px!important;
     font-weight: bold;
 }
+.add_new_gallerypic {
+    background-image: none!important;
+    background-color: #145224!important;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px!important;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0 10px;
+    line-height: 24px!important;
+    font-weight: bold;
+    width: 169px!important;
+}
 /* Below gallery inputs */
 div.custom_belowgallerrytext {
     width: 153px;
