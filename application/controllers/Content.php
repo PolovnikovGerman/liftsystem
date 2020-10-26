@@ -238,6 +238,12 @@ class Content extends MY_Controller
                             'maxitems' => $this->config->item('max_slider_casestudy'),
                         ];
                         $mdata['content'] = $this->load->view('content/custom_casestudyitems_edit', $casestudy_options, TRUE);
+                    } elseif ($postdata['imagetype']=='galleryitem_image') {
+                        $mdata['galleryitem'] = 1;
+                        $item_options = [
+                            'galleryitems' => $res['items'],
+                        ];
+                        $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $item_options, TRUE);
                     }
                 }
             }
@@ -262,7 +268,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -310,7 +316,7 @@ class Content extends MY_Controller
                         'galleries' => $res['galleries'],
                         'maxitems' => $this->config->item('max_slider_galleryitems'),
                     ];
-                    $mdata['content'] = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                    $mdata['content'] = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1123,8 +1129,8 @@ class Content extends MY_Controller
             if ($edit_mode == 0) {
                 $gallery_view = $this->load->view('content/custom_galleries_view', $gallery_options, TRUE);
             } else {
-                $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
-                $gallery_view = $this->load->view('content/custom_galleries_edit', ['gallery_view'=>$editgallery], TRUE);
+                // $editgallery = $this->load->view('content/custom_galleryitems_edit', $gallery_options, TRUE);
+                $gallery_view = $this->load->view('content/custom_galleries_edit', $gallery_options, TRUE); // ['gallery_view'=>$editgallery]
             }
             // Examples gallery
             if ($edit_mode == 0) {
