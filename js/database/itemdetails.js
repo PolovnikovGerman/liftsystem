@@ -73,10 +73,14 @@ function close_view() {
         if (response.errors=='') {
             var pagename = response.data.pagename;
             if (pagename=='categview') {
-                init_page('itemcategoryview');
+                $("#itemdetailsview").hide();
+                $("#legacyview").show();
+                init_legacy_page('itemcategoryview');
             } else {
-                var start = $(".maincontentmenu_item:first").data('link');
-                init_page(start);
+                var start = $(".summenu_item:first").data('link');
+                $("#itemdetailsview").hide();
+                $("#legacyview").show();
+                init_legacy_page(start);
             }
         } else {
             show_error(response);

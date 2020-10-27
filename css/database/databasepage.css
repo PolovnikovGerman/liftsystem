@@ -6,14 +6,16 @@
     clear: both;
     width: 100%;
 }
-.legacyview {
+.legacyviewlnk {
     float: right!important;
 }
 .maincontentmenu {
     margin-right: 5px!important;
     width: calc(100% - 15px)!important;
 }
-
+.right_maincontent {
+    width: 100%!important;
+}
 .statcipage_content {
     clear: both;
     float: left;
@@ -454,4 +456,22 @@ a.itemtitle.nearlyupdate {
     background: linear-gradient(top, #4646db, #5959fb); /* CSS3 */
     border-top: 1px solid #bdbdbd;
     border-bottom: 1px solid #bdbdbd;
+}
+.legacy_submenu {
+    margin-top: 7px;
+    margin-left: 7px;
+}
+.summenu_item {
+    margin-right: 7px;
+    height: 21px;
+    line-height: 21px!important;
+    font-size: 14px;
+    color: #000000;
+    background: #dedede;
+    border: 1px solid #000000;
+    padding: 0 14px;
+    cursor: pointer;
+}
+.summenu_item.active {
+    background: #ffffff;
 }

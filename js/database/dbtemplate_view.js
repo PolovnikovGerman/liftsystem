@@ -24,13 +24,13 @@ function init_templates_view() {
         search_data();
     });
     // Change Brand
-    $("#itemtemplatesbrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itemtemplatesbrand").val(brand);
-        $("#itemtemplatesbrandmenu").find("div.left_tab").removeClass('active');
-        $("#itemtemplatesbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_data();
-    });
+    // $("#itemtemplatesbrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itemtemplatesbrand").val(brand);
+    //     $("#itemtemplatesbrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itemtemplatesbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_data();
+    // });
 }
 
 function make_hover() {
