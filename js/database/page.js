@@ -33,7 +33,6 @@ function view_itemdetails(item_id, brand) {
     var params=new Array();
     params.push({name: 'item_id', value: item_id});
     // params.push({name: 'brand', value: brand});
-    console.log('Show Details '+item_id);
     var url = '/database/view_item';
     $.post(url, params, function (response) {
         if (response.errors=='') {
