@@ -5,7 +5,7 @@ function init_customshape_view() {
         display_metadata();
     });
     $(".displaycontent").unbind('click').click(function () {
-        display_content()
+        display_customcontent();
     });
     $(".displaygallery").unbind('click').click(function(){
         display_gallery();
@@ -49,33 +49,33 @@ function init_customshape_view() {
 
 }
 
-function display_content() {
+function display_customcontent() {
     if ($(".displaycontent").hasClass('show')) {
         $(".customcontent-area").hide();
-        $(".displaycontent").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaycontent").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".customcontent-area").show();
-        $(".displaycontent").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaycontent").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 
 function display_gallery() {
     if ($(".displaygallery").hasClass('show')) {
         $(".custom_galleries_area").hide();
-        $(".displaygallery").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaygallery").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".custom_galleries_area").show();
-        $(".displaygallery").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaygallery").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 
 function display_casestudy() {
     if ($(".displaycasestudy").hasClass('show')) {
         $(".custom_casestudies_area").hide();
-        $(".displaycasestudy").removeClass('show').addClass('hide').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+        $(".displaycasestudy").removeClass('show').addClass('hiden').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
     } else {
         $(".custom_casestudies_area").show();
-        $(".displaycasestudy").removeClass('hide').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+        $(".displaycasestudy").removeClass('hiden').addClass('show').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
     }
 }
 
@@ -114,7 +114,7 @@ function init_customshape_editcontent() {
         display_metadata();
     });
     $(".displaycontent").unbind('click').click(function () {
-        display_content()
+        display_customcontent();
     });
     $(".displaygallery").unbind('click').click(function(){
         display_gallery();
@@ -201,6 +201,7 @@ function init_customshape_editcontent() {
     });
     // Remove main image
     $(".custom_mainimageremove").unbind('click').click(function(){
+        $(".custom_mainimagesrc").unbind('click');
         if (confirm('Delete Main Image?')) {
             var params=new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
@@ -216,6 +217,8 @@ function init_customshape_editcontent() {
                     show_error(response);
                 }
             },'json');
+        } else {
+            init_customshape_editcontent();
         }
     });
     // Add main image
@@ -333,9 +336,9 @@ function init_customshape_editcontent() {
         },'json');
     });
     // Click on place for image
-    $(".custom_emptygalleryitem").each(function(){
+    $(".custom_galleryimageupload").each(function(){
         var gallery = $(this).data('gallery');
-        var img = $(this).find('div.custom_galleryitemupload').prop('id');
+        var img = $(this).prop('id');
         var uploader = new qq.FileUploader({
             element: document.getElementById(img),
             action: '/utils/save_itemimg',
@@ -365,13 +368,12 @@ function init_customshape_editcontent() {
         });
     })
     // Remove image
-    $(".custom_galleryitemdelete").unbind('click').click(function(){
+    $(".custom_galleryimagedelete").unbind('click').click(function(){
         if (confirm('Delete image from Gallery?')) {
             var params = new Array();
             params.push({name: 'session', value: $("#custom_session").val()});
             params.push({name: 'custom_gallery_id', value: $(this).data('gallery')});
-            params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
-            var url="/content/remove_customgalleryitem";
+            var url="/content/remove_customgalleryimage";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);
@@ -444,6 +446,59 @@ function init_customshape_editcontent() {
             },'json');
         }
     })
+    // Item in gallery
+    $(".custom_galleryitemdelete").unbind('click').click(function(){
+        if (confirm('Delete image from Gallery?')) {
+            var params = new Array();
+            params.push({name: 'session', value: $("#custom_session").val()});
+            params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
+            var url="/content/remove_customgalleryitem";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#stressballgalleryarea").empty().html(response.data.content);
+                    init_customshape_editcontent();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Add New
+    // Click on place for image
+    var qq_template= '<div class="qq-uploader"><div class="add_new_gallerypic qq-upload-button">'+
+        '+ Add New Gallery Pic</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<div class="clear"></div></div>';
+
+    var itemuploader = new qq.FileUploader({
+        element: document.getElementById('add_new_gallery'),
+        action: '/utils/save_itemimg',
+        uploadButtonText: '',
+        template: qq_template,
+        multiple: false,
+        debug: false,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $("li.qq-upload-success").hide();
+                var params=new Array();
+                params.push({name: 'session', value: $("#custom_session").val()});
+                params.push({name: 'imagetype', value: 'galleryitem_image'});
+                params.push({name: 'imagesrc', value: responseJSON.filename});
+                var url='/content/save_imageupload_custom';
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#stressballgalleryarea").empty().html(response.data.content);
+                        init_customshape_editcontent();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            }
+        }
+    });
+
+
     // CaseStudy
     // Upload
     // $(".custom_casestudyimage_empty").unbind('click').click(function(){

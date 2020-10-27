@@ -3,7 +3,7 @@
         <div class="maincontentmenu">
             <div class="title">Database:</div>
             <?php foreach ($menu as $item) { ?>
-                <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                <div class="maincontentmenu_item <?=str_replace('#','', $item['item_link'])?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
         <?php if (isset($itempriceview)) { ?>

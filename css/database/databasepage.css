@@ -1,11 +1,19 @@
 .maincontentmenuarea {
-    width: calc(100% - 25px)!important;
-    margin-left: 25px!important;
+/*    width: calc(100% - 25px)!important;
+    margin-left: 25px!important; */
 }
 .dbcontentarea {
     clear: both;
     width: 100%;
 }
+.legacyview {
+    float: right!important;
+}
+.maincontentmenu {
+    margin-right: 5px!important;
+    width: calc(100% - 15px)!important;
+}
+
 .statcipage_content {
     clear: both;
     float: left;

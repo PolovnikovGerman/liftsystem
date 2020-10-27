@@ -42,6 +42,14 @@ class Database extends MY_Controller
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
         foreach ($menu as $row) {
+            if ($row['item_link'] == '#customersview') {
+
+            } elseif ($row['item_link'] == '#vendorsview') {
+                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+                $content_options['vendorsview'] = $this->_prepare_vendors_view();
+            }
+            /*
             if ($row['item_link'] == '#categoryview') {
                 // Item Categories
                 $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
@@ -122,6 +130,8 @@ class Database extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
                 $content_options['itemtemplateview'] = $this->_content_view('itemtemplates', $brand, $left_menu, $search);
             }
+            */
+
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/database/page.js');
@@ -1267,5 +1277,20 @@ class Database extends MY_Controller
         }
         return $out;
     }
+
+    private function _prepare_vendors_view() {
+        $this->load->model('vendors_model');
+        $totals=$this->vendors_model->get_count_vendors();
+        $options=array(
+            'perpage'=> 250,
+            'order'=>'vendor_name',
+            'direc'=>'asc',
+            'total'=>$totals,
+            'curpage'=>0,
+        );
+        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
+    }
+
 
 }
