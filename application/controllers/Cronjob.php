@@ -976,5 +976,62 @@ Class Cronjob extends CI_Controller
 
     }
 
+    // Remove
+    public function test_artproof_report() {
+        $dateend=strtotime(date('2020-10-17'));
+        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+        // Select total
+        // $brands = ['BT', 'SB'];
+        $brands = ['BT'];
+        $this->load->model('reports_model');
+        foreach ($brands as $brand) {
+            $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
+            $out = $data['out'];
+            echo $brand.' data count '.count($out).PHP_EOL;
+            if (!empty($out)) {
+                // Prepare report
+                $title=date('D - M d, Y', $datestart).' - Art Proof Report ';
+                if ($brand=='BT') {
+                    $title.='(Bluetrack.com)';
+                } elseif ($brand=='SB') {
+                    $title.='(stressballs.com)';
+                }
+                $total=$data['total'];
+                $totaltype = $data['totaltype'];
+                $outtype = $data['outtype'];
+                $repoptions=[
+                    'lists'=>$out,
+                    'total'=>$total,
+                    'title'=>$title,
+                    'listtype'=>$outtype,
+                    'totaltype'=>$totaltype,
+                ];
+                $body= $this->load->view('messages/artproof_report_view', $repoptions, TRUE);
+                $this->load->library('email');
+                $config['charset'] = 'utf-8';
+                $config['mailtype']='html';
+                $config['wordwrap'] = TRUE;
+                $this->email->initialize($config);
+                $email_from=$this->config->item('email_notification_sender');
+                $email_to=$this->config->item('sean_email');
+                $email_cc=array(
+                    $this->config->item('sage_email'),
+                    $this->config->item('taisenkatakura_email'),
+                    $this->config->item('art_dept_email'),
+                    $this->config->item('developer_email'),
+                );
+                $this->email->from($email_from);
+                $this->email->to($email_to);
+                $this->email->cc($email_cc);
+
+                $this->email->subject($title);
+                $this->email->message($body);
+                $this->email->send();
+                $this->email->clear(TRUE);
+            }
+        }
+    }
+
+
 
 }
