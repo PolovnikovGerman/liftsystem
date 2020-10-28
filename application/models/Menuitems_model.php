@@ -483,6 +483,17 @@ Class Menuitems_model extends MY_Model
                             array_push($child, $erow['id']);
                             $webpages[$idx]['element'][$eidx]['value']=$newval;
                         }
+                        if (is_array($erow['element'])) {
+                            $sidx = 0;
+                            foreach ($erow['element'] as $srow) {
+                                if ($srow['id']==$menuitem || $row['id']==$menuitem || $erow['id']==$menuitem) {
+                                    $found = 1;
+                                    array_push($child, $srow['id']);
+                                    $webpages[$idx]['element'][$eidx]['element'][$sidx]['value']=$newval;
+                                }
+                                $sidx++;
+                            }
+                        }
                         $eidx++;
                     }
                 }
@@ -660,6 +671,37 @@ Class Menuitems_model extends MY_Model
                                     $this->db->set('permission_type', 1);
                                     $this->db->where('user_permission_id', $res);
                                     $this->db->update('user_permissions');
+                                }
+                            }
+                        }
+                        // 3-rd level
+                        if (isset($erow['element']) && is_array($erow['element'])) {
+                            $selements = $erow['element'];
+                            foreach ($selements as $srow) {
+                                $selmenuchk = $this->get_menuitem('', $srow['id']);
+                                if ($selmenuchk['result']==$this->success_result) {
+                                    $selmenuitem = $selmenuchk['menuitem'];
+                                    $sres = $this->_chkuserpermission($srow['id'], $user_id);
+                                    $this->db->set('permission_type', $srow['value']);
+                                    if ($srow['value']==0) {
+                                        $this->db->set('brand', NULL);
+                                    } else {
+                                        if (empty($srow['brand'])) {
+                                            $this->db->set('brand', NULL);
+                                        } else {
+                                            $this->db->set('brand', $srow['brand']);
+                                        }
+                                    }
+                                    $this->db->where('user_permission_id', $sres);
+                                    $this->db->update('user_permissions');
+                                    if ($srow['value']==1) {
+                                        $this->db->set('permission_type', 1);
+                                        $this->db->where('user_permission_id', $eres);
+                                        $this->db->update('user_permissions');
+                                        $this->db->set('permission_type', 1);
+                                        $this->db->where('user_permission_id', $res);
+                                        $this->db->update('user_permissions');
+                                    }
                                 }
                             }
                         }

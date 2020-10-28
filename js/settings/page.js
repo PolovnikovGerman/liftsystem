@@ -26,6 +26,10 @@ function init_page(objid) {
             $("#btsettingsview").show();
             init_sitesettings_view('BT');
             break;
+        case 'sbsettingsview':
+            $("#sbsettingsview").show();
+            init_sitesettings_view('SB');
+            break;
         case 'countriesview':
             $("#countriesview").show();
             init_countries();

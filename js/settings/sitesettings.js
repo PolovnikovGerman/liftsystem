@@ -7,9 +7,12 @@ function init_sitesettings_view(brand){
         } else {
             start = $("#btsettingsview").find(".submenu_item:first").data('link');
         }
-        console.log('Start '+start);
     } else {
-
+        if ($("#sbsettingsview").find(".submenu_item.active").length > 0 ) {
+            start = $("#sbsettingsview").find(".submenu_item.active").data('link');
+        } else {
+            start = $("#sbsettingsview").find(".submenu_item:first").data('link');
+        }
     }
     init_sitesetting_page(start, brand);
     $(".submenu_item").unbind('click').click(function () {
@@ -34,6 +37,18 @@ function init_sitesetting_page(objid, brand) {
             break;
         case 'btrushoptionsview':
             $("#btrushoptionsview").show();
+            init_rushoptions_page(brand);
+            break;
+        case 'sbshippingview':
+            $("#sbshippingview").show();
+            init_shiipings_page(brand);
+            break;
+        case 'sbnotificationsview':
+            $("#sbnotificationsview").show();
+            init_notifications_page(brand);
+            break;
+        case 'sbrushoptionsview':
+            $("#sbrushoptionsview").show();
             init_rushoptions_page(brand);
             break;
     }

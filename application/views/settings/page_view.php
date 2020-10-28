@@ -15,6 +15,9 @@
         <?php if (isset($btsettingsview)) { ?>
             <div class="settingcontentarea" id="btsettingsview" style="display: none;"><?=$btsettingsview?></div>
         <?php } ?>
+        <?php if (isset($sbsettingsview)) { ?>
+            <div class="settingcontentarea" id="sbsettingsview" style="display: none;"><?=$sbsettingsview?></div>
+        <?php } ?>
     </div>
 </div>
 
