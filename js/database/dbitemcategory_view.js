@@ -3,13 +3,13 @@ var maxheight=560;
 function init_dbcategory_view() {
     initDBCategoryPagination();
     // Change Brand
-    $("#itemcategorybrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itemcategorybrand").val(brand);
-        $("#itemcategorybrandmenu").find("div.left_tab").removeClass('active');
-        $("#itemcategorybrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_dbcategdata();
-    });
+    // $("#itemcategorybrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itemcategorybrand").val(brand);
+    //     $("#itemcategorybrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itemcategorybrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_dbcategdata();
+    // });
 }
 
 /**

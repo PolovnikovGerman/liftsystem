@@ -1,30 +1,31 @@
 <div class="maincontent">
     <div class="maincontentmenuarea marketmenu">
         <div class="maincontentmenu">
+            <div class="title">Leads:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item <?=$start == str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
             <?php } ?>
         </div>
-    </div>
-    <div class="maincontent_view">
-        <?php if (isset($leadsview)) { ?>
-            <div class="leadscontentarea" id="leadsview" style="display: none;"><?=$leadsview?></div>
-        <?php } ?>
-        <?php if (isset($itemslistview)) { ?>
-            <div class="leadscontentarea" id="itemslistview" style="display: none;"><?=$itemslistview?></div>
-        <?php } ?>
-        <?php if (isset($onlinequotesview)) { ?>
-            <div class="leadscontentarea" id="onlinequotesview" style="display: none;"><?=$onlinequotesview?></div>
-        <?php } ?>
-        <?php if (isset($proofrequestsview)) { ?>
-            <div class="leadscontentarea" id="proofrequestsview" style="display: none;"><?=$proofrequestsview?></div>
-        <?php } ?>
-        <?php if (isset($questionsview)) { ?>
-            <div class="leadscontentarea" id="questionsview" style="display: none;"><?=$questionsview?></div>
-        <?php } ?>
-        <?php if (isset($checkoutattemptsview)) { ?>
-            <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>
-        <?php } ?>
+        <div class="maincontent_view">
+            <?php if (isset($leadsview)) { ?>
+                <div class="leadscontentarea" id="leadsview" style="display: none;"><?=$leadsview?></div>
+            <?php } ?>
+            <?php if (isset($itemslistview)) { ?>
+                <div class="leadscontentarea" id="itemslistview" style="display: none;"><?=$itemslistview?></div>
+            <?php } ?>
+            <?php if (isset($onlinequotesview)) { ?>
+                <div class="leadscontentarea" id="onlinequotesview" style="display: none;"><?=$onlinequotesview?></div>
+            <?php } ?>
+            <?php if (isset($proofrequestsview)) { ?>
+                <div class="leadscontentarea" id="proofrequestsview" style="display: none;"><?=$proofrequestsview?></div>
+            <?php } ?>
+            <?php if (isset($questionsview)) { ?>
+                <div class="leadscontentarea" id="questionsview" style="display: none;"><?=$questionsview?></div>
+            <?php } ?>
+            <?php if (isset($checkoutattemptsview)) { ?>
+                <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

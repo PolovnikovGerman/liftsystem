@@ -25,13 +25,13 @@ function init_profit_view() {
         search_profitdata();
     });
     // Change Brand
-    $("#itemprofitbrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itemprofitbrand").val(brand);
-        $("#itemprofitbrandmenu").find("div.left_tab").removeClass('active');
-        $("#itemprofitbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_profitdata();
-    });
+    // $("#itemprofitbrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itemprofitbrand").val(brand);
+    //     $("#itemprofitbrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itemprofitbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_profitdata();
+    // });
 };
 
 /**

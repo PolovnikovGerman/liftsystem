@@ -72,9 +72,9 @@ class Template
             // 'activeitem' => (isset($options['activeitem']) ? $options['activeitem'] : ''),
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
         ];
-        $menu_view = $this->CI->load->view('page/menu_view', $menu_options, TRUE);
+        $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
         // Admin and Alerts
-        $admin_permission = $alert_permission = 0;
+        $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
 
         if ($adminchk['result']==$this->success_result) {
@@ -83,14 +83,34 @@ class Template
                 $admin_permission = 1;
             }
         }
+        // Reports
+        $reports_permissions = 0;
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics');
 
-        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
-        if ($alertchk['result']==$this->success_result) {
-            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
-            if ($alert_permissionchk['result']==$this->success_result && $alert_permissionchk['permission']>0) {
-                $alert_permission = 1;
+        if ($reportchk['result']==$this->success_result) {
+            $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
+            if ($report_permissionchk['result']==$this->success_result && $report_permissionchk['permission']>0) {
+                $reports_permissions = 1;
             }
         }
+        // Resources
+        $resource_permissions = 0;
+        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources');
+
+        if ($resourcechk['result']==$this->success_result) {
+            $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
+            if ($resource_permissionchk['result']==$this->success_result && $resource_permissionchk['permission']>0) {
+                $resource_permissions = 1;
+            }
+        }
+
+//        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
+//        if ($alertchk['result']==$this->success_result) {
+//            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
+//            if ($alert_permissionchk['result']==$this->success_result && $alert_permissionchk['permission']>0) {
+//                $alert_permission = 1;
+//            }
+//        }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
 
@@ -108,7 +128,8 @@ class Template
             'total_view' => $total_view,
             'menu_view' => $menu_view,
             'adminchk' => $admin_permission,
-            'alertchk' => $alert_permission,
+            'reportchk' => $reports_permissions,
+            'resourcechk' => $resource_permissions,
         ];
         $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);

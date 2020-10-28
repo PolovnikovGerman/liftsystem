@@ -452,6 +452,7 @@ Class User_model extends MY_Model
         $this->db->set('personal_email', $user['personal_email']);
         $this->db->set('email_signature', $user['email_signature']);
         $this->db->set('profit_view', $user['profit_view']);
+        $this->db->set('user_page', ifset($user,'user_page',NULL));
         if ($user['user_id']==0) {
             $this->db->insert('users');
             $user_id = $this->db->inserted_id();
@@ -627,6 +628,24 @@ Class User_model extends MY_Model
         }
         $res = $this->db->get()->result_array();
         return $res;
+    }
+
+    public function default_page($user_page) {
+        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->from('menu_items');
+        $this->db->where('menu_item_id', $user_page);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'menu_item_id', 0)==0) {
+            return 'welcome';
+        }
+        if (empty($res['parent_id'])) {
+            return $res['item_link'];
+        }
+        $this->db->select('menu_item_id, item_link');
+        $this->db->from('menu_items');
+        $this->db->where('menu_item_id', $res['parent_id']);
+        $main = $this->db->get()->row_array();
+        return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
     }
 
 }

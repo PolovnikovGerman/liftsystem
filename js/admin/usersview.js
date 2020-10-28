@@ -320,6 +320,19 @@ function user_edit_manage() {
             }
         },'json');
     });
+    $("#userstartpageselect").unbind('change').change(function () {
+        var url = '/admin/userdata_change';
+        var params = new Array();
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'item', value: 'user_page'});
+        params.push({name: 'newval', value: $(this).val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function add_user() {

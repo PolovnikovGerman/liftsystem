@@ -10,13 +10,13 @@ var maroonpopover_template='<div class="popover maroon_background"  role="toolti
 function init_dbprice_view() {
     initDBPricePagination();
     // Change Brand
-    $("#itempricebrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itempricebrand").val(brand);
-        $("#itempricebrandmenu").find("div.left_tab").removeClass('active');
-        $("#itempricebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_pricedata();
-    });
+    // $("#itempricebrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itempricebrand").val(brand);
+    //     $("#itempricebrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itempricebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_pricedata();
+    // });
 }
 
 function initDBPricePagination() {

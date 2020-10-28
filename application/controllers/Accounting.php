@@ -35,7 +35,7 @@ class Accounting extends MY_Controller
     public function index()
     {
         $head = [];
-        $head['title'] = 'Accounting';
+        $head['title'] = 'Finance';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
         $start = $this->input->get('start', TRUE);

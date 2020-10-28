@@ -2,13 +2,13 @@ var itemsperpage = 80;
 function init_dbsequence_view() {
     initSequencePagination();
     // Change Brand
-    $("#itemsequencebrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itemsequencebrand").val(brand);
-        $("#itemsequencebrandmenu").find("div.left_tab").removeClass('active');
-        $("#itemsequencebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_sequence();
-    });
+    // $("#itemsequencebrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itemsequencebrand").val(brand);
+    //     $("#itemsequencebrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itemsequencebrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_sequence();
+    // });
 }
 
 function initSequencePagination() {

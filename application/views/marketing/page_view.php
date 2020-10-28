@@ -1,27 +1,28 @@
 <div class="maincontent">
     <div class="maincontentmenuarea marketmenu">
         <div class="maincontentmenu">
+            <div class="title">Marketing:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item <?=$start==str_replace('#', '', $item['item_link']) ? 'active' : ''?>" data-link="<?= str_replace('#', '', $item['item_link']) ?>"><?= $item['item_name'] ?></div>
             <?php } ?>
         </div>
-    </div>
-    <div class="maincontent_view">
-        <?php if (isset($searchestimeview)) { ?>
-            <div class="marketingcontentarea" id="searchestimeview" style="display: none;"><?= $searchestimeview ?></div>
-        <?php } ?>
-        <?php if (isset($searcheswordview)) { ?>
-            <div class="marketingcontentarea" id="searcheswordview" style="display: none"><?=$searcheswordview?></div>
-        <?php } ?>
-        <?php if (isset($searchesipadrview)) { ?>
-            <div class="marketingcontentarea" id="searchesipadrview" style="display: none"><?=$searchesipadrview?></div>
-        <?php } ?>
-        <?php if (isset($signupview)) { ?>
-            <div class="marketingcontentarea" id="signupview" style="display: none"><?=$signupview?></div>
-        <?php } ?>
-        <?php if (isset($couponsview)) { ?>
-            <div class="marketingcontentarea" id="couponsview" style="display: none"><?=$couponsview?></div>
-        <?php } ?>
+        <div class="maincontent_view">
+            <?php if (isset($searchestimeview)) { ?>
+                <div class="marketingcontentarea" id="searchestimeview" style="display: none;"><?= $searchestimeview ?></div>
+            <?php } ?>
+            <?php if (isset($searcheswordview)) { ?>
+                <div class="marketingcontentarea" id="searcheswordview" style="display: none"><?=$searcheswordview?></div>
+            <?php } ?>
+            <?php if (isset($searchesipadrview)) { ?>
+                <div class="marketingcontentarea" id="searchesipadrview" style="display: none"><?=$searchesipadrview?></div>
+            <?php } ?>
+            <?php if (isset($signupview)) { ?>
+                <div class="marketingcontentarea" id="signupview" style="display: none"><?=$signupview?></div>
+            <?php } ?>
+            <?php if (isset($couponsview)) { ?>
+                <div class="marketingcontentarea" id="couponsview" style="display: none"><?=$couponsview?></div>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

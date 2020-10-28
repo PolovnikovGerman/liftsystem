@@ -20,13 +20,13 @@ function init_misinfo_view() {
         search_missinfodata();
     });
     // Change Brand
-    $("#itemmisinfobrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#itemmisinfobrand").val(brand);
-        $("#itemmisinfobrandmenu").find("div.left_tab").removeClass('active');
-        $("#itemmisinfobrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        search_missinfodata();
-    });
+    // $("#itemmisinfobrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#itemmisinfobrand").val(brand);
+    //     $("#itemmisinfobrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#itemmisinfobrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     search_missinfodata();
+    // });
 };
 
 /**

@@ -110,9 +110,9 @@
                 <div class="permissioninfo">
                     <?=$webpages?>
                 </div>
-                <div class="userdefpagearea">
-                    <div class="label">User Default page</div>
-                    <!-- <div class="value"><?php //$page_select?></div> -->
+                <div class="input_row">
+                    <div class="labeltxt">User Default page</div>
+                    <div class="inputval"><?=$pages_select?></div>
                 </div>
             </fieldset>
         </div>

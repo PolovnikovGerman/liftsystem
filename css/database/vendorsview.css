@@ -1,0 +1,172 @@
+.vendorsview {
+    clear: both;
+    width: 520px;
+}
+.vendortitlerow {
+    width: 100%;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+.newvendor {
+    background: url(/img/icons/addnew.png) no-repeat scroll 0 0 transparent;
+    color: #ffffff;
+    float: left;
+    height: 28px;
+    line-height: 25px!important;
+    text-align: center;
+    width: 89px;
+    cursor: pointer;
+}
+.fulfillment_pagination {
+    margin-top: -19px;
+    margin-bottom: -20px;
+    float: right!important;
+}
+.vendordata-title {
+    width: 480px;
+    background: #bcbcbc;
+    color: #000000;
+}
+.vendordata-title > div {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    height: 24px;
+    line-height: 24px!important;
+}
+.vendordata-title > .manage {
+    width: 54px;
+}
+.vendordata-title > .vendor-name {
+    width: 251px;
+}
+.vendordata-title > .inclreport {
+    width: 23px;
+}
+.vendordata-title > .vendor-zip {
+    width: 43px;
+}
+.vendordata-title > .vendor-calend {
+    width: 90px;
+}
+.vendortab {
+    background-color: #FFFFFF;
+    border: 1px solid #B9B9B9;
+    clear: both;
+    float: left;
+    height: 576px;
+    margin-left: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 480px;
+    margin-bottom: 20px;
+}
+.vendorsdatarow {
+    clear: both;
+    width: 466px;
+}
+.vendorsdatarow.error {
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    height: 24px;
+    line-height: 24px!important;
+    color: #B00000;
+}
+.vendorsdatarow > div {
+    color: #000000;
+    font-size: 12px;
+    font-weight: normal;
+    height: 24px;
+    line-height: 24px!important;
+}
+.vendorsdatarow > .vendrecmanage {
+    text-align: center;
+    width: 27px;
+}
+.vendorsdatarow > .vendrecmanage i {
+    font-size: 16px;
+    cursor: pointer;
+}
+.vendorsdatarow > .vendorname {
+    width: 251px;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendorsdatarow > .vendorinc {
+    width: 23px;
+}
+.vendorsdatarow > .vendzipcode {
+    text-align: center;
+    width: 43px;
+}
+.vendorsdatarow > .vendcalendar {
+    width: 90px;
+}
+/* Popup Edit form */
+.vendordata {
+    background-color: #FFFFFF;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    padding: 5px;
+    text-align: center;
+    width: 574px;
+}
+
+.vendordata fieldset {
+    border: 2px solid #0000FF;
+    width: 540px;
+}
+.input_row {
+    clear: both;
+    float: left;
+    margin-bottom: 7px;
+    width: 541px;
+}
+.input_row .labeltxt {
+    clear: both;
+    float: left;
+    font-weight: bold;
+    line-height: 18px;
+    padding-right: 10px;
+    padding-top: 2px;
+    text-align: right;
+    width: 160px;
+}
+.input_row .inputval {
+    float: left;
+    text-align: left;
+    width: 365px;
+}
+.inputval input.large {
+    width: 350px;
+}
+.inputval input.medium {
+    width: 200px;
+}
+.inputval input.short {
+    width: 120px;
+}
+.calendarselect {
+    width: 350px;
+}
+.savevendor {
+    float: left;
+    margin-left: 350px;
+    margin-top: 10px;
+    background: url(/img/icons/addnew.png) no-repeat;
+    width: 89px;
+    height: 28px;
+    /* padding-top: 2px; */
+    text-align: center;
+    line-height: 25px!important;
+}
+.savevendor a {
+    color:#FFFFFF;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
