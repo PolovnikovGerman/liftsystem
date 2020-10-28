@@ -40,46 +40,26 @@ class Content extends MY_Controller
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
-            if ($row['item_link'] == '#customshappedview') {
-                // Custom shaped
-                $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
-                $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
-            }
-            if ($row['item_link'] == '#serviceview') {
-                $head['styles'][]=array('style'=>'/css/content/extraservices.css');
-                $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
-            }
-            if ($row['item_link'] == '#aboutusview') {
-                $head['styles'][]=array('style'=>'/css/content/aboutus.css');
-                $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
-            }
-            if ($row['item_link'] == '#faqview') {
-                $head['styles'][]=array('style'=>'/css/content/faqpage.css');
-                $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
-            }
-            if ($row['item_link'] == '#contactusview') {
-                $head['styles'][]=array('style'=>'/css/content/contactus.css');
-                $head['scripts'][]=array('src'=>'/js/content/contactus.js');
-            }
-            if ($row['item_link'] == '#termsview') {
-                $head['styles'][]=array('style'=>'/css/content/terms.css');
-                $head['scripts'][]=array('src'=>'/js/content/terms.js');
-                $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
-                $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+            if ($row['item_link'] =='#btcontentview' ) {
+                $bt_options = [];
+                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
+                foreach ($submenu as $menu) {
+                    if ($menu['item_link']=='#') {
+                        $bt_options['btshippingview'] = $this->_prepare_shipping_view('BT');
+                    } elseif ($menu['item_link'] == '#btnotificationsview') {
+                        $bt_options['btnotificationsview'] = $this->_prepare_notifications_view('BT');
+                    } elseif ($menu['item_link'] == '#btrushoptionsview') {
+                        $bt_options['btrushoptionsview'] = $this->_prepare_rushoptions_view('BT');
+                    }
+                    $submenu_options = [
+                        'menus' => $submenu,
+                        'brand' => 'BT',
+                    ];
+                    $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+                    $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
+                }
             }
         }
-        $content_options['menu'] = $menu;
-        // Left menu
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
-        $left_options = [
-            'brands' => $brands,
-            'active' => $brands[0]['brand'],
-        ];
-        $content_options['left_menu'] = $this->load->view('content/left_menu_view', $left_options, TRUE);
-        $content_options['brand']=$brands[0]['brand'];
         $content_view = $this->load->view('content/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/content/page.js');
