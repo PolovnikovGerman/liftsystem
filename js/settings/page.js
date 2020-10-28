@@ -18,21 +18,13 @@ function init_page(objid) {
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
-        case 'shippingview':
-            $("#shippingview").show();
-            init_shiipings_page();
-            break;
         case 'calendarsview':
             $("#calendarsview").show();
             init_calendars_page();
             break;
-        case 'notificationsview':
-            $("#notificationsview").show();
-            init_notifications_page();
-            break;
-        case 'rushoptionsview':
-            $("#rushoptionsview").show();
-            init_rushoptions_page();
+        case 'btsettingsview':
+            $("#btsettingsview").show();
+            init_sitesettings_view('BT');
             break;
         case 'countriesview':
             $("#countriesview").show();

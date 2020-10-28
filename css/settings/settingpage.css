@@ -2,7 +2,29 @@
     /* width: calc(100% - 25px)!important;
     margin-left: 25px!important; */
 }
-.settingcontentarea {
+.settingcontentarea, .sitesettingcontentarea {
     clear: both;
     width: 100%;
+}
+
+.right_maincontent {
+    width: 100% !important;
+}
+.settings_submenu {
+    margin-left: 7px;
+    margin-top: 7px;
+}
+.submenu_item {
+    margin-right: 7px;
+    height: 21px;
+    line-height: 21px!important;
+    font-size: 14px;
+    color: #000000;
+    background: #dedede;
+    border: 1px solid #000000;
+    padding: 0 14px;
+    cursor: pointer;
+}
+.submenu_item.active {
+    background: #ffffff;
 }

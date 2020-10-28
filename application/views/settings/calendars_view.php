@@ -1,8 +1,4 @@
 <div class="page_container">
-    <input type="hidden" value="<?= $brand ?>" id="calendarsviewbrand"/>
-    <div class="left_maincontent" id="calendarsviewbrandmenu">
-        <?= $left_menu ?>
-    </div>
     <div class="right_maincontent">
         <input type="hidden" id="totalcalend" value="<?= $total ?>"/>
         <input type="hidden" id="perpagecalend" value="<?= $perpage ?>"/>

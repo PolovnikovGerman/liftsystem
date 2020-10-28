@@ -36,41 +36,53 @@ class Settings extends MY_Controller
             'menu' => $menu,
             'start' => $this->input->get('start', TRUE),
         ];
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
-        $brand = $brands[0]['brand'];
-        $left_options = [
-            'brands' => $brands,
-            'active' => $brand,
-        ];
-        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
+//        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+//        if (count($brands)==0) {
+//            redirect('/');
+//        }
+//        $brand = $brands[0]['brand'];
+//        $left_options = [
+//            'brands' => $brands,
+//            'active' => $brand,
+//        ];
+//        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
 
         foreach ($menu as $row) {
-            if ($row['item_link'] == '#shippingview') {
-                $head['styles'][] = array('style' => '/css/settings/shippings.css');
-                $head['scripts'][] = array('src' => '/js/settings/shippings.js');
-                $content_options['shippingview'] = $this->_prepare_shipping_view($brand, $left_menu);
+            if ($row['item_link']=='#countriesview') {
+                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
+                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
+                $content_options['countriesview'] = $this->_prepare_countries_view();
             } elseif ($row['item_link'] == '#calendarsview') {
                 $head['styles'][] = array('style' => '/css/settings/calendars.css');
                 $head['scripts'][] = array('src' => '/js/settings/calendars.js');
-                $content_options['calendarsview'] = $this->_prepare_calendars_view($brand, $left_menu);
-            } elseif ($row['item_link']=='#notificationsview') {
-                $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
-                $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
-                $content_options['notificationsview'] = $this->_prepare_notifications_view($brand, $left_menu);
-            } elseif ($row['item_link']=='#rushoptionsview') {
-                $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
-                $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
-                $content_options['rushoptionsview'] = $this->_prepare_rushoptions_view($brand, $left_menu);
-            } elseif ($row['item_link']=='#countriesview') {
-                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
-                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
-                $content_options['countriesview'] = $this->_prepare_countries_view($brand, $left_menu);
+                $content_options['calendarsview'] = $this->_prepare_calendars_view();
+            } elseif ($row['item_link'] =='#btsettingsview' ) {
+                $bt_options = [];
+                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
+                foreach ($submenu as $menu) {
+                    if ($menu['item_link']=='#btshippingview') {
+                        $bt_options['btshippingview'] = $this->_prepare_shipping_view('BT');
+                    } elseif ($menu['item_link'] == '#btnotificationsview') {
+                        $bt_options['btnotificationsview'] = $this->_prepare_notifications_view('BT');
+                    } elseif ($menu['item_link'] == '#btrushoptionsview') {
+                        $bt_options['btrushoptionsview'] = $this->_prepare_rushoptions_view('BT');
+                    }
+                    $submenu_options = [
+                        'menus' => $submenu,
+                        'brand' => 'BT',
+                    ];
+                    $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+                    $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
+                }
             }
         }
-
+        $head['styles'][] = array('style' => '/css/settings/shippings.css');
+        $head['scripts'][] = array('src' => '/js/settings/shippings.js');
+        $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
+        $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
+        $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
+        $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
+        $head['scripts'][] = array('src' => '/js/settings/sitesettings.js');
         $content_view = $this->load->view('settings/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/settings/page.js');
@@ -185,7 +197,7 @@ class Settings extends MY_Controller
         echo $content;
     }
 
-    private function _prepare_shipping_view($brand, $left_menu) {
+    private function _prepare_shipping_view($brand) {
         $months=array();
         for ($i=1; $i<13; $i++) {
             $key=str_pad($i,2,'0',STR_PAD_LEFT);
@@ -206,7 +218,6 @@ class Settings extends MY_Controller
             'curmonth'=>date('m'),
             'curyear'=>date('Y'),
             'brand' => $brand,
-            'left_menu' => $left_menu,
         ];
         $content=$this->load->view('settings/shippings_view',$options,TRUE);
         return $content;
@@ -347,15 +358,13 @@ class Settings extends MY_Controller
         show_404();
     }
 
-    private function _prepare_calendars_view($brand, $left_menu) {
+    private function _prepare_calendars_view() {
         $this->load->model('calendars_model');
-        $totals = $this->calendars_model->count_calendars($brand);
+        $totals = $this->calendars_model->count_calendars('ALL');
         $orderby='calendar_id';
         $direc='asc';
 
         $options=array(
-            'brand' => $brand,
-            'left_menu' => $left_menu,
             'total'=>$totals,
             'perpage'=>$this->PERPAGE,
             'orderby'=>$orderby,
@@ -461,7 +470,7 @@ class Settings extends MY_Controller
         show_404();
     }
 
-    private function _prepare_notifications_view($brand, $left_menu) {
+    private function _prepare_notifications_view($brand) {
         $this->load->model('email_model');
         $totals=$this->email_model->get_count_notifications();
         // $survay_data=$this->memails->get_surveydata();
@@ -471,10 +480,6 @@ class Settings extends MY_Controller
             'direction'=>'asc',
             'cur_page'=>0,
             'brand' => $brand,
-            'left_menu' => $left_menu,
-            // 'dialog'=>$this->load->view('otherpages/detail_notifications_view',array(),TRUE),
-            // 'surveyid'=>$survay_data['survey_apiid'],
-            // 'surveyshow'=>$survay_data['survey_show'],
         );
         return $this->load->view('settings/notifications_view',$options,TRUE);
     }
@@ -531,10 +536,9 @@ class Settings extends MY_Controller
         show_404();
     }
 
-    private function _prepare_rushoptions_view($brand, $left_menu) {
+    private function _prepare_rushoptions_view($brand) {
         $options = [
             'brand' => $brand,
-            'left_menu' => $left_menu,
         ];
         return $this->load->view('settings/rushoptions_view', $options, TRUE);
     }
@@ -571,12 +575,12 @@ class Settings extends MY_Controller
         }
     }
 
-    private function _prepare_countries_view($brand, $left_menu) {
+    private function _prepare_countries_view() {
         $this->load->model('shipping_model');
         $search_templates=$this->shipping_model->get_country_search_templates();
         $options = [
-            'brand' => $brand,
-            'left_menu' => $left_menu,
+            // 'brand' => $brand,
+            // 'left_menu' => $left_menu,
             'search_templ' => $search_templates,
         ];
         $content=$this->load->view('settings/countries_view', $options,TRUE);
