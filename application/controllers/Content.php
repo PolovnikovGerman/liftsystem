@@ -38,26 +38,35 @@ class Content extends MY_Controller
         $head['title'] = 'Content';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $content_options = [];
+        $content_options['menu'] = $menu;
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
-            if ($row['item_link'] =='#btcontentview' ) {
+            if ($row['item_link'] =='#sbcontentview' ) {
                 $bt_options = [];
                 $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
-                foreach ($submenu as $menu) {
-                    if ($menu['item_link']=='#') {
-                        $bt_options['btshippingview'] = $this->_prepare_shipping_view('BT');
-                    } elseif ($menu['item_link'] == '#btnotificationsview') {
-                        $bt_options['btnotificationsview'] = $this->_prepare_notifications_view('BT');
-                    } elseif ($menu['item_link'] == '#btrushoptionsview') {
-                        $bt_options['btrushoptionsview'] = $this->_prepare_rushoptions_view('BT');
+                foreach ($submenu as $smenu) {
+                    if ($smenu['item_link']=='#sbhomeview') {
+                        $bt_options['sbhomeview'] = $this->load->view('content/template_view',['link'=>'sbhomeview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbcustomshappedview') {
+                        $bt_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbserviceview') {
+                        $bt_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbaboutusview') {
+                        $bt_options['sbaboutusview'] = $this->load->view('content/template_view',['link'=>'sbaboutusview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbfaqview') {
+                        $bt_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbcontactusview') {
+                        $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
+                    } elseif ($smenu['item_link']=='#sbtermsview') {
+                        $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
                     }
-                    $submenu_options = [
-                        'menus' => $submenu,
-                        'brand' => 'BT',
-                    ];
-                    $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
-                    $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
                 }
+                $submenu_options = [
+                    'menus' => $submenu,
+                    'brand' => 'SB',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['sbcontentview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
             }
         }
         $content_view = $this->load->view('content/page_view', $content_options, TRUE);

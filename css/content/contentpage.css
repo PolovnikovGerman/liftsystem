@@ -1,8 +1,11 @@
 .left_maincontent {
     margin-top: 33px;
 }
+.right_maincontent {
+    width: 100% !important;
+}
 .maincontentmenuarea {
-    padding: 0 10px 10px 0px!important;
+    /* padding: 0 10px 10px 0px!important; */
 }
 .contentpagearea {
     display: none;
@@ -202,4 +205,22 @@
 .statcipage_content .customcontent-area {
     margin-top: 16px;
     padding-left: 20px;
+}
+.sitecontent_submenu {
+    margin-top: 7px;
+    margin-left: 7px;
+}
+.submenu_item {
+    margin-right: 7px;
+    height: 24px;
+    line-height: 24px!important;
+    font-size: 14px;
+    color: #000000;
+    background: #dedede;
+    border: 1px solid #000000;
+    padding: 0 14px;
+    cursor: pointer;
+}
+.submenu_item.active {
+    background: #ffffff;
 }

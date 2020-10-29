@@ -1,1 +1,1 @@
-<?php
+<div class="contentpagearea" id="<?=$link?>">&nbsp;</div>
