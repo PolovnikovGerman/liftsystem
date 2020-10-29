@@ -59,8 +59,10 @@ $(document).ready(function () {
     // )
     $("div.menuitem").unbind('click').click(function () {
         var url = $(this).data('menulink');
-        console.log('URL '+url);
         window.location.href=url;
+    })
+    $("#showtotalthisweek").unbind('click').click(function () {
+        window.location.href='/orders';
     })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);

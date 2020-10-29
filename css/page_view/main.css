@@ -96,12 +96,12 @@ body div {
 .period_analitic_info {
     border: 1px solid #9b9b9b;
 }
-.period_analitic_info > div {
+.period_analitic_info div {
     height: 24px;
     line-height: 24px;
     color: #ffffff;
 }
-.period_analitic_info > .period_name {
+.period_analitic_info .period_name {
     width: 86px;
     text-align: center;
     font-family: Arial;
@@ -110,27 +110,26 @@ body div {
     color: #55aeff;
     text-transform: uppercase;
 }
-.period_analitic_info > .param_value_label {
-    /* width: 32px; */
+.period_analitic_info .param_value_label {
     text-align: right;
     padding-right: 7px;
     text-transform: uppercase;
     font-family: Helvetica CE;
     font-size: 12px;
-    /* padding-top: 10px; */
-    /* line-height: 12px; */
-    /* height: 19px; */
+    cursor: pointer;
 }
-.period_analitic_info > .param_value {
+.period_analitic_info .param_value {
     min-width: 26px;
     font-family: Helvetica-Bold;
     font-size: 18px;
     padding-right: 7px;
+    cursor: pointer;
 }
-.period_analitic_info > .param_value.money {
+.period_analitic_info .param_value.money {
     min-width: 45px;
     border-left: 1px solid #9b9b9b;
     padding-left: 7px;
+    cursor: pointer;
 }
 .publicsearch {
     margin-left: 5px;
