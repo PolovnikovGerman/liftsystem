@@ -1,4 +1,4 @@
-function init_faqpage_view() {
+function init_faqpage_view(brand) {
     window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
@@ -12,7 +12,7 @@ function init_faqpage_view() {
         display_faqsection(section);
     });
     $(".edit_button[data-page='faq']").unbind('click').click(function () {
-        init_faqpage_edit();
+        init_faqpage_edit(brand);
     });
 }
 
@@ -36,13 +36,17 @@ function display_faqsection(section) {
     }
 }
 
-function init_faqpage_edit() {
+function init_faqpage_edit(brand) {
     var url = "/content/edit_faqcontent";
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand});
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#faqview").empty().html(response.data.content);
+            if (brand=='SB') {
+                $("#sbfaqview").empty().html(response.data.content);
+            } else {
+                $("#btfaqview").empty().html(response.data.content);
+            }
             $(".content_preview").on('click',function () {
                 var url=$("#faq_previewurl").val();
                 $.fancybox.open({
@@ -55,14 +59,14 @@ function init_faqpage_edit() {
                     }
                 });
             });
-            init_faqpage_editcontent();
+            init_faqpage_editcontent(brand);
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function init_faqpage_editcontent() {
+function init_faqpage_editcontent(brand) {
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -76,17 +80,17 @@ function init_faqpage_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='faq']").unbind('click').click(function () {
-        init_contentpage('faq');
+        init_contentpage('faq', brand);
     });
     // Save
     $(".save_button[data-page='faq']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#faq_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand});
         var url="/content/save_faqpagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('faq');
+                init_contentpage('faq', brand);
             } else {
                 show_error(response);
             }
@@ -191,7 +195,7 @@ function init_faqpage_editcontent() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".faqsection_area[data-faqsection='"+section+"']").empty().html(response.data.content);
-                init_faqpage_editcontent();
+                init_faqpage_editcontent(brand);
             } else {
                 show_error(response);
             }
@@ -209,7 +213,7 @@ function init_faqpage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".faqsection_area[data-faqsection='"+section+"']").empty().html(response.data.content);
-                    init_faqpage_editcontent();
+                    init_faqpage_editcontent(brand);
                 } else {
                     show_error(response);
                 }

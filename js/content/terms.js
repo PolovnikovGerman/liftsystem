@@ -1,4 +1,4 @@
-function init_terms_view() {
+function init_terms_view(brand) {
     window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {

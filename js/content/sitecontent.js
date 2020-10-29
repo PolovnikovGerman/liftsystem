@@ -38,6 +38,36 @@ function init_sitecontent_page(objid, brand) {
         case 'sbcustomshappedview':
             init_contentpage('custom', 'SB');
             break;
+        case 'sbfaqview':
+            init_contentpage('faq','SB');
+            break;
+        case 'btfaqview':
+            init_contentpage('faq','BT');
+            break;
+        case 'sbserviceview':
+            init_contentpage('extraservice','SB');
+            break;
+        case 'btserviceview':
+            init_contentpage('extraservice','BT');
+            break;
+        case 'btaboutusview':
+            init_contentpage('about','BT');
+            break;
+        case 'sbaboutusview':
+            init_contentpage('about','SB');
+            break;
+        case 'btcontactusview':
+            init_contentpage('contactus','BT');
+            break;
+        case 'sbcontactusview':
+            init_contentpage('contactus','SB');
+            break;
+        case 'bttermsview':
+            init_contentpage('terms','BT');
+            break;
+        case 'sbtermsview':
+            init_contentpage('terms','SB');
+            break;
 
     }
 }
@@ -63,20 +93,40 @@ function init_contentpage(page_name, brand) {
                 }
                 init_customshape_view(brand);
             } else if (page_name=='faq') {
-                $("#faqview").show().empty().html(response.data.content);
-                init_faqpage_view();
+                if (brand=='SB') {
+                    $("#sbfaqview").show().empty().html(response.data.content);
+                } else {
+                    $("#btfaqview").show().empty().html(response.data.content);
+                }
+                init_faqpage_view(brand);
             } else if (page_name=='terms') {
-                $("#termsview").show().empty().html(response.data.content);
-                init_terms_view();
+                if (brand=='BT') {
+                    $("#bttermsview").show().empty().html(response.data.content);
+                } else {
+                    $("#sbtermsview").show().empty().html(response.data.content);
+                }
+                init_terms_view(brand);
             } else if (page_name=='about') {
-                $("#aboutusview").show().empty().html(response.data.content);
-                init_aboutpage_view();
+                if (brand=='BT') {
+                    $("#btaboutusview").show().empty().html(response.data.content);
+                } else {
+                    $("#sbaboutusview").show().empty().html(response.data.content);
+                }
+                init_aboutpage_view(brand);
             } else if (page_name=='contactus') {
-                $("#contactusview").show().empty().html(response.data.content);
-                init_contactus_view();
+                if (brand=='BT') {
+                    $("#btcontactusview").show().empty().html(response.data.content);
+                } else {
+                    $("#sbcontactusview").show().empty().html(response.data.content);
+                }
+                init_contactus_view(brand);
             } else if (page_name=='extraservice') {
-                $("#serviceview").show().empty().html(response.data.content);
-                init_service_page();
+                if (brand=='BT') {
+                    $("#btserviceview").show().empty().html(response.data.content);
+                } else {
+                    $("#sbserviceview").show().empty().html(response.data.content);
+                }
+                init_service_page(brand);
             }
         } else {
             show_error(response);
