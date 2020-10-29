@@ -7,7 +7,7 @@
         <img src="<?=$item['item_source']?>" alt="'Item"/>
     </div>
     <?php $numr++;?>
-    <?php if ($numr==3) { ?>
+    <?php if ($numr==6) { ?>
         </div>
         <?php $numr = 0;?>
     <?php } ?>
