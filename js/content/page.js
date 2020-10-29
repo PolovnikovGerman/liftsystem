@@ -20,6 +20,8 @@ function init_page(objid) {
     $(".sitecontentpagearea").hide();
     switch (objid) {
         case 'btcontentview':
+            $("#btcontentview").show();
+            init_sitecontent('BT');
             break;
         case 'sbcontentview':
             $("#sbcontentview").show();

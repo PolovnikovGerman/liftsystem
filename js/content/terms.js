@@ -11,7 +11,7 @@ function init_terms_view(brand) {
         display_terms();
     });
     $(".edit_button[data-page='terms']").unbind('click').click(function () {
-        init_termspage_edit();
+        init_termspage_edit(brand);
     });
 }
 
@@ -35,13 +35,17 @@ function display_terms() {
     }
 }
 
-function init_termspage_edit() {
+function init_termspage_edit(brand) {
     var url = "/content/edit_termscontent";
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand});
     $.post(url, params, function (response) {
         if (response.errors == '') {
-            $("#termsview").empty().html(response.data.content);
+            if (brand=='BT') {
+                $("#bttermsview").empty().html(response.data.content);
+            } else {
+                $("#sbtermsview").empty().html(response.data.content);
+            }
             $(".content_preview").on('click', function () {
                 var url = $("#terms_previewurl").val();
                 $.fancybox.open({
@@ -54,14 +58,14 @@ function init_termspage_edit() {
                     }
                 });
             });
-            init_termspage_editcontent();
+            init_termspage_editcontent(brand);
         } else {
             show_error(response);
         }
     }, 'json');
 }
 
-function init_termspage_editcontent() {
+function init_termspage_editcontent(brand) {
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
     });
@@ -73,17 +77,17 @@ function init_termspage_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='terms']").unbind('click').click(function () {
-        init_contentpage('terms');
+        init_contentpage('terms', brand);
     });
     // Save
     $(".save_button[data-page='terms']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#terms_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand});
         var url="/content/save_termspagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('terms');
+                init_contentpage('terms', brand);
             } else {
                 show_error(response);
             }
@@ -172,7 +176,7 @@ function init_termspage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".termsdata-area").empty().html(response.data.content);
-                    init_termspage_editcontent();
+                    init_termspage_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -187,7 +191,7 @@ function init_termspage_editcontent() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".termsdata-area").empty().html(response.data.content);
-                init_termspage_editcontent();
+                init_termspage_editcontent(brand);
             } else {
                 show_error(response);
             }
@@ -208,7 +212,7 @@ function init_termspage_editcontent() {
                     stylesheet : 'uEditorContent.css',
                     containerClass : 'uEditor'
                 });
-                init_termspage_editcontent();
+                init_termspage_editcontent(brand);
             } else {
                 show_error(response);
             }
@@ -224,7 +228,7 @@ function init_termspage_editcontent() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".termsdatarow[data-term='"+term+"']").empty().html(response.data.content);
-                init_termspage_editcontent();
+                init_termspage_editcontent(brand);
             } else {
                 show_error(response);
             }
@@ -241,7 +245,7 @@ function init_termspage_editcontent() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".termsdatarow[data-term='"+term+"']").empty().html(response.data.content);
-                init_termspage_editcontent();
+                init_termspage_editcontent(brand);
             } else {
                 show_error(response);
             }
