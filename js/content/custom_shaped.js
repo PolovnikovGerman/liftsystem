@@ -502,7 +502,22 @@ function init_customshape_editcontent(brand) {
             }
         }
     });
-
+    // Gallery item description
+    $("input.item_description").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#custom_session").val()});
+        params.push({name: 'type', value: 'galleryitem'});
+        params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
+        params.push({name: 'field', value: 'item_description'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_customparam";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 
     // CaseStudy
     // Upload

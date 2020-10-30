@@ -113,22 +113,40 @@ Class Staticpages_model extends MY_Model
                 usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
             } elseif ($postdata['type']=='gallery') {
-                $out['msg']='Gallery Not Found';
+                $out['msg'] = 'Gallery Not Found';
                 $data = $session_data['galleries'];
-                $found=0;
-                $idx=0;
+                $found = 0;
+                $idx = 0;
                 foreach ($data as $row) {
-                    if ($row['custom_gallery_id']==$postdata['custom_gallery_id']) {
-                        $found=1;
+                    if ($row['custom_gallery_id'] == $postdata['custom_gallery_id']) {
+                        $found = 1;
+                        break;
+                    }
+                    $idx++;
+                }
+                if ($found == 1) {
+                    $data[$idx][$postdata['field']] = $postdata['newval'];
+                    $session_data['galleries'] = $data;
+                    usersession($session_id, $session_data);
+                    $out['result'] = $this->success_result;
+                }
+            } elseif ($postdata['type']=='galleryitem') {
+                $out['msg'] = 'Gallery Item Not Found';
+                $data = $session_data['galleryitems'];
+                $found = 0;
+                $idx = 0;
+                foreach ($data as $row) {
+                    if ($row['custom_galleryitem_id']==$postdata['custom_galleryitem_id']) {
+                        $found = 1;
                         break;
                     }
                     $idx++;
                 }
                 if ($found==1) {
-                    $data[$idx][$postdata['field']]=$postdata['newval'];
-                    $session_data['galleries']=$data;
+                    $data[$idx][$postdata['field']] = $postdata['newval'];
+                    $session_data['galleryitems'] = $data;
                     usersession($session_id, $session_data);
-                    $out['result']=$this->success_result;
+                    $out['result'] = $this->success_result;
                 }
             } elseif ($postdata['type']=='casestudy') {
                 $out['msg']='Gallery Not Found';
@@ -217,6 +235,7 @@ Class Staticpages_model extends MY_Model
                 $data[] = [
                     'custom_galleryitem_id' => $newitem,
                     'item_source' => $postdata['imagesrc'],
+                    'item_description' => '',
                     'newload' => 1,
                 ];
                 $session_data['galleryitems'] = $data;
@@ -494,6 +513,7 @@ Class Staticpages_model extends MY_Model
                     $this->db->set('item_source', $this->config->item('gallery_images').$filename);
                     $this->db->set('item_order', $numpp);
                     $this->db->set('brand', $brand);
+                    $this->db->set('item_description', $galleriitem['item_description']);
                     $this->db->insert('sb_custom_galleryitems');
                     if ($this->db->insert_id() > 0) {
                         $numpp++;
@@ -503,6 +523,7 @@ Class Staticpages_model extends MY_Model
                 $this->db->where('custom_galleryitem_id', $galleriitem['custom_galleryitem_id']);
                 $this->db->set('update_user', $user);
                 $this->db->set('item_order', $numpp);
+                $this->db->set('item_description', $galleriitem['item_description']);
                 $this->db->update('sb_custom_galleryitems');
                 $numpp++;
             }
