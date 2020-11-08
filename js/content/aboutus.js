@@ -1,4 +1,4 @@
-function init_aboutpage_view() {
+function init_aboutpage_view(brand) {
     window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
@@ -24,7 +24,7 @@ function init_aboutpage_view() {
         });
     })
     $(".edit_button[data-page='about']").unbind('click').click(function () {
-        init_aboutpage_edit();
+        init_aboutpage_edit(brand);
     });
 }
 
@@ -38,13 +38,17 @@ function display_content() {
     }
 }
 
-function init_aboutpage_edit() {
+function init_aboutpage_edit(brand) {
     var url = "/content/edit_aboutcontent";
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand});
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#aboutusview").empty().html(response.data.content);
+            if (brand=='BT') {
+                $("#btaboutusview").empty().html(response.data.content);
+            } else {
+                $("#sbaboutusview").empty().html(response.data.content);
+            }
             $(".content_preview").on('click',function () {
                 var url=$("#previewurl").val();
                 $.fancybox.open({
@@ -57,14 +61,14 @@ function init_aboutpage_edit() {
                     }
                 });
             });
-            init_aboutpage_editcontent();
+            init_aboutpage_editcontent(brand);
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function init_aboutpage_editcontent() {
+function init_aboutpage_editcontent(brand) {
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -74,17 +78,17 @@ function init_aboutpage_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='about']").unbind('click').click(function () {
-        init_contentpage('about');
+        init_contentpage('about',brand);
     });
     // Save
     $(".save_button[data-page='about']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#about_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand });
         var url="/content/save_aboutpagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('about');
+                init_contentpage('about', brand);
             } else {
                 show_error(response);
             }
@@ -198,7 +202,7 @@ function init_aboutpage_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".affilateimagearea[data-image='"+imagenum+"']").empty().html(response.data.content);
-                            init_aboutpage_editcontent();
+                            init_aboutpage_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -219,7 +223,7 @@ function init_aboutpage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".affilateimagearea[data-image='"+imagenum+"']").empty().html(response.data.content);
-                    init_aboutpage_editcontent();
+                    init_aboutpage_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -238,7 +242,7 @@ function init_aboutpage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $("#about_mainimagearea").empty().html('<div class="about_mainimageempty"><div class="about_mainimageupload" id="mainimageupload"></div></div>');
-                    init_aboutpage_editcontent();
+                    init_aboutpage_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -266,7 +270,7 @@ function init_aboutpage_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#about_mainimagearea").empty().html(response.data.content);
-                            init_aboutpage_editcontent();
+                            init_aboutpage_editcontent(brand);
                         } else {
                             show_error(response);
                         }

@@ -71,9 +71,9 @@ class Settings extends MY_Controller
                         'menus' => $submenu,
                         'brand' => 'BT',
                     ];
-                    $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
-                    $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
                 }
+                $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+                $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
             } elseif ($row['item_link']=='#sbsettingsview') {
                 $sb_options = [];
                 $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
@@ -89,10 +89,9 @@ class Settings extends MY_Controller
                         'menus' => $submenu,
                         'brand' => 'SB',
                     ];
-                    $sb_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
-                    $content_options['sbsettingsview'] = $this->load->view('settings/page_content_view', $sb_options, TRUE);
                 }
-
+                $sb_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+                $content_options['sbsettingsview'] = $this->load->view('settings/page_content_view', $sb_options, TRUE);
             }
         }
         $head['styles'][] = array('style' => '/css/settings/shippings.css');

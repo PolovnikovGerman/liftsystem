@@ -1,4 +1,4 @@
-function init_service_page() {
+function init_service_page(brand) {
     window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
@@ -24,7 +24,7 @@ function init_service_page() {
         });
     })
     $(".edit_button[data-page='extraservice']").unbind('click').click(function () {
-        init_servicepage_edit();
+        init_servicepage_edit(brand);
     });
 }
 
@@ -38,13 +38,17 @@ function display_content() {
     }
 }
 
-function init_servicepage_edit() {
+function init_servicepage_edit(brand) {
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand });
     var url = "/content/edit_servicecontent";
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#serviceview").empty().html(response.data.content);
+            if (brand=='BT') {
+                $("#btserviceview").empty().html(response.data.content);
+            } else {
+                $("#sbserviceview").empty().html(response.data.content);
+            }
             $(".content_preview").on('click',function () {
                 var url=$("#service_previewurl").val();
                 console.log('URL '+url);
@@ -57,14 +61,14 @@ function init_servicepage_edit() {
                     }
                 });
             });
-            init_servicepage_editcontent();
+            init_servicepage_editcontent(brand);
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function init_servicepage_editcontent() {
+function init_servicepage_editcontent(brand) {
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -74,17 +78,17 @@ function init_servicepage_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='extraservice']").unbind('click').click(function () {
-        init_contentpage('extraservice');
+        init_contentpage('extraservice', brand);
     });
     // Save
     $(".save_button[data-page='extraservice']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#service_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand });
         var url="/content/save_servicepagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('extraservice');
+                init_contentpage('extraservice', brand);
             } else {
                 show_error(response);
             }
@@ -169,7 +173,7 @@ function init_servicepage_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#service_mainimagearea").empty().html(response.data.content);
-                            init_servicepage_editcontent();
+                            init_servicepage_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -189,7 +193,7 @@ function init_servicepage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $("#service_mainimagearea").empty().html('<div class="service_mainimagesrcempty"><div class="uploadservicemainimage" id="uploadservicemainimage"/></div>');
-                    init_servicepage_editcontent();
+                    init_servicepage_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -221,7 +225,7 @@ function init_servicepage_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".service_serviceimageplace[data-service='"+service+"']").empty().html(response.data.content);
-                            init_servicepage_editcontent();
+                            init_servicepage_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -242,7 +246,7 @@ function init_servicepage_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".service_serviceimageplace[data-service='"+service+"']").empty().html('<div class="service_imagesrcempty"><div class="uploadserviceimage" data-image="service_image'+service+'" data-service="'+service+'" id="uploadserviceimage'+service+'"></div></div>');
-                    init_servicepage_editcontent();
+                    init_servicepage_editcontent(brand);
                 } else {
                     show_error(response);
                 }

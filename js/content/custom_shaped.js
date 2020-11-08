@@ -1,4 +1,4 @@
-function init_customshape_view() {
+function init_customshape_view(brand) {
     window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
@@ -14,7 +14,7 @@ function init_customshape_view() {
         display_casestudy();
     });
     $(".edit_button[data-page='custom']").unbind('click').click(function () {
-        init_customshape_edit();
+        init_customshape_edit(brand);
     });
     // Open image
     $(".custom_mainimagesrc").unbind('click').click(function(){
@@ -79,13 +79,17 @@ function display_casestudy() {
     }
 }
 
-function init_customshape_edit() {
+function init_customshape_edit(brand) {
     var url = "/content/edit_customcontent";
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand});
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#customshappedview").empty().html(response.data.content);
+            if (brand=='BT') {
+                $("#btcustomshappedview").empty().html(response.data.content);
+            } else {
+                $("#sbcustomshappedview").empty().html(response.data.content);
+            }
             $(".content_preview").on('click',function () {
                 var url=$("#custom_previewurl").val();
                 $.fancybox.open({
@@ -98,14 +102,14 @@ function init_customshape_edit() {
                     }
                 });
             });
-            init_customshape_editcontent();
+            init_customshape_editcontent(brand);
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function init_customshape_editcontent() {
+function init_customshape_editcontent(brand) {
     var uploadtemplate= '<div class="qq-uploader">' +
         '<div class="custom_upload"><span></span></div>' +
         '</div>';
@@ -124,17 +128,17 @@ function init_customshape_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='custom']").unbind('click').click(function () {
-        init_contentpage('custom');
+        init_contentpage('custom', brand);
     });
     // Save
     $(".save_button[data-page='custom']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#custom_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand});
         var url="/content/save_customcontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('custom');
+                init_contentpage('custom', brand);
             } else {
                 show_error(response);
             }
@@ -212,13 +216,13 @@ function init_customshape_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $("#custom_mainimagearea").empty().html('<div class="custom_mainimageempty"><div class="custom_mainimageupload" id="mainimageupload"></div></div>');
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }
             },'json');
         } else {
-            init_customshape_editcontent();
+            init_customshape_editcontent(brand);
         }
     });
     // Add main image
@@ -243,7 +247,7 @@ function init_customshape_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#custom_mainimagearea").empty().html(response.data.content);
-                            init_customshape_editcontent();
+                            init_customshape_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -273,7 +277,7 @@ function init_customshape_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $("#custom_homepageimagearea").empty().html('<div class="custom_homepageimageempty"><div class="custom_mainimageupload" id="homepageimageupload"></div></div>');
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -301,7 +305,7 @@ function init_customshape_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#custom_homepageimagearea").empty().html(response.data.content);
-                            init_customshape_editcontent();
+                            init_customshape_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -358,7 +362,7 @@ function init_customshape_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".custom_galleries_area").empty().html(response.data.content);
-                            init_customshape_editcontent();
+                            init_customshape_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -377,7 +381,7 @@ function init_customshape_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -404,7 +408,7 @@ function init_customshape_editcontent() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".custom_galleries_area").empty().html(response.data.content);
-                init_customshape_editcontent();
+                init_customshape_editcontent(brand);
             } else {
                 show_error(response);
             }
@@ -439,7 +443,7 @@ function init_customshape_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".custom_galleries_area").empty().html(response.data.content);
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -456,7 +460,7 @@ function init_customshape_editcontent() {
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $("#stressballgalleryarea").empty().html(response.data.content);
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }
@@ -468,13 +472,14 @@ function init_customshape_editcontent() {
     var qq_template= '<div class="qq-uploader"><div class="add_new_gallerypic qq-upload-button">'+
         '+ Add New Gallery Pic</div>' +
         '<ul class="qq-upload-list"></ul>' +
+        '<div class="qq-upload-drop-area"></div>' +
         '<div class="clear"></div></div>';
 
     var itemuploader = new qq.FileUploader({
         element: document.getElementById('add_new_gallery'),
         action: '/utils/save_itemimg',
-        uploadButtonText: '',
         template: qq_template,
+        uploadButtonText: '',
         multiple: false,
         debug: false,
         allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
@@ -489,7 +494,7 @@ function init_customshape_editcontent() {
                 $.post(url, params, function (response) {
                     if (response.errors=='') {
                         $("#stressballgalleryarea").empty().html(response.data.content);
-                        init_customshape_editcontent();
+                        init_customshape_editcontent(brand);
                     } else {
                         show_error(response);
                     }
@@ -497,7 +502,22 @@ function init_customshape_editcontent() {
             }
         }
     });
-
+    // Gallery item description
+    $("input.item_description").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#custom_session").val()});
+        params.push({name: 'type', value: 'galleryitem'});
+        params.push({name: 'custom_galleryitem_id', value: $(this).data('item')});
+        params.push({name: 'field', value: 'item_description'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_customparam";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 
     // CaseStudy
     // Upload
@@ -505,6 +525,7 @@ function init_customshape_editcontent() {
     //     var casestudy = $(this).data('casestudy');
     //     upload_customshaped_image('casestudy_image',casestudy);
     // });
+
     $(".custom_casestudyimage_empty").each(function () {
         var casestudy = $(this).data('casestudy');
         var img = $(this).find('div.custom_casestudyitemupload').prop('id');
@@ -512,6 +533,7 @@ function init_customshape_editcontent() {
             element: document.getElementById(img),
             action: '/utils/save_itemimg',
             uploadButtonText: '',
+            // template: qq_template,
             multiple: false,
             debug: false,
             allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
@@ -527,7 +549,7 @@ function init_customshape_editcontent() {
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $(".custom_casestudies_area").empty().html(response.data.content);
-                            init_customshape_editcontent();
+                            init_customshape_editcontent(brand);
                         } else {
                             show_error(response);
                         }
@@ -546,7 +568,7 @@ function init_customshape_editcontent() {
             $.post(url, params, function(response){
                 if (response.errors=='') {
                     $(".custom_casestudies_area").empty().html(response.data.content);
-                    init_customshape_editcontent();
+                    init_customshape_editcontent(brand);
                 } else {
                     show_error(response);
                 }

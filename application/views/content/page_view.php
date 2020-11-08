@@ -1,7 +1,4 @@
 <div class="page_container">
-    <div class="left_maincontent">
-        <?=$left_menu?>
-    </div>
     <div class="right_maincontent">
         <div class="maincontent">
             <div class="maincontentmenuarea databasemenu">
@@ -12,9 +9,11 @@
                     <?php } ?>
                 </div>
                 <div class="maincontent_view">
-                    <input type="hidden" id="contentbrand" value="<?=$brand?>"/>
-                    <?php foreach ($menu as $item) { ?>
-                        <div class="contentpagearea" id="<?=str_replace('#','', $item['item_link'])?>">&nbsp;</div>
+                    <?php if (isset($btcontentview)) { ?>
+                        <div class="sitecontentpagearea" id="btcontentview"><?=$btcontentview?></div>
+                    <?php } ?>
+                    <?php if (isset($sbcontentview)) { ?>
+                        <div class="sitecontentpagearea" id="sbcontentview"><?=$sbcontentview?></div>
                     <?php } ?>
                 </div>
             </div>
