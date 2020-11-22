@@ -32,7 +32,7 @@ class Test extends CI_Controller
         // Inv #
         $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
         $pdf->SetXY(167,17);
-        $pdf->SetFont('Arial','B',18);
+        $pdf->SetFont('Arial','B',14);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,'MJ-42738',0,0,'C');
 
