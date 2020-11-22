@@ -5811,7 +5811,210 @@ Class Orders_model extends MY_Model
                         $this->db->set('current', 1);
                         $this->db->insert('ts_order_shipcosts');
                     }
-                    
+                    // Items
+                    $this->db->set('order_id', $neword);
+                    $this->db->set('item_id', $item['item_id']);
+                    $this->db->set('item_qty', $item['item_qty']);
+                    $this->db->set('base_price', $item['item_price']);
+                    $this->db->set('item_price', $item['item_price']);
+                    $this->db->insert('ts_order_items');
+                    $item_id = $this->db->insert_id();
+                    if ($item_id > 0) {
+                        /* Setup and Imprint */
+                        $this->db->where('order_item_id', $item_id);
+                        $this->db->set('setup_price', $item['setup_price']);
+                        $this->db->set('imprint_price', $item['imprint_price']);
+                        $this->db->update('ts_order_items');
+                        // Add colors
+                        $colordat = [];
+                        if (!empty($item['item_colors'])) {
+                            $colordat = $item['item_colors'];
+                        }
+                        foreach ($colordat as $crow) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('item_description', $item['item_name']);
+                            $this->db->set('item_price', $item['item_price']);
+                            $this->db->set('item_qty', $crow['order_color_qty']);
+                            $this->db->set('item_color', $crow['order_color_itemcolor']);
+                            // if (!empty($orddata['printshop_inventory_id'])) {
+                            //     $this->db->set('printshop_item_id', $orddata['printshop_inventory_id']);
+                            // }
+                            $this->db->insert('ts_order_itemcolors');
+                        }
+                        if ($item['imprint_type'] == 0) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_description', '&nbsp;');
+                            $this->db->insert('ts_order_imprints');
+                            // Add empty details
+                            for ($i = 0; $i < 12; $i++) {
+                                $this->db->set('order_item_id', $item_id);
+                                $this->db->set('imprint_active', 0);
+                                if ($i==1) {
+                                    $this->db->set('print_1', 0.00);
+                                } else {
+                                    $this->db->set('print_1', $item['imprint_price']);
+                                }
+                                $this->db->set('print_2', $item['imprint_price']);
+                                $this->db->set('print_3', $item['imprint_price']);
+                                $this->db->set('print_4', $item['imprint_price']);
+                                $this->db->set('setup_1', $item['setup_price']);
+                                $this->db->set('setup_2', $item['setup_price']);
+                                $this->db->set('setup_3', $item['setup_price']);
+                                $this->db->set('setup_4', $item['setup_price']);
+                                $this->db->insert('ts_order_imprindetails');
+                            }
+                        } else {
+                            $numpp = 0;
+                            $locnum = 1;
+                            $artworks = $item['artworks'];
+                            foreach ($artworks as $arow) {
+                                // Calc a number of colors
+                                $numcolors = 1;
+                                $colorsarray = explode(',', $arow['order_artwork_colors']);
+                                if (count($colorsarray) > 1) {
+                                    $numcolors = 2;
+                                }
+                                $this->db->set('order_item_id', $item_id);
+                                $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 1st Color Imprinting');
+                                $this->db->set('imprint_item', 1);
+                                $this->db->set('imprint_qty', $item['item_qty']);
+                                if ($numpp == 0) {
+                                    $this->db->set('imprint_price', 0.00);
+                                } else {
+                                    if ($item['imprint_type']==3) {
+                                        $this->db->set('imprint_price', 0.00);
+                                    } else {
+                                        $this->db->set('imprint_price', $item['imprint_price']);
+                                    }
+                                }
+                                $this->db->set('order_item_id', $item_id);
+                                $this->db->insert('ts_order_imprints');
+                                $numpp++;
+                                if ($numcolors == 2) {
+                                    $this->db->set('order_item_id', $item_id);
+                                    $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 2nd Color Imprinting');
+                                    $this->db->set('imprint_item', 1);
+                                    $this->db->set('imprint_qty', $orddata['item_qty']);
+                                    if ($numpp == 0) {
+                                        $this->db->set('imprint_price', 0.00);
+                                    } else {
+                                        if ($item['imprint_type']==3) {
+                                            $this->db->set('imprint_price', 0);
+                                        } else {
+                                            $this->db->set('imprint_price', $item['imprint_price']);
+                                        }
+                                    }
+                                    $this->db->set('order_item_id', $item_id);
+                                    $this->db->insert('ts_order_imprints');
+                                    $numpp++;
+                                }
+                                $locnum++;
+                            }
+                            for ($i = 1; $i <= 12; $i++) {
+                                $this->db->set('order_item_id', $item_id);
+                                $this->db->set('num_colors', 1);
+                                if ($i==1) {
+                                    $this->db->set('print_1', 0.00);
+                                } else {
+                                    if ($item['imprint_type']==3) {
+                                        $this->db->set('print_1', 0);
+                                        $this->db->set('print_2', 0);
+                                        $this->db->set('print_3', 0);
+                                        $this->db->set('print_4', 0);
+                                        $this->db->set('setup_1', 0);
+                                        $this->db->set('setup_2', 0);
+                                        $this->db->set('setup_3', 0);
+                                        $this->db->set('setup_4', 0);
+                                    } else {
+                                        $this->db->set('print_1', $item['imprint_price']);
+                                        $this->db->set('print_2', $item['imprint_price']);
+                                        $this->db->set('print_3', $item['imprint_price']);
+                                        $this->db->set('print_4', $item['imprint_price']);
+                                        $this->db->set('setup_1', $item['setup_price']);
+                                        $this->db->set('setup_2', $item['setup_price']);
+                                        $this->db->set('setup_3', $item['setup_price']);
+                                        $this->db->set('setup_4', $item['setup_price']);
+                                    }
+                                }
+                                if ($i < $locnum) {
+                                    $this->db->set('imprint_active', 1);
+                                } else {
+                                    $this->db->set('imprint_active', 0);
+                                }
+                                $this->db->insert('ts_order_imprindetails');
+                            }
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_description', 'One Time Art Setup Charge');
+                            $this->db->set('imprint_item', 0);
+                            $this->db->set('imprint_qty', $numpp);
+                            if ($item['imprint_type']==3) {
+                                $this->db->set('imprint_price', 0);
+                            } else {
+                                $this->db->set('imprint_price', $item['setup_price']);
+                            }
+                            $this->db->insert('ts_order_imprints');
+                        }
+                    }
+                    // Add New Billing Info
+                    // Get Billing State
+                    $bilstate_id = NULL;
+                    if (!empty($orddata['billing_state'])) {
+                        $this->db->select('state_id');
+                        $this->db->from('ts_states');
+                        $this->db->where('country_id', $orddata['billing_country_id']);
+                        $this->db->where('state_code', $orddata['billing_state']);
+                        $statchk = $this->db->get()->row_array();
+                        if (isset($statchk['state_id'])) {
+                            $bilstate_id = $statchk['state_id'];
+                        }
+                    }
+                    $this->db->set('order_id', $neword);
+                    $this->db->set('customer_name', $orddata['customer_name']);
+                    $this->db->set('company', $orddata['customer_company']);
+                    $this->db->set('address_1', $orddata['billing_street1']);
+                    $this->db->set('address_2', $orddata['billing_street2']);
+                    $this->db->set('city', $orddata['billing_city']);
+                    $this->db->set('zip', $orddata['billing_zipcode']);
+                    $this->db->set('country_id', $orddata['billing_country_id']);
+                    $this->db->set('state_id', $bilstate_id);
+                    $this->db->insert('ts_order_billings');
+                    // Add Payments
+                    $batchdate=strtotime(date('Y-m-d',strtotime($orddata['order_date'])));
+                    if ($user_id) {
+                        $this->db->set('create_usr', $user_id);
+                        $this->db->set('update_usr', $user_id);
+                    }
+                    $this->db->set('create_date', date('Y-m-d H:i:s'));
+                    // $this->db->set('batch_date', strtotime($orddata['order_date']));
+                    $this->db->set('batch_date', $batchdate);
+                    $this->db->set('order_id', $neword);
+                    $this->db->set('batch_amount', $item['total']);
+                    if ($orddata['payment_card_type'] == 'American Express') {
+                        // batch_amex
+                        $ccfee = $this->config->item('paypal_amexfee');
+                        $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
+                        $duedate = getAmexDueDate($batchdate, $paymethod);
+                        $this->db->set('batch_amex', $pureval);
+                    } else {
+                        $ccfee = $this->config->item('paypal_vmdfee');
+                        $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
+                        $duedate = getVMDDueDate($batchdate, $paymethod);
+                        $this->db->set('batch_vmd', $pureval);
+                    }
+                    $this->db->set('batch_due', $duedate);
+                    $this->db->set('batch_received', 0);
+                    $this->db->set('batch_type', $orddata['payment_card_type']);
+                    $this->db->set('batch_num', substr($orddata['payment_card_number'], -4));
+                    $this->db->set('batch_transaction', $orddata['transaction_id']);
+                    $this->db->insert('ts_order_batches');
+                    // Charge value
+                    $this->db->set('order_id', $neword);
+                    $this->db->set('cardnum', $orddata['payment_card_number']);
+                    $this->db->set('exp_month', $orddata['payment_card_month']);
+                    $this->db->set('exp_year', $orddata['payment_card_year']);
+                    $this->db->set('cardcode', $orddata['payment_card_vn']);
+                    $this->db->set('autopay', 1);
+                    $this->db->insert('ts_order_payments');
                 }
             }
         }
