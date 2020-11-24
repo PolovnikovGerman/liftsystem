@@ -8689,6 +8689,9 @@ Class Leadorder_model extends My_Model {
             $pdf->Cell($tableWidths[4], 10, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
+        // $pdf->SetXY(17, 232);
+        // $pdf->SetFont('Arial','',13);
+        // $pdf->MultiCell(82,0,$options['invoice_message'],1,0);
         // Totals
         $invtotalImage = FCPATH.'/img/invoice/totals_bg.png';
         $invtotalXPos = 115;
