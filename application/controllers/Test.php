@@ -17,12 +17,12 @@ class Test extends CI_Controller
         $logoWidth = 95;
 
         $invnumImg = FCPATH.'/img/invoice/invoice_num.png';
-        $invnumXPos = 123;
+        $invnumXPos = 125;
         $invnumYPos = 15;
         $invnumWidth = 78;
 
         $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
-        $ponumXPos = 136;
+        $ponumXPos = 139;
         $ponumYPos = 48;
         $ponumWidth = 64;
 
@@ -67,7 +67,7 @@ class Test extends CI_Controller
         $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth );
         // Inv #
         $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
-        $pdf->SetXY(167,17);
+        $pdf->SetXY(169,17);
         $pdf->SetFont('Arial','B',14);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,'MJ-42738',0,0,'C');
@@ -81,9 +81,9 @@ class Test extends CI_Controller
         $pdf->Text(38,48, '1-800-790-6090');
         $pdf->text(15,56,'www.bluetrack.com','http://www.bluetrack.com');
         $pdf->SetTextColor(0,0,0);
-        $pdf->Text(146, 40, 'Invoice Date: 11/18/2020');
+        $pdf->Text(147, 40, 'Invoice Date: 11/18/2020');
         $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth);
-        $pdf->SetXY(175,49);
+        $pdf->SetXY(178,49);
         $pdf->SetFont('Arial','B');
         $pdf->Cell(24,8,'42738',0,0,'C');
         $pdf->SetFont('Arial','', 12);
