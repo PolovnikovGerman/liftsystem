@@ -21,12 +21,48 @@ class Test extends CI_Controller
         $invnumYPos = 15;
         $invnumWidth = 78;
 
+        $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
+        $ponumXPos = 136;
+        $ponumYPos = 48;
+        $ponumWidth = 64;
+
+        $termsImage = FCPATH.'/img/invoice/terms_head_bg.png';
+        $termsXPos = 15;
+        $termsYPos = 60;
+        $termsWidth = 38;
+
+        $paydueImage = FCPATH.'/img/invoice/paymentdue_head_bg.png';
+        $paydueXPos = 58;
+        $paydueYPos = 60;
+        $paydueWidth = 38;
+
+        $shipdateImage = FCPATH.'/img/invoice/shipdate_head_bg.png';
+        $shipdateXPos = 123;
+        $shipdateYPos = 60;
+        $shipdateWidth = 38;
+
+        $arivdateImage = FCPATH.'/img/invoice/deliverydate_head_bg.png';
+        $arivdateXPos = 166;
+        $arivdateYPos = 60;
+        $arivdateWidth = 38;
+
+        $billadrImage = FCPATH.'/img/invoice/billto_head_bg.png';
+        $billadrXPos = 15;
+        $billadrYPos = 75;
+        $billadrWidth = 82;
+
+        $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.png';
+        $shipadrXPos = 123;
+        $shipadrYPos = 75;
+        $shipadrWidth = 82;
+
+
         $file = $this->config->item('upload_path_preload').'hello.pdf';
         $pdf = new FPDF('P','mm','A4');
         $pdf->AddPage();
         $pdf->SetFont('Arial','',12);
         $pdf->SetTextColor(65, 65, 65);
-        $pdf->SetMargins(14,14,14);
+        // $pdf->SetMargins(14,14,14);
         // Logo
         $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth );
         // Inv #
@@ -35,6 +71,131 @@ class Test extends CI_Controller
         $pdf->SetFont('Arial','B',14);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,'MJ-42738',0,0,'C');
+        $pdf->Ln(5);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetFont('Arial','',14);
+        $pdf->Text(15, 32, '855 Bloomfield Ave');
+        $pdf->Text(15, 40, 'Clifton, NJ 07012');
+        $pdf->Text(15,48, 'Call Us at');
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Text(38,48, '1-800-790-6090');
+        $pdf->text(15,56,'www.bluetrack.com','http://www.bluetrack.com');
+        $pdf->SetTextColor(0,0,0);
+        $pdf->Text(146, 40, 'Invoice Date: 11/18/2020');
+        $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth);
+        $pdf->SetXY(175,49);
+        $pdf->SetFont('Arial','B');
+        $pdf->Cell(24,8,'42738',0,0,'C');
+        $pdf->SetFont('Arial','', 12);
+        $pdf->SetTextColor(65, 65, 65);
+        // Terms
+        $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth);
+        $pdf->Text(26,73, '12/18/20');
+        // Payment Due
+        $pdf->Image($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth);
+        $pdf->Text(68,73, '12/18/20');
+        // Ship Date
+        $pdf->Image($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth);
+        $pdf->Text(134,73, '12/18/20');
+        // Delivery Date
+        $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth);
+        $pdf->Text(175,73, '12/18/20');
+        // Billing Address
+        $pdf->SetFont('Arial','', 9.5);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth);
+        $pdf->Text(17, 88, 'Donna Insixiengmay');
+        $pdf->Text(17, 93, 'NCTCOG');
+        $pdf->Text(17, 98, 'CENTERPOINT TWO');
+        $pdf->Text(17, 103, '616 SIX FLAGS DR');
+        $pdf->Text(17, 108, 'ARLINGTON TX 76011');
+        // Shipping Address
+        $pdf->Image($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth);
+        $pdf->Text(125, 88, 'Donna Insixiengmay');
+        $pdf->Text(125, 93, 'NCTCOG');
+        $pdf->Text(125, 98, 'CENTERPOINT TWO');
+        $pdf->Text(125, 103, '616 SIX FLAGS DR');
+        $pdf->Text(125, 108, 'ARLINGTON TX 76011');
+        // Table
+        $tableHeadYPos = 110;
+        $itemnumImage = FCPATH.'/img/invoice/itemnum_head_bg.png';
+        $itemnumXPos = 15;
+        $itemnumWidth = 26;
+
+        $descripImage = FCPATH.'/img/invoice/itemdescript_head_bg.png';
+        $descripXPos = 43;
+        $descripWidth = 75;
+
+        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg.png';
+        $itemqtyXPos = 121;
+        $itemqtyWidth = 13;
+
+        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg.png';
+        $priceXPos = 136;
+        $priceWidth = 27;
+
+        $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.png';
+        $totalXPos = 166;
+        $totalWidth = 27;
+
+        $pdf->Image($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth);
+        $pdf->Image($descripImage, $descripXPos, $tableHeadYPos, $descripWidth);
+        $pdf->Image($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth);
+        $pdf->Image($priceImage, $priceXPos, $tableHeadYPos, $priceWidth);
+        $pdf->Image($totalImage, $totalXPos, $tableHeadYPos, $totalWidth);
+        // Table Data
+        $tableWidths = [
+            28,
+            78,
+            13,
+            31,
+            31,
+        ];
+        $numpp = 1;
+
+        $pdf->SetFillColor(225, 225, 225);
+        $pdf->SetXY(15, 117);
+        $pdf->Cell($tableWidths[0], 10, '00-ZZ000', 0, 0,'C', true);
+        $pdf->Cell($tableWidths[1], 10, 'Custom Shaped Stress Balls - Custom Logo',0,0,'L',true);
+        $pdf->Cell($tableWidths[2], 10,'1000',0, 0, 'C', true);
+        $pdf->Cell($tableWidths[3], 10, '2.49',0,0,'C', true);
+        $pdf->Cell($tableWidths[4], 10, '$2,490.00',0, 1,'C', true);
+        // Next row
+        //$pdf->Cell($tableWidths[0], 10,'',0,0,'C', false);
+        $pdf->SetX(15);
+        $pdf->Cell($tableWidths[0]);
+        $pdf->Cell($tableWidths[1], 10, 'Loc 1: 1st Color Imprinting');
+        $pdf->Cell($tableWidths[2], 10, '1000',0,0,'C');
+        $pdf->Cell($tableWidths[3], 10, '0.00',0,0, 'C');
+        $pdf->Cell($tableWidths[4], 10, '$0.00',0, 1,'C');
+
+        $pdf->Cell(10,5,'',0,1);
+        // Totals
+        $invtotalImage = FCPATH.'/img/invoice/totals_bg.png';
+        $invtotalXPos = 115;
+        $invtotalYPos = 212;
+        $invtotalWidth = 80;
+
+        $pdf->Image($invtotalImage, $invtotalXPos, $invtotalYPos, $invtotalWidth);
+        // Totals
+        $pdf->SetXY(116,212);
+        $pdf->SetFont('Arial','',13);
+        $pdf->Cell(75, 8, 'NJ 6.625% Sales Tax (0.0%) $0.00',0,1);
+        $pdf->SetX(116);
+        $pdf->SetFont('','B');
+        $pdf->Cell(52, 8, 'Total');
+        $pdf->SetTextColor(8,0,255);
+        $pdf->Cell(23, 8, '$2,649.00',0,1);
+        $pdf->SetX(116);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetFont('','');
+        $pdf->Cell(52, 8, 'Payment - 11/12/20',0,0,'L',true);
+        $pdf->Cell(26.2, 8,'$2,649.00',0,1,'L',true);
+        $pdf->SetX(116);
+        $pdf->SetFont('','B');
+        $pdf->Cell(52,8,'Balance Due');
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Cell(23,8,'$0.00',0,1);
 
         $pdf->Output('F', $file);
     }
