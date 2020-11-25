@@ -8540,7 +8540,7 @@ Class Leadorder_model extends My_Model {
 
         $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
         $ponumXPos = 139;
-        $ponumYPos = 48;
+        $ponumYPos = 45;
         $ponumWidth = 64;
 
         $termsImage = FCPATH.'/img/invoice/terms_head_bg.png';
@@ -8583,28 +8583,29 @@ Class Leadorder_model extends My_Model {
         // Inv #
         $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
         $pdf->SetXY(169,17);
-        $pdf->SetFont('','B',14);
+        $pdf->SetFont('','B',16.564429);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,$options['order_num'],0,0,'C');
 
         $pdf->Ln(5);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('','',14);
+        $pdf->SetFont('','',12.046857);
         $pdf->Text(15, 32, '855 Bloomfield Ave');
         $pdf->Text(15, 40, 'Clifton, NJ 07012');
         $pdf->Text(15,48, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(38,48, '1-800-790-6090');
+        $pdf->Text(33,48, '1-800-790-6090');
         $pdf->text(15,56,'www.bluetrack.com','http://www.bluetrack.com');
         $pdf->SetTextColor(0,0,0);
+        $pdf->SetFont('', '', 13.552714);
         $pdf->Text(147, 40, 'Invoice Date: '.$options['order_date']);
         if (!empty($options['customer_code'])) {
             $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth);
-            $pdf->SetXY(178,49);
+            $pdf->SetXY(178,46);
             $pdf->SetFont('','B');
             $pdf->Cell(24,8,'42738',0,0,'C');
         }
-        $pdf->SetFont('','', 12);
+        $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
         // Terms
         $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth);
@@ -8621,7 +8622,7 @@ Class Leadorder_model extends My_Model {
         $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth);
         $pdf->Text(175,73, $options['arrive']);
         // Billing Address
-        $pdf->SetFont('','', 9.5);
+        $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth);
         $startY = 88;
