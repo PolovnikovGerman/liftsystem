@@ -8575,7 +8575,7 @@ Class Leadorder_model extends My_Model {
 
         $pdf = new FPDF('P','mm','A4');
         $pdf->AddPage();
-        $pdf->SetFont('Arial','',12);
+        $pdf->SetFont('Times','',9.035143);
         $pdf->SetTextColor(65, 65, 65);
         // $pdf->SetMargins(14,14,14);
         // Logo
@@ -8583,13 +8583,13 @@ Class Leadorder_model extends My_Model {
         // Inv #
         $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
         $pdf->SetXY(169,17);
-        $pdf->SetFont('Arial','B',14);
+        $pdf->SetFont('','B',14);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,$options['order_num'],0,0,'C');
 
         $pdf->Ln(5);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('Arial','',14);
+        $pdf->SetFont('','',14);
         $pdf->Text(15, 32, '855 Bloomfield Ave');
         $pdf->Text(15, 40, 'Clifton, NJ 07012');
         $pdf->Text(15,48, 'Call Us at');
@@ -8601,14 +8601,14 @@ Class Leadorder_model extends My_Model {
         if (!empty($options['customer_code'])) {
             $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth);
             $pdf->SetXY(178,49);
-            $pdf->SetFont('Arial','B');
+            $pdf->SetFont('','B');
             $pdf->Cell(24,8,'42738',0,0,'C');
         }
-        $pdf->SetFont('Arial','', 12);
+        $pdf->SetFont('','', 12);
         $pdf->SetTextColor(65, 65, 65);
         // Terms
         $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth);
-        if (empty($options['terms'])) {
+        if (!empty($options['terms'])) {
             $pdf->Text(26,73, $options['terms']);
         }
         // Payment Due
@@ -8621,7 +8621,7 @@ Class Leadorder_model extends My_Model {
         $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth);
         $pdf->Text(175,73, $options['arrive']);
         // Billing Address
-        $pdf->SetFont('Arial','', 9.5);
+        $pdf->SetFont('','', 9.5);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth);
         $startY = 88;
@@ -8702,7 +8702,7 @@ Class Leadorder_model extends My_Model {
         // Totals
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(116,232);
-        $pdf->SetFont('Arial','',13);
+        $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
         $numtotalrow = 1;
@@ -8726,9 +8726,9 @@ Class Leadorder_model extends My_Model {
         }
         $pdf->SetX(116);
         $pdf->SetFont('','B');
-        $pdf->Cell(52,8,'Balance Due');
+        $pdf->Cell(52,8,'Balance Due',0,0, '', $fillcell);
         $pdf->SetTextColor(0,0,255);
-        $pdf->Cell(26.2,8,$options['balance'],0,1);
+        $pdf->Cell(26.2,8,$options['balance'],0,1, '', $fillcell);
         // Save file
         $pdf->Output('F', $file_out);
         return TRUE;
