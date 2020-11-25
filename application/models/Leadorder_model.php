@@ -8699,37 +8699,35 @@ Class Leadorder_model extends My_Model {
         $invtotalYPos = 232;
         $invtotalWidth = 80;
 
-        $pdf->Image($invtotalImage, $invtotalXPos, $invtotalYPos, $invtotalWidth);
+        // $pdf->Image($invtotalImage, $invtotalXPos, $invtotalYPos, $invtotalWidth);
         // Totals
+        $invtotalHeght = 27 + 8*$options['payments_count'];
+        $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(116,232);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
-        $numtotalrow = 1;
-        $fillcell=($numtotalrow%2==1 ? false : true);
-
         $pdf->SetX(116);
         $pdf->SetFont('','B');
-        $pdf->Cell(52, 8, 'Total',0, 0, $fillcell);
+        $pdf->Cell(52, 8, 'Total',0, 0);
         $pdf->SetTextColor(8,0,255);
-        $pdf->Cell(26.2, 8, $options['total'],0,1, $fillcell);
-        $numtotalrow++;
-        $fillcell=($numtotalrow%2==1 ? false : true);
+        $pdf->Cell(26.2, 8, $options['total'],0,1);
+
         if ($options['payments_count'] > 0) {
-            $pdf->SetX(116);
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','');
-            $pdf->Cell(52, 8, 'Payment - 11/12/20',0,0,'L',true);
-            $pdf->Cell(26.2, 8,'$2,649.00',0,1,'L',true);
-            $numtotalrow++;
-            $fillcell=($numtotalrow%2==1 ? false : true);
+            foreach ($options['payments_detail'] as $payments_detail) {
+                $pdf->SetX(116);
+                $pdf->SetTextColor(0,0,0);
+                $pdf->SetFont('','');
+                $pdf->Cell(52, 8, $payments_detail['label'],0,0,'L',true);
+                $pdf->Cell(26.2, 8,$payments_detail['value'],0,1,'L',true);
+            }
         }
         $pdf->SetX(116);
         $pdf->SetFont('','B');
-        $pdf->Cell(52,8,'Balance Due',0,0, '', $fillcell);
+        $pdf->Cell(52,8,'Balance Due',0,0);
         $pdf->SetTextColor(0,0,255);
-        $pdf->Cell(26.2,8,$options['balance'],0,1, '', $fillcell);
+        $pdf->Cell(26.2,8,$options['balance'],0,1);
         // Save file
         $pdf->Output('F', $file_out);
         return TRUE;
