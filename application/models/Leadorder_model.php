@@ -8531,47 +8531,56 @@ Class Leadorder_model extends My_Model {
         $logoFile = FCPATH."/img/invoice/invoice_logo_bluetrack-stressballs.jpg";
         $logoXPos = 15;
         $logoYPos = 15;
-        $logoWidth = 95;
+        $logoWidth = 105.655;
+        $logoHeight = 12.88;
+        $logoType = 'JPG';
 
         $invnumImg = FCPATH.'/img/invoice/invoice_num.png';
-        $invnumXPos = 125;
-        $invnumYPos = 15;
-        $invnumWidth = 78;
+        $invnumXPos = 130;
+        $invnumYPos = 14.7;
+        $invnumWidth = 0;
+        $invnumHeigth = 14.5;
+        $invnumType = 'PNG';
 
         $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
         $ponumXPos = 139;
-        $ponumYPos = 45;
-        $ponumWidth = 64;
+        $ponumYPos = 41;
+        $ponumWidth = 0;
+        $ponumHeight = 9;
+        $ponumType = 'PNG';
+
+        $invoiceimgHeadType = 'PNG';
+        $invoiceimgHeadHeight = 7.2;
 
         $termsImage = FCPATH.'/img/invoice/terms_head_bg.png';
         $termsXPos = 15;
         $termsYPos = 60;
-        $termsWidth = 38;
+        $termsWidth = 0;
 
         $paydueImage = FCPATH.'/img/invoice/paymentdue_head_bg.png';
         $paydueXPos = 58;
         $paydueYPos = 60;
-        $paydueWidth = 38;
+        $paydueWidth = 0;
 
         $shipdateImage = FCPATH.'/img/invoice/shipdate_head_bg.png';
         $shipdateXPos = 123;
         $shipdateYPos = 60;
-        $shipdateWidth = 38;
+        $shipdateWidth = 0;
 
         $arivdateImage = FCPATH.'/img/invoice/deliverydate_head_bg.png';
         $arivdateXPos = 166;
         $arivdateYPos = 60;
-        $arivdateWidth = 38;
+        $arivdateWidth = 0;
 
         $billadrImage = FCPATH.'/img/invoice/billto_head_bg.png';
         $billadrXPos = 15;
         $billadrYPos = 75;
-        $billadrWidth = 82;
+        $billadrWidth = 0;
 
         $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.png';
         $shipadrXPos = 123;
         $shipadrYPos = 75;
-        $shipadrWidth = 82;
+        $shipadrWidth = 0;
 
         $pdf = new FPDF('P','mm','A4');
         $pdf->AddPage();
@@ -8579,10 +8588,10 @@ Class Leadorder_model extends My_Model {
         $pdf->SetTextColor(65, 65, 65);
         // $pdf->SetMargins(14,14,14);
         // Logo
-        $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth );
+        $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight, $logoType );
         // Inv #
-        $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
-        $pdf->SetXY(169,17);
+        $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth, $invnumType);
+        $pdf->SetXY(171,16);
         $pdf->SetFont('','B',16.564429);
         $pdf->SetTextColor(0, 0, 255);
         $pdf->Cell(32,12,$options['order_num'],0,0,'C');
@@ -8590,48 +8599,49 @@ Class Leadorder_model extends My_Model {
         $pdf->Ln(5);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('','',12.046857);
-        $pdf->Text(15, 32, '855 Bloomfield Ave');
+        $pdf->Text(15, 34, '855 Bloomfield Ave');
         $pdf->Text(15, 40, 'Clifton, NJ 07012');
-        $pdf->Text(15,48, 'Call Us at');
+        $pdf->Text(15,46, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(33,48, '1-800-790-6090');
-        $pdf->text(15,56,'www.bluetrack.com','http://www.bluetrack.com');
+        $pdf->Text(33,46, '1-800-790-6090');
+        $pdf->text(15,52,'www.bluetrack.com','http://www.bluetrack.com');
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('', '', 13.552714);
-        $pdf->Text(147, 40, 'Invoice Date: '.$options['order_date']);
+        $pdf->Text(147, 38, 'Invoice Date: '.$options['order_date']);
         if (!empty($options['customer_code'])) {
-            $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth);
-            $pdf->SetXY(178,46);
+            $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight, $ponumType);
+            // $pdf->Image($ponumImage, $ponumXPos, $ponumYPos);
+            $pdf->SetXY(178,41.5);
             $pdf->SetFont('','B');
             $pdf->Cell(24,8,'42738',0,0,'C');
         }
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
         // Terms
-        $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth);
+        $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         if (!empty($options['terms'])) {
             $pdf->Text(26,73, $options['terms']);
         }
         // Payment Due
-        $pdf->Image($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth);
+        $pdf->Image($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $pdf->Text(68,73, $options['payment_due']);
         // Ship Date
-        $pdf->Image($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth);
+        $pdf->Image($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $pdf->Text(134,73, $options['shipdate']);
         // Delivery Date
-        $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth);
+        $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $pdf->Text(175,73, $options['arrive']);
         // Billing Address
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth);
+        $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $startY = 88;
         foreach ($options['billing'] as $biladrrow) {
             $pdf->Text(17, $startY, $biladrrow);
             $startY+=5;
         }
         // Shipping Address
-        $pdf->Image($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth);
+        $pdf->Image($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $startY = 88;
         foreach ($options['shipping'] as $shipadrrow) {
             $pdf->Text(125, $startY, $shipadrrow);
@@ -8641,29 +8651,29 @@ Class Leadorder_model extends My_Model {
         $tableHeadYPos = 110;
         $itemnumImage = FCPATH.'/img/invoice/itemnum_head_bg.png';
         $itemnumXPos = 15;
-        $itemnumWidth = 26;
+        $itemnumWidth = 0;
 
         $descripImage = FCPATH.'/img/invoice/itemdescript_head_bg.png';
         $descripXPos = 43;
-        $descripWidth = 75;
+        $descripWidth = 0;
 
         $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg.png';
         $itemqtyXPos = 121;
-        $itemqtyWidth = 13;
+        $itemqtyWidth = 0;
 
         $priceImage = FCPATH.'/img/invoice/priceeach_head_bg.png';
         $priceXPos = 136;
-        $priceWidth = 27;
+        $priceWidth = 0;
 
         $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.png';
         $totalXPos = 166;
-        $totalWidth = 27;
+        $totalWidth = 0;
 
-        $pdf->Image($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth);
-        $pdf->Image($descripImage, $descripXPos, $tableHeadYPos, $descripWidth);
-        $pdf->Image($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth);
-        $pdf->Image($priceImage, $priceXPos, $tableHeadYPos, $priceWidth);
-        $pdf->Image($totalImage, $totalXPos, $tableHeadYPos, $totalWidth);
+        $pdf->Image($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->Image($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->Image($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->Image($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->Image($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         // Table Data
         $tableWidths = [
             28,
@@ -8674,7 +8684,7 @@ Class Leadorder_model extends My_Model {
         ];
         $numpp = 1;
         $pdf->SetFillColor(225, 225, 225);
-        $pdf->SetXY(0, 117);
+        $pdf->SetXY(0, 117.7);
         foreach ($options['details'] as $detail) {
             $fillcell = ($numpp%2==1 ? true:  false);
             if ($detail['item_color']=='#ff0000') {

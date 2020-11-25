@@ -14,12 +14,16 @@ class Test extends CI_Controller
         $logoFile = FCPATH."/img/invoice/invoice_logo_bluetrack-stressballs.jpg";
         $logoXPos = 15;
         $logoYPos = 15;
-        $logoWidth = 95;
+        $logoWidth = 105.655;
+        $logoHeight = 12.88;
+        $logoType = 'JPG';
 
         $invnumImg = FCPATH.'/img/invoice/invoice_num.png';
-        $invnumXPos = 125;
+        $invnumXPos = 137;
         $invnumYPos = 15;
-        $invnumWidth = 78;
+        $invnumWidth = 65.42;
+        $invnumHeigth = 12.88;
+        $invnumType = 'PNG';
 
         $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
         $ponumXPos = 139;
@@ -64,13 +68,13 @@ class Test extends CI_Controller
         $pdf->SetTextColor(65, 65, 65);
         // $pdf->SetMargins(14,14,14);
         // Logo
-        $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth );
+        $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight, $logoType );
         // Inv #
-        $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth);
-        $pdf->SetXY(169,17);
+        $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth, $invnumType);
+        $pdf->SetXY(171,16);
         $pdf->SetFont('Arial','B',14);
         $pdf->SetTextColor(0, 0, 255);
-        $pdf->Cell(32,12,'MJ-42738',0,0,'C');
+        $pdf->Cell(32,12,'MJ-42738',1,0,'C');
         $pdf->Ln(5);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('Arial','',14);
