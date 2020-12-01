@@ -4035,9 +4035,11 @@ Class Leadorder_model extends My_Model {
         }
         if (!empty($leadorder['message']['general_notes'])) {
             $this->db->set('general_notes', $leadorder['message']['general_notes']);
-            $this->db->where('artwork_id', $artwork_id);
-            $this->db->update('ts_artworks');
+        } else {
+            $this->db->set('general_notes', '');
         }
+        $this->db->where('artwork_id', $artwork_id);
+        $this->db->update('ts_artworks');
         $this->db->select('o.order_blank');
         $this->db->from('ts_orders o');
         $this->db->where('o.order_id',$order_id);
