@@ -5649,7 +5649,7 @@ Class Orders_model extends MY_Model
     public function add_lift_order($order_id, $user_id) {
         $out=['result' => $this->error_result, 'msg' => ''];
         $this->load->model('calendars_model');
-
+        $this->load->model('shipping_model');
         $paymethod = 'PAYPAL';
         $data = $this->order_details(array('order_id' => $order_id));
         if ($data['result']==$this->success_result) {
@@ -5762,6 +5762,13 @@ Class Orders_model extends MY_Model
                         $this->db->insert('ts_order_contacts');
                     }
                     // Add data into SHIPPING
+                    $shipstate = null;
+                    if (!empty($orddata['shipping_state'])) {
+                        $stateres = $this->shipping_model->get_state_bycode2($orddata['shipping_state'], $orddata['shipping_country_id']);
+                        if ($stateres['result']==$this->success_result) {
+                            $shipstate = $stateres['data']['state_id'];
+                        }
+                    }
                     $this->db->set('order_id', $neword);
                     if (!empty($item['event_date'])) {
                         $this->db->set('event_date', strtotime($item['event_date']));
@@ -5783,7 +5790,8 @@ Class Orders_model extends MY_Model
                     $this->db->set('ship_address2', (empty($orddata['shipping_street2']) ? NULL : $orddata['shipping_street2']));
                     $this->db->set('city', $orddata['shipping_city']);
                     $this->db->set('zip', $orddata['shipping_zipcode']);
-                    $this->db->set('state_id', $orddata['shipping_state']);
+                    // $this->db->set('state_id', $orddata['shipping_state']);
+                    $this->db->set('state_id', $shipstate);
                     $this->db->set('item_qty', $item['item_qty']);
                     if ($item['shipping_date']) {
                         $this->db->set('ship_date', $item['shipping_date']);
@@ -6024,7 +6032,7 @@ Class Orders_model extends MY_Model
     public function orderlift_items($order_id) {
         $this->db->select('oi.*, i.item_number, i.item_name');
         $this->db->from('sb_order_items oi');
-        $this->db->join('sb_items i','i.item_id, oi.item_id');
+        $this->db->join('sb_items i','i.item_id = oi.item_id');
         $this->db->where('order_id', $order_id);
         $itemres = $this->db->get()->result_array();
         $items = [];

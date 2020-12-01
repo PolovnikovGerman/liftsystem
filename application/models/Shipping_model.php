@@ -1022,6 +1022,22 @@ Class Shipping_model extends MY_Model
         return $result;
     }
 
+    public function get_state_bycode2($state_code, $country_id=0) {
+        $out = ['result' => $this->error_result, 'msg' => 'State Not Fond'];
+        $this->db->select('*');
+        $this->db->from('sb_states');
+        $this->db->where('state_code', $state_code);
+        if ($country_id!==0) {
+            $this->db->where('country_id', $country_id);
+        }
+        $res = $this->db->get()->row_array();
+        if (count($res) > 0) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $res;
+        }
+        return $out;
+    }
+
 
 
 }

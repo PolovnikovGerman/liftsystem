@@ -161,7 +161,7 @@ select.leadord_filterselect {
 .leadorder_datahead > .item {
     border-right: 1px solid #000000;
     float: left;
-    width: 163px;
+    width: 161px;
 }
 .leadorder_datahead > .revenue {
     border-right: 1px solid #000000;
@@ -287,7 +287,7 @@ select.leadord_filterselect {
     padding-left: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 163px;
+    width: 161px;
 }
 .leadorder_datarow > .item.customorder {
     font-weight: bold;
