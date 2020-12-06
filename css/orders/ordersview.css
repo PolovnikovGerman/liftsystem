@@ -140,13 +140,13 @@ select.leadord_filterselect {
 .leadorder_datahead > .confirmnum {
     border-right: 1px solid #000000;
     float: left;
-    width: 64px;
+    width: 72px;
 }
 .leadorder_datahead > .customer {
     border-right: 1px solid #000000;
     float: left;
     /* width: 158px; */
-    width: 144px;
+    width: 140px;
 }
 .leadorder_datahead > .qty {
     border-right: 1px solid #000000;
@@ -161,7 +161,7 @@ select.leadord_filterselect {
 .leadorder_datahead > .item {
     border-right: 1px solid #000000;
     float: left;
-    width: 161px;
+    width: 157px;
 }
 .leadorder_datahead > .revenue {
     border-right: 1px solid #000000;
@@ -247,7 +247,7 @@ select.leadord_filterselect {
     border-right: 1px solid;
     width: 22px;
     float: left;
-    width: 64px;
+    width: 72px;
 }
 .leadorder_datarow > .confirmnum.historical {
     color: #646464;
@@ -260,7 +260,7 @@ select.leadord_filterselect {
     padding-right: 5px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 144px;
+    width: 140px;
 }
 .leadorder_datarow > .qty {
     border-right: 1px solid #000000;
@@ -287,7 +287,7 @@ select.leadord_filterselect {
     padding-left: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 161px;
+    width: 157px;
 }
 .leadorder_datarow > .item.customorder {
     font-weight: bold;

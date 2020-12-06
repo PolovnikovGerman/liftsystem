@@ -111,7 +111,7 @@ select.filter_select {
     width: 50px;
 }
 .generealorder_content > .tablehead > .orderconf {
-    width: 64px;
+    width: 73px;
 }
 .generealorder_content > .tablehead > .customer {
     width: 212px;
@@ -174,7 +174,7 @@ select.filter_select {
 }
 .generealorder_content > .tabledata > .rowdata > .orderconf {
     border-right: 1px solid #919191;
-    width: 63px;
+    width: 72px;
 }
 .generealorder_content > .tabledata > .rowdata > .customer {
     border-right: 1px solid #919191;
