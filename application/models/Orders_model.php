@@ -681,6 +681,14 @@ Class Orders_model extends MY_Model
                 $row['order_amount'] = MoneyOutput($order_amount);
             }
             $row['order_date_show'] = date('m/d/y', strtotime($row['order_date']));
+            if ($row['order_type']=='NEW') {
+                $this->db->select('group_concat(i.item_name) as item_name');
+                $this->db->from('sb_order_items oi');
+                $this->db->join('sb_items i','i.item_id=oi.item_id');
+                $this->db->where('oi.order_id', $row['order_id']);
+                $itmres = $this->db->get()->row_array();
+                $row['item_name']=$itmres['item_name'];
+            }
             $out_arr[] = $row;
         }
         return $out_arr;
@@ -7350,6 +7358,113 @@ Class Orders_model extends MY_Model
         $this->db->where('aw.order_artwork_id', $art_id);
         $res = $this->db->get()->row_array();
         return $res;
+    }
+
+    public function get_weborder_details($order_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('*');
+        $this->db->from('sb_orders');
+        $this->db->where('order_id', $order_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $res;
+        }
+        return $out;
+    }
+
+    public function prepare_billing_view($data) {
+        $billing_view = '<p>'.$data['shipping_firstname'].' '.$data['shipping_lastname'];
+        if (ifset($data,'billing_street1','')!=='') {
+            $billing_view.='<br>'.$data['billing_street1'];
+        }
+        if (ifset($data, 'billing_street2','')!=='') {
+            $billing_view.='<br>'.$data['billing_street2'];
+        }
+        $billing_view.='<br>';
+        if (ifset($data,'billing_city','')!=='') {
+            $billing_view.=$data['billing_city'].(ifset($data,'billing_state','')=='' ? ' ' : ','.$data['billing_state']);
+        }
+        if (ifset($data, 'billing_zipcode','')!=='') {
+            $billing_view.=' '.$data['billing_zipcode'];
+        }
+        $billing_view.='</p>';
+        return $billing_view;
+    }
+
+    public function prepare_shipping_view($data) {
+        $shipping_view = '<p>'.$data['shipping_firstname'].' '.$data['shipping_lastname'];
+        if (ifset($data,'shipping_street1','')!=='') {
+            $shipping_view.='<br>'.$data['shipping_street1'];
+        }
+        if (ifset($data, 'shipping_street2','')!=='') {
+            $shipping_view.='<br>'.$data['shipping_street2'];
+        }
+        $shipping_view.='<br>';
+        if (ifset($data,'shipping_city','')!=='') {
+            $shipping_view.=$data['shipping_city'].(ifset($data,'shipping_state','')=='' ? ' ' : ','.$data['shipping_state']);
+        }
+        if (ifset($data, 'shipping_zipcode','')!=='') {
+            $shipping_view.=' '.$data['shipping_zipcode'];
+        }
+        $shipping_view.='</p>';
+        return $shipping_view;
+
+    }
+
+    public function get_order_items($order_id) {
+        $this->load->model('items_model');
+        $this->load->model('itemimages_model');
+        $this->db->select('*');
+        $this->db->from('sb_order_items');
+        $this->db->where('order_id', $order_id);
+        $res = $this->db->get()->result_array();
+        $totals = [
+            'items' => 0,
+            'imprinting' => 0,
+            'rush' => 0,
+            'shipping' => 0,
+            'tax' => 0,
+        ];
+        $out=[];
+        foreach ($res as $row) {
+            $itemres = $this->items_model->get_item($row['item_id']);
+            if ($itemres['result']==$this->success_result) {
+                $itemdata = $itemres['data'];
+                $itemimg = $this->itemimages_model->get_item_images($row['item_id'],1);
+                $this->db->select('*');
+                $this->db->from('sb_order_colors');
+                $this->db->where('order_item_id', $row['order_item_id']);
+                $itemcolors = $this->db->get()->result_array();
+                $colors = [];
+                foreach ($itemcolors as $itemcolor) {
+                    $colors[] = [
+                        'color' => $itemcolor['order_color_itemcolor'],
+                        'qty' => $itemcolor['order_color_qty'],
+                        'price' => $row['item_price'],
+                        'subtotal' => $row['item_price'] * $itemcolor['order_color_qty'],
+                    ];
+                }
+                $out[]=[
+                    'order_item_id' =>$row['order_item_id'],
+                    'item_name' => $itemdata['item_name'],
+                    'item_number' => $itemdata['item_number'],
+                    'item_image' => $itemimg[0]['item_img_thumb'],
+                    'colors' => $colors,
+                    'shippng' => $row['shipping_date'],
+                    'arrive' => $row['arrive_date'],
+                ];
+                $totals['items'] += $row['item_qty'] * $row['item_price'];
+                if ($row['imprint_type']==1) {
+                    $totals['imprinting'] += ($row['imprint'] - 1) * $row['item_qty'] * $row['imprint_price'] + $row['imprint'] * $row['setup_price'];
+                }
+                $totals['shipping'] += $row['shipping_cost'];
+                $totals['rush'] += $row['rush_cost'];
+                $totals['tax'] += $row['tax'];
+            }
+        }
+        return ['data' => $out, 'totals' => $totals];
+
     }
 
 

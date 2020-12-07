@@ -52,6 +52,7 @@ class Orders extends MY_Controller
                 $content_options['ordersview'] = $this->_prepare_orders_view($brand, $top_menu, $search);
             } elseif ($row['item_link']=='#orderlistsview') {
                 $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
+                $head['styles'][]=array('style'=>'/css/orders/onlineorderpopup.css');
                 $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
@@ -362,37 +363,76 @@ class Orders extends MY_Controller
         if ($this->isAjax()) {
             $order_id=$this->input->post('order_id');
             $mdata=array();
-            /* Get Data about order */
-            $options=array(
-                'order_id'=>$order_id,
-            );
             $this->load->model('orders_model');
-            $data=$this->orders_model->order_details($options);
-            $error = $data['msg'];
-            if ($data['result']==$this->success_result) {
+            $res = $this->orders_model->get_weborder_details($order_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
                 $error = '';
-                $order_data = $data['data'];
-                if ($order_data['order_status']=='NEW') {
-                    // Change Order Num input
-                    $ordnums=$this->orders_model->finorder($order_data['order_date']);
-                    $order_data['order_num_view']=$this->load->view('orders/ordernum_select_view',array('orders'=>$ordnums),TRUE);
+                $orderdata=$res['data'];
+                if ($orderdata['order_type']=='NEW') {
+                    $billing = $this->orders_model->prepare_billing_view($orderdata);
+                    $shipping = $this->orders_model->prepare_shipping_view($orderdata);
+                    // Items
+                    $items = $this->orders_model->get_order_items($order_id);
+                    $itemoptions = [
+                        'items' => $items['data'],
+                        'order' => $orderdata,
+                    ];
+                    $items_view = $this->load->view('orders/onlineorder_itemsdata_view', $itemoptions, TRUE);
+                    $content_options = [
+                        'order' => $order_id,
+                        'confirm' => $orderdata['order_confirmation'],
+                        'order_date' => strtotime($orderdata['order_date']),
+                        'contact_name' => $orderdata['contact_first_name'].' '.$orderdata['contact_last_name'],
+                        'contact_phone' => $orderdata['contact_phone'],
+                        'contact_email' => $orderdata['contact_email'],
+                        'billing' => $billing,
+                        'shipping' => $shipping,
+                        'items' => $items_view,
+                        'totals' => $items['totals'],
+                        'regular_total' => $orderdata['order_total'] - $orderdata['saved'],
+                        'salings' => $orderdata['saved'],
+                        'order_total' => $orderdata['order_total'],
+                        'payment_card_type' => $orderdata['payment_card_type'],
+                        'payment_card_number' => $orderdata['payment_card_number'],
+                    ];
+                    $mdata['content']=$this->load->view('orders/onlineorder_popup_view', $content_options,TRUE);
+                    $mdata['view'] = 'new';
                 } else {
-                    $order_data['order_num_view']=$this->load->view('orders/ordernum_input_view',$order_data,TRUE);
+                    /* Get Data about order */
+                    $options=array(
+                        'order_id'=>$order_id,
+                    );
+                    $data=$this->orders_model->order_details($options);
+                    $error = $data['msg'];
+                    if ($data['result']==$this->success_result) {
+                        $error = '';
+                        $order_data = $data['data'];
+                        if ($order_data['order_status']=='NEW') {
+                            // Change Order Num input
+                            $ordnums=$this->orders_model->finorder($order_data['order_date']);
+                            $order_data['order_num_view']=$this->load->view('orders/ordernum_select_view',array('orders'=>$ordnums),TRUE);
+                        } else {
+                            $order_data['order_num_view']=$this->load->view('orders/ordernum_input_view',$order_data,TRUE);
+                        }
+                        $datart = array();
+                        $datart['art'] = $this->orders_model->get_online_artwork($order_id);
+                        $art_disp = $this->load->view('orders/onlineorders_artwork_view', $datart, TRUE);
+                        $options = array(
+                            'order' => $order_data,
+                            'artwork' => $art_disp,
+                            'imprint' => $this->online_imprintval($order_data['imprinting'])
+                        );
+                        $mdata['content'] = $this->load->view('orders/onlineorders_detail_view', $options, TRUE);
+                        $mdata['footer'] = $this->load->view('orders/onlineorders_footer_view',[], TRUE);
+                        $mdata['title'] = 'Order '.$order_data['order_confirmation'];
+                        $mdata['view'] = 'old';
+                    }
                 }
-                $datart = array();
-                $datart['art'] = $this->orders_model->get_online_artwork($order_id);
-                $art_disp = $this->load->view('orders/onlineorders_artwork_view', $datart, TRUE);
-                $options = array(
-                    'order' => $order_data,
-                    'artwork' => $art_disp,
-                    'imprint' => $this->online_imprintval($order_data['imprinting'])
-                );
-                $mdata['content'] = $this->load->view('orders/onlineorders_detail_view', $options, TRUE);
-                $mdata['footer'] = $this->load->view('orders/onlineorders_footer_view',[], TRUE);
-                $mdata['title'] = 'Order '.$order_data['order_confirmation'];
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     public function upload_attach() {

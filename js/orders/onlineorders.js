@@ -111,9 +111,11 @@ function showorderdetails(objid) {
             /* Fill data into Dialog */
             // show_popup('order_details_dialog');
             $("#pageModal").find('div.modal-dialog').css('width','1025px');
-            $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
+            if (response.data.view=='old') {
+                $("#pageModal").find('div.modal-footer').empty().html(response.data.footer);
+                $("#pageModalLabel").empty().html(response.data.title);
+            }
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
 
             $("a.uplattach").click(function(){
