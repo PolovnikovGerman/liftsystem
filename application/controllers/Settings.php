@@ -312,8 +312,9 @@ class Settings extends MY_Controller
                 $error = 'Empty New Date';
                 $newdate = ifset($postdata,'newdate','');
                 if (!empty($newdate)) {
-                    $holiday = $newdate/1000;
+                    // $holiday = $newdate/1000;
                     // $holiday = date('m/d/Y',strtotime($newdate));
+                    $holiday = strtotime($newdate);
                     $this->load->model('calendars_model');
                     $res = $this->calendars_model->add_holiday($session_data, $holiday, $session_id);
                     $error = $res['msg'];

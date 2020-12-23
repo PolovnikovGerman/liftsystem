@@ -131,9 +131,8 @@ function init_calendedit_content() {
         autoclose: true,
         todayHighlight: true,
     }).on('changeDate', function (e) {
-        // add_holiday(e.date);
-        var d = new Date(e.date);
-        add_holiday(d.getTime())
+        var newdat = e.date.getFullYear()+'-'+(e.date.getMonth()+1)+'-'+e.date.getDate();
+        add_holiday(newdat);
     });
     $("a#save").click(function(){
         save_calend();
