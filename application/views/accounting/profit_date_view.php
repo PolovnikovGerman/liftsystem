@@ -7,12 +7,12 @@
         <div class="profitdate-bookmark">
             <?php $i = $max_year; ?>
             <div class="tab1-cont" id="year<?= $i ?>">
-                <div class="style-text1">Year <?= $i ?></div>
+                <div class="style-text1"><?= $i ?></div>
             </div>
             <?php $i--; ?>
             <?php while ($i >= $min_year) { ?>
                 <div class="tab2-cont" id="year<?= $i ?>">
-                    <div class="style-text2-nonactive">Year <?= $i ?></div>
+                    <div class="style-text2-nonactive"><?= $i ?></div>
                 </div>
                 <?php $i--; ?>
             <?php } ?>
