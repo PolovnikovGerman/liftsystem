@@ -8714,12 +8714,12 @@ Class Leadorder_model extends My_Model {
         }
         // Totals
         $invtotalXPos = 115;
-        $invtotalYPos = 229;
+        $invtotalYPos = 231;
         $invtotalWidth = 88;
         $invtotalHeght = 27 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,229.5);
+        $pdf->SetXY(116,231.5);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
