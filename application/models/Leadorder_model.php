@@ -8719,7 +8719,7 @@ Class Leadorder_model extends My_Model {
         $invtotalHeght = 27 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,227.5);
+        $pdf->SetXY(118,227.5);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
