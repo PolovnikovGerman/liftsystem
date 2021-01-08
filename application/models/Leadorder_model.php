@@ -8614,7 +8614,7 @@ Class Leadorder_model extends My_Model {
             // $pdf->Image($ponumImage, $ponumXPos, $ponumYPos);
             $pdf->SetXY(173.5,37.8);
             $pdf->SetFont('','B');
-            $pdf->Cell(29,8.8,'42738',0,0,'C');
+            $pdf->Cell(29,8.8,$options['customer_code'],0,0,'C');
         }
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
