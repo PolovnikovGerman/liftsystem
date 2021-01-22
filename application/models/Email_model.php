@@ -1456,15 +1456,19 @@ class Email_model extends My_Model
                     $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
                     $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
                     $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
-                    $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
-                    $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+                    if ($mail['brand']=='SB') {
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                    } else {
+                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
+                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+                    }
                     $mail['imgpath']=$this->config->item('img_path');
                     $mail['itemimgpath']=$this->config->item('item_quote_images');
                     $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
 
                     if ($item_id != 0) {
                         /* Get Main Picture */
-
                         $img = $this->itemimages_model->get_item_images($item_id);
                         $mail['mainimg'] = '';
                         if (is_array($img)) {
