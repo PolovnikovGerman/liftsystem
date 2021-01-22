@@ -769,9 +769,12 @@ Class Shipping_model extends MY_Model
     public function shipcalc_report($month, $year, $brand) {
         $datstart=  strtotime($year.'-'.$month.'-01');
         $datend = strtotime(date("Y-m-d", $datstart) . " +1 month");
+        log_message('ERROR', 'DateBGN '.date('d.m.Y', $datstart).' - END '.date('d.m.Y', $datend));
         /* First day of week */
         $week1=date('W', $datstart);
+        log_message('ERROR', 'Week # '.$week1);
         $datcalendbgn=getDayOfWeek($week1, $year, 1);
+        log_message('ERROR', 'WEEK BGN START '.date('d.m.Y', $datcalendbgn));
         $week2=date('W', $datend);
         if (intval($week2)< intval($week1)) {
             $datcalendend=getDayOfWeek($week2, $year+1, 7);
@@ -781,6 +784,7 @@ Class Shipping_model extends MY_Model
         if ($datcalendbgn>$datcalendend) {
             $datcalendbgn=getDayOfWeek($week1, $year-1, 1);
         }
+        log_message('ERROR', 'WEEK BGN FINISH '.date('d.m.Y', $datcalendbgn));
         $this->db->select('scl.logdate, count(scl.shipcalclog_id) as cnt');
         $this->db->from('sb_shipcalc_log scl');
         $this->db->where('scl.calcdate >=',$datcalendbgn);
