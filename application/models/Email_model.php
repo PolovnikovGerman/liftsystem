@@ -1445,7 +1445,6 @@ class Email_model extends My_Model
                     } else {
                         $mail['colorprint'] = 'Blank, No Imprinting';
                     }
-                    $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
                     $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
                     $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
                     $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
@@ -1459,9 +1458,11 @@ class Email_model extends My_Model
                     if ($mail['brand']=='SB') {
                         $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
                         $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     } else {
                         $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
                         $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
                     }
                     $mail['imgpath']=$this->config->item('img_path');
                     $mail['itemimgpath']=$this->config->item('item_quote_images');
