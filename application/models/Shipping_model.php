@@ -772,7 +772,7 @@ Class Shipping_model extends MY_Model
         log_message('ERROR', 'DateBGN '.date('d.m.Y', $datstart).' - END '.date('d.m.Y', $datend));
         /* First day of week */
         $datcalendbgn = strtotime('monday this week', $datstart);
-        $datcalendend = strtotime('sunday this week', $datend);
+        $datcalendend = strtotime('sunday this week', $datend-10);
         log_message('ERROR', 'WEEK BGN FINISH '.date('d.m.Y', $datcalendbgn).' END '.date('d.m.Y', $datcalendend));
 
 //        $week1=date('W', $datstart);
