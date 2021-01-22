@@ -790,6 +790,7 @@ Class Shipping_model extends MY_Model
             $this->db->where('brand', $brand);
         }
         $res=$this->db->get()->result_array();
+        log_message('ERROR', 'GET SQL '.$this->db->last_query());
         $days=array();
         $start=$datcalendbgn;
         for ($i=1; $i<=60; $i++) {
