@@ -5628,6 +5628,7 @@ Class Orders_model extends MY_Model
         $this->db->where('order_num is null');
         $this->db->where('is_void', 0);
         $this->db->where('unix_timestamp(order_date) <= ', $datemin->format('U'));
+        $this->db->where('brand', 'BT');
         $this->db->order_by('order_id');
         $this->db->limit(10);
         $res = $this->db->get()->result_array();
