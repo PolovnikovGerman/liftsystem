@@ -318,7 +318,7 @@ class Purchaseorders extends MY_Controller
                 $amount_id=$this->input->post('amount_id');
                 $brand = $this->input->post('brand');
                 $this->load->model('payments_model');
-                $res=$this->payments_model->delete_amount($amount_id, $this->USR_ID);
+                $res=$this->payments_model->delete_amount($amount_id, $this->USR_ID, $brand);
                 if ($res==0) {
                     $error='Amount was not deleted';
                 } else {
