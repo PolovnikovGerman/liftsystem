@@ -24,6 +24,7 @@ and open the template in the editor.
     position: relative;
     margin-top: 26px;
 }
+/*
 .tab1-cont {
     background-image: url(/img/accounting/tab1-cont3.png);
     float: left;
@@ -33,19 +34,44 @@ and open the template in the editor.
     width: 97px;
     z-index: 5;
 }
-.tab2-cont {
-    background-image: url(/img/accounting/tab2-cont.png);
-    float: left;
+*/
+
+/*
+.tab2-cont:before {
+    background: url('/img/accounting/nonactiv_tab_left.png') no-repeat;
+    width: 9px;
     height: 21px;
+    display: block;
+    content: '';
+}
+*/
+.tab2-cont {
+    /* background: url(/img/accounting/nonactiv_tab_center.png) repeat-x; */
+    background: #ffffff;
+    border : 2px solid #888888;
+    border-radius: 7px 7px 0 0px;
+    height: 24px;
     margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 1px;
+    margin-right: 1px;
     margin-top: -19px;
     position: relative;
-    width: 82px;
+    /* width: 40px; */
     z-index: 5;
+    border-bottom: none;
 }
-.tab3-cont {
+/*
+.tab2-cont:after {
+    background: url('/img/accounting/nonactiv_tab_right.png') no-repeat;
+    width: 9px;
+    height: 21px;
+    display: block;
+    content: '';
+    959494
+}
+*/
+.tab3-cont, .tab1-cont {
+    /*
     background-image: url(/img/accounting/tab3-cont3.png);
     float: left;
     height: 43px;
@@ -54,7 +80,18 @@ and open the template in the editor.
     position: relative;
     width: 112px;
     z-index: 5;
+     */
+    float: left;
+    height: 31px;
+    margin-top: -23px;
+    position: relative;
+    z-index: 5;
+    background: #959494;
+    border: 2px solid #959494;
+    border-radius: 7px 7px 0 0;
+    border-bottom: none;
 }
+/*
 .style-text1 {
     color: #FFFFFF;
     float: left;
@@ -62,13 +99,15 @@ and open the template in the editor.
     font-weight: bold;
     padding: 7px 0 0 15px;
 }
+ */
 .style-text2-nonactive {
     color: #1F1F1F;
-    float: left;
     font-size: 11px;
-    padding: 5px 0 0 15px;
+    line-height: 21px!important;
+    padding: 0 6px;
 }
-.style-text3 {
+.style-text3, .style-text1 {
+    /*
     color: #FFFFFF;
     float: left;
     font-size: 14px;
@@ -79,6 +118,13 @@ and open the template in the editor.
     padding-top: 7px;
     position: relative;
     text-align: right;
+     */
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 0;
+    padding: 0 6px;
+    line-height: 19px!important;
 }
 .legenddatearea {
     color: #000000;
@@ -96,10 +142,18 @@ and open the template in the editor.
     z-index: 18;
 }
 .caledardatas {
+    /*
     background: url(/img/profit_date/calendar_bg.png) no-repeat transparent;
     height: 619px;
     margin: -18px 0 10px 16px;
     width: 963px;
+     */
+    background: url(/img/profit_date/calendar_bg.png) no-repeat transparent;
+    height: 619px;
+    margin: -7px 0 10px 16px;
+    width: 963px;
+    z-index: 10;
+    position: relative;
 }
 .profitdate_months {
     float: left;

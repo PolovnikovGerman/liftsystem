@@ -8614,7 +8614,7 @@ Class Leadorder_model extends My_Model {
             // $pdf->Image($ponumImage, $ponumXPos, $ponumYPos);
             $pdf->SetXY(173.5,37.8);
             $pdf->SetFont('','B');
-            $pdf->Cell(29,8.8,'42738',0,0,'C');
+            $pdf->Cell(29,8.8,$options['customer_code'],0,0,'C');
         }
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
@@ -8712,14 +8712,21 @@ Class Leadorder_model extends My_Model {
             $pdf->Cell($tableWidths[4], 10, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
+        if (!empty($options['invoice_message'])) {
+            $pdf->SetXY(5,231);
+            $pdf->SetFont('','',13);
+            // $pdf->Cell(105, 0, $options['invoice_message'],1);
+            $pdf->MultiCell(100, 6, $options['invoice_message'], 1, 'L', FALSE);
+
+        }
         // Totals
         $invtotalXPos = 115;
-        $invtotalYPos = 227;
+        $invtotalYPos = 231;
         $invtotalWidth = 88;
         $invtotalHeght = 27 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,227.5);
+        $pdf->SetXY(116,231.5);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 

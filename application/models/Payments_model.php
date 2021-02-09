@@ -670,7 +670,7 @@ Class Payments_model extends MY_Model {
 //        return $res;
 //    }
 
-    public function delete_amount($amount_id, $user_id) {
+    public function delete_amount($amount_id, $user_id, $brand) {
         $outres=0;
         $def_profit=$this->config->item('default_profit');
         $this->db->select('o.*, oa.amount_sum');
@@ -679,7 +679,7 @@ Class Payments_model extends MY_Model {
         $this->db->where('amount_id',$amount_id);
         $res=$this->db->get()->row_array();
         if (isset($res['order_id'])) {
-            $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+            $this->db->select('np.*, netprofit_profit(datebgn, dateend,\''.$brand.'\') as gross_profit',FALSE);
             $this->db->from('netprofit np');
             $this->db->where('np.profit_month',NULL);
             $this->db->where('np.datebgn <= ',$res['order_date']);
@@ -693,6 +693,7 @@ Class Payments_model extends MY_Model {
                 $total_options=array(
                     'type'=>'week',
                     'start'=>$this->config->item('netprofit_start'),
+                    'brand' => $brand,
                 );
                 $rundat=$this->balances_model->get_netprofit_runs($total_options);
                 $oldtotalrun=$rundat['out_debtval'];
@@ -710,7 +711,7 @@ Class Payments_model extends MY_Model {
             $cc_fee=$res['cc_fee'];
             $order_cog=$res['order_cog'];
             $amount_sum=$res['amount_sum'];
-            $order_num='BT'.$res['order_num'];
+            $order_num=$brand.$res['order_num'];
             if ($order_cog!='') {
                 $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
                 $this->db->from('ts_orders');
