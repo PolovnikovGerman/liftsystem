@@ -5633,7 +5633,6 @@ Class Orders_model extends MY_Model
         $this->db->where('order_num is null');
         $this->db->where('is_void', 0);
         $this->db->where('unix_timestamp(order_date) <= ', $datemin->format('U'));
-        $this->db->where('brand', 'BT');
         $this->db->order_by('order_id');
         $this->db->limit(10);
         $res = $this->db->get()->result_array();
@@ -5895,7 +5894,9 @@ Class Orders_model extends MY_Model
                     $this->db->from('sb_order_userlogos');
                     $this->db->where('order_userlogo_artworkid', $artrow['order_artwork_id']);
                     $logores = $this->db->get()->row_array();
+                    log_message('ERROR', $this->db->last_query());
                     if (ifset($logores,'order_userlogo_id',0)>0) {
+                        log_message('ERROR', 'Logo File '.$logores['order_userlogo_id']);
                         $artrow['logo_file'] = $logores['order_userlogo_filename'];
                         $artrow['logo_source'] = $logores['order_userlogo_file'];
                     } else {
