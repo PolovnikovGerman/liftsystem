@@ -159,7 +159,7 @@ class Settings extends MY_Controller
             $error='Empty Brand';
             $brand = ifset($details, 'brand');
             if (!empty($brand)) {
-                $zones = $this->shipping_model->get_zones(['brand'=>$brand]);
+                // $zones = $this->shipping_model->get_zones(['brand'=>$brand]);
                 /* Get list of Shipping methods for all zones */
                 $avail_meth=$this->shipping_model->get_shipmethodlist();
                 $methods_data=array();
