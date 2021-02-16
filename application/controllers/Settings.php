@@ -164,19 +164,21 @@ class Settings extends MY_Controller
                 $avail_meth=$this->shipping_model->get_shipmethodlist();
                 $methods_data=array();
                 foreach ($avail_meth as $row) {
-                    $kf=0;
-                    $dim=0;
-                    if (isset($details['percent'.$row['zonemethod_id']])) {
-                        $kf=floatval($details['percent'.$row['zonemethod_id']]);
+                    if ($row['brand']==$brand) {
+                        $kf=0;
+                        $dim=0;
+                        if (isset($details['percent'.$row['zonemethod_id']])) {
+                            $kf=floatval($details['percent'.$row['zonemethod_id']]);
+                        }
+                        if (isset($details['dimens'.$row['zonemethod_id']])) {
+                            $dim=1;
+                        }
+                        $methods_data[]=array(
+                            'zonemethod_id'=>$row['zonemethod_id'],
+                            'method_percent'=>$kf,
+                            'method_dimens'=>$dim,
+                        );
                     }
-                    if (isset($details['dimens'.$row['zonemethod_id']])) {
-                        $dim=1;
-                    }
-                    $methods_data[]=array(
-                        'zonemethod_id'=>$row['zonemethod_id'],
-                        'method_percent'=>$kf,
-                        'method_dimens'=>$dim,
-                    );
                 }
                 $this->shipping_model->save_zones_methods_dat($methods_data);
                 $error = '';
