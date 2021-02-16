@@ -131,8 +131,8 @@ class Settings extends MY_Controller
                 $cont_arr=array();
                 foreach ($zones as $row) {
                     $details=$this->shipping_model->get_shipzone_details($row['zone_id'], $brand);
-                    foreach ($details as $row) {
-                        foreach ($row as $key=>$val) {
+                    foreach ($details as $rowd) {
+                        foreach ($rowd as $key=>$val) {
                             log_message('error','Details Key '.$key.' Val '.$val);
                         }
                     }
