@@ -180,6 +180,11 @@ class Settings extends MY_Controller
                         );
                     }
                 }
+                foreach ($methods_data as $row) {
+                    foreach ($row as $key=>$val) {
+                        log_message('ERR0R','Key '.$key.' Val '.$val);
+                    }
+                }
                 $this->shipping_model->save_zones_methods_dat($methods_data);
                 $error = '';
             }
