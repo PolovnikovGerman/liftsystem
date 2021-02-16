@@ -131,11 +131,6 @@ class Settings extends MY_Controller
                 $cont_arr=array();
                 foreach ($zones as $row) {
                     $details=$this->shipping_model->get_shipzone_details($row['zone_id'], $brand);
-                    foreach ($details as $rowd) {
-                        foreach ($rowd as $key=>$val) {
-                            log_message('error','Details Key '.$key.' Val '.$val);
-                        }
-                    }
                     $content=$this->load->view('settings/shipzone_method_view',array('zone'=>$row['zone_name'],'shipdat'=>$details),TRUE);
                     $cont_arr[]=$content;
                 }
@@ -183,11 +178,6 @@ class Settings extends MY_Controller
                             'method_percent'=>$kf,
                             'method_dimens'=>$dim,
                         );
-                    }
-                }
-                foreach ($methods_data as $row) {
-                    foreach ($row as $key=>$val) {
-                        log_message('error','Key '.$key.' Val '.$val);
                     }
                 }
                 $this->shipping_model->save_zones_methods_dat($methods_data);
