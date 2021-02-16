@@ -4,7 +4,7 @@
             <div class="othershiparea">
                 <form class="shipzones" data-brand="<?=$brand?>">
                     <div class="shippping-service-title">Shipping Services:</div>
-                    <div class="shipzonesdata" data-brand="<?=$brand?>"></div>
+                    <div class="shipzonesdata" id="shipzonesdata<?=$brand?>" data-brand="<?=$brand?>"></div>
                 </form>
                 <div class="activate_btn shipkoefmanage" data-brand="<?=$brand?>">
                     <div class="activate-text">Activate Editing</div>
