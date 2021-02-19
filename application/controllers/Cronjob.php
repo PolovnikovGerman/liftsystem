@@ -974,11 +974,11 @@ Class Cronjob extends CI_Controller
                 'mailtype'=>'html',
             );
             $this->email->initialize($email_conf);
-            // $mail_to=array('sean@bluetrack.com');
-            // $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
-            $mail_to = array($this->config->item('developer_email'));
+            $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
+            $mail_cc=array($this->config->item('developer_email'));
+
             $this->email->to($mail_to);
-            // $this->email->cc($mail_cc);
+            $this->email->cc($mail_cc);
 
             $this->email->from('no-replay@bluetrack.com');
             $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
