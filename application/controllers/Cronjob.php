@@ -953,27 +953,40 @@ Class Cronjob extends CI_Controller
         }
     }
 
-    public function test_email() {
-        $email_conf = array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf-8',
-            'wordwrap'=>TRUE,
-            'mailtype'=>'html',
-        );
-        $this->load->library('email');
-        $this->email->initialize($email_conf);
-        $this->email->to('german.polovnikov@bluetrack.com');
+    public function unpaid_orders() {
+        $brands = ['BT'];
+        $yearbgn = intval(date('Y'))-1;
+        $datebgn = strtotime($yearbgn.'-01-01');
+        $this->load->model('orders_model');
+        foreach ($brands as $brand) {
+            $dat = $this->orders_model->get_unpaid_orders($datebgn, $brand);
+            if (count($dat)==0) {
+                $mail_body=$this->load->view('messages/notpaidorders_listempty_view',array(),TRUE);
+            } else {
+                $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat),TRUE);
+            }
 
-        // $this->email->from('german.polovnikov@golden-team.org');
-        $this->email->from('support@bluetrack.com');
-        $title = 'Weekly Report about Unsuccessful Searches '.'(Stressballs.com)';
-        $this->email->subject($title);
-        $this->email->message('Hello Everybody');
-        $res=$this->email->send();
-        echo $this->email->print_debugger();
+            $this->load->library('email');
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+            $this->email->initialize($email_conf);
+            // $mail_to=array('sean@bluetrack.com');
+            // $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
+            $mail_to = array($this->config->item('developer_email'));
+            $this->email->to($mail_to);
+            // $this->email->cc($mail_cc);
 
-        $this->email->clear(TRUE);
+            $this->email->from('no-replay@bluetrack.com');
+            $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
+            $this->email->subject($title);
+            $this->email->message($mail_body);
+            $res=$this->email->send();
+            $this->email->clear(TRUE);
+        }
 
     }
-
 }

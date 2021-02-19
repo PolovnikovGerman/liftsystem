@@ -6726,5 +6726,31 @@ Class Orders_model extends MY_Model
         return $res;
     }
 
+    public function get_unpaid_orders($datebgn, $brand) {
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.order_confirmation, o.customer_name, o.revenue, b.cnt, b.paysum');
+        $this->db->from('ts_orders o');
+        $this->db->join("(select order_id, count(batch_id) cnt, sum(batch_amount) paysum from ts_order_batches group by order_id) b",'b.order_id=o.order_id','left');
+        $this->db->where('order_date >= ', $datebgn);
+        $this->db->where('is_canceled', 0);
+        $res = $this->db->get()->result_array();
+        log_message('ERROR','SQL '.$this->db->last_query());
+        $out = [];
+        foreach ($res as $row) {
+            if (round($row['revenue'],2)!==round($row['paysum'],2)) {
+                $notpaid = $row['revenue'] - $row['paysum'];
+                $out[] = [
+                    'order_date' => date('m/d/y',$row['order_date']),
+                    'order_num' => $row['order_num'],
+                    'order_confirmation' => $row['order_confirmation'],
+                    'customer_name' => $row['customer_name'],
+                    'revenue' => MoneyOutput($row['revenue']),
+                    'paysum' => MoneyOutput($row['paysum']),
+                    'notpaid' =>MoneyOutput($notpaid),
+                ];
+            }
+        }
+        return $out;
+    }
+
 
 }
