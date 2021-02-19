@@ -58,8 +58,7 @@
     <tbody>
     <?php foreach ($data as $row) { ?>
         <tr>
-            <td><?=$row['user']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order_date']?></td>
+            <td><?=$row['order_date']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['order_num']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['order_confirmation']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['customer_name']?></td>
