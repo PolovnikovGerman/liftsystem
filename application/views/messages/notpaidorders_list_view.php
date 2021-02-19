@@ -59,11 +59,13 @@
     <?php foreach ($data as $row) { ?>
         <tr>
             <td><?=$row['user']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['parameter']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['old_value']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['new_value']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['description']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['order_date']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['order_num']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['order_confirmation']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['customer_name']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['revenue']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['paysum']?></td>
+            <td style="border-left: 1px solid #000000"><?=$row['notpaid']?></td>
         </tr>
     <?php } ?>
     </tbody>
