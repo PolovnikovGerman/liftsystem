@@ -44,18 +44,18 @@
 <body>
 <?php if (count($totals)>0) { ?>
     <div class="maintitle">Totals per year</div>
-    <table style="width: 400px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
+    <table style="width: 280px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
         <thead style="color: #FFFFFF; background-color: #000000">
         <tr>
-            <td style="width: 40%">Year</td>
-            <td style="width: 60%;border-left: 1px solid #000000">Total</td>
+            <td style="width: 40%;text-align: center;">Year</td>
+            <td style="width: 60%;text-align: center;">Total</td>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($totals as $trow) { ?>
             <tr>
-                <td><?=$trow['year']?></td>
-                <td style="border-left: 1px solid #000000"><?=MoneyOutput($trow['debt'])?></td>
+                <td style="text-align: center;"><?=$trow['year']?></td>
+                <td style="border-left: 1px solid #000000; text-align: right;"><?=MoneyOutput($trow['debt'])?></td>
             </tr>
         <?php } ?>
         </tbody>
