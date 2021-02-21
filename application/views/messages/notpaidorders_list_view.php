@@ -61,13 +61,13 @@
         </tbody>
     </table>
 <?php } ?>
-<table style="width: 860px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
+<table style="width: 960px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
     <thead style="color: #FFFFFF; background-color: #000000">
     <tr>
         <th style="width: 6%;text-align: center">Date</th>
         <th style="width: 6%; text-align: center">Order #</th>
-        <th style="width: 8%; text-align: center">Confirm #</th>
-        <th style="width: 25%; text-align: center;">Customer</th>
+        <th style="width: 10%; text-align: center">Confirm #</th>
+        <th style="width: 23%; text-align: center;">Customer</th>
         <th style="width: 14%; text-align: center">Phone</th>
         <th style="width: 14%; text-align: center;">Email</th>
         <td style="width: 6%; text-align: center">Last message</td>
