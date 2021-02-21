@@ -45,7 +45,7 @@
 <?php if (count($totals)>0) { ?>
     <div class="maintitle">Totals per year</div>
     <table style="width: 400px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
-        <thead>
+        <thead style="color: #FFFFFF; background-color: #000000">
         <tr>
             <td style="width: 40%">Year</td>
             <td style="width: 60%;border-left: 1px solid #000000">Total</td>
@@ -80,12 +80,12 @@
     <?php foreach ($data as $row) { ?>
         <tr>
             <td><?=$row['order_date']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order_num']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order_confirmation']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['order_num']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['order_confirmation']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['customer_name']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['phone']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['email']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['last_update']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['last_update']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['revenue']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['paysum']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['notpaid']?></td>
