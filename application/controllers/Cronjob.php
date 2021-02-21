@@ -959,11 +959,12 @@ Class Cronjob extends CI_Controller
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
         foreach ($brands as $brand) {
+            $totals = $this->orders_model->get_updaid_totals($brand);
             $dat = $this->orders_model->get_unpaid_orders($datebgn, $brand);
             if (count($dat)==0) {
                 $mail_body=$this->load->view('messages/notpaidorders_listempty_view',array(),TRUE);
             } else {
-                $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat),TRUE);
+                $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat,'totals'=>$totals),TRUE);
             }
 
             $this->load->library('email');
@@ -974,11 +975,11 @@ Class Cronjob extends CI_Controller
                 'mailtype'=>'html',
             );
             $this->email->initialize($email_conf);
-            $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
-            $mail_cc=array($this->config->item('developer_email'));
+            // $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
+            $mail_to=array($this->config->item('developer_email'));
 
             $this->email->to($mail_to);
-            $this->email->cc($mail_cc);
+            // $this->email->cc($mail_cc);
 
             $this->email->from('no-replay@bluetrack.com');
             $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
