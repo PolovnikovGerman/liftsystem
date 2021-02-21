@@ -43,49 +43,48 @@
 </head>
 <body>
 <?php if (count($totals)>0) { ?>
-    <div class="maintitle">Totals per year</div>
-    <table style="width: 400px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
-        <thead>
+    <table style="width: 280px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
+        <thead style="color: #FFFFFF; background-color: #000000">
         <tr>
-            <td style="width: 40%">Year</td>
-            <td style="width: 60%;border-left: 1px solid #000000">Total</td>
+            <td style="width: 40%;text-align: center;">Year</td>
+            <td style="width: 60%;text-align: center;">Total</td>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($totals as $trow) { ?>
             <tr>
-                <td><?=$trow['year']?></td>
-                <td style="border-left: 1px solid #000000"><?=MoneyOutput($trow['debt'])?></td>
+                <td style="text-align: center;"><?=$trow['year']?></td>
+                <td style="border-left: 1px solid #000000; text-align: right;"><?=MoneyOutput($trow['debt'])?></td>
             </tr>
         <?php } ?>
         </tbody>
     </table>
 <?php } ?>
-<table style="width: 770px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
+<table style="width: 960px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
     <thead style="color: #FFFFFF; background-color: #000000">
     <tr>
-        <th style="width: 8%;text-align: center">Date</th>
-        <th style="width: 8%; text-align: center">Order #</th>
-        <th style="width: 9%; text-align: center">Confirm #</th>
-        <th style="width: 16%; text-align: center;">Customer</th>
-        <th style="width: 10%; text-align: center">Phone</th>
-        <th style="width: 12%; text-align: center;">Email</th>
-        <td style="width: 8%; text-align: center">Last message</td>
-        <th style="width: 9%; text-align: center;">Revenue</th>
-        <th style="width: 9%; text-align: center;">Pay Sum</th>
-        <th style="width: 9%; text-align: center">Different</th>
+        <th style="width: 6%;text-align: center">Date</th>
+        <th style="width: 6%; text-align: center">Order #</th>
+        <th style="width: 10%; text-align: center">Confirm #</th>
+        <th style="width: 23%; text-align: center;">Customer</th>
+        <th style="width: 14%; text-align: center">Phone</th>
+        <th style="width: 14%; text-align: center;">Email</th>
+        <td style="width: 6%; text-align: center">Last message</td>
+        <th style="width: 7%; text-align: center;">Revenue</th>
+        <th style="width: 7%; text-align: center;">Pay Sum</th>
+        <th style="width: 7%; text-align: center">Different</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($data as $row) { ?>
         <tr>
             <td><?=$row['order_date']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order_num']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['order_confirmation']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['order_num']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['order_confirmation']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['customer_name']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['phone']?></td>
             <td style="border-left: 1px solid #000000"><?=$row['email']?></td>
-            <td style="border-left: 1px solid #000000"><?=$row['last_update']?></td>
+            <td style="border-left: 1px solid #000000;text-align: center;"><?=$row['last_update']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['revenue']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['paysum']?></td>
             <td style="border-left: 1px solid #000000;text-align: right"><?=$row['notpaid']?></td>
