@@ -61,19 +61,19 @@
         </tbody>
     </table>
 <?php } ?>
-<table style="width: 770px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
+<table style="width: 860px; font-size: 13px; color: #000000; border: 1px solid #000;border-collapse: collapse; margin-bottom: 15px;">
     <thead style="color: #FFFFFF; background-color: #000000">
     <tr>
-        <th style="width: 8%;text-align: center">Date</th>
-        <th style="width: 8%; text-align: center">Order #</th>
-        <th style="width: 9%; text-align: center">Confirm #</th>
-        <th style="width: 16%; text-align: center;">Customer</th>
-        <th style="width: 10%; text-align: center">Phone</th>
-        <th style="width: 12%; text-align: center;">Email</th>
-        <td style="width: 8%; text-align: center">Last message</td>
-        <th style="width: 9%; text-align: center;">Revenue</th>
-        <th style="width: 9%; text-align: center;">Pay Sum</th>
-        <th style="width: 9%; text-align: center">Different</th>
+        <th style="width: 6%;text-align: center">Date</th>
+        <th style="width: 6%; text-align: center">Order #</th>
+        <th style="width: 8%; text-align: center">Confirm #</th>
+        <th style="width: 25%; text-align: center;">Customer</th>
+        <th style="width: 14%; text-align: center">Phone</th>
+        <th style="width: 14%; text-align: center;">Email</th>
+        <td style="width: 6%; text-align: center">Last message</td>
+        <th style="width: 7%; text-align: center;">Revenue</th>
+        <th style="width: 7%; text-align: center;">Pay Sum</th>
+        <th style="width: 7%; text-align: center">Different</th>
     </tr>
     </thead>
     <tbody>
