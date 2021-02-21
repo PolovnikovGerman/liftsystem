@@ -6745,7 +6745,7 @@ Class Orders_model extends MY_Model
             if (round($row['revenue'],2)!==round($row['paysum'],2)) {
                 $notpaid = $row['revenue'] - $row['paysum'];
                 // Get contacts
-                $contact = $this->db->select('contact_phone, contact_email')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
+                $contact = $this->db->select('contact_phone, contact_emal')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
                 $this->db->select('date_format(from_unixtime(h.created_time),\'%m/%d/%Y\') as created_time');
                 $this->db->from('ts_artwork_history h');
                 $this->db->join('ts_artworks a','a.artwork_id=h.artwork_id');
