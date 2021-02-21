@@ -6727,17 +6727,31 @@ Class Orders_model extends MY_Model
     }
 
     public function get_unpaid_orders($datebgn, $brand) {
+        $this->db->select('order_id, count(batch_id) cnt, sum(batch_amount) paysum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $batchsql = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.order_num, o.order_date, o.order_confirmation, o.customer_name, o.revenue, b.cnt, b.paysum');
         $this->db->from('ts_orders o');
-        $this->db->join("(select order_id, count(batch_id) cnt, sum(batch_amount) paysum from ts_order_batches group by order_id) b",'b.order_id=o.order_id','left');
+        $this->db->join('('.$batchsql.') b','b.order_id=o.order_id','left');
         $this->db->where('order_date >= ', $datebgn);
         $this->db->where('is_canceled', 0);
         $res = $this->db->get()->result_array();
-        log_message('ERROR','SQL '.$this->db->last_query());
+
         $out = [];
         foreach ($res as $row) {
             if (round($row['revenue'],2)!==round($row['paysum'],2)) {
                 $notpaid = $row['revenue'] - $row['paysum'];
+                // Get contacts
+                $contact = $this->db->select('contact_phone, contact_email')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
+                $this->db->select('date_format(from_unixtime(h.created_time),\'%m/%d/%Y\') as created_time');
+                $this->db->from('ts_artwork_history h');
+                $this->db->join('ts_artworks a','a.artwork_id=h.artwork_id');
+                $this->db->where('a.order_id', $row['order_id']);
+                $this->db->order_by('h.artwork_history_id','desc');
+                $history=$this->db->get()->row_array();
                 $out[] = [
                     'order_date' => date('m/d/y',$row['order_date']),
                     'order_num' => $row['order_num'],
@@ -6746,11 +6760,30 @@ Class Orders_model extends MY_Model
                     'revenue' => MoneyOutput($row['revenue']),
                     'paysum' => MoneyOutput($row['paysum']),
                     'notpaid' =>MoneyOutput($notpaid),
+                    'email' => ifset($contact,'contact_email',''),
+                    'phone' => ifset($contact, 'contact_phone', ''),
+                    'last_update' => ifset($history,'created_date',''),
                 ];
             }
         }
         return $out;
     }
 
+    public function get_updaid_totals($brand) {
+        $start_date = strtotime('2013-01-01');
+        $this->db->select('order_id, count(batch_id) cnt, sum(batch_amount) paysum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $batchsql = $this->db->get_compiled_select();
 
+        $this->db->select('date_format(from_unixtime(o.order_date),\'%Y\') as year, sum(o.revenue - ifnull(b.paysum,0)) as debt');
+        $this->db->from('ts_orders o');
+        $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled', 0);
+        $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
 }
