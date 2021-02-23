@@ -206,7 +206,7 @@ class Test extends CI_Controller
 
     public function paymentreport_new() {
         $datebgn = strtotime('2019-10-01');
-        $dateend = strtotime('2020-01-01');
+        $dateend = strtotime('2021-01-01');
         // $datewhere = '((batch_due>='.$datebgn.' and batch_due<'.$dateend.') or (batch_due is NULL and batch_date>='.$datebgn.' and batch_date<'.$datebgn.'))';
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->select('case when batch_due is null then batch_date else batch_due END AS datesort', FALSE);
