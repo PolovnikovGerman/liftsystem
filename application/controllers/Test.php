@@ -204,4 +204,56 @@ class Test extends CI_Controller
         $pdf->Output('F', $file);
     }
 
+    public function paymentreport_new() {
+        $datebgn = strtotime('2019-10-01');
+        $dateend = strtotime('2020-01-01');
+        // $datewhere = '((batch_due>='.$datebgn.' and batch_due<'.$dateend.') or (batch_due is NULL and batch_date>='.$datebgn.' and batch_date<'.$datebgn.'))';
+        $this->db->select('b.*, o.order_num, o.customer_name');
+        $this->db->select('case when batch_due is null then batch_date else batch_due END AS datesort', FALSE);
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->where('batch_received',1);
+        // $this->db->where($datewhere);
+        $this->db->where('b.batch_date >= ', $datebgn);
+        $this->db->where('b.batch_date < ', $dateend);
+        $this->db->order_by('datesort');
+        $res = $this->db->get()->result_array();
+        $out = [];
+        foreach ($res  as $batch) {
+            // $date = date('m/d/Y', $batch['batch_due']);
+            // if (empty($batch['batch_due'])) {
+            $date=date('m/d/Y', $batch['batch_date']);
+            // }
+            $batchtype = '';
+            if (abs($batch['batch_amex'])>0) {
+                $batchtype='American Express';
+            } elseif (abs($batch['batch_vmd'])>0) {
+                $batchtype='Visa';
+            } elseif (abs($batch['batch_term'])>0) {
+                $batchtype=(!empty($batch['batch_type']) ? $batch['batch_type'] : 'Check');
+            } else {
+                $batchtype=(!empty($batch['batch_type']) ? $batch['batch_type'] : 'Terms');
+            }
+            $out[]=[
+                'date'=> $date,
+                'order_num'=>$batch['order_num'],
+                'customer'=>$batch['customer_name'],
+                'payment_type'=>$batchtype,
+                'payment_amout'=>$batch['batch_amount'],
+            ];
+        }
+        $file=$this->config->item('upload_path_preload').'payreport2018.csv';
+        @unlink($file);
+        $fh=fopen($file,'w+');
+        $rowdat='Date;Order #;Customer;Payment Type;Payment Amount;'.PHP_EOL;
+        fwrite($fh, $rowdat);
+        foreach ($out as $row) {
+            $rowdat=$row['date'].';'.$row['order_num'].';"'.$row['customer'].'";'.$row['payment_type'].';'.$row['payment_amout'].';'.PHP_EOL;
+            fwrite($fh, $rowdat);
+        }
+        fclose($fh);
+        echo 'File '.$file.' ready '.PHP_EOL;
+
+    }
+
 }
