@@ -212,7 +212,7 @@ class Test extends CI_Controller
         $this->db->select('case when batch_due is null then batch_date else batch_due END AS datesort', FALSE);
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('batch_received',1);
+        // $this->db->where('batch_received',1);
         // $this->db->where($datewhere);
         $this->db->where('b.batch_date >= ', $datebgn);
         $this->db->where('b.batch_date < ', $dateend);
@@ -225,7 +225,17 @@ class Test extends CI_Controller
             $date=date('m/d/Y', $batch['batch_date']);
             // }
             $batchtype = '';
-            if (abs($batch['batch_amex'])>0) {
+            if ($batch['batch_type']=='Amex') {
+                $batchtype='American Express';
+            } elseif ($batch['batch_type']=='American Express') {
+                $batchtype='American Express';
+            }  elseif ($batch['batch_type']=='Visa') {
+                $batchtype = 'Visa';
+            } elseif ($batch['batch_type']=='Mastercard') {
+                $batchtype = 'Mastercard';
+            } elseif ($batch['batch_type']=='Discover') {
+                $batchtype = 'Discover';
+            } elseif (abs($batch['batch_amex'])>0) {
                 $batchtype='American Express';
             } elseif (abs($batch['batch_vmd'])>0) {
                 $batchtype='Visa';
