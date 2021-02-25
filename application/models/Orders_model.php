@@ -7498,4 +7498,21 @@ Class Orders_model extends MY_Model
     }
 
 
+    public function get_updaid_totals($brand) {
+        $start_date = strtotime('2013-01-01');
+        $this->db->select('order_id, count(batch_id) cnt, sum(batch_amount) paysum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $batchsql = $this->db->get_compiled_select();
+
+        $this->db->select('date_format(from_unixtime(o.order_date),\'%Y\') as year, sum(o.revenue - ifnull(b.paysum,0)) as debt');
+        $this->db->from('ts_orders o');
+        $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled', 0);
+        $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
 }

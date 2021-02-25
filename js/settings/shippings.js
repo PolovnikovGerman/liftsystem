@@ -10,7 +10,9 @@ function init_shipping(brand) {
     params.push({name: 'brand', value: brand});
     $.post('/settings/shippingdata', params, function(response){
         if (response.errors=='') {
-            $("div.shipzonesdata[data-brand='"+brand+"']").empty().html(response.data.content);
+            // $("div.shipzonesdata[data-brand='"+brand+"']").empty().html(response.data.content);
+            var areaid='#shipzonesdata'+brand;
+            $(areaid).empty().html(response.data.content);
             $("div.shipcalclogcalend[data-brand='"+brand+"']").empty().html(response.data.report);
             initshipcontent(brand);
         } else {
