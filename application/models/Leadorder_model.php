@@ -780,7 +780,7 @@ Class Leadorder_model extends My_Model {
         $res = $this->db->get()->result_array();
         $out = array();
         foreach ($res as $row) {
-            $row['out_date'] = date('m/d', $row['batch_date']);
+            $row['out_date'] = date('m/d/y', $row['batch_date']);
             if ($row['batch_type']=='American Express') {
                 $row['batch_type']='AmEx';
             }

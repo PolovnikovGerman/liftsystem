@@ -1281,6 +1281,9 @@ span.taxemptyview {
     margin-top: 5px;
     margin-left: -9px;
 }
+.bl_payments > .bl_tx {
+    margin-left: -4px;
+}
 .bl_payments_tx {
     margin-top: 18px;
 }
@@ -1289,7 +1292,8 @@ span.taxemptyview {
     float: left;
     /* height: 97px; */
     margin: 2px 0;
-    width: 163px;
+    /* width: 163px; */
+    width: 177px;
 }
 .payments_title {
     text-align: center;
@@ -1310,11 +1314,13 @@ span.taxemptyview {
     float: left;
     height: 65px;
     overflow-y: auto;
-    width: 163px;
+    /* width: 163px; */
+    width: 174px;
 }
 .payments_date {
     float: left;
-    width: 35px;
+    /* width: 35px; */
+    width: 45px;
 }
 .payments_payment{
     float: left;
@@ -1326,17 +1332,18 @@ span.taxemptyview {
 }
 .payments_date2 {
     float: left;
-    width: 30px;
+    /* width: 30px;*/
+    width: 45px;
     text-align: center;
 }
 .payments_payment2{
     float: left;
-    width: 57px;
+    width: 68px;
     padding-left: 2px;
 }
 .payments_amnt2 {
     float: left;
-    width: 53px;
+    width: 60px;
     text-align: right;
     padding-right: 2px;
 }
