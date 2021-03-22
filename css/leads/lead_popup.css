@@ -18,12 +18,12 @@
 }
 .lead_popupform_row input {
     font-size: 14px;
-    color: #000000;
-    background-color: #ffffff;
+    color: #000000!important;
+    background-color: #ffffff!important;
     padding-left: 5px;
     height: 19px;
-    font-size: 14px;
-    text-align: left;
+    font-size: 14px!important;
+    text-align: left!important;
 }
 .lead_popup_status {
     float: left;
@@ -228,6 +228,9 @@ input.lead_qty {
 .lead_popup_iteminpt {
     float: left;
     width: 184px;
+}
+.lead_popup_iteminpt > div {
+    color: #000;
 }
 /*input.lead_item {
     width: 187px;
