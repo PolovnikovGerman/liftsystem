@@ -62,41 +62,42 @@
             <div class="label custom_belowimagetext">Text Below Image:</div>
             <input class="custom_belowimagetext" data-content="content" data-field="custom_belowimagetext" value="<?=ifset($data,'custom_belowimagetext')?>"/>
         </div>
-
-    </div>
-    <div class="content-row">
-        <div class="label custom_fivebulletpoints">Bullet Points:</div>
-        <div class="custom_fivebulletpoints_area">
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint1" value="<?=ifset($data,'custom_bulletpoint1')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint2" value="<?=ifset($data,'custom_bulletpoint2')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint3" value="<?=ifset($data,'custom_bulletpoint3')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint4" value="<?=ifset($data,'custom_bulletpoint4')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint5" value="<?=ifset($data,'custom_bulletpoint5')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint6" value="<?=ifset($data,'custom_bulletpoint6')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint7" value="<?=ifset($data,'custom_bulletpoint7')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint8" value="<?=ifset($data,'custom_bulletpoint8')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint9" value="<?=ifset($data,'custom_bulletpoint9')?>"/>
-            <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint10" value="<?=ifset($data,'custom_bulletpoint10')?>"/>
+        <div class="content-row">
+            <div class="label custom_fivebulletpoints">Bullet Points:</div>
+            <div class="custom_fivebulletpoints_area">
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint1" value="<?=ifset($data,'custom_bulletpoint1')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint3" value="<?=ifset($data,'custom_bulletpoint3')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint5" value="<?=ifset($data,'custom_bulletpoint5')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint7" value="<?=ifset($data,'custom_bulletpoint7')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint9" value="<?=ifset($data,'custom_bulletpoint9')?>"/>
+            </div>
+            <div class="custom_fivebulletpoints_area">
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint2" value="<?=ifset($data,'custom_bulletpoint2')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint4" value="<?=ifset($data,'custom_bulletpoint4')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint6" value="<?=ifset($data,'custom_bulletpoint6')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint8" value="<?=ifset($data,'custom_bulletpoint8')?>"/>
+                <input class="custom_fivebulletpoints" data-content="content" data-field="custom_bulletpoint10" value="<?=ifset($data,'custom_bulletpoint10')?>"/>
+            </div>
         </div>
     </div>
-    <div class="content-row">
-        <div class="label custom_longerbodytext">Longer Body Text:</div>
-        <textarea class="custom_longerbodytext" data-content="content" data-field="custom_longerbodytext"><?=ifset($data,'custom_longerbodytext')?></textarea>
-    </div>
-<!--    <div class="content-row">-->
-<!--        <div class="label custom_abovegallerytext">Above Gallery Text:</div>-->
-<!--        <input class="custom_abovegallerytext" data-content="content" data-field="custom_abovegallerytext" value="--><?//=ifset($data,'custom_abovegallerytext')?><!--">-->
-<!--    </div>-->
-    <div class="content-row">
-        <div class="label custom_gallerytitle">Gallery Title:</div>
-        <input class="custom_gallerytitle" data-content="content" data-field="custom_gallerytitle" value="<?=ifset($data,'custom_gallerytitle')?>"/>
+    <div class="custompage_content_right">
+        <div class="content-row">
+            <div class="label custom_longerbodytext">Longer Body Text:</div>
+            <textarea class="custom_longerbodytext" data-content="content" data-field="custom_longerbodytext"><?=ifset($data,'custom_longerbodytext')?></textarea>
+        </div>
     </div>
 </div>
 <div class="galleryinfotitle">
     <div class="displaygallery show">
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
-    <div class="title">GALLERY:</div>
+    <div class="title">EXAMPLE TYPES:</div>
+</div>
+<div class="customcontent-area">
+    <div class="content-row">
+        <div class="label custom_commongallerytitle">Example Types Title:</div>
+        <input class="custom_commongallerytitle" name="custom_gallerytitle" value="<?=ifset($data,'custom_gallerytitle')?>"/>
+    </div>
 </div>
 <div class="custom_galleries_area">
     <?=$gallery_view?>

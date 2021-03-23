@@ -70,11 +70,6 @@
             <textarea class="custom_longerbodytext" name="custom_longerbodytext" readonly="readonly"><?=ifset($data,'custom_longerbodytext')?></textarea>
         </div>
     </div>
-<!--    <div class="content-row">-->
-<!--        <div class="label custom_abovegallerytext">Above Gallery Text:</div>-->
-<!--        <input class="custom_abovegallerytext" name="custom_abovegallerytext" readonly="readonly" value="--><?//=ifset($data,'custom_abovegallerytext')?><!--">-->
-<!--    </div>-->
-
 </div>
 <div class="galleryinfotitle">
     <div class="displaygallery show">

@@ -13,7 +13,7 @@ input.custom_secondarytext {
 }
 .custom_mainimagearea {
     clear: both;
-    width: 630px;
+    width: 652px;
 }
 div.custom_mainimage {
     width: 91px;
@@ -45,8 +45,8 @@ div.custom_mainimage {
     background: #000000;
     z-index: 10;
     position: relative;
-    top: -118px;
-    left: 489px;
+    top: 2px;
+    left: -35px;
     cursor: pointer;
 }
 .custom_mainimageremove i {
@@ -61,7 +61,7 @@ div.custom_mainimage {
     margin-top: 85px;
 }
 .custom_homeimagearea {
-    width: 449px;
+    width: 442px;
 }
 .custom_homepageimage {
     width: 192px;
@@ -113,6 +113,7 @@ input.custom_fivebulletpoints {
 }
 div.custom_longerbodytext {
     width: 147px;
+    margin-top: 10px;
 }
 textarea.custom_longerbodytext {
     width: 472px;
@@ -165,7 +166,7 @@ div.custom_gallerytitle {
     width: 129px;
 }
 input.custom_gallerytitle {
-    width: 202px;
+    width: 180px;
 }
 .custom_exampletitlesize {
     color: #000000;
@@ -284,7 +285,7 @@ input.custom_gallerytitle {
     border-radius: 50%;
 }
 .custom_gallerydelete {
-    margin-left: 22px;
+    margin-left: 10px;
     width: 37px;
     height: 30px;
     line-height: 30px!important;
@@ -440,9 +441,11 @@ input.item_description {
     width: 23px;
     cursor: pointer;
     margin-left: 8px;
+    line-height: 28px;
 }
 .casestudyinfotitle .title {
     margin-left: 5px;
+    line-height: 28px;
 }
 .custom_casestudies_area {
     margin-top: 16px;
