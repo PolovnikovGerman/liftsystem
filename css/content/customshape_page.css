@@ -5,7 +5,7 @@ input.custom_maintitle {
     width: 198px;
 }
 div.custom_secondarytext {
-    width: 128px;
+    width: 78px;
     margin-left: 12px;
 }
 input.custom_secondarytext {
@@ -325,13 +325,13 @@ input.custom_gallerytitle {
 }
 /* Below gallery inputs */
 div.custom_belowgallerrytext {
-    width: 153px;
+    width: 159px;
 }
 input.custom_belowgallerrytext {
     width: 553px;
 }
 input.custom_belowgallerrysubtext {
-    margin-left: 147px;
+    margin-left: 159px;
     width: 553px;
 }
 div.custom_stepprocesstitle {
@@ -425,7 +425,7 @@ textarea.custom_belowstepstext {
     margin-bottom: 10px;
 }
 input.item_description {
-    width: 132px;
+    width: 122px;
 }
 /* Case study slider */
 .casestudyinfotitle {
@@ -505,7 +505,7 @@ input.custom_casestudytitle {
 }
 textarea.custom_casestudytext {
     width: 224px;
-    height: 76px;
+    height: 240px;
 }
 textarea.custom_casestudyexpand {
     width: 224px;

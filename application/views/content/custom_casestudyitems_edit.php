@@ -31,7 +31,6 @@
         </div>
         <div class="content-row">
             <textarea class="custom_casestudytext" data-content="casestudy" data-field="casestudy_text" data-casestudy="<?=$item['custom_casestudy_id']?>"><?=$item['casestudy_text']?></textarea>
-            <textarea class="custom_casestudyexpand" data-content="casestudy" data-field="casestudy_expand" data-casestudy="<?=$item['custom_casestudy_id']?>"><?=$item['casestudy_expand']?></textarea>
         </div>
     </div>
     <?php $i++; $numpp++;?>

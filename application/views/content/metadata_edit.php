@@ -14,7 +14,7 @@
 <!--        <textarea class="internalkeywords" data-content="meta" data-field="internal_keywords">--><?//=$internal_keywords?><!--</textarea>-->
     </div>
     <div class="metarightpart">
-        <div class="label metadescription">Meta Desc:</div>
+        <div class="label metadescription">Meta Description:</div>
         <textarea class="metadescription" data-content="meta" data-field="meta_description"><?=$meta_description?></textarea>
     </div>
 </div>

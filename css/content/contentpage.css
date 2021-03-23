@@ -13,6 +13,7 @@
     width: 1141px;
     margin-top: 7px;
     margin-bottom: 7px;
+    margin-left: 167px;
 }
 .statcipage_content {
     clear: both;
@@ -28,17 +29,20 @@
 .statcipage_content input {
     padding-left: 8px;
     height: 25px;
-    border: 1px solid #c0c0c0;
+    border: 1px solid #000;
     float: left;
 }
+.statcipage_content input:read-only {
+    border: 1px solid #c0c0c0;
+}
 .statcipage_content textarea {
-    border: 1px solid #c0c0c0!important;
+    border: 1px solid #000;
     padding-top: 8px;
     padding-left: 8px;
     resize: none;
     overflow-y: auto;
 }
-.statcipage_content textarea:focus {
+.statcipage_content textarea:read-only {
     border: 1px solid #c0c0c0!important;
 }
 .statcipage_content .content-row {
@@ -188,7 +192,7 @@
     width: 143px;
 }
 .statcipage_content div.metadescription {
-    width: 88px;
+    width: 132px;
 }
 .statcipage_content input.metatitle {
     width: 448px;
@@ -206,7 +210,7 @@
 }
 .statcipage_content textarea.metadescription {
     height: 133px;
-    width: 462px;
+    width: 419px;
 }
 .statcipage_content .customcontent-area {
     margin-top: 16px;
@@ -216,6 +220,7 @@
     margin-top: 7px;
     margin-left: 7px;
     width: 160px;
+    position: fixed;
 }
 .submenu_item {
     /*margin-right: 7px;*/

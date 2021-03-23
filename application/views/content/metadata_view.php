@@ -14,7 +14,7 @@
 <!--        <textarea class="internalkeywords" readonly="readonly">--><?//=$internal_keywords?><!--</textarea>-->
     </div>
     <div class="metarightpart">
-        <div class="label metadescription">Meta Desc:</div>
+        <div class="label metadescription">Meta Description:</div>
         <textarea class="metadescription" readonly="readonly"><?=$meta_description?></textarea>
     </div>
 </div>

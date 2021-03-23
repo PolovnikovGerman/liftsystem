@@ -33,7 +33,6 @@
             </div>
             <div class="content-row">
                 <textarea class="custom_casestudytext" readonly="readonly" name="custom_casestudytext"><?=$item['casestudy_text']?></textarea>
-                <textarea class="custom_casestudyexpand" readonly="readonly" name="custom_casestudyexpand"><?=$item['casestudy_expand']?></textarea>
             </div>
         </div>
         <?php $i++; $numpp++;?>
