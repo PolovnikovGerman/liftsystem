@@ -10,11 +10,11 @@
         <input type="text" class="metatitle" readonly="readonly" value="<?=$meta_title?>"/>
         <div class="label metakeywords">Meta Keywords:</div>
         <textarea class="metakeywords" readonly="readonly"><?=$meta_keywords?></textarea>
-        <div class="label internalkeywords">Internal Keywords:</div>
-        <textarea class="internalkeywords" readonly="readonly"><?=$internal_keywords?></textarea>
+<!--        <div class="label internalkeywords">Internal Keywords:</div>-->
+<!--        <textarea class="internalkeywords" readonly="readonly">--><?//=$internal_keywords?><!--</textarea>-->
     </div>
     <div class="metarightpart">
-        <div class="label metadescription">Meta Desc:</div>
+        <div class="label metadescription">Meta Description:</div>
         <textarea class="metadescription" readonly="readonly"><?=$meta_description?></textarea>
     </div>
 </div>

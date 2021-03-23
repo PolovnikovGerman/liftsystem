@@ -24,7 +24,9 @@ function init_sitecontent(brand) {
 function init_sitecontent_page(objid, brand) {
     $(".contentpagearea").hide();
     $(".submenu_item[data-brand='" + brand + "']").removeClass('active');
+    $(".submenu_manage[data-brand='" + brand + "']").removeClass('active');
     $(".submenu_item[data-link='" + objid + "'][data-brand='" + brand + "']").addClass('active');
+    $(".submenu_manage[data-link='" + objid + "'][data-brand='" + brand + "']").addClass('active');
     switch (objid) {
         case 'bthomeview':
             init_contentpage('home','BT');
@@ -88,8 +90,12 @@ function init_contentpage(page_name, brand) {
             } else if (page_name=='custom') {
                 if (brand=='SB') {
                     $("#sbcustomshappedview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbcustomshappedview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
                 } else {
                     $("#btcustomshappedview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_customshape_view(brand);
             } else if (page_name=='faq') {
