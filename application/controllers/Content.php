@@ -120,32 +120,42 @@ class Content extends MY_Controller
                 $special_content = '';
                 if ($page_name == 'home') {
                     $page_name_full = 'Homepage';
+                    $pagelink = 'homeview';
                 } elseif ($page_name == 'custom') {
                     $page_name_full = 'Custom Shaped Stress Balls';
+                    $pagelink = 'customshappedview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'faq') {
                     $page_name_full = 'Frequently Asked Questions';
+                    $pagelink = 'faqview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'terms') {
                     $page_name_full = 'Terms & Polices';
+                    $pagelink = 'termsview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'about') {
                     $page_name_full = 'About Us';
+                    $pagelink = 'aboutusview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'contactus') {
                     $page_name_full = 'Contact Us';
+                    $pagelink = 'contactusview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'categories') {
                     $page_name_full = 'Categories';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'extraservice') {
                     $page_name_full = 'Services';
+                    $pagelink = 'serviceview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
                 }
-                $button_options = ['page' => $page_name, 'content_name' => $page_name_full];
+                $button_options = ['page' => $pagelink, 'content_name' => $page_name_full, 'brand' => $brand];
                 $buttons_view = $this->load->view('content/content_viewbuttons_view', $button_options, TRUE);
-                $options = ['meta_view' => $meta_view, 'buttons_view' => $buttons_view, 'special_content' => $special_content,];
+                $options = [
+                    'meta_view' => $meta_view, // 'buttons_view' => $buttons_view,
+                    'special_content' => $special_content,];
                 $mdata['content'] = $this->load->view('content/staticpage_view', $options, TRUE);
+                $mdata['buttons'] = $buttons_view;
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -175,10 +185,11 @@ class Content extends MY_Controller
                 $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+                $mdata['buttons'] = $buttons_view;
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -435,11 +446,11 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
-                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                // $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
+                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
@@ -542,11 +553,11 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                $button_options = ['page'=>'about', 'content_name' => $page_name_full, 'session'=> $session_id];
-                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                // $button_options = ['page'=>'about', 'content_name' => $page_name_full, 'session'=> $session_id];
+                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
@@ -664,11 +675,11 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                $button_options = ['page'=>'faq', 'content_name' => $page_name_full, 'session'=> $session_id];
-                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                // $button_options = ['page'=>'faq', 'content_name' => $page_name_full, 'session'=> $session_id];
+                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
@@ -847,11 +858,11 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
-                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                // $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
+                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
@@ -940,11 +951,11 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                $button_options = ['page'=>'terms', 'content_name' => $page_name_full, 'session'=> $session_id];
-                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                // $button_options = ['page'=>'terms', 'content_name' => $page_name_full, 'session'=> $session_id];
+                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
-                    'buttons_view' => $buttons_view,
+                    // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
@@ -1131,6 +1142,7 @@ class Content extends MY_Controller
             $gallery_options = [
                 'galleries' => $galleries,
                 'maxitems' => $this->config->item('max_slider_galleryitems'),
+                'data' => $data,
             ];
             if ($edit_mode == 0) {
                 $gallery_view = $this->load->view('content/custom_galleries_view', $gallery_options, TRUE);

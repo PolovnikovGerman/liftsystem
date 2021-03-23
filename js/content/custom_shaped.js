@@ -13,7 +13,7 @@ function init_customshape_view(brand) {
     $(".displaycasestudy").unbind('click').click(function () {
         display_casestudy();
     });
-    $(".edit_button[data-page='custom']").unbind('click').click(function () {
+    $(".edit_button[data-link='customshappedview']").unbind('click').click(function () {
         init_customshape_edit(brand);
     });
     // Open image
@@ -87,21 +87,25 @@ function init_customshape_edit(brand) {
         if (response.errors=='') {
             if (brand=='BT') {
                 $("#btcustomshappedview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
             } else {
                 $("#sbcustomshappedview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
             }
-            $(".content_preview").on('click',function () {
-                var url=$("#custom_previewurl").val();
-                $.fancybox.open({
-                    src  : url,
-                    type : 'iframe',
-                    opts : {
-                        afterShow : function( instance, current ) {
-                            console.info( 'done!' );
-                        }
-                    }
-                });
-            });
+            // $(".content_preview").on('click',function () {
+            //     var url=$("#custom_previewurl").val();
+            //     $.fancybox.open({
+            //         src  : url,
+            //         type : 'iframe',
+            //         opts : {
+            //             afterShow : function( instance, current ) {
+            //                 console.info( 'done!' );
+            //             }
+            //         }
+            //     });
+            // });
             init_customshape_editcontent(brand);
         } else {
             show_error(response);

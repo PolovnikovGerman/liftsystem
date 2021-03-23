@@ -10,20 +10,16 @@
     <div class="content-row">
         <div class="label custom_maintitle">Main Title:</div>
         <input class="custom_maintitle" data-content="content" data-field="custom_maintitle" value="<?=ifset($data,'custom_maintitle')?>"/>
-    </div>
-    <div class="content-row">
         <div class="label custom_secondarytext">Secondary Text:</div>
         <input class="custom_secondarytext" data-content="content" data-field="custom_secondarytext" value="<?=ifset($data,'custom_secondarytext')?>"/>
     </div>
     <div class="custom_mainimagearea">
         <div class="content-row">
             <div class="label custom_mainimage">Main Image:</div>
-            <div class="custom_imagesubtitle">click image to enlarge</div>
+            <div class="custom_imagesubtitle">(1140px х 461px)</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(1140px х 258px)</div>
-        </div>
-        <div class="content-row">
+            <div class="custom_imagesubtitlesize">click to enlarge</div>
             <div id="custom_mainimagearea">
                 <?php if (empty(ifset($data,'custom_mainimage'))) { ?>
                     <div class="custom_mainimageempty"><div class="custom_mainimageupload" id="mainimageupload"></div></div>
@@ -41,12 +37,10 @@
     <div class="custom_homeimagearea">
         <div class="content-row">
             <div class="label custom_homepageimage">Homepage Collage Image:</div>
-            <div class="custom_imagesubtitle">click image to enlarge</div>
+            <div class="custom_imagesubtitle">(500px x 516px)</div>
         </div>
         <div class="content-row">
-            <div class="custom_imagesubtitlesize">(500px x 516px)</div>
-        </div>
-        <div class="content-row">
+            <div class="custom_imagesubtitlesize">click to enlarge</div>
             <div id="custom_homepageimagearea">
                 <?php if (empty(ifset($data,'custom_homepageimage'))) { ?>
                     <div class="custom_homepageimageempty">
@@ -63,9 +57,12 @@
             </div>
         </div>
     </div>
-    <div class="content-row">
-        <div class="label custom_belowimagetext">Below Image Text:</div>
-        <input class="custom_belowimagetext" data-content="content" data-field="custom_belowimagetext" value="<?=ifset($data,'custom_belowimagetext')?>"/>
+    <div class="custompage_content_left">
+        <div class="content-row">
+            <div class="label custom_belowimagetext">Text Below Image:</div>
+            <input class="custom_belowimagetext" data-content="content" data-field="custom_belowimagetext" value="<?=ifset($data,'custom_belowimagetext')?>"/>
+        </div>
+
     </div>
     <div class="content-row">
         <div class="label custom_fivebulletpoints">Bullet Points:</div>

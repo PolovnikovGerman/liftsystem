@@ -6,13 +6,14 @@ input.custom_maintitle {
 }
 div.custom_secondarytext {
     width: 128px;
+    margin-left: 12px;
 }
 input.custom_secondarytext {
     width: 345px;
 }
 .custom_mainimagearea {
     clear: both;
-    width: 550px;
+    width: 630px;
 }
 div.custom_mainimage {
     width: 91px;
@@ -21,17 +22,18 @@ div.custom_mainimage {
     color: #000000;
     font-family: Helvetica-Oblique;
     font-size: 12px;
-    margin-top: 7px;
+    margin-top: 4px;
 }
 .custom_imagesubtitlesize {
     color: #000000;
     font-family: Helvetica-Oblique;
     font-size: 12px;
+    margin-right: 6px;
 }
 .custom_mainimagesrc,
 .custom_mainimageempty {
     width: 533px;
-    height: 123px;
+    height: 223px;
     border: 1px solid #ededed;
 }
 .custom_mainimagesrc img {
@@ -66,8 +68,8 @@ div.custom_mainimage {
 }
 .custom_homepageimagesrc,
 .custom_homepageimageempty {
-    width: 184px;
-    height: 190px;
+    width: 234px;
+    height: 237px;
     border: 1px solid #ededed;
 }
 .custom_homepageimagesrc img {
@@ -90,6 +92,9 @@ div.custom_mainimage {
     width: 33px;
     line-height: 22px!important;
 }
+.custompage_content_left {
+    width: 615px;
+}
 div.custom_belowimagetext {
     width: 147px;
 }
@@ -110,8 +115,8 @@ div.custom_longerbodytext {
     width: 147px;
 }
 textarea.custom_longerbodytext {
-    width: 557px;
-    height: 124px;
+    width: 472px;
+    height: 183px;
 }
 div.custom_abovegallerytext {
     width: 158px;
@@ -148,12 +153,40 @@ input.custom_gallerytitle {
 .custom_galleries_area {
     margin-top: 16px;
     padding-left: 20px;
+    width: 1113px;
+}
+div.custom_commongallerytitle {
+    width: 155px;
+}
+input.custom_commongallerytitle {
+    width: 455px;
 }
 div.custom_gallerytitle {
-    width: 116px;
+    width: 129px;
 }
 input.custom_gallerytitle {
-    width: 235px;
+    width: 202px;
+}
+.custom_exampletitlesize {
+    color: #000000;
+    font-family: Helvetica-Oblique;
+    font-size: 12px;
+    margin-left: 132px;
+}
+.custom_examplelabel {
+    width: 111px;
+}
+.custom_exampleimagetitle {
+    color: #000000;
+    font-family: Helvetica-Bold;
+    font-size: 13px;
+    /* margin-left: 132px; */
+    width: 93px;
+}
+.customimage_enlarge {
+    color: #000000;
+    font-size: 10px;
+    width: 90px;
 }
 .gallery_collageimage {
     width: 185px;
