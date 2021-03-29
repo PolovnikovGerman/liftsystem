@@ -4105,7 +4105,7 @@ Class Orders_model extends MY_Model
         $datsrch=array();
         $data_results=array();
         $curweek=date('W',$dat_month_bgn);
-        $week_results[$curweek]=array('week'=>$curweek, 'profit'=>0,'orders'=>0,'profit_percent'=>0,'revenue'=>0);
+        $week_results[$curweek]=array('week'=>$curweek, 'profit'=>0,'orders'=>0,'profit_percent'=>0,'revenue'=>0, 'shipping' => 0,);
         $month_results=array('profit'=>0,'orders'=>0,'profit_percent'=>0,'revenue'=>0);
         while ($i<=$dat_month_end) {
             array_push($datsrch, date('m/d/Y',$i));
@@ -4123,7 +4123,7 @@ Class Orders_model extends MY_Model
             );
             if (date('W',$i)!=$curweek) {
                 $curweek=date('W',$i);
-                $week_results[$curweek]=array('week'=>$curweek, 'profit'=>0,'orders'=>0,'profit_percent'=>0,'revenue'=>0);
+                $week_results[$curweek]=array('week'=>$curweek, 'profit'=>0,'orders'=>0,'profit_percent'=>0,'revenue'=>0, 'shipping' => 0,);
             }
             $i=strtotime(date('m/d/Y',$i).' + 1 day');
         }
@@ -4154,6 +4154,7 @@ Class Orders_model extends MY_Model
         /* Common data */
         $this->db->select('date_format(from_unixtime(order_date),\'%m/%d/%Y\') AS order_date,sum(profit) AS profit');
         $this->db->select('count(order_id) AS numorders, sum(coalesce(order_cog,(revenue * 0.34))) AS order_cog, sum(coalesce(revenue,0)) AS revenue');
+        $this->db->select('sum(shipping) as shipping');
         $this->db->from('ts_orders');
         // $this->db->where_in('order_date',$datsrch);
         $this->db->where('order_date >= ',$dat_month_bgn);
@@ -4176,6 +4177,7 @@ Class Orders_model extends MY_Model
                 $week_results[$weekkey]['orders']+=$row['numorders'];
                 $week_results[$weekkey]['revenue']+=$row['revenue'];
                 $week_results[$weekkey]['profit']+=$row['profit'];
+                $week_results[$weekkey]['shipping']+=$row['shipping'];
                 $weekday=$data_results[$key]['weekday'];
                 if ($data_results[$key]['curmonth']==1) {
                     /* Add to Week resuls and day Results */
@@ -4183,7 +4185,6 @@ Class Orders_model extends MY_Model
                     $month_results['profit']+=$row['profit'];
                     $month_results['revenue']+=$row['revenue'];
                 }
-
             }
         }
         /* Recallculate Week results */
@@ -4198,6 +4199,12 @@ Class Orders_model extends MY_Model
                 $row['profitdata_class']='bluetxt';
             } else {
                 $row['profitdata_class']='';
+            }
+            $row['shipping_class']='';
+            $row['shipping_view'] = '';
+            if (abs($row['shipping']) > 0) {
+                $row['shipping_class'] = 'shippingdataview';
+                $row['shipping_view']='<b>Shipping</b><br>'.MoneyOutput($row['shipping']).' - ('.round($row['shipping']/$row['revenue']*100,1).'%)';
             }
             $row['profit']=($row['profit']==0 ? '-----' : '$'.number_format($row['profit'],2,'.',','));
 

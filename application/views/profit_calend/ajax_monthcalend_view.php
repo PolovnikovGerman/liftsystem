@@ -3,7 +3,7 @@
 <div class="line-week">
 <?php foreach ($data_results as $row) { ?>
     <?php if (intval($row['week'])!=$nweek) {?>
-        <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?>">
+        <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-shippingview="<?=$weeks_results[$nweek]['shipping_view']?>">
             <div class="cell-weekinfo-profitperc">                                
                 <div class="cell-weekinfo-profitperc-value">
                     <?=$weeks_results[$nweek]['profit_perc']?>
@@ -33,7 +33,7 @@
         </div>
     </div>
 <?php } ?>            
-    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?>">
+    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-shippingview="<?=$weeks_results[$nweek]['shipping_view']?>">
         <div class="cell-weekinfo-profitperc">                                
             <div class="cell-weekinfo-profitperc-value">
                 <?=$weeks_results[$nweek]['profit_perc']?>

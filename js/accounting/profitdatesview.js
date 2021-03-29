@@ -209,6 +209,19 @@ function show_curent_calend() {
                     classes: 'qtip-dark dayorders_tooltip'
                 },
             });
+            $("div.shippingdataview").qtip({
+                content: {
+                    attr: 'data-shippingview'
+                },
+                position: {
+                    my: 'left center',
+                    at: 'center right',
+                },
+                style: {
+                    classes: 'orderdata_tooltip'
+                }
+
+            });
             init_profit_date();
         } else {
             show_error(response);
