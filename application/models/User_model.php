@@ -289,6 +289,7 @@ Class User_model extends MY_Model
         $res=$this->db->get()->result_array();
         if (count($res)==1) {
             $out['result']=$this->success_result;
+            $res[0]['user_passwd_txt2'] = '';
             $out['data']=$res[0];
         }
         return $out;
@@ -310,6 +311,8 @@ Class User_model extends MY_Model
             'personal_email'=>'',
             'email_signature'=>'',
             'finuser'=>0,
+            'user_passwd_txt' => '',
+            'user_passwd_txt2' => '',
             'profit_view'=>'Points',
         ];
         return $data;
@@ -440,46 +443,50 @@ Class User_model extends MY_Model
         $deleted = $session_data['deleted'];
         // checks incoming data
         $chkusrdat = $this->_checkuserdata($user);
-        // Update
-        $this->db->set('user_email', $user['user_email']);
-        $this->db->set('user_name', $user['user_name']);
-        $this->db->set('user_status', $user['user_status']);
-        $this->db->set('user_leadrep', $user['user_leadrep']);
-        $this->db->set('finuser', $user['finuser']);
-        $this->db->set('user_leadname', $user['user_leadname']);
-        $this->db->set('user_initials', $user['user_initials']);
-        $this->db->set('time_restrict', $user['time_restrict']);
-        $this->db->set('personal_email', $user['personal_email']);
-        $this->db->set('email_signature', $user['email_signature']);
-        $this->db->set('profit_view', $user['profit_view']);
-        $this->db->set('user_page', ifset($user,'user_page',NULL));
-        if ($user['user_id']==0) {
-            $this->db->insert('users');
-            $user_id = $this->db->inserted_id();
-        } else {
-            $this->db->where('user_id', $user['user_id']);
-            $this->db->update('users');
-            $user_id = $user['user_id'];
-        }
-        // Insert finished successfully
-        if ($user_id>0) {
-            if (!empty($user['user_passwd_txt'])) {
-                $this->db->set('user_passwd', md5($user['user_passwd_txt']));
-                $this->db->set('user_passwd_txt', $user['user_passwd_txt']);
-                $this->db->where('user_id', $user_id);
+        $out['msg'] = $chkusrdat['msg'];
+        if ($chkusrdat['result']==$this->success_result) {
+            // Update
+            $this->db->set('user_email', $user['user_email']);
+            $this->db->set('user_name', $user['user_name']);
+            $this->db->set('user_status', $user['user_status']);
+            $this->db->set('user_leadrep', $user['user_leadrep']);
+            $this->db->set('finuser', $user['finuser']);
+            $this->db->set('user_leadname', $user['user_leadname']);
+            $this->db->set('user_initials', $user['user_initials']);
+            $this->db->set('time_restrict', $user['time_restrict']);
+            $this->db->set('personal_email', $user['personal_email']);
+            $this->db->set('email_signature', $user['email_signature']);
+            $this->db->set('profit_view', $user['profit_view']);
+            $this->db->set('user_page', ifset($user,'user_page',NULL));
+            if ($user['user_id']==0) {
+                $this->db->insert('users');
+                $user_id = $this->db->insert_id();
+            } else {
+                $this->db->where('user_id', $user['user_id']);
                 $this->db->update('users');
+                $user_id = $user['user_id'];
             }
-            // Update restrict
-            $this->update_iprestrict($userip, $user_id);
-            // Update page permissions
-            $this->load->model('menuitems_model');
-            $this->menuitems_model->save_userpermissions($webpages, $user_id);
-            foreach ($deleted as $row) {
-                $this->db->where('user_restriction_id', $row);
-                $this->db->delete('user_restrictions');
+            // Insert finished successfully
+            $out['msg'] = 'Error during update user';
+            if ($user_id>0) {
+                if (!empty($user['user_passwd_txt'])) {
+                    $this->db->set('user_passwd', md5($user['user_passwd_txt']));
+                    $this->db->set('user_passwd_txt', $user['user_passwd_txt']);
+                    $this->db->where('user_id', $user_id);
+                    $this->db->update('users');
+                }
+                // Update restrict
+                $this->update_iprestrict($userip, $user_id);
+                // Update page permissions
+                $this->load->model('menuitems_model');
+                $this->menuitems_model->save_userpermissions($webpages, $user_id);
+                foreach ($deleted as $row) {
+                    $this->db->where('user_restriction_id', $row);
+                    $this->db->delete('user_restrictions');
+                }
+                $out['result']=$this->success_result;
+                usersession($session_id, NULL);
             }
-            $out['result']=$this->success_result;
-            usersession($session_id, NULL);
         }
         return $out;
     }
@@ -580,21 +587,23 @@ Class User_model extends MY_Model
         $numrec=$res['cnt'];
         if ($numrec==0) {
             $out['msg'] = 'For new user password required parameter';
-            if ($userdat['user_id']<=0 && !empty($userdat['user_passwd_txt'])) {
-                $out['msg'] = 'Enter Leads repl name';
-                if ($userdat['user_leadrep']==1 && !empty($userdat['user_leadname'])) {
-                    /* Check password */
-                    $out['msg']='Please re-type password';
-                    if (!empty($userdat['user_passwd_txt']) && ($userdat['user_passwd_txt']==$userdat['user_passwd_txt2'])) {
-                        $out['msg']='User email (login) is required parameter';
-                        if ($userdat['user_email']!='') {
-                            $out['result'] = $this->success_result;
-                        }
-                    }
-
-                }
-
+            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt'])) {
+                return $out;
             }
+            $out['msg'] = 'Enter Leads repl name';
+            if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
+                return $out;
+            }
+            /* Check password */
+            $out['msg']='Please re-type password';
+            if (!empty($userdat['user_passwd_txt']) && ($userdat['user_passwd_txt']!=$userdat['user_passwd_txt2'])) {
+                return $out;
+            }
+            $out['msg']='User email (login) is required parameter';
+            if (empty($userdat['user_email'])) {
+                return $out;
+            }
+            $out['result'] = $this->success_result;
             // Check default page
 //            if ($userdat['user_page']!='') {
 //                $found=0;
