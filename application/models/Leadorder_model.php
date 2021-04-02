@@ -7835,7 +7835,7 @@ Class Leadorder_model extends My_Model {
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
 
-        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/'),'_',$order['order_items']).'.pdf';
+        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/'),'_',str_replace('-','',$order['order_items'])).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
         $this->_invoice_pdfdoc_create($options, $file_out);
