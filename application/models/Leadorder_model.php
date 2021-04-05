@@ -3875,6 +3875,8 @@ Class Leadorder_model extends My_Model {
         $brand = $order['brand'];
         $netdata=$this->_get_netpofitweek($order['order_date'], $brand);
         $savepayment=0;
+        $newplaceorder = 0;
+        $finerror = 0;
         if ($order_type=='new') {
             // Get Item ID, Order QTY
             $order_items=$leadorder['order_items'];
@@ -3887,14 +3889,10 @@ Class Leadorder_model extends My_Model {
                 return $out;
             }
             if ($order['order_id']==0) {
-                $popopt=array(
-                    'order'=>$res['neworder'],
-                    'confirm'=>$order['order_confirmation'],
-                );
+                $newplaceorder = 1;
                 $savepayment=1;
                 $order['order_num']=$res['neworder'];
                 $leadorder['order']=$order;
-                $out['popupmsg']=$this->load->view('leadorderdetails/order_placed_view',$popopt, TRUE);
                 // Confirmation # WY-3028 Placed - Internal Order # 39457
                 $order['order_id']=$res['result'];
                 $artwork['order_id']=$order['order_id'];
@@ -3961,15 +3959,29 @@ Class Leadorder_model extends My_Model {
             $this->_delete_leadorder_components($delrecords);
             $out['result']=$this->success_result;
             // Tty to Pay
+            if ($newplaceorder==1) {
+                $popopt=array(
+                    'order'=>$res['neworder'],
+                    'confirm'=>$order['order_confirmation'],
+                );
+            }
             if ($savepayment==1) {
                 $finres=$this->_prepare_order_payment($order_id, $user_id);
                 if ($finres['result']==$this->error_result) {
+                    $finerror = 1;
                     $out['finres']=$this->error_result;
-                    $out['finerror']=$finres['msg'];
+                    if ($newplaceorder==1) {
+                        $popopt['finres'] = 'The order has not been paid. Cause - '.$finres['msg'];
+                    }
                 } else {
                     $out['finres']=$this->success_result;
                 }
             }
+            if ($newplaceorder==1) {
+                $out['finerror'] = $finerror;
+                $out['popupmsg']=$this->load->view('leadorderdetails/order_placed_view',$popopt, TRUE);
+            }
+            $out['newplaceorder'] = $newplaceorder;
             $out['order_id']=$order_id;
             $newdata=$this->orders_model->get_order_detail($order_id);
             $newprofit=$newdata['profit'];
@@ -6016,6 +6028,7 @@ Class Leadorder_model extends My_Model {
             }
         }
         $out['result']=$this->success_result;
+        return $out;
     }
 
     // Update History Msg
