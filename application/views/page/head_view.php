@@ -6,6 +6,7 @@
 <!-- <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'> -->
 <link rel="stylesheet" href="/css/page_view/font-awesome.min.css">
 <link rel="stylesheet" href="/css/page_view/main.css?v=<?=getsitecssversion()?>">
+<link rel="stylesheet" href="/css/jsflash/flash.css">
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>
@@ -16,6 +17,7 @@
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script> -->
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/adminpage/page.js?v=<?=getsitejsversion()?>"></script>
+<script src="/js/jsflash/flash.js"></script>
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>

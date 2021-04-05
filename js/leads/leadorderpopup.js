@@ -3690,6 +3690,7 @@ function place_neworder() {
         if (response.errors=='') {
             save_leadorderdata();
         } else {
+            $("#loader").hide();
             $("#artNextModal").find('div.modal-dialog').css('width','475px');
             $("#artNextModal").find('.modal-title').empty().html('Place Order');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
@@ -3738,20 +3739,19 @@ function save_leadorderdata() {
         if (response.errors=='') {       
             clearTimeout(timerId);
             // Current page
-
-            /*if (callpage=='artorderlist') {
-                $("#orderlist").show();
-                init_orders();
-            }*/
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#loader").hide();
-            if(typeof response.data.popupmsg !== 'undefined') {
-                // $("#flash").css('width','975');
-                // $.flash(response.data.popupmsg,5000);
+            if (parseInt(response.data.newplaceorder)==1) {
+                $("#flash").css('width','975');
+                if (parseInt(response.data.finerror)==0) {
+                    $("#flash").css('background-color','#2b34d1');
+                } else {
+                    $("#flash").css('background-color','#ff0000');
+                }
+                $.flash(response.data.popupmsg,7000);
             }
             navigation_init();
-
             /*
             $("#artModal").modal('hide');
             if (callpage=='finance') {

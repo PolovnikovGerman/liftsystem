@@ -4487,8 +4487,10 @@ class Leadorder extends MY_Controller
                     }
                     // Get Data about Engaded records
                     $order_id=$res['order_id'];
-                    if (isset($res['popupmsg'])) {
+                    $mdata['newplaceorder'] = $res['newplaceorder'];
+                    if ($res['newplaceorder']==1) {
                         $mdata['popupmsg']=$res['popupmsg'];
+                        $mdata['finerror'] = $res['finerror'];
                     }
                     $brand = ifset($postdata, 'brand', 'ALL');
                     $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
