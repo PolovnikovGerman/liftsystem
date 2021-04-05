@@ -29,7 +29,7 @@
                 <div class="input_row userpasswd">
                     <div class="labeltxt">User Password:</div>
                     <div class="inputval">
-                        <input type="user_passwd_txt" class="large userpersdata" data-name="user_passwd_txt" id="user_passwd_txt" value=""/>
+                        <input type="user_passwd_txt" class="large userpersdata" data-name="user_passwd_txt1" id="user_passwd_txt1" value=""/>
                     </div>
                 </div>
                 <div class="input_row">(leave blank if not want to change)</div>

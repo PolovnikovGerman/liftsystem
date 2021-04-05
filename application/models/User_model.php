@@ -290,6 +290,7 @@ Class User_model extends MY_Model
         if (count($res)==1) {
             $out['result']=$this->success_result;
             $res[0]['user_passwd_txt2'] = '';
+            $res[0]['user_passwd_txt1'] = '';
             $out['data']=$res[0];
         }
         return $out;
@@ -311,7 +312,7 @@ Class User_model extends MY_Model
             'personal_email'=>'',
             'email_signature'=>'',
             'finuser'=>0,
-            'user_passwd_txt' => '',
+            'user_passwd_txt1' => '',
             'user_passwd_txt2' => '',
             'profit_view'=>'Points',
         ];
@@ -469,9 +470,9 @@ Class User_model extends MY_Model
             // Insert finished successfully
             $out['msg'] = 'Error during update user';
             if ($user_id>0) {
-                if (!empty($user['user_passwd_txt'])) {
-                    $this->db->set('user_passwd', md5($user['user_passwd_txt']));
-                    $this->db->set('user_passwd_txt', $user['user_passwd_txt']);
+                if (!empty($user['user_passwd_txt1'])) {
+                    $this->db->set('user_passwd', md5($user['user_passwd_txt1']));
+                    $this->db->set('user_passwd_txt', $user['user_passwd_txt1']);
                     $this->db->where('user_id', $user_id);
                     $this->db->update('users');
                 }
@@ -596,7 +597,7 @@ Class User_model extends MY_Model
             }
             /* Check password */
             $out['msg']='Please re-type password';
-            if (!empty($userdat['user_passwd_txt']) && ($userdat['user_passwd_txt']!=$userdat['user_passwd_txt2'])) {
+            if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
                 return $out;
             }
             $out['msg']='User email (login) is required parameter';
