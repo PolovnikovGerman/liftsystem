@@ -15,10 +15,9 @@
                     <?=$legacyview?>
                 </div>
             <?php } ?>
-            <div class="dbcontentarea" id="itemdetailsview" style="display: none;">
-                <div class="left_maincontent"></div>
-                <div class="right_maincontent"></div>
-            </div>
+            <?php if (isset($sbitemsview)) { ?>
+                <div class="dbcontentarea" id="sbitemsview" style="display: none;"><?=$sbitemsview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

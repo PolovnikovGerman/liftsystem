@@ -51,7 +51,9 @@ class Database extends MY_Controller
             } elseif ($row['item_link'] == '#btitemsview') {
 
             } elseif ($row['item_link'] == '#sbitemsview') {
-
+                $head['styles'][]=array('style'=>'/css/database/itemdatalist.css');
+                $head['scripts'][]=array('src'=>'/js/database/itemdatalist.js');
+                $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
             } elseif ($row['item_link'] == '#amazonitemsview') {
 
             } elseif ($row['item_link'] == '#legacyview') {
@@ -860,6 +862,40 @@ class Database extends MY_Controller
         }
     }
 
+    // Items List
+    public function itemlistsdata() {
+        if ($this->isAjax()) {
+//            params.push({name: 'search', value: $('.search_input[data-brand="'+brand+'"]').val()});
+//    params.push({name: 'vendor', value: $('.vendorfilter[data-brand="'+brand+'"]').val()});
+//    params.push({name: 'itemstatus',  value: $('.itemlistatusfilter[data-brand="'+brand+'"]').val()});
+
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $pagenum = ifset($postdata, 'offset', 0);
+            $options = [];
+            $options['limit'] = ifset($postdata, 'limit', 100);
+            $options['offset'] = ($pagenum * $options['limit']);
+            $options['order_by'] = ifset($postdata, 'order_by', 'item_number');
+            $options['direct'] = ifset($postdata,'direction', 'asc');
+            $options['brand'] = ifset($postdata,'brand','ALL');
+            $options['search'] = strtoupper(ifset($postdata, 'search', ''));
+            $options['vendor'] = ifset($postdata,'vendor', '');
+            $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
+            $this->load->model('items_model');
+            $res = $this->items_model->get_itemlists($options);
+            $this->load->model('categories_model');
+            $pageoptions = [
+                'datas' => $res,
+                'categories' => $this->categories_model->get_categories_list(),
+                'brand' => $options['brand'],
+            ];
+            $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     // Prepare pages
     private function _prepare_dbpage_content($page_name, $search='')
@@ -1378,6 +1414,23 @@ class Database extends MY_Controller
             'curpage'=>0,
         );
         $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_itemdata_view($brand) {
+        $this->load->model('items_model');
+        $totals = $this->items_model->count_searchres('', 'ALL');
+        $this->load->model('vendors_model');
+
+        $options = [
+            'perpage' => 250,
+            'order' => 'item_number',
+            'direct' => 'asc',
+            'totals' =>  $totals,
+            'brand' => $brand,
+            'vendors' => $this->vendors_model->get_vendors(),
+        ];
+        $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         return $content;
     }
 

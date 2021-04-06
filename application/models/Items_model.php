@@ -483,5 +483,64 @@ Class Items_model extends My_Model
         return $res['cnt'];
     }
 
+    public function get_itemlists($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+        $this->db->select('v.vendor_name as vendor');
+        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
+        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            // $this->db->where('i.brand', $options['brand']);
+        }
+        if (ifset($options, 'search', '')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options,'vendor', '')!=='') {
+            $this->db->where('v.vendor_id', $options['vendor']);
+        }
+        if (ifset($options, 'itemstatus', 0) > 0) {
+            if ($options['itemstatus']==1) {
+                $this->db->where('i.item_active', 1);
+            } else {
+                $this->db->where('i.item_active', 0);
+            }
+        }
+        $limit = ifset($options, 'limit', 0);
+        $offset = ifset($options, 'offset', 0);
+        if ($limit > 0) {
+            if ($offset>0) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        $out=[];
+        $numpp = $offset + 1;
+        foreach ($res as $item) {
+            $item['category1']=$item['category2']=$item['category3']='';
+            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid');
+            $this->db->from('sb_item_categories ic');
+            $this->db->where('ic.item_categories_itemid',$item['item_id']);
+            $categ=$this->db->get()->result_array();
+            $i=1;
+            foreach ($categ as $cat) {
+                $item['category'.$i]=$cat['item_categories_categoryid'];
+                $i++;
+                if ($i>3) {
+                    break;
+                }
+            }
+            $item['misinfo_class'] = ($item['missings']==0 ? '' : 'missing');
+            $item['misinfo_name'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
+            $item['numpp'] = $numpp;
+            $numpp++;
+            $out[] = $item;
+        }
+        return $out;
+    }
 
 }
