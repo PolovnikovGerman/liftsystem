@@ -263,7 +263,135 @@ class Test extends CI_Controller
         }
         fclose($fh);
         echo 'File '.$file.' ready '.PHP_EOL;
+    }
 
+    public function addsb_items() {
+        $price_types = $this->config->item('price_types');
+        $this->db->select('*');
+        $this->db->from('sb_items');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            echo 'Item '.$item['item_number'].' '.$item['item_name'].PHP_EOL;
+            foreach ($item as $key=>$val) {
+                if ($key!=='item_id' && $key!=='brand') {
+                    $this->db->set($key, $val);
+                }
+            }
+            $this->db->set('brand','SB');
+            $this->db->insert('sb_items');
+            $newid = $this->db->insert_id();
+            if ($newid > 0 ) {
+                // Change related tables
+                // Prices
+                $this->db->select('*');
+                $this->db->from('sb_item_prices');
+                $this->db->where('item_price_itemid', $item['item_id']);
+                $prices = $this->db->get()->row_array();
+                // Add Special prices
+                $this->db->set('item_price_itemid', $newid);
+                $this->db->set('item_price_print', $prices['item_price_print']);
+                $this->db->set('item_price_setup', $prices['item_price_setup']);
+                $this->db->set('item_sale_print', $prices['item_sale_print']);
+                $this->db->set('item_sale_setup', $prices['item_sale_setup']);
+                $this->db->set('profit_print', $prices['profit_print']);
+                $this->db->set('profit_setup', $prices['profit_setup']);
+                $this->db->insert('sb_item_prices');
+                if ($item['item_template']=='Stressball') {
+                    foreach ($price_types as $price_type) {
+                        if (!empty($prices['item_price_'.$price_type['type']]) && !empty($prices['item_sale_'.$price_type['type']])) {
+                            $this->db->set('item_id', $newid);
+                            $this->db->set('item_qty', intval($price_type['type']));
+                            $this->db->set('price', $prices['item_price_'.$price_type['type']]);
+                            $this->db->set('sale_price', $prices['item_sale_'.$price_type['type']]);
+                            $this->db->set('profit', $prices['profit_'.$price_type['type']]);
+                            $this->db->insert('sb_promo_price');
+                        }
+                    }
+                } else {
+                    $this->db->select('*');
+                    $this->db->from('sb_promo_price');
+                    $this->db->where('item_id', $item['item_id']);
+                    $promoprices = $this->db->get()->result_array();
+                    foreach ($promoprices as $promoprice) {
+                        $this->db->set('item_id', $newid);
+                        $this->db->set('item_qty', $promoprice['item_qty']);
+                        $this->db->set('price', $promoprice['price']);
+                        $this->db->set('sale_price', $promoprice['sale_price']);
+                        $this->db->set('profit', $promoprice['profit']);
+                        $this->db->insert('sb_promo_price');
+                    }
+                }
+                // Categories
+                $this->db->select('*');
+                $this->db->from('sb_item_categories');
+                $this->db->where('item_categories_itemid', $item['item_id']);
+                $categories = $this->db->get()->result_array();
+                foreach ($categories as $category) {
+                    $this->db->set('item_categories_itemid', $newid);
+                    $this->db->set('item_categories_categoryid', $category['item_categories_categoryid']);
+                    $this->db->set('item_categories_order', $category['item_categories_order']);
+                    $this->db->insert('sb_item_categories');
+                }
+                // Colors
+                $this->db->select('*');
+                $this->db->from('sb_item_colors');
+                $this->db->where('item_color_itemid', $item['item_id']);
+                $colors = $this->db->get()->result_array();
+                foreach ($colors as $color) {
+                    $this->db->set('item_color_itemid', $newid);
+                    $this->db->set('item_color', $color['item_color']);
+                    $this->db->insert('sb_item_colors');
+                }
+                // Common Terms
+                $this->db->select('*');
+                $this->db->from('sb_item_commonterms');
+                $this->db->where('item_id', $item['item_id']);
+                $terms = $this->db->get()->result_array();
+                foreach ($terms as $term) {
+                    $this->db->set('item_id', $newid);
+                    $this->db->set('common_term', $term['common_term']);
+                    $this->db->insert('sb_item_commonterms');
+                }
+                // Images
+                $this->db->select('*');
+                $this->db->from('sb_item_images');
+                $this->db->where('item_img_item_id', $item['item_id']);
+                $images = $this->db->get()->result_array();
+                foreach ($images as $image) {
+                    $this->db->set('item_img_item_id', $newid);
+                    $this->db->set('item_img_name', $image['item_img_name']);
+                    $this->db->set('item_img_thumb', $image['item_img_thumb']);
+                    $this->db->set('item_img_order', $image['item_img_order']);
+                    $this->db->set('item_img_big', $image['item_img_big']);
+                    $this->db->set('item_img_medium', $image['item_img_medium']);
+                    $this->db->set('item_img_small', $image['item_img_small']);
+                    $this->db->insert('sb_item_images');
+                }
+                // Imprints
+                $this->db->select('*');
+                $this->db->from('sb_item_inprints');
+                $this->db->where('item_inprint_item', $item['item_id']);
+                $inprints = $this->db->get()->result_array();
+                foreach ($inprints as $inprint) {
+                    $this->db->set('item_inprint_item', $newid);
+                    $this->db->set('item_inprint_location', $inprint['item_inprint_location']);
+                    $this->db->set('item_inprint_size', $inprint['item_inprint_size']);
+                    $this->db->set('item_inprint_view', $inprint['item_inprint_view']);
+                    $this->db->set('item_imprint_mostpopular', $inprint['item_imprint_mostpopular']);
+                    $this->db->insert('sb_item_inprints');
+                }
+                // Similar
+                $this->db->select('*');
+                $this->db->from('sb_item_similars');
+                $this->db->where('item_similar_item', $item['item_id']);
+                $simulars = $this->db->get()->result_array();
+                foreach ($simulars as $simular) {
+                    $this->db->set('item_similar_item', $newid);
+                    $this->db->set('item_similar_similar', $simular['item_similar_similar']);
+                    $this->db->insert('sb_item_similars');
+                }
+            }
+        }
     }
 
 }

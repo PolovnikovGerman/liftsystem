@@ -879,7 +879,7 @@ class Database extends MY_Controller
             $vendor = ifset($postdata,'vendor', '');
             $itemstatus = ifset($postdata, 'itemstatus', 0);
             $this->load->model('items_model');
-            $totals = $this->items_model->count_searchres($search, 'ALL', $vendor, $itemstatus);
+            $totals = $this->items_model->count_searchres($search, $brand, $vendor, $itemstatus);
             $mdata['totals'] = $totals;
             $mdata['totals_view'] = QTYOutput($totals).' Records';
             $this->ajaxResponse($mdata, $error);
@@ -1454,7 +1454,7 @@ class Database extends MY_Controller
 
     private function _prepare_itemdata_view($brand) {
         $this->load->model('items_model');
-        $totals = $this->items_model->count_searchres('', 'ALL');
+        $totals = $this->items_model->count_searchres('', $brand);
         $this->load->model('vendors_model');
 
         $options = [

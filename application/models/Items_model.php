@@ -501,7 +501,7 @@ Class Items_model extends My_Model
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
         $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
-            // $this->db->where('i.brand', $options['brand']);
+            $this->db->where('i.brand', $options['brand']);
         }
         if (ifset($options, 'search', '')!=='') {
             $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
