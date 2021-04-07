@@ -11,7 +11,7 @@
         <div class="listitemname"><?=$data['item_name']?></div>
         <div class="listvendor" id="vendordet<?=$data['item_id']?>" data-content="<?=$data['vendor_details']?>"><?=$data['vendor']?></div>
         <div class="listcategoryname">
-            <select class="itemlist_category <?=empty($data['category1']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" disabled="disabled">
+            <select class="itemlist_category <?=empty($data['category1']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" data-categ="category1" disabled="disabled">
                 <option value="0" <?=$data['category1']=='' ? 'selected="selected"' : ''?>>------------- select -------------</option>
                 <?php foreach ($categories as $category) { ?>
                     <option value="<?=$category['category_id']?>" <?=$data['category1']==$category['category_id'] ? 'selected="selected"' : ''?>><?=$category['category_name']?></option>
@@ -19,7 +19,7 @@
             </select>
         </div>
         <div class="listcategoryname">
-            <select class="itemlist_category <?=empty($data['category2']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" disabled="disabled">
+            <select class="itemlist_category <?=empty($data['category2']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" data-categ="category2" disabled="disabled">
                 <option value="0" <?=$data['category2']=='' ? 'selected="selected"' : ''?>>------------- select -------------</option>
                 <?php foreach ($categories as $category) { ?>
                     <option value="<?=$category['category_id']?>" <?=$data['category2']==$category['category_id'] ? 'selected="selected"' : ''?>><?=$category['category_name']?></option>
@@ -27,7 +27,7 @@
             </select>
         </div>
         <div class="listcategoryname">
-            <select class="itemlist_category <?=empty($data['category3']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" disabled="disabled">
+            <select class="itemlist_category <?=empty($data['category3']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" data-categ="category3" disabled="disabled">
                 <option value="0" <?=$data['category2']=='' ? 'selected="selected"' : ''?>>------------- select -------------</option>
                 <?php foreach ($categories as $category) { ?>
                     <option value="<?=$category['category_id']?>" <?=$data['category3']==$category['category_id'] ? 'selected="selected"' : ''?>><?=$category['category_name']?></option>

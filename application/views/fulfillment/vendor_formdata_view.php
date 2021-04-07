@@ -30,6 +30,27 @@
                 </select>
             </div>
         </div>
+        <div class="input_row">
+            <div class="labeltxt">Vendor Phone:</div>
+            <div class="inputval">
+                <input type="text" class="medium" name="vendor_phone" id="vendor_phone"
+                       value="<?= $vendor['vendor_phone'] ?>"/>
+            </div>
+        </div>
+        <div class="input_row">
+            <div class="labeltxt">Vendor Email:</div>
+            <div class="inputval">
+                <input type="text" class="long" name="vendor_email" id="vendor_email"
+                       value="<?= $vendor['vendor_email'] ?>"/>
+            </div>
+        </div>
+        <div class="input_row">
+            <div class="labeltxt">Vendor WEB:</div>
+            <div class="inputval">
+                <input type="text" class="long" name="vendor_website" id="vendor_website"
+                       value="<?= $vendor['vendor_website'] ?>"/>
+            </div>
+        </div>
 
         <div class="input_row">
             <div class="savevendor">

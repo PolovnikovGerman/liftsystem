@@ -252,7 +252,7 @@ Class Vendors_model extends My_Model
         return $out;
     }
 
-    function save_vendor($vendor_id, $vendor_name, $vendor_zipcode, $calendar_id) {
+    function save_vendor($vendor_id, $vendor_name, $vendor_zipcode, $calendar_id, $phone, $email, $website) {
         $out=array('result'=>$this->error_result,'msg'=>'Error during save Vendor');
         if (trim($vendor_name)=='') {
             $out['msg']='Vendor name required parameter';
@@ -268,6 +268,9 @@ Class Vendors_model extends My_Model
                 $this->db->set('vendor_name',$vendor_name);
                 $this->db->set('vendor_zipcode',$vendor_zipcode);
                 $this->db->set('calendar_id',($calendar_id=='' ? NULL : $calendar_id));
+                $this->db->set('vendor_phone', $phone);
+                $this->db->set('vendor_email', $email);
+                $this->db->set('vendor_website', $website);
                 if ($vendor_id==0) {
                     $this->db->insert('vendors');
                     $vendor_id=$this->db->insert_id();

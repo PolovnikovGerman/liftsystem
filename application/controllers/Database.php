@@ -840,8 +840,11 @@ class Database extends MY_Controller
             $vendor_name=$this->input->post('vendor_name');
             $vendor_zipcode=$this->input->post('vendor_zipcode');
             $calendar_id=$this->input->post('calendar_id');
+            $phone = $this->input->post('vendor_phone');
+            $email = $this->input->post('vendor_email');
+            $website = $this->input->post('vendor_website');
             $this->load->model('vendors_model');
-            $res=$this->vendors_model->save_vendor($vendor_id,$vendor_name, $vendor_zipcode, $calendar_id);
+            $res=$this->vendors_model->save_vendor($vendor_id,$vendor_name, $vendor_zipcode, $calendar_id, $phone, $email, $website);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
@@ -908,6 +911,21 @@ class Database extends MY_Controller
                 'brand' => $options['brand'],
             ];
             $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function itemlistcategory() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata = $this->input->post();
+            $this->load->model('itemcategory_model');
+            $res = $this->itemcategory_model->update_itemlistcategory($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

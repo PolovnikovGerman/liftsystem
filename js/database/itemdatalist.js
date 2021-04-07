@@ -25,6 +25,11 @@ function init_itemslist_view(brand) {
     // $(".newvendor").live('click',function(){
     //     add_vendor();
     // });
+    $(".categorymanagebtn.locked[data-brand='"+brand+"']").unbind('click').click(function () {
+        $("select.itemlist_category[data-brand='"+brand+"']").prop('disabled',false);
+        $(this).removeClass('locked').addClass('unlocked');
+        init_item_categorychange(brand);
+    })
 }
 
 function initItemsListPagination(brand) {
@@ -168,22 +173,38 @@ function init_itemlist_content(brand) {
         }, function () {
             $("#"+vendid).fu_popover("hide");
         });
-    })
-/*
-    $("#vendordet3").fu_popover({
-        content: $(this).data('content'),
-        dismissable: true,
-        placement:'top',
-        trigger: 'hover',
-        width: '180px',
-        themeName:'Theme_blue',
     });
-*/
-    /*
-        $(".listvendor").hover(function () {
-        }, function () {
-            $(".listvendor").fu_popover("hide");
-        });
-    */
+}
 
+function init_item_categorychange(brand) {
+    $("select.itemlist_category[data-brand='" + brand + "']").unbind('change').change(function () {
+        var newval = $(this).val();
+        if (parseInt(newval) == 0) {
+            $(this).removeClass('selected');
+        } else {
+            $(this).addClass('selected');
+        }
+        // Collect data
+        var item = $(this).data('item');
+        var categ1 = $(".itemlist_category[data-brand='" + brand + "'][data-item='" + item + "'][data-categ='category1']").val()
+        var categ2 = $(".itemlist_category[data-brand='" + brand + "'][data-item='" + item + "'][data-categ='category2']").val()
+        var categ3 = $(".itemlist_category[data-brand='" + brand + "'][data-item='" + item + "'][data-categ='category3']").val()
+        var params = new Array();
+        params.push({name: 'brand', value: brand});
+        params.push({name: 'item_id', value: item});
+        params.push({name: 'category1', value: categ1});
+        params.push({name: 'category2', value: categ2});
+        params.push({name: 'category3', value: categ3});
+        var url = '/database/itemlistcategory';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".categorymanagebtn.unlocked[data-brand='" + brand + "']").unbind('click').click(function () {
+        $(this).removeClass('unlocked').addClass('locked');
+        $("select.itemlist_category[data-brand='" + brand + "']").prop('disabled', true);
+    });
 }

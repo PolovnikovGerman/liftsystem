@@ -23,7 +23,7 @@
     float: right!important;
 }
 .vendordata-title {
-    width: 480px;
+    width: 754px;
     background: #bcbcbc;
     color: #000000;
 }
@@ -44,11 +44,21 @@
     width: 23px;
 }
 .vendordata-title > .vendor-zip {
-    width: 43px;
+    width: 66px;
 }
 .vendordata-title > .vendor-calend {
     width: 90px;
 }
+.vendordata-title > .vendor-phone {
+    width: 90px;
+}
+.vendordata-title > .vendor-email {
+    width: 90px;
+}
+.vendordata-title > .vendor-website {
+    width: 90px;
+}
+
 .vendortab {
     background-color: #FFFFFF;
     border: 1px solid #B9B9B9;
@@ -58,12 +68,12 @@
     margin-left: 20px;
     overflow-y: auto;
     overflow-x: hidden;
-    width: 480px;
+    width: 753px;
     margin-bottom: 20px;
 }
 .vendorsdatarow {
     clear: both;
-    width: 466px;
+    width: 754px;
 }
 .vendorsdatarow.error {
     text-align: center;
@@ -100,11 +110,30 @@
 }
 .vendorsdatarow > .vendzipcode {
     text-align: center;
-    width: 43px;
+    width: 66px;
 }
 .vendorsdatarow > .vendcalendar {
     width: 90px;
 }
+.vendorsdatarow > .vendor-phone {
+    width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendorsdatarow > .vendor-email {
+    width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendorsdatarow > .vendor-website {
+    width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Popup Edit form */
 .vendordata {
     background-color: #FFFFFF;

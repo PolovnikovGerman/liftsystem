@@ -163,11 +163,6 @@ Class Itemcategory_model extends My_Model
 
     public function update_itemcategory($data) {
         $out=['result'=> $this->error_result, 'msg'=> 'Non unique category'];
-        /*
-    params.push({name: 'item_id', value: item_id});
-    params.push({name: 'itemcategory_id', value: itemcateg_id});
-    params.push({name: 'item_category', value: item_category});
-         */
         if ($data['itemcategory_id']>0 && empty($data['item_category'])) {
             // delete relation
             $this->db->where('item_categories_id', $data['itemcategory_id']);
@@ -217,5 +212,37 @@ Class Itemcategory_model extends My_Model
         return $out;
     }
 
+    public function update_itemlistcategory($options) {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Item'];
+        $item = ifset($options,'item_id', '0');
+        if ($item!=0) {
+            $this->db->where('item_categories_itemid', $item);
+            $this->db->delete('sb_item_categories');
+            $numpp=1;
+            if (ifset($options,'category1',0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category1']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            if (ifset($options, 'category2', 0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category2']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            if (ifset($options, 'category3', 0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category3']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
 
 }

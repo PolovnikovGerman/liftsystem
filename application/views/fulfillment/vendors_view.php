@@ -15,6 +15,9 @@
             <div class="inclreport">&nbsp;</div>
             <div class="vendor-zip">Zip Code</div>
             <div class="vendor-calend">Calendar</div>
+            <div class="vendor-phone">Phone</div>
+            <div class="vendor-email">Email</div>
+            <div class="vendor-website">WEB</div>
         </div>
     </div>
 

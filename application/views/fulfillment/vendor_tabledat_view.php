@@ -13,6 +13,9 @@
         </div>
         <div class="vendzipcode"><?=$vendor['vendor_zipcode']?></div>
         <div class="vendcalendar"><?=$vendor['calendar_name']?></div>
+        <div class="vendor-phone"><?=$vendor['vendor_phone']?></div>
+        <div class="vendor-email"><?=$vendor['vendor_email']?></div>
+        <div class="vendor-website"><?=$vendor['vendor_website']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>
