@@ -187,6 +187,10 @@ select.itemlistatusfilter {
 .itemlist-tablerow {
     width: 1322px;
 }
+.itemlistactiverow {
+    background: #0000ba;
+    color: #ffffff;
+}
 .itemlist-tablerow div {
     height: 25px;
     line-height: 25px;

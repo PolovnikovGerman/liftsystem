@@ -35,7 +35,7 @@
             </div>
             <div class="content-row">
                 <div class="itemlistpagination" data-brand="<?=$brand?>"></div>
-                <div class="itemslisttotalsview"><?=QTYOutput($totals)?> Records</div>
+                <div class="itemslisttotalsview" data-brand="<?=$brand?>"><?=QTYOutput($totals)?> Records</div>
             </div>
         </div>
     </div>
@@ -44,8 +44,8 @@
             <div class="listaction"><img src="/img/database/add_itemlist_btn.png"></div>
             <div class="listnumrow">&nbsp;</div>
             <div class="liststatus">Active</div>
-            <div class="listitemnumber sortable active">Item # <div class="ascsort">&nbsp;</div> </div>
-            <div class="listitemname sortable">Item Name</div>
+            <div class="listitemnumber sortable active" data-sortcell="item_number">Item # <div class="ascsort">&nbsp;</div> </div>
+            <div class="listitemname sortable" data-sortcell="item_name">Item Name</div>
             <div class="listvendor">Supplier</div>
             <div class="listcategoryname">Category 1</div>
             <div class="listcategoryname">Category 2</div>

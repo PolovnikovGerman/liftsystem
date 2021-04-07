@@ -124,6 +124,8 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        $head['scripts'][] = array('src'=> 'js/adminpage/popover.js');
+        $head['styles'][] = array('style' => '/css/page_view/popover.css');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
@@ -863,12 +865,27 @@ class Database extends MY_Controller
     }
 
     // Items List
+    public function itemlistsearch() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+
+            $brand = ifset($postdata,'brand','ALL');
+            $search = strtoupper(ifset($postdata, 'search', ''));
+            $vendor = ifset($postdata,'vendor', '');
+            $itemstatus = ifset($postdata, 'itemstatus', 0);
+            $this->load->model('items_model');
+            $totals = $this->items_model->count_searchres($search, 'ALL', $vendor, $itemstatus);
+            $mdata['totals'] = $totals;
+            $mdata['totals_view'] = QTYOutput($totals).' Records';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function itemlistsdata() {
         if ($this->isAjax()) {
-//            params.push({name: 'search', value: $('.search_input[data-brand="'+brand+'"]').val()});
-//    params.push({name: 'vendor', value: $('.vendorfilter[data-brand="'+brand+'"]').val()});
-//    params.push({name: 'itemstatus',  value: $('.itemlistatusfilter[data-brand="'+brand+'"]').val()});
-
             $mdata = [];
             $error = '';
             $postdata = $this->input->post();

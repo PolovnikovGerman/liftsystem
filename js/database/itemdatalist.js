@@ -1,5 +1,27 @@
 function init_itemslist_view(brand) {
     initItemsListPagination(brand);
+    $(".itemlist-tablehead").find(".sortable").unbind('click').click(function () {
+        var fld=$(this).data('sortcell');
+        sort_itemlist(fld, brand);
+    });
+    $(".search_input[data-brand='"+brand+"']").keypress(function(event){
+         if (event.which == 13) {
+             search_itemlists(brand);
+         }
+    });
+    $('.searchlist-btn[data-brand="'+brand+'"]').unbind('click').click(function(){
+        search_itemlists(brand);
+    });
+    $('.clearsearchlist-btn[data-brand="'+brand+'"]').unbind('click').click(function(){
+        $(".search_input[data-brand='"+brand+"']").val('');
+        search_itemlists(brand);
+    })
+    $(".vendorfilter[data-brand='"+brand+"']").unbind('change').change(function(){
+        search_itemlists(brand);
+    });
+    $(".itemlistatusfilter[data-brand='"+brand+"']").unbind('change').change(function(){
+        search_itemlists(brand);
+    });
     // $(".newvendor").live('click',function(){
     //     add_vendor();
     // });
@@ -52,8 +74,7 @@ function pageBTItemsListCallback(page_index) {
 }
 
 function pageItemsListCallback(page_index, brand) {
-    console.log('Brand  '+brand);
-    params = new Array();
+    var params = new Array();
     params.push({name: 'offset', value: page_index});
     params.push({name: 'limit', value: $('.itemsperpage[data-brand="'+brand+'"]').val()});
     params.push({name: 'order_by', value: $('.itemsorder[data-brand="'+brand+'"]').val()});
@@ -68,10 +89,101 @@ function pageItemsListCallback(page_index, brand) {
         if (response.errors=='') {
             $("#loader").hide();
             $('.itemlist-tablebody[data-brand="'+brand+'"]').empty().html(response.data.content);
-            // init_vendor_content();
+            $('.itemspagenum[data-brand="'+brand+'"]').val(page_index);
+            init_itemlist_content(brand);
         } else {
             show_error(response);
         }
     },'json');
+}
+
+function sort_itemlist(fld, brand) {
+    var cursort = $('.itemsorder[data-brand="'+brand+'"]').val();
+    var curdirec = $('.itemsorderdirect[data-brand="'+brand+'"]').val();
+    if (cursort==fld) {
+        // Change direction
+        if (curdirec=='asc') {
+            $(".itemlist-tablehead[data-brand='"+brand+"']").find("div.ascsort").remove();
+            $(".itemlist-tablehead[data-brand='"+brand+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
+            $('.itemsorderdirect[data-brand="'+brand+'"]').val('desc');
+        } else {
+            $(".itemlist-tablehead[data-brand='"+brand+"']").find("div.descsort").remove();
+            $(".itemlist-tablehead[data-brand='"+brand+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+            $('.itemsorderdirect[data-brand="'+brand+'"]').val('asc');
+        }
+    } else {
+        $(".itemlist-tablehead[data-brand='"+brand+"']").find("div.ascsort").remove();
+        $(".itemlist-tablehead[data-brand='"+brand+"']").find("div.descsort").remove();
+        $(".itemlist-tablehead[data-brand='"+brand+"']").find("div[data-sortcell='"+cursort+"']").removeClass('active');
+        $(".itemlist-tablehead[data-brand='"+brand+"']").find("div[data-sortcell='"+fld+"']").addClass('active');
+        $(".itemlist-tablehead[data-brand='"+brand+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+        $('.itemsorderdirect[data-brand="'+brand+'"]').val('asc');
+        $('.itemsorder[data-brand="'+brand+'"]').val(fld);
+    }
+    var pageindex = $('.itemspagenum[data-brand="'+brand+'"]').val();
+    pageItemsListCallback(pageindex, brand);
+}
+
+function search_itemlists(brand) {
+    var params = new Array();
+    params.push({name: 'search', value: $('.search_input[data-brand="'+brand+'"]').val()});
+    params.push({name: 'vendor', value: $('.vendorfilter[data-brand="'+brand+'"]').val()});
+    params.push({name: 'itemstatus',  value: $('.itemlistatusfilter[data-brand="'+brand+'"]').val()});
+    params.push({name: 'brand', value: brand});
+    $("#loader").show();
+    $.post('/database/itemlistsearch', params, function(response){
+        if (response.errors=='') {
+            $("#loader").hide();
+            $('.itemstotals[data-brand="'+brand+'"]').val(response.data.totals);
+            $('.itemspagenum[data-brand="'+brand+'"]').val(0);
+            $('.itemslisttotalsview[data-brand="'+brand+'"]').empty().html(response.data.totals_view);
+            initItemsListPagination(brand);
+        } else {
+            show_error(response);
+        }
+    },'json');
+
+}
+
+function init_itemlist_content(brand) {
+    $(".itemlist-tablerow").hover(function(){
+        $(this).addClass('itemlistactiverow');
+    }, function() {
+        $(this).removeClass('itemlistactiverow');
+    });
+    $(".itemlist-tablerow").find("div.listvendor").each(function(){
+        var vendid=$(this).prop('id');
+        console.log('Array ID '+ vendid);
+        $("#"+vendid).fu_popover(
+            {
+                content: $(this).data('content'),
+                dismissable: true,
+                placement:'top',
+                trigger: 'hover',
+                width: '180px',
+                themeName:'Theme_blue'
+            }
+        );
+        $("#"+vendid).hover(function () {
+        }, function () {
+            $("#"+vendid).fu_popover("hide");
+        });
+    })
+/*
+    $("#vendordet3").fu_popover({
+        content: $(this).data('content'),
+        dismissable: true,
+        placement:'top',
+        trigger: 'hover',
+        width: '180px',
+        themeName:'Theme_blue',
+    });
+*/
+    /*
+        $(".listvendor").hover(function () {
+        }, function () {
+            $(".listvendor").fu_popover("hide");
+        });
+    */
 
 }

@@ -9,7 +9,7 @@
         <div class="liststatus"><?=$data['item_active']==1 ? 'Active' : 'Inactive'?></div>
         <div class="listitemnumber"><?=$data['item_number']?></div>
         <div class="listitemname"><?=$data['item_name']?></div>
-        <div class="listvendor" data-tem="<?=$data['item_id']?>"><?=$data['vendor']?></div>
+        <div class="listvendor" id="vendordet<?=$data['item_id']?>" data-content="<?=$data['vendor_details']?>"><?=$data['vendor']?></div>
         <div class="listcategoryname">
             <select class="itemlist_category <?=empty($data['category1']) ? '' : 'selected'?>" data-item="<?=$data['item_id']?>" data-brand="<?=$brand?>" disabled="disabled">
                 <option value="0" <?=$data['category1']=='' ? 'selected="selected"' : ''?>>------------- select -------------</option>

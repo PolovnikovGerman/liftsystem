@@ -10,10 +10,9 @@ Class Items_model extends My_Model
         parent::__construct();
     }
 
-    public function count_searchres($search, $brand, $vendor_id='') {
+    public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
         $this->db->select('count(i.item_id) as cnt',FALSE);
         $this->db->from('sb_items i');
-        $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
         if ($vendor_id) {
             $this->db->join('sb_vendor_items v','v.vendor_item_id=i.item_id');
             $this->db->where('v.vendor_item_vendor',$vendor_id);
@@ -21,7 +20,17 @@ Class Items_model extends My_Model
         if ($brand!=='ALL') {
             $this->db->where('i.brand', $brand);
         }
-        $this->db->where($where);
+        if (!empty($search)) {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+            $this->db->where($where);
+        }
+        if ($itemstatus!=0) {
+            if ($itemstatus==1) {
+                $this->db->where('i.item_active',1);
+            } else {
+                $this->db->where('i.item_active',0);
+            }
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -485,7 +494,7 @@ Class Items_model extends My_Model
 
     public function get_itemlists($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('v.vendor_name as vendor');
+        $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
         $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
@@ -508,6 +517,9 @@ Class Items_model extends My_Model
                 $this->db->where('i.item_active', 0);
             }
         }
+        $order_by = ifset($options, 'order_by','item_id');
+        $direc = ifset($options, 'direct','asc');
+        $this->db->order_by($order_by, $direc);
         $limit = ifset($options, 'limit', 0);
         $offset = ifset($options, 'offset', 0);
         if ($limit > 0) {
@@ -537,6 +549,7 @@ Class Items_model extends My_Model
             $item['misinfo_class'] = ($item['missings']==0 ? '' : 'missing');
             $item['misinfo_name'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['numpp'] = $numpp;
+            $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
             $numpp++;
             $out[] = $item;
         }
