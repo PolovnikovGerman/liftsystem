@@ -34,7 +34,9 @@
                 <?php } ?>
             </select>
         </div>
-        <div class="listmissinginfo <?=$data['misinfo_class']?>"><?=$data['misinfo_name']?></div>
+        <div class="listmissinginfo <?=$data['misinfo_class']?>" data-brand="<?=$brand?>" id="missinfo<?=$data['item_id']?>" data-content="<?=$data['misinfo_content']?>">
+            <?=$data['misinfo_name']?>
+        </div>
     </div>
     <?php $numpp++;?>
 <?php } ?>

@@ -25,11 +25,15 @@ function init_itemslist_view(brand) {
     // $(".newvendor").live('click',function(){
     //     add_vendor();
     // });
+    init_itemlist_manage(brand);
+}
+
+function init_itemlist_manage(brand) {
     $(".categorymanagebtn.locked[data-brand='"+brand+"']").unbind('click').click(function () {
         $("select.itemlist_category[data-brand='"+brand+"']").prop('disabled',false);
         $(this).removeClass('locked').addClass('unlocked');
         init_item_categorychange(brand);
-    })
+    });
 }
 
 function initItemsListPagination(brand) {
@@ -95,6 +99,8 @@ function pageItemsListCallback(page_index, brand) {
             $("#loader").hide();
             $('.itemlist-tablebody[data-brand="'+brand+'"]').empty().html(response.data.content);
             $('.itemspagenum[data-brand="'+brand+'"]').val(page_index);
+            $(".categorymanagebtn[data-brand='"+brand+"']").removeClass('unlocked').addClass('locked');
+            init_itemlist_manage(brand);
             init_itemlist_content(brand);
         } else {
             show_error(response);
@@ -158,7 +164,6 @@ function init_itemlist_content(brand) {
     });
     $(".itemlist-tablerow").find("div.listvendor").each(function(){
         var vendid=$(this).prop('id');
-        console.log('Array ID '+ vendid);
         $("#"+vendid).fu_popover(
             {
                 content: $(this).data('content'),
@@ -173,6 +178,26 @@ function init_itemlist_content(brand) {
         }, function () {
             $("#"+vendid).fu_popover("hide");
         });
+    });
+    $(".itemlist-tablerow").find("div.listmissinginfo.missing").each(function() {
+        var missid=$(this).prop('id');
+        $("#"+missid).fu_popover(
+            {
+                content: $(this).data('content'),
+                dismissable: true,
+                autoHide: true,
+                autoHideDelay: 20000,
+                placement:'top',
+                trigger: 'hover',
+                width: '180px',
+                themeName:'theme_red'
+            }
+        );
+        $("#"+missid).hover(function () {
+        }, function () {
+            $("#"+missid).fu_popover("hide");
+        });
+
     });
 }
 
@@ -206,5 +231,6 @@ function init_item_categorychange(brand) {
     $(".categorymanagebtn.unlocked[data-brand='" + brand + "']").unbind('click').click(function () {
         $(this).removeClass('unlocked').addClass('locked');
         $("select.itemlist_category[data-brand='" + brand + "']").prop('disabled', true);
+        init_itemlist_manage(brand);
     });
 }
