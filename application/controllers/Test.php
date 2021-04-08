@@ -331,7 +331,7 @@ class Test extends CI_Controller
                 $this->db->insert('sb_item_prices');
                 if ($item['item_template']=='Stressball') {
                     foreach ($price_types as $price_type) {
-                        if (!empty($prices['item_price_'.$price_type['type']]) && !empty($prices['item_sale_'.$price_type['type']])) {
+                        if (!empty($prices['item_price_'.$price_type['type']]) || !empty($prices['item_sale_'.$price_type['type']])) {
                             $this->db->set('item_id', $newid);
                             $this->db->set('item_qty', intval($price_type['type']));
                             $this->db->set('price', $prices['item_price_'.$price_type['type']]);
