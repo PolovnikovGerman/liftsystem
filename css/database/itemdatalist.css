@@ -258,3 +258,10 @@ select.itemlist_category.selected {
 .itemlist-tablerow > .listmissinginfo.missing {
     background: #ff0000;
 }
+/* Image */
+.popover.right {
+    height: 270px;
+}
+.popover-content {
+    height: auto!important;
+}

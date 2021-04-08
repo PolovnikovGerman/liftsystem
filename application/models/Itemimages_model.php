@@ -273,4 +273,22 @@ Class Itemimages_model extends My_Model
 //        return $result;
 //    }
 
+    public function get_item_mainimage($item_id) {
+        $this->db->select('item_img_name');
+        $this->db->from('sb_item_images');
+        $this->db->where('item_img_item_id', $item_id);
+        $this->db->order_by('item_img_order');
+        $images = $this->db->get()->result_array();
+        $out_img = '';
+        $name_sh = $this->config->item('item_images');
+        $name_fl = $this->config->item('item_images_relative');
+        foreach ($images as $image) {
+            $chkurl = str_replace($name_sh, $name_fl, $image['item_img_name']);
+            if (file_exists($chkurl)) {
+                $out_img = $image['item_img_name'];
+                break;
+            }
+        }
+        return $out_img;
+    }
 }
