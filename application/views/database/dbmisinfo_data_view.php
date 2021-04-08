@@ -7,6 +7,7 @@
     <input type="hidden" id="directionmisinfo" value="<?= $direction ?>"/>
     <input type="hidden" id="curpagemisinfo" value="<?= $cur_page ?>"/>
     <input type="hidden" id="perpagemisinfo" value="<?= $perpage ?>"/>
+    <input type="hidden" id="itemmisinfobrand" value="<?=$brand?>"/>
     <div class="clearfix"></div>
     <div class="missing_head">
         <div class="numinlist gradient1">&nbsp;</div>

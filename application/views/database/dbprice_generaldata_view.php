@@ -8,6 +8,7 @@
     <input type="hidden" id="curpagedbprice" value="<?= $cur_page ?>"/>
     <input type="hidden" id="searchdbprice" value="<?= $search ?>"/>
     <input type="hidden" id="perpagedbprice" value="<?=$perpage?>"/>
+    <input type="hidden" id="itempricebrand" value="<?=$brand?>"/>
     <div class="table-price">
         <table cellspacing="0" cellpadding="0">
             <tr class="table_head">

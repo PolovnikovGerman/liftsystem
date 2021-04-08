@@ -1,6 +1,6 @@
 function init_vendorpage() {
     initVendorPagination();
-    $(".newvendor").live('click',function(){
+    $(".newvendor").unbind('click').click(function(){
         add_vendor();
     });
 }

@@ -947,6 +947,7 @@ class Database extends MY_Controller
             $direction = 'asc';
             // $search = '';
             $vendor_id = '';
+            $brand = 'BT';
             $current_pagename = usersession('page_name');
             if ($current_pagename == $page_name) {
                 $cur_page = usersession('curpage');
@@ -956,7 +957,7 @@ class Database extends MY_Controller
                 $vendor_id = usersession('vendor_id');
             }
             $this->load->model('items_model');
-            $total_rec = $this->items_model->count_searchres($search, 'ALL', $vendor_id);
+            $total_rec = $this->items_model->count_searchres($search, $brand, $vendor_id);
             $this->load->model('vendors_model');
             if ($page_name=='itemprice') {
                 $this->load->model('otherprices_model');
@@ -1005,6 +1006,7 @@ class Database extends MY_Controller
                     'cur_page' => $cur_page,
                     'search' => $search,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 );
                 if ($this->USR_ROLE == 'general') {
                     $table_dat = $this->load->view('database/dbprice_generaldata_view', $content_dat, TRUE);
@@ -1026,6 +1028,7 @@ class Database extends MY_Controller
                     'search'=>$search,
                     'legend' => $legend,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 ];
                 $table_dat=$this->load->view('database/dbcategory_data_view',$content_dat,TRUE);
             } elseif ($page_name=='itemsequence') {
@@ -1051,6 +1054,7 @@ class Database extends MY_Controller
                     'cur_page'=>$cur_page,
                     'legend' => $legend,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 );
                 $table_dat=$this->load->view('database/dbsequence_data_view',$content_dat,TRUE);
             } elseif ($page_name=='itemmisinfo') {
@@ -1070,6 +1074,7 @@ class Database extends MY_Controller
                     'new_available' => 1,
                     'legend' => $legend,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 ];
                 $table_dat=$this->load->view('database/dbmisinfo_data_view',$content_dat,TRUE);
 
@@ -1101,6 +1106,7 @@ class Database extends MY_Controller
                     'search'=>$search,
                     'legend' => $legend,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 ];
                 if ($this->USR_ROLE=='general') {
                     $table_dat=$this->load->view('database/dbprofit_datageneral_view',$content_dat,TRUE);
@@ -1124,6 +1130,7 @@ class Database extends MY_Controller
                     'search'=>$search,
                     'legend' => $legend,
                     'perpage' => $this->config->item('dbview_perpage'),
+                    'brand' => $brand,
                 ];
                 $table_dat=$this->load->view('database/dbtemplate_data_view',$content_dat,TRUE);
             }

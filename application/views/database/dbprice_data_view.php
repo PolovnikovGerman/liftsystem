@@ -7,6 +7,7 @@
     <input type="hidden" id="directiondbprice" value="<?= $direction ?>"/>
     <input type="hidden" id="curpagedbprice" value="<?= $cur_page ?>"/>
     <input type="hidden" id="perpagedbprice" value="<?=$perpage?>"/>
+    <input type="hidden" id="itempricebrand" value="<?=$brand?>"/>
     <div class="table-price">
         <div class="table-price-header">
             <div class="gradient1 bor-1 numinlist"> &nbsp; </div>

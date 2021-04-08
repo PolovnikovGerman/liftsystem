@@ -168,6 +168,8 @@ function init_itemlist_content(brand) {
             {
                 content: $(this).data('content'),
                 dismissable: true,
+                autoHide: true,
+                autoHideDelay: 7000,
                 placement:'top',
                 trigger: 'hover',
                 width: '180px',

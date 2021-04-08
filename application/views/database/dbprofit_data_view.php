@@ -7,6 +7,7 @@
     <input type="hidden" id="directiondbprofit" value="<?= $direction ?>"/>
     <input type="hidden" id="curpagedbprofit" value="<?= $cur_page ?>"/>
     <input type="hidden" id="perpagedbprofit" value="<?=$perpage?>"/>
+    <input type="hidden" id="itemprofitbrand" value="<?=$brand?>"/>
     <div class="clearfix"></div>
     <div class="profit_head">
         <div class="gradient1 numinlist">&nbsp;</div>

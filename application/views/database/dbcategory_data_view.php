@@ -7,6 +7,7 @@
     <input type="hidden" id="directiondbcateg" value="<?= $direction ?>"/>
     <input type="hidden" id="curpagedbcateg" value="<?= $cur_page ?>"/>
     <input type="hidden" id="perpagedbcateg" value="<?= $perpage ?>"/>
+    <input type="hidden" id="itemcategorybrand" value="<?=$brand?>"/>
     <div class="dbcategory_table_head">
         <div class="gradient1 numinlist">&nbsp;</div>
         <div class="gradient1 editcoll">edit</div>

@@ -7,6 +7,7 @@
     <input type="hidden" id="directiondbtempl" value="<?=$direction?>"/>
     <input type="hidden" id="curpagedbtempl" value="<?=$cur_page?>"/>
     <input type="hidden" id="perpagedbtempl" value="<?=$perpage?>"/>
+    <input type="hidden" id="itemtemplatesbrand" value="<?=$brand?>"/>
     <div class="clearfix"></div>
     <div class="blank_templateloader">
         <div class="template_arrow">
