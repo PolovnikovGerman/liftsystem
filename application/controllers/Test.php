@@ -287,17 +287,21 @@ class Test extends CI_Controller
                 $this->db->from('sb_vendor_items');
                 $this->db->where('vendor_item_id', $item['item_id']);
                 $vitem = $this->db->get()->row_array();
-                $this->db->set('vendor_item_id', $newid);
-                $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
-                $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
-                $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
-                $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
-                $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
-                $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
-                $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
-                $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
-                $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
-                $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                if (ifset($vitem,'vendor_item_id',0)==0) {
+                    $this->db->set('vendor_item_id', $newid);
+                } else {
+                    $this->db->set('vendor_item_id', $newid);
+                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
+                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
+                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
+                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
+                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
+                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
+                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
+                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
+                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                }
                 $this->db->insert('sb_vendor_items');
                 // Vendor Prices
                 $this->db->select('*');
