@@ -203,7 +203,7 @@ select.itemlistatusfilter {
 }
 .listitempreview, .listitemedit {
     width: 25px;
-    text-align: center;
+    /* text-align: center; */
     cursor: pointer;
 }
 .itemlist-tablerow > .listnumrow {

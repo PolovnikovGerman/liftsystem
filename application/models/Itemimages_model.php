@@ -291,4 +291,13 @@ Class Itemimages_model extends My_Model
         }
         return $out_img;
     }
+
+    public function get_itemlist_images($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_item_images');
+        $this->db->where('item_img_item_id', $item_id);
+        $this->db->order_by('item_img_order');
+        $images = $this->db->get()->result_array();
+        return $images;
+    }
 }

@@ -14,7 +14,7 @@ Class Items_model extends My_Model
         $this->db->select('count(i.item_id) as cnt',FALSE);
         $this->db->from('sb_items i');
         if ($vendor_id) {
-            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.item_id');
+            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
             $this->db->where('v.vendor_item_vendor',$vendor_id);
         }
         if ($brand!=='ALL') {
@@ -562,6 +562,252 @@ Class Items_model extends My_Model
             $out[] = $item;
         }
         return $out;
+    }
+
+    public function new_itemlist($brand) {
+        $out=['result' => $this->success_result, 'msg' => ''];
+        // Start
+        $item = [
+            'item_id' => -1,
+            'item_number' => '',
+            'item_name' => '',
+            'item_active' => 1,
+            'item_new' => 0,
+            'item_template' => 'Stressballs',
+            'item_lead_a' => 0,
+            'item_lead_b' => 0,
+            'item_lead_c' => 0,
+            'item_material' => '',
+            'item_weigth' => 0,
+            'item_size' => '',
+            'item_keywords' => '',
+            'item_url' => '',
+            'item_meta_title' => '',
+            'item_metadescription' => '',
+            'item_metakeywords' => '',
+            'item_description1' => '',
+            'item_description2' => '',
+            'item_vector_img' => '',
+            ''
+        ];
+        $vitem=[
+            'vendor_item_id' => -1,
+            'vendor_item_vendor' => '',
+            'vendor_item_number' => '',
+            'vendor_item_name' => '',
+            'vendor_item_blankcost' => 0,
+            'vendor_item_cost' => 0,
+            'vendor_item_exprint' => 0,
+            'vendor_item_setup' => 0,
+            'vendor_item_notes' => '',
+            'vendor_item_zipcode' => '',
+            'printshop_item_id' => '',
+        ];
+        $vprices = [];
+        for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+            $vprices[] = [
+                'vendorprice_id' => $i*-1,
+                'vendor_item_id' => -1,
+                'vendorprice_qty' => '',
+                'vendorprice_val' => '',
+                'vendorprice_color' => '',
+            ];
+        }
+        $images = [];
+        for ($i=1; $i<=$this->config->item('slider_images'); $i++) {
+            if ($i==1) {
+                $title = 'Main Pic';
+            } else {
+                $title = 'Pic '.$i;
+            }
+
+            $images[] = [
+                'item_img_id' => $i * (-1),
+                'item_img_item_id' => -1,
+                'item_img_name' => '',
+                'item_img_thumb' => '',
+                'item_img_order' => '',
+                'item_img_big' => '',
+                'item_img_medium' => '',
+                'item_img_small' => '',
+                'item_img_label' => '',
+                'title' => $title,
+            ];
+        }
+        $imprints = [];
+        $prices = [];
+        for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+            $prices[] = [
+                'promo_price_id' => $i * (-1),
+                'item_id' => -1,
+                'price' => '',
+                'sale_price' => '',
+                'profit' => '',
+                'show_first' => '0',
+            ];
+        }
+        $data=[
+            'item' => $item,
+            'vendor_item' => $vitem,
+            'vendor_price' => $vprices,
+            'images' => $images,
+            'inprints' => $imprints,
+            'prices' => $prices,
+        ];
+        $out['data'] = $data;
+        return $out;
+    }
+
+    public function get_itemlist_details($item_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
+        $this->db->select('*');
+        $this->db->from('sb_items');
+        $this->db->where('item_id', $item_id);
+        $item = $this->db->get()->row_array();
+        if (ifset($item, 'item_id',0)==$item_id) {
+            $out['result'] = $this->success_result;
+            $this->load->model('itemimages_model');
+            $this->load->model('vendors_model');
+            $this->load->model('imprints_model');
+            $this->load->model('prices_model');
+            $this->load->model('similars_model');
+            // Vendor Info
+            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
+            $vprices = [];
+            if (ifset($vitem,'vendor_item_id', 0 )==0) {
+                $vitem=[
+                    'vendor_item_id' => -1,
+                    'vendor_item_vendor' => '',
+                    'vendor_item_number' => '',
+                    'vendor_item_name' => '',
+                    'vendor_item_blankcost' => 0,
+                    'vendor_item_cost' => 0,
+                    'vendor_item_exprint' => 0,
+                    'vendor_item_setup' => 0,
+                    'vendor_item_notes' => '',
+                    'vendor_item_zipcode' => '',
+                    'printshop_item_id' => '',
+                ];
+                for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+                    $vprices[] = [
+                        'vendorprice_id' => $i*-1,
+                        'vendor_item_id' => -1,
+                        'vendorprice_qty' => '',
+                        'vendorprice_val' => '',
+                        'vendorprice_color' => '',
+                    ];
+                }
+            } else {
+                $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
+                $numpp = 1;
+                foreach ($results as $result) {
+                    $vprices[] = [
+                        'vendorprice_id' => $result['vendorprice_id'],
+                        'vendor_item_id' => $result['vendor_item_id'],
+                        'vendorprice_qty' => $result['vendorprice_qty'],
+                        'vendorprice_val' => $result['vendorprice_val'],
+                        'vendorprice_color' => $result['vendorprice_color'],
+                    ];
+                    $numpp++;
+                }
+                for ($i=$numpp; $i<=$this->config->item('prices_val'); $i++) {
+                    $vprices[] = [
+                        'vendorprice_id' => $i*-1,
+                        'vendor_item_id' => $vitem['vendor_item_id'],
+                        'vendorprice_qty' => '',
+                        'vendorprice_val' => '',
+                        'vendorprice_color' => '',
+                    ];
+                }
+            }
+            $imagsrc = $this->itemimages_model->get_itemlist_images($item_id);
+            $numpp = 1;
+            $images = [];
+            foreach ($imagsrc as $image) {
+                if ($numpp==1) {
+                    $title = 'Main Pic';
+                } else {
+                    $title = 'Pic '.$numpp;
+                }
+                $images[]=[
+                    'item_img_id' => $image['item_img_id'],
+                    'item_img_item_id' => $image['item_img_item_id'],
+                    'item_img_name' => $image['item_img_name'],
+                    'item_img_thumb' => $image['item_img_thumb'],
+                    'item_img_order' => $image['item_img_order'],
+                    'item_img_big' => $image['item_img_big'],
+                    'item_img_medium' => $image['item_img_medium'],
+                    'item_img_small' => $image['item_img_small'],
+                    'item_img_label' => $image['item_img_label'],
+                    'title' => $title,
+                ];
+                $numpp++;
+                if ($numpp > $this->config->item('slider_images')) {
+                    break;
+                }
+            }
+            if ($numpp < $this->config->item('slider_images')) {
+                for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
+                    $title = 'Pic '.$i;
+                    $images[] = [
+                        'item_img_id' => $i * (-1),
+                        'item_img_item_id' => $item_id,
+                        'item_img_name' => '',
+                        'item_img_thumb' => '',
+                        'item_img_order' => '',
+                        'item_img_big' => '',
+                        'item_img_medium' => '',
+                        'item_img_small' => '',
+                        'item_img_label' => '',
+                        'title' => $title,
+                    ];
+                }
+            }
+            $imprints = $this->imprints_model->get_imprint_item($item_id);
+            $priceres = $this->prices_model->get_itemlist_price($item_id);
+            $prices = [];
+            $numpp = 1;
+            foreach ($priceres as $price) {
+                $prices[] = [
+                    'promo_price_id' => $price['promo_price_id'],
+                    'item_id' => $price['item_id'],
+                    'price' => $price['price'],
+                    'sale_price' => $price['sale_price'],
+                    'profit' => $price['profit'],
+                    'show_first' => $price['show_first'],
+                ];
+                $numpp++;
+                if ($numpp > $this->config->item('prices_val')) {
+                    break;
+                }
+            }
+            if ($numpp<$this->config->item('prices_val')) {
+                for ($i=$numpp; $i<=$this->config->item('prices_val'); $i++) {
+                    $prices[] = [
+                        'promo_price_id' => $i * (-1),
+                        'item_id' => $item_id,
+                        'price' => '',
+                        'sale_price' => '',
+                        'profit' => '',
+                        'show_first' => '0',
+                    ];
+                }
+            }
+            // Simular
+            $similar = $this->similars_model->get_similar_items($item_id);
+            $data=[
+                'item' => $item,
+                'vendor_item' => $vitem,
+                'vendor_price' => $vprices,
+                'images' => $images,
+                'inprints' => $imprints,
+                'prices' => $prices,
+                'similar' => $similar,
+            ];
+            $out['data'] = $data;
+        }
+        return $out;
+
     }
 
 }

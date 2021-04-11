@@ -41,6 +41,7 @@ class Database extends MY_Controller
         ];
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
+        $itemslist = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#customersview') {
 
@@ -51,6 +52,7 @@ class Database extends MY_Controller
             } elseif ($row['item_link'] == '#btitemsview') {
 
             } elseif ($row['item_link'] == '#sbitemsview') {
+                $itemslist = 1;
                 $head['styles'][]=array('style'=>'/css/database/itemdatalist.css');
                 $head['scripts'][]=array('src'=>'/js/database/itemdatalist.js');
                 $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
@@ -106,13 +108,10 @@ class Database extends MY_Controller
                 $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
                 $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
             }
-
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/database/page.js');
         $head['styles'][] = array('style' => '/css/database/databasepage.css');
-        // Add Item details
-        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
         // Utils
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
@@ -126,7 +125,13 @@ class Database extends MY_Controller
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         $head['scripts'][] = array('src'=> 'js/adminpage/popover.js');
         $head['styles'][] = array('style' => '/css/page_view/popover.css');
+        // Itemlistdetails
+        if ($itemslist==1) {
+            $head['styles'][]=array('style'=>'/css/database/itemlistdetails.css');
+            $head['scripts'][] = array('src' => '/js/database/itemlistdetails.js');
+        }
         // Item details
+        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
@@ -941,6 +946,62 @@ class Database extends MY_Controller
             $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
         }
         echo $content;
+    }
+
+    // Edit Item
+    public function itemlistdetails() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Item Not Send';
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata, 'item_id', -1);
+            $brand = ifset($postdata,'brand', 'SB');
+
+            $this->load->model('items_model');
+            if ($item_id>=0) {
+                $editmode = 0;
+                if ($item_id==0) {
+                    $error = '';
+                    $editmode = 1;
+                    $data = $this->items_model->new_itemlist($brand);
+                } else {
+                    $res = $this->items_model->get_itemlist_details($item_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = $res['data'];
+                    }
+                }
+            }
+            if ($error=='') {
+                // Build HTML
+                $session_id = uniq_link('15');
+                usersession($session_id, $data);
+                $header_options = [
+                    'editmode' => $editmode,
+                    'item' => $data['item'],
+                ];
+                $header_view = $this->load->view('dbitemdetails/header_view', $header_options, TRUE);
+                $mdata['header'] = $header_view;
+                // Body
+                $left_options = [
+                    'item' => $data['item'],
+                    'similar' => $data['similar'],
+                    'editmode' => $editmode,
+                ];
+                $design_view = $this->load->view('dbitemdetails/webdesign_view', $left_options, TRUE);
+                $meta_view = $this->load->view('dbitemdetails/metadata_view', $left_options, TRUE);
+                $internalsearch_view = $this->load->view('dbitemdetails/intersearch_view', $left_options, TRUE);;
+                $options = [
+                    'design_view' => $design_view,
+                    'meta_view' => $meta_view,
+                    'internalsearch_view' => $internalsearch_view,
+                ];
+                $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
 

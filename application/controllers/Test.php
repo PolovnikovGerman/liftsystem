@@ -282,39 +282,6 @@ class Test extends CI_Controller
             $newid = $this->db->insert_id();
             if ($newid > 0 ) {
                 // Change related tables
-                // Vendor Items
-                $this->db->select('*');
-                $this->db->from('sb_vendor_items');
-                $this->db->where('vendor_item_id', $item['item_id']);
-                $vitem = $this->db->get()->row_array();
-                if (ifset($vitem,'vendor_item_id',0)==0) {
-                    $this->db->set('vendor_item_id', $newid);
-                } else {
-                    $this->db->set('vendor_item_id', $newid);
-                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
-                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
-                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
-                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
-                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
-                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
-                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
-                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
-                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
-                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
-                }
-                $this->db->insert('sb_vendor_items');
-                // Vendor Prices
-                $this->db->select('*');
-                $this->db->from('sb_vendor_prices');
-                $this->db->where('vendor_item_id', $item['item_id']);
-                $vprices = $this->db->get()->result_array();
-                foreach ($vprices as $vprice) {
-                    $this->db->set('vendor_item_id', $newid);
-                    $this->db->set('vendorprice_qty', $vprice['vendorprice_qty']);
-                    $this->db->set('vendorprice_val', $vprice['vendorprice_val']);
-                    $this->db->set('vendorprice_color', $vprice['vendorprice_color']);
-                    $this->db->insert('sb_vendor_prices');
-                }
                 // Prices
                 $this->db->select('*');
                 $this->db->from('sb_item_prices');
@@ -425,6 +392,24 @@ class Test extends CI_Controller
                 }
             }
         }
+    }
+
+    public function clean_vendoritems() {
+        $this->db->select('*');
+        $this->db->from('sb_vendor_items');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('count(item_id) as cnt');
+            $this->db->from('sb_items');
+            $this->db->where('vendor_item_id', $item['vendor_item_id']);
+            $cntres = $this->db->get()->row_array();
+            if ($cntres['cnt']==0) {
+                echo 'Item '.$item['vendor_item_number'].PHP_EOL;
+                $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                $this->db->delete('sb_vendor_items');
+            }
+        }
+        echo 'Clean Finish '.PHP_EOL;
     }
 
 }

@@ -474,5 +474,14 @@ Class Prices_model extends My_Model
         return $retprice;
     }
 
+    public function get_itemlist_price($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_promo_price');
+        $this->db->where('item_id', $item_id);
+        $this->db->order_by('item_qty');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 
 }

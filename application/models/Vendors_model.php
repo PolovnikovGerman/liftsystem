@@ -326,4 +326,20 @@ Class Vendors_model extends My_Model
         $result=$this->db->get()->result_array();
         return $result;
     }
+    // Get Vendor for new edit
+    public function get_item_vendor($vendor_item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_vendor_items');
+        $this->db->where('vendor_item_id', $vendor_item_id);
+        $vitem = $this->db->get()->row_array();
+        return $vitem;
+    }
+
+    public function get_item_vendorprice($vendor_item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_vendor_prices');
+        $this->db->where('vendor_item_id', $vendor_item_id);
+        $vprices = $this->db->get()->result_array();
+        return $vprices;
+    }
 }
