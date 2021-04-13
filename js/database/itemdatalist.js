@@ -267,6 +267,7 @@ function edit_itemlist(item, brand) {
             $("#itemDetailsModal").find('div.modal-dialog').css('width','1345px');
             // $("#pageModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_itemlist_details_view();
             //
         } else {
             show_error(response);

@@ -1,7 +1,5 @@
 <div class="itemdetails-webdesign">
-    <div class="content-row">
-        <div class="chapterlabel leftpart">Website Design:</div>
-    </div>
+    <div class="chapterlabel leftpart">Website Design:</div>
     <div class="content-row">
         <div class="tempalte_label">Template:</div>
         <div class="template_design">

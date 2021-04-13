@@ -992,10 +992,35 @@ class Database extends MY_Controller
                 $design_view = $this->load->view('dbitemdetails/webdesign_view', $left_options, TRUE);
                 $meta_view = $this->load->view('dbitemdetails/metadata_view', $left_options, TRUE);
                 $internalsearch_view = $this->load->view('dbitemdetails/intersearch_view', $left_options, TRUE);;
+                // Images
+                $slider_options = [
+                    'images' => $data['images'],
+                    'limit' => count($data['images']),
+                ];
+                if ($editmode==0) {
+                    $image_slider = $this->load->view('dbitemdetails/pictures_slider_view', $slider_options, TRUE);
+                } else {
+                    $image_slider = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
+                }
+                $images_options = [
+                    'editmode' => $editmode,
+                    'image_slider' => $image_slider,
+                ];
+                $images_view = $this->load->view('dbitemdetails/images_view', $images_options, TRUE);
+                // Vendor data
+                $vendor_options = [
+                    'vendor_item' => $data['vendor_item'],
+                    'vendor_price' => $data['vendor_price'],
+                    'item' => $data['item'],
+                    'editmode' => $editmode,
+                ];
+                $vendor_view = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
                 $options = [
                     'design_view' => $design_view,
                     'meta_view' => $meta_view,
                     'internalsearch_view' => $internalsearch_view,
+                    'images_view' => $images_view,
+                    'vendor_view' => $vendor_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
             }

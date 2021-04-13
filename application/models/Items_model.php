@@ -658,7 +658,7 @@ Class Items_model extends My_Model
         return $out;
     }
 
-    public function get_itemlist_details($item_id) {
+    public function get_itemlist_details($item_id, $editmode = 0) {
         $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
         $this->db->select('*');
         $this->db->from('sb_items');
@@ -697,6 +697,9 @@ Class Items_model extends My_Model
                         'vendorprice_color' => '',
                     ];
                 }
+                $vendor = [
+
+                ];
             } else {
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
                 $numpp = 1;
@@ -746,21 +749,23 @@ Class Items_model extends My_Model
                     break;
                 }
             }
-            if ($numpp < $this->config->item('slider_images')) {
-                for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
-                    $title = 'Pic '.$i;
-                    $images[] = [
-                        'item_img_id' => $i * (-1),
-                        'item_img_item_id' => $item_id,
-                        'item_img_name' => '',
-                        'item_img_thumb' => '',
-                        'item_img_order' => '',
-                        'item_img_big' => '',
-                        'item_img_medium' => '',
-                        'item_img_small' => '',
-                        'item_img_label' => '',
-                        'title' => $title,
-                    ];
+            if ($editmode==1) {
+                if ($numpp < $this->config->item('slider_images')) {
+                    for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
+                        $title = 'Pic '.$i;
+                        $images[] = [
+                            'item_img_id' => $i * (-1),
+                            'item_img_item_id' => $item_id,
+                            'item_img_name' => '',
+                            'item_img_thumb' => '',
+                            'item_img_order' => '',
+                            'item_img_big' => '',
+                            'item_img_medium' => '',
+                            'item_img_small' => '',
+                            'item_img_label' => '',
+                            'title' => $title,
+                        ];
+                    }
                 }
             }
             $imprints = $this->imprints_model->get_imprint_item($item_id);

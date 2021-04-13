@@ -5,7 +5,8 @@
         <?=$internalsearch_view?>
     </div>
     <div class="center-part">
-        &nbsp;
+        <?=$images_view?>
+        <?=$vendor_view?>
     </div>
     <div class="right-part">
         &nbsp;
