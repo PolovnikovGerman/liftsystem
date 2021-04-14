@@ -956,16 +956,16 @@ class Database extends MY_Controller
             $postdata = $this->input->post();
             $item_id = ifset($postdata, 'item_id', -1);
             $brand = ifset($postdata,'brand', 'SB');
-
+            $editmode = ifset($postdata,'editmode', 0);
             $this->load->model('items_model');
             if ($item_id>=0) {
-                $editmode = 0;
+                // $editmode = 0;
                 if ($item_id==0) {
                     $error = '';
                     $editmode = 1;
                     $data = $this->items_model->new_itemlist($brand);
                 } else {
-                    $res = $this->items_model->get_itemlist_details($item_id);
+                    $res = $this->items_model->get_itemlist_details($item_id, $editmode);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
@@ -1015,12 +1015,20 @@ class Database extends MY_Controller
                     'editmode' => $editmode,
                 ];
                 $vendor_view = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
+                // Prices
                 $prices_options = [
                     'editmode' => $editmode,
                     'item' => $data['item'],
                     'prices' => $data['prices'],
                 ];
                 $prices_view = $this->load->view('dbitemdetails/prices_view', $prices_options, TRUE);
+                // Kye Info
+                $key_options = [
+                    'item' => $data['item'],
+                    'colors' => $data['colors'],
+                    'editmode' => $editmode,
+                ];
+                $key_view = $this->load->view('dbitemdetails/keyinfo_view', $key_options, TRUE);
                 $options = [
                     'design_view' => $design_view,
                     'meta_view' => $meta_view,
@@ -1028,6 +1036,7 @@ class Database extends MY_Controller
                     'images_view' => $images_view,
                     'vendor_view' => $vendor_view,
                     'prices_view' => $prices_view,
+                    'key_view' => $key_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
             }

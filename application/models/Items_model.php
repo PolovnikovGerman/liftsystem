@@ -671,6 +671,28 @@ Class Items_model extends My_Model
             $this->load->model('imprints_model');
             $this->load->model('prices_model');
             $this->load->model('similars_model');
+            $this->load->model('itemcolors_model');
+            // Colors
+            $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
+            $colors = [];
+            $numpp=0;
+            foreach ($colorsrc as $itmcolor) {
+                $colors[] = [
+                    'item_color_id' => $itmcolor['item_color_id'],
+                    'item_color_itemid' => $itmcolor['item_color_itemid'],
+                    'item_color' => $itmcolor['item_color'],
+                ];
+                $numpp++;
+            }
+            if ($numpp < 9 ) {
+                for ($i=$numpp; $i < 9 ; $i++) {
+                    $colors[] = [
+                        'item_color_id' => $i*(-1),
+                        'item_color_itemid' => $item_id,
+                        'item_color' => '',
+                    ];
+                }
+            }
             // Vendor Info
             $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
             $vprices = [];
@@ -829,6 +851,7 @@ Class Items_model extends My_Model
             $similar = $this->similars_model->get_similar_items($item_id);
             $data=[
                 'item' => $item,
+                'colors' => $colors,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,

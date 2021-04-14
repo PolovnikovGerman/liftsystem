@@ -10,6 +10,6 @@
         <?=$prices_view?>
     </div>
     <div class="right-part">
-        &nbsp;
+        <?=$key_view?>
     </div>
 </div>

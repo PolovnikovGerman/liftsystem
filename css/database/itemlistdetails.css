@@ -127,7 +127,10 @@ input.itemname {
     width: 254px;
 }
 .itemdetails-body .chapterlabel.centerpart {
-    width: 576px;
+    width: 575px;
+}
+.itemdetails-body .chapterlabel.rightpart {
+    width: 375px;
 }
 .itemdetails-body > .left-part {
     width: 254px;
@@ -567,4 +570,91 @@ input.itemname {
 .priceinfoarea .maroon {
     background-color: #800000;
     color: #FFFFFF;
+}
+.itemdetails_keyinfo {
+    margin-bottom: 27px;
+    width: 375px;
+}
+.itemdetails_keyinfo .content-row {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.itemdetails_keyinfo .keyinfoarea-left {
+    margin-left: 9px;
+    margin-top: 4px;
+    width: 140px;
+}
+.itemdetails_keyinfo .keyinfoarea-right {
+    margin-top: 4px;
+    width: 220px;
+}
+
+.keydatlabel {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+}
+.keydatlabel.options {
+    margin-right: 3px;
+}
+.keydatlabel.size {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.note {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.material {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.description {
+    margin-left: 6px;
+}
+.keydatvalue {
+}
+.keydatvalue.options {
+    width: 80px;
+}
+.keydatvalue.colors {
+    width: 130px;
+}
+.keydatvalue.size {
+    width: 172px;
+}
+.keydatvalue.note {
+    width: 169px;
+}
+.keydatvalue.material {
+    width: 151px;
+}
+.keydatvalue.description {
+    width: 217px;
+}
+
+.keydatvalue .viewparam {
+    background: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    padding-left: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.keydatvalue .viewtextparam {
+    height: 89px;
+    line-height: 14px;
+    padding: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #fff;
 }
