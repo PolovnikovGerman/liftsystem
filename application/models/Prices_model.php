@@ -483,5 +483,41 @@ Class Prices_model extends My_Model
         return $res;
     }
 
+    public function get_itemlist_specprice($item_id) {
+        $this->db->select('item_price_id, item_price_print, item_sale_print, profit_print, item_price_setup, item_sale_setup, profit_setup');
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid', $item_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'item_price_id', 0)==0) {
+            // Not found
+            $res = [
+                'item_price_id' => -1,
+                'item_price_print' => 0,
+                'item_sale_print' => 0,
+                'profit_print' => 0,
+                'item_price_setup' => 0,
+                'item_sale_setup' => 0,
+                'profit_setup' => 0,
+                'profit_print_class' => '',
+                'profit_print_perc' => '',
+                'profit_setup_class' => '',
+                'profit_setup_perc' => '',
+            ];
+        } else {
+            $res['profit_print_class']=$res['profit_print_perc']=$res['profit_setup_class']=$res['profit_setup_perc']='';
+            if (floatval($res['item_sale_setup'])!=0) {
+                $profit_perc = round(($res['profit_print']/$res['item_sale_setup'])*100,1);
+                $res['profit_print_perc'] =$profit_perc.'%';
+                $res['profit_print_class'] = profitClass($profit_perc);
+            }
+            if (floatval($res['item_sale_setup'])!=0) {
+                $profit_perc = round($res['profit_setup']/$res['item_sale_setup']*100,1);
+                $res['profit_setup_perc'] = $profit_perc.'%';
+                $res['profit_setup_class'] = profitClass($profit_perc);
+            }
+        }
+        return $res;
+    }
+
 
 }

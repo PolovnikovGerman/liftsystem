@@ -773,13 +773,23 @@ Class Items_model extends My_Model
             $prices = [];
             $numpp = 1;
             foreach ($priceres as $price) {
+                $profitperc = $profitclass = '';
+                if (floatval($price['sale_price']) > 0) {
+                    $profitperc = round(($price['profit'] / ($price['sale_price']*$price['item_qty'])) * 100,1);
+                    $profitclass = profitClass($profitperc);
+                }
                 $prices[] = [
                     'promo_price_id' => $price['promo_price_id'],
                     'item_id' => $price['item_id'],
+                    'item_qty' => $price['item_qty'],
                     'price' => $price['price'],
                     'sale_price' => $price['sale_price'],
                     'profit' => $price['profit'],
                     'show_first' => $price['show_first'],
+                    'shipbox' => $price['shipbox'],
+                    'shipweight' => $price['shipweight'],
+                    'profit_class' => $profitclass,
+                    'profit_perc' => (empty($profitperc) ? $profitperc : $profitperc.'%'),
                 ];
                 $numpp++;
                 if ($numpp > $this->config->item('prices_val')) {
@@ -795,9 +805,26 @@ Class Items_model extends My_Model
                         'sale_price' => '',
                         'profit' => '',
                         'show_first' => '0',
+                        'shipbox' =>  '',
+                        'shipweight' =>  '',
+                        'profit_class' =>  '',
+                        'profit_perc' =>  '',
                     ];
                 }
             }
+            // Special price - setup, print
+            $specprice = $this->prices_model->get_itemlist_specprice($item_id);
+            $item['item_price_id'] = $specprice['item_price_id'];
+            $item['item_price_print'] = $specprice['item_price_print'];
+            $item['item_sale_print'] = $specprice['item_sale_print'];
+            $item['profit_print'] = $specprice['profit_print'];
+            $item['item_price_setup'] = $specprice['item_price_setup'];
+            $item['item_sale_setup'] = $specprice['item_sale_setup'];
+            $item['profit_setup'] = $specprice['profit_setup'];
+            $item['profit_print_class']=$specprice['profit_print_class'];
+            $item['profit_print_perc']=$specprice['profit_print_perc'];
+            $item['profit_setup_class']=$specprice['profit_setup_class'];
+            $item['profit_setup_perc']=$specprice['profit_setup_perc'];
             // Simular
             $similar = $this->similars_model->get_similar_items($item_id);
             $data=[

@@ -7,6 +7,7 @@
     <div class="center-part">
         <?=$images_view?>
         <?=$vendor_view?>
+        <?=$prices_view?>
     </div>
     <div class="right-part">
         &nbsp;

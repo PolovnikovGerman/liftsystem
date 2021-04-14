@@ -1015,12 +1015,19 @@ class Database extends MY_Controller
                     'editmode' => $editmode,
                 ];
                 $vendor_view = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
+                $prices_options = [
+                    'editmode' => $editmode,
+                    'item' => $data['item'],
+                    'prices' => $data['prices'],
+                ];
+                $prices_view = $this->load->view('dbitemdetails/prices_view', $prices_options, TRUE);
                 $options = [
                     'design_view' => $design_view,
                     'meta_view' => $meta_view,
                     'internalsearch_view' => $internalsearch_view,
                     'images_view' => $images_view,
                     'vendor_view' => $vendor_view,
+                    'prices_view' => $prices_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
             }
