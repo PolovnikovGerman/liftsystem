@@ -459,6 +459,18 @@ input.itemname {
 .pricedatlabel.displayprice {
     margin-left: 1px;
 }
+.pricedatlabel.shipbox {
+    margin-right: 6px;
+}
+.pricedatlabel.shipweight {
+    margin-right: 6px;
+}
+.pricedatlabel.profitval {
+    margin-right: 26px;
+}
+.pricedatlabel.profitperc {
+    margin-right: 29px;
+}
 .pricedatvalue {
 }
 .pricedatvalue.qty {
@@ -476,6 +488,26 @@ input.itemname {
     height: 26px;
     line-height: 23px;
 }
+.pricedatvalue.shipbox {
+    width: 26px;
+    margin-right: 20px;
+}
+.pricedatvalue.shipweight {
+    width: 46px;
+    height: 29px;
+    border-bottom: 1.5px solid #000000;
+    padding-right: 7px;
+}
+.pricedatvalue.profitperc {
+    width: 39px;
+    margin-right: 7px;
+    text-align: center;
+}
+.pricedatvalue.specprofit {
+    width: 48px;
+    margin-right: 7px;
+    text-align: center;
+}
 .pricedatvalue .viewparam {
     background: #ffffff;
     padding-left: 5px;
@@ -489,13 +521,50 @@ input.itemname {
     height: 22px;
     line-height: 22px;
 }
+.pricedatvalue.profitperc .viewparam, .pricedatvalue.specprofit .viewparam {
+    padding-left: 0;
+}
 .priceinfoarea .price_subtitle {
     font-size: 11px;
     color: #000000;
     margin-left: 87px;
     margin-top: -2px;
 }
-.pricehightline {
-    margin-left: 87px;
-    width: 380px;
+.priceinfoarea .priceshiplabel {
+    font-size: 13px;
+    font-style: italic;
+    line-height: 16px;
+    width: 85px;
+    border-bottom: 1.5px solid #000000;
+    margin-top: -3px;
+}
+/* Special classes for color TD */
+.priceinfoarea .white {
+    color: #222222;
+    background: #ffffff;
+}
+.priceinfoarea .orange {
+    color: #222222;
+    background: #ff7300;
+}
+.priceinfoarea .red {
+    color: #222222;
+    background: #ff0000;
+}
+.priceinfoarea .blue {
+    color: #FFFFFF;
+    background: #fe3cd7;
+    width: 47px;
+}
+.priceinfoarea .green {
+    color: #222222;
+    background: #49fd9e;
+}
+.priceinfoarea .black {
+    background: #000000;
+    color: #FFFFFF;
+}
+.priceinfoarea .maroon {
+    background-color: #800000;
+    color: #FFFFFF;
 }

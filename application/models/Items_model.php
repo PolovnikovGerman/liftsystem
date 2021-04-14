@@ -776,7 +776,7 @@ Class Items_model extends My_Model
                 $profitperc = $profitclass = '';
                 if (floatval($price['sale_price']) > 0) {
                     $profitperc = round(($price['profit'] / ($price['sale_price']*$price['item_qty'])) * 100,1);
-                    $profitclass = profitClass($profitperc);
+                    $profitclass = profit_bgclass($profitperc);
                 }
                 $prices[] = [
                     'promo_price_id' => $price['promo_price_id'],
