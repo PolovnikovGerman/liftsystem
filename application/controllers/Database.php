@@ -1029,6 +1029,7 @@ class Database extends MY_Controller
                     'editmode' => $editmode,
                 ];
                 $key_view = $this->load->view('dbitemdetails/keyinfo_view', $key_options, TRUE);
+                // Inprints
                 $inprintdata = $this->load->view('dbitemdetails/inprintdata_view',['inprints' => $data['inprints'],'editmode' => $editmode,], TRUE);
                 $inprint_options = [
                     'item' => $data['item'],
@@ -1037,6 +1038,17 @@ class Database extends MY_Controller
                     'inpritdata' => $inprintdata,
                 ];
                 $inprint_view = $this->load->view('dbitemdetails/inprintinfo_view', $inprint_options, TRUE);
+                // ADV info
+                if ($editmode==0) {
+                    $advdata = $this->load->view('dbitemdetails/advimage_view', ['item' => $data['item']], TRUE);
+                } else {
+                    $advdata = $this->load->view('dbitemdetails/advimage_edit', ['item' => $data['item']], TRUE);
+                }
+                $advoptions = [
+                    'advdata' => $advdata,
+                    'editmode' => $editmode,
+                ];
+                $adv_view = $this->load->view('dbitemdetails/advinfo_view', $advoptions, TRUE);
                 $options = [
                     'design_view' => $design_view,
                     'meta_view' => $meta_view,
@@ -1046,6 +1058,7 @@ class Database extends MY_Controller
                     'prices_view' => $prices_view,
                     'key_view' => $key_view,
                     'inprint_view' => $inprint_view,
+                    'adv_view' => $adv_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
             }

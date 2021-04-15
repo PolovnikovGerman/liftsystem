@@ -12,6 +12,6 @@
     <div class="right-part">
         <?=$key_view?>
         <?=$inprint_view?>
-
+        <?=$adv_view?>
     </div>
 </div>

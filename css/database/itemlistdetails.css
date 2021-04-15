@@ -746,3 +746,30 @@ input.itemname {
     text-align: center;
     width: 50px;
 }
+.itemdetails_advinfo {
+    margin-bottom: 16px;
+}
+.advinfoarea {
+    margin-top: 12px;
+    margin-left: 12px;
+    width: 357px;
+}
+.advinfolabel.advimgsize {
+    float: right!important;
+    font-size: 13px;
+    font-style: italic;
+    margin-right: 9px;
+    color: #000;
+}
+.advimagearea {
+    width: 100%;
+}
+.advimagearea .emptyimage {
+    height: 74px;
+    width: calc(100% - 2px);
+    border: 1px dashed #000000;
+    line-height: 74px;
+    text-align: center;
+    font-size: 13px;
+    color: #7c7c7c;
+}
