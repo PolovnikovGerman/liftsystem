@@ -11,5 +11,7 @@
     </div>
     <div class="right-part">
         <?=$key_view?>
+        <?=$inprint_view?>
+
     </div>
 </div>

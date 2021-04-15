@@ -1029,6 +1029,14 @@ class Database extends MY_Controller
                     'editmode' => $editmode,
                 ];
                 $key_view = $this->load->view('dbitemdetails/keyinfo_view', $key_options, TRUE);
+                $inprintdata = $this->load->view('dbitemdetails/inprintdata_view',['inprints' => $data['inprints'],'editmode' => $editmode,], TRUE);
+                $inprint_options = [
+                    'item' => $data['item'],
+                    'inprints' => $data['inprints'],
+                    'editmode' => $editmode,
+                    'inpritdata' => $inprintdata,
+                ];
+                $inprint_view = $this->load->view('dbitemdetails/inprintinfo_view', $inprint_options, TRUE);
                 $options = [
                     'design_view' => $design_view,
                     'meta_view' => $meta_view,
@@ -1037,6 +1045,7 @@ class Database extends MY_Controller
                     'vendor_view' => $vendor_view,
                     'prices_view' => $prices_view,
                     'key_view' => $key_view,
+                    'inprint_view' => $inprint_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
             }

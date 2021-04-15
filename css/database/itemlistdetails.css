@@ -658,3 +658,91 @@ input.itemname {
     text-overflow: ellipsis;
     background: #fff;
 }
+.itemdetails_inprintinfo {
+    margin-bottom: 26px;
+}
+.itemdetails_inprintinfo .inprintarea {
+    margin-top: 6px;
+    margin-left: 8px;
+    width: 360px;
+}
+.itemdetails_inprintinfo .inprintarea .content-row {
+    width: 100%;
+    margin-bottom: 4px;
+}
+.inprintarea .implintdatalabel {
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.implintdatalabel.cansell {
+    margin-right: 10px;
+}
+.implintdatalabel.selloptions {
+    margin-right: 13px;
+}
+.implintdatalabel.vectorfile {
+    margin-right: 7px;
+}
+.implintdatavalue {
+    height: 20px;
+    line-height: 20px;
+}
+.implintdatavalue.sellopt {
+    width: 20px;
+}
+.implintdatavalue.vectorfile {
+    color: #0000ff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+.imprintheader {
+}
+.imprintheader > div {
+    height: 22px;
+    line-height: 22px;
+    background: #b7b7b7;
+    text-align: center;
+}
+.inprintheadname {
+    width: 129px;
+}
+.inprintheadsize {
+    width: 179px;
+}
+.inprintheadview {
+    width: 50px;
+}
+.imprintcontent {
+    min-height: 136px;
+    width: 357px;
+    background: #ffffff;
+}
+.inprintdatarow {
+    width: 100%;
+}
+.inprintdatarow > div {
+    height: 16px;
+    line-height: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000000;
+}
+.inprintdatarow .inprintdataname {
+    padding-left: 4px;
+    width: 127px;
+    border-right: 2px solid #b7b7b7;
+}
+.inprintdatarow .inprintdatasize {
+    padding-left: 4px;
+    width: 177px;
+    border-right: 2px solid #b7b7b7;
+}
+.inprintdatarow .inprintdataview {
+    text-align: center;
+    width: 50px;
+}
