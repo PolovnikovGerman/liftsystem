@@ -296,6 +296,7 @@ class Test extends CI_Controller
                 $this->db->set('profit_print', $prices['profit_print']);
                 $this->db->set('profit_setup', $prices['profit_setup']);
                 $this->db->insert('sb_item_prices');
+                $minqty = 0;
                 if ($item['item_template']=='Stressball') {
                     foreach ($price_types as $price_type) {
                         if (!empty($prices['item_price_'.$price_type['type']]) || !empty($prices['item_sale_'.$price_type['type']])) {
@@ -305,6 +306,9 @@ class Test extends CI_Controller
                             $this->db->set('sale_price', $prices['item_sale_'.$price_type['type']]);
                             $this->db->set('profit', $prices['profit_'.$price_type['type']]);
                             $this->db->insert('sb_promo_price');
+                            if ($minqty==0) {
+                                $minqty = intval($price_type['type']);
+                            }
                         }
                     }
                 } else {
@@ -319,6 +323,23 @@ class Test extends CI_Controller
                         $this->db->set('sale_price', $promoprice['sale_price']);
                         $this->db->set('profit', $promoprice['profit']);
                         $this->db->insert('sb_promo_price');
+                    }
+                }
+                // Vendor item
+                $this->db->select('vendor_item_cost');
+                $this->db->from('sb_vendor_items');
+                $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                $vitemdat = $this->db->get()->row_array();
+                if (ifset($vitemdat,'vendor_item_cost',0)>0) {
+                    $this->db->select('count(vendorprice_id) as cnt');
+                    $this->db->from('sb_vendor_prices');
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $vpricedat = $this->db->get()->row_array();
+                    if ($vpricedat['cnt']==0) {
+                        $this->db->set('vendor_item_id', $item['vendor_item_id']);
+                        $this->db->set('vendorprice_qty', $minqty);
+                        $this->db->set('vendorprice_color', $vitemdat['vendor_item_cost']);
+                        $this->db->insert('sb_vendor_prices');
                     }
                 }
                 // Categories
