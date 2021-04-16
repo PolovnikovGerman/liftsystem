@@ -796,7 +796,7 @@ Class Items_model extends My_Model
             $numpp = 1;
             foreach ($priceres as $price) {
                 $profitperc = $profitclass = '';
-                if (floatval($price['sale_price']) > 0) {
+                if (floatval($price['sale_price']) > 0 && $price['profit']!==NULL) {
                     $profitperc = round(($price['profit'] / ($price['sale_price']*$price['item_qty'])) * 100,1);
                     $profitclass = profit_bgclass($profitperc);
                 }

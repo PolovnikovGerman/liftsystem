@@ -505,12 +505,12 @@ Class Prices_model extends My_Model
             ];
         } else {
             $res['profit_print_class']=$res['profit_print_perc']=$res['profit_setup_class']=$res['profit_setup_perc']='';
-            if (floatval($res['item_sale_setup'])!=0) {
+            if (floatval($res['item_sale_print'])!=0 && $res['profit_print']!==NULL) {
                 $profit_perc = round(($res['profit_print']/$res['item_sale_print'])*100,1);
                 $res['profit_print_perc'] =$profit_perc.'%';
                 $res['profit_print_class'] = profit_bgclass($profit_perc);
             }
-            if (floatval($res['item_sale_setup'])!=0) {
+            if (floatval($res['item_sale_setup'])!=0 && $res['profit_setup']!==NULL) {
                 $profit_perc = round($res['profit_setup']/$res['item_sale_setup']*100,1);
                 $res['profit_setup_perc'] = $profit_perc.'%';
                 $res['profit_setup_class'] = profit_bgclass($profit_perc);
