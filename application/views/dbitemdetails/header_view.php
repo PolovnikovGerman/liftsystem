@@ -1,3 +1,6 @@
+<input type="hidden" id="dbdetailid" value="<?=$item['item_id']?>"/>
+<input type="hidden" id="dbdetailsession" value="<?=$session_id?>"/>
+<input type="hidden" id="dbdetailbrand" value="<?=$item['brand']?>"/>
 <div class="content-row">
     <div class="itemlistdetails-header">
         <div class="itemlistdetails-left-header">
@@ -13,7 +16,7 @@
                     <input type="text" class="itemlistdetailsinpt itemnumber" data-item="item_number" value="<?=$item['item_number']?>"/>
                 <?php } ?>
             </div>
-            <div class="itemnameview">
+            <div class="<?=$editmode==0 ? 'itemnameview' : 'itemnameedit'?>">
                 <?php if ($editmode==0) { ?>
                     <?=$item['item_name']?>
                 <?php } else { ?>
@@ -26,7 +29,7 @@
             <?php if ($editmode==0) { ?>
                 <div class="itemlistactivatetbtn">Activate</div>
             <?php } else { ?>
-
+                <div class="itemlistsaveactionbtn">Save</div>
             <?php }?>
         </div>
     </div>

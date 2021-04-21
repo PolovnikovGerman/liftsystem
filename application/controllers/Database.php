@@ -980,6 +980,7 @@ class Database extends MY_Controller
                 $header_options = [
                     'editmode' => $editmode,
                     'item' => $data['item'],
+                    'session_id' => $session_id,
                 ];
                 $header_view = $this->load->view('dbitemdetails/header_view', $header_options, TRUE);
                 $mdata['header'] = $header_view;
@@ -989,6 +990,9 @@ class Database extends MY_Controller
                     'similar' => $data['similar'],
                     'editmode' => $editmode,
                 ];
+                if ($editmode==1) {
+                    $left_options['items'] = $this->items_model->get_item_list($item_id);
+                }
                 $design_view = $this->load->view('dbitemdetails/webdesign_view', $left_options, TRUE);
                 $meta_view = $this->load->view('dbitemdetails/metadata_view', $left_options, TRUE);
                 $internalsearch_view = $this->load->view('dbitemdetails/intersearch_view', $left_options, TRUE);;

@@ -10,7 +10,7 @@
             <?php if ($editmode==0) { ?>
                 <div class="viewparam-multirow"><?=$item['item_keywords']?></div>
             <?php } else { ?>
-                <textarea class="itemlistdetailsinpt" data-item="item_keywords"><?=$item['item_keywords']?></textarea>
+                <textarea class="itemlistdetailsinpt metadata" data-item="item_keywords"><?=$item['item_keywords']?></textarea>
             <?php } ?>
         </div>
     </div>
@@ -25,10 +25,12 @@
                     <div class="simulardataview"><?=$row['item_number']?></div>
                 <?php } ?>
             <?php } else { ?>
-                <select class="simulardataselect" data-item="<?=$row['item_similar_id']?>">
+                <select class="simulardataselect" data-item="item_similar_similar" data-idx="<?=$row['item_similar_id']?>">
                     <option value="">Select</option>
                     <?php foreach ($items as $itemrow) { ?>
-                        <option value="<?=$itemrow['item_id']?>"><?=$itemrow['item_name']?></option>
+                        <option value="<?=$itemrow['item_id']?>" <?=$itemrow['item_id']==$row['item_similar_similar'] ? 'selected="selected"' : ''?>>
+                            <?=$itemrow['item_name']?>
+                        </option>
                     <?php } ?>
                 </select>
             <?php } ?>

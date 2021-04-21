@@ -679,7 +679,6 @@ Class Items_model extends My_Model
             foreach ($colorsrc as $itmcolor) {
                 $colors[] = [
                     'item_color_id' => $itmcolor['item_color_id'],
-                    'item_color_itemid' => $itmcolor['item_color_itemid'],
                     'item_color' => $itmcolor['item_color'],
                 ];
                 $numpp++;
@@ -858,6 +857,7 @@ Class Items_model extends My_Model
                 'inprints' => $imprints,
                 'prices' => $prices,
                 'similar' => $similar,
+                'deleted' => [],
             ];
             $out['data'] = $data;
         }

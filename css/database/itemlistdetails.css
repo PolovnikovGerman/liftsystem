@@ -32,13 +32,6 @@
 #itemDetailsModal .modal-footer {
     padding: 0px;
 }
-input.itemlistdetailsinpt {
-    border: 1px solid #000000;
-    height: 19px;
-    padding-left: 5px;
-    font-size: 14px;
-    color: #000000;
-}
 .itemlistdetails-header div {
     float: left;
 }
@@ -56,26 +49,11 @@ input.itemlistdetailsinpt {
     font-style: italic;
     margin-right: 8px;
 }
-.itemstatusbtn {
-    border-radius: 7px;
-    cursor: pointer;
-}
-.itemstatusview.active, .itemstatusbtn.active {
-    background: #0000ff;
-    color: #ffffff;
-}
-.itemstatusview.inactive, .itemstatusbtn.inactive {
-    background: #ededed;
-    color: #000000;
-}
 .itemnumberview {
     color: #0000ff;
     font-size: 18px;
     font-weight: bold;
     margin-right: 7px;
-    width: 88px;
-}
-input.itemnumber {
     width: 88px;
 }
 .itemnameview {
@@ -84,8 +62,11 @@ input.itemnumber {
     color: #000000;
     margin-top: -4px;
 }
-input.itemname {
-    width: 144px;
+.itemnameedit {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: -6px;
 }
 .itemlistdetails-right-header {
     float: right!important;
@@ -99,6 +80,17 @@ input.itemname {
 }
 .itemlistactivatetbtn {
     background: #cd00d5;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px!important;
+    padding-left: 13px;
+    padding-right: 13px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+.itemlistsaveactionbtn {
+    background: #1B6633;
     color: #ffffff;
     font-size: 14px;
     height: 24px;
@@ -772,4 +764,64 @@ input.itemname {
     text-align: center;
     font-size: 13px;
     color: #7c7c7c;
+}
+/* EDIT */
+.itemstatusbtn {
+    border-radius: 7px;
+    cursor: pointer;
+}
+.itemstatusview.active, .itemstatusbtn.active {
+    background: #0000ff;
+    color: #ffffff;
+}
+.itemstatusview.inactive, .itemstatusbtn.inactive {
+    background: #ededed;
+    color: #000000;
+}
+input.itemlistdetailsinpt {
+    border: 1px solid #000000;
+    height: 19px;
+    padding-left: 5px;
+    font-size: 14px;
+    color: #000000;
+}
+select.itemlistdetailsselect {
+    background: #ffffff;
+    border: 1px solid #000000;
+    height: 20px;
+    padding-left: 5px;
+    font-size: 14px;
+    color: #000000;
+}
+textarea.itemlistdetailsinpt {
+    border: 1px solid #000000;
+    font-size: 14px;
+    color: #000000;
+    resize: none;
+}
+input.itemnumber {
+    width: 88px;
+}
+input.itemname {
+    width: 250px;
+}
+select.webdesign {
+    width: 90px;
+}
+input.metadata {
+    width: 243px;
+}
+textarea.metadata {
+    width: 243px;
+    height: 70px;
+}
+select.simulardataselect {
+    background: #ffffff;
+    border: 1px solid #000000;
+    height: 20px;
+    /* padding-left: 5px; */
+    font-size: 11px;
+    color: #000000;
+    width: 30%;
+    margin-right: 2%;
 }
