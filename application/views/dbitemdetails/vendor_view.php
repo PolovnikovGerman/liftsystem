@@ -55,7 +55,7 @@
             <?php if ($editmode==0) { ?>
                 <div class="viewparam"><?=$vendor_item['vendor_item_number']?></div>
             <?php } else { ?>
-                <input type="text" class="vendordatainpt vendoritemnum" data-item="vendor_item_number" value="<?=$vendor_item['vendor_item_number']?>">
+                <input type="text" class="vendornameinpt vendoritemnum" id="vendor_item_number" data-item="vendor_item_number" value="<?=$vendor_item['vendor_item_number']?>">
             <?php } ?>
         </div>
         <div class="vendorinfo-label">Vend Item Name:</div>
@@ -109,14 +109,14 @@
             <?php if ($editmode==0) { ?>
                 <div class="viewparam"><?=empty($vendor_item['vendor_item_exprint']) ? '&nbsp;' : MoneyOutput($vendor_item['vendor_item_exprint'])?></div>
             <?php } else { ?>
-                <input type="text" class="vendordatainpt vendorprice_special" data-item="vendor_item_exprint" value="<?=$vendor_item['vendor_item_exprint']?>">
+                <input type="text" class="vendorpriceinpt vendorprice_special" data-idx="<?=$item['item_price_id']?>" data-item="vendor_item_exprint" value="<?=$vendor_item['vendor_item_exprint']?>">
             <?php } ?>
         </div>
         <div class="vendorinfo-value vendoritemspecqty">
             <?php if ($editmode==0) { ?>
                 <div class="viewparam"><?=empty($vendor_item['vendor_item_setup']) ? '&nbsp;' : MoneyOutput($vendor_item['vendor_item_setup'])?></div>
             <?php } else { ?>
-                <input type="text" class="vendordatainpt vendorprice_special" data-item="vendor_item_setup" value="<?=$vendor_item['vendor_item_setup']?>">
+                <input type="text" class="vendorpriceinpt vendorprice_special" data-idx="<?=$item['item_price_id']?>" data-item="vendor_item_setup" value="<?=$vendor_item['vendor_item_setup']?>">
             <?php } ?>
         </div>
     </div>

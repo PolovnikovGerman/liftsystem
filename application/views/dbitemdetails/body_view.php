@@ -6,7 +6,9 @@
     </div>
     <div class="center-part">
         <?=$images_view?>
-        <?=$vendor_view?>
+        <div id="vendordataviewarea">
+            <?=$vendor_view?>
+        </div>
         <?=$prices_view?>
     </div>
     <div class="right-part">

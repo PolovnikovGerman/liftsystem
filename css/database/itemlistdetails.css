@@ -612,6 +612,11 @@
 .keydatvalue.colors {
     width: 130px;
 }
+.keydatvalue.colorsedit {
+    width: 130px;
+    max-height: 219px;
+    overflow-y: auto;
+}
 .keydatvalue.size {
     width: 172px;
 }
@@ -778,12 +783,17 @@
     background: #ededed;
     color: #000000;
 }
-input.itemlistdetailsinpt, input.vendordatainpt, input.vendorpriceinpt, input.vendornameinpt {
+input.itemlistdetailsinpt, input.vendordatainpt, input.vendorpriceinpt, input.vendornameinpt, input.pricevalinpt, input.shipvalinpt, input.itemcolorinpt {
     border: 1px solid #000000;
     height: 22px;
     padding-left: 5px;
     font-size: 14px;
     color: #000000;
+}
+input.itemcolorinpt {
+    height: 19px;
+    margin-top: 1px;
+    margin-bottom: 2px;
 }
 select.itemlistdetailsselect {
     background: #ffffff;
@@ -848,6 +858,45 @@ input.vendorprice_qty {
 }
 input.vendorprice_special {
     width: 48px;
+}
+input.price_qty {
+    width: 39px;
+}
+input.shipbox {
+    width: 26px;
+}
+input.shipweight {
+    width: 43px;
+}
+input.item_color {
+    width: 116px;
+}
+input.item_size {
+    width: 172px;
+}
+input.item_description2 {
+    width: 169px;
+}
+input.item_material {
+    width: 151px;
+}
+input.note_material {
+    width: 169px;
+}
+textarea.item_description1 {
+    width: 217px;
+    height: 108px;
+}
+.delimprint {
+    font-size: 15px;
+    cursor: pointer;
+    margin-right: 3px;
+}
+.newimprintloaction {
+    color: #0000ff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 19px;
 }
 /* Auto compliter */
 .autocompleter {

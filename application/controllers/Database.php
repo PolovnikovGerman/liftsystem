@@ -1020,10 +1020,12 @@ class Database extends MY_Controller
                 ];
                 $vendor_view = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
                 // Prices
+                $profit_view = $this->load->view('dbitemdetails/price_profit_view',['prices' => $data['prices'], 'item' => $data['item']], TRUE);
                 $prices_options = [
                     'editmode' => $editmode,
                     'item' => $data['item'],
                     'prices' => $data['prices'],
+                    'profit_view' => $profit_view,
                 ];
                 $prices_view = $this->load->view('dbitemdetails/prices_view', $prices_options, TRUE);
                 // Kye Info

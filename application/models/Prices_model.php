@@ -518,6 +518,62 @@ Class Prices_model extends My_Model
         }
         return $res;
     }
+    // Recalc profit for Promo Prices
+    public function recalc_promo_profit($vendor_prices, $item_prices) {
+        $priceidx = 0;
+        foreach ($item_prices  as $item_price) {
+            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
+            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
+                // Calc
+                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
+                $baseqty = intval($item_price['item_qty']);
+                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
+                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
+                foreach ($vendor_prices as $vendor_price) {
+                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
+                        $vendqty=intval($vendor_price['vendorprice_qty']);
+                        $vendprice = floatval($vendor_price['vendorprice_color']);
+                        if ($vendqty > 75) {
+                            $tt=1;
+                        }
+                    }
+                }
+
+                if ($vendprice>0) {
+                    $profit = ($basecost - $vendprice)*$baseqty;
+                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
+                    $item_prices[$priceidx]['profit']=round($profit, 0);
+                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
+                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
+                }
+            }
+            $priceidx++;
+        }
+        return $item_prices;
+    }
+    // Recalc inprint and setup Profit
+    public function recalc_setup_profit($item, $vendor_item) {
+        // Imprint
+        $item['profit_print']=$item['profit_print_class']=$item['profit_print_perc']='';
+        $item['profit_setup']=$item['profit_setup_class']=$item['profit_setup_perc']='';
+        $printbasecost = (floatval($item['item_sale_print'])>0 ? floatval($item['item_sale_print']) : floatval($item['item_price_print']));
+        if ($printbasecost > 0) {
+            $profit = round($printbasecost - floatval($vendor_item['vendor_item_exprint']),2);
+            $profitperc = $profit / $printbasecost * 100;
+            $item['profit_print']=$profit;
+            $item['profit_print_perc']=round($profitperc,0).'%';
+            $item['profit_print_class']=profit_bgclass($profitperc);
+        }
+        $setupbasecost = floatval($item['item_sale_setup'])>0 ? floatval($item['item_sale_setup']) : floatval($item['item_price_setup']);
+        if ($setupbasecost > 0) {
+            $profit = round($setupbasecost - floatval($vendor_item['vendor_item_setup']),2);
+            $profitperc = $profit / $setupbasecost * 100;
+            $item['profit_setup']=$profit;
+            $item['profit_setup_perc']=round($profitperc,0).'%';
+            $item['profit_setup_class']=profit_bgclass($profitperc);
+        }
+        return $item;
+    }
 
 
 }

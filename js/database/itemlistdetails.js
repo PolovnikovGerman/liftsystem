@@ -17,6 +17,15 @@ function init_itemlist_details_view() {
             if (response.errors=='') {
                 $("#itemDetailsModalLabel").empty().html(response.data.header);
                 $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                // First init
+                $("#sliderlist").easySlider({
+                    nextText : '',
+                    prevText : '',
+                    vertical : false
+                });
+                $(".displayprice").css('cursor','pointer');
+                $(".template-checkbox").css('cursor','pointer');
+                $(".implintdatavalue.sellopt").css('cursor','pointer');
                 init_itemlist_details_edit();
             } else {
                 show_error(response);
@@ -130,23 +139,48 @@ function init_itemlist_details_edit() {
         params.push({name: 'vendor_name', value :vendor_name});
         $.post('/dbitemdetails/vendor_check',params,function(response){
             if (response.errors=='') {
-                $("#vendor_item_vendor").val(response.data.vendor_id);
                 if (parseInt(response.data.showvendor)==1) {
-                    $("#vendor_name").val(response.data.vendor_name);
-                    $("#vendor_item_number").val(response.data.vendor_item_number);
-                    $("#vendor_item_number").attr('readonly',false);
-                    $("input.vendorinputvalues[data-fld='vendor_item_zipcode']").val(response.data.vendor_item_zipcode);
-                    $("textarea.vendorinputvalues[data-fld='vendor_item_notes']").val(response.data.vendor_item_notes);
-                    $(".vendorprices").empty().html(response.data.vendorprices);
+                    $("#vendordataviewarea").empty().html(response.data.vendor_view);
+                    $(".vendordatainpt[data-item='vendor_item_zipcode']").focus();
+                    init_itemlist_details_edit();
                 }
             } else {
                 show_error(response);
             }
         },'json');
+    });
 
-        // $.post('/itemdetails/chk_vendor',{'name':vendor_name},function(data){
-        //     $("#vendor_item_vendor").val(data.vendor_id);
-        // },'json');
+    $("#vendor_item_number").autocompleter({
+        source: '/dbitemdetails/search_vendor_item',
+        minLength: 3,
+        combine: function(params) {
+            var vendor_id = $('#vendor_item_vendor').val();
+            return {
+                q: params.query,
+                vendor_id: vendor_id
+            };
+        },
+        callback: function(value, index, object) {
+            if (object.id) {
+                $("#vendor_item_id").val(object.id);
+            }
+        }
+    });
+
+    $("#vendor_item_number").blur(function() {
+        // Check Item Number
+        var vendor_item_number = $("#vendor_item_number").val();
+        params = prepare_edit();
+        params.push({name: 'number', value: vendor_item_number});
+        $.post('/dbitemdetails/vendoritem_check',params,function(response){
+            if (response.errors=='') {
+                $("#vendordataviewarea").empty().html(response.data.vendor_view);
+                $(".vendordatainpt[data-item='vendor_item_name']").focus();
+                init_itemlist_details_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
 
     $(".vendordatainpt").unbind('change').change(function () {
@@ -162,8 +196,111 @@ function init_itemlist_details_edit() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".vendorpriceinpt").unbind('change').change(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        if (fldname=='vendor_item_exprint' || fldname=='vendor_item_setup') {
+            params.push({name: 'entity', value: 'vendor_specprice'});
+        }  else {
+            params.push({name: 'entity', value: 'vendor_price'});
+        }
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/change_price';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#profitareaview").empty().html(response.data.profit_view);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".pricevalinpt").unbind('change').change(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        if (fldname=='item_sale_setup' || fldname=='item_sale_print') {
+            params.push({name: 'entity', value: 'item_specprice'});
+        } else {
+            params.push({name: 'entity', value: 'item_price'});
+        }
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/change_price';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#profitareaview").empty().html(response.data.profit_view);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".shipvalinpt").unbind('change').change(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        params.push({name: 'entity', value: 'shipping'});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/change_parameter';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".displayprice").unbind('click').click(function () {
+        var params=prepare_edit();
+        var curidx = $(this).data('idx');
+        params.push({name: 'entity', value: 'priceshow'});
+        params.push({name: 'fld', value: 'show_first'});
+        params.push({name: 'newval', value: 1});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/change_parameter';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // Remove old checked
+                $(".displayprice").empty().html('<i class="fa fa-circle-o" aria-hidden="true"></i>');
+                $(".displayprice[data-idx='"+curidx+"']").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".itemcolorinpt").unbind('change').change(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        params.push({name: 'entity', value: 'colors'});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/change_parameter';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Print type
+    $(".implintdatavalue.sellopt").unbind('click').click(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: 1});
+        var url = '/dbitemdetails/change_parameter';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".implintdatavalue.sellopt[data-item='"+fldname+"']").empty().html(response.data.newcheck);
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
-
 }
 
 function prepare_edit() {

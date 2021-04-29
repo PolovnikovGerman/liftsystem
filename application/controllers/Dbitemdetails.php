@@ -25,11 +25,19 @@ class Dbitemdetails extends MY_Controller
                 $mdata['oldvalue'] = $res['oldvalue'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    if ($res['entity']=='item' && ($res['fld']=='item_sale' || $res['fld']=='item_new')) {
-                        if ($res['newval']==0) {
-                            $mdata['newcheck'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
-                        } else {
-                            $mdata['newcheck'] = '<i class="fa fa-square" aria-hidden="true"></i>';
+                    if ($res['entity']=='item') {
+                        if ($res['fld']=='item_sale' || $res['fld']=='item_new') {
+                            if ($res['newval']==0) {
+                                $mdata['newcheck'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+                            } else {
+                                $mdata['newcheck'] = '<i class="fa fa-square" aria-hidden="true"></i>';
+                            }
+                        }  elseif ($res['fld']=='sellblank' || $res['fld']=='sellcolor' || $res['fld']=='sellcolors') {
+                            if ($res['newval']==0) {
+                                $mdata['newcheck'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+                            } else {
+                                $mdata['newcheck'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                            }
                         }
                     }
 //                    if ($res['entity']=='item_images') {
@@ -91,14 +99,70 @@ class Dbitemdetails extends MY_Controller
                             'editmode' => 1,
                         ];
                         $mdata['vendor_view'] = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
-                        $mdata['vendor_item_number']=$vendor['vendor_item_number'];
-                        $mdata['vendor_item_name']=$vendor['vendor_item_name'];
-                        $mdata['vendor_item_cost']=$vendor['vendor_item_cost'];
-                        $mdata['vendor_item_exprint']=$vendor['vendor_item_exprint'];
-                        $mdata['vendor_item_setup']=$vendor['vendor_item_setup'];
-                        $mdata['vendor_item_notes']=$vendor['vendor_item_notes'];
-                        $mdata['vendor_name']=$vendor['vendor_name'];
                     }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function search_vendor_item() {
+        $vend_it_num=$this->input->get('q');
+        $vendor_id=$this->input->get('vendor_id');
+        $this->load->model('vendors_model');
+        $get_dat=$this->vendors_model->search_vendor_items($vend_it_num, $vendor_id);
+        echo json_encode($get_dat);
+    }
+
+    public function vendoritem_check() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->check_vendor_item($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $session_data = usersession($session_id);
+                    $item = $session_data['item'];
+                    $vendor = $session_data['vendor_item'];
+                    $vendor_price = $session_data['vendor_price'];
+                    $mdata['vendor_id']=$vendor['vendor_item_vendor'];
+                    // Vendor data
+                    $vendor_options = [
+                        'vendor_item' => $vendor,
+                        'vendor_price' => $vendor_price,
+                        'item' => $item,
+                        'editmode' => 1,
+                    ];
+                    $mdata['vendor_view'] = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function change_price() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->change_price($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $session_data = usersession($session_id);
+                    $prices = $session_data['prices'];
+                    $item = $session_data['item'];
+                    $mdata['profit_view'] = $this->load->view('dbitemdetails/price_profit_view', ['prices' => $prices, 'item' => $item], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

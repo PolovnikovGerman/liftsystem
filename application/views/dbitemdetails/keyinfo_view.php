@@ -7,7 +7,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparam"><?=$item['options']?></div>
                 <?php } else { ?>
-                    <select name="item_options" id="item_options" class="itemactiveselect" data-fld="options">
+                    <select class="itemlistdetailsselect itemoptions" data-item="options">
                         <option value="colors" <?= ($item['options'] == 'colors' ? 'selected="selected"' : '') ?>>Colors</option>
                         <option value="flavors" <?= ($item['options'] == 'flavors' ? 'selected="selected"' : '') ?> >Flavors</option>
                         <option value="sizes" <?= ($item['options'] == 'sizes' ? 'selected="selected"' : '') ?> >Sizes</option>
@@ -17,12 +17,12 @@
             </div>
         </div>
         <div class="content-row">
-            <div class="keydatvalue colors">
+            <div class="keydatvalue <?=$editmode==1? 'colorsedit' : 'colors'?>">
                 <?php foreach ($colors as $color) { ?>
                     <?php if ($editmode==0) { ?>
                         <div class="viewparam"><?=empty($color['item_color']) ? '&nbsp;' : $color['item_color']?></div>
                     <?php } else { ?>
-                        <input type="itemcolorinpt" data-colorid="<?=$color['item_color_id']?>" value="<?=$color['item_color']?>">
+                        <input type="text" class="itemcolorinpt item_color" data-idx="<?=$color['item_color_id']?>" data-item="item_color" value="<?=$color['item_color']?>">
                     <?php } ?>
                 <?php } ?>
             </div>
@@ -35,7 +35,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparam"><?=$item['item_size']?></div>
                 <?php } else { ?>
-                    <input type="text" class="itemlistdetailsinpt" data-item="item_size" value="<?=$item['item_size']?>">
+                    <input type="text" class="itemlistdetailsinpt item_size" data-item="item_size" value='<?=$item['item_size']?>'>
                 <?php } ?>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparam"><?=$item['item_description2']?></div>
                 <?php } else { ?>
-                    <input type="text" class="itemlistdetailsinpt" data-item="item_description2" value="<?=$item['item_description2']?>"/>
+                    <input type="text" class="itemlistdetailsinpt item_description2" data-item="item_description2" value="<?=$item['item_description2']?>"/>
                 <?php } ?>
             </div>
         </div>
@@ -55,7 +55,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparam"><?=$item['item_material']?></div>
                 <?php } else { ?>
-                    <input type="text" class="itemlistdetailsinpt" data-item="item_material" value="<?=$item['item_material']?>"/>
+                    <input type="text" class="itemlistdetailsinpt item_material" data-item="item_material" value="<?=$item['item_material']?>"/>
                 <?php } ?>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparam"><?=$item['note_material']?></div>
                 <?php } else { ?>
-                    <input type="text" class="itemlistdetailsinpt" data-item="note_material" value="<?=$item['note_material']?>"/>
+                    <input type="text" class="itemlistdetailsinpt note_material" data-item="note_material" value="<?=$item['note_material']?>"/>
                 <?php } ?>
             </div>
         </div>
@@ -77,7 +77,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewtextparam"><?=$item['item_description1']?></div>
                 <?php } else { ?>
-                    <textarea class="itemlistdetailsinpt" data-item="item_description1"><?=$item['item_description1']?></textarea>
+                    <textarea class="itemlistdetailsinpt item_description1" data-item="item_description1"><?=$item['item_description1']?></textarea>
                 <?php } ?>
             </div>
         </div>

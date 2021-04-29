@@ -177,7 +177,7 @@ Class Vendors_model extends My_Model
     }
 
     public function chk_vendor_item($vendor_it_num) {
-        $this->db->select('vi.*,v.vendor_name');
+        $this->db->select('vi.*,v.vendor_name, v.vendor_zipcode');
         $this->db->from('sb_vendor_items vi');
         $this->db->join("vendors v",'v.vendor_id=vi.vendor_item_vendor','left');
         $this->db->where('upper(vendor_item_number)',  strtoupper($vendor_it_num));

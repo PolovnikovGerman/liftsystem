@@ -297,6 +297,7 @@ class Test extends CI_Controller
                 $this->db->set('profit_setup', $prices['profit_setup']);
                 $this->db->insert('sb_item_prices');
                 $minqty = 0;
+                $showfl = 0;
                 if ($item['item_template']=='Stressball') {
                     foreach ($price_types as $price_type) {
                         if (!empty($prices['item_price_'.$price_type['type']]) || !empty($prices['item_sale_'.$price_type['type']])) {
@@ -305,6 +306,10 @@ class Test extends CI_Controller
                             $this->db->set('price', $prices['item_price_'.$price_type['type']]);
                             $this->db->set('sale_price', $prices['item_sale_'.$price_type['type']]);
                             $this->db->set('profit', $prices['profit_'.$price_type['type']]);
+                            if (intval($price_type['type'])>=150 && $showfl==0) {
+                                $this->db->set('show_first',1);
+                                $showfl=1;
+                            }
                             $this->db->insert('sb_promo_price');
                             if ($minqty==0) {
                                 $minqty = intval($price_type['type']);
@@ -322,6 +327,10 @@ class Test extends CI_Controller
                         $this->db->set('price', $promoprice['price']);
                         $this->db->set('sale_price', $promoprice['sale_price']);
                         $this->db->set('profit', $promoprice['profit']);
+                        if ($showfl==0) {
+                            $this->db->set('show_first',1);
+                            $showfl=1;
+                        }
                         $this->db->insert('sb_promo_price');
                     }
                 }

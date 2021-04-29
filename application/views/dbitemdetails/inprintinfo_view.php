@@ -27,6 +27,12 @@
                 <?php } ?>
             </div>
             <div class="implintdatalabel selloptions">2 Colors</div>
+            <?php if ($editmode==1) { ?>
+                <div class="newimprintloaction">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    <span>Add Location</span>
+                </div>
+            <?php } ?>
         </div>
         <div class="content-row">
             <div class="imprintheader">
