@@ -360,6 +360,141 @@ class Dbitemdetails_model extends MY_Model
         return $out;
     }
 
+    public function remove_inprint($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Area not found'];
+        $key = ifset($data,'idx',0);
+        $inprints = ifset($session_data, 'inprints', []);
+        $found = 0;
+        $newimprint = [];
+        $deleted = ifset($session_data,'deleted',[]);
+        foreach ($inprints as $inprint) {
+            if ($inprint['item_inprint_id']==$key) {
+                $found=1;
+                if ($key > 0) {
+                    $deleted[] = [
+                        'entity' => 'inprints',
+                        'key' => $key,
+                    ];
+                }
+            } else {
+                $newimprint[] = $inprint;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $session_data['inprints'] = $newimprint;
+            $session_data['deleted'] = $deleted;
+            usersession($session_id, $session_data);
+            $out['inprints'] = $newimprint;
+        }
+        return $out;
+    }
+
+    public function get_inprint_area($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Area not found'];
+        $key = ifset($data,'idx',0);
+        if ($key==0) {
+            $out['result']=$this->success_result;
+            usersession($session_id, $session_data);
+            $out['inprint'] = [
+                'item_inprint_id' => 0,
+                'item_inprint_item' => 0,
+                'item_inprint_location' => '',
+                'item_inprint_size' => '',
+                'item_inprint_view' => '',
+                'item_imprint_mostpopular' => '',
+            ];
+
+        } else {
+            $inprints = $session_data['inprints'];
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$key) {
+                    $out['result'] = $this->success_result;
+                    $out['inprint'] = $inprint;
+                    usersession($session_id, $session_data);
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function change_imprintlocation($postdata, $imprsession_data, $imprsession) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $imprint = $imprsession_data['imprint'];
+        $fld = ifset($postdata,'fld', 'emptyfield');
+        if (array_key_exists($fld, $imprint)) {
+            $newval =ifset($postdata,'newval','');
+            $imprint[$fld]=$newval;
+            $out['result']=$this->success_result;
+            $out['newfld']=$fld;
+            if ($fld=='item_inprint_view') {
+                $out['imprintview_src']=$imprint['item_inprint_view'];
+            }
+            $imprsession_data['imprint']=$imprint;
+            usersession($imprsession, $imprsession_data);
+        }
+        return $out;
+    }
+
+    public function save_imprint($imprsession_data, $imprsession, $session_data, $session_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $imprint = $imprsession_data['imprint'];
+        if (empty($imprint['item_inprint_location'])) {
+            $out['msg']='Empty Imprint Title';
+        } elseif (empty($imprint['item_inprint_size'])) {
+            $out['msg']='Empty Imprint Size';
+        } elseif (empty($imprint['item_inprint_view'])) {
+            $out['msg']='Empty Imprint View';
+        } else {
+            $out['msg']='Imprint Location Not Found';
+            $imprints = $session_data['inprints'];
+            $key = $imprint['item_inprint_id'];
+            if ($key==0) {
+                // New imprint area
+                $minidx = 0;
+                foreach ($imprints as $row) {
+                    if ($row['item_inprint_id'] < $minidx) {
+                        $minidx = $row['item_inprint_id'];
+                    }
+                }
+                $imprints[] = [
+                    'item_inprint_id' => ($minidx - 1),
+                    'item_inprint_item' => $imprint['item_inprint_item'],
+                    'item_inprint_location' => $imprint['item_inprint_location'],
+                    'item_inprint_size' => $imprint['item_inprint_size'],
+                    'item_inprint_view' => $imprint['item_inprint_view'],
+                    'item_imprint_mostpopular' => $imprint['item_imprint_mostpopular'],
+                ];
+                $out['result']=$this->success_result;
+                $out['imprints']=$imprints;
+                $session_data['inprints']=$imprints;
+                usersession($session_id, $session_data);
+                usersession($imprsession, NULL);
+            } else {
+                // Edit exist
+                $found = 0;
+                $idx = 0;
+                foreach ($imprints as $row) {
+                    if ($row['item_inprint_id']==$key) {
+                        $found = 1;
+                        $imprints[$idx]=$imprint;
+                        break;
+                    }
+                    $idx++;
+                }
+                if ($found==1) {
+                    $out['result']=$this->success_result;
+                    $out['imprints']=$imprints;
+                    $session_data['imprints']=$imprints;
+                    usersession($session_id, $session_data);
+                    usersession($imprsession, NULL);
+                }
+            }
+        }
+        return $out;
+    }
+
     // Check uniq number
     private function  _check_item_number($item_number, $item_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Item # not unique'];

@@ -170,4 +170,96 @@ class Dbitemdetails extends MY_Controller
         show_404();
     }
 
+    public function inprint_prepare() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->get_inprint_area($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $imprsession_id = 'imprint'.uniq_link(10);
+                    usersession($imprsession_id, ['imprint'=>$res['inprint']]);
+                    $options = [
+                        'session' => $imprsession_id,
+                        'imprint' => $res['inprint'],
+                    ];
+                    $mdata['content'] = $this->load->view('dbitemdetails/inprintlocation_add_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_imprintlocation() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $imprsession = ifset($postdata,'imprsession', 'defsess');
+            $imprsession_data = usersession($imprsession);
+            if (!empty($imprsession_data)) {
+                $res = $this->dbitemdetails_model->change_imprintlocation($postdata, $imprsession_data, $imprsession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    if ($res['newfld']=='item_inprint_view') {
+                        $options = [
+                            'item_inprint_view' => $res['imprintview_src'],
+                        ];
+                        $mdata['content']=$this->load->view('itemdetails/iteminprint_preview', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_imprintlocation() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $imprsession = ifset($postdata, 'imprsession','defsess');
+            $imprsession_data = usersession($imprsession);
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($imprsession_data) && !empty($session_data)) {
+                $res = $this->dbitemdetails_model->save_imprint($imprsession_data, $imprsession, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content']=$this->load->view('dbitemdetails/inprintdata_view',array('inprints'=>$res['imprints'],'editmode' => 1),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
+    public function remove_inprint() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->remove_inprint($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['content'] = $this->load->view('dbitemdetails/inprintdata_view',['inprints' => $res['inprints'],'editmode' => 1,], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 }

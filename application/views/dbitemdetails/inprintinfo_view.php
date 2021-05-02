@@ -30,7 +30,7 @@
             <?php if ($editmode==1) { ?>
                 <div class="newimprintloaction">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    <span>Add Location</span>
+                    <span>Add</span>
                 </div>
             <?php } ?>
         </div>
@@ -44,7 +44,12 @@
         </div>
         <div class="content-row">
             <div class="implintdatalabel vectorfile">Vector File: </div>
-            <div class="implintdatavalue vectorfile" data-link="<?=$item['item_vector_img']?>">click to open</div>
+            <?php if ($editmode==1) { ?>
+                <div class="implintdatavalue vectorfile" id="newvecorfile">click to open</div>
+            <?php } else { ?>
+                <div class="implintdatavalue vectorfile" data-link="<?=$item['item_vector_img']?>">click to open</div>
+            <?php } ?>
+
         </div>
     </div>
 </div>

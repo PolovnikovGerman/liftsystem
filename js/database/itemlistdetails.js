@@ -26,11 +26,53 @@ function init_itemlist_details_view() {
                 $(".displayprice").css('cursor','pointer');
                 $(".template-checkbox").css('cursor','pointer');
                 $(".implintdatavalue.sellopt").css('cursor','pointer');
+                init_vectorfile_upload();
                 init_itemlist_details_edit();
             } else {
                 show_error(response);
             }
         },'json');
+    });
+    $(".inprintdataview").unbind('click').click(function () {
+        var imgsrc = $(this).data('viewurl');
+        $.fancybox.open({
+            src  : imgsrc,
+            type : 'image',
+            autoSize : false
+        });
+    });
+}
+
+function init_vectorfile_upload() {
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background-image: none; width: 90px;">click to open</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('newvecorfile'),
+        action: '/utils/save_vectorfile',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        allowedExtensions: ['ai', 'AI'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $("li.qq-upload-success").hide();
+                var params=prepare_edit();
+                params.push({name: 'entity', value: 'item'});
+                params.push({name: 'fld', value: 'item_vector_img'});
+                params.push({name: 'newval', value: responseJSON.filename});
+                var url = '/dbitemdetails/change_parameter';
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            }
+        }
     });
 }
 
@@ -300,8 +342,144 @@ function init_itemlist_details_edit() {
                 show_error(response);
             }
         },'json');
+    });
+    // Imprint
+    $(".inprintdataview").unbind('click').click(function () {
+        var imgsrc = $(this).data('viewurl');
+        $.fancybox.open({
+            src  : imgsrc,
+            type : 'image',
+            autoSize : false
+        });
+    });
+    $(".delimprint").unbind('click').click(function(){
+        if (confirm('Do you want to remove Print Area?')==true) {
+            var params=prepare_edit();
+            params.push({name: 'idx', value: $(this).data('idx') });
+            var url  = "/dbitemdetails/remove_inprint";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".imprintcontent").empty().html(response.data.content);
+                    init_itemlist_details_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".newimprintloaction").unbind('click').click(function () {
+        var params=prepare_edit();
+        params.push({name: 'idx', value: 0});
+        var url = '/dbitemdetails/inprint_prepare';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('Edit Imprint Location');
+                $("#editModal").find('.modal-dialog').css('width','493px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                // $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+                dbitemlocation_manage();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".inprintdatanameedit").unbind('click').click(function () {
+        var params=prepare_edit();
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url = '/dbitemdetails/inprint_prepare';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('Edit Imprint Location');
+                $("#editModal").find('.modal-dialog').css('width','493px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                // $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+                dbitemlocation_manage();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    })
+
+}
+
+function dbitemlocation_manage() {
+    $("input.inprintlocationedit").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/dbitemdetails/change_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".savelocationedit").show();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".delinprintview").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        params.push({name: 'fld', value: 'item_inprint_view'});
+        params.push({name: 'newval', value: ''});
+        var url="/dbitemdetails/change_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".savelocationedit").show();
+                $("#imprintlocationviewarea").empty().html(response.data.content);
+                itemlocation_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("#newimprintlocationview").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('newimprintlocationview'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'imprsession', value: $("#imprsession").val()});
+                    params.push({name: 'fld', value: 'item_inprint_view'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/dbitemdetails/change_imprintlocation";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#imprintlocationviewarea").empty().html(response.data.content);
+                            $(".savelocationedit").show();
+                            itemlocation_manage();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    $(".savelocationedit").unbind('click').click(function () {
+        var params=prepare_edit();
+        params.push({name: 'imprsession', value: $("#imprsession").val()});
+        var url="/dbitemdetails/save_imprintlocation";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+                $(".imprintcontent").empty().html(response.data.content);
+                init_itemlist_details_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
+
 
 function prepare_edit() {
     var params = new Array();

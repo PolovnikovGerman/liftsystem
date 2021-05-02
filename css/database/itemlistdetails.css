@@ -720,8 +720,8 @@
     width: 100%;
 }
 .inprintdatarow > div {
-    height: 16px;
-    line-height: 16px;
+    height: 17px;
+    line-height: 17px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -734,6 +734,19 @@
     width: 127px;
     border-right: 2px solid #b7b7b7;
 }
+.inprintdatarow .delimprint {
+    font-size: 15px;
+    cursor: pointer;
+    margin-right: 3px;
+    width: 15px;
+    text-align: center;
+}
+.inprintdatarow .inprintdatanameedit {
+    padding-left: 4px;
+    width: 109px;
+    border-right: 2px solid #b7b7b7;
+    cursor: pointer;
+}
 .inprintdatarow .inprintdatasize {
     padding-left: 4px;
     width: 177px;
@@ -742,6 +755,7 @@
 .inprintdatarow .inprintdataview {
     text-align: center;
     width: 50px;
+    cursor: pointer;
 }
 .itemdetails_advinfo {
     margin-bottom: 16px;
@@ -887,11 +901,7 @@ textarea.item_description1 {
     width: 217px;
     height: 108px;
 }
-.delimprint {
-    font-size: 15px;
-    cursor: pointer;
-    margin-right: 3px;
-}
+
 .newimprintloaction {
     color: #0000ff;
     font-size: 16px;
@@ -901,4 +911,66 @@ textarea.item_description1 {
 /* Auto compliter */
 .autocompleter {
     width: 23%!important;
+}
+/* Edit Location area */
+.locationedit-body {
+    background: url(/img/itemdetails/imprinting-itemdetails-bg.png);
+    clear: both;
+    height: 315px;
+    margin: 0 auto;
+    padding: 17px;
+    width: 462px;
+}
+.locationedit-row {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.locationedit-rowlegend {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100px;
+    height: 22px;
+    line-height: 22px;
+}
+.locationedit-rowvalue {
+    float: left;
+    margin-left: 5px;
+    width: 230px;
+}
+input.inprintlocationedit {
+    border: 1px solid #000000;
+    font-size: 14px;
+    height: 22px;
+    width: 235px;
+}
+.inprintimage_preview {
+    float: left;
+    width: 150px;
+    height: 150px;
+}
+.inprintimage_preview img {
+    width: 100%;
+}
+.delinprintview {
+    float: left;
+    background: #000;
+    color: #fff;
+    width: 16px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    top: -150px;
+    left: 134px;
+}
+.savelocationedit {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 336px;
+    width: 88px;
 }

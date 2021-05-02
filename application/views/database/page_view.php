@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" style="z-index: 1100">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
