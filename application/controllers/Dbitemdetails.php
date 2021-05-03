@@ -38,6 +38,9 @@ class Dbitemdetails extends MY_Controller
                             } else {
                                 $mdata['newcheck'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
                             }
+                        } elseif ($res['fld']=='printlocat_example_img') {
+                            $session_data = usersession($session_id);
+                            $mdata['content'] = $this->load->view('dbitemdetails/advimage_edit', ['item' => $session_data['item']], TRUE);
                         }
                     }
 //                    if ($res['entity']=='item_images') {

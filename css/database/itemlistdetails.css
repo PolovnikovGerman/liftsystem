@@ -316,6 +316,7 @@
     color: #000000;
     background: #ffffff;
 }
+
 /*
 .itemdata .picture-none {
     position: relative;
@@ -344,6 +345,16 @@
     top: 20px;
 }
 */
+.imagesort {
+    width: 70px;
+    margin-left: 22px;
+    margin-top: 43px;
+    color: #0000ff;
+    text-align: center;
+}
+.imagesortarea {
+    cursor: pointer;
+}
 .itemdetails-vendorinfo {
     margin-bottom: 12px;
 }
@@ -784,6 +795,28 @@
     font-size: 13px;
     color: #7c7c7c;
 }
+.advimagearea .emptyimage.edit {
+    cursor: pointer;
+}
+.newadvimage {
+    width: 80px;
+    margin: 0 auto;
+    float: unset!important;
+    margin-top: 27px;
+}
+.advimagearea .image {
+    width: 100%;
+}
+.advimagearea .image img {
+    width: 100%;
+}
+.deladvimage {
+    margin-top: -11px;
+    float: right!important;
+    font-size: 15px;
+    cursor: pointer;
+}
+
 /* EDIT */
 .itemstatusbtn {
     border-radius: 7px;

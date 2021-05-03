@@ -401,6 +401,55 @@ function init_itemlist_details_edit() {
             }
         }, 'json');
     })
+    if ($("#newadvimage").length > 0 ) {
+        console.log('New ADV Image');
+        var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background-image: none; width: 90px;">empty</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '<ul class="qq-upload-drop-area"></ul>'+
+            '<div class="clear"></div></div>';
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('newadvimage'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            /* template: upload_templ, */
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=prepare_edit();
+                    params.push({name: 'fld', value: 'printlocat_example_img'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'entity', value: 'item'});
+                    var url="/dbitemdetails/change_parameter";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $(".advinfoarea").empty().html(response.data.content);
+                            init_itemlist_details_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    $(".deladvimage").unbind('click').click(function () {
+        var params=prepare_edit();
+        params.push({name: 'fld', value: 'printlocat_example_img'});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'entity', value: 'item'});
+        var url="/dbitemdetails/change_parameter";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".advinfoarea").empty().html(response.data.content);
+                init_itemlist_details_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 
 }
 
