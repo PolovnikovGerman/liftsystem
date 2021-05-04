@@ -246,6 +246,34 @@ class Dbitemdetails extends MY_Controller
         show_404();
     }
 
+    public function change_pictures() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->change_picture($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    // Images
+                    $slider_options = [
+                        'images' => $data['images'],
+                        'limit' => count($data['images']),
+                    ];
+                    $image_slider = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
+
+                    $mdata['content']=$this->load->view('dbitemdetails/inprintdata_view',array('inprints'=>$res['imprints'],'editmode' => 1),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
 
     public function remove_inprint() {
         if ($this->isAjax()) {

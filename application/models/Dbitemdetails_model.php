@@ -495,6 +495,29 @@ class Dbitemdetails_model extends MY_Model
         return $out;
     }
 
+    public function change_picture($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Image Not found'];
+        $images = ifset($session_data,'images', []);
+        $key = ifset($data,'idx', 0);
+        $found = 0;
+        $idx = 0;
+        foreach ($images as $image) {
+            if ($image['item_img_id']==$key) {
+                $found=1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $images[$idx]['item_img_name'] = ifset($data,'newval','');
+            $session_data['images'] = $images;
+            usersession($session_id, $session_data);
+            $out['result'] = $this->success_result;
+            $out['images'] = $images;
+        }
+        return $out;
+    }
+
     // Check uniq number
     private function  _check_item_number($item_number, $item_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Item # not unique'];

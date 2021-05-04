@@ -317,34 +317,34 @@
     background: #ffffff;
 }
 
-/*
-.itemdata .picture-none {
+.itemdetails-images .picture-none {
     position: relative;
     float:right;
     background-image: url("/img/itemdetails/picture-none.png");
     width: 77px;
     height: 77px;
+    background-color: #fff;
 }
-.itemdata .picture-none .qq-upload-button {
+.itemdetails-images .picture-none .qq-upload-button {
     background: none!important;
     position: relative;
     top: 20px;
 }
-.itemdata .close-x {
+.itemdetails-images .remove-slideimage {
     float:right;
     padding-right: 5px;
     position: relative;
     cursor: pointer;
 }
-.itemdata .pic {
+.itemdetails-images .pic {
     padding-left: 9px;
 }
-.itemdata .pic .qq-upload-button {
+.itemdetails-images .pic .qq-upload-button {
     background: none!important;
     position: relative;
     top: 20px;
 }
-*/
+
 .imagesort {
     width: 70px;
     margin-left: 22px;

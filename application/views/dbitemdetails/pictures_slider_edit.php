@@ -10,14 +10,22 @@
                     <div class="imagetitle">
                         <?= $row['title'] ?>
                     </div>
-                    <div class="pictures" style="background-image: url('<?= $row['item_img_name'] ?>'); background-size: contain; background-repeat: no-repeat;">
-                        <div class="close-x" data-idx="<?=$row['item_img_id']?>">
-                            <img src="/img/itemdetails/x.png"/>
+                    <?php if (empty($row['item_img_name'])) { ?>
+                        <div class="picture-none" id="uplimg<?= $row['item_img_id'] ?>" data-idx="<?= $row['item_img_id'] ?>">
+                            <div class="pic" >
+                                &nbsp;
+                            </div>
                         </div>
-                        <div class="pic" id="uplimg<?= $row['item_img_id'] ?>" data-idx="<?= $row['item_img_id'] ?>">
-                            &nbsp;
+                    <?php } else { ?>
+                        <div class="pictures" style="background-image: url('<?= $row['item_img_name'] ?>'); background-size: contain; background-repeat: no-repeat;">
+                            <div class="remove-slideimage" data-idx="<?=$row['item_img_id']?>">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="pic" id="uplimg<?= $row['item_img_id'] ?>" data-idx="<?= $row['item_img_id'] ?>">
+                                &nbsp;
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                     <div class="picturename">
                         <div class="viewparam"><?= $row['item_img_label'] ?></div>
                     </div>

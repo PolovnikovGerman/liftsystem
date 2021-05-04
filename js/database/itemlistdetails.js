@@ -449,7 +449,39 @@ function init_itemlist_details_edit() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    // Pictures
+    $(".picture-none").each(function(){
+        var img = $(this).prop('id');
+        var item = $(this).data('idx');
+        var uploader = new qq.FileUploader({
+            element: document.getElementById(img),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=prepare_edit();
+                    params.push({name: 'entity', value: 'item_images'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'src'});
+                    params.push({name: 'idx', value: item});
+                    var url="/dbitemdetails/change_pictures";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#pictures_slade").empty().html(response.data.content);
+                            init_itemdetails_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    });
 
 }
 
