@@ -266,4 +266,29 @@ class Test extends CI_Controller
 
     }
 
+    public function billing_report() {
+        $this->db->select('o.order_id, o.order_num, o.customer_name, b.customer_name as billig_name, b.company');
+        $this->db->select('b.address_1, b.address_2, b.city, s.state_code, b.zip, tc.country_name, o.revenue, o.order_itemnumber, o.order_items');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_billings b','b.order_id=o.order_id');
+        $this->db->join('ts_states s', 'b.state_id = s.state_id','left');
+        $this->db->join('ts_countries tc', 'b.country_id = tc.country_id','left');
+        $this->db->where('o.is_canceled',0);
+        $this->db->order_by('o.order_num');
+        $results = $this->db->get()->result_array();
+        $file=$this->config->item('upload_path_preload').'billing_report.csv';
+        @unlink($file);
+        $fh=fopen($file,'w+');
+        $rowdat='Order#;Customer;Billing Name;Billing Company;Billing Address 1;Billing Address 2;Billing City;Billing State;Billing Zip;Billing Country;Revenue of order;Item #;Item Description;'.PHP_EOL;
+        fwrite($fh, $rowdat);
+        foreach ($results as $result) {
+            $msg=$result['order_num'].';"'.$result['customer_name'].'";"'.$result['billig_name'].'";"'.$result['company'].'";"'.$result['address_1'];
+            $msg.='";"'.$result['address_2'].'";"'.$result['city'].'";"'.$result['state_code'].'";"'.$result['zip'].'";"'.$result['country_name'];
+            $msg.='";"'.$result['revenue'].'";"'.$result['order_itemnumber'].'";"'.$result['order_items'].'"'.PHP_EOL;
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
+        echo 'File '.$file.' ready '.PHP_EOL;
+    }
+
 }
