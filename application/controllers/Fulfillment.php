@@ -45,7 +45,7 @@ class Fulfillment extends MY_Controller
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#vendorsview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/fulfillment/_vendorsview.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link']=='#fullfilstatusview') {

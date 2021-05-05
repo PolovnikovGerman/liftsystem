@@ -1,1 +1,1 @@
-<?php
+<span>EDIT VENDOR</span>

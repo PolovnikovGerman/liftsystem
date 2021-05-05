@@ -769,9 +769,9 @@ class Database extends MY_Controller
             $this->load->model('vendors_model');
             $vendors=$this->vendors_model->get_vendors_list($options);
             if (count($vendors)==0) {
-                $content=$this->load->view('fulfillment/vendors_emptydata_view', array(), TRUE);
+                $content=$this->load->view('vendorcenter/emptydata_view', array(), TRUE);
             } else {
-                $content=$this->load->view('fulfillment/vendor_tabledat_view',array('vendors'=>$vendors),TRUE);
+                $content=$this->load->view('vendorcenter/datalist_view',array('vendors'=>$vendors),TRUE);
             }
             $mdata['content']=$content;
             $this->ajaxResponse($mdata, $error);
@@ -805,23 +805,38 @@ class Database extends MY_Controller
             $vendor_id = ifset($postdata, 'vendor_id');
             if (!empty($vendor_id)) {
                 $this->load->model('vendors_model');
-                $this->load->model('calendars_model');
-                $calendars=$this->calendars_model->get_calendars();
                 if ($vendor_id<0) {
                     $error = '';
                     $data = $this->vendors_model->add_vendor();
                     $mdata['title'] = 'New Vendor';
+                    $editmode = 1;
                 } else {
                     $res = $this->vendors_model->get_vendor($vendor_id);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
-                        $data = $res['data'];
-                        $mdata['title'] = 'Change Vendor '.$data['vendor_name'];
+                        $data = [
+                            'vendor' => $res['data'],
+                            'vendor_contacts' => $res['vendor_contacts'],
+                            'vendor_docs' => $res['vendor_docs'],
+                        ];
+                        // $mdata['title'] = 'Change Vendor '.$datap[['vendor_name'];
+                        $editmode = 0;
                     }
                 }
                 if ($error =='') {
-                    $mdata['content']=$this->load->view('fulfillment/vendor_formdata_view',array('vendor'=>$data,'calendars'=>$calendars),TRUE);
+                    $session_id = uniq_link(20);
+                    usersession($session_id, $data);
+                    $options = [
+                        'vendor'=>$data['vendor'],
+                        'vendor_contacts' => $data['vendor_contacts'],
+                        'vendor_docs' => $data['vendor_docs'],
+                        'editmode' => $editmode,
+                        'session' => $session_id,
+                    ];
+                    $mdata['header'] = $this->load->view('vendorcenter/header_view', $options, TRUE);
+                    $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
+                    $mdata['editmode'] = $editmode;
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1371,13 +1386,14 @@ class Database extends MY_Controller
         $this->load->model('vendors_model');
         $totals=$this->vendors_model->get_count_vendors();
         $options=array(
-            'perpage'=> 250,
+            'perpage'=> 100,
             'order'=>'vendor_name',
             'direc'=>'asc',
             'total'=>$totals,
             'curpage'=>0,
         );
         $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
 

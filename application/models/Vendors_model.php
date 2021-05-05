@@ -207,9 +207,9 @@ Class Vendors_model extends My_Model
     }
 
     public function get_vendors_list($options) {
-        $this->db->select('v.*, c.calendar_name');
+        $this->db->select('v.*, c.country_name');
         $this->db->from('vendors v');
-        $this->db->join('calendars c','c.calendar_id=v.calendar_id','left');
+        $this->db->join('ts_countries c','c.country_id=v.country_id','left');
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);
@@ -224,30 +224,83 @@ Class Vendors_model extends My_Model
                 $this->db->order_by($options['order_by']);
             }
         }
-        $res=$this->db->get()->result_array();
+        $results=$this->db->get()->result_array();
+        $res = [];
+        $start = ifset($options, 'offset', 0);
+        foreach ($results as $result) {
+            $start++;
+            $result['numpp'] = $start;
+            $result['country_name'] = ($result['country_name']=='United States' ? 'USA' : $result['country_name']);
+            $this->db->select('count(vendor_item_id) as cnt');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_vendor', $result['vendor_id']);
+            $qty = $this->db->get()->row_array();
+            $result['item_qty'] = $qty['cnt'];
+            $this->db->select('contact_name, contact_phone, contact_cellphone, contact_email');
+            $this->db->from('vendor_contacts');
+            $this->db->where('vendor_id', $result['vendor_id']);
+            $contact = $this->db->get()->row_array();
+            $result['contact_name'] = ifset($contact, 'contact_name','');
+            $result['contact_phone'] = ifset($contact, 'contact_phone','');
+            $result['contact_email'] = ifset($contact, 'contact_email','');
+            $res[]= $result;
+        }
         return $res;
     }
 
     public function add_vendor() {
         $vendor=array(
-            'vendor_id'=>0,
-            'vendor_name'=>'',
-            'vendor_zipcode'=>'',
-            'calendar_id'=>'',
+            'vendor_id' => 0,
+            'calendar_id' => $this->config->item('bank_calendar'),
+            'vendor_name' => '',
+	        'vendor_zipcode' => '',
+	        'vendor_asinumber' => '',
+            'payinclude' => 0,
+	        'payinclorder' => 0,
+	        'vendor_phone' => '',
+	        'vendor_email' => '',
+	        'vendor_website' => '',
+	        'vendor_type' => 'Supplier',
+	        'country_id' => '',
+	        'alt_name' => '',
+	        'our_account_number' => '',
+	        'address text' => '',
+	        'shipping_pickup' => '',
+	        'payment_accept_visa' => 0,
+	        'payment_accept_amex' => 0,
+	        'payment_accept_terms' => 0,
+	        'payment_accept_check' => 0,
+	        'payment_accept_wire' => 0,
+	        'po_note' => '',
+	        'internal_po_note' => '',
+	        'vendor_status' => 1,
+	        'vendor_slug' => '',
         );
-        return $vendor;
+        return [
+            'vendor' => $vendor,
+            'vendor_contacts' => [],
+            'vendor_docs' => [],
+        ];
     }
 
     public function get_vendor($vendor_id)
     {
-        $out = ['result' => $this->error_result, 'msg' => 'Vendor not fpund'];
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor not found'];
         $this->db->select('*');
         $this->db->from('vendors');
         $this->db->where('vendor_id', $vendor_id);
         $vendor = $this->db->get()->row_array();
-        if (isset($vendor['vendor_id'])) {
+        if (ifset($vendor, 'vendor_id',0)>0) {
             $out['result'] = $this->success_result;
             $out['data'] = $vendor;
+            $this->db->select('*');
+            $this->db->from('vendor_contacts');
+            $this->db->where('vendor_id', $vendor_id);
+            $out['vendor_contacts'] = $this->db->get()->result_array();
+            $this->db->select('*');
+            $this->db->from('vendor_docs');
+            $this->db->where('vendor_id', $vendor_id);
+            $out['vendor_docs'] = $this->db->get()->result_array();
         }
         return $out;
     }
