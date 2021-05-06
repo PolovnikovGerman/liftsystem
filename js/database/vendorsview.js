@@ -105,9 +105,9 @@ function edit_vendor(vendor_id) {
     var url="/database/vendor_edit";
     $.post(url,{'vendor_id':vendor_id},function(response){
         if (response.errors=='') {
-            $("#vendorDetailsModal").empty().html(response.data.header);
+            $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
-            $("#vendorDetailsModal").find('div.modal-dialog').css('width','1345px');
+            $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
             $("#vendorDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
             // init_itemlist_details_view();
 

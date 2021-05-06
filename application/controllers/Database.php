@@ -827,13 +827,21 @@ class Database extends MY_Controller
                 if ($error =='') {
                     $session_id = uniq_link(20);
                     usersession($session_id, $data);
+
+                    $this->load->model('shipping_model');
                     $options = [
                         'vendor'=>$data['vendor'],
                         'vendor_contacts' => $data['vendor_contacts'],
                         'vendor_docs' => $data['vendor_docs'],
                         'editmode' => $editmode,
                         'session' => $session_id,
+                        'countries' => $this->shipping_model->get_countries_list(),
                     ];
+                    $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
+                    $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
+                    $options['contacts'] = $contacts_view;
+                    $options['docs'] = $docs_view;
+
                     $mdata['header'] = $this->load->view('vendorcenter/header_view', $options, TRUE);
                     $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
                     $mdata['editmode'] = $editmode;

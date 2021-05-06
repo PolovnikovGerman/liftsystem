@@ -1,34 +1,34 @@
 <input type="hidden" id="session" value="<?=$session?>"/>
 <input type="hidden" id="vendorid" value="<?=$vendor['vendor_id']?>"
 <div class="content-row">
-    <div class="details-header">
-        <div class="details-left-header">
+    <div class="vendordetails-header">
+        <div class="vendordetails-left-header">
             <?php if ($editmode==0) { ?>
-                <div class="statusview <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>"><?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?></div>
+                <div class="vendorstatusview <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>"><?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?></div>
             <?php } else { ?>
-                <div class="statusbtn <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>"><?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?></div>
+                <div class="vendorstatusbtn <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>"><?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?></div>
             <?php } ?>
-            <div class="numberview">
+            <div class="vendornumberview">
                 <?php if ($editmode==0) { ?>
-                    <?=$vendor['vendor_slug']?>
+                    <?=empty($vendor['vendor_slug']) ? '&nbsp;' : $vendor['vendor_slug']?>
                 <?php } else { ?>
-                    <input type="text" class="detailsinpt slug" data-item="vendor_slug" value="<?=$vendor['vendor_slug']?>"/>
+                    <input type="text" class="vendordetailsinpt slug" data-item="vendor_slug" value="<?=$vendor['vendor_slug']?>"/>
                 <?php } ?>
             </div>
-            <div class="<?=$editmode==0 ? 'nameview' : 'nameedit'?>">
+            <div class="<?=$editmode==0 ? 'vendornameview' : 'vendornameedit'?>">
                 <?php if ($editmode==0) { ?>
-                    <?=$vendor['vendor_name']?>
+                    <?=empty($vendor['vendor_name']) ? '&nbsp;' : $vendor['vendor_name']?>
                 <?php } else { ?>
-                    <input type="text" class="detailsinpt vendorname" data-item="vendor_name" value="<?=$vendor['vendor_name']?>"/>
+                    <input type="text" class="vendordetailsinpt vendorname" data-item="vendor_name" value="<?=$vendor['vendor_name']?>"/>
                 <?php } ?>
             </div>
         </div>
-        <div class="details-right-header">
-            <div class="modeview"><?=$editmode==0 ? 'View mode' : 'Edit mode'?></div>
+        <div class="vendordetails-right-header">
+            <div class="vendormodeview"><?=$editmode==0 ? 'View mode' : 'Edit mode'?></div>
             <?php if ($editmode==0) { ?>
-                <div class="activatetbtn">Activate</div>
+                <div class="vendoractivatetbtn">Activate</div>
             <?php } else { ?>
-                <div class="saveactionbtn">Save</div>
+                <div class="vendorsaveactionbtn">Save</div>
             <?php }?>
         </div>
     </div>

@@ -286,8 +286,9 @@ Class Vendors_model extends My_Model
     public function get_vendor($vendor_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Vendor not found'];
-        $this->db->select('*');
-        $this->db->from('vendors');
+        $this->db->select('v.*, c.country_name');
+        $this->db->from('vendors v');
+        $this->db->join('ts_countries c','c.country_id=v.country_id','left');
         $this->db->where('vendor_id', $vendor_id);
         $vendor = $this->db->get()->row_array();
         if (ifset($vendor, 'vendor_id',0)>0) {
