@@ -78,6 +78,8 @@
 }
 .vendordataview .datatitle {
     margin-top: 5px;
+    background: #545454;
+    color: #ffffff;
 }
 .vendordataview .datatitle div {
     height: 29px;
@@ -139,7 +141,10 @@
     width: 82px;
 }
 .vendordataview .datatitle .name {
-    width: 142px;
+    width: 132px;
+    margin: 5px;
+    height: 19px;
+    line-height: 19px;
 }
 .vendordataview .datatitle .country {
     width: 82px;
