@@ -199,9 +199,15 @@ Class Vendors_model extends My_Model
 
     }
 
-    public function get_count_vendors() {
+    public function get_count_vendors($options = []) {
         $this->db->select('count(vendor_id) as cnt');
         $this->db->from('vendors');
+        if (ifset($options, 'status',0) > 0) {
+            $this->db->where('vendor_status', ($options['status']==2 ? 0 : $options['status']));
+        }
+        if (ifset($options,'search','')!=='') {
+            $this->db->like('concat(coalesce(vendor_name,\'\'), coalesce(alt_name,\'\'), coalesce(vendor_slug,\'\'))', $options['search']);
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -210,6 +216,12 @@ Class Vendors_model extends My_Model
         $this->db->select('v.*, c.country_name');
         $this->db->from('vendors v');
         $this->db->join('ts_countries c','c.country_id=v.country_id','left');
+        if (ifset($options, 'status',0) > 0) {
+            $this->db->where('vendor_status', ($options['status']==2 ? 0 : $options['status']));
+        }
+        if (ifset($options,'search','')!=='') {
+            $this->db->like('concat(coalesce(vendor_name,\'\'), coalesce(alt_name,\'\'), coalesce(vendor_slug,\'\'))', $options['search']);
+        }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);

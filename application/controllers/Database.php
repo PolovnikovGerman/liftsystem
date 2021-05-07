@@ -750,6 +750,23 @@ class Database extends MY_Controller
         }
     }
 
+    public function vendor_search() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata=$this->input->post();
+            $options=[
+                'status' => ifset($postdata,'vendor_status',0),
+                'search' => ifset($postdata, 'search',''),
+            ];
+            $this->load->model('vendors_model');
+            $mdata['totals'] = $this->vendors_model->get_count_vendors($options);
+            $mdata['total_txt'] = QTYOutput($mdata['totals']).' Records';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function vendordata() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -760,11 +777,15 @@ class Database extends MY_Controller
             $offset = $page_num * $limit;
             $order_by = ifset($postdata,'order_by','vendor_name');
             $direction = ifset($postdata, 'direction','asc');
+            $status = ifset($postdata,'vendor_status', 0);
+            $search = ifset($postdata,'search', '');
             $options = [
                 'offset' => $offset,
                 'limit' => $limit,
                 'order_by' => $order_by,
                 'direct' => $direction,
+                'status' => $status,
+                'search' => $search,
             ];
             $this->load->model('vendors_model');
             $vendors=$this->vendors_model->get_vendors_list($options);

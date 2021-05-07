@@ -3,6 +3,40 @@ function init_vendorpage() {
     $(".newvendor").live('click',function(){
         edit_vendor(-1);
     });
+    init_vendor_search();
+}
+
+function init_vendor_search() {
+    $("#filterdata").unbind('change').change(function () {
+        search_vendors();
+    });
+    $(".datasearchbtn").unbind('click').click(function () {
+        search_vendors();
+    });
+    $(".datacleanbtn").unbind('click').click(function () {
+        $("#vedorsearch").val('');
+        search_vendors();
+    });
+    $("#vedorsearch").keypress(function(event){
+        if (event.which == 13) {
+            search_vendors();
+        }
+    });
+}
+
+function search_vendors() {
+    var params = prepare_list_filter();
+    var url='/database/vendor_search';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#totalvend").val(response.data.totals);
+            $(".totaldata").empty().html(response.data.total_txt);
+            $("#curpagevend").val(0);
+            initVendorPagination();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function initVendorPagination() {
@@ -32,7 +66,7 @@ function initVendorPagination() {
 
 function pageVendorCallback(page_index) {
     // var perpage = itemsperpage;
-    var params = new Array();
+    var params = prepare_list_filter();
     params.push({name: 'offset', value: page_index});
     params.push({name: 'limit', value: $("#perpagevend").val()});
     params.push({name: 'order_by', value: $("#orderbyvend").val()});
@@ -52,6 +86,13 @@ function pageVendorCallback(page_index) {
             }
         }
     },'json');
+}
+
+function prepare_list_filter() {
+    var params = new Array();
+    params.push({name: 'vendor_status', value: $("#filterdata").val()});
+    params.push({name: 'search', value: $("#vedorsearch").val()});
+    return params;
 }
 
 function init_vendor_content() {
