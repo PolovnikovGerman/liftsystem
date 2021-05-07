@@ -366,7 +366,10 @@
     font-size: 13px;
     font-weight: bold;
     padding-left: 7px;
-    padding-right: 25px;
+    padding-right: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .vendordetails-body .viewparamvalue.type {
     width: 153px;
@@ -378,7 +381,7 @@
     width: 180px;
 }
 .vendordetails-body .viewparamvalue.asinumber {
-    width: 50px;
+    width: 55px;
 }
 .vendordetails-body .viewparamvalue.ouraccount {
     width: 97px;
@@ -390,6 +393,7 @@
 .vendordetails-body .viewparamvalue.address {
     width: 186px;
     height: 74px;
+    white-space: normal;
 }
 .vendordetails-body .poinfo {
     margin-bottom: 15px;
@@ -401,6 +405,7 @@
 .vendordetails-body .viewparamvalue.shippingpickup {
     width: 182px;
     height: 72px;
+    white-space: normal;
 }
 .vendordetails-body .viewparamvalue.zip {
     width: 52px;
@@ -423,6 +428,7 @@
     width: 248px;
     height: 52px;
     margin-left: 10px;
+    white-space: normal;
 }
 .vendordetails-body .contacts_info {
     width: 987px;
@@ -503,6 +509,32 @@
 .vendordetails-body .chapterlabel.docsinfo {
     width: 254px;
 }
+.vendordetails-body .chapterlabel.docsinfo .vendordocadd{
+    float: right;
+    margin-right: 23px;
+    cursor: pointer;
+}
+.vendordetails-body .vendordocremove {
+    margin-left: 10px;
+    width: 28px;
+    text-align: center;
+    font-size: 17px;
+    cursor: pointer;
+}
+.vendordetails-body .vendordocname {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0000ba;
+    width: 211px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 22px;
+    line-height: 22px;
+}
+.vendordetails-body .viewparamvalue.docnote {
+    width: 203px;
+}
 .vendordetails-body .internalnotes {
     margin-left: 75px;
     width: 255px;
@@ -514,6 +546,7 @@
     margin-left: 10px;
     width: 244px;
     height: 79px;
+    white-space: normal;
 }
 /* Edit mode */
 .vendorstatusview.active, .vendorstatusbtn.active {
@@ -530,7 +563,8 @@
     cursor: pointer;
 }
 input.vendordetailsinpt,
-input.vendorcontactinpt {
+input.vendorcontactinpt,
+input.vendordocuminpt{
     border: 1px solid #000000;
     height: 22px;
     padding-left: 5px;

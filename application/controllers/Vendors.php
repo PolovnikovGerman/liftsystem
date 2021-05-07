@@ -82,4 +82,29 @@ class Vendors extends MY_Controller
         }
         show_404();
     }
+
+    public function vendor_doc_manage() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                // Update
+                $res = $this->vendors_model->vendor_docs_manage($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'vendor_docs' => $res['vendor_docs'],
+                        'editmode' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

@@ -172,7 +172,12 @@
             </div>
         </div>
         <div class="documents_info">
-            <div class="chapterlabel docsinfo">Documents Info:</div>
+            <div class="chapterlabel docsinfo">
+                Documents Info:
+                <?php if ($editmode==1) { ?>
+                    <div class="vendordocadd" id="vendordocadd"></div>
+                <?php } ?>
+            </div>
             <div id="vendordocuments">
                 <?=$docs?>
             </div>

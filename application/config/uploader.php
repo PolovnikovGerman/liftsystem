@@ -76,6 +76,8 @@ $config['imprint_images']='/uploads/items_imprint/';
 $config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
 $config['item_images']='/uploads/items_images/';
 $config['item_images_relative']=BASEPATH.'../uploads/items_images/';
+$config['vendor_docs']='/uploads/vendor_docs/';
+$config['vendor_docs_relative']=BASEPATH.'../uploads/vendor_docs/';
 
 
 /* End of file uploader.php */

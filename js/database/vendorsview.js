@@ -273,7 +273,73 @@ function init_vendordetails_edit() {
                 }
             },'json');
         }
+    });
+    // Docs
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background-image: none; width: 90px; color: #ffffff;top: -25px;left: 36px;"><i class="fa fa-plus-circle" aria-hidden="true"></i><span>Add</span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+
+        element: document.getElementById('vendordocadd'),
+        action: '/utils/vendorcenterattach',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $("li.qq-upload-success").hide();
+                var params=prepare_edit();
+                params.push({name: 'entity', value: 'vendor_docs'});
+                params.push({name: 'newval', value: responseJSON.filename});
+                params.push({name: 'srcname', value: responseJSON.source});
+                params.push({name: 'manage', value: 'add'});
+                var url="/vendors/vendor_doc_manage";
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#vendordocuments").empty().html(response.data.content);
+                        init_vendordetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            }
+        }
+    });
+    $("input.vendordocuminpt").unbind('change').change(function(){
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor_docs'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendordocremove").unbind('click').click(function () {
+        var params=prepare_edit();
+        params.push({name: 'entity', value: 'vendor_docs'});
+        params.push({name: 'manage', value: 'del'});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        var url="/vendors/vendor_doc_manage";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#vendordocuments").empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
+
 }
 
 function prepare_edit() {

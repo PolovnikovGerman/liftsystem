@@ -1,6 +1,6 @@
 <?php foreach ($vendor_docs as $row) { ?>
     <div class="content-row">
-        <div class="vendordocremove" idx="<?=$row['vendor_doc_id']?>">
+        <div class="vendordocremove" data-idx="<?=$row['vendor_doc_id']?>">
             <?php if ($editmode==0) { ?>
                 &nbsp;
             <?php } else { ?>
@@ -14,7 +14,7 @@
         <?php if ($editmode==0) { ?>
             <div class="viewparamvalue docnote"><?=$row['doc_description']?></div>
         <?php } else { ?>
-            <input class="vendordetailsinpt docnote" data-item="doc_description" data-idx="<?=$row['vendor_doc_id']?>" value="<?=$row['doc_description']?>"/>
+            <input class="vendordocuminpt docnote" data-item="doc_description" data-idx="<?=$row['vendor_doc_id']?>" value="<?=$row['doc_description']?>"/>
         <?php } ?>
     </div>
 <?php } ?>
