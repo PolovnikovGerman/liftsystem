@@ -808,9 +808,11 @@ class Database extends MY_Controller
                 if ($vendor_id<0) {
                     $error = '';
                     $data = $this->vendors_model->add_vendor();
-                    $mdata['title'] = 'New Vendor';
+                    $data['deleted'] = [];
+                    // $mdata['title'] = 'New Vendor';
                     $editmode = 1;
                 } else {
+                    $editmode = ifset($postdata, 'editmode',0);
                     $res = $this->vendors_model->get_vendor($vendor_id);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
@@ -819,9 +821,10 @@ class Database extends MY_Controller
                             'vendor' => $res['data'],
                             'vendor_contacts' => $res['vendor_contacts'],
                             'vendor_docs' => $res['vendor_docs'],
+                            'deleted' => [],
                         ];
                         // $mdata['title'] = 'Change Vendor '.$datap[['vendor_name'];
-                        $editmode = 0;
+                        // $editmode = 0;
                     }
                 }
                 if ($error =='') {
@@ -855,16 +858,17 @@ class Database extends MY_Controller
     public function vendordata_save() {
         if ($this->isAjax()) {
             $mdata = [];
-            $vendor_id=$this->input->post('vendor_id');
-            $vendor_name=$this->input->post('vendor_name');
-            $vendor_zipcode=$this->input->post('vendor_zipcode');
-            $calendar_id=$this->input->post('calendar_id');
-            $this->load->model('vendors_model');
-            $res=$this->vendors_model->save_vendor($vendor_id,$vendor_name, $vendor_zipcode, $calendar_id);
-            $error = $res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error = '';
-                $mdata['totals'] = $this->vendors_model->get_count_vendors();
+            $error = 'Edit Time Explain. Require data again';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('vendors_model');
+                $res = $this->vendors_model->save_vendordata($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

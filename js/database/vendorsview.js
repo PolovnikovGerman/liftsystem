@@ -1,7 +1,7 @@
 function init_vendorpage() {
     initVendorPagination();
     $(".newvendor").live('click',function(){
-        add_vendor();
+        edit_vendor(-1);
     });
 }
 
@@ -81,49 +81,205 @@ function init_vendor_content() {
 }
 
 
-
-function add_vendor() {
-    var vendor_id=-1;
+function edit_vendor(vendor_id) {
     var url="/database/vendor_edit";
     $.post(url,{'vendor_id':vendor_id},function(response){
-        if (response.errors=='') {
-            $("#pageModal").find('div.modal-dialog').css('width','625px');
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            /* Init save button */
-            $("#savevendor").click(function(){
-                save_vendor();
-            });
+        if (response.errors=='') {            
+            $("#vendorDetailsModalLabel").empty().html(response.data.header);
+            $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
+            $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
+            $("#vendorDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(response.data.editmode)==0) {
+                init_vendordetails_view();
+            } else {
+                init_vendordetails_edit(); 
+            }
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function edit_vendor(vendor_id) {
-    var url="/database/vendor_edit";
-    $.post(url,{'vendor_id':vendor_id},function(response){
-        if (response.errors=='') {
-            $("#vendorDetailsModalLabel").empty().html(response.data.header);
-            $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
-            $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
-            $("#vendorDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // init_itemlist_details_view();
+function init_vendordetails_view() {
+    $(".vendoractivatetbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'vendor_id', value: $("#vendorid").val()});
+        params.push({name: 'editmode', value: 1});
+        var url="/database/vendor_edit";
+        $.post(url,params,function(response) {
+            if (response.errors=='') {
+                $("#vendorDetailsModalLabel").empty().html(response.data.header);
+                $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    })
+}
 
-            // $("#pageModal").find('div.modal-dialog').css('width','625px');
-            // $("#pageModalLabel").empty().html(response.data.title);
-            // $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // /* Init save button */
-            // $("#savevendor").click(function(){
-            //     save_vendor();
-            // });
-
-        } else {
-            show_error(response);
+function init_vendordetails_edit() {
+    $(".vendorsaveactionbtn").unbind('click').click(function () {
+        var params = prepare_edit();
+        var url = '/database/vendordata_save';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#vendorDetailsModal").modal('hide');
+                initVendorPagination();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendorstatusbtn").unbind('click').click(function () {
+        var newstatus = 1;
+        if ($(this).hasClass('active')) {
+            newstatus = 0;
         }
-    },'json');
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: 'vendor_status'});
+        params.push({name: 'newval', value: newstatus});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newstatus==1) {
+                    $(".vendorstatusbtn").removeClass('inactive').addClass('active');
+                    $(".vendorstatusbtn").empty().html('Active');
+                } else {
+                    $(".vendorstatusbtn").removeClass('active').addClass('inactive');
+                    $(".vendorstatusbtn").empty().html('Inactive');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
+    });
+    $("input.vendordetailsinpt").unbind('change').change(function () {
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea.vendordetailsinpt").unbind('change').change(function () {
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("select.vendordetailsselect").unbind('change').change(function () {
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendorparamcheck").unbind('click').click(function(){
+        var item=$(this).data('item');
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: item});
+        var url='/vendors/update_vendor_check';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendorparamcheck[data-item='"+item+"']").empty().html(response.data.content);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Contacts
+    $(".vendorcontactinpt").unbind('change').change(function () {
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor_contacts'});
+        params.push({name: 'fld', value: $(this).data('field')});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendorcontactcheck").unbind('click').click(function () {
+        var field = $(this).data('field');
+        var idx = $(this).data('idx');
+        var params = prepare_edit();
+        params.push({name: 'entity', value: 'vendor_contacts'});
+        params.push({name: 'fld', value: field});
+        params.push({name: 'idx', value: idx});
+        var url='/vendors/update_vendor_check';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendorcontactcheck[data-field='"+field+"'][data-idx='"+idx+"']").empty().html(response.data.content);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Add contacts
+    $(".vendorcontactadd").unbind('click').click(function(){
+        var params = prepare_edit();
+        params.push({name: 'manage', value: 'add'});
+        var url = '/vendors/vendor_contact_manage';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#vendorcontacts").empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Remove contacts
+    $(".removevendorcontact").unbind('click').click(function () {
+        if (confirm('Remove contact ?')==true) {
+            var params = prepare_edit();
+            params.push({name: 'manage', value: 'del'});
+            params.push({name: 'idx', value: $(this).data('idx')});
+            var url = '/vendors/vendor_contact_manage';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#vendorcontacts").empty().html(response.data.content);
+                    init_vendordetails_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+}
+
+function prepare_edit() {
+    var params = new Array();
+    params.push({name: 'session', value: $("#session").val()});
+    return params;
 }
 
 function save_vendor() {

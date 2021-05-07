@@ -65,7 +65,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue address"><?=$vendor['address']?></div>
                 <?php } else { ?>
-                    <textarea class="vendordetailsinpt address" data-item="address" value="<?=$vendor['address']?>"/>
+                    <textarea class="vendordetailsinpt address" data-item="address"><?=$vendor['address']?></textarea>
                 <?php } ?>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue shippingpickup"><?=$vendor['shipping_pickup']?></div>
                 <?php } else { ?>
-                    <textarea class="vendordetailsinpt shippingpickup" data-item="shipping_pickup" value="<?=$vendor['shipping_pickup']?>"/>
+                    <textarea class="vendordetailsinpt shippingpickup" data-item="shipping_pickup"><?=$vendor['shipping_pickup']?></textarea>
                 <?php } ?>
             </div>
             <div class="content-row">
@@ -91,7 +91,7 @@
                 <div class="vendorparamlabel payments">Payments Accepted:</div>
             </div>
             <div class="content-row">
-                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-field="payment_accept_visa">
+                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-item="payment_accept_visa">
                     <?php if ($vendor['payment_accept_visa']==0) { ?>
                         <i class="fa fa-square-o" aria-hidden="true"></i>
                     <?php } else { ?>
@@ -99,7 +99,7 @@
                     <?php } ?>
                 </div>
                 <div class="vendorchecklabel">Visa / MC</div>
-                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-field="payment_accept_amex">
+                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-item="payment_accept_amex">
                     <?php if ($vendor['payment_accept_amex']==0) { ?>
                         <i class="fa fa-square-o" aria-hidden="true"></i>
                     <?php } else { ?>
@@ -107,7 +107,7 @@
                     <?php } ?>
                 </div>
                 <div class="vendorchecklabel amex">Amex</div>
-                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-field="payment_accept_terms">
+                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-item="payment_accept_terms">
                     <?php if ($vendor['payment_accept_terms']==0) { ?>
                         <i class="fa fa-square-o" aria-hidden="true"></i>
                     <?php } else { ?>
@@ -117,7 +117,7 @@
                 <div class="vendorchecklabel terms">Net Terms</div>
             </div>
             <div class="content-row">
-                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-field="payment_accept_check">
+                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-item="payment_accept_check">
                     <?php if ($vendor['payment_accept_check']==0) { ?>
                         <i class="fa fa-square-o" aria-hidden="true"></i>
                     <?php } else { ?>
@@ -125,7 +125,7 @@
                     <?php } ?>
                 </div>
                 <div class="vendorchecklabel">Check</div>
-                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-field="payment_accept_wire">
+                <div class="vendorparamcheck <?=$editmode==1 ? 'edit' : ''?>" data-item="payment_accept_wire">
                     <?php if ($vendor['payment_accept_wire']==0) { ?>
                         <i class="fa fa-square-o" aria-hidden="true"></i>
                     <?php } else { ?>
@@ -141,7 +141,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue ponotes"><?=$vendor['po_note']?></div>
                 <?php } else { ?>
-                    <textarea class="vendordetailsinpt ponotes" data-item="po_note" value="<?=$vendor['po_note']?>"/>
+                    <textarea class="vendordetailsinpt ponotes" data-item="po_note"><?=$vendor['po_note']?></textarea>
                 <?php } ?>
             </div>
         </div>
@@ -149,7 +149,15 @@
 
     <div class="right-part">
         <div class="contacts_info">
-            <div class="chapterlabel contactinfo">Contact Info:</div>
+            <div class="chapterlabel contactinfo">
+                Contact Info:
+                <?php if ($editmode==1) { ?>
+                    <div class="vendorcontactadd">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        <span>Add</span>
+                    </div>
+                <?php } ?>
+            </div>
             <div class="content-row">
                 <div class="vendorcontactlabel name">Contact name</div>
                 <div class="vendorcontactlabel phone">Phone</div>
@@ -178,7 +186,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue interrnalnote"><?=$vendor['internal_po_note']?></div>
                 <?php } else { ?>
-                    <textarea class="vendordetailsinpt interrnalnote" data-item="internal_po_note" value="<?=$vendor['internal_po_note']?>"/>
+                    <textarea class="vendordetailsinpt interrnalnote" data-item="internal_po_note"><?=$vendor['internal_po_note']?></textarea>
                 <?php } ?>
             </div>
         </div>

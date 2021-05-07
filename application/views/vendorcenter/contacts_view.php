@@ -15,28 +15,28 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue contactname"><?=$row['contact_name']?></div>
                 <?php } else { ?>
-                    <input class="vendordetailsinpt contactname" data-filed="contact_name" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_name']?>"/>
+                    <input class="vendorcontactinpt contactname" data-field="contact_name" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_name']?>"/>
                 <?php } ?>
             </div>
             <div class="vendorcontactvalue">
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue contactphone"><?=$row['contact_phone']?></div>
                 <?php } else { ?>
-                    <input class="vendordetailsinpt contactphone" data-field="contact_phone" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_phone']?>"/>
+                    <input class="vendorcontactinpt contactphone" data-field="contact_phone" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_phone']?>"/>
                 <?php } ?>
             </div>
             <div class="vendorcontactvalue">
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue contactphone"><?=$row['contact_cellphone']?></div>
                 <?php } else { ?>
-                    <input class="vendordetailsinpt contactphone" data-field="contact_cellphone" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_cellphone']?>"/>
+                    <input class="vendorcontactinpt contactphone" data-field="contact_cellphone" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_cellphone']?>"/>
                 <?php } ?>
             </div>
             <div class="vendorcontactvalue">
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue contactemail"><?=$row['contact_email']?></div>
                 <?php } else { ?>
-                    <input class="vendordetailsinpt contactemail" data-field="contact_email" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_email']?>"/>
+                    <input class="vendorcontactinpt contactemail" data-field="contact_email" data-idx="<?=$row['vendor_contact_id']?>" value="<?=$row['contact_email']?>"/>
                 <?php } ?>
             </div>
             <div class="vendorcontactvalue">
@@ -73,7 +73,7 @@
                 <?php if ($editmode==0) { ?>
                     <div class="viewparamvalue contactnote"><?=$row['contact_note']?></div>
                 <?php } else { ?>
-                    <textarea class="vendordetailsinpt contactnote" data-field="contact_note" data-idx="<?=$row['vendor_contact_id']?>"><?=$row['contact_note']?></textarea>
+                    <textarea class="vendorcontactinpt contactnote" data-field="contact_note" data-idx="<?=$row['vendor_contact_id']?>"><?=$row['contact_note']?></textarea>
                 <?php } ?>
             </div>
         </div>

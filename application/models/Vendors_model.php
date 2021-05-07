@@ -377,4 +377,225 @@ Class Vendors_model extends My_Model
         $result=$this->db->get()->result_array();
         return $result;
     }
+
+    public function update_vendor_details($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $fld = ifset($data,'fld', '');
+        $newval = ifset($data,'newval', '');
+        $entity = ifset($data,'entity','');
+        $key = ifset($data,'idx', 0);
+        if ($entity=='vendor') {
+            $vendor = ifset($session_data, 'vendor', []);
+            if (array_key_exists($fld, $vendor)) {
+                $vendor[$fld] = $newval;
+                $session_data['vendor'] = $vendor;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['fld'] = $fld;
+                $out['vendor'] = $vendor;
+            }
+        } elseif ($entity=='vendor_contacts') {
+            $contacts = $session_data['vendor_contacts'];
+            $found = 0;
+            $idx = 0;
+            foreach ($contacts as $contact) {
+                if ($contact['vendor_contact_id']==$key) {
+                    $found = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $contacts[$idx][$fld]=$newval;
+                $session_data['vendor_contacts'] = $contacts;
+                usersession($session_id, $session_data);
+                $out['result']=$this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function update_vendor_check($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $fld = ifset($data,'fld', '');
+        $entity = ifset($data,'entity','');
+        $key = ifset($data,'idx',0);
+        if ($entity=='vendor') {
+            $vendor = ifset($session_data, 'vendor', []);
+            if (array_key_exists($fld, $vendor)) {
+                $oldval = $vendor[$fld];
+                $newval = ($oldval==0 ? 1 : 0);
+                $vendor[$fld] = $newval;
+                $session_data['vendor'] = $vendor;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['fld'] = $fld;
+                $out['newval'] = $newval;
+            }
+        } elseif ($entity=='vendor_contacts') {
+            $contacts = ifset($session_data, 'vendor_contacts', []);
+            $idx = 0;
+            $found = 0;
+            foreach ($contacts as $contact) {
+                if ($contact['vendor_contact_id']==$key) {
+                    $found=1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $oldval = $contacts[$idx][$fld];
+                $newval = ($oldval==0 ? 1 : 0);
+                $contacts[$idx][$fld] = $newval;
+                $session_data['vendor_contacts'] = $contacts;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['fld'] = $fld;
+                $out['newval'] = $newval;
+            }
+        }
+        return $out;
+    }
+
+    public function vendor_contact_manage($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $manage = ifset($data,'manage', '');
+        $key = ifset($data, 'idx', 0);
+        $contacts = $session_data['vendor_contacts'];
+        if ($manage=='add') {
+            $minidx = 0;
+            foreach ($contacts as $contact) {
+                if ($contact['vendor_contact_id']<$minidx) {
+                    $minidx = $contact['vendor_contact_id'];
+                }
+            }
+            $minidx = $minidx -1;
+            $newcontact = [
+                'vendor_contact_id' => $minidx,
+                'contact_name' => '',
+                'contact_phone' => '',
+                'contact_cellphone' => '',
+                'contact_email' => '',
+                'contact_po' => 0,
+                'contact_art' => 0,
+                'contact_pay' => 0,
+                'contact_note' => '',
+            ];
+            $contacts[] = $newcontact;
+            $session_data['vendor_contacts']=$contacts;
+            usersession($session_id, $session_data);
+            $out['result'] = $this->success_result;
+            $out['vendor_contacts'] = $contacts;
+        } elseif ($manage=='del') {
+            $deleted = $session_data['deleted'];
+            $newcontact = [];
+            $found = 0;
+            foreach ($contacts as $contact) {
+                if ($contact['vendor_contact_id']==$key) {
+                    $found=1;
+                    if ($key > 0) {
+                        $deleted[] = [
+                            'entity' => 'contacts',
+                            'id' => $key,
+                        ];
+                    }
+                } else {
+                    $newcontact[] = $contact;
+                }
+            }
+            if ($found==1) {
+                $session_data['vendor_contacts']=$newcontact;
+                $session_data['deleted'] = $deleted;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['vendor_contacts'] = $newcontact;
+            }
+        }
+        return $out;
+    }
+
+    public function save_vendordata($session_data, $session_id) {
+        // Check data
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
+        $vendor = $session_data['vendor'];
+        $vendor_contacts = $session_data['vendor_contacts'];
+        $vendor_docs = $session_data['vendor_docs'];
+        $deleted = $session_data['deleted'];
+        $vendor_id = $vendor['vendor_id'];
+        // Save main data
+        $this->db->set('vendor_name', $vendor['vendor_name']);
+        $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
+        $this->db->set('calendar_id', $vendor['calendar_id']);
+        $this->db->set('vendor_asinumber', $vendor['vendor_asinumber']);
+        $this->db->set('payinclude', $vendor['payinclude']);
+        $this->db->set('payinclorder', $vendor['payinclorder']);
+        $this->db->set('vendor_website', $vendor['vendor_website']);
+        $this->db->set('vendor_type', $vendor['vendor_type']);
+        $this->db->set('country_id', $vendor['country_id']);
+        $this->db->set('alt_name', $vendor['alt_name']);
+        $this->db->set('our_account_number', $vendor['our_account_number']);
+        $this->db->set('address', $vendor['address']);
+        $this->db->set('shipping_pickup', $vendor['shipping_pickup']);
+        $this->db->set('payment_accept_visa', $vendor['payment_accept_visa']);
+        $this->db->set('payment_accept_amex', $vendor['payment_accept_amex']);
+        $this->db->set('payment_accept_terms', $vendor['payment_accept_terms']);
+        $this->db->set('payment_accept_check', $vendor['payment_accept_check']);
+        $this->db->set('payment_accept_wire', $vendor['payment_accept_wire']);
+        $this->db->set('po_note', $vendor['po_note']);
+        $this->db->set('internal_po_note', $vendor['internal_po_note']);
+        $this->db->set('vendor_status', $vendor['vendor_status']);
+        $this->db->set('vendor_slug', strtoupper($vendor['vendor_slug']));
+        if ($vendor_id > 0) {
+            $this->db->where('vendor_id', $vendor_id);
+            $this->db->update('vendors');
+        } else {
+            $this->db->insert('vendors');
+            $vendor_id=$this->db->insert_id();
+        }
+        $out['msg'] = 'Error during insert / update record';
+        if ($vendor_id > 0) {
+            $out['result'] = $this->success_result;
+            // Contacts
+            $idx = 0;
+            foreach ($vendor_contacts as $vendor_contact) {
+                $this->db->set('vendor_id', $vendor_id);
+                $this->db->set('contact_name', $vendor_contact['contact_name']);
+                $this->db->set('contact_phone', $vendor_contact['contact_phone']);
+                $this->db->set('contact_cellphone', $vendor_contact['contact_cellphone']);
+                $this->db->set('contact_email', $vendor_contact['contact_email']);
+                $this->db->set('contact_po', $vendor_contact['contact_po']);
+                $this->db->set('contact_art', $vendor_contact['contact_art']);
+                $this->db->set('contact_pay', $vendor_contact['contact_pay']);
+                $this->db->set('contact_note', $vendor_contact['contact_note']);
+                if ($vendor_contact['vendor_contact_id']>0) {
+                    $this->db->where('vendor_contact_id', $vendor_contact['vendor_contact_id']);
+                    $this->db->update('vendor_contacts');
+                } else {
+                    $this->db->insert('vendor_contacts');
+                }
+                if ($idx==0) {
+                    $this->db->set('vendor_phone', $vendor_contact['contact_phone']);
+                    $this->db->set('vendor_email', $vendor_contact['contact_email']);
+                    $this->db->where('vendor_id', $vendor_id);
+                    $this->db->update('vendors');
+                }
+                $idx++;
+            }
+            // Docs
+            // Deleted
+            foreach ($deleted as $item) {
+                if ($item['entity']=='contacts') {
+                    $this->db->where('vendor_contact_id', $item['id']);
+                    $this->db->delete('vendor_contacts');
+                } elseif ($item['entity']=='docs') {
+                    $this->db->where('vendor_doc_id', $item['id']);
+                    $this->db->delete('vendor_docs');
+                }
+            }
+            $out['result'] = $this->success_result;
+            // Clean session
+            usersession($session_id, null);
+        }
+        return $out;
+    }
 }
