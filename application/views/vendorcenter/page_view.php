@@ -33,8 +33,8 @@
             <div class="addnewvendor">+ add</div>
         </div>
         <div class="type">Type</div>
-        <div class="slug">Vendor #</div>
-        <div class="name">Vendor Name</div>
+        <div class="slug sortable" data-sortcell="vendor_slug">Vendor #</div>
+        <div class="name sortable active" data-sortcell="vendor_name">Vendor Name  <div class="ascsort">&nbsp;</div></div>
         <div class="country">Country</div>
         <div class="website">Website</div>
         <div class="ouraccount">Our Acct #</div>

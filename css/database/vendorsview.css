@@ -88,6 +88,35 @@
     font-size: 13px;
     font-weight: bold;
 }
+.vendordataview .datatitle .sortable {
+    cursor: pointer;
+}
+.vendordataview .datatitle .sortable.active {
+    background: #ebffd3;
+    color: #000000;
+}
+.vendordataview .datatitle .ascsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #555;
+    float: right;
+    position: relative;
+    right: 3px;
+    top: 3px;
+}
+.vendordataview .datatitle .descsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #555;
+    float: right;
+    position: relative;
+    right: 3px;
+    top: 3px;
+}
 .vendordataview .datatitle .numpp {
     width: 64px;
 }
