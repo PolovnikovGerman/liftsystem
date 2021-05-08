@@ -12,14 +12,14 @@
                 <?php if ($editmode==0) { ?>
                     <?=empty($vendor['vendor_slug']) ? '&nbsp;' : $vendor['vendor_slug']?>
                 <?php } else { ?>
-                    <input type="text" class="vendordetailsinpt slug" data-item="vendor_slug" value="<?=$vendor['vendor_slug']?>"/>
+                    <input type="text" class="vendordetailsinpt slug" data-item="vendor_slug" value="<?=$vendor['vendor_slug']?>" placeholder="Vendor #"/>
                 <?php } ?>
             </div>
             <div class="<?=$editmode==0 ? 'vendornameview' : 'vendornameedit'?>">
                 <?php if ($editmode==0) { ?>
                     <?=empty($vendor['vendor_name']) ? '&nbsp;' : $vendor['vendor_name']?>
                 <?php } else { ?>
-                    <input type="text" class="vendordetailsinpt vendorname" data-item="vendor_name" value="<?=$vendor['vendor_name']?>"/>
+                    <input type="text" class="vendordetailsinpt vendorname" data-item="vendor_name" value="<?=$vendor['vendor_name']?>" placeholder="Vendor Name"/>
                 <?php } ?>
             </div>
         </div>

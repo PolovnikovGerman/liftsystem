@@ -1,6 +1,6 @@
 function init_vendorpage() {
     initVendorPagination();
-    $(".newvendor").live('click',function(){
+    $(".addnewvendor").live('click',function(){
         edit_vendor(-1);
     });
     init_vendor_search();
@@ -22,6 +22,10 @@ function init_vendor_search() {
             search_vendors();
         }
     });
+    $(".vendordataview .datatitle").find(".sortable").unbind('click').click(function () {
+        var fld=$(this).data('sortcell');
+        sort_vendorlist(fld);
+    });
 }
 
 function search_vendors() {
@@ -37,6 +41,34 @@ function search_vendors() {
             show_error(response);
         }
     },'json');
+}
+
+function sort_vendorlist(fld) {
+    var cursort = $('#orderbyvend').val();
+    var curdirec = $('#directionvend').val();
+    if (cursort==fld) {
+        // Change direction
+        if (curdirec=='asc') {
+            $(".vendordataview .datatitle").find("div.ascsort").remove();
+            $(".vendordataview .datatitle").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
+            $('#directionvend').val('desc');
+        } else {
+            $(".vendordataview .datatitle").find("div.descsort").remove();
+            $(".vendordataview .datatitle").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+            $('#directionvend').val('asc');
+        }
+    } else {
+        $(".vendordataview .datatitle").find("div.ascsort").remove();
+        $(".vendordataview .datatitle").find("div.descsort").remove();
+        $(".vendordataview .datatitle").find("div[data-sortcell='"+cursort+"']").removeClass('active');
+        $(".vendordataview .datatitle").find("div[data-sortcell='"+fld+"']").addClass('active');
+        $(".vendordataview .datatitle").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+        $('#directionvend').val('asc');
+        $('#orderbyvend').val(fld);
+    }
+    var pageindex = $('#curpagevend').val();
+    pageVendorCallback(pageindex);
+
 }
 
 function initVendorPagination() {
@@ -166,7 +198,7 @@ function init_vendordetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#vendorDetailsModal").modal('hide');
-                initVendorPagination();
+                search_vendors();
             } else {
                 show_error(response);
             }

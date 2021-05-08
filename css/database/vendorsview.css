@@ -85,8 +85,6 @@
     height: 29px;
     line-height: 29px;
     text-align: center;
-    background: #545454;
-    color: #ffffff;
     font-size: 13px;
     font-weight: bold;
 }
@@ -133,12 +131,16 @@
     font-style: italic;
     margin-top: 6px;
     margin-left: 6px;
+    cursor: pointer;
 }
 .vendordataview .datatitle .type {
     width: 68px;
 }
 .vendordataview .datatitle .slug {
-    width: 82px;
+    width: 72px;
+    margin: 5px;
+    height: 19px;
+    line-height: 19px;
 }
 .vendordataview .datatitle .name {
     width: 132px;
@@ -606,7 +608,7 @@ input.vendordocuminpt{
     color: #000000;
 }
 .vendordetailsinpt.slug {
-    width: 76px;
+    width: 85px;
     text-transform: uppercase;
 }
 .vendordetailsinpt.vendorname {
