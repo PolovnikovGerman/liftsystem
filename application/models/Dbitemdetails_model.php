@@ -518,6 +518,58 @@ class Dbitemdetails_model extends MY_Model
         return $out;
     }
 
+    public function delete_picture($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Image Not found'];
+        // slider_images
+        $images = ifset($session_data,'images', []);
+        $deleted = ifset($session_data, 'deleted',[]);
+        $key = ifset($data,'idx', 0);
+        $found = 0;
+        $newimages = [];
+        $minidx = 0;
+        $numpp = 1;
+        foreach ($images as $image) {
+            if ($image['item_img_id']==$key) {
+                $found=1;
+                if ($key > 0) {
+                    $deleted[] = [
+                        'entity' => 'images',
+                        'id' => $key,
+                    ];
+                }
+            } else {
+                if ($image['item_img_id']<$minidx) {
+                    $minidx = $image['item_img_id'];
+                }
+                $image['item_img_order'] = $numpp;
+                $image['title'] = ($numpp==1 ? 'Main Pic' : 'Pic '.$numpp);
+                $newimages[] = $image;
+                $numpp++;
+            }
+        }
+        if ($found==1) {
+            // Add new image
+            $minidx = $minidx -1;
+            $newimages[] = [
+                'item_img_id' => $minidx,
+                'item_img_name' => '',
+                'item_img_thumb' => '',
+                'item_img_order' => $numpp,
+                'item_img_big' => '',
+                'item_img_medium' => '',
+                'item_img_small' => '',
+                'item_img_label' => '',
+                'title' => 'Pic '.$numpp,
+            ];
+            $session_data['images'] = $newimages;
+            $session_data['deleted'] = $deleted;
+            usersession($session_id, $session_data);
+            $out['result'] = $this->success_result;
+            $out['images'] = $newimages;
+        }
+        return $out;
+    }
+
     // Check uniq number
     private function  _check_item_number($item_number, $item_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Item # not unique'];
