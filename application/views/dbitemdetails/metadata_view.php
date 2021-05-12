@@ -46,7 +46,7 @@
             <?php if ($editmode==0) { ?>
                 <div class="viewparam-multirow"><?=$item['item_metadescription']?></div>
             <?php } else { ?>
-                <textarea class="itemlistdetailsinpt metadata" data-item="item_metakeywords"><?=$item['item_metakeywords']?></textarea>
+                <textarea class="itemlistdetailsinpt metadata" data-item="item_metadescription"><?=$item['item_metadescription']?></textarea>
             <?php } ?>
         </div>
     </div>

@@ -149,6 +149,7 @@ select.itemlistatusfilter {
 }
 .itemlist-tablehead > .listaction {
     width: 53px;
+    cursor: pointer;
 }
 .itemlist-tablehead > .listnumrow {
     width: 34px;

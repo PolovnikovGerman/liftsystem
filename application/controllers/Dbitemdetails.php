@@ -82,7 +82,6 @@ class Dbitemdetails extends MY_Controller
             $session_id=ifset($postdata, 'session_id','defsess');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('itemdetails_model');
                 $res = $this->dbitemdetails_model->check_vendor($postdata, $session_data, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -313,6 +312,75 @@ class Dbitemdetails extends MY_Controller
             }
             $this->ajaxResponse($mdata, $error);
 
+        }
+        show_404();
+    }
+
+    public function sort_picture_prepare() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->sort_picture_prepare($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    // Images
+                    $image_options = [
+                        'images' => $res['images'],
+                    ];
+                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_sort_view', $image_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function sort_picture_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = $this->session_error;
+            $session_id = ifset($postdata,'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->sort_picture_save($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    // Images
+                    $slider_options = [
+                        'images' => $res['images'],
+                        'limit' => count($res['images']),
+                    ];
+                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_itemdetails() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error=$this->session_error;
+            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->dbitemdetails_model->save_itemdetails($session_data, $session_id, $this->USR_ID, $this->USR_ROLE);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
         }
         show_404();
     }

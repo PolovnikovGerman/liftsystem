@@ -22,9 +22,9 @@ function init_itemslist_view(brand) {
     $(".itemlistatusfilter[data-brand='"+brand+"']").unbind('change').change(function(){
         search_itemlists(brand);
     });
-    // $(".newvendor").live('click',function(){
-    //     add_vendor();
-    // });
+    $(".listaction").unbind('click').click(function(){
+        edit_itemlist(-1, brand);
+    });
     init_itemlist_manage(brand);
 }
 

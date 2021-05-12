@@ -321,7 +321,9 @@ Class Vendors_model extends My_Model
     public function search_vendors($vend_name) {
         $this->db->select('vendor_name as label, vendor_id as id');
         $this->db->from("vendors");
-        $this->db->like('upper(vendor_name)',  strtoupper($vend_name));
+        $this->db->where('vendor_type','Supplier');
+        $this->db->where('vendor_status',1);
+        $this->db->like('upper(concat(vendor_name, coalesce(alt_name,\'\')))',  strtoupper($vend_name));
         $this->db->order_by('vendor_name');
         $result=$this->db->get()->result_array();
         return $result;

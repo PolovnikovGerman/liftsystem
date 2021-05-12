@@ -76,7 +76,7 @@ $config['imprint_images']='/uploads/items_imprint/';
 $config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
 $config['item_images']='/uploads/items_images/';
 $config['item_images_relative']=BASEPATH.'../uploads/items_images/';
-
-
+$config['item_template'] = '/uploads/aitemp/';
+$config['item_template_relative'] = BASEPATH.'../uploads/aitemp/';
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

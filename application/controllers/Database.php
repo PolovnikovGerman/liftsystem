@@ -129,6 +129,9 @@ class Database extends MY_Controller
         if ($itemslist==1) {
             $head['styles'][]=array('style'=>'/css/database/itemlistdetails.css');
             $head['scripts'][] = array('src' => '/js/database/itemlistdetails.js');
+            // $head['scripts'][] = array('src' => '/js/Sortable.js');
+            // $head['scripts'][] = array('src' => '/js/jquery-sortable.js');
+            $head['outscripts'] = ['src' => 'https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js'];
         }
         // Item details
         $head['scripts'][] = array('src' => '/js/database/itemdetails.js');

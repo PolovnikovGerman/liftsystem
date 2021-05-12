@@ -21,4 +21,9 @@
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>
+<?php if (isset($outscripts)) { ?>
+    <?php foreach ($outscripts as $outscript) { ?>
+        <script src="<?=$outscript['src']?>"></script>
+    <?php } ?>
+<?php } ?>
 <script src="/js/adminpage/jquery.qtip.js"></script>

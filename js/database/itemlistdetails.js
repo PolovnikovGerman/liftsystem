@@ -77,6 +77,20 @@ function init_vectorfile_upload() {
 }
 
 function init_itemlist_details_edit() {
+    // Save 
+    $(".itemlistsaveactionbtn").unbind('click').click(function () {
+        var brand = $("#dbdetailbrand").val();
+        var params = prepare_edit();
+        var url = '/dbitemdetails/save_itemdetails';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#itemDetailsModal").modal('hide');
+                initItemsListPagination(brand);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     $(".itemstatusbtn").unbind('click').click(function () {
         var status = 1;
         if ($(this).hasClass('active')) {
@@ -499,7 +513,46 @@ function init_itemlist_details_edit() {
             },'json');
         }
     });
-
+    // Sort images
+    $(".imagesortarea").unbind('click').click(function () {
+        var params=prepare_edit();
+            var url = "/dbitemdetails/sort_picture_prepare";
+        $.post(url, params, function (response) {
+            $("#editModalLabel").empty().html('Change Sequence');
+            $("#editModal").find('.modal-dialog').css('width','493px');
+            $("#editModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#imagesortcontent").sortable({
+                draggable: '.itemimagesort',
+                dataIdAttr: 'data-idx'
+            });
+            $(".savesort").unbind('click').click(function () {
+                var params = prepare_edit();
+                var name='';
+                var numpp=1;
+                var idx='';
+                $("#imagesortcontent").find('div.itemimagesort').each(function(){
+                    idx = $(this).data('idx');
+                    name='sort_'+numpp;
+                    params.push({name: name, value: idx});
+                    numpp = numpp + 1;
+                });
+                var url = 'dbitemdetails/sort_picture_save';
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".pictureslderarea").empty().html(response.data.content);
+                        image_slider_init();
+                        init_itemlist_details_edit();
+                        $("#editModal").modal('hide');
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            })
+            // dbitemlocation_manage();
+        },'json');
+    });
 }
 
 function dbitemlocation_manage() {

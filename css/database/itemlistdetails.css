@@ -1007,3 +1007,37 @@ input.inprintlocationedit {
     margin-left: 336px;
     width: 88px;
 }
+/*Sort images */
+.imagesortcontent {
+    float: left;
+    width: 493px;
+    padding: 10px;
+}
+.imagesortcontent div {
+    float: left;
+}
+.imagesortrow {
+    clear: both;
+    width: 90%;
+    float: left;
+}
+.itemimagesort {
+    width: 80px;
+    margin-right: 7px;
+    border: 1px solid;
+    margin-bottom: 7px;
+}
+.itemimagesort img {
+    width: 100%;
+}
+.savesort {
+    background: #0000ff;
+    color: #fff;
+    width: 125px;
+    text-align: center;
+    padding: 7px;
+    float: right;
+    border-radius: 7px;
+    font-weight: 600;
+    cursor: pointer;
+}

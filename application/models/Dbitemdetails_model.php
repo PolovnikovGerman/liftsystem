@@ -61,13 +61,13 @@ class Dbitemdetails_model extends MY_Model
                 $idx++;
             }
         } elseif ($entity=='vendor_item') {
-            $out['msg']='Item Simular Not Found';
+            $out['msg']='Vendor Item Not Found';
             $vendor = ifset($session_data,'vendor_item', []);
             $out['msg']='Parameter '.$fld.' Not Found';
             if (array_key_exists($fld, $vendor)) {
                 $out['oldvalue'] = $vendor[$fld];
                 $vendor[$fld] = $newval;
-                $session_data['vendor']=$vendor;
+                $session_data['vendor_item']=$vendor;
                 usersession($session_id, $session_data);
                 $out['msg']='';
                 $out['result']=$this->success_result;
@@ -158,6 +158,8 @@ class Dbitemdetails_model extends MY_Model
             $this->db->select('vendor_id, vendor_name, vendor_zipcode');
             $this->db->from('vendors');
             $this->db->where('vendor_name', $vendor_name);
+            $this->db->where('vendor_type','Supplier');
+            $this->db->where('vendor_status', 1);
             $chkres = $this->db->get()->result_array();
             if (count($chkres)>1) {
                 $out['msg']='Non Unique Vendor name';
@@ -315,12 +317,13 @@ class Dbitemdetails_model extends MY_Model
         } elseif ($entity=='vendor_specprice') {
             $out['msg']='Vendor Price Not Found';
             $items=ifset($session_data,'item',[]);
-            if (array_key_exists($fld, $items)) {
-                $items[$fld] = $newval;
-                $vendor_item = $session_data['vendor_item'];
+            $vendor_item = $session_data['vendor_item'];
+            if (array_key_exists($fld, $vendor_item)) {
+                $vendor_item[$fld] = $newval;
                 // Calc Special promo
                 $newitems = $this->prices_model->recalc_setup_profit($items, $vendor_item);
                 $session_data['item'] = $newitems;
+                $session_data['vendor_item'] = $vendor_item;
                 usersession($session_id, $session_data);
                 $out['result']=$this->success_result;
             }
@@ -373,7 +376,7 @@ class Dbitemdetails_model extends MY_Model
                 if ($key > 0) {
                     $deleted[] = [
                         'entity' => 'inprints',
-                        'key' => $key,
+                        'id' => $key,
                     ];
                 }
             } else {
@@ -566,6 +569,542 @@ class Dbitemdetails_model extends MY_Model
             usersession($session_id, $session_data);
             $out['result'] = $this->success_result;
             $out['images'] = $newimages;
+        }
+        return $out;
+    }
+
+    public function sort_picture_prepare($session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Image Not found'];
+        $images = ifset($session_data,'images', []);
+        $imgsort = [];
+        foreach ($images as $image) {
+            if (!empty($image['item_img_name'])) {
+                $imgsort[] = $image;
+            }
+        }
+        $out['result'] = $this->success_result;
+        usersession($session_id, $session_data);
+        $out['images'] = $imgsort;
+        return $out;
+    }
+
+    public function sort_picture_save($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Image Not found'];
+        $images = ifset($session_data,'images', []);
+        $imgsort = [];
+        foreach ($data as $key=>$val) {
+            if (substr($key,0,5)=='sort_') {
+                array_push($imgsort, $val);
+            }
+        }
+        $newimages = [];
+        $numpp = 1;
+        foreach ($imgsort as $idx) {
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$idx) {
+                    if ($numpp==1) {
+                        $image['title'] = 'Main Pic';
+                    } else {
+                        $image['title'] = 'Pic '.$numpp;
+                    }
+                    $newimages[] = $image;
+                    $numpp++;
+                }
+            }
+        }
+        if (count($newimages) < $this->config->item('slider_images')) {
+            $idx = 1;
+            for ($i=count($newimages); $i<=$this->config->item('slider_images'); $i++) {
+                $newimages[] = [
+                    'item_img_id' => ($idx * -1),
+                    'item_img_name' => '',
+                    'item_img_thumb' => '',
+                    'item_img_order' => $numpp,
+                    'item_img_big' => '',
+                    'item_img_medium' => '',
+                    'item_img_small' => '',
+                    'item_img_label' => '',
+                    'title' => 'Pic '.$numpp,
+                ];
+                $idx++;
+                $numpp++;
+            }
+        }
+        $out['result'] = $this->success_result;
+        $out['images'] = $newimages;
+        $session_data['images'] = $newimages;
+        usersession($session_id, $session_data);
+        return $out;
+    }
+
+    public function save_itemdetails($session_data, $session_id, $usr_id, $usr_role) {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        // Check
+        $itemchk = $this->_check_itemdetails($session_data);
+        $out['msg']=$itemchk['msg'];
+        if ($itemchk['result']==$this->success_result) {
+            $item = $session_data['item'];
+            $vendor_item = $session_data['vendor_item'];
+            $vendor_price = $session_data['vendor_price'];
+            // Lets Go
+            $vendorres = $this->_save_vendoritem($vendor_item, $vendor_price);
+            $out['msg'] = $vendorres['msg'];
+            if ($vendorres['result']==$this->success_result) {
+                $item['vendor_item_id'] = $vendorres['vendor_item_id'];
+                $datares = $this->_save_itemdata($item, $usr_id);
+                $out['msg'] = $datares['msg'];
+                if ($datares['result']==$this->success_result) {
+                    $item_id = $datares['item_id'];
+                    // Item options
+                    $this->_save_item_colors($session_data['colors'], $item_id);
+                    // Item Iages
+                    $this->_save_item_images($session_data['images'], $item_id);
+                    // Inprints
+                    $this->_save_item_inprints($session_data['inprints'], $item_id);
+                    // Prices
+                    $this->_save_item_prices($session_data['prices'], $item_id);
+                    // Similar
+                    $this->_save_item_similar($session_data['similar'], $item_id);
+                    // Deleted objects
+                    $this->_clean_details($session_data['deleted']);
+                    $out['result'] = $this->success_result;
+                }
+            }
+        }
+        return $out;
+    }
+
+    private function _clean_details($deleted) {
+        foreach ($deleted as $row) {
+            if ($row['entity']=='inprints') {
+                $this->db->where('item_inprint_id', $row['id']);
+                $this->db->delete('sb_item_inprints');
+            } elseif ($row['entity']=='images') {
+                $this->db->where('item_img_id', $row['id']);
+                $this->db->delete('sb_item_images');
+            }
+        }
+        return true;
+    }
+
+    private function _save_item_similar($similars, $item_id) {
+        foreach ($similars as $similar) {
+            if (!empty($similar['item_similar_similar'])) {
+                $this->db->set('item_similar_item', $item_id);
+                $this->db->set('item_similar_similar', $similar['item_similar_similar']);
+                if ($similar['item_similar_id'] > 0 ) {
+                    $this->db->where('item_similar_id', $similar['item_similar_id']);
+                    $this->db->update('sb_item_similars');
+                } else {
+                    $this->db->insert('sb_item_similars');
+                }
+            } else {
+                if ($similar['item_similar_id'] > 0) {
+                    $this->db->where('item_similar_id', $similar['item_similar_id']);
+                    $this->db->delete('sb_item_similars');
+                }
+            }
+        }
+        return true;
+    }
+
+    public function _save_item_prices($prices, $item_id) {
+        foreach ($prices as $price) {
+            if (intval($price['item_qty']) > 0 && (floatval($price['price']) > 0 || floatval($price['sale_price']) > 0)) {
+                $this->db->set('item_id', $item_id);
+                $this->db->set('item_qty', $price['item_qty']);
+                $this->db->set('price', $price['price']);
+                $this->db->set('sale_price', $price['sale_price']);
+                $this->db->set('profit', $price['profit']);
+                $this->db->set('show_first', $price['show_first']);
+                $this->db->set('shipbox', $price['shipbox']);
+                if ($price['promo_price_id'] > 0) {
+                    $this->db->where('promo_price_id', $price['promo_price_id']);
+                    $this->db->update('sb_promo_price');
+                } else {
+                    $this->db->insert('sb_promo_price');
+                }
+            }
+        }
+        return true;
+    }
+
+    private function _save_item_inprints($inprints, $item_id) {
+        $full_path = $this->config->item('imprintimages_relative').$item_id.'/';
+        createPath($full_path);
+        $short_path = $this->config->item('imprintimages').$item_id.'/';
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        foreach ($inprints as $inprint) {
+            if (!empty($inprint['item_inprint_location']) && !empty($inprint['item_inprint_view'])) {
+                if (stripos($inprint['item_inprint_view'],$path_preload_short)!==FALSE) {
+                    $imagesrc = str_replace($path_preload_short, $path_preload_full, $inprint['item_inprint_view']);
+                    $imagedetails = extract_filename($inprint['item_inprint_view']);
+                    $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+                    $res = @copy($imagesrc, $full_path.$filename);
+                    $inprint['item_inprint_view']='';
+                    if ($res) {
+                        $inprint['item_inprint_view']=$short_path.$filename;
+                    }
+                }
+                if ($inprint['item_inprint_view']!=='') {
+                    $this->db->set('item_inprint_item', $item_id);
+                    $this->db->set('item_inprint_location', $inprint['item_inprint_location']);
+                    $this->db->set('item_inprint_size', $inprint['item_inprint_size']);
+                    $this->db->set('item_inprint_view', $inprint['item_inprint_view']);
+                    if ($inprint['item_inprint_id'] > 0 ) {
+                        $this->db->where('item_inprint_id', $inprint['item_inprint_id']);
+                        $this->db->update('sb_item_inprints');
+                    } else {
+                        $this->db->insert('sb_item_inprints');
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private function _save_item_images($images, $item_id) {
+        $full_path = $this->config->item('itemimages_relative').$item_id.'/';
+        createPath($full_path);
+        $short_path = $this->config->item('itemimages').$item_id.'/';
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        $numpp = 1;
+        foreach ($images as $image) {
+            if (!empty($image['item_img_name'])) {
+                if (stripos($image['item_img_name'],$path_preload_short)!==FALSE) {
+                    // New Image
+                    $imagesrc = str_replace($path_preload_short, $path_preload_full, $image['item_img_name']);
+                    $imagedetails = extract_filename($image['item_img_name']);
+                    $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+                    $res = @copy($imagesrc, $full_path.$filename);
+                    $image['item_img_name']='';
+                    if ($res) {
+                        $image['item_img_name']=$short_path.$filename;
+                    }
+                }
+                if (!empty($image['item_img_name'])) {
+                    $this->db->set('item_img_item_id', $item_id);
+                    $this->db->set('item_img_name', $image['item_img_name']);
+                    $this->db->set('item_img_order', $numpp);
+                    if ($image['item_img_id'] > 0) {
+                        $this->db->where('item_img_id', $image['item_img_id']);
+                        $this->db->update('sb_item_images');
+                    } else {
+                        $this->db->insert('sb_item_images');
+                    }
+                    $numpp++;
+                }
+            }
+        }
+    }
+
+    private function _save_item_colors($colors, $item_id) {
+        foreach ($colors as $color) {
+            if (!empty($color['item_color'])) {
+                $this->db->set('item_color_itemid', $item_id);
+                $this->db->set('item_color', $color['item_color']);
+                if ($color['item_color_id'] > 0) {
+                    $this->db->where('item_color_id', $color['item_color_id']);
+                    $this->db->update('sb_item_colors');
+                } else {
+                    $this->db->insert('sb_item_colors');
+                }
+            } else {
+                if ($color['item_color_id'] > 0) {
+                    $this->db->where('item_color_id', $color['item_color_id']);
+                    $this->db->delete('sb_item_colors');
+                }
+            }
+        }
+        return true;
+    }
+
+    private function _save_itemdata($item, $user_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Details Save - Unknown Error'];
+        // Check new images
+        $full_path = $this->config->item('contents_images_relative');
+        createPath($full_path);
+        $short_path = $this->config->item('contents_images');
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        if (!empty($item['printlocat_example_img']) && stripos($item['printlocat_example_img'],$path_preload_short)!==FALSE) {
+            $imagesrc = str_replace($path_preload_short, $path_preload_full, $item['printlocat_example_img']);
+            $imagedetails = extract_filename($item['printlocat_example_img']);
+            $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+            $res = @copy($imagesrc, $full_path.$filename);
+            $item['printlocat_example_img']='';
+            if ($res) {
+                $item['printlocat_example_img']=$short_path.$filename;
+            }
+        }
+        $full_path = $this->config->item('item_template_relative');
+        createPath($full_path);
+        $short_path = $this->config->item('item_template');
+        if (!empty($item['item_vector_img']) && stripos($item['item_vector_img'],$path_preload_short)!==FALSE) {
+            $imagesrc = str_replace($path_preload_short, $path_preload_full, $item['item_vector_img']);
+            $imagedetails = extract_filename($item['item_vector_img']);
+            $filename = uniq_link(15,'chars').'.'.$imagedetails['ext'];
+            $res = @copy($imagesrc, $full_path.$filename);
+            $item['item_vector_img']='';
+            if ($res) {
+                $item['item_vector_img']=$short_path.$filename;
+            }
+        }
+        // Save
+        $this->db->set('item_number', $item['item_number']);
+        $this->db->set('item_name', $item['item_name']);
+        $this->db->set('item_active', $item['item_active']);
+        $this->db->set('item_new', $item['item_new']);
+//        $this->db->set('item_template', $item['item_template']);
+        $this->db->set('item_lead_a', $item['item_lead_a']);
+        $this->db->set('item_lead_b', empty($item['item_lead_b']) ? null : intval($item['item_lead_b']));
+        $this->db->set('item_lead_c', empty($item['item_lead_c']) ? null : intval($item['item_lead_c']));
+        $this->db->set('item_material', $item['item_material']);
+//        $this->db->set('item_weigth', floatval($item['item_weigth']));
+        $this->db->set('item_size', $item['item_size']);
+        $this->db->set('item_keywords', $item['item_keywords']);
+        $this->db->set('item_url', $item['item_url']);
+        $this->db->set('item_meta_title', $item['item_meta_title']);
+        $this->db->set('item_metadescription', $item['item_metadescription']);
+        $this->db->set('item_metakeywords', $item['item_metakeywords']);
+        $this->db->set('item_description1', $item['item_description1']);
+        $this->db->set('item_description2',$item['item_description2']);
+        $this->db->set('item_vector_img', $item['item_vector_img']);
+        $this->db->set('vendor_item_id', $item['vendor_item_id']);
+//        $this->db->set('common_terms', $item['common_terms']);
+//        $this->db->set('bottom_text', $item['bottom_text']);
+        $this->db->set('options', $item['options']);
+//        $this->db->set('cartoon_qty', $item['cartoon_qty']);
+//        $this->db->set('cartoon_width', $item['cartoon_width']);
+//        $this->db->set('cartoon_heigh', $item['cartoon_heigh']);
+//        $this->db->set('cartoon_depth', $item['cartoon_depth']);
+//        $this->db->set('boxqty', $item['boxqty']);
+//        $this->db->set('charge_pereach', $item['charge_pereach']);
+//        $this->db->set('charge_perorder', $item['charge_perorder']);
+//        $this->db->set('faces', $item['faces']);
+//        $this->db->set('special', $item['special']);
+//        $this->db->set('category_id', $item['category_id']);
+//        $this->db->set('special_checkout', $item['special_checkout']);
+//        $this->db->set('special_shipping', $item['special_shipping']);
+//        $this->db->set('special_setup', $item['special_setup']);
+//        $this->db->set('item_source', $item['item_source']);
+//        $this->db->set('printshop_inventory_id', $item['printshop_inventory_id']);
+//        $this->db->set('update_template',$item['update_template']);
+//        $this->db->set('imprint_update', $item['imprint_update']);
+//        $this->db->set('item_sequence', $item['item_sequence']);
+        $this->db->set('item_sale', $item['item_sale']);
+        $this->db->set('printlocat_example_img', $item['printlocat_example_img']);
+//        $this->db->set('itemcolor_example_img', $item['itemcolor_example_img']);
+//        $this->db->set('outstock', $item['outstock']);
+//        $this->db->set('outstock_banner', $item['outstock_banner']);
+//        $this->db->set('outstock_link', $item['outstock_link']);
+        // $this->db->set('shipping_info', $item['shipping_info']);
+        $this->db->set('note_material', $item['note_material']);
+        $this->db->set('sellblank', $item['sellblank']);
+        $this->db->set('sellcolor', $item['sellcolor']);
+        $this->db->set('sellcolors', $item['sellcolors']);
+        if ($item['item_id']==0) {
+            $this->db->set('create_user', $user_id);
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
+            $this->db->set('update_user', $user_id);
+            $this->db->insert('sb_items');
+            $newrec = $this->db->insert_id();
+            if ($newrec==0) {
+                $out=['result'=> $this->error_result, 'msg'=>'Error during add item data'];
+            } else {
+                $out=['result'=>$this->success_result, 'msg'=> '', 'item_id'=>$newrec];
+            }
+        } else {
+            $this->db->set('update_user', $user_id);
+            $this->db->where('item_id', $item['item_id']);
+            $this->db->update('sb_items');
+            $out=['result'=>$this->success_result, 'msg'=> '', 'item_id'=>$item['item_id']];
+        }
+        if (ifset($item['item_price_id'],0) !== 0) {
+            $this->db->set('item_price_print', $item['item_price_print']);
+            $this->db->set('item_sale_print', $item['item_sale_print']);
+            $this->db->set('profit_print', $item['profit_print']);
+            $this->db->set('item_price_setup', $item['item_price_setup']);
+            $this->db->set('item_sale_setup', $item['item_sale_setup']);
+            $this->db->set('profit_print', $item['profit_print']);
+            $this->db->set('profit_setup', $item['profit_setup']);
+            if ($item['item_price_id'] > 0) {
+                $this->db->where('item_price_itemid', $item['item_price_id']);
+                $this->db->update('sb_item_prices');
+            } else {
+                $this->db->set('item_price_itemid', $out['item_id']);
+                $this->db->insert('sb_item_prices');
+            }
+        }
+        return $out;
+    }
+
+
+    private function _save_vendoritem($vendor_item, $vendor_prices)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor Item Save - Unknown Error'];
+        if ($vendor_item['vendor_item_vendor'] < 0) {
+            // Save vendor
+            $this->db->set('vendor_name', $vendor_item['vendor_name']);
+            $this->db->set('', $vendor_item['vendor_item_zipcode']);
+            $this->db->insert('vendors');
+            $vendor_id = $this->db->insert_id();
+            if ($vendor_id == 0) {
+                $out['msg'] = 'Error during Insert Vendor Data';
+                return $out;
+            } else {
+                $vendor_item['vendor_item_vendor'] = $vendor_id;
+            }
+        }
+        // save vendor item
+        $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
+        $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
+        $this->db->set('vendor_item_exprint', $vendor_item['vendor_item_exprint']);
+        $this->db->set('vendor_item_setup', $vendor_item['vendor_item_setup']);
+        $this->db->set('vendor_item_notes', $vendor_item['vendor_item_notes']);
+        $this->db->set('vendor_item_zipcode', $vendor_item['vendor_item_zipcode']);
+        if ($vendor_item['vendor_item_id'] > 0 ) {
+            $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
+            $this->db->update('sb_vendor_items');
+            $vendor_item_id = $vendor_item['vendor_item_id'];
+        } else {
+            $this->db->insert('sb_vendor_items');
+            $vendor_item_id = $this->db->insert_id();
+        }
+        foreach ($vendor_prices as $vendor_price) {
+            if (intval($vendor_price['vendorprice_qty']) > 0 && floatval($vendor_price['vendorprice_color']) > 0) {
+                $this->db->set('vendor_item_id', $vendor_item_id);
+                $this->db->set('vendorprice_qty', intval($vendor_price['vendorprice_qty']));
+                $this->db->set('vendorprice_color', floatval($vendor_price['vendorprice_color']));
+                if ($vendor_price['vendorprice_id'] > 0) {
+                    $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                    $this->db->update('sb_vendor_prices');
+                } else {
+                    $this->db->insert('sb_vendor_prices');
+                }
+            } else {
+                if ($vendor_price['vendorprice_id'] > 0) {
+                    $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                    $this->db->delete('sb_vendor_prices');
+                }
+            }
+        }
+        if ($vendor_item_id > 0) {
+            $out['result'] = $this->success_result;
+            $out['vendor_item_id'] = $vendor_item_id;
+        }
+        return $out;
+    }
+
+    private function _check_itemdetails($data) {
+        $out=['result'=>$this->success_result, 'msg' =>''];
+        $out_mgs='';
+        $item = $data['item'];
+        if (empty(ifset($item,'item_number',''))) {
+            $out_mgs.='Item # required.'.PHP_EOL;
+        } else {
+            $numchkres = $this->_check_item_number($item['item_number'], $item['item_id']);
+            if ($numchkres['result']==$this->error_result) {
+                $out_mgs.='Item Number is not unique'.PHP_EOL;
+            }
+        }
+        /* Add Unique check */
+        if (empty(ifset($item,'item_name',''))) {
+            $out_mgs.='Item name required'.PHP_EOL;
+        }
+
+        if (intval(ifset($item,'item_lead_a',0))==0) {
+            $out_mgs.='Lead A required'.PHP_EOL;
+        }
+
+        if (empty(ifset($item,'item_material',''))) {
+            // if ($item['item_template']==$this->STRESSBALL_TEMPLATE) {
+                $out_mgs.='Item material required'.PHP_EOL;
+            // }
+        }
+//        if (empty(ifset($item,'item_weigth',0))) {
+//            $out_mgs.='Item weight required'.PHP_EOL;
+//        }
+        if (empty(ifset($item,'item_size',''))) {
+            $out_mgs.='Item size required'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_keywords',''))) {
+            $out_mgs.='Internal Keywords required'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_url',''))) {
+            $out_mgs.='Page URL is required field'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_meta_title',''))) {
+            $out_mgs.='Meta title required'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_metadescription',''))) {
+            $out_mgs.='Meta description required'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_metakeywords',''))) {
+            $out_mgs.='Meta keywords required'.PHP_EOL;
+        }
+        if (empty(ifset($item,'item_description1',''))) {
+            $out_mgs.='Attributes (row 1) required'.PHP_EOL;
+        }
+        if (isset($item['item_description2']) && empty($item['item_description2'])) { // && $item['item_template']=='Stressball'
+            $out_mgs.='Attributes (row 2) required'.PHP_EOL;
+        }
+//        if (isset($item['cartoon_qty']) && empty($item['cartoon_qty'])) {
+//            $out_mgs.='Shipping Information - Carton Qty - required'.PHP_EOL;
+//        } elseif (!is_numeric($item['cartoon_qty'])) {
+//            $out_mgs.='Shipping Information - Carton Qty - must be a number';
+//        }
+//        if (isset($item['cartoon_width']) && empty($item['cartoon_width'])) {
+//            $out_mgs.='Shipping Information - Carton Width - required'.PHP_EOL;
+//        } elseif (!is_numeric($item['cartoon_width'])) {
+//            $out_mgs.='Shipping Information - Carton Width - must be a number'.PHP_EOL;
+//        }
+//        if (isset($item['cartoon_heigh']) && empty($item['cartoon_heigh'])) {
+//            $out_mgs.='Shipping Information - Carton Height - required'.PHP_EOL;
+//        } elseif (!is_numeric($item['cartoon_heigh'])) {
+//            $out_mgs.='Shipping Information - Carton Height - must be a number'.PHP_EOL;
+//        }
+//        if (isset($item['cartoon_depth']) && empty($item['cartoon_depth'])) {
+//            $out_mgs.='Shipping Information - Carton Depth - required'.PHP_EOL;
+//        } elseif (!is_numeric($item['cartoon_depth'])) {
+//            $out_mgs.='Shipping Information - Carton Depth - must be a number'.PHP_EOL;
+//        }
+//        if (!is_numeric($item['charge_pereach'])) {
+//            $out_mgs.='Shipping Information - Special Shipping charge per each  - must be a number'.PHP_EOL;
+//        }
+//        if (!is_numeric($item['charge_perorder'])) {
+//            $out_mgs.='Shipping Information - Special Shipping charge per order  - must be a number'.PHP_EOL;
+//        }
+//        if ($item['item_source']==$this->Inventory_Source && empty($item['printshop_inventory_id'])) {
+//            $out_mgs.='Choose Inventory Item'.PHP_EOL;
+//        }
+//        if ($item['outstock']==1 && empty($item['outstock_banner'])) {
+//            $out_mgs.='Empty Out of Stock Banner'.PHP_EOL;
+//        }
+
+        $vendor_item = $data['vendor_item'];
+        if (empty($vendor_item['vendor_item_id'])) {
+            $out_mgs.='Vendor Item not Entered';
+        }
+        if (empty($vendor_item['vendor_item_vendor'])) {
+            $out_mgs.='Vendor not Entered';
+        }
+        $vendor_prices = $data['vendor_price'];
+        $vchk =0;
+        foreach ($vendor_prices as $vendor_price) {
+            if (intval($vendor_price['vendorprice_qty'])>0 && floatval($vendor_price['vendorprice_color'])>0) {
+                $vchk=1;
+                break;
+            }
+        }
+        if ($vchk==0) {
+            $out_mgs.='Vendor Item Price not Entered';
+        }
+        if (!empty($out_mgs)) {
+            $out['result']=$this->error_result;
+            $out['msg']=$out_mgs;
         }
         return $out;
     }
