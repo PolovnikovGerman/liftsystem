@@ -390,10 +390,13 @@ Class Items_model extends My_Model
         return $out;
     }
 
-    public function get_item_list($item_id) {
+    public function get_item_list($item_id, $brand='') {
         $this->db->select("item_id,concat(item_number,'-',item_name) as item_name",FALSE);
         $this->db->from('sb_items');
         $this->db->where('item_id !=',$item_id);
+        if ($brand!=='') {
+            $this->db->where('brand', $brand);
+        }
         $this->db->order_by('item_number');
         $out=$this->db->get()->result_array();
         return $out;

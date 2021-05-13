@@ -19,6 +19,7 @@ function init_itemlist_details_view() {
                 $(".template-checkbox").css('cursor','pointer');
                 $(".implintdatavalue.sellopt").css('cursor','pointer');
                 init_vectorfile_upload();
+                init_item_similar();
                 init_itemlist_details_edit();
             } else {
                 show_error(response);
@@ -41,6 +42,12 @@ function image_slider_init() {
         prevText : '',
         vertical : false
     });
+}
+
+function init_item_similar() {
+    $("#itemsimilar1").searchable();
+    $("#itemsimilar2").searchable();
+    $("#itemsimilar3").searchable();
 }
 
 function init_vectorfile_upload() {

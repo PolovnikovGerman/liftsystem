@@ -19,13 +19,14 @@
     </div>
     <div class="content-row">
         <div class="intersearch-value">
+        <?php $numpp=1;?>
         <?php foreach ($similar as $row) { ?>
             <?php if ($editmode==0) { ?>
                 <?php if (!empty($row['item_similar_similar'])) { ?>
                     <div class="simulardataview"><?=$row['item_number']?></div>
                 <?php } ?>
             <?php } else { ?>
-                <select class="simulardataselect" data-item="item_similar_similar" data-idx="<?=$row['item_similar_id']?>">
+                <select class="simulardataselect" id="itemsimilar<?=$numpp?>" data-item="item_similar_similar" data-idx="<?=$row['item_similar_id']?>">
                     <option value="">Select</option>
                     <?php foreach ($items as $itemrow) { ?>
                         <option value="<?=$itemrow['item_id']?>" <?=$itemrow['item_id']==$row['item_similar_similar'] ? 'selected="selected"' : ''?>>
@@ -34,6 +35,7 @@
                     <?php } ?>
                 </select>
             <?php } ?>
+            <?php $numpp++;?>
         <?php } ?>
         </div>
     </div>

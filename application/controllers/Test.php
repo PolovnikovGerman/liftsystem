@@ -266,6 +266,8 @@ class Test extends CI_Controller
     }
 
     public function addsb_items() {
+        $this->db->where('brand', 'SB');
+        $this->db->delete('sb_items');
         $price_types = $this->config->item('price_types');
         $this->db->select('*');
         $this->db->from('sb_items');
@@ -301,11 +303,16 @@ class Test extends CI_Controller
                 if ($item['item_template']=='Stressball') {
                     foreach ($price_types as $price_type) {
                         if (!empty($prices['item_price_'.$price_type['type']]) || !empty($prices['item_sale_'.$price_type['type']])) {
+                            // Numbox
+                            $numbox = ceil(intval($price_type['type'])/$item['cartoon_qty']);
+                            $weigth = round(intval($price_type['type'])*$item['item_weigth'],3);
                             $this->db->set('item_id', $newid);
                             $this->db->set('item_qty', intval($price_type['type']));
                             $this->db->set('price', $prices['item_price_'.$price_type['type']]);
                             $this->db->set('sale_price', $prices['item_sale_'.$price_type['type']]);
                             $this->db->set('profit', $prices['profit_'.$price_type['type']]);
+                            $this->db->set('shipbox', $numbox);
+                            $this->db->set('shipweight', $weigth);
                             if (intval($price_type['type'])>=150 && $showfl==0) {
                                 $this->db->set('show_first',1);
                                 $showfl=1;
@@ -322,6 +329,8 @@ class Test extends CI_Controller
                     $this->db->where('item_id', $item['item_id']);
                     $promoprices = $this->db->get()->result_array();
                     foreach ($promoprices as $promoprice) {
+                        $numbox = ceil(intval($promoprice['item_qty'])/$item['cartoon_qty']);
+                        $weigth = round(intval($promoprice['item_qty'])*$item['item_weigth'],3);
                         $this->db->set('item_id', $newid);
                         $this->db->set('item_qty', $promoprice['item_qty']);
                         $this->db->set('price', $promoprice['price']);
@@ -422,6 +431,28 @@ class Test extends CI_Controller
                 }
             }
         }
+        echo 'Rebuild Similar '.PHP_EOL;
+        $this->db->select('i.item_id, s.item_similar_id, it.item_number');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_item_similars s','s.item_similar_item=i.item_id');
+        $this->db->join('sb_items it','it.item_id=s.item_similar_similar');
+        $simres = $this->db->get()->result_array();
+        foreach ($simres as $srow) {
+            $this->db->select('item_id');
+            $this->db->from('sb_items');
+            $this->db->where('item_number', $srow['item_number']);
+            $this->db->where('brand','SB');
+            $item = $this->db->get()->row_array();
+            if (ifset($item, 'item_id',0)==0) {
+                $this->db->where('item_similar_id', $srow['item_similar_id']);
+                $this->db->delete('sb_item_similars');
+            } else {
+                $this->db->set('item_similar_similar', $item['item_id']);
+                $this->db->where('item_similar_id', $srow['item_similar_id']);
+                $this->db->update('sb_item_similars');
+            }
+        }
+        echo 'Ready '.PHP_EOL;
     }
 
     public function clean_vendoritems() {

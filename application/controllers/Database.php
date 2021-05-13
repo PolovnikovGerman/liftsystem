@@ -130,6 +130,7 @@ class Database extends MY_Controller
             $head['styles'][]=array('style'=>'/css/database/itemlistdetails.css');
             $head['scripts'][] = array('src' => '/js/database/itemlistdetails.js');
             $head['outscripts'] = ['src' => 'https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js'];
+            $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
         }
         // Item details
         $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
@@ -992,7 +993,7 @@ class Database extends MY_Controller
                     'editmode' => $editmode,
                 ];
                 if ($editmode==1) {
-                    $left_options['items'] = $this->items_model->get_item_list($item_id);
+                    $left_options['items'] = $this->items_model->get_item_list($item_id, $brand);
                 }
                 $design_view = $this->load->view('dbitemdetails/webdesign_view', $left_options, TRUE);
                 $meta_view = $this->load->view('dbitemdetails/metadata_view', $left_options, TRUE);

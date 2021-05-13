@@ -657,3 +657,4 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 .marketmenusection {
     margin-left: 40px;
 }
+.modal { overflow: auto !important; }
