@@ -390,7 +390,6 @@ function init_itemlist_details_edit() {
                 $("#editModalLabel").empty().html('Edit Imprint Location');
                 $("#editModal").find('.modal-dialog').css('width','493px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 dbitemlocation_manage();
             } else {
@@ -407,7 +406,6 @@ function init_itemlist_details_edit() {
                 $("#editModalLabel").empty().html('Edit Imprint Location');
                 $("#editModal").find('.modal-dialog').css('width','493px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
                 dbitemlocation_manage();
             } else {
