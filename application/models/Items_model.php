@@ -573,7 +573,8 @@ Class Items_model extends My_Model
             'item_name' => '',
             'item_active' => 1,
             'item_new' => 0,
-            'item_template' => 'Stressballs',
+            'item_sale' => 0,
+            // 'item_template' => 'Stressballs',
             'item_lead_a' => 0,
             'item_lead_b' => 0,
             'item_lead_c' => 0,
@@ -588,7 +589,24 @@ Class Items_model extends My_Model
             'item_description1' => '',
             'item_description2' => '',
             'item_vector_img' => '',
-            ''
+            'options' => 'colors',
+            'note_material' => '',
+            'brand' => $brand,
+            'printlocat_example_img' => '',
+            'sellblank' => 0,
+            'sellcolor' => 0,
+            'sellcolors' => 0,
+            'item_price_id' => -1,
+            'item_price_print' => 0.00,
+            'item_sale_print' => 0.00,
+            'profit_print' => '',
+            'item_price_setup' => 0.00,
+            'item_sale_setup' => 0.00,
+            'profit_setup' => '',
+            'profit_print_class' => '',
+            'profit_print_perc' => '',
+            'profit_setup_class' => '',
+            'profit_setup_perc' => '',
         ];
         $vitem=[
             'vendor_item_id' => -1,
@@ -601,7 +619,12 @@ Class Items_model extends My_Model
             'vendor_item_setup' => 0,
             'vendor_item_notes' => '',
             'vendor_item_zipcode' => '',
+            'vendor_item_exprint' => 0,
+            'vendor_item_setup' => 0,
+            'vendor_item_notes' => '',
             'printshop_item_id' => '',
+            'vendor_name' => '',
+            'vendor_zipcode' => '',
         ];
         $vprices = [];
         for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
@@ -640,10 +663,33 @@ Class Items_model extends My_Model
             $prices[] = [
                 'promo_price_id' => $i * (-1),
                 'item_id' => -1,
+                'item_qty' => 0,
                 'price' => '',
                 'sale_price' => '',
                 'profit' => '',
                 'show_first' => '0',
+                'shipbox' => 0,
+                'shipweight' => 0.000,
+                'profit_class' => '',
+                'profit_perc' => '',
+            ];
+        }
+        $similar = [];
+        for ($i=1; $i<4; $i++) {
+            $similar[] = [
+                'item_similar_id' => $i*(-1),
+                'item_similar_similar' => '',
+                'item_number' => '',
+                'item_name' => '',
+                'item_template' => '',
+            ];
+        }
+        $colors = [];
+        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
+            $idx = ($i + 1) * (-1);
+            $colors[] = [
+                'item_color_id' => $idx,
+                'item_color' => '',
             ];
         }
         $data=[
@@ -653,9 +699,13 @@ Class Items_model extends My_Model
             'images' => $images,
             'inprints' => $imprints,
             'prices' => $prices,
+            'similar' => $similar,
+            'colors' => $colors,
+            'deleted' => [],
         ];
-        $out['data'] = $data;
-        return $out;
+        // $out['data'] = $data;
+        // return $out;
+        return $data;
     }
 
     public function get_itemlist_details($item_id, $editmode = 0) {
@@ -772,10 +822,11 @@ Class Items_model extends My_Model
             }
             if ($editmode==1) {
                 if ($numpp < $this->config->item('slider_images')) {
+                    $idx = 1;
                     for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
                         $title = 'Pic '.$i;
                         $images[] = [
-                            'item_img_id' => $i * (-1),
+                            'item_img_id' => $idx * (-1),
                             'item_img_item_id' => $item_id,
                             'item_img_name' => '',
                             'item_img_thumb' => '',
@@ -786,6 +837,7 @@ Class Items_model extends My_Model
                             'item_img_label' => '',
                             'title' => $title,
                         ];
+                        $idx++;
                     }
                 }
             }
@@ -818,10 +870,12 @@ Class Items_model extends My_Model
                 }
             }
             if ($numpp<$this->config->item('prices_val')) {
+                $idx = 1;
                 for ($i=$numpp; $i<=$this->config->item('prices_val'); $i++) {
                     $prices[] = [
-                        'promo_price_id' => $i * (-1),
+                        'promo_price_id' => $idx * (-1),
                         'item_id' => $item_id,
+                        'item_qty' => '',
                         'price' => '',
                         'sale_price' => '',
                         'profit' => '',
@@ -831,6 +885,7 @@ Class Items_model extends My_Model
                         'profit_class' =>  '',
                         'profit_perc' =>  '',
                     ];
+                    $idx++;
                 }
             }
             // Special price - setup, print

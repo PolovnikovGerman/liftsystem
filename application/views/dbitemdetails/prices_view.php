@@ -8,7 +8,7 @@
                     <?php if ($editmode==0) { ?>
                         <div class="viewparam"><?=empty($price['item_qty']) ? '&nbsp;' : $price['item_qty']?></div>
                     <?php } else { ?>
-                        <input type="text" class="pricevalinpt price_qty" data-idx="<?=$price['promo_price_id']?>" data-item="price_qty" value="<?=$price['item_qty']?>"/>
+                        <input type="text" class="pricevalinpt price_qty" data-idx="<?=$price['promo_price_id']?>" data-item="item_qty" value="<?=$price['item_qty']?>"/>
                     <?php } ?>
                 </div>
             <?php } ?>

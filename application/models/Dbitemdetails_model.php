@@ -122,6 +122,25 @@ class Dbitemdetails_model extends MY_Model
                 $out['msg']='';
                 $out['result']=$this->success_result;
             }
+        } elseif ($entity=='images') {
+            $out['msg']='Item Image Not Found';
+            $items = ifset($session_data,'images', []);
+            $idx = 0;
+            $found=0;
+            foreach ($items as $item) {
+                if ($item['item_img_id']==$key) {
+                    $items[$idx][$fld] = $newval;
+                    $found = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($found==1) {
+                $session_data['images']=$items;
+                usersession($session_id, $session_data);
+                $out['msg']='';
+                $out['result']=$this->success_result;
+            }
         }
         $out['fld'] = $fld;
         $out['newval'] = $newval;
@@ -718,6 +737,7 @@ class Dbitemdetails_model extends MY_Model
                 $this->db->set('profit', $price['profit']);
                 $this->db->set('show_first', $price['show_first']);
                 $this->db->set('shipbox', $price['shipbox']);
+                $this->db->set('shipweight', $price['shipweight']);
                 if ($price['promo_price_id'] > 0) {
                     $this->db->where('promo_price_id', $price['promo_price_id']);
                     $this->db->update('sb_promo_price');
@@ -730,9 +750,9 @@ class Dbitemdetails_model extends MY_Model
     }
 
     private function _save_item_inprints($inprints, $item_id) {
-        $full_path = $this->config->item('imprintimages_relative').$item_id.'/';
+        $full_path = $this->config->item('imprintimages').$item_id.'/';
         createPath($full_path);
-        $short_path = $this->config->item('imprintimages').$item_id.'/';
+        $short_path = $this->config->item('imprintimages_relative').$item_id.'/';
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         foreach ($inprints as $inprint) {
@@ -765,9 +785,9 @@ class Dbitemdetails_model extends MY_Model
     }
 
     private function _save_item_images($images, $item_id) {
-        $full_path = $this->config->item('itemimages_relative').$item_id.'/';
+        $full_path = $this->config->item('itemimages').$item_id.'/';
         createPath($full_path);
-        $short_path = $this->config->item('itemimages').$item_id.'/';
+        $short_path = $this->config->item('itemimages_relative').$item_id.'/';
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         $numpp = 1;
@@ -787,6 +807,7 @@ class Dbitemdetails_model extends MY_Model
                 if (!empty($image['item_img_name'])) {
                     $this->db->set('item_img_item_id', $item_id);
                     $this->db->set('item_img_name', $image['item_img_name']);
+                    $this->db->set('item_img_label', $image['item_img_label']);
                     $this->db->set('item_img_order', $numpp);
                     if ($image['item_img_id'] > 0) {
                         $this->db->where('item_img_id', $image['item_img_id']);
@@ -905,7 +926,8 @@ class Dbitemdetails_model extends MY_Model
         $this->db->set('sellblank', $item['sellblank']);
         $this->db->set('sellcolor', $item['sellcolor']);
         $this->db->set('sellcolors', $item['sellcolors']);
-        if ($item['item_id']==0) {
+        $this->db->set('brand', $item['brand']);
+        if ($item['item_id']<=0) {
             $this->db->set('create_user', $user_id);
             $this->db->set('create_time', date('Y-m-d H:i:s'));
             $this->db->set('update_user', $user_id);
@@ -1117,7 +1139,7 @@ class Dbitemdetails_model extends MY_Model
         $this->db->where('item_number', $item_number);
         $this->db->where('item_id != ', $item_id);
         $res = $this->db->get()->row_array();
-        if ($res['cnt']==1) {
+        if ($res['cnt']==0) {
             $out['result'] = $this->success_result;
         }
         return $out;

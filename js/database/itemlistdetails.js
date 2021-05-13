@@ -553,6 +553,21 @@ function init_itemlist_details_edit() {
             // dbitemlocation_manage();
         },'json');
     });
+    $("input.imagesinpt").unbind('change').change(function () {
+        var params=prepare_edit();
+        var fldname = $(this).data('item');
+        params.push({name: 'entity', value: 'images'});
+        params.push({name: 'idx', value: $(this).data('idx')});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/dbitemdetails/change_parameter';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function dbitemlocation_manage() {

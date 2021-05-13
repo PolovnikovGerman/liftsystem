@@ -27,7 +27,7 @@
                         </div>
                     <?php } ?>
                     <div class="picturename">
-                        <div class="viewparam"><?= $row['item_img_label'] ?></div>
+                        <input type="text" class="imagesinpt imglabel" data-idx="<?=$row['item_img_id']?>" data-item="item_img_label" value="<?=$row['item_img_label']?>"/>
                     </div>
                 </div>
                 <?php $i++;

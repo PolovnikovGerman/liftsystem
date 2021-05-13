@@ -1070,6 +1070,7 @@ class Database extends MY_Controller
                     'adv_view' => $adv_view,
                 ];
                 $mdata['content'] = $this->load->view('dbitemdetails/body_view', $options, TRUE);
+                $mdata['editmode'] = $editmode;
             }
             $this->ajaxResponse($mdata, $error);
         }

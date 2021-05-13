@@ -23,7 +23,7 @@ function init_itemslist_view(brand) {
         search_itemlists(brand);
     });
     $(".listaction").unbind('click').click(function(){
-        edit_itemlist(-1, brand);
+        edit_itemlist(0, brand);
     });
     init_itemlist_manage(brand);
 }
@@ -267,7 +267,16 @@ function edit_itemlist(item, brand) {
             $("#itemDetailsModal").find('div.modal-dialog').css('width','1345px');
             // $("#pageModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_itemlist_details_view();
+            if (parseInt(response.data.editmode)==1) {
+                image_slider_init();
+                $(".displayprice").css('cursor','pointer');
+                $(".template-checkbox").css('cursor','pointer');
+                $(".implintdatavalue.sellopt").css('cursor','pointer');
+                init_vectorfile_upload();
+                init_itemlist_details_edit();
+            } else {
+                init_itemlist_details_view();
+            }
             //
         } else {
             show_error(response);
