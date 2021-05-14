@@ -86,7 +86,7 @@
             <?php foreach ($prices as $price) { ?>
                 <div class="pricedatvalue shipweight">
                     <?php if ($editmode==0) { ?>
-                        <div class="viewparam"><?=empty($price['shipweight']) ? '&nbsp;' : $price['shipweight']?></div>
+                        <div class="viewparam"><?=empty($price['shipweight']) ? '&nbsp;' : round($price['shipweight'],1)?></div>
                     <?php } else { ?>
                         <input type="text" class="shipvalinpt shipweight" data-idx="<?=$price['promo_price_id']?>" data-item="shipweight" value="<?=$price['shipweight']?>"/>
                     <?php } ?>
