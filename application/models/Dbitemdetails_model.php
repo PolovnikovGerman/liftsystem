@@ -22,7 +22,7 @@ class Dbitemdetails_model extends MY_Model
             if (array_key_exists($fld,$item)) {
                 $out['oldvalue'] = $item[$fld];
                 if ($fld=='item_number') {
-                    $chkres = $this->_check_item_number($newval, $item['item_id']);
+                    $chkres = $this->_check_item_number($newval, $item['item_id'], $item['brand']);
                     $out['msg'] = $chkres['msg'];
                     if ($chkres['result'] == $this->success_result) {
                         $item[$fld] = $newval;
@@ -1027,7 +1027,7 @@ class Dbitemdetails_model extends MY_Model
         if (empty(ifset($item,'item_number',''))) {
             $out_mgs.='Item # required.'.PHP_EOL;
         } else {
-            $numchkres = $this->_check_item_number($item['item_number'], $item['item_id']);
+            $numchkres = $this->_check_item_number($item['item_number'], $item['item_id'], $item['brand']);
             if ($numchkres['result']==$this->error_result) {
                 $out_mgs.='Item Number is not unique'.PHP_EOL;
             }
@@ -1132,12 +1132,13 @@ class Dbitemdetails_model extends MY_Model
     }
 
     // Check uniq number
-    private function  _check_item_number($item_number, $item_id) {
+    private function  _check_item_number($item_number, $item_id, $brand) {
         $out = ['result' => $this->error_result, 'msg' => 'Item # not unique'];
         $this->db->select('count(item_id) as cnt');
         $this->db->from('sb_items');
         $this->db->where('item_number', $item_number);
         $this->db->where('item_id != ', $item_id);
+        $this->db->where('brand', $brand);
         $res = $this->db->get()->row_array();
         if ($res['cnt']==0) {
             $out['result'] = $this->success_result;
