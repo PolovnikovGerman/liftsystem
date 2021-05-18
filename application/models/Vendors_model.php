@@ -328,6 +328,7 @@ Class Vendors_model extends My_Model
         $result=$this->db->get()->result_array();
         return $result;
     }
+
     // Get Vendor for new edit
     public function get_item_vendor($vendor_item_id) {
         $this->db->select('vi.*');
