@@ -193,7 +193,7 @@ function init_vendordetails_view() {
 
 function init_vendordetails_edit() {
     $(".vendorsaveactionbtn").unbind('click').click(function () {
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         var url = '/database/vendordata_save';
         $.post(url, params, function (response) {
             if (response.errors=='') {
@@ -209,7 +209,7 @@ function init_vendordetails_edit() {
         if ($(this).hasClass('active')) {
             newstatus = 0;
         }
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: 'vendor_status'});
         params.push({name: 'newval', value: newstatus});
@@ -229,7 +229,7 @@ function init_vendordetails_edit() {
         },'json');
     });
     $("input.vendordetailsinpt").unbind('change').change(function () {
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
@@ -243,7 +243,7 @@ function init_vendordetails_edit() {
         },'json');
     });
     $("textarea.vendordetailsinpt").unbind('change').change(function () {
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
@@ -257,7 +257,7 @@ function init_vendordetails_edit() {
         },'json');
     });
     $("select.vendordetailsselect").unbind('change').change(function () {
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
@@ -272,7 +272,7 @@ function init_vendordetails_edit() {
     });
     $(".vendorparamcheck").unbind('click').click(function(){
         var item=$(this).data('item');
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: item});
         var url='/vendors/update_vendor_check';
@@ -286,7 +286,7 @@ function init_vendordetails_edit() {
     });
     // Contacts
     $(".vendorcontactinpt").unbind('change').change(function () {
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor_contacts'});
         params.push({name: 'fld', value: $(this).data('field')});
         params.push({name: 'idx', value: $(this).data('idx')});
@@ -303,7 +303,7 @@ function init_vendordetails_edit() {
     $(".vendorcontactcheck").unbind('click').click(function () {
         var field = $(this).data('field');
         var idx = $(this).data('idx');
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor_contacts'});
         params.push({name: 'fld', value: field});
         params.push({name: 'idx', value: idx});
@@ -318,7 +318,7 @@ function init_vendordetails_edit() {
     });
     // Add contacts
     $(".vendorcontactadd").unbind('click').click(function(){
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'manage', value: 'add'});
         var url = '/vendors/vendor_contact_manage';
         $.post(url, params, function (response) {
@@ -333,7 +333,7 @@ function init_vendordetails_edit() {
     // Remove contacts
     $(".removevendorcontact").unbind('click').click(function () {
         if (confirm('Remove contact ?')==true) {
-            var params = prepare_edit();
+            var params = prepare_vendor_edit();
             params.push({name: 'manage', value: 'del'});
             params.push({name: 'idx', value: $(this).data('idx')});
             var url = '/vendors/vendor_contact_manage';
@@ -365,7 +365,7 @@ function init_vendordetails_edit() {
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success==true) {
                 $("li.qq-upload-success").hide();
-                var params=prepare_edit();
+                var params=prepare_vendor_edit();
                 params.push({name: 'entity', value: 'vendor_docs'});
                 params.push({name: 'newval', value: responseJSON.filename});
                 params.push({name: 'srcname', value: responseJSON.source});
@@ -383,7 +383,7 @@ function init_vendordetails_edit() {
         }
     });
     $("input.vendordocuminpt").unbind('change').change(function(){
-        var params = prepare_edit();
+        var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor_docs'});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'idx', value: $(this).data('idx')});
@@ -398,7 +398,7 @@ function init_vendordetails_edit() {
         },'json');
     });
     $(".vendordocremove").unbind('click').click(function () {
-        var params=prepare_edit();
+        var params=prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor_docs'});
         params.push({name: 'manage', value: 'del'});
         params.push({name: 'idx', value: $(this).data('idx')});
@@ -415,7 +415,7 @@ function init_vendordetails_edit() {
 
 }
 
-function prepare_edit() {
+function prepare_vendor_edit() {
     var params = new Array();
     params.push({name: 'session', value: $("#session").val()});
     return params;
