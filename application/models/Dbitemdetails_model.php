@@ -240,6 +240,7 @@ class Dbitemdetails_model extends MY_Model
 
     public function check_vendor_item($postdata, $session_data, $session_id) {
         $out=['result'=>$this->error_result, 'msg'=>'Unknown error'];
+        $vendordat = $session_data['vendor_item'];
         $vendor_item_number = ifset($postdata,'number','');
         $this->load->model('vendors_model');
         if (empty($vendor_item_number)) {
@@ -263,17 +264,17 @@ class Dbitemdetails_model extends MY_Model
             if (ifset($res,'vendor_item_id',0)==0) {
                 $data=[
                     'vendor_item_id'=>-1,
-                    'vendor_item_vendor'=>'',
+                    'vendor_item_vendor'=>$vendordat['vendor_item_vendor'],
                     'vendor_item_number'=>$vendor_item_number,
                     'vendor_item_name'=>$vendor_item_number,
                     'vendor_item_cost'=>'',
                     'vendor_item_exprint'=>'',
                     'vendor_item_setup'=>'',
                     'vendor_item_notes'=>'',
-                    'vendor_item_zipcode'=>'',
+                    'vendor_item_zipcode'=>$vendordat['vendor_item_zipcode'],
                     'vendor_item_blankcost' => '',
-                    'vendor_name' => '',
-                    'vendor_zipcode' => '',
+                    'vendor_name' => $vendordat['vendor_name'],
+                    'vendor_zipcode' => $vendordat['vendor_zipcode'],
                 ];
                 $vendor_prices=$this->vendors_model->newitem_vendorprices();
             } else {
