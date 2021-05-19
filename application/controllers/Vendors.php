@@ -13,6 +13,7 @@ class Vendors extends MY_Controller
         $this->load->model('vendors_model');
     }
 
+    // Update vendors parameters
     public function update_vendor_param() {
         if ($this->isAjax()) {
             $mdata=[];
