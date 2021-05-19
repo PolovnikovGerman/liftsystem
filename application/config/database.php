@@ -93,6 +93,7 @@ $db['default'] = array(
 );
 switch($_SERVER['SERVER_NAME']) {
     case 'lifttest.stressballs.com':
+    case 'lift.stressballs.com':
         $db['default']['username']='stressball_liftnew';
         $db['default']['password']='fDQa0ral9KJm'; //
         $db['default']['database']='stressball_liftnew';
