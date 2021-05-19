@@ -10,6 +10,7 @@ class Vendors extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        log_message('ERROR','Open Vendors');
         $this->load->model('vendors_model');
     }
 
