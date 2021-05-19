@@ -37,10 +37,10 @@ body {
     font-family: HelveticaNeue-Medium;
     src: url(/fonts/HelveticaNeue-Medium.otf) format("opentype");
 }
-@font-face {
-    font-family: Helvetica CE;
-    src: url(/fonts/HelveticaCE.otf) format("opentype");
-}
+/*@font-face {*/
+/*    font-family: Helvetica CE;*/
+/*    src: url(/fonts/HelveticaCE.otf) format("opentype");*/
+/*}*/
 @font-face {
     font-family: helveticaneuecyr-black;
     src: url(/fonts/helveticaneuecyr-black.otf) format("opentype");
