@@ -752,8 +752,8 @@ class Dbitemdetails_model extends MY_Model
 
     private function _save_item_inprints($inprints, $item_id) {
         $full_path = $this->config->item('imprintimages').$item_id.'/';
-        createPath($full_path);
         $short_path = $this->config->item('imprintimages_relative').$item_id.'/';
+        createPath($short_path);
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         foreach ($inprints as $inprint) {
@@ -787,8 +787,8 @@ class Dbitemdetails_model extends MY_Model
 
     private function _save_item_images($images, $item_id) {
         $full_path = $this->config->item('itemimages').$item_id.'/';
-        createPath($full_path);
         $short_path = $this->config->item('itemimages_relative').$item_id.'/';
+        createPath($short_path);
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         $numpp = 1;
@@ -847,8 +847,8 @@ class Dbitemdetails_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Item Details Save - Unknown Error'];
         // Check new images
         $full_path = $this->config->item('contents_images_relative');
-        createPath($full_path);
         $short_path = $this->config->item('contents_images');
+        createPath($short_path);
         $path_preload_short = $this->config->item('pathpreload');
         $path_preload_full = $this->config->item('upload_path_preload');
         if (!empty($item['printlocat_example_img']) && stripos($item['printlocat_example_img'],$path_preload_short)!==FALSE) {
@@ -862,8 +862,8 @@ class Dbitemdetails_model extends MY_Model
             }
         }
         $full_path = $this->config->item('item_template_relative');
-        createPath($full_path);
         $short_path = $this->config->item('item_template');
+        createPath($short_path);
         if (!empty($item['item_vector_img']) && stripos($item['item_vector_img'],$path_preload_short)!==FALSE) {
             $imagesrc = str_replace($path_preload_short, $path_preload_full, $item['item_vector_img']);
             $imagedetails = extract_filename($item['item_vector_img']);
