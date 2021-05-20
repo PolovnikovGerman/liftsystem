@@ -875,7 +875,7 @@ class Dbitemdetails_model extends MY_Model
             }
         }
         // Save
-        $this->db->set('item_number', $item['item_number']);
+        $this->db->set('item_number', strtoupper($item['item_number']));
         $this->db->set('item_name', $item['item_name']);
         $this->db->set('item_active', $item['item_active']);
         $this->db->set('item_new', $item['item_new']);

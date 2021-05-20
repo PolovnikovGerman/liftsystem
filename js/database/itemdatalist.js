@@ -273,6 +273,7 @@ function edit_itemlist(item, brand) {
                 $(".template-checkbox").css('cursor','pointer');
                 $(".implintdatavalue.sellopt").css('cursor','pointer');
                 init_vectorfile_upload();
+                init_item_similar();
                 init_itemlist_details_edit();
             } else {
                 init_itemlist_details_view();
