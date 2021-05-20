@@ -971,7 +971,7 @@ class Dbitemdetails_model extends MY_Model
         if ($vendor_item['vendor_item_vendor'] < 0) {
             // Save vendor
             $this->db->set('vendor_name', $vendor_item['vendor_name']);
-            $this->db->set('', $vendor_item['vendor_item_zipcode']);
+            $this->db->set('vendor_zip_code', $vendor_item['vendor_item_zipcode']);
             $this->db->insert('vendors');
             $vendor_id = $this->db->insert_id();
             if ($vendor_id == 0) {
@@ -982,6 +982,7 @@ class Dbitemdetails_model extends MY_Model
             }
         }
         // save vendor item
+        $this->db->set('vendor_item_vendor', $vendor_item['vendor_item_vendor']);
         $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
         $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
         $this->db->set('vendor_item_exprint', $vendor_item['vendor_item_exprint']);
