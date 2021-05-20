@@ -446,14 +446,15 @@ class Content extends MY_Controller
                 $session_data['meta'] = $meta;
                 $session_data['deleted'] = []; // type , id
                 usersession($session_id, $session_data);
-                // $button_options = ['page'=> $page_name, 'content_name' => $page_name_full, 'session'=> $session_id];
-                // $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                $button_options = ['page'=>'extraservice', 'content_name' => $page_name_full, 'session'=> $session_id];
+                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view,
                     // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,
                 ];
                 $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+                $mdata['buttons'] = $buttons_view;
             }
             $this->ajaxResponse($mdata, $error);
         }
