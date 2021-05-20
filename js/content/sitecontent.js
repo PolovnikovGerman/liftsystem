@@ -129,8 +129,13 @@ function init_contentpage(page_name, brand) {
             } else if (page_name=='extraservice') {
                 if (brand=='BT') {
                     $("#btserviceview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='btserviceview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='btserviceview']").find('div.buttons').empty().html(response.data.buttons);
                 } else {
                     $("#sbserviceview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbserviceview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbserviceview']").find('div.buttons').empty().html(response.data.buttons);
+
                 }
                 init_service_page(brand);
             }

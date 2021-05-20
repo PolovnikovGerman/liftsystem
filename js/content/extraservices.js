@@ -23,7 +23,7 @@ function init_service_page(brand) {
             autoSize : false
         });
     })
-    $(".edit_button[data-page='extraservice']").unbind('click').click(function () {
+    $(".edit_button[data-link='serviceview']").unbind('click').click(function () {
         init_servicepage_edit(brand);
     });
 }
@@ -46,21 +46,24 @@ function init_servicepage_edit(brand) {
         if (response.errors=='') {
             if (brand=='BT') {
                 $("#btserviceview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='btserviceview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='btserviceview']").find('div.buttons').empty().html(response.data.buttons);
             } else {
                 $("#sbserviceview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbserviceview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbserviceview']").find('div.buttons').empty().html(response.data.buttons);
             }
-            $(".content_preview").on('click',function () {
-                var url=$("#service_previewurl").val();
-                console.log('URL '+url);
-                $.fancybox.open({
-                    src  : url,
-                    type : 'iframe',
-                    opts : {
-                        afterShow : function( instance, current ) {
-                        }
-                    }
-                });
-            });
+            // $(".content_preview").on('click',function () {
+            //     var url=$("#service_previewurl").val();
+            //     $.fancybox.open({
+            //         src  : url,
+            //         type : 'iframe',
+            //         opts : {
+            //             afterShow : function( instance, current ) {
+            //             }
+            //         }
+            //     });
+            // });
             init_servicepage_editcontent(brand);
         } else {
             show_error(response);
