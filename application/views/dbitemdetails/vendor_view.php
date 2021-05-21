@@ -15,7 +15,13 @@
             <?php if ($editmode==0) { ?>
                 <div class="viewparam"><?=$vendor_item['vendor_name']?></div>
             <?php } else { ?>
-                <input type="text" class="vendornameinpt vendorname" id="vendor_name" data-item="vendor_name" value="<?=$vendor_item['vendor_name']?>">
+                <!-- <input type="text" class="vendornameinpt vendorname" id="vendor_name" data-item="vendor_name" value="<?php // $vendor_item['vendor_name']?>"> -->
+                <select class="vendordatainpt vendorname" data-item="vendor_item_vendor" id="vendor_name">
+                    <option value="">Select Vendor</option>
+                    <?php foreach ($vendors as $vendor) { ?>
+                        <option value="<?=$vendor['vendor_id']?>" <?=$vendor['vendor_id']==$vendor_item['vendor_item_vendor'] ? 'selected="selected"' : ''?>><?=$vendor['vendor_name']?></option>
+                    <?php } ?>
+                </select>
             <?php } ?>
         </div>
         <div class="vendorinfo-label">Ships From Zip:</div>

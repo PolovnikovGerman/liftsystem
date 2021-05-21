@@ -48,6 +48,7 @@ function init_item_similar() {
     $("#itemsimilar1").searchable();
     $("#itemsimilar2").searchable();
     $("#itemsimilar3").searchable();
+    $("#vendor_name").searchable();
 }
 
 function init_vectorfile_upload() {
@@ -181,37 +182,39 @@ function init_itemlist_details_edit() {
             }
         },'json');
     });
-    $("#vendor_name").autocompleter({
-        source:'/dbitemdetails/searchvendor',
-        minLength: 2,
-        combine: function(params) {
-            return {
-                q: params.query
-            };
-        },
-        callback: function(value, index, object) {
-            if (object.id) {
-                $("#vendor_item_vendor").val(object.id);
-            }
-        }
-    });
+    // $("#vendor_name").autocompleter({
+    //     source:'/dbitemdetails/searchvendor',
+    //     minLength: 2,
+    //     combine: function(params) {
+    //         return {
+    //             q: params.query
+    //         };
+    //     },
+    //     callback: function(value, index, object) {
+    //         if (object.id) {
+    //             $("#vendor_item_vendor").val(object.id);
+    //         }
+    //     }
+    // });
 
-    $("#vendor_name").blur(function(){
-        var vendor_name=$("#vendor_name").val();
-        params = prepare_edit();
-        params.push({name: 'vendor_name', value :vendor_name});
-        $.post('/dbitemdetails/vendor_check',params,function(response){
-            if (response.errors=='') {
-                if (parseInt(response.data.showvendor)==1) {
-                    $("#vendordataviewarea").empty().html(response.data.vendor_view);
-                    $(".vendordatainpt[data-item='vendor_item_zipcode']").focus();
-                    init_itemlist_details_edit();
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("#vendor_name").blur(function(){
+    //     var vendor_name=$("#vendor_name").val();
+    //     params = prepare_edit();
+    //     params.push({name: 'vendor_name', value :vendor_name});
+    //     $.post('/dbitemdetails/vendor_check',params,function(response){
+    //         if (response.errors=='') {
+    //             if (parseInt(response.data.showvendor)==1) {
+    //                 $("#vendordataviewarea").empty().html(response.data.vendor_view);
+    //                 $(".vendordatainpt[data-item='vendor_item_zipcode']").focus();
+    //                 init_itemlist_details_edit();
+    //             }
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
+
+
 
     $("#vendor_item_number").autocompleter({
         source: '/dbitemdetails/search_vendor_item',

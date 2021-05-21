@@ -1014,10 +1014,13 @@ class Database extends MY_Controller
                 ];
                 $images_view = $this->load->view('dbitemdetails/images_view', $images_options, TRUE);
                 // Vendor data
+                $this->load->model('vendors_model');
+                $vendors = $this->vendors_model->get_vendors(['vendor_type' => 'Supplier', 'vendor_status'=>1]);
                 $vendor_options = [
                     'vendor_item' => $data['vendor_item'],
                     'vendor_price' => $data['vendor_price'],
                     'item' => $data['item'],
+                    'vendors' => $vendors,
                     'editmode' => $editmode,
                 ];
                 $vendor_view = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);

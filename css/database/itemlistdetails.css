@@ -228,6 +228,10 @@
     margin-left: 11px;
     width: 243px;
 }
+.itemdetails-intersearchdata .intersearch-value .intersearch-simular {
+    width: 75px;
+    margin-right: 6px;
+}
 .itemdetails-intersearchdata .intersearch-value .viewparam-multirow {
     padding: 5px;
     background: #ffffff;
@@ -843,7 +847,7 @@ input.itemcolorinpt {
     margin-top: 1px;
     margin-bottom: 2px;
 }
-select.itemlistdetailsselect {
+select.itemlistdetailsselect, select.vendordatainpt {
     background: #ffffff;
     border: 1px solid #000000;
     height: 22px;
@@ -884,7 +888,12 @@ select.simulardataselect {
     margin-right: 7px;
     /* margin-right: 2%; */
 }
+/*
 input.vendorname {
+    width: 129px;
+}
+*/
+select.vendorname {
     width: 129px;
 }
 input.vendorzip {
