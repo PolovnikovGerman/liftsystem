@@ -22,4 +22,6 @@
 <?php if (isset($categoryview)) { ?>
     <div class="page_container dbitemspage" id="categoryview" style="display: none;"><?=$categoryview?></div>
 <?php } ?>
-
+<?php if (isset($itemexportview)) { ?>
+    <div class="page_container dbitemspage" id="itemexportview" style="display: none;"><?=$itemexportview?></div>
+<?php } ?>
