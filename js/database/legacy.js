@@ -43,6 +43,10 @@ function init_legacy_page(objid) {
             $("#itemtemplateview").show();
             init_templates_view();
             break;
+        case 'itemexportview':
+            $("#itemexportview").show();
+            init_export_view();
+            break;
         case 'categoryview':
             $("#categoryview").show();
             init_categories_page();
