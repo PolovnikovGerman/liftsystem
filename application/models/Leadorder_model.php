@@ -6209,6 +6209,12 @@ Class Leadorder_model extends My_Model {
                 'OrderItems' => $OrderItems,
                 'Secure3D' => $Secure3D
             );
+            foreach ($Item as $key => $val) {
+                log_message('ERROR','Item Param '.$key.' Val '.$val.' !');
+            }
+            foreach ($PaymentDetails as $key=>$val) {
+                log_message('ERROR','Payment Param '.$key.' Val '.$val.' !');
+            }
             $PayPalResult = $this->paypal_pro->DoDirectPayment($PayPalRequestData);
 
             if (!$this->paypal_pro->APICallSuccessful($PayPalResult['ACK'])) {
