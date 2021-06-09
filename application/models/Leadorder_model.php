@@ -2555,6 +2555,7 @@ Class Leadorder_model extends My_Model {
             $out['msg'] = 'Expire Year Incorrect';
         } elseif (floatval($charge['amount'])>floatval($order_data['revenue'])) {
             $out['msg'] = 'Charge Value Great than Order Total';
+            log_message('ERROR', 'Charge '.floatval($charge['amount']).' REVENUE '.floatval($order_data['revenue']));
         } else {
             $cardtype=$this->getCCardType($cardnum);
             if (empty($cardtype)) {
