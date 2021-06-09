@@ -2553,7 +2553,7 @@ Class Leadorder_model extends My_Model {
             $out['msg']='Expire Month Incorrect';
         } elseif (intval($charge['exp_year'])==0) {
             $out['msg'] = 'Expire Year Incorrect';
-        } elseif (round(floatval($charge['amount']),2)>roud(floatval($order_data['revenue']),2)) {
+        } elseif (round(floatval($charge['amount']),2)>round(floatval($order_data['revenue']),2)) {
             $out['msg'] = 'Charge Value Great than Order Total';
             log_message('ERROR', 'Charge '.round(floatval($charge['amount']),2).' REVENUE '.round(floatval($order_data['revenue']),2));
         } else {
