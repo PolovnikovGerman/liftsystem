@@ -1084,6 +1084,65 @@ class Database extends MY_Controller
         show_404();
     }
 
+    public function exportdata() {
+        if ($this->isAjax()) {
+            $search= $this->input->post();
+            $mdata=array();
+            $error='';
+            $this->load->model('items_model');
+            $results=$this->items_model->get_export_data($search);
+            $mdata['totals']=count($results);
+            $mdata['content']=$this->load->view('database/exportdb_tabledat_view',array('items'=>$results),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function export_select_fields() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('items_model');
+            $flds=$this->items_model->get_export_description();
+            /* Allowed select */
+            $allow_select=$this->load->view('database/fields_select_view',array('fields'=>$flds,'allowed'=>1,'def_class'=>'allowed_enable'),TRUE);
+            $selected=$this->load->view('database/fields_select_view',array('fields'=>$flds,'allowed'=>0,'def_class'=>'select_hide'),TRUE);
+            $mdata['content']=$this->load->view('database/export_selectfelds_view',array('allowed_select'=>$allow_select,'selected'=>$selected),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function save_export() {
+        if ($this->isAjax()) {
+            $mdata=array();
+
+            $search = $this->input->post();
+            $search['print_ver']=1;
+            $this->load->model('items_model');
+            $results=$this->items_model->get_export_data($search);
+            $fldstr=$this->input->post('fldlst');
+            $fldstr=substr($fldstr,0,-1);
+            $fldarr=  explode('|',$fldstr);
+            $options=array();
+            foreach ($fldarr as $key=>$value) {
+                array_push($options, $value);
+            }
+            $flds=$this->items_model->get_export_description($options);
+            $report_name=uniq_link(15).'.xls';
+
+            $this->load->model('exportexcell_model');
+            $res = $this->exportexcell_model->export_itemdata($results, $options, $flds, $report_name);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['export_url']=$res['url'];
+            }
+            // $res=$this->prepare_export_file($results,$options,$flds,$filename);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
 
     // Prepare pages
     private function _prepare_dbpage_content($page_name, $search='')
