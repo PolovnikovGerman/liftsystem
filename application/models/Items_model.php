@@ -923,5 +923,100 @@ Class Items_model extends My_Model
         return $out;
 
     }
+    
+    public function get_export_data($search) {
+        $this->db->select('i.*,vi.vendor_item_number, vi.vendor_item_name, vi.vendor_item_cost, vi.vendor_item_exprint, vi.vendor_item_setup, v.vendor_name');
+        $i=1;
+        foreach ($this->config->item('price_types') as $row) {
+            $this->db->select("{$row['type']} as qty_price{$i}",FALSE);
+            $this->db->select("ip.item_price_{$row['type']} as price{$i}",FALSE);
+            $this->db->select("ip.item_sale_{$row['type']} as sale_price{$i}",FALSE);
+            $i++;
+        }
+        $this->db->select('ip.item_price_print as price_print , ip.item_price_setup as price_setup , ip.item_sale_print as sale_print , ip.item_sale_setup as sale_setup');
+        $this->db->from('sb_items i');
+        $this->db->join("sb_vendor_items vi","vi.vendor_item_id=i.vendor_item_id","left");
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor","left");
+        $this->db->join('sb_item_prices ip','ip.item_price_itemid=i.item_id','left');
+        /* Analyse search */
+        if ($search['item_number']!='') {
+            $this->db->like('i.item_number',$search['item_number']);
+        }
+        if ($search['item_name']!='') {
+            $this->db->like('upper(i.item_name) ',$search['item_name']);
+        }
+        if ($search['item_template']!='') {
+            $this->db->where('i.item_template ',$search['item_template']);
+        }
+        if ($search['item_new']!=''){
+            $this->db->where('i.item_new',$search['item_new']);
+        }
+        if ($search['item_active']!=='') {
+            $this->db->where('i.item_active',$search['item_active']);
+        }
+        if ($search['vendor_id']!='') {
+            $this->db->where('v.vendor_id',$search['vendor_id']);
+        }
+        $this->db->order_by('i.item_number');
+        $res=$this->db->get()->result_array();
+        if (isset($search['print_ver']) && $search['print_ver']) {
+            $out=array();
+            foreach ($res as $row) {
+                $row['item_new']=($row['item_new']==1 ? 'Yes' : 'No');
+                $row['item_active']=($row['item_active']==1 ? 'Yes' : 'No');
+                $row['item_lead_a']=(intval($row['item_lead_a'])==0 ? '' : intval($row['item_lead_a']));
+                $row['item_lead_b']=(intval($row['item_lead_b'])==0 ? '' : intval($row['item_lead_b']));
+                $row['item_lead_c']=(intval($row['item_lead_c'])==0 ? '' : intval($row['item_lead_c']));
+                $row['charge_pereach']=(floatval($row['charge_pereach'])==0 ? '' : $row['charge_pereach']);
+                $row['charge_perorder']=(floatval($row['charge_perorder'])==0 ? '' : $row['charge_perorder']);
+                $row['vendor_item_cost']=(floatval($row['vendor_item_cost'])==0 ? '' : $row['vendor_item_cost']);
+                $row['vendor_item_exprint']=(floatval($row['vendor_item_exprint'])==0 ? '' : $row['vendor_item_exprint']);
+                $row['vendor_item_setup']=(floatval($row['vendor_item_setup'])==0 ? '' : $row['vendor_item_setup']);
+                $row['price_print']=(floatval($row['price_print'])==0 ? '' : $row['price_print']);
+                $row['price_setup']=(floatval($row['price_setup'])==0 ? '' : $row['price_setup']);
+                $row['sale_print']=(floatval($row['sale_print'])==0 ? '' : $row['sale_print']);
+                $row['sale_setup']=(floatval($row['sale_setup'])==0 ? '' : $row['sale_setup']);
+                if ($row['item_template']!='Stressball') {
+                    for ($i=1; $i<=10; $i++) {
+                        $row['qty_price'.$i]='';
+                        $row['price'.$i]='';
+                        $row['sale_price'.$i]='';
+                    }
+                    /* Get Promo Prices */
+                    $this->db->select('*');
+                    $this->db->from('sb_promo_price');
+                    $this->db->where('item_id',$row['item_id']);
+                    $this->db->order_by('item_qty');
+                    $price_dat=$this->db->get()->result_array();
+                    $i=1;
+                    foreach ($price_dat as $prow) {
+                        $row['qty_price'.$i]=(intval($prow['item_qty'])==0 ? '' : $prow['item_qty']);
+                        $row['price'.$i]=(floatval($prow['price'])==0 ? '' : floatval($prow['price']));
+                        $row['sale_price'.$i]=(floatval($prow['sale_price'])==0 ? '' : floatval($prow['sale_price']));
+                    }
+                } else {
+                    for ($i=1; $i<=10; $i++) {
+                        $row['qty_price'.$i]=(intval($row['qty_price'.$i])==0 ? '' : $row['qty_price'.$i]);
+                        $row['price'.$i]=(floatval($row['price'.$i])==0 ? '' : floatval($row['price'.$i]));
+                        $row['sale_price'.$i]=(floatval($row['sale_price'.$i])==0 ? '' : floatval($row['sale_price'.$i]));
+                    }
+                }
+                $out[]=$row;
+            }
+            $res=$out;
+        }
+        return $res;
+    }
+
+    public function get_export_description($options=array()) {
+        $this->db->select('*');
+        $this->db->from('sb_export_fields');
+        if (count($options)>0) {
+            $this->db->where_in('expfield_id',$options);
+        }
+        $this->db->order_by('expfield_id');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
 
 }

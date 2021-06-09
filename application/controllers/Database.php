@@ -90,10 +90,15 @@ class Database extends MY_Controller
                         $page_name = 'itemprofit';
                         $legacy_options['itemprofitview'] = $this->_content_view($page_name);
                     } elseif ($smenu['item_link']=='#itemtemplateview') {
-                        $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
-                        $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
+                        $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
                         $page_name = 'itemtemplates';
                         $legacy_options['itemtemplateview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemexportview') {
+                        $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+                        $page_name = 'itemexport';
+                        $legacy_options['itemexportview'] = $this->_content_view($page_name);
                     } elseif ($smenu['item_link'] == '#categoryview') {
                         $head['styles'][] = array('style' => '/css/database/categories.css');
                         $head['scripts'][] = array('src' => '/js/database/categories.js');
@@ -1281,6 +1286,19 @@ class Database extends MY_Controller
                     'brand' => $brand,
                 ];
                 $table_dat=$this->load->view('database/dbtemplate_data_view',$content_dat,TRUE);
+            } elseif ($page_name=='itemexport') {
+                //
+                $content_dat=[
+                    'total_rec'=>$total_rec,
+                    'order_by'=>$order_by,
+                    'direction'=>$order_by,
+                    'cur_page'=>$cur_page,
+                    'search'=>$search,
+                    // 'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                    'vendors'=>$this->vendors_model->get_vendors(),
+                ];
+                $table_dat=$this->load->view('database/dbexport_data_view',$content_dat,TRUE);
             }
             return $table_dat;
         }

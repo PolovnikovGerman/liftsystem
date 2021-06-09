@@ -1,0 +1,321 @@
+.dbexport_form {
+    clear: both;
+    width: calc(100% - 20px);
+    font-size: 14px;
+    margin-left: 10px;
+}
+.dbexport_form input {
+    border: 1px solid #000;
+    background-color: #ffffff!important;
+    font-size: 12px;
+    color: #000!important;
+    padding-left: 3px;
+    height: 20px;
+    line-height: 20px;
+    margin-left: 5px;
+}
+.dbexport_form select {
+    margin-left: 5px;
+    height: 22px;
+    line-height: 22px;
+}
+.dbexport_form .dbexport_row {
+    clear: both;
+    margin-top: 10px;
+    width: 99%;
+    font-weight: normal;
+}
+.dbexport_form .dbexport_row > div {
+    height: 26px;
+    line-height: 26px;
+}
+.dbexport_form .db_number {
+    margin-right: 10px;
+}
+.dbexport_form input.item_number {
+    width: 53px;
+    text-transform: uppercase;
+}
+.dbexport_form .db_name {
+    margin-right: 10px;
+}
+.dbexport_form input.item_name {
+    width: 300px;
+    text-transform: uppercase;
+}
+.dbexport_form .db_template {
+    margin-right: 10px;
+}
+.dbexport_form select.select_template {
+    width: 145px;
+}
+.dbexport_form .db_itemnew {
+    margin-right: 10px;
+}
+.dbexport_form select.select_new {
+    width: 50px;
+}
+.dbexport_form .lead_label {
+    margin-right: 5px;
+}
+.dbexport_form .lead_item {
+    margin-right: 9px;
+    font-size: 14px;
+}
+.dbexport_form input.leadinput {
+    width: 50px;
+}
+.dbexport_form .db_search_results {
+    float: left;
+    font-weight: normal;
+    margin-left: 10px;
+    padding-top: 6px;
+    width: 142px;
+}
+.dbexport_form a.db_search {
+    background: url(/img/database/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 29px;
+    margin: 3px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}
+.dbexport_form a.db_search.hidebtn {
+    display: none;
+}
+/* Export preview */
+.db_export_head {
+    clear: both;
+    margin-left: 12px;
+}
+.db_export_head > div {
+    background: #333333;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: center;
+    height: 24px;
+    line-height: 24px;
+}
+.db_export_head .itemnumber {
+    width: 70px;
+}
+.db_export_head .itemname {
+    width: 340px;
+}
+.db_export_head .itemtemplate {
+    width: 120px;
+}
+.db_export_head .itemnew {
+    width: 80px;
+}
+.db_export_head .vendor {
+    width: 253px;
+}
+.db_export_results {
+    clear: both;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    height: 462px;
+    margin-left: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 864px;
+    margin-bottom: 12px;
+}
+.dbitems_row {
+    clear: both;
+    width: 853px;
+}
+.dbitems_row > div {
+    height: 20px;
+    line-height: 20px;
+    text-align: left;
+    font-size: 14px;
+}
+.grey {
+    background-color: #C8C8C8;
+}
+.dbitem_delete {
+    float: left;
+    height: 26px;
+    text-align: center;
+    width: 32px;
+}
+.dbitem_delete:hover {
+    cursor:pointer;
+}
+.dbitems_row .dbitem_number {
+    text-align: center;
+    width: 70px;
+}
+.dbitems_row .dbitem_name {
+    padding-left: 5px;
+    text-align: left;
+    width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.dbitems_row .dbitem_template {
+    width: 120px;
+    text-align: center;
+}
+.dbitems_row .dbitem_new {
+    width: 80px;
+    text-align: center;
+}
+.dbitems_row .dbitem_vendor {
+    width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.newitemimport {
+    font-weight: bold;
+}
+.export_select_fields {
+    background : url('../img/background-window.png');
+    clear: both;
+    float: left;
+    width: 466px;
+    height: 318px;
+}
+.export_titles {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 465px;
+}
+.export_select_title {
+    float: left;
+    margin-top: 9px;
+    text-align: center;
+    width: 183px;
+}
+.selected__title {
+    float: left;
+    margin-left: 68px;
+    margin-top: 9px;
+    text-align: center;
+    width: 171px;
+}
+.allowed_select {
+    float: left;
+    height: 255px;
+    margin-left: 15px;
+    margin-top: 10px;
+    overflow-y: auto;
+    width: 190px;
+}
+.selected_fileds {
+    float: left;
+    height: 255px;
+    margin-top: 10px;
+    overflow-y: auto;
+    width: 190px;
+}
+.selected_buttons {
+    float: left;
+    margin-left: 5px;
+    margin-top: 104px;
+    width: 45px;
+}
+.fields_list {
+    float: left;
+    width: 170px;
+    text-align: left;
+    font-size: 12px;
+}
+.fieldname {
+    height: 14px;
+    padding-top: 2px;
+    text-wrap: none;
+    overflow: hidden;
+}
+.fieldname:hover {
+    cursor: pointer;
+}
+.fieldname.selected {
+    background-color: #C8C8C8;
+}
+.allowed_enable {
+    display: block;
+}
+.allowed_hide {
+    display: none;
+}
+.select_hide {
+    display: none;
+}
+.select_allowed {
+    display: block;
+}
+.export_savefile {
+    clear: both;
+    float: left;
+    margin-left: 280px;
+    width: 120px;
+}
+/* Import Data section */
+.db_import {
+    clear: both;
+    float:left;
+    width: 970px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+.db_import fieldset {
+    font-weight: bold;
+    border: 2px solid #0000FF;
+}
+.import_legend {
+    float: left;
+    font-weight: normal;
+    margin-left: 15px;
+    padding-top: 3px;
+    width: 90px;
+}
+.select_importfile {
+    float: left;
+    margin-left: 10px;
+    width: 90px;
+}
+.importdb_result {
+    float: left;
+    font-weight: normal;
+    padding-top: 3px;
+    margin-left: 10px;
+    width: 350px;
+}
+.saveimport {
+    display: none;
+    float: left;
+    margin-top: -4px;
+    width: 100px;
+}
+.cleanimport {
+    display: none;
+    float: left;
+    margin-top: -4px;
+    width: 100px;
+}
+.saveimpresult {
+    display: none;
+    float: left;
+    margin-top: -4px;
+    width: 100px;
+}
+.cleansave {
+    display: none;
+    float: left;
+    margin-top: -4px;
+    width: 100px;
+}
