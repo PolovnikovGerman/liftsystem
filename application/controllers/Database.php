@@ -86,10 +86,15 @@ class Database extends MY_Controller
                         $page_name = 'itemprofit';
                         $legacy_options['itemprofitview'] = $this->_content_view($page_name);
                     } elseif ($smenu['item_link']=='#itemtemplateview') {
-                        $head['styles'][]=array('style'=>'/css/database/dbtemplate_view.css');
-                        $head['scripts'][]=array('src'=>'/js/database/dbtemplate_view.js');
+                        $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
                         $page_name = 'itemtemplates';
                         $legacy_options['itemtemplateview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemexportview') {
+                        $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+                        $page_name = 'itemexport';
+                        $legacy_options['itemexportview'] = $this->_content_view($page_name);
                     } elseif ($smenu['item_link'] == '#categoryview') {
                         $head['styles'][] = array('style' => '/css/database/categories.css');
                         $head['scripts'][] = array('src' => '/js/database/categories.js');
@@ -908,6 +913,67 @@ class Database extends MY_Controller
         }
     }
 
+    public function exportdata() {
+        if ($this->isAjax()) {
+            $search= $this->input->post();
+            $mdata=array();
+            $error='';
+            $this->load->model('items_model');
+            $results=$this->items_model->get_export_data($search);
+            $mdata['totals']=count($results);
+            $mdata['content']=$this->load->view('database/exportdb_tabledat_view',array('items'=>$results),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function export_select_fields() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $this->load->model('items_model');
+            $flds=$this->items_model->get_export_description();
+            /* Allowed select */
+            $allow_select=$this->load->view('database/fields_select_view',array('fields'=>$flds,'allowed'=>1,'def_class'=>'allowed_enable'),TRUE);
+            $selected=$this->load->view('database/fields_select_view',array('fields'=>$flds,'allowed'=>0,'def_class'=>'select_hide'),TRUE);
+            $mdata['content']=$this->load->view('database/export_selectfelds_view',array('allowed_select'=>$allow_select,'selected'=>$selected),TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function save_export() {
+        if ($this->isAjax()) {
+            $mdata=array();
+
+            $search = $this->input->post();
+            $search['print_ver']=1;
+            $this->load->model('items_model');
+            $results=$this->items_model->get_export_data($search);
+            $fldstr=$this->input->post('fldlst');
+            $fldstr=substr($fldstr,0,-1);
+            $fldarr=  explode('|',$fldstr);
+            $options=array();
+            foreach ($fldarr as $key=>$value) {
+                array_push($options, $value);
+            }
+            $flds=$this->items_model->get_export_description($options);
+            $report_name=uniq_link(15).'.xls';
+
+            $this->load->model('exportexcell_model');
+            $res = $this->exportexcell_model->export_itemdata($results, $options, $flds, $report_name);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['export_url']=$res['url'];
+            }
+            // $res=$this->prepare_export_file($results,$options,$flds,$filename);
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+
 
     // Prepare pages
     private function _prepare_dbpage_content($page_name, $search='')
@@ -1103,6 +1169,19 @@ class Database extends MY_Controller
                     'perpage' => $this->config->item('dbview_perpage'),
                 ];
                 $table_dat=$this->load->view('database/dbtemplate_data_view',$content_dat,TRUE);
+            } elseif ($page_name=='itemexport') {
+                //
+                $content_dat=[
+                    'total_rec'=>$total_rec,
+                    'order_by'=>$order_by,
+                    'direction'=>$order_by,
+                    'cur_page'=>$cur_page,
+                    'search'=>$search,
+                    // 'legend' => $legend,
+                    'perpage' => $this->config->item('dbview_perpage'),
+                    'vendors'=>$this->vendors_model->get_vendors(),
+                ];
+                $table_dat=$this->load->view('database/dbexport_data_view',$content_dat,TRUE);
             }
             return $table_dat;
         }
