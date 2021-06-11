@@ -110,7 +110,7 @@
     float: right;
     position: relative;
     right: 3px;
-    top: 3px;
+    top: 5px;
 }
 .vendordataview .datatitle .descsort {
     width: 0;
@@ -121,7 +121,7 @@
     float: right;
     position: relative;
     right: 3px;
-    top: 3px;
+    top: 5px;
 }
 .vendordataview .datatitle .numpp {
     width: 64px;

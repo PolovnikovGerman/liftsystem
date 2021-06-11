@@ -11,7 +11,7 @@
                 <input type="text" id="vedorsearch" class="searchinpt" placeholder="Enter keyword"/>
             </div>
             <div class="datasearchbtn">Search</div>
-            <div class="datacleanbtn">Clean</div>
+            <div class="datacleanbtn">Clear</div>
         </div>
         <div class="datafilternavig">
             <div class="filterdata">
