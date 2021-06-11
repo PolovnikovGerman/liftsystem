@@ -208,6 +208,9 @@ Class Vendors_model extends My_Model
         if (ifset($options,'search','')!=='') {
             $this->db->like('concat(coalesce(vendor_name,\'\'), coalesce(alt_name,\'\'), coalesce(vendor_slug,\'\'))', $options['search']);
         }
+        if (ifset($options,'vtype','')!=='') {
+            $this->db->where('vendor_type', $options['vtype']);
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -221,6 +224,9 @@ Class Vendors_model extends My_Model
         }
         if (ifset($options,'search','')!=='') {
             $this->db->like('concat(coalesce(vendor_name,\'\'), coalesce(alt_name,\'\'), coalesce(vendor_slug,\'\'))', $options['search']);
+        }
+        if (ifset($options,'vtype','')!=='') {
+            $this->db->where('vendor_type', $options['vtype']);
         }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {

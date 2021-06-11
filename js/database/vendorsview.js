@@ -10,6 +10,9 @@ function init_vendor_search() {
     $("#filterdata").unbind('change').change(function () {
         search_vendors();
     });
+    $("#filtertype").unbind('change').change(function () {
+        search_vendors();
+    });
     $(".datasearchbtn").unbind('click').click(function () {
         search_vendors();
     });
@@ -124,6 +127,7 @@ function prepare_list_filter() {
     var params = new Array();
     params.push({name: 'vendor_status', value: $("#filterdata").val()});
     params.push({name: 'search', value: $("#vedorsearch").val()});
+    params.push({name: 'vtype', value: $("#filtertype").val()});
     return params;
 }
 
@@ -147,7 +151,16 @@ function init_vendor_content() {
     //     var vendor = $(this).data('vendor');
     //     del_vendor(vendor);
     // });
-    $(".vendordataview").find("div.editdata").unbind('click').click(function(){
+
+    $(".vendordataview").find('div.datarow').hover(
+        function () {
+            $(this).addClass('activerow');
+        },
+        function () {
+            $(this).removeClass('activerow');
+        }
+    );
+    $(".vendordataview").find("div.datarow").unbind('click').click(function(){
         var vendor = $(this).data('vendor');
         edit_vendor(vendor);
     });

@@ -16,11 +16,19 @@
         <div class="datafilternavig">
             <div class="filterdata">
                 <select class="filterdata" name="filerdata" id="filterdata">
-                    <option value="0">All Vendors Types</option>
-                    <option value="1">Active Vendors</option>
+                    <option value="0">All Vendors Status</option>
+                    <option value="1" selected="selected">Active Vendors</option>
                     <option value="2">Non-Active Vendors</option>
                 </select>
-               <label for="filterdata">Display:</label>
+                <label for="filterdata">Display:</label>
+                <select class="filterdata" id="filtertype">
+                    <option value="">All Vendors Types</option>
+                    <option value="Supplier">Supplier</option>
+                    <option value="Artwork">Artwork</option>
+                    <option value="Shipping">Shipping</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label for="filterdata">Display:</label>
             </div>
             <div class="datanavigation">
                 <div class="paginator" id="vendorPagination"></div>
@@ -29,18 +37,16 @@
         </div>
     </div>
     <div class="datatitle">
-        <div class="numpp">
+        <div class="status">
             <div class="addnewvendor">+ add</div>
         </div>
         <div class="type">Type</div>
         <div class="slug sortable" data-sortcell="vendor_slug">Vendor #</div>
         <div class="name sortable active" data-sortcell="vendor_name">Vendor Name  <div class="ascsort">&nbsp;</div></div>
-        <div class="country">Country</div>
+        <div class="altname sortable" data-sortcell="alt_name">Alternate Name</div>
+        <div class="asinumber sortable" data-sortcell="alt_name">ASI #</div>
         <div class="website">Website</div>
-        <div class="ouraccount">Our Acct #</div>
-        <div class="contact">Contact</div>
         <div class="phone">Phone</div>
-        <div class="email">Email</div>
         <div class="itemqty">Our Items</div>
     </div>
     <div class="dataarea" id="vendorinfo"></div>

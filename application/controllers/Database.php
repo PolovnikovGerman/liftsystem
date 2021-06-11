@@ -763,6 +763,7 @@ class Database extends MY_Controller
             $options=[
                 'status' => ifset($postdata,'vendor_status',0),
                 'search' => ifset($postdata, 'search',''),
+                'vtype' => ifset($postdata,'vtype',''),
             ];
             $this->load->model('vendors_model');
             $mdata['totals'] = $this->vendors_model->get_count_vendors($options);
@@ -784,6 +785,7 @@ class Database extends MY_Controller
             $direction = ifset($postdata, 'direction','asc');
             $status = ifset($postdata,'vendor_status', 0);
             $search = ifset($postdata,'search', '');
+            $vtype = ifset($postdata,'vtype','');
             $options = [
                 'offset' => $offset,
                 'limit' => $limit,
@@ -791,6 +793,7 @@ class Database extends MY_Controller
                 'direct' => $direction,
                 'status' => $status,
                 'search' => $search,
+                'vtype' => $vtype,
             ];
             $this->load->model('vendors_model');
             $vendors=$this->vendors_model->get_vendors_list($options);
@@ -1496,7 +1499,7 @@ class Database extends MY_Controller
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
-        $totals=$this->vendors_model->get_count_vendors();
+        $totals=$this->vendors_model->get_count_vendors(['status' => 1]);
         $options=array(
             'perpage'=> 100,
             'order'=>'vendor_name',
@@ -1504,7 +1507,6 @@ class Database extends MY_Controller
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
         $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
