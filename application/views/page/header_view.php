@@ -13,7 +13,10 @@
                 </div>
             </div>
             <?php if ($reportchk) { ?>
-                <div class="inforeports" id="reports">
+                <div class="inforeports <?=($reportsold==0 ? 'oldver' : '')?>" id="reports">
+                    <?php  if ($reportsold==0) { ?>
+                        <div class="oldvesionlabel">&nbsp;</div>
+                    <?php } ?>
                     <div class="icon">
                         <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
                     </div>
@@ -41,15 +44,21 @@
                 </div>
             </div>
             <?php if ($adminchk) { ?>
-                <div class="infoalerts" id="admin">
-                    <div class="alerticon admin">
+                <div class="infoalerts admininfo <?=$adminold==0 ? 'oldver' : ''?>" id="admin">
+                    <?php  if ($adminold==0) { ?>
+                        <div class="oldvesionlabel">&nbsp;</div>
+                    <?php } ?>
+                    <div class="alerticon admin ">
                         <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                     </div>
                     <div class="alerttext">Admin</div>
                 </div>
             <?php } ?>
             <?php if ($resourcechk) { ?>
-                <div class="infoalerts resources" id="resources">
+                <div class="infoalerts resources <?=$resourceold==0 ? 'oldver' : ''?>" id="resources">
+                    <?php  if ($resourceold==0) { ?>
+                        <div class="oldvesionlabel">&nbsp;</div>
+                    <?php } ?>
                     <div class="alerticon">
                         <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
                     </div>
