@@ -45,8 +45,8 @@ class Fulfillment extends MY_Controller
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#vendorsview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/_vendorsview.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/vendorsview.js');
+                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link']=='#fullfilstatusview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/postatus.css');
@@ -1850,15 +1850,15 @@ class Fulfillment extends MY_Controller
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
-        $totals=$this->vendors_model->get_count_vendors();
+        $totals=$this->vendors_model->get_count_vendors(['status' => 1]);
         $options=array(
-            'perpage'=> 250,
+            'perpage'=> 100,
             'order'=>'vendor_name',
             'direc'=>'asc',
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
 

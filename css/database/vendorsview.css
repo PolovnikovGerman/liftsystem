@@ -583,6 +583,10 @@
     margin-right: 23px;
     cursor: pointer;
 }
+.vendordetails-body .chapterlabel.docsinfo .vendordocadd .qq-uploader{
+    top: 0;
+    bottom: 0;
+}
 .vendordetails-body .vendordocremove {
     margin-left: 10px;
     width: 28px;
@@ -639,6 +643,7 @@ input.vendordocuminpt{
     padding-left: 5px;
     font-size: 14px;
     color: #000000;
+    text-align: left;
 }
 .vendordetailsinpt.slug {
     width: 85px;

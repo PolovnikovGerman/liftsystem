@@ -33,7 +33,7 @@ function init_vendor_search() {
 
 function search_vendors() {
     var params = prepare_list_filter();
-    var url='/database/vendor_search';
+    var url='/vendors/vendor_search';
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#totalvend").val(response.data.totals);
@@ -108,7 +108,7 @@ function pageVendorCallback(page_index) {
     params.push({name: 'direction', value: $("#directionvend").val()});
     params.push({name: 'maxval', value: $('#totalvend').val()});
     $("#loader").show();
-    $.post('/database/vendordata', params, function(response){
+    $.post('/vendors/vendordata', params, function(response){
         if (response.errors=='') {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
@@ -168,7 +168,7 @@ function init_vendor_content() {
 
 
 function edit_vendor(vendor_id) {
-    var url="/database/vendor_edit";
+    var url="/vendors/vendor_edit";
     $.post(url,{'vendor_id':vendor_id},function(response){
         if (response.errors=='') {            
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
@@ -191,7 +191,7 @@ function init_vendordetails_view() {
         var params = new Array();
         params.push({name: 'vendor_id', value: $("#vendorid").val()});
         params.push({name: 'editmode', value: 1});
-        var url="/database/vendor_edit";
+        var url="/vendors/vendor_edit";
         $.post(url,params,function(response) {
             if (response.errors=='') {
                 $("#vendorDetailsModalLabel").empty().html(response.data.header);
@@ -207,7 +207,7 @@ function init_vendordetails_view() {
 function init_vendordetails_edit() {
     $(".vendorsaveactionbtn").unbind('click').click(function () {
         var params = prepare_vendor_edit();
-        var url = '/database/vendordata_save';
+        var url = '/vendors/vendordata_save';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#vendorDetailsModal").modal('hide');

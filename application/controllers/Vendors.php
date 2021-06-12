@@ -108,4 +108,135 @@ class Vendors extends MY_Controller
         }
         show_404();
     }
+
+    public function vendor_search() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata=$this->input->post();
+            $options=[
+                'status' => ifset($postdata,'vendor_status',0),
+                'search' => ifset($postdata, 'search',''),
+                'vtype' => ifset($postdata,'vtype',''),
+            ];
+            $this->load->model('vendors_model');
+            $mdata['totals'] = $this->vendors_model->get_count_vendors($options);
+            $mdata['total_txt'] = QTYOutput($mdata['totals']).' Records';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function vendordata() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+            $page_num = ifset($postdata, 'offset', 0);
+            $limit = ifset($postdata, 'limit', 100);
+            $offset = $page_num * $limit;
+            $order_by = ifset($postdata,'order_by','vendor_name');
+            $direction = ifset($postdata, 'direction','asc');
+            $status = ifset($postdata,'vendor_status', 0);
+            $search = ifset($postdata,'search', '');
+            $vtype = ifset($postdata,'vtype','');
+            $options = [
+                'offset' => $offset,
+                'limit' => $limit,
+                'order_by' => $order_by,
+                'direct' => $direction,
+                'status' => $status,
+                'search' => $search,
+                'vtype' => $vtype,
+            ];
+            $this->load->model('vendors_model');
+            $vendors=$this->vendors_model->get_vendors_list($options);
+            if (count($vendors)==0) {
+                $content=$this->load->view('vendorcenter/emptydata_view', array(), TRUE);
+            } else {
+                $content=$this->load->view('vendorcenter/datalist_view',array('vendors'=>$vendors),TRUE);
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function vendor_edit() {
+        if ($this->isAjax()) {
+            $error = 'Vendor not found';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $vendor_id = ifset($postdata, 'vendor_id');
+            if (!empty($vendor_id)) {
+                $this->load->model('vendors_model');
+                if ($vendor_id<0) {
+                    $error = '';
+                    $data = $this->vendors_model->add_vendor();
+                    $data['deleted'] = [];
+                    // $mdata['title'] = 'New Vendor';
+                    $editmode = 1;
+                } else {
+                    $editmode = ifset($postdata, 'editmode',0);
+                    $res = $this->vendors_model->get_vendor($vendor_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = [
+                            'vendor' => $res['data'],
+                            'vendor_contacts' => $res['vendor_contacts'],
+                            'vendor_docs' => $res['vendor_docs'],
+                            'deleted' => [],
+                        ];
+                        // $mdata['title'] = 'Change Vendor '.$datap[['vendor_name'];
+                        // $editmode = 0;
+                    }
+                }
+                if ($error =='') {
+                    $session_id = uniq_link(20);
+                    usersession($session_id, $data);
+
+                    $this->load->model('shipping_model');
+                    $options = [
+                        'vendor'=>$data['vendor'],
+                        'vendor_contacts' => $data['vendor_contacts'],
+                        'vendor_docs' => $data['vendor_docs'],
+                        'editmode' => $editmode,
+                        'session' => $session_id,
+                        'countries' => $this->shipping_model->get_countries_list(),
+                    ];
+                    $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
+                    $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
+                    $options['contacts'] = $contacts_view;
+                    $options['docs'] = $docs_view;
+
+                    $mdata['header'] = $this->load->view('vendorcenter/header_view', $options, TRUE);
+                    $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
+                    $mdata['editmode'] = $editmode;
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function vendordata_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit Time Explain. Require data again';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $this->load->model('vendors_model');
+                $res = $this->vendors_model->save_vendordata($session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
