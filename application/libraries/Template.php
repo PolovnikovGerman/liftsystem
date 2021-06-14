@@ -76,31 +76,36 @@ class Template
         // Admin and Alerts
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
-
+        $admin_old = 1;
         if ($adminchk['result']==$this->success_result) {
             $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
             if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
                 $admin_permission = 1;
+                $admin_old = $adminchk['menuitem']['newver'];
             }
         }
         // Reports
         $reports_permissions = 0;
+        $reports_old = 1;
         $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics');
 
         if ($reportchk['result']==$this->success_result) {
             $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
             if ($report_permissionchk['result']==$this->success_result && $report_permissionchk['permission']>0) {
                 $reports_permissions = 1;
+                $reports_old = $reportchk['menuitem']['newver'];
             }
         }
         // Resources
         $resource_permissions = 0;
+        $resource_old = 1;
         $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources');
 
         if ($resourcechk['result']==$this->success_result) {
             $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
             if ($resource_permissionchk['result']==$this->success_result && $resource_permissionchk['permission']>0) {
                 $resource_permissions = 1;
+                $resource_old = $resourcechk['menuitem']['newver'];
             }
         }
 
@@ -128,8 +133,11 @@ class Template
             'total_view' => $total_view,
             'menu_view' => $menu_view,
             'adminchk' => $admin_permission,
+            'adminold' => $admin_old,
             'reportchk' => $reports_permissions,
+            'reportsold' => $reports_old,
             'resourcechk' => $resource_permissions,
+            'resourceold' => $resource_old,
         ];
         $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);

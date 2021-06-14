@@ -3,7 +3,12 @@
         <div class="maincontentmenu">
             <div class="title">Admin:</div>
             <?php foreach ($menu as $item) { ?>
-                <div class="maincontentmenu_item" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                <div class="maincontentmenu_item <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
+                    <?php  if (ifset($item,'newver', 1)==0) { ?>
+                        <div class="oldvesionlabel">&nbsp;</div>
+                    <?php } ?>
+                    <?=$item['item_name']?>
+                </div>
             <?php } ?>
         </div>
         <div class="maincontent_view">

@@ -203,10 +203,16 @@ body div {
 .inforeports:hover {
     background: #000080;
 }
+.inforeports.oldver {
+    width: 94px;
+}
 .inforeports .icon {
     width: 15px;
     padding-top: 4px;
     margin-left: 12px;
+}
+.inforeports.oldver .icon {
+    margin-left: -3px!important;
 }
 .inforeports .icon img {
     width: 100%;
@@ -239,6 +245,12 @@ body div {
     width: 15px;
     padding-top: 6px;
     margin-left: 12px;
+}
+.resources.oldver .alerticon {
+    margin-left: -3px;
+}
+.admininfo.oldver .alerticon {
+    margin-left: -3px;
 }
 .infoalerts .alerticon.admin {
     padding-top: 5px;
@@ -483,6 +495,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
     margin-top: 9px;
     color: #f7f4f4;
 }
+.maincontentmenu_item.oldver {
+    padding: 0 13px 0 1px;
+}
 .maincontentmenu_item.active {
     color: #000;
     font-weight: bold;
@@ -614,7 +629,6 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 }
 /* New Menu */
 .menuitem {
-    /* background: #434343; */
     background: #6b6b6b;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
@@ -629,6 +643,18 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     cursor: pointer;
     min-width: 60px;
     padding: 0 16px;
+}
+.menuitem.oldver {
+    padding: 0 16px 0 4px!important;
+}
+div.oldvesionlabel {
+    opacity: 0.6;
+    position: relative;
+    left: 47%;
+    background-color: #b53535;
+    width: 12px;
+    margin-top: 0px;
+    height: 24px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
     background: #3636ff;
