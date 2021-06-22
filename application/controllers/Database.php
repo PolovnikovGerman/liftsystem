@@ -46,6 +46,7 @@ class Database extends MY_Controller
 
             } elseif ($row['item_link'] == '#vendorsview') {
                 $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/database/vendordetails.css');
                 $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link'] == '#btitemsview') {

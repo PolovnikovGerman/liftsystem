@@ -149,7 +149,6 @@ class Vendors extends MY_Controller
                 'search' => $search,
                 'vtype' => $vtype,
             ];
-            $this->load->model('vendors_model');
             $vendors=$this->vendors_model->get_vendors_list($options);
             if (count($vendors)==0) {
                 $content=$this->load->view('vendorcenter/emptydata_view', array(), TRUE);
@@ -158,6 +157,35 @@ class Vendors extends MY_Controller
             }
             $mdata['content']=$content;
             $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function vendor_newedit() {
+        if ($this->isAjax()) {
+            $error = 'Vendor not found';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $vendor_id = ifset($postdata, 'vendor_id');
+            if (!empty($vendor_id)) {
+                if ($vendor_id<0) {
+                } else {
+                    $editmode = ifset($postdata, 'editmode',0);
+                    $res = $this->vendors_model->get_vendor($vendor_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = [
+                            'vendor' => $res['data'],
+                            'vendor_contacts' => $res['vendor_contacts'],
+                            'vendor_docs' => $res['vendor_docs'],
+                            'deleted' => [],
+                        ];
+                        // $mdata['title'] = 'Change Vendor '.$datap[['vendor_name'];
+                        // $editmode = 0;
+                    }
+                }
+            }
+
         }
     }
 
@@ -183,8 +211,8 @@ class Vendors extends MY_Controller
                         $error = '';
                         $data = [
                             'vendor' => $res['data'],
-                            'vendor_contacts' => $res['vendor_contacts'],
-                            'vendor_docs' => $res['vendor_docs'],
+                            'vendor_pricedocs' => $res['vendor_pricedocs'],
+                            'vendor_otherdocs' => $res['vendor_otherdocs'],
                             'deleted' => [],
                         ];
                         // $mdata['title'] = 'Change Vendor '.$datap[['vendor_name'];
@@ -194,24 +222,51 @@ class Vendors extends MY_Controller
                 if ($error =='') {
                     $session_id = uniq_link(20);
                     usersession($session_id, $data);
+                    $price_optios = [
+                        'docs' => $data['vendor_pricedocs'],
+                        'count' => count($data['vendor_pricedocs']),
+                    ];
+                    $pricedoc_view = $this->load->view('vendorcenter/pricedoc_short_view', $price_optios, TRUE);
 
                     $this->load->model('shipping_model');
-                    $options = [
+                    $profile_options = [
                         'vendor'=>$data['vendor'],
-                        'vendor_contacts' => $data['vendor_contacts'],
-                        'vendor_docs' => $data['vendor_docs'],
                         'editmode' => $editmode,
                         'session' => $session_id,
                         'countries' => $this->shipping_model->get_countries_list(),
+                        'pricedocview' => $pricedoc_view,
+                        'otherdocs' => count($data['vendor_otherdocs']),
                     ];
-                    $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
-                    $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
-                    $options['contacts'] = $contacts_view;
-                    $options['docs'] = $docs_view;
+                    $mdata['header'] = $this->load->view('vendorcenter/header_view', $profile_options, TRUE);
+                    $general_info = $this->load->view('vendorcenter/profile_general_info', $profile_options, TRUE);
+                    $purchase_info = $this->load->view('vendorcenter/profile_purchase_info', $profile_options, TRUE);
+                    $pament_info =  $this->load->view('vendorcenter/profile_payment_info', $profile_options, TRUE);
+                    $prices_info = $this->load->view('vendorcenter/profile_prices_info', $profile_options, TRUE);
+                    $customer_info = $this->load->view('vendorcenter/profile_customers_info', $profile_options, TRUE);
+                    $document_info = $this->load->view('vendorcenter/profile_otherdoc_info', $profile_options, TRUE);
 
-                    $mdata['header'] = $this->load->view('vendorcenter/header_view', $options, TRUE);
+                    $profview_options = [
+                        'general_view' => $general_info,
+                        'purchase_view' => $purchase_info,
+                        'payment_view' => $pament_info,
+                        'prices_view' => $prices_info,
+                        'customer_view' => $customer_info,
+                        'otherdoc_view' => $document_info,
+                    ];
+                    $profile_view = $this->load->view('vendorcenter/profile_view', $profview_options, TRUE);
+                    $options = [
+                        'profile_view' => $profile_view,
+                    ];
+                    // $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
+                    // $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
+                    // $options['contacts'] = $contacts_view;
+                    // $options['docs'] = $docs_view;
+                    // $options['contacts'] = $options['docs'] = '';
+
                     $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
+                    // $mdata['content']= '';
                     $mdata['editmode'] = $editmode;
+                    $mdata['status'] = ($data['vendor']['vendor_status']==1 ? 'active' : 'inactive');
                 }
             }
             $this->ajaxResponse($mdata, $error);

@@ -176,8 +176,10 @@ function edit_vendor(vendor_id) {
             $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
             $("#vendorDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(response.data.editmode)==0) {
+                $("#vendorDetailsModal").find('div.modal-header').addClass(response.data.status);
                 init_vendordetails_view();
             } else {
+                $("#vendorDetailsModal").find('div.modal-header').addClass('editmode');
                 init_vendordetails_edit(); 
             }
         } else {

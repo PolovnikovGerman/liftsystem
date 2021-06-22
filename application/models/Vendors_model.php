@@ -253,7 +253,8 @@ Class Vendors_model extends My_Model
             $this->db->from('sb_vendor_items');
             $this->db->where('vendor_item_vendor', $result['vendor_id']);
             $qty = $this->db->get()->row_array();
-            $result['item_qty'] = $qty['cnt'];
+            // $result['item_qty'] = $qty['cnt'];
+            $result['item_qty'] = 0;
             $this->db->select('contact_name, contact_phone, contact_cellphone, contact_email');
             $this->db->from('vendor_contacts');
             $this->db->where('vendor_id', $result['vendor_id']);
@@ -312,14 +313,22 @@ Class Vendors_model extends My_Model
         if (ifset($vendor, 'vendor_id',0)>0) {
             $out['result'] = $this->success_result;
             $out['data'] = $vendor;
-            $this->db->select('*');
-            $this->db->from('vendor_contacts');
-            $this->db->where('vendor_id', $vendor_id);
-            $out['vendor_contacts'] = $this->db->get()->result_array();
+//            $this->db->select('*');
+//            $this->db->from('vendor_contacts');
+//            $this->db->where('vendor_id', $vendor_id);
+//            $out['vendor_contacts'] = $this->db->get()->result_array();
             $this->db->select('*');
             $this->db->from('vendor_docs');
             $this->db->where('vendor_id', $vendor_id);
-            $out['vendor_docs'] = $this->db->get()->result_array();
+            $this->db->where('doc_type','PRICELIST');
+            $this->db->order_by('doc_year desc, vendor_doc_id desc');
+            $out['vendor_pricedocs'] = $this->db->get()->result_array();
+            $this->db->select('*');
+            $this->db->from('vendor_docs');
+            $this->db->where('vendor_id', $vendor_id);
+            $this->db->where('doc_type','OTHERS');
+            $out['vendor_otherdocs'] = $this->db->get()->result_array();
+
         }
         return $out;
     }

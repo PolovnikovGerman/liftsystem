@@ -291,4 +291,16 @@ class Test extends CI_Controller
         echo 'File '.$file.' ready '.PHP_EOL;
     }
 
+    public function vendor_slug() {
+        $this->db->select('vendor_id');
+        $this->db->from('vendors');
+        $vendors = $this->db->get()->result_array();
+        foreach ($vendors as $vendor) {
+            $new_slug = 'V-5'.str_pad($vendor['vendor_id'],4,'0', STR_PAD_LEFT);
+            $this->db->where('vendor_id', $vendor['vendor_id']);
+            $this->db->set('vendor_slug', $new_slug);
+            $this->db->update('vendors');
+        }
+    }
+
 }
