@@ -666,7 +666,7 @@ Class Vendors_model extends My_Model
                 $this->db->set('vendor_asinumber', $vendor['vendor_asinumber']);
                 $this->db->set('our_account_number', $vendor['our_account_number']);
                 $this->db->set('vendor_website', $vendor['vendor_website']);
-                $this->db->set('vendor_phone', $vendor['contact_phone']);
+                $this->db->set('vendor_phone', $vendor['vendor_phone']);
                 $this->db->set('address', $vendor['address']);
                 $this->db->set('general_note', $vendor['general_note']);
                 $this->db->set('po_contact', $vendor['po_contact']);
@@ -676,20 +676,34 @@ Class Vendors_model extends My_Model
                 $this->db->set('po_bcemail', $vendor['po_bcemail']);
                 $this->db->set('shipping_pickup', $vendor['shipping_pickup']);
                 $this->db->set('po_note', $vendor['po_note']);
-
-
-                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
-                $this->db->set('calendar_id', $vendor['calendar_id']);
-                $this->db->set('payinclude', $vendor['payinclude']);
-                $this->db->set('payinclorder', $vendor['payinclorder']);
-                $this->db->set('vendor_status', $vendor['vendor_status']);
-
+                $this->db->set('payment_contact', $vendor['payment_contact']);
+                $this->db->set('payment_phone', $vendor['payment_phone']);
+                $this->db->set('payment_email', $vendor['payment_email']);
+                $this->db->set('payment_prepay', $vendor['payment_prepay']);
+                $this->db->set('payment_terms', $vendor['payment_terms']);
                 $this->db->set('payment_accept_visa', $vendor['payment_accept_visa']);
                 $this->db->set('payment_accept_amex', $vendor['payment_accept_amex']);
-                $this->db->set('payment_accept_terms', $vendor['payment_accept_terms']);
                 $this->db->set('payment_accept_check', $vendor['payment_accept_check']);
+                $this->db->set('payment_accept_ach', $vendor['payment_accept_ach']);
+                $this->db->set('payment_accept_paypal', $vendor['payment_accept_paypal']);
                 $this->db->set('payment_accept_wire', $vendor['payment_accept_wire']);
-                $this->db->set('internal_po_note', $vendor['internal_po_note']);
+                // Wire account
+                $this->db->set('payment_note', $vendor['payment_note']);
+                $this->db->set('pricing_contact', $vendor['pricing_contact']);
+                $this->db->set('pricing_phone', $vendor['pricing_phone']);
+                $this->db->set('pricing_email', $vendor['pricing_email']);
+                $this->db->set('customer_contact', $vendor['customer_contact']);
+                $this->db->set('customer_phone', $vendor['customer_phone']);
+                $this->db->set('customer_email', $vendor['customer_email']);
+
+
+//                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
+//                $this->db->set('calendar_id', $vendor['calendar_id']);
+//                $this->db->set('payinclude', $vendor['payinclude']);
+//                $this->db->set('payinclorder', $vendor['payinclorder']);
+//                $this->db->set('vendor_status', $vendor['vendor_status']);
+//
+//                $this->db->set('internal_po_note', $vendor['internal_po_note']);
 
                 if ($vendor_id > 0) {
                     $this->db->where('vendor_id', $vendor_id);
@@ -709,61 +723,61 @@ Class Vendors_model extends My_Model
                         $this->db->update('vendors');
                     }
                     // Contacts
-                    $idx = 0;
-                    foreach ($vendor_contacts as $vendor_contact) {
-                        $this->db->set('vendor_id', $vendor_id);
-                        $this->db->set('contact_name', $vendor_contact['contact_name']);
-                        $this->db->set('contact_phone', $vendor_contact['contact_phone']);
-                        $this->db->set('contact_cellphone', $vendor_contact['contact_cellphone']);
-                        $this->db->set('contact_email', $vendor_contact['contact_email']);
-                        $this->db->set('contact_po', $vendor_contact['contact_po']);
-                        $this->db->set('contact_art', $vendor_contact['contact_art']);
-                        $this->db->set('contact_pay', $vendor_contact['contact_pay']);
-                        $this->db->set('contact_note', $vendor_contact['contact_note']);
-                        if ($vendor_contact['vendor_contact_id']>0) {
-                            $this->db->where('vendor_contact_id', $vendor_contact['vendor_contact_id']);
-                            $this->db->update('vendor_contacts');
-                        } else {
-                            $this->db->insert('vendor_contacts');
-                        }
-                        if ($idx==0) {
-                            $this->db->set('vendor_phone', $vendor_contact['contact_phone']);
-                            $this->db->set('vendor_email', $vendor_contact['contact_email']);
-                            $this->db->where('vendor_id', $vendor_id);
-                            $this->db->update('vendors');
-                        }
-                        $idx++;
-                    }
-                    // Docs
-                    $idx=1;
-                    foreach ($vendor_docs as $vendor_doc) {
-                        if ($vendor_doc['vendor_doc_id']<0) {
-                            $filename = 'vendoc_'.time().'_'.str_pad($idx,3,'0',STR_PAD_LEFT);
-                            $srcdat = extract_filename($vendor_doc['doc_url']);
-                            $filename.='.'.$srcdat['ext'];
-                            $source = str_replace($this->config->item('pathpreload'),$this->config->item('upload_path_preload'), $vendor_doc['doc_url']);
-                            $target = $this->config->item('vendor_docs_relative').$filename;
-                            $res = @copy($source, $target);
-                            $newfile = '';
-                            if ($res) {
-                                $newfile = $this->config->item('vendor_docs').$filename;
-                            }
-                            $vendor_doc['doc_url'] = $newfile;
-                            $idx++;
-                        }
-                        if (!empty($vendor_doc['doc_url'])) {
-                            $this->db->set('vendor_id', $vendor_id);
-                            $this->db->set('doc_url', $vendor_doc['doc_url']);
-                            $this->db->set('doc_name', $vendor_doc['doc_name']);
-                            $this->db->set('doc_description', $vendor_doc['doc_description']);
-                            if ($vendor_doc['vendor_doc_id']>0) {
-                                $this->db->where('vendor_doc_id', $vendor_doc['vendor_doc_id']);
-                                $this->db->update('vendor_docs');
-                            } else {
-                                $this->db->insert('vendor_docs');
-                            }
-                        }
-                    }
+//                    $idx = 0;
+//                    foreach ($vendor_contacts as $vendor_contact) {
+//                        $this->db->set('vendor_id', $vendor_id);
+//                        $this->db->set('contact_name', $vendor_contact['contact_name']);
+//                        $this->db->set('contact_phone', $vendor_contact['contact_phone']);
+//                        $this->db->set('contact_cellphone', $vendor_contact['contact_cellphone']);
+//                        $this->db->set('contact_email', $vendor_contact['contact_email']);
+//                        $this->db->set('contact_po', $vendor_contact['contact_po']);
+//                        $this->db->set('contact_art', $vendor_contact['contact_art']);
+//                        $this->db->set('contact_pay', $vendor_contact['contact_pay']);
+//                        $this->db->set('contact_note', $vendor_contact['contact_note']);
+//                        if ($vendor_contact['vendor_contact_id']>0) {
+//                            $this->db->where('vendor_contact_id', $vendor_contact['vendor_contact_id']);
+//                            $this->db->update('vendor_contacts');
+//                        } else {
+//                            $this->db->insert('vendor_contacts');
+//                        }
+//                        if ($idx==0) {
+//                            $this->db->set('vendor_phone', $vendor_contact['contact_phone']);
+//                            $this->db->set('vendor_email', $vendor_contact['contact_email']);
+//                            $this->db->where('vendor_id', $vendor_id);
+//                            $this->db->update('vendors');
+//                        }
+//                        $idx++;
+//                    }
+//                    // Docs
+//                    $idx=1;
+//                    foreach ($vendor_docs as $vendor_doc) {
+//                        if ($vendor_doc['vendor_doc_id']<0) {
+//                            $filename = 'vendoc_'.time().'_'.str_pad($idx,3,'0',STR_PAD_LEFT);
+//                            $srcdat = extract_filename($vendor_doc['doc_url']);
+//                            $filename.='.'.$srcdat['ext'];
+//                            $source = str_replace($this->config->item('pathpreload'),$this->config->item('upload_path_preload'), $vendor_doc['doc_url']);
+//                            $target = $this->config->item('vendor_docs_relative').$filename;
+//                            $res = @copy($source, $target);
+//                            $newfile = '';
+//                            if ($res) {
+//                                $newfile = $this->config->item('vendor_docs').$filename;
+//                            }
+//                            $vendor_doc['doc_url'] = $newfile;
+//                            $idx++;
+//                        }
+//                        if (!empty($vendor_doc['doc_url'])) {
+//                            $this->db->set('vendor_id', $vendor_id);
+//                            $this->db->set('doc_url', $vendor_doc['doc_url']);
+//                            $this->db->set('doc_name', $vendor_doc['doc_name']);
+//                            $this->db->set('doc_description', $vendor_doc['doc_description']);
+//                            if ($vendor_doc['vendor_doc_id']>0) {
+//                                $this->db->where('vendor_doc_id', $vendor_doc['vendor_doc_id']);
+//                                $this->db->update('vendor_docs');
+//                            } else {
+//                                $this->db->insert('vendor_docs');
+//                            }
+//                        }
+//                    }
                     // Deleted
                     foreach ($deleted as $item) {
                         if ($item['entity']=='contacts') {
@@ -786,7 +800,7 @@ Class Vendors_model extends My_Model
     private function _checkvendordata($session_data) {
         $out = ['result' => $this->success_result, 'msg' => ''];
         $vendor = $session_data['vendor'];
-        $vendor_contacts = $session_data['vendor_contacts'];
+        // $vendor_contacts = $session_data['vendor_contacts'];
         $errmsg = '';
         // Empty name
         if (empty($vendor['vendor_name'])) {

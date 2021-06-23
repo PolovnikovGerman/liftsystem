@@ -5,7 +5,11 @@
             <fieldset>
                 <legend>Pricing Contact</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['pricing_contact']) ? '&nbsp;' : $vendor['pricing_contact']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['pricing_contact']) ? '&nbsp;' : $vendor['pricing_contact']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="pricing_contact" value="<?=$vendor['pricing_contact']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>
@@ -15,7 +19,11 @@
             <fieldset>
                 <legend>Pricing Phone</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['pricing_phone']) ? '&nbsp;' : $vendor['pricing_phone']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['pricing_phone']) ? '&nbsp;' : $vendor['pricing_phone']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="pricing_phone" value="<?=$vendor['pricing_phone']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>
@@ -25,7 +33,11 @@
             <fieldset>
                 <legend>Pricing Email</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['pricing_email']) ? '&nbsp;' : $vendor['pricing_email']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['pricing_email']) ? '&nbsp;' : $vendor['pricing_email']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="pricing_email" value="<?=$vendor['pricing_email']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>

@@ -285,6 +285,7 @@ function init_vendordetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".vendorparamcheck[data-item='"+item+"']").empty().html(response.data.content);
+                $(".vedorpaymentmethod[data-item='"+item+"']").removeClass('checked').addClass(response.data.class);
             } else {
                 show_error(response);
             }

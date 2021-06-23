@@ -366,6 +366,10 @@ select.vendordetailsselect {
     cursor: pointer;
     margin-right: 5px;
 }
+.vendorparamcheck {
+    cursor: pointer;
+    margin-right: 5px;
+}
 /*
 .vendordetails-left-header {
 margin-left: 14px;

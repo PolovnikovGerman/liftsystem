@@ -49,7 +49,7 @@
                 <div class="vedorpaymentterm <?=$vendor['payment_prepay']==1 ? 'checked' : ''?>" data-item="payment_prepay" style="clear: both;">
                     <div class="vendorparam_icon" data-item="payment_prepay">
                         <?php if ($vendor['payment_prepay']==1) { ?>
-                            <i class="fa fa-check-circle-o" aria-hidden="true">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                         <?php } else { ?>
                             <i class="fa fa-circle-o" aria-hidden="true"></i>
                         <?php } ?>
@@ -59,7 +59,7 @@
                 <div class="vedorpaymentterm <?=$vendor['payment_terms']==1 ? 'checked' : ''?>" data-item="payment_terms">
                     <div class="vendorparam_icon" data-item="payment_terms">
                         <?php if ($vendor['payment_terms']==1) { ?>
-                            <i class="fa fa-check-circle-o" aria-hidden="true">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                         <?php } else { ?>
                             <i class="fa fa-circle-o" aria-hidden="true"></i>
                         <?php } ?>
@@ -73,52 +73,64 @@
         <div class="vendorpaymentmethod_value">
             <fieldset>
                 <legend>Accepted Methods</legend>
-                <div class="vedorpaymentmethod <?=$vendor['payment_accept_visa']==1 ? 'checked' : ''?>" style="clear: both;">
-                    <?php if ($vendor['payment_accept_visa']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_visa']==1 ? 'checked' : ''?>" data-item="payment_accept_visa" style="clear: both;">
+                    <div class="vendorparamcheck" data-item="payment_accept_visa">
+                        <?php if ($vendor['payment_accept_visa']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                     Visa / MC
                 </div>
-                <div class="vedorpaymentmethod">
-                    <?php if ($vendor['payment_accept_amex']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_amex']==1 ? 'checked' : ''?>" data-item="payment_accept_amex" >
+                    <div class="vendorparamcheck" data-item="payment_accept_amex">
+                        <?php if ($vendor['payment_accept_amex']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                     Amex
                 </div>
-                <div class="vedorpaymentmethod">
-                    <?php if ($vendor['payment_accept_check']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_check']==1 ? 'checked' : ''?>" data-item="payment_accept_check">
+                    <div class="vendorparamcheck" data-item="payment_accept_check">
+                        <?php if ($vendor['payment_accept_check']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                      Check
                 </div>
-                <div class="vedorpaymentmethod">
-                    <?php if ($vendor['payment_accept_ach']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_ach']==1 ? 'checked' : ''?>" data-item="payment_accept_ach">
+                    <div class="vendorparamcheck" data-item="payment_accept_ach">
+                        <?php if ($vendor['payment_accept_ach']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                     ACH
                 </div>
-                <div class="vedorpaymentmethod">
-                    <?php if ($vendor['payment_accept_paypal']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_paypal']==1 ? 'checked' : ''?>" data-item="payment_accept_paypal">
+                    <div class="vendorparamcheck" data-item="payment_accept_paypal">
+                        <?php if ($vendor['payment_accept_paypal']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                      Paypal
                 </div>
-                <div class="vedorpaymentmethod">
-                    <?php if ($vendor['payment_accept_wire']==1) { ?>
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_wire']==1 ? 'checked' : ''?>" data-item="payment_accept_wire">
+                    <div class="vendorparamcheck" data-item="payment_accept_wire">
+                        <?php if ($vendor['payment_accept_wire']==1) { ?>
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                      Wire
                 </div>
             </fieldset>

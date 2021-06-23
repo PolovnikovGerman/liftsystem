@@ -50,9 +50,11 @@ class Vendors extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata['class']='';
                     if ($res['newval']==0) {
                         $mdata['content'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
                     } else {
+                        $mdata['class']='checked';
                         $mdata['content'] = '<i class="fa fa-check-square" aria-hidden="true"></i>';
                     }
                 }
