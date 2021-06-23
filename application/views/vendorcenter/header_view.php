@@ -15,9 +15,9 @@
         <div class="vendoreditarea">
             <div class="managemodelabel"><?=$editmode==0 ? 'View mode' : 'Edit mode'?></div>
             <?php if ($editmode==0) { ?>
-                <div class="vendoractivatetbtn">Edit</div>
+                <div class="vendoractivatetbtn">&nbsp;</div>
             <?php } else { ?>
-                <div class="vendorsaveactionbtn">Save</div>
+                <div class="vendorsaveactionbtn">&nbsp;</div>
             <?php }?>
         </div>
     </div>

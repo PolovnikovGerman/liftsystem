@@ -170,7 +170,8 @@ function init_vendor_content() {
 function edit_vendor(vendor_id) {
     var url="/vendors/vendor_edit";
     $.post(url,{'vendor_id':vendor_id},function(response){
-        if (response.errors=='') {            
+        if (response.errors=='') {
+            $("#vendorDetailsModal").find('div.modal-header').removeClass('editmode');
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
             $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
@@ -198,6 +199,7 @@ function init_vendordetails_view() {
             if (response.errors=='') {
                 $("#vendorDetailsModalLabel").empty().html(response.data.header);
                 $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                $("#vendorDetailsModal").find('div.modal-header').addClass('editmode');
                 init_vendordetails_edit();
             } else {
                 show_error(response);
@@ -219,27 +221,16 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
-    $(".vendorstatusbtn").unbind('click').click(function () {
-        var newstatus = 1;
-        if ($(this).hasClass('active')) {
-            newstatus = 0;
-        }
+    $(".vendorchangemode").unbind('click').click(function(){
         var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
         params.push({name: 'fld', value: 'vendor_status'});
-        params.push({name: 'newval', value: newstatus});
         var url='/vendors/update_vendor_param';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                if (newstatus==1) {
-                    $(".vendorstatusbtn").removeClass('inactive').addClass('active');
-                    $(".vendorstatusbtn").empty().html('Active');
-                } else {
-                    $(".vendorstatusbtn").removeClass('active').addClass('inactive');
-                    $(".vendorstatusbtn").empty().html('Inactive');
-                }
+                $(".vendorchangemode").empty().html(response.data.status_label);
             } else {
-                show_error(response)
+                show_error(response);
             }
         },'json');
     });
@@ -299,6 +290,23 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
+    // Radio
+    $(".vendorparam_icon").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        var url='/vendors/update_vendor_radio';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vedorpaymentterm[data-item='payment_prepay']").removeClass('checked').addClass(response.data.prepay_class);
+                $(".vendorparam_icon[data-item='payment_prepay']").empty().html(response.data.prepay_content);
+                $(".vedorpaymentterm[data-item='payment_terms']").removeClass('checked').addClass(response.data.term_class);
+                $(".vendorparam_icon[data-item='payment_terms']").empty().html(response.data.term_content);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
     // Contacts
     $(".vendorcontactinpt").unbind('change').change(function () {
         var params = prepare_vendor_edit();
@@ -331,103 +339,6 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
-    // Add contacts
-    $(".vendorcontactadd").unbind('click').click(function(){
-        var params = prepare_vendor_edit();
-        params.push({name: 'manage', value: 'add'});
-        var url = '/vendors/vendor_contact_manage';
-        $.post(url, params, function (response) {
-            if (response.errors=='') {
-                $("#vendorcontacts").empty().html(response.data.content);
-                init_vendordetails_edit();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    // Remove contacts
-    $(".removevendorcontact").unbind('click').click(function () {
-        if (confirm('Remove contact ?')==true) {
-            var params = prepare_vendor_edit();
-            params.push({name: 'manage', value: 'del'});
-            params.push({name: 'idx', value: $(this).data('idx')});
-            var url = '/vendors/vendor_contact_manage';
-            $.post(url, params, function (response) {
-                if (response.errors=='') {
-                    $("#vendorcontacts").empty().html(response.data.content);
-                    init_vendordetails_edit();
-                } else {
-                    show_error(response);
-                }
-            },'json');
-        }
-    });
-    // Docs
-    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background-image: none; width: 90px; color: #ffffff;top: -25px;left: 36px;"><i class="fa fa-plus-circle" aria-hidden="true"></i><span>Add</span></div>' +
-        '<ul class="qq-upload-list"></ul>' +
-        '<ul class="qq-upload-drop-area"></ul>'+
-        '<div class="clear"></div></div>';
-
-    var uploader = new qq.FileUploader({
-
-        element: document.getElementById('vendordocadd'),
-        action: '/utils/vendorcenterattach',
-        uploadButtonText: '',
-        multiple: false,
-        debug: false,
-        template: upload_templ,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF'],
-        onComplete: function(id, fileName, responseJSON){
-            if (responseJSON.success==true) {
-                $("li.qq-upload-success").hide();
-                var params=prepare_vendor_edit();
-                params.push({name: 'entity', value: 'vendor_docs'});
-                params.push({name: 'newval', value: responseJSON.filename});
-                params.push({name: 'srcname', value: responseJSON.source});
-                params.push({name: 'manage', value: 'add'});
-                var url="/vendors/vendor_doc_manage";
-                $.post(url, params, function (response) {
-                    if (response.errors=='') {
-                        $("#vendordocuments").empty().html(response.data.content);
-                        init_vendordetails_edit();
-                    } else {
-                        show_error(response);
-                    }
-                },'json');
-            }
-        }
-    });
-    $("input.vendordocuminpt").unbind('change').change(function(){
-        var params = prepare_vendor_edit();
-        params.push({name: 'entity', value: 'vendor_docs'});
-        params.push({name: 'fld', value: $(this).data('item')});
-        params.push({name: 'idx', value: $(this).data('idx')});
-        params.push({name: 'newval', value: $(this).val()});
-        var url='/vendors/update_vendor_param';
-        $.post(url, params, function (response) {
-            if (response.errors=='') {
-
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $(".vendordocremove").unbind('click').click(function () {
-        var params=prepare_vendor_edit();
-        params.push({name: 'entity', value: 'vendor_docs'});
-        params.push({name: 'manage', value: 'del'});
-        params.push({name: 'idx', value: $(this).data('idx')});
-        var url="/vendors/vendor_doc_manage";
-        $.post(url, params, function (response) {
-            if (response.errors=='') {
-                $("#vendordocuments").empty().html(response.data.content);
-                init_vendordetails_edit();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    })
-
 }
 
 function prepare_vendor_edit() {

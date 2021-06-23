@@ -414,12 +414,16 @@ Class Vendors_model extends My_Model
         if ($entity=='vendor') {
             $vendor = ifset($session_data, 'vendor', []);
             if (array_key_exists($fld, $vendor)) {
+                if ($fld=='vendor_status') {
+                    $newval = ($vendor['vendor_status']==0 ? 1 : 0);
+                }
                 $vendor[$fld] = $newval;
                 $session_data['vendor'] = $vendor;
                 usersession($session_id, $session_data);
                 $out['result'] = $this->success_result;
                 $out['fld'] = $fld;
                 $out['vendor'] = $vendor;
+                $out['newval'] = $newval;
             }
         } elseif ($entity=='vendor_contacts') {
             $contacts = $session_data['vendor_contacts'];
@@ -496,6 +500,31 @@ Class Vendors_model extends My_Model
                 $out['result'] = $this->success_result;
                 $out['fld'] = $fld;
                 $out['newval'] = $newval;
+            }
+        }
+        return $out;
+    }
+
+    public function update_vendor_radio($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $fld = ifset($data,'fld', '');
+        $entity = ifset($data,'entity','');
+        if ($entity=='vendor') {
+            $vendor = ifset($session_data, 'vendor', []);
+            if (array_key_exists($fld, $vendor)) {
+                $oldval = $vendor[$fld];
+                $newval = ($oldval==0 ? 1 : 0);
+                $vendor[$fld] = $newval;
+                if ($fld=='payment_prepay') {
+                    $vendor['payment_terms'] = ($newval==1 ? 0 : 1);
+                } else {
+                    $vendor['payment_prepay'] = ($newval==1 ? 0 : 1);
+                }
+                $session_data['vendor'] = $vendor;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+                $out['fld'] = $fld;
+                $out['vendor'] = $vendor;
             }
         }
         return $out;
@@ -623,44 +652,62 @@ Class Vendors_model extends My_Model
             $chkres = $this->_checkvendordata($session_data);
             $out['msg'] = $chkres['msg'];
             if ($chkres['result']==$this->success_result) {
+                $newrec = 0;
                 $vendor = $session_data['vendor'];
-                $vendor_contacts = $session_data['vendor_contacts'];
-                $vendor_docs = $session_data['vendor_docs'];
+                // $vendor_contacts = $session_data['vendor_contacts'];
+                // $vendor_docs = $session_data['vendor_docs'];
                 $deleted = $session_data['deleted'];
                 $vendor_id = $vendor['vendor_id'];
                 // Save main data
                 $this->db->set('vendor_name', $vendor['vendor_name']);
-                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
-                $this->db->set('calendar_id', $vendor['calendar_id']);
-                $this->db->set('vendor_asinumber', $vendor['vendor_asinumber']);
-                $this->db->set('payinclude', $vendor['payinclude']);
-                $this->db->set('payinclorder', $vendor['payinclorder']);
-                $this->db->set('vendor_website', $vendor['vendor_website']);
+                $this->db->set('alt_name', $vendor['alt_name']);
                 $this->db->set('vendor_type', $vendor['vendor_type']);
                 $this->db->set('country_id', $vendor['country_id']);
-                $this->db->set('alt_name', $vendor['alt_name']);
+                $this->db->set('vendor_asinumber', $vendor['vendor_asinumber']);
                 $this->db->set('our_account_number', $vendor['our_account_number']);
+                $this->db->set('vendor_website', $vendor['vendor_website']);
+                $this->db->set('vendor_phone', $vendor['contact_phone']);
                 $this->db->set('address', $vendor['address']);
+                $this->db->set('general_note', $vendor['general_note']);
+                $this->db->set('po_contact', $vendor['po_contact']);
+                $this->db->set('po_phone', $vendor['po_phone']);
+                $this->db->set('po_email', $vendor['po_email']);
+                $this->db->set('po_ccemail', $vendor['po_ccemail']);
+                $this->db->set('po_bcemail', $vendor['po_bcemail']);
                 $this->db->set('shipping_pickup', $vendor['shipping_pickup']);
+                $this->db->set('po_note', $vendor['po_note']);
+
+
+                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
+                $this->db->set('calendar_id', $vendor['calendar_id']);
+                $this->db->set('payinclude', $vendor['payinclude']);
+                $this->db->set('payinclorder', $vendor['payinclorder']);
+                $this->db->set('vendor_status', $vendor['vendor_status']);
+
                 $this->db->set('payment_accept_visa', $vendor['payment_accept_visa']);
                 $this->db->set('payment_accept_amex', $vendor['payment_accept_amex']);
                 $this->db->set('payment_accept_terms', $vendor['payment_accept_terms']);
                 $this->db->set('payment_accept_check', $vendor['payment_accept_check']);
                 $this->db->set('payment_accept_wire', $vendor['payment_accept_wire']);
-                $this->db->set('po_note', $vendor['po_note']);
                 $this->db->set('internal_po_note', $vendor['internal_po_note']);
-                $this->db->set('vendor_status', $vendor['vendor_status']);
-                $this->db->set('vendor_slug', strtoupper($vendor['vendor_slug']));
+
                 if ($vendor_id > 0) {
                     $this->db->where('vendor_id', $vendor_id);
                     $this->db->update('vendors');
                 } else {
+                    $newrec = 1;
                     $this->db->insert('vendors');
                     $vendor_id=$this->db->insert_id();
                 }
                 $out['msg'] = 'Error during insert / update record';
                 if ($vendor_id > 0) {
                     $out['result'] = $this->success_result;
+                    if ($newrec==1) {
+                        $newslug = 'V-5'.str_pad($vendor_id,4,'0', STR_PAD_LEFT);
+                        $this->db->where('vendor_id', $vendor_id);
+                        $this->db->set('vendor_slug', $newslug);
+                        $this->db->update('vendors');
+                    }
                     // Contacts
                     $idx = 0;
                     foreach ($vendor_contacts as $vendor_contact) {
@@ -762,16 +809,16 @@ Class Vendors_model extends My_Model
         }
 
         // Contacts
-        $idx =1;
-        foreach ($vendor_contacts as $vendor_contact) {
-            if (empty($vendor_contact['contact_name'])) {
-                $errmsg.='Contact # '.$idx.' Contact Name Empty'.PHP_EOL;
-            }
-            if (!empty($vendor_contact['contact_email']) && !valid_email_address($vendor_contact['contact_email'])) {
-                $errmsg.='Contact '.$idx.' Contact email '.$vendor_contact['contact_email'].' Not Valid'.PHP_EOL;
-            }
-            $idx++;
-        }
+//        $idx =1;
+//        foreach ($vendor_contacts as $vendor_contact) {
+//            if (empty($vendor_contact['contact_name'])) {
+//                $errmsg.='Contact # '.$idx.' Contact Name Empty'.PHP_EOL;
+//            }
+//            if (!empty($vendor_contact['contact_email']) && !valid_email_address($vendor_contact['contact_email'])) {
+//                $errmsg.='Contact '.$idx.' Contact email '.$vendor_contact['contact_email'].' Not Valid'.PHP_EOL;
+//            }
+//            $idx++;
+//        }
         if (!empty($errmsg)) {
             $out['result'] = $this->error_result;
             $out['msg'] = $errmsg;

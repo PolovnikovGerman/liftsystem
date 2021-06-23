@@ -5,7 +5,11 @@
             <fieldset>
                 <legend>Payment Contact</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['payment_contact']) ? '&nbsp;' : $vendor['payment_contact']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['payment_contact']) ? '&nbsp;' : $vendor['payment_contact']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="payment_contact" value="<?=$vendor['payment_contact']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>
@@ -15,7 +19,11 @@
             <fieldset>
                 <legend>Payment Phone</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['payment_phone']) ? '^nbsp;' : $vendor['payment_phone']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['payment_phone']) ? '&nbsp;' : $vendor['payment_phone']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>
@@ -25,7 +33,11 @@
             <fieldset>
                 <legend>Payment Email</legend>
                 <div class="vendorparam_value">
-                    <?=empty($vendor['payment_email']) ? '&nbsp;' : $vendor['payment_email']?>
+                    <?php if ($editmode==0) { ?>
+                        <?=empty($vendor['payment_email']) ? '&nbsp;' : $vendor['payment_email']?>
+                    <?php } else { ?>
+                        <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                    <?php } ?>
                 </div>
             </fieldset>
         </div>
@@ -34,20 +46,24 @@
         <div class="vendorpaymentterms_value">
             <fieldset>
                 <legend>Pay Before or After</legend>
-                <div class="vedorpaymentterm <?=$vendor['payment_prepay']==1 ? 'checked' : ''?>" style="clear: both;">
-                    <?php if ($vendor['payment_prepay']==1) { ?>
-                        <i class="fa fa-check-circle-o" aria-hidden="true">
-                    <?php } else { ?>
-                        <i class="fa fa-circle-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentterm <?=$vendor['payment_prepay']==1 ? 'checked' : ''?>" data-item="payment_prepay" style="clear: both;">
+                    <div class="vendorparam_icon" data-item="payment_prepay">
+                        <?php if ($vendor['payment_prepay']==1) { ?>
+                            <i class="fa fa-check-circle-o" aria-hidden="true">
+                        <?php } else { ?>
+                            <i class="fa fa-circle-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                     Prepay
                 </div>
-                <div class="vedorpaymentterm <?=$vendor['payment_terms']==1 ? 'checked' : ''?>">
-                    <?php if ($vendor['payment_terms']==1) { ?>
-                        <i class="fa fa-check-circle-o" aria-hidden="true">
-                    <?php } else { ?>
-                        <i class="fa fa-circle-o" aria-hidden="true"></i>
-                    <?php } ?>
+                <div class="vedorpaymentterm <?=$vendor['payment_terms']==1 ? 'checked' : ''?>" data-item="payment_terms">
+                    <div class="vendorparam_icon" data-item="payment_terms">
+                        <?php if ($vendor['payment_terms']==1) { ?>
+                            <i class="fa fa-check-circle-o" aria-hidden="true">
+                        <?php } else { ?>
+                            <i class="fa fa-circle-o" aria-hidden="true"></i>
+                        <?php } ?>
+                    </div>
                     Terms
                 </div>
             </fieldset>
@@ -57,7 +73,7 @@
         <div class="vendorpaymentmethod_value">
             <fieldset>
                 <legend>Accepted Methods</legend>
-                <div class="vedorpaymentmethod" style="clear: both;">
+                <div class="vedorpaymentmethod <?=$vendor['payment_accept_visa']==1 ? 'checked' : ''?>" style="clear: both;">
                     <?php if ($vendor['payment_accept_visa']==1) { ?>
                         <i class="fa fa-check-square" aria-hidden="true"></i>
                     <?php } else { ?>

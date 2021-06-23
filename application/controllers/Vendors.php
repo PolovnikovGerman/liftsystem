@@ -27,6 +27,9 @@ class Vendors extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    if ($res['fld']=='vendor_status') {
+                        $mdata['status_label'] = ($res['newval']==0 ? 'Make Active' : 'Make Inactive');
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -51,6 +54,41 @@ class Vendors extends MY_Controller
                         $mdata['content'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
                     } else {
                         $mdata['content'] = '<i class="fa fa-check-square" aria-hidden="true"></i>';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_vendor_radio() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                // Update
+                $res = $this->vendors_model->update_vendor_radio($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $vendor = $res['vendor'];
+                    if ($vendor['payment_prepay']==0) {
+                        $mdata['prepay_class'] = '';
+                        $mdata['prepay_content'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                    } else {
+                        $mdata['prepay_class'] = 'checked';
+                        $mdata['prepay_content'] = '<i class="fa fa-check-circle-o" aria-hidden="true">';
+                    }
+                    if ($vendor['payment_terms']==0) {
+                        $mdata['term_class'] = '';
+                        $mdata['term_content'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                    } else {
+                        $mdata['term_class'] = 'checked';
+                        $mdata['term_content'] = '<i class="fa fa-check-circle-o" aria-hidden="true">';
                     }
                 }
             }
