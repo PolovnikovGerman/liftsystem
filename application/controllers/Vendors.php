@@ -99,6 +99,25 @@ class Vendors extends MY_Controller
         show_404();
     }
 
+    public function update_vendor_address() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->vendors_model->update_vendor_address($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function vendor_contact_manage() {
         if ($this->isAjax()) {
             $mdata=[];

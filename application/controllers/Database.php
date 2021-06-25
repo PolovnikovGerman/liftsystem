@@ -48,6 +48,9 @@ class Database extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
                 $head['styles'][]=array('style'=>'/css/database/vendordetails.css');
                 $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+                // $head['scripts'][] = array('src' => 'https://maps.googleapis.com/maps/api/js?key='.$this->config->item('googlemapapi').'&libraries=places');
+                $head['scripts'][] = array('src' => '/js/database/vendoraddress.js');
+                $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link'] == '#btitemsview') {
 
@@ -130,7 +133,7 @@ class Database extends MY_Controller
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'], 'gmaps' => ifset($head, 'gmaps', 0)];
         $dat = $this->template->prepare_pagecontent($options);
 
         $content_view = $this->load->view('database/page_view', $content_options, TRUE);

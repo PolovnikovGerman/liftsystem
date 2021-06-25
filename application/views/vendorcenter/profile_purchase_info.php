@@ -75,11 +75,48 @@
             <fieldset>
                 <legend>Ship From Address</legend>
                 <div class="vendorparam_value">
-                    <?php if ($editmode==0) { ?>
-                        <?=empty($vendor['shipping_pickup']) ? '&nbsp;' : nl2br($vendor['shipping_pickup'])?>
-                    <?php }else { ?>
-                        <textarea class="vendordetailsinpt address" data-item="shipping_pickup"><?=$vendor['shipping_pickup']?></textarea>
-                    <?php } ?>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['shipaddr_line1']) ? '&nbsp;' : $vendor['shipaddr_line1']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="shipaddr_line1" id="shipaddr_line1" name="shipaddr_line1" value="<?=$vendor['shipaddr_line1']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['shipaddr_line2']) ? '&nbsp;' : $vendor['shipaddr_line2']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="shipaddr_line2" id="shipaddr_line2" name="shipaddr_line2" value="<?=$vendor['shipaddr_line2']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="cityaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['shipaddr_city']) ? '&nbsp;' : $vendor['shipaddr_city']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="shipaddr_city" id="shipaddr_city" name="shipaddr_city" value="<?=$vendor['shipaddr_city']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="stateaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['shipaddr_state']) ? '&nbsp;' : $vendor['shipaddr_state']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="shipaddr_state" id="shipaddr_state" name="shipaddr_state" value="<?=$vendor['shipaddr_state']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="zipaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['vendor_zipcode']) ? '&nbsp;' : $vendor['vendor_zipcode']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="vendor_zipcode" id="vendor_zipcode" name="vendor_zipcode" value="<?=$vendor['vendor_zipcode']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['shipaddr_country']) ? '&nbsp;' : $vendor['shipaddr_country']?>
+                        <?php }else { ?>
+                            <input class="vendoraddress" data-item="shipaddr_country" id="shipaddr_country" name="shipaddr_country" value="<?=$vendor['shipaddr_country']?>"/>
+                        <?php } ?>
+                    </div>
                 </div>
             </fieldset>
         </div>

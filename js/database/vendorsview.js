@@ -201,6 +201,7 @@ function init_vendordetails_view() {
                 $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
                 $("#vendorDetailsModal").find('div.modal-header').addClass('editmode');
                 init_vendordetails_edit();
+                initAddressAutocomplete();
             } else {
                 show_error(response);
             }
@@ -248,6 +249,20 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
+    $("input.vendoraddress").unbind('change').change(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_param';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
     $("textarea.vendordetailsinpt").unbind('change').change(function () {
         var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});

@@ -530,6 +530,34 @@ Class Vendors_model extends My_Model
         return $out;
     }
 
+    public function update_vendor_address($data, $session_data, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $adrtype = ifset($data,'address_type', '');
+        $vendor = $session_data['vendor'];
+        $update = 0;
+        if ($adrtype=='address') {
+            $update = 1;
+            $vendor['address_line1'] = ifset($data,'line_1','');
+            $vendor['address_city'] = ifset($data, 'city', '');
+            $vendor['address_state'] = ifset($data, 'state','');
+            $vendor['address_zip'] = ifset($data, 'zip', '');
+            $vendor['address_country'] = ifset($data, 'country', '');
+        } elseif ($adrtype=='shipping') {
+            $update = 1;
+            $vendor['shipaddr_line1'] = ifset($data,'line_1','');
+            $vendor['shipaddr_city'] = ifset($data, 'city', '');
+            $vendor['shipaddr_state'] = ifset($data, 'state','');
+            $vendor['vendor_zipcode'] = ifset($data, 'zip', '');
+            $vendor['shipaddr_country'] = ifset($data, 'country', '');
+        }
+        if ($update==1) {
+            $out['result'] = $this->success_result;
+            $session_data['vendor']=$vendor;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
     public function vendor_contact_manage($data, $session_data, $session_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
         $manage = ifset($data,'manage', '');
@@ -667,14 +695,27 @@ Class Vendors_model extends My_Model
                 $this->db->set('our_account_number', $vendor['our_account_number']);
                 $this->db->set('vendor_website', $vendor['vendor_website']);
                 $this->db->set('vendor_phone', $vendor['vendor_phone']);
-                $this->db->set('address', $vendor['address']);
+                // $this->db->set('address', $vendor['address']);
+                $this->db->set('address_line1', $vendor['address_line1']);
+                $this->db->set('address_line2', $vendor['address_line2']);
+                $this->db->set('address_city', $vendor['address_city']);
+                $this->db->set('address_state', $vendor['address_state']);
+                $this->db->set('address_zip', $vendor['address_zip']);
+                $this->db->set('address_country', $vendor['address_country']);
+
                 $this->db->set('general_note', $vendor['general_note']);
                 $this->db->set('po_contact', $vendor['po_contact']);
                 $this->db->set('po_phone', $vendor['po_phone']);
                 $this->db->set('po_email', $vendor['po_email']);
                 $this->db->set('po_ccemail', $vendor['po_ccemail']);
                 $this->db->set('po_bcemail', $vendor['po_bcemail']);
-                $this->db->set('shipping_pickup', $vendor['shipping_pickup']);
+                // $this->db->set('shipping_pickup', $vendor['shipping_pickup']);
+                $this->db->set('shipaddr_line1', $vendor['shipaddr_line1']);
+                $this->db->set('shipaddr_line2', $vendor['shipaddr_line2']);
+                $this->db->set('shipaddr_city', $vendor['shipaddr_city']);
+                $this->db->set('shipaddr_state', $vendor['shipaddr_state']);
+                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
+                $this->db->set('shipaddr_country', $vendor['shipaddr_country']);
                 $this->db->set('po_note', $vendor['po_note']);
                 $this->db->set('payment_contact', $vendor['payment_contact']);
                 $this->db->set('payment_phone', $vendor['payment_phone']);
@@ -697,7 +738,6 @@ Class Vendors_model extends My_Model
                 $this->db->set('customer_email', $vendor['customer_email']);
 
 
-//                $this->db->set('vendor_zipcode', $vendor['vendor_zipcode']);
 //                $this->db->set('calendar_id', $vendor['calendar_id']);
 //                $this->db->set('payinclude', $vendor['payinclude']);
 //                $this->db->set('payinclorder', $vendor['payinclorder']);

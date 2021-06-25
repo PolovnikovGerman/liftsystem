@@ -118,6 +118,7 @@ class Template
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => ifset($options, 'gmaps', 0),
         ];
 
         $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);

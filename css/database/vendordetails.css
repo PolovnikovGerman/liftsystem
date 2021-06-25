@@ -250,6 +250,37 @@
 .vendorslug_value {
     width: 128px;
 }
+.vendorparam_value .fulladdress {
+    width: 237px;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .cityaddress {
+    width: 135px;
+    margin-right: 5px;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .stateaddress {
+    width: 25px;
+    margin-right: 5px;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .zipaddress {
+    width: 60px;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .vendorname_value, .vendoraltname_value, .vendorweb_value, .vendorphone_value, .vendoraddress_value, .vendorinnernote_value {
     width: 260px;
 }
@@ -369,6 +400,13 @@ select.vendordetailsselect {
 .vendorparamcheck {
     cursor: pointer;
     margin-right: 5px;
+}
+input.vendoraddress {
+    width: 100%;
+    border: none;
+}
+.pac-container {
+    z-index: 10000 !important;
 }
 /*
 .vendordetails-left-header {

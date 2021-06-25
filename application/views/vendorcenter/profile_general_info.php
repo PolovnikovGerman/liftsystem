@@ -138,11 +138,48 @@
             <fieldset>
                 <legend>Address</legend>
                 <div class="vendorparam_value">
-                    <?php if ($editmode==0) { ?>
-                        <?=empty($vendor['address']) ? '&nbsp;' : nl2br($vendor['address'])?>
-                    <?php } else {  ?>
-                        <textarea class="vendordetailsinpt address" data-item="address"><?=$vendor['address']?></textarea>
-                    <?php }  ?>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_line1']) ? '&nbsp;' : $vendor['address_line1']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress" data-item="address_line1" id="address_line1" name="address_line1" value="<?=$vendor['address_line1']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_line2']) ? '&nbsp;' : $vendor['address_line2']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress" data-item="address_line2" id="address_line2" name="address_line2" value="<?=$vendor['address_line2']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="cityaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_city']) ? '&nbsp;' : $vendor['address_city']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress"  data-item="address_city" id="address_city" name="address_city" value="<?=$vendor['address_city']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="stateaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_state'])  ? '&nbsp;' : $vendor['address_state']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress" data-item="address_state" id="address_state" name="address_state" value="<?=$vendor['address_state']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="zipaddress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_zip']) ? '&nbsp;' : $vendor['address_zip']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress" data-item="address_zip" id="address_zip" name="address_zip" value="<?=$vendor['address_zip']?>"/>
+                        <?php } ?>
+                    </div>
+                    <div class="fulladdress">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['address_country']) ? '&nbsp;' : $vendor['address_country']?>
+                        <?php } else { ?>
+                            <input class="vendoraddress" data-item="address_country" id="address_country" name="address_country" value="<?=$vendor['address_country']?>"/>
+                        <?php } ?>
+                    </div>
                 </div>
             </fieldset>
         </div>
