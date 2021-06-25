@@ -1178,7 +1178,7 @@ Class Leadorder_model extends My_Model {
             $order['order_items']=$orditm['item_name'];
             $order['order_itemnumber']=$orditm['item_number'];
         }
-        $order['order_qty']+=$defqty;
+        $order['order_qty']=intval($order['order_qty'])+intval($defqty);
         //
         $this->load->model('shipping_model');
         if ($order['order_blank']==0) {

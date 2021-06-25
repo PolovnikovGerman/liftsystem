@@ -5,7 +5,10 @@
                 <div class="maincontentmenu">
                     <div class="title">Content:</div>
                     <?php foreach ($menu as $item) { ?>
-                        <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                        <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>"><?=$item['item_name']?></div>
+                        <?php  if (ifset($item,'newver', 1)==0) { ?>
+                            <div class="oldvesionlabel">&nbsp;</div>
+                        <?php } ?>
                     <?php } ?>
                 </div>
                 <div class="maincontent_view">

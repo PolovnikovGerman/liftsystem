@@ -165,7 +165,7 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_user_permissions($user_id) {
-        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link');
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.newver');
         $this->db->from('menu_items m');
         $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
         $this->db->where('u.user_id', $user_id);
@@ -193,6 +193,7 @@ Class Menuitems_model extends MY_Model
                 'item_link' => $mrow['item_link'],
                 'submenus' => count($submenu),
                 'submenu' => $submenu,
+                'newver' => $mrow['newver'],
             ];
         }
         return $out;
@@ -231,7 +232,7 @@ Class Menuitems_model extends MY_Model
     }
 
     public function get_itemsubmenu($user_id, $root_lnk) {
-        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access');
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access, m.newver');
         $this->db->from('menu_items mm');
         $this->db->join('menu_items m','m.parent_id=mm.menu_item_id');
         $this->db->where('mm.item_link', $root_lnk);
@@ -259,6 +260,7 @@ Class Menuitems_model extends MY_Model
                         'item_link' => $row['item_link'],
                         'brand_access' => $row['brand_access'],
                         'brand' => $newbrand,
+                        'newver' => $row['newver'],
                     ];
                 }
             } else {
@@ -273,6 +275,7 @@ Class Menuitems_model extends MY_Model
                             'item_link' => $row['item_link'],
                             'brand_access' => $row['brand_access'],
                             'brand' => null,
+                            'newver' => $row['newver'],
                         ];
                     } else {
                         if (ifset($userperm,'brand','')!=='') {
@@ -283,6 +286,7 @@ Class Menuitems_model extends MY_Model
                                 'item_link' => $row['item_link'],
                                 'brand_access' => $row['brand_access'],
                                 'brand' => $userperm['brand'],
+                                'newver' => $row['newver'],
                             ];
                         }
                     }
@@ -303,6 +307,7 @@ Class Menuitems_model extends MY_Model
                             'item_link' => $row['item_link'],
                             'brand_access' => $row['brand_access'],
                             'brand' => null,
+                            'newver' => $row['newver'],
                         ];
                     }
                 }
