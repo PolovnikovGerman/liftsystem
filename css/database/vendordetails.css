@@ -408,6 +408,15 @@ input.vendoraddress {
 .pac-container {
     z-index: 10000 !important;
 }
+.addnewpricedoc {
+    background-image: url(/img/vendors/upload_new_doc.png);
+    float: right!important;
+    width: 85px;
+    height: 26px;
+    cursor: pointer;
+    margin-top: -12px;
+    margin-right: 7px;
+}
 /*
 .vendordetails-left-header {
 margin-left: 14px;

@@ -46,6 +46,9 @@
         <div class="vendorpricingdocs_value">
             <fieldset>
                 <legend>Pricing Document</legend>
+                <?php if ($editmode==1) { ?>
+                    <div class="addnewpricedoc">&nbsp;</div>
+                <?php } ?>
                 <?=$pricedocview?>
             </fieldset>
         </div>

@@ -118,6 +118,19 @@ class Vendors extends MY_Controller
         show_404();
     }
 
+    public function pricelist_upload_prepare() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $years = [];
+            $curyear = intval(date('Y'));
+            for ($i=0; $i<=10; $i++) {
+                $years[] = $curyear - $i;
+            }
+            $mdata['content'] = $this->load->view('vendorcenter/test');
+        }
+        show_404();
+    }
+
     public function vendor_contact_manage() {
         if ($this->isAjax()) {
             $mdata=[];

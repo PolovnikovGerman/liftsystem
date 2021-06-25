@@ -355,6 +355,26 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
+    $(".addnewpricedoc").unbind('click').click(function(){
+        var params=new Array();
+        var url='/vendors/pricelist_upload_prepare';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('Please upload a new pricing doc');
+                $("#editModal").find('.modal-dialog').css('width', '300px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                /* $("#editModal").modal({backdrop: 'static', keyboard: false, show: true}); */
+                init_venorprice_upload()
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
+}
+
+function init_venorprice_upload() {
+
 }
 
 function prepare_vendor_edit() {
