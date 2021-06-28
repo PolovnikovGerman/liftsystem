@@ -581,6 +581,9 @@ function init_venorprice_upload() {
                     if (response.errors=='') {
                         $("#editModal").modal('hide');
                         $(".docspricelistsarea").empty().html(response.data.content);
+                        $(".vendordetails-section.customserviceview").show();
+                        $(".vendordetails-section.documentsview").show();
+                        init_vendordetails_edit();
                     } else {
                         show_error(response);
                     }
