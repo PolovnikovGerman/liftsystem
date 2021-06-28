@@ -268,6 +268,14 @@ Class Vendors_model extends My_Model
     }
 
     public function add_vendor() {
+        $this->db->select('count(vendor_id) as cnt, max(vendor_id) as maxval');
+        $this->db->from('vendors');
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $newid = 1;
+        } else {
+            $newid = $res['maxval'] + 1;
+        }
         $vendor=array(
             'vendor_id' => 0,
             'calendar_id' => $this->config->item('bank_calendar'),
@@ -280,25 +288,55 @@ Class Vendors_model extends My_Model
 	        'vendor_email' => '',
 	        'vendor_website' => '',
 	        'vendor_type' => 'Supplier',
-	        'country_id' => '',
+	        'country_id' => $this->config->item('vendor_default_country'),
 	        'alt_name' => '',
 	        'our_account_number' => '',
 	        'address' => '',
+            'address_line1' => '',
+            'address_line2' => '',
+            'address_city' => '',
+            'address_zip' => '',
+            'address_state' => '',
+            'address_country' => '',
 	        'shipping_pickup' => '',
+            'shipaddr_line1' => '',
+            'shipaddr_line2' => '',
+            'shipaddr_city' => '',
+            'shipaddr_state' => '',
+            'shipaddr_country' => '',
 	        'payment_accept_visa' => 0,
 	        'payment_accept_amex' => 0,
-	        'payment_accept_terms' => 0,
+	        'payment_accept_ach' => 0,
 	        'payment_accept_check' => 0,
 	        'payment_accept_wire' => 0,
+	        'payment_accept_paypal' => 0,
 	        'po_note' => '',
 	        'internal_po_note' => '',
 	        'vendor_status' => 1,
-	        'vendor_slug' => '',
+	        'vendor_slug' => 'V-5'.str_pad($newid,4,'0', STR_PAD_LEFT),
+            'general_note' => '',
+            'po_contact' => '',
+            'po_phone' => '',
+            'po_email' => '',
+            'po_ccemail' => '',
+            'po_bcemail' => '',
+            'payment_contact' => '',
+            'payment_phone' => '',
+            'payment_email' => '',
+            'payment_prepay' => 1,
+            'payment_terms' => 0,
+            'payment_note' => '',
+            'pricing_contact' => '',
+            'pricing_phone' => '',
+            'pricing_email' => '',
+            'customer_contact' => '',
+            'customer_phone' => '',
+            'customer_email' => '',
         );
         return [
             'vendor' => $vendor,
-            'vendor_contacts' => [],
-            'vendor_docs' => [],
+            'vendor_pricedocs' => [],
+            'vendor_otherdocs' => [],
         ];
     }
 

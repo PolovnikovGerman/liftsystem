@@ -471,7 +471,23 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
-    $(".vendordocument_value").unbind('click').click(function () {
+    $(".documentlist").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'full'});
+        params.push({name: 'editmode', value: 1});
+        var url = '/vendors/show_otherdocs_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendordetails-section.pricesview").hide();
+                $(".vendordetails-section.customserviceview").hide();
+                $(".vendordocument_value").empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".addnewotherdorcs").unbind('click').click(function () {
         var params = prepare_vendor_edit();
         params.push({name: 'view', value: 'full'});
         params.push({name: 'editmode', value: 1});

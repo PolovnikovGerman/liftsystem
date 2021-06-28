@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='2.01812';
-$config['css_version']='2.01812';
+$config['js_version']='2.01813';
+$config['css_version']='2.01813';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -294,3 +294,4 @@ switch ($_SERVER['SERVER_NAME']) {
 }
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
+$config['vendor_default_country'] = 223;
