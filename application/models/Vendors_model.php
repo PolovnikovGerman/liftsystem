@@ -974,10 +974,4 @@ Class Vendors_model extends My_Model
         return $out;
     }
 
-    private function _pricelist_sort($pricelist) {
-        usort($pricelist, function($a, $b) {
-            return $a['doc_year'] - $b['doc_year'];
-        });
-
-    }
 }
