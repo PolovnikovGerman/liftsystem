@@ -5,7 +5,7 @@
         <div class="vendor-tab" data-tab="history">History</div>
         <div class="vendor-tab" data-tab="items">Items</div>
     </div>
-    <div class="vendordata-content current <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>" data-tab="profile">
+    <div class="vendordata-content current <?=$editmode==0 ? ($vendor['vendor_status']==1 ? 'active' : 'inactive') : 'editmode'?>" data-tab="profile">
         <?=$profile_view?>
     </div>
     <div class="vendordata-content <?=$vendor['vendor_status']==1 ? 'active' : 'inactive'?>" data-tab="login">

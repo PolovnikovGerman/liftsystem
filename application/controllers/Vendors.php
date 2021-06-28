@@ -118,15 +118,23 @@ class Vendors extends MY_Controller
         show_404();
     }
 
-    public function pricelist_upload_prepare() {
+    public function vendordoc_upload_prepare() {
         if ($this->isAjax()) {
+            $error = '';
             $mdata=[];
-            $years = [];
-            $curyear = intval(date('Y'));
-            for ($i=0; $i<=10; $i++) {
-                $years[] = $curyear - $i;
+            $postdata = $this->input->post();
+            $doctype = ifset($postdata, 'doctype','pricelist');
+            if ($doctype=='pricelist') {
+                $years = [];
+                $curyear = intval(date('Y'));
+                for ($i=0; $i<=10; $i++) {
+                    $years[] = $curyear - $i;
+                }
+                $mdata['content'] = $this->load->view('vendorcenter/upload_pricelist_view',['years' => $years], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('vendorcenter/upload_otherdoc_view',[], TRUE);
             }
-            $mdata['content'] = $this->load->view('vendorcenter/test');
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -169,16 +177,84 @@ class Vendors extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $options = [
-                        'vendor_docs' => $res['vendor_docs'],
-                        'editmode' => 1,
-                    ];
-                    $mdata['content'] = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
+                    $mdata['doc_type'] = $res['doc_type'];
+                    if ($res['doc_type']=='PRICELIST') {
+                        $price_optios = [
+                            'docs' => $res['vendor_docs'],
+                            'count' => count($res['vendor_docs']),
+                        ];
+                        $mdata['content'] = $this->load->view('vendorcenter/pricedoc_short_view', $price_optios, TRUE);
+                    } else {
+                        $docs = $res['vendor_docs'];
+                        $listcnt = (count($docs)<19 ? 19 : count($docs));
+                        $options = [
+                            'docs' => $docs,
+                            'count' => count($docs),
+                            'listcnt' => $listcnt,
+                            'editmode' => 1,
+                        ];
+                        $mdata['content'] = $this->load->view('vendorcenter/otherdoc_full_view', $options, TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function show_pricelist_history() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $error = '';
+                $docs = $session_data['vendor_pricedocs'];
+                $listcnt = (count($docs)<10 ? 10 : count($docs));
+                $options = [
+                    'docs' => $docs,
+                    'count' => count($docs),
+                    'listcnt' => $listcnt,
+                ];
+                if (ifset($postdata,'view','short')=='short') {
+                    $mdata['content'] = $this->load->view('vendorcenter/pricedoc_short_view', $options, TRUE);
+                } else {
+                    $mdata['content'] = $this->load->view('vendorcenter/pricedoc_full_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function show_otherdocs_history() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $error = '';
+                $docs = $session_data['vendor_otherdocs'];
+                $editmode = ifset($postdata, 'editmode', 0);
+                $listcnt = (count($docs)<19 ? 19 : count($docs));
+                $options = [
+                    'docs' => $docs,
+                    'count' => count($docs),
+                    'listcnt' => $listcnt,
+                    'editmode' => $editmode,
+                ];
+                if (ifset($postdata,'view','short')=='short') {
+                    $mdata['content'] = $this->load->view('vendorcenter/otherdoc_short_view', $options, TRUE);
+                } else {
+                    $mdata['content'] = $this->load->view('vendorcenter/otherdoc_full_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 
     public function vendor_search() {
@@ -328,6 +404,7 @@ class Vendors extends MY_Controller
                     $profile_view = $this->load->view('vendorcenter/profile_view', $profview_options, TRUE);
                     $options = [
                         'profile_view' => $profile_view,
+                        'editmode' => $editmode,
                     ];
                     // $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
                     // $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);

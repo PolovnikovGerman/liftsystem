@@ -175,7 +175,7 @@ function edit_vendor(vendor_id) {
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
             $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
-            $("#vendorDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#vendorDetailsModal").modal({keyboard: false, show: true});
             if (parseInt(response.data.editmode)==0) {
                 $("#vendorDetailsModal").find('div.modal-header').addClass(response.data.status);
                 init_vendordetails_view();
@@ -206,7 +206,77 @@ function init_vendordetails_view() {
                 show_error(response);
             }
         }, 'json');
-    })
+    });
+    $(".pricedoc_icon").unbind('click').click(function () {
+        var docurl = $(this).data('file');
+        var docsrc = $(this).data('source');
+        openai(docurl, docsrc);
+    });
+    $(".historicpricedoc_icon").unbind('click').click(function () {
+        var docurl = $(this).data('file');
+        var docsrc = $(this).data('source');
+        openai(docurl, docsrc);
+    });
+    $(".pricedocs_view").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'full'});
+        var url = '/vendors/show_pricelist_history';
+        $.post(url, params, function (reponse) {
+            if (reponse.errors=='') {
+                $(".vendordetails-section.customserviceview").hide();
+                $(".vendordetails-section.documentsview").hide();
+                $(".docspricelistsarea").empty().html(reponse.data.content);
+                init_vendordetails_view();
+            } else {
+                show_error(reponse);
+            }
+        },'json');
+    });
+    $(".hidepricelists").unbind('click').click(function(){
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'short'});
+        var url = '/vendors/show_pricelist_history';
+        $.post(url, params, function (reponse) {
+            if (reponse.errors=='') {
+                $(".docspricelistsarea").empty().html(reponse.data.content);
+                $(".vendordetails-section.customserviceview").show();
+                $(".vendordetails-section.documentsview").show();
+                init_vendordetails_view();
+            } else {
+                show_error(reponse);
+            }
+        },'json');
+    });
+    $(".documentlist").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'full'});
+        var url = '/vendors/show_otherdocs_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendordetails-section.pricesview").hide();
+                $(".vendordetails-section.customserviceview").hide();
+                $(".vendordocument_value").empty().html(response.data.content);
+                init_vendordetails_view();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".hidedocumentslists").unbind('click').click(function(){
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'short'});
+        var url = '/vendors/show_otherdocs_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendordetails-section.pricesview").show();
+                $(".vendordetails-section.customserviceview").show();
+                $(".vendordocument_value").empty().html(response.data.content);
+                init_vendordetails_view();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_vendordetails_edit() {
@@ -357,24 +427,197 @@ function init_vendordetails_edit() {
     });
     $(".addnewpricedoc").unbind('click').click(function(){
         var params=new Array();
-        var url='/vendors/pricelist_upload_prepare';
+        params.push({name: 'doctype', value: 'pricelist'});
+        var url='/vendors/vendordoc_upload_prepare';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#editModalLabel").empty().html('Please upload a new pricing doc');
                 $("#editModal").find('.modal-dialog').css('width', '300px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
-                /* $("#editModal").modal({backdrop: 'static', keyboard: false, show: true}); */
+                $("#editModal").modal({show: true, keyboard: false });
                 init_venorprice_upload()
             } else {
                 show_error(response);
             }
         },'json');
-
+    });
+    $(".pricedocs_view").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'full'});
+        var url = '/vendors/show_pricelist_history';
+        $.post(url, params, function (reponse) {
+            if (reponse.errors=='') {
+                $(".vendordetails-section.customserviceview").hide();
+                $(".vendordetails-section.documentsview").hide();
+                $(".docspricelistsarea").empty().html(reponse.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(reponse);
+            }
+        },'json');
+    });
+    $(".hidepricelists").unbind('click').click(function(){
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'short'});
+        var url = '/vendors/show_pricelist_history';
+        $.post(url, params, function (reponse) {
+            if (reponse.errors=='') {
+                $(".docspricelistsarea").empty().html(reponse.data.content);
+                $(".vendordetails-section.customserviceview").show();
+                $(".vendordetails-section.documentsview").show();
+                init_vendordetails_edit();
+            } else {
+                show_error(reponse);
+            }
+        },'json');
+    });
+    $(".vendordocument_value").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'full'});
+        params.push({name: 'editmode', value: 1});
+        var url = '/vendors/show_otherdocs_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendordetails-section.pricesview").hide();
+                $(".vendordetails-section.customserviceview").hide();
+                $(".vendordocument_value").empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".addotherdoc").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'doctype', value: 'otherdoc'});
+        var url='/vendors/vendordoc_upload_prepare';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#editModalLabel").empty().html('Please upload a non-pricing doc');
+                $("#editModal").find('.modal-dialog').css('width', '300px');
+                $("#editModal").find('div.modal-body').empty().html(response.data.content);
+                $("#editModal").modal({show: true, keyboard: false });
+                init_venorotherdoc_upload()
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".hidedocumentslists").unbind('click').click(function(){
+        var params = prepare_vendor_edit();
+        params.push({name: 'view', value: 'short'});
+        var url = '/vendors/show_otherdocs_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".vendordetails-section.pricesview").show();
+                $(".vendordetails-section.customserviceview").show();
+                $(".vendordocument_value").empty().html(response.data.content);
+                init_vendordetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".otherdocdel_icon").unbind('click').click(function () {
+        if (confirm('Delete Non-pricing Doument?')) {
+            var url='/vendors/vendor_doc_manage';
+            var params=prepare_vendor_edit();
+            params.push({name: 'idx', value: $(this).data('doc')});
+            params.push({name: 'manage', value: 'del'});
+            params.push({name: 'doc_type', value: 'OTHERS'});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#editModal").modal('hide');
+                    $(".vendordocument_value").empty().html(response.data.content);
+                    init_vendordetails_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     });
 }
 
 function init_venorprice_upload() {
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/vendors/browse_new_doc.png" alt="Add Proof"/></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
 
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('pricelistuploadbtn'),
+        action: '/utils/vendorcenterattach',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/vendors/vendor_doc_manage';
+                var params=prepare_vendor_edit();
+                params.push({name: 'doc_url', value: responseJSON.filename});
+                params.push({name: 'doc_name', value: responseJSON.source});
+                params.push({name: 'doc_type', value: 'PRICELIST'});
+                params.push({name: 'doc_year', value: $(".pricelistyearselect").val()});
+                params.push({name: 'manage', value: 'add'});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#editModal").modal('hide');
+                        $(".docspricelistsarea").empty().html(response.data.content);
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+
+}
+
+function init_venorotherdoc_upload() {
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/vendors/browse_new_doc.png" alt="Add Proof"/></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('otherdocuploadbtn'),
+        action: '/utils/vendorcenterattach',
+        uploadButtonText: '',
+        multiple: false,
+        debug: false,
+        template: upload_templ,
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/vendors/vendor_doc_manage';
+                var params=prepare_vendor_edit();
+                params.push({name: 'doc_url', value: responseJSON.filename});
+                params.push({name: 'doc_name', value: responseJSON.source});
+                params.push({name: 'doc_type', value: 'OTHERS'});
+                params.push({name: 'doc_description', value: $("#newdocname").val()});
+                params.push({name: 'manage', value: 'add'});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#editModal").modal('hide');
+                        $(".vendordocument_value").empty().html(response.data.content);
+                        init_vendordetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
 }
 
 function prepare_vendor_edit() {

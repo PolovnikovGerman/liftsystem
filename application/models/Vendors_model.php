@@ -618,53 +618,76 @@ Class Vendors_model extends My_Model
     public function vendor_docs_manage($data, $session_data, $session_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
         $manage = ifset($data,'manage', '');
-        $key = ifset($data, 'idx', 0);
-        $src = ifset($data,'newval','');
-        $source = ifset($data,'srcname','');
-        $docs = $session_data['vendor_docs'];
-        if ($manage=='add') {
-            // New doc
-            $minidx = 0;
-            foreach ($docs as $doc) {
-                if ($doc['vendor_doc_id']<$minidx) {
-                    $minidx = $doc['vendor_doc_id'];
-                }
+        $doc_type = ifset($data,'doc_type','');
+        if (!empty($doc_type)) {
+            if ($doc_type=='PRICELIST') {
+                $docs = $session_data['vendor_pricedocs'];
+            } else {
+                $docs = $session_data['vendor_otherdocs'];
             }
-            $minidx=$minidx-1;
-            $docs[] = [
-                'vendor_doc_id' => $minidx,
-                'doc_url' => $src,
-                'doc_name' => $source,
-                'doc_description' => '',
-            ];
-            $out['result'] = $this->success_result;
-            $session_data['vendor_docs'] = $docs;
-            usersession($session_id, $session_data);
-            $out['vendor_docs'] = $docs;
-        } elseif ($manage=='del') {
-            $found = 0;
-            $deleted = $session_data['deleted'];
-            $newdoc = [];
-            foreach ($docs as $doc) {
-                if ($doc['vendor_doc_id']==$key) {
-                    $found=1;
-                    if ($key > 0) {
-                        $deleted[] = [
-                            'entity' => 'docs',
-                            'id' => $key,
-                        ];
+            $key = ifset($data, 'idx', 0);
+            $doc_url = ifset($data,'doc_url','');
+            $doc_name = ifset($data,'doc_name','');
+            $doc_year = ifset($data, 'doc_year', '');
+            if ($manage=='add') {
+                // New doc
+                $minidx = 0;
+                foreach ($docs as $doc) {
+                    if ($doc['vendor_doc_id']<$minidx) {
+                        $minidx = $doc['vendor_doc_id'];
                     }
-                    break;
-                } else {
-                    $newdoc[] = $doc;
                 }
-            }
-            if ($found==1) {
+                $minidx=$minidx-1;
+                $docs[] = [
+                    'vendor_doc_id' => $minidx,
+                    'doc_url' => $doc_url,
+                    'doc_name' => $doc_name,
+                    'doc_description' => isset($data['doc_description']) ? $data['doc_description'] : '',
+                    'doc_year' => $doc_year,
+                ];
                 $out['result'] = $this->success_result;
-                $out['vendor_docs'] = $newdoc;
-                $session_data['vendor_docs'] = $newdoc;
-                $session_data['deleted'] = $deleted;
+                if ($doc_type=='PRICELIST') {
+                    $keys = array_column($docs, 'doc_year');
+                    array_multisort($keys, SORT_DESC, $docs);
+                    $session_data['vendor_pricedocs'] = $docs;
+                    $out['vendor_docs'] = $docs;
+                } else {
+                    $session_data['vendor_otherdocs'] = $docs;
+                    $out['vendor_docs'] = $docs;
+                }
                 usersession($session_id, $session_data);
+                $out['doc_type'] = $doc_type;
+                $out['result'] = $this->success_result;
+            } elseif ($manage=='del') {
+                $found = 0;
+                $deleted = $session_data['deleted'];
+                $newdoc = [];
+                foreach ($docs as $doc) {
+                    if ($doc['vendor_doc_id']==$key) {
+                        $found=1;
+                        if ($key > 0) {
+                            $deleted[] = [
+                                'entity' => 'docs',
+                                'id' => $key,
+                            ];
+                        }
+                        // break;
+                    } else {
+                        $newdoc[] = $doc;
+                    }
+                }
+                if ($found==1) {
+                    $out['result'] = $this->success_result;
+                    if ($doc_type=='PRICELIST') {
+                        $session_data['vendor_pricedocs'] = $newdoc;
+                    } else {
+                        $session_data['vendor_otherdocs'] = $newdoc;
+                    }
+                    $out['vendor_docs'] = $newdoc;
+                    $out['doc_type'] = $doc_type;
+                    $session_data['deleted'] = $deleted;
+                    usersession($session_id, $session_data);
+                }
             }
         }
         return $out;
@@ -683,7 +706,8 @@ Class Vendors_model extends My_Model
                 $newrec = 0;
                 $vendor = $session_data['vendor'];
                 // $vendor_contacts = $session_data['vendor_contacts'];
-                // $vendor_docs = $session_data['vendor_docs'];
+                $vendor_pricedocs = $session_data['vendor_pricedocs'];
+                $vendor_otherdocs = $session_data['vendor_otherdocs'];
                 $deleted = $session_data['deleted'];
                 $vendor_id = $vendor['vendor_id'];
                 // Save main data
@@ -788,36 +812,68 @@ Class Vendors_model extends My_Model
 //                        }
 //                        $idx++;
 //                    }
-//                    // Docs
-//                    $idx=1;
-//                    foreach ($vendor_docs as $vendor_doc) {
-//                        if ($vendor_doc['vendor_doc_id']<0) {
-//                            $filename = 'vendoc_'.time().'_'.str_pad($idx,3,'0',STR_PAD_LEFT);
-//                            $srcdat = extract_filename($vendor_doc['doc_url']);
-//                            $filename.='.'.$srcdat['ext'];
-//                            $source = str_replace($this->config->item('pathpreload'),$this->config->item('upload_path_preload'), $vendor_doc['doc_url']);
-//                            $target = $this->config->item('vendor_docs_relative').$filename;
-//                            $res = @copy($source, $target);
-//                            $newfile = '';
-//                            if ($res) {
-//                                $newfile = $this->config->item('vendor_docs').$filename;
-//                            }
-//                            $vendor_doc['doc_url'] = $newfile;
-//                            $idx++;
-//                        }
-//                        if (!empty($vendor_doc['doc_url'])) {
-//                            $this->db->set('vendor_id', $vendor_id);
-//                            $this->db->set('doc_url', $vendor_doc['doc_url']);
-//                            $this->db->set('doc_name', $vendor_doc['doc_name']);
-//                            $this->db->set('doc_description', $vendor_doc['doc_description']);
-//                            if ($vendor_doc['vendor_doc_id']>0) {
-//                                $this->db->where('vendor_doc_id', $vendor_doc['vendor_doc_id']);
-//                                $this->db->update('vendor_docs');
-//                            } else {
-//                                $this->db->insert('vendor_docs');
-//                            }
-//                        }
-//                    }
+                    // Docs
+                    $idx=1;
+                    foreach ($vendor_pricedocs as $vendor_doc) {
+                        if ($vendor_doc['vendor_doc_id']<0) {
+                            $filename = 'vendoc_'.time().'_'.str_pad($idx,3,'0',STR_PAD_LEFT);
+                            $srcdat = extract_filename($vendor_doc['doc_url']);
+                            $filename.='.'.$srcdat['ext'];
+                            $source = str_replace($this->config->item('pathpreload'),$this->config->item('upload_path_preload'), $vendor_doc['doc_url']);
+                            $target = $this->config->item('vendor_docs_relative').$filename;
+                            $res = @copy($source, $target);
+                            $newfile = '';
+                            if ($res) {
+                                $newfile = $this->config->item('vendor_docs').$filename;
+                            }
+                            $vendor_doc['doc_url'] = $newfile;
+                            $idx++;
+                        }
+                        if (!empty($vendor_doc['doc_url'])) {
+                            $this->db->set('vendor_id', $vendor_id);
+                            $this->db->set('doc_type','PRICELIST');
+                            $this->db->set('doc_url', $vendor_doc['doc_url']);
+                            $this->db->set('doc_name', $vendor_doc['doc_name']);
+                            $this->db->set('doc_description', $vendor_doc['doc_description']);
+                            $this->db->set('doc_year', $vendor_doc['doc_year']);
+                            if ($vendor_doc['vendor_doc_id']>0) {
+                                $this->db->where('vendor_doc_id', $vendor_doc['vendor_doc_id']);
+                                $this->db->update('vendor_docs');
+                            } else {
+                                $this->db->insert('vendor_docs');
+                            }
+                        }
+                    }
+                    $idx=1;
+                    foreach ($vendor_otherdocs as $vendor_doc) {
+                        if ($vendor_doc['vendor_doc_id']<0) {
+                            $filename = 'vendoc_'.time().'_'.str_pad($idx,3,'0',STR_PAD_LEFT);
+                            $srcdat = extract_filename($vendor_doc['doc_url']);
+                            $filename.='.'.$srcdat['ext'];
+                            $source = str_replace($this->config->item('pathpreload'),$this->config->item('upload_path_preload'), $vendor_doc['doc_url']);
+                            $target = $this->config->item('vendor_docs_relative').$filename;
+                            $res = @copy($source, $target);
+                            $newfile = '';
+                            if ($res) {
+                                $newfile = $this->config->item('vendor_docs').$filename;
+                            }
+                            $vendor_doc['doc_url'] = $newfile;
+                            $idx++;
+                        }
+                        if (!empty($vendor_doc['doc_url'])) {
+                            $this->db->set('vendor_id', $vendor_id);
+                            $this->db->set('doc_type', 'OTHERS');
+                            $this->db->set('doc_url', $vendor_doc['doc_url']);
+                            $this->db->set('doc_name', $vendor_doc['doc_name']);
+                            $this->db->set('doc_description', $vendor_doc['doc_description']);
+                            if ($vendor_doc['vendor_doc_id']>0) {
+                                $this->db->where('vendor_doc_id', $vendor_doc['vendor_doc_id']);
+                                $this->db->update('vendor_docs');
+                            } else {
+                                $this->db->insert('vendor_docs');
+                            }
+                        }
+                    }
                     // Deleted
                     foreach ($deleted as $item) {
                         if ($item['entity']=='contacts') {
@@ -878,5 +934,12 @@ Class Vendors_model extends My_Model
             $out['msg'] = $errmsg;
         }
         return $out;
+    }
+
+    private function _pricelist_sort($pricelist) {
+        usort($pricelist, function($a, $b) {
+            return $a['doc_year'] - $b['doc_year'];
+        });
+
     }
 }

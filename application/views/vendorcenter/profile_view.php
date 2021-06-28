@@ -13,6 +13,6 @@
 <div class="vendordetails-section customserviceview">
     <?=$customer_view?>
 </div>
-<div class="vendordetails-section">
+<div class="vendordetails-section documentsview">
     <?=$otherdoc_view?>
 </div>

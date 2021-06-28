@@ -49,7 +49,9 @@
                 <?php if ($editmode==1) { ?>
                     <div class="addnewpricedoc">&nbsp;</div>
                 <?php } ?>
-                <?=$pricedocview?>
+                <div class="docspricelistsarea">
+                    <?=$pricedocview?>
+                </div>
             </fieldset>
         </div>
     </div>
