@@ -1,0 +1,95 @@
+.maincontentmenuarea {
+    padding: 10px!important;
+}
+.dbcenter_pagetitle {
+    margin: 10px 0 15px 25px;
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+}
+.dbcenter_master_title {
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+    width: 100%;
+}
+.dbcenter_master_menu, .dbcenter_channels_menu {
+    width: 100%;
+}
+.dbcenter_master_menuitems, .dbcenter_channels_menuitems {
+    float: unset!important;
+    margin: 15px auto;
+    display: table;
+}
+.dbcenter_master_item {
+    background: url('/img/database_center/master_item_btn.png');
+    width: 229px;
+    height: 80px;
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 30px;
+}
+.dbcenter_master_item:hover {
+    background: url('/img/database_center/master_itemhover_btn.png');
+}
+.dbcenter_master_item:last-child {
+    margin-right: 0px!important;
+}
+.dbcenter_master_item > .mastrelabel {
+    clear: both;
+    font-size: 15px;
+    font-weight: bold;
+    text-shadow: 1.6px 0 3.2px #333333;
+    margin-top: 12px;
+    text-align: center;
+    width: 100%;
+}
+.dbcenter_master_item > .itemlabel {
+    clear: both;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 3px 0 6px #333333;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+.dbcenter_channels_title {
+    width: 100%;
+    height: 32px;
+    line-height: 32px;
+    margin-top: 62px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+.channel_menucontent {
+    margin-right: 30px;
+    width: 230px;
+}
+.channel_menucontent:last-child {
+    margin-right: 0 !important;
+}
+.channel_logo {
+    width: 230px;
+    height: 114px;
+    text-align: center;
+}
+.dbcenter_channel_item {
+    background: url('/img/database_center/channel_item_btn.png');
+    width: 229px;
+    height: 60px;
+    cursor: pointer;
+    line-height: 55px!important;
+    font-size: 21px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+}
+.dbcenter_channel_item:hover {
+    background: url('/img/database_center/channel_itemhover_btn.png');
+}
