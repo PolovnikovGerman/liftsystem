@@ -85,8 +85,11 @@ class Databasecenter extends MY_Controller
             if ($row['item_link']=='#mastercustomer') {
 
             } elseif ($row['item_link']=='#mastervendors') {
-                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
-                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+                $head['styles'][]=array('style'=>'/css/database_center/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
+                $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
+                $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             }
 
@@ -115,15 +118,15 @@ class Databasecenter extends MY_Controller
 
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
-        $totals=$this->vendors_model->get_count_vendors();
+        $totals=$this->vendors_model->get_count_vendors(['status' => 1]);
         $options=array(
-            'perpage'=> 250,
+            'perpage'=> 100,
             'order'=>'vendor_name',
             'direc'=>'asc',
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
 

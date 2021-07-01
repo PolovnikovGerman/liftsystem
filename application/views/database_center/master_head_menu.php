@@ -2,7 +2,7 @@
     <div class="menulabel">MASTER</div>
     <div class="mastermenu_items">
         <?php foreach ($menu as $mrow) { ?>
-            <div class="headmenuitem <?=$start==str_replace('#', '',$mrow['item_link']) ? 'active' : ''?> "><?=$mrow['item_name']?></div>
+            <div class="headmenuitem <?=$start==str_replace('#', '',$mrow['item_link']) ? 'active' : ''?>" data-lnk="<?=str_replace('#', '',$mrow['item_link'])?>"><?=$mrow['item_name']?></div>
         <?php } ?>
     </div>
     <div class="returndbcenter">
