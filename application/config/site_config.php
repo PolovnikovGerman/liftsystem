@@ -255,6 +255,7 @@ if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bl
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
 }
 $config['geo_apikey']='4b81812eeadb21fdb1ee0927218859cc46d35d0b88e0aa802ce28d25a774d8ef';
+$config['googlemapapi'] = 'AIzaSyCgboqcBZF286ISpDYK3Wlz2Yvmcmi65Ws';
 $config['message_subject']='Bluetrack.com Research Question';
 switch ($_SERVER['SERVER_NAME']) {
     case 'bluetrack.sys':

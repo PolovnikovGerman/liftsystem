@@ -109,7 +109,7 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],'gmaps' => ifset($head, 'gmaps', 0)];
         $dat = $this->template->prepare_pagecontent($options);
         $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
