@@ -32,4 +32,7 @@ function init_dbcenter_mastermenu() {
         $(".dbcontentarea").hide();
         show_dbcenter_mastercontent(act);
     });
+    $(".returndbcenter").unbind('click').click(function () {
+        window.location.href = '/databasecenter';
+    })
 }
