@@ -955,7 +955,6 @@ Class Vendors_model extends My_Model
                 $errmsg.='Vendor # Not Unique'.PHP_EOL;
             }
         }
-
         // Contacts
 //        $idx =1;
 //        foreach ($vendor_contacts as $vendor_contact) {
@@ -973,5 +972,4 @@ Class Vendors_model extends My_Model
         }
         return $out;
     }
-
 }
