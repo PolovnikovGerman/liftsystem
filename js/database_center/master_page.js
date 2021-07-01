@@ -28,6 +28,7 @@ function init_dbcenter_mastermenu() {
     $(".headmenuitem").unbind('click').click(function () {
         $(".headmenuitem").removeClass('active');
         var act = $(this).data('lnk');
+        $(this).addClass('active');
         $(".dbcontentarea").hide();
         show_dbcenter_mastercontent(act);
     });

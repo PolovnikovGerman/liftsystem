@@ -26,6 +26,7 @@
     font-weight: bold;
     text-align: center;
     line-height: 38px;
+    cursor: pointer;
 }
 .mastermenu_items > .headmenuitem.active {
     background: url('/img/database_center/headmenu_item_active.png');
