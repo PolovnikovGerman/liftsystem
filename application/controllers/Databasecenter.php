@@ -30,7 +30,7 @@ class Databasecenter extends MY_Controller
 
     public function index() {
         $head = [];
-        $head['title'] = 'Database';
+        $head['title'] = 'Database Center';
         $menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
         $master=[];
         $channelsb=[];
@@ -57,10 +57,46 @@ class Databasecenter extends MY_Controller
         usersession('liftsearch', NULL);
         // Add main page management
         $head['styles'][] = array('style' => '/css/database_center/main_page.css');
-        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][] = array('src' => '/js/database_center/main_page.js');
+        // Item details
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $dat = $this->template->prepare_pagecontent($options);
+        $content_view = $this->load->view('database_center/page_view', $content_options, TRUE);
+        $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
+    }
+
+    public function masteritems() {
+        $head = [];
+        $start = $this->input->get('start');
+        $head['title'] = 'Database Center';
+        $pagelnk = '#dbcentermaster';
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        $menu_options = [
+            'menu' => $menu,
+            'start' => $start,
+        ];
+        $page_menu = $this->load->view('database_center/master_head_menu', $menu_options, TRUE);
+        // Add main page management
+        $content_options=[
+            'page_menu' => $page_menu,
+        ];
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#mastercustomer') {
+
+            } elseif ($row['item_link']=='#mastervendors') {
+                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+                $content_options['vendorsview'] = $this->_prepare_vendors_view();
+            }
+
+        }
+        $head['styles'][] = array('style' => '/css/database_center/master_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/master_page.js');
+
         // Utils
-        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
         $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
         $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
@@ -72,12 +108,23 @@ class Databasecenter extends MY_Controller
         // Item details
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_view = $this->load->view('database_center/page_view', $content_options, TRUE);
+        $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
 
-    public function masteritems($start) {
-        
+    private function _prepare_vendors_view() {
+        $this->load->model('vendors_model');
+        $totals=$this->vendors_model->get_count_vendors();
+        $options=array(
+            'perpage'=> 250,
+            'order'=>'vendor_name',
+            'direc'=>'asc',
+            'total'=>$totals,
+            'curpage'=>0,
+        );
+        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
     }
+
 }

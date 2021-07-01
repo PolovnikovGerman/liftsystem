@@ -1,0 +1,38 @@
+.maincontentmenuarea {
+    padding: 10px!important;
+}
+.menupage_head {
+    background: #fff;
+    padding: 7px;
+    margin-bottom: 9px;
+    width: 100%;
+}
+.mastermenu_head {
+    width: 100%;
+}
+.mastermenu_head > .menulabel {
+    width: 151px;
+    text-align: center;
+    font-size: 28.26px;
+    font-weight: bold;
+    line-height: 41px;
+}
+.mastermenu_items > .headmenuitem {
+    background: url('/img/database_center/headmenu_item.png');
+    width: 137px;
+    height: 41px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 38px;
+}
+.mastermenu_items > .headmenuitem.active {
+    background: url('/img/database_center/headmenu_item_active.png');
+    color: #0000c4;
+}
+.mastermenu_head > .returndbcenter {
+    float: right!important;
+    margin-right: 7px;
+    cursor: pointer;
+}
