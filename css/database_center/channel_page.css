@@ -1,0 +1,72 @@
+.maincontentmenuarea {
+    padding: 10px!important;
+}
+.menupage_head {
+    background: #fff;
+    padding: 7px;
+    margin-bottom: 9px;
+    width: 100%;
+}
+.channelmenu_head {
+    width: 100%;
+}
+.channelmenu_head > .menulabel {
+    width: 151px;
+    text-align: center;
+    font-size: 28.26px;
+    font-weight: bold;
+    line-height: 41px;
+}
+.channelmenu_head > .menulabel.stressballs {
+    background: url('/img/database_center/stressballs_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head > .menulabel.nationalsb {
+    background: url('/img/database_center/national_sb_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head > .menulabel.bluetrack {
+    background: url('/img/database_center/bluetrack_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head > .menulabel.btlegacy {
+    background: url('/img/database_center/bluetrack_legacy_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head > .menulabel.amazon {
+    background: url('/img/database_center/amazon_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_items {
+    margin-left: 7px;
+}
+.channelmenu_items > .headmenuitem {
+    background: url('/img/database_center/headmenu_item.png');
+    width: 137px;
+    height: 41px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.channelmenu_items > .headmenuitem.active {
+    background: url('/img/database_center/headmenu_item_active.png');
+    color: #0000c4;
+}
+.channelmenu_head > .returndbcenter {
+    float: right!important;
+    margin-right: 7px;
+    cursor: pointer;
+}

@@ -38,6 +38,7 @@ class Databasecenter extends MY_Controller
         $channelbt=[];
         $channellbt=[];
         $channelamz=[];
+        $channelcnt = 0;
         foreach ($menu as $mitems) {
             if ($mitems['item_link']=='#dbcentermaster') {
                 foreach ($mitems['submenu'] as $mitem) {
@@ -46,12 +47,51 @@ class Databasecenter extends MY_Controller
                     ];
                 }
             } elseif ($mitems['item_link']=='#dbcentersbchannel') {
-
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelsb[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenternsbchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelnsb[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenterbtchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelbt[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenterlbtchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channellbt[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenteramazonchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelamz[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
             }
         }
 
         $content_options = [
             'master' => $master,
+            'channelcnt' => $channelcnt,
+            'channelsb' => $channelsb,
+            'channelnsb' => $channelnsb,
+            'channelbt' => $channelbt,
+            'channellbt' => $channellbt,
+            'channelamz' => $channelamz,
         ];
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
@@ -69,7 +109,7 @@ class Databasecenter extends MY_Controller
     public function masteritems() {
         $head = [];
         $start = $this->input->get('start');
-        $head['title'] = 'Database Center';
+        $head['title'] = 'Database Center Master';
         $pagelnk = '#dbcentermaster';
         $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
         $menu_options = [
@@ -116,6 +156,81 @@ class Databasecenter extends MY_Controller
         $this->load->view('page/page_template_view', $dat);
     }
 
+    public function channelitems() {
+        $head = [];
+        $start = $this->input->get('start');
+        $brand = $this->input->get('brand');
+        if (empty($brand)) {
+            redirect('/');
+        }
+        if ($brand=='stressballs') {
+            $head['title'] = 'Database Center Stressalls';
+            $pagelnk = '#dbcentersbchannel';
+        } elseif ($brand=='nationalsb') {
+            $head['title'] = 'Database Center National Stressalls';
+            $pagelnk = '#dbcenternsbchannel';
+        } elseif ($brand=='bluetrack') {
+            $head['title'] = 'Database Center Bluetrack';
+            $pagelnk = '#dbcenterbtchannel';
+        } elseif ($brand=='btlegacy') {
+            $head['title'] = 'Database Center Bluetrack Legacy Site';
+            $pagelnk = '#dbcenterlbtchannel';
+        } elseif ($brand=='amazon') {
+            $head['title'] = 'Database Center Amazon';
+            $pagelnk = '#dbcenteramazonchannel';
+        }
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        if (empty($menu))  {
+            redirect('/');
+        }
+        $menu_options = [
+            'menu' => $menu,
+            'start' => $start,
+            'brand' => $brand,
+        ];
+        $content_options=[];
+        $content_options['page_menu'] = $this->load->view('database_center/channel_head_menu', $menu_options, TRUE);
+        // Add
+        $itemslist = 0;
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#sbitems') {
+                if ($itemslist==0) {
+                    $itemslist = 1;
+                    $head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
+                    $head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
+                    $head['styles'][] = array('style' => '/css/database_center/itemlistdetails.css');
+                    $head['scripts'][]=array('src' => '/js/database_center/itemlistdetails.js');
+                    $head['styles'][] = array('style' => '/css/page_view/popover.css');
+                    $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
+                    $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                }
+                $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
+            } elseif ($row['item_link']=='#sbpages') {
+            }
+        }
+
+        // Item details
+        $head['styles'][] = array('style' => '/css/database_center/channel_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/channel_page.js');
+        //  Utils
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/easySlider1.5.js');
+        $options = ['title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0)
+        ];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $this->load->view('database_center/channel_page_view', $content_options, TRUE);
+        $this->load->view('page/page_template_view', $dat);
+    }
+
     private function _prepare_vendors_view() {
         $this->load->model('vendors_model');
         $totals=$this->vendors_model->get_count_vendors(['status' => 1]);
@@ -127,6 +242,22 @@ class Databasecenter extends MY_Controller
             'curpage'=>0,
         );
         $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_itemdata_view($brand) {
+        $this->load->model('items_model');
+        $totals = $this->items_model->count_searchres('', $brand);
+        $this->load->model('vendors_model');
+        $options = [
+            'perpage' => 250,
+            'order' => 'item_number',
+            'direct' => 'asc',
+            'totals' =>  $totals,
+            'brand' => $brand,
+            'vendors' => $this->vendors_model->get_vendors(),
+        ];
+        $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         return $content;
     }
 
