@@ -9,8 +9,8 @@
         <div class="itemlistsubtitle"><?=$brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)' ?></div>
         <div class="itemlistsearchinpt">
             <input class="search_input" type="text" data-brand="<?=$brand?>" placeholder="Enter keyword or item #"/>
-            <div class="searchlist-btn" data-brand="<?=$brand?>"><img src="/img/database/search_items_btn.png"></div>
-            <div class="clearsearchlist-btn" data-brand="<?=$brand?>"><img src="/img/database/clear_searchitems_btn.png"></div>
+            <div class="searchlist-btn" data-brand="<?=$brand?>"><img src="/img/dbitems/search_items_btn.png"></div>
+            <div class="clearsearchlist-btn" data-brand="<?=$brand?>"><img src="/img/dbitems/clear_searchitems_btn.png"></div>
         </div>
         <div class="itemlistfilterarea">
             <div class="content-row">
@@ -41,7 +41,7 @@
     </div>
     <div class="content-row">
         <div class="itemlist-tablehead" data-brand="<?=$brand?>">
-            <div class="listaction"><img src="/img/database/add_itemlist_btn.png"></div>
+            <div class="listaction"><img src="/img/dbitems/add_itemlist_btn.png"></div>
             <div class="listnumrow">&nbsp;</div>
             <div class="liststatus">Active</div>
             <div class="listitemnumber sortable active" data-sortcell="item_number">Item # <div class="ascsort">&nbsp;</div> </div>

@@ -207,6 +207,11 @@ class Databasecenter extends MY_Controller
         // Item details
         $head['styles'][] = array('style' => '/css/database_center/channel_page.css');
         $head['scripts'][] = array('src' => '/js/database_center/channel_page.js');
+        //  Utils
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,

@@ -587,5 +587,77 @@ Class Items_model extends My_Model
         return $res;
     }
 
+    public function get_itemlists($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+        $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
+        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
+        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            $this->db->where('i.brand', $options['brand']);
+        }
+        if (ifset($options, 'search', '')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options,'vendor', '')!=='') {
+            $this->db->where('v.vendor_id', $options['vendor']);
+        }
+        if (ifset($options, 'itemstatus', 0) > 0) {
+            if ($options['itemstatus']==1) {
+                $this->db->where('i.item_active', 1);
+            } else {
+                $this->db->where('i.item_active', 0);
+            }
+        }
+        $order_by = ifset($options, 'order_by','item_id');
+        $direc = ifset($options, 'direct','asc');
+        $this->db->order_by($order_by, $direc);
+        $limit = ifset($options, 'limit', 0);
+        $offset = ifset($options, 'offset', 0);
+        if ($limit > 0) {
+            if ($offset>0) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        log_message('ERROR','SQL '.$this->db->last_query());
+        $out=[];
+        $numpp = $offset + 1;
+        foreach ($res as $item) {
+            $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
+            $item['category1']=$item['category2']=$item['category3']='';
+            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid');
+            $this->db->from('sb_item_categories ic');
+            $this->db->where('ic.item_categories_itemid',$item['item_id']);
+            $categ=$this->db->get()->result_array();
+            $i=1;
+            foreach ($categ as $cat) {
+                $item['category'.$i]=$cat['item_categories_categoryid'];
+                $i++;
+                if ($i>3) {
+                    break;
+                }
+            }
+            $item['misinfo_class'] = ($item['missings']==0 ? '' : 'missing');
+            $item['misinfo_name'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
+            $item['misinfo_content'] = '';
+            if ($item['missings']>0) {
+                $this->db->select('*');
+                $this->db->from('v_item_missinginfo');
+                $this->db->where('item_id', $item['item_id']);
+                $misdata = $this->db->get()->row_array();
+                $item['misinfo_content'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
+            }
+            $item['numpp'] = $numpp;
+            $numpp++;
+            $out[] = $item;
+        }
+        return $out;
+    }
 
 }

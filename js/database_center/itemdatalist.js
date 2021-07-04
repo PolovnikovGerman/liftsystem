@@ -94,7 +94,7 @@ function pageItemsListCallback(page_index, brand) {
     params.push({name: 'itemstatus',  value: $('.itemlistatusfilter[data-brand="'+brand+'"]').val()});
     params.push({name: 'brand', value: brand});
     $("#loader").show();
-    $.post('/database/itemlistsdata', params, function(response){
+    $.post('/dbitems/itemlistsdata', params, function(response){
         if (response.errors=='') {
             $("#loader").hide();
             $('.itemlist-tablebody[data-brand="'+brand+'"]').empty().html(response.data.content);
@@ -142,7 +142,7 @@ function search_itemlists(brand) {
     params.push({name: 'itemstatus',  value: $('.itemlistatusfilter[data-brand="'+brand+'"]').val()});
     params.push({name: 'brand', value: brand});
     $("#loader").show();
-    $.post('/database/itemlistsearch', params, function(response){
+    $.post('/dbitems/itemlistsearch', params, function(response){
         if (response.errors=='') {
             $("#loader").hide();
             $('.itemstotals[data-brand="'+brand+'"]').val(response.data.totals);
