@@ -10,18 +10,27 @@ Class Items_model extends My_Model
         parent::__construct();
     }
 
-    public function count_searchres($search, $brand, $vendor_id='') {
+    public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
         $this->db->select('count(i.item_id) as cnt',FALSE);
         $this->db->from('sb_items i');
-        $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
         if ($vendor_id) {
-            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.item_id');
+            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
             $this->db->where('v.vendor_item_vendor',$vendor_id);
         }
         if ($brand!=='ALL') {
             $this->db->where('i.brand', $brand);
         }
-        $this->db->where($where);
+        if (!empty($search)) {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+            $this->db->where($where);
+        }
+        if ($itemstatus!=0) {
+            if ($itemstatus==1) {
+                $this->db->where('i.item_active',1);
+            } else {
+                $this->db->where('i.item_active',0);
+            }
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }

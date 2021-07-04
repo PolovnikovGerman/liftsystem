@@ -11,7 +11,8 @@ $(document).ready(function(){
 })
 
 function show_dbcenter_channelcontent(act) {
-    if (act=='mastercustomer') {
+    if (act=='sbitems') {
+        $("#sbitemsview").show();
     }
 }
 

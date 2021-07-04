@@ -190,6 +190,20 @@ class Databasecenter extends MY_Controller
         ];
         $content_options=[];
         $content_options['page_menu'] = $this->load->view('database_center/channel_head_menu', $menu_options, TRUE);
+        // Add
+        $itemslist = 0;
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#sbitems') {
+                if ($itemslist==0) {
+                    $itemslist = 1;
+                    $head['styles'][]=array('style'=>'/css/database/itemdatalist.css');
+                    $head['scripts'][]=array('src'=>'/js/database/itemdatalist.js');
+                }
+                $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
+            } elseif ($row['item_link']=='#sbpages') {
+            }
+        }
+
         // Item details
         $head['styles'][] = array('style' => '/css/database_center/channel_page.css');
         $head['scripts'][] = array('src' => '/js/database_center/channel_page.js');
@@ -202,7 +216,7 @@ class Databasecenter extends MY_Controller
             'gmaps' => ifset($head, 'gmaps', 0)
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $dat['content_view'] = $this->load->view('database_center/master_page_view', $content_options, TRUE);
+        $dat['content_view'] = $this->load->view('database_center/channel_page_view', $content_options, TRUE);
         $this->load->view('page/page_template_view', $dat);
     }
 
@@ -217,6 +231,22 @@ class Databasecenter extends MY_Controller
             'curpage'=>0,
         );
         $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_itemdata_view($brand) {
+        $this->load->model('items_model');
+        $totals = $this->items_model->count_searchres('', $brand);
+        $this->load->model('vendors_model');
+        $options = [
+            'perpage' => 250,
+            'order' => 'item_number',
+            'direct' => 'asc',
+            'totals' =>  $totals,
+            'brand' => $brand,
+            'vendors' => $this->vendors_model->get_vendors(),
+        ];
+        $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         return $content;
     }
 
