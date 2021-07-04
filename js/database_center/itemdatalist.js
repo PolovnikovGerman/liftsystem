@@ -259,7 +259,7 @@ function edit_itemlist(item, brand) {
     var params = new Array();
     params.push({name: 'item_id', value: item});
     params.push({name: 'brand', value: brand});
-    var url = '/database/itemlistdetails';
+    var url = '/dbitems/itemlistdetails';
     $.post(url, params, function (response) {
         if (response.errors == '') {
             $("#itemDetailsModalLabel").empty().html(response.data.header);

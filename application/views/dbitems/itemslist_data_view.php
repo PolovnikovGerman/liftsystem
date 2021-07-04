@@ -2,7 +2,7 @@
 <?php foreach ($datas as $data) { ?>
     <div class="itemlist-tablerow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
         <div class="listaction">
-            <div class="listitempreview" data-viewsrc="/database/itemmainimage/<?=$data['item_id']?>"><i class="fa fa-search" aria-hidden="true"></i></div>
+            <div class="listitempreview" data-viewsrc="/dbitems/itemmainimage/<?=$data['item_id']?>"><i class="fa fa-search" aria-hidden="true"></i></div>
             <div class="listitemedit" data-item="<?=$data['item_id']?>"><i class="fa fa-pencil" aria-hidden="true"></i></div>
         </div>
         <div class="listnumrow"><?=$data['numpp']?></div>

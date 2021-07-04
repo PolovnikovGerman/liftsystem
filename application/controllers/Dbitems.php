@@ -77,5 +77,17 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function itemmainimage($item_id) {
+        // $item_id=$this->input->get('id');
+        $this->load->model('leadorder_model');
+        $res = $this->leadorder_model->get_leadorder_itemimage($item_id);
+        $content = '';
+        if ($res['result']==$this->success_result) {
+            $viewopt=$res['viewoptions'];
+            $content=$this->load->view('redraw/viewsource_view',$viewopt, TRUE);
+        }
+        echo $content;
+    }
+
 
 }
