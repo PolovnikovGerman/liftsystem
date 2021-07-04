@@ -196,8 +196,8 @@ class Databasecenter extends MY_Controller
             if ($row['item_link']=='#sbitems') {
                 if ($itemslist==0) {
                     $itemslist = 1;
-                    $head['styles'][]=array('style'=>'/css/database/itemdatalist.css');
-                    $head['scripts'][]=array('src'=>'/js/database/itemdatalist.js');
+                    $head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
+                    $head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
                 }
                 $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
             } elseif ($row['item_link']=='#sbpages') {
