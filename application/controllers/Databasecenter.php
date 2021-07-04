@@ -218,6 +218,9 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
         $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
         $head['scripts'][] = array('src' => '/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,
