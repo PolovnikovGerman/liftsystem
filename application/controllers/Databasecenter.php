@@ -38,6 +38,7 @@ class Databasecenter extends MY_Controller
         $channelbt=[];
         $channellbt=[];
         $channelamz=[];
+        $channelcnt = 0;
         foreach ($menu as $mitems) {
             if ($mitems['item_link']=='#dbcentermaster') {
                 foreach ($mitems['submenu'] as $mitem) {
@@ -46,12 +47,51 @@ class Databasecenter extends MY_Controller
                     ];
                 }
             } elseif ($mitems['item_link']=='#dbcentersbchannel') {
-
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelsb[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenternsbchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelnsb[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenterbtchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelbt[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenterlbtchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channellbt[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
+            } elseif ($mitems['item_link']=='#dbcenteramazonchannel') {
+                $channelcnt = 1;
+                foreach ($mitems['submenu'] as $mitem) {
+                    $channelamz[] = [
+                        'item_link' => $mitem['item_link'],
+                    ];
+                }
             }
         }
 
         $content_options = [
             'master' => $master,
+            'channelcnt' => $channelcnt,
+            'channelsb' => $channelsb,
+            'channelnsb' => $channelnsb,
+            'channelbt' => $channelbt,
+            'channellbt' => $channellbt,
+            'channelamz' => $channelamz,
         ];
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
@@ -69,7 +109,7 @@ class Databasecenter extends MY_Controller
     public function masteritems() {
         $head = [];
         $start = $this->input->get('start');
-        $head['title'] = 'Database Center';
+        $head['title'] = 'Database Center Master';
         $pagelnk = '#dbcentermaster';
         $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
         $menu_options = [
@@ -113,6 +153,56 @@ class Databasecenter extends MY_Controller
         $dat = $this->template->prepare_pagecontent($options);
         $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
+    }
+
+    public function channelitems() {
+        $head = [];
+        $start = $this->input->get('start');
+        $brand = $this->input->get('brand');
+        if (empty($brand)) {
+            redirect('/');
+        }
+        if ($brand=='stressballs') {
+            $head['title'] = 'Database Center Stressalls';
+            $pagelnk = '#dbcentersbchannel';
+        } elseif ($brand=='nationalsb') {
+            $head['title'] = 'Database Center National Stressalls';
+            $pagelnk = '#dbcenternsbchannel';
+        } elseif ($brand=='bluetrack') {
+            $head['title'] = 'Database Center Bluetrack';
+            $pagelnk = '#dbcenterbtchannel';
+        } elseif ($brand=='btlegacy') {
+            $head['title'] = 'Database Center Bluetrack Legacy Site';
+            $pagelnk = '#dbcenterlbtchannel';
+        } elseif ($brand=='amazon') {
+            $head['title'] = 'Database Center Amazon';
+            $pagelnk = '#dbcenteramazonchannel';
+        }
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        if (empty($menu))  {
+            redirect('/');
+        }
+        $menu_options = [
+            'menu' => $menu,
+            'start' => $start,
+            'brand' => $brand,
+        ];
+        $content_options=[];
+        $content_options['page_menu'] = $this->load->view('database_center/channel_head_menu', $menu_options, TRUE);
+        // Item details
+        $head['styles'][] = array('style' => '/css/database_center/channel_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/channel_page.js');
+        $options = ['title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0)
+        ];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $this->load->view('database_center/master_page_view', $content_options, TRUE);
         $this->load->view('page/page_template_view', $dat);
     }
 

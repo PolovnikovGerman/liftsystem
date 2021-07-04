@@ -79,6 +79,18 @@
     height: 114px;
     text-align: center;
 }
+.channel_logo.sblogo {
+    padding-top: 39px;
+}
+.channel_logo.btlogo {
+    padding-top: 26px;
+}
+.channel_logo.btleglogo {
+    padding-top: 11px;
+}
+.channel_logo.amazlogo {
+    padding-top: 37px;
+}
 .dbcenter_channel_item {
     background: url('/img/database_center/channel_item_btn.png');
     width: 229px;
