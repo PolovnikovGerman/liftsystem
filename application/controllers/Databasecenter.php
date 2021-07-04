@@ -198,6 +198,9 @@ class Databasecenter extends MY_Controller
                     $itemslist = 1;
                     $head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
                     $head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
+                    $head['styles'][] = array('style' => '/css/page_view/popover.css');
+                    $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
+                    $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 }
                 $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
             } elseif ($row['item_link']=='#sbpages') {
