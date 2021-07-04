@@ -198,6 +198,8 @@ class Databasecenter extends MY_Controller
                     $itemslist = 1;
                     $head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
                     $head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
+                    $head['styles'][] = array('style' => '/css/database_center/itemlistdetails.css');
+                    $head['scripts'][]=array('src' => '/js/database_center/itemlistdetails.js');
                     $head['styles'][] = array('style' => '/css/page_view/popover.css');
                     $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
                     $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
@@ -215,6 +217,7 @@ class Databasecenter extends MY_Controller
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
         $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
         $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/easySlider1.5.js');
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,

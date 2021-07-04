@@ -8,7 +8,7 @@ function init_itemlist_details_view() {
     $(".itemlistactivatetbtn").unbind('click').click(function(){
         var params = prepare_edit();
         params.push({name: 'editmode', value: 1});
-        var url="/database/itemlistdetails";
+        var url="/dbitems/itemlistdetails";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#itemDetailsModalLabel").empty().html(response.data.header);

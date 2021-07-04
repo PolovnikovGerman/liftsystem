@@ -217,5 +217,37 @@ Class Itemcategory_model extends My_Model
         return $out;
     }
 
+    public function update_itemlistcategory($options) {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Item'];
+        $item = ifset($options,'item_id', '0');
+        if ($item!=0) {
+            $this->db->where('item_categories_itemid', $item);
+            $this->db->delete('sb_item_categories');
+            $numpp=1;
+            if (ifset($options,'category1',0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category1']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            if (ifset($options, 'category2', 0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category2']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            if (ifset($options, 'category3', 0)!=0) {
+                $this->db->set('item_categories_itemid', $item);
+                $this->db->set('item_categories_categoryid', $options['category3']);
+                $this->db->set('item_categories_order', $numpp);
+                $this->db->insert('sb_item_categories');
+                $numpp++;
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
 
 }

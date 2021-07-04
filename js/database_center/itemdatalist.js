@@ -240,18 +240,18 @@ function init_item_categorychange(brand) {
         params.push({name: 'category1', value: categ1});
         params.push({name: 'category2', value: categ2});
         params.push({name: 'category3', value: categ3});
-        var url = '/database/itemlistcategory';
-        $.post(url, params, function (response) {
-            if (response.errors == '') {
-            } else {
-                show_error(response);
-            }
-        }, 'json');
-    });
-    $(".categorymanagebtn.unlocked[data-brand='" + brand + "']").unbind('click').click(function () {
-        $(this).removeClass('unlocked').addClass('locked');
-        $("select.itemlist_category[data-brand='" + brand + "']").prop('disabled', true);
-        init_itemlist_manage(brand);
+            var url = '/dbitems/itemlistcategory';
+            $.post(url, params, function (response) {
+                if (response.errors == '') {
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        });
+        $(".categorymanagebtn.unlocked[data-brand='" + brand + "']").unbind('click').click(function () {
+            $(this).removeClass('unlocked').addClass('locked');
+            $("select.itemlist_category[data-brand='" + brand + "']").prop('disabled', true);
+            init_itemlist_manage(brand);
     });
 }
 
