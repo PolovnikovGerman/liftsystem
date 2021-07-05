@@ -1,4 +1,4 @@
-function init_contactus_view() {
+function init_contactus_view(brand) {
     // window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
@@ -7,8 +7,8 @@ function init_contactus_view() {
     $(".displaycontent").unbind('click').click(function () {
         display_content()
     });
-    $(".edit_button[data-page='contactus']").unbind('click').click(function () {
-        init_contactus_edit();
+    $(".edit_button[data-link='contactusview']").unbind('click').click(function () {
+        init_contactus_edit(brand);
     });
 }
 
@@ -22,13 +22,21 @@ function display_content() {
     }
 }
 
-function init_contactus_edit() {
+function init_contactus_edit(brand) {
     var params = new Array();
-    params.push({name:'brand', value: $("#contentbrand").val()});
+    params.push({name:'brand', value: brand});
     var url = "/content/edit_contactus";
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#contactusview").empty().html(response.data.content);
+            if (brand=='BT') {
+                $("#btcontactusview").show().empty().html(response.data.content);
+                $(".submenu_manage[data-link='btcontactusview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='btcontactusview']").find('div.buttons').empty().html(response.data.buttons);
+            } else if (brand=='SB') {
+                $("#sbcontactusview").show().empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbcontactusview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbcontactusview']").find('div.buttons').empty().html(response.data.buttons);
+            }
             $(".content_preview").on('click',function () {
                 var url=$("#contactus_previewurl").val();
                 $.fancybox.open({
@@ -41,14 +49,14 @@ function init_contactus_edit() {
                     }
                 });
             });
-            init_contactus_editcontent();
+            init_contactus_editcontent(brand);
         } else {
             show_error(response);
         }
     },'json');
 }
 
-function init_contactus_editcontent() {
+function init_contactus_editcontent(brand) {
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -58,17 +66,17 @@ function init_contactus_editcontent() {
     });
     // Cancel Edit
     $(".cancel_button[data-page='contactus']").unbind('click').click(function () {
-        init_contentpage('contactus');
+        init_contentpage('contactus', brand);
     });
     // Save
     $(".save_button[data-page='contactus']").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'session', value: $("#contact_session").val()});
-        params.push({name:'brand', value: $("#contentbrand").val()});
+        params.push({name:'brand', value: brand});
         var url="/content/save_contactcontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('contactus');
+                init_contentpage('contactus', brand);
             } else {
                 show_error(response);
             }
