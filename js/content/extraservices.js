@@ -1,5 +1,5 @@
 function init_service_page(brand) {
-    window_alignment();
+    // window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();

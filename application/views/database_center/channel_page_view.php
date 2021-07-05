@@ -7,6 +7,9 @@
             <?php if (isset($sbitemsview)) { ?>
                 <div class="dbcontentarea" id="sbitemsview" style="display: none;"><?=$sbitemsview?></div>
             <?php } ?>
+            <?php if (isset($sbpagesview)) { ?>
+                <div class="dbcontentarea" id="sbpagesview" style="display: none;"><?=$sbpagesview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

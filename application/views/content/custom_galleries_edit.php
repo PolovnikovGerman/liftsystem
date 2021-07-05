@@ -19,7 +19,7 @@
                 <div class="custom_exampleimagetitle">Type Image <?=$gallery['numpp']?>:</div>
                 <div class="customimage_enlarge"> click to enlarge </div>
             </div>
-            <div class="gallery_collageimage">
+            <div class="gallery_collageimage" <?=empty($gallery['gallery_image']) ? '' : 'data-fancybox="gallery_example" data-src="'.$gallery['gallery_image'].'"'?>>
                 <?php if (!empty($gallery['gallery_image'])) { ?>
                 <img src="<?=$gallery['gallery_image']?>" alt="Gallery Image"/>
                 </div>

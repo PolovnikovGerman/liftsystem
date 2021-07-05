@@ -1,5 +1,5 @@
 function init_aboutpage_view(brand) {
-    window_alignment();
+    // window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -23,7 +23,7 @@ function init_aboutpage_view(brand) {
             autoSize : false
         });
     })
-    $(".edit_button[data-page='about']").unbind('click').click(function () {
+    $(".edit_button[data-link='aboutusview']").unbind('click').click(function () {
         init_aboutpage_edit(brand);
     });
 }
@@ -46,10 +46,14 @@ function init_aboutpage_edit(brand) {
         if (response.errors=='') {
             if (brand=='BT') {
                 $("#btaboutusview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='btaboutusview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='btaboutusview']").find('div.buttons').empty().html(response.data.buttons);
             } else {
                 $("#sbaboutusview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbaboutusview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbaboutusview']").find('div.buttons').empty().html(response.data.buttons);
             }
-            $(".content_preview").on('click',function () {
+            /*$(".content_preview").on('click',function () {
                 var url=$("#previewurl").val();
                 $.fancybox.open({
                     src  : url,
@@ -60,7 +64,7 @@ function init_aboutpage_edit(brand) {
                         }
                     }
                 });
-            });
+            }); */
             init_aboutpage_editcontent(brand);
         } else {
             show_error(response);
