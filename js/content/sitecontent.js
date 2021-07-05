@@ -7,10 +7,10 @@ function init_sitecontent(brand) {
             start = $("#btcontentview").find(".submenu_item:first").data('link');
         }
     } else {
-        if ($("#sbcontentview").find(".submenu_item.active").length > 0 ) {
-            start = $("#sbcontentview").find(".submenu_item.active").data('link');
+        if ($("#sbpagesview").find(".submenu_item.active").length > 0 ) {
+            start = $("#sbpagesview").find(".submenu_item.active").data('link');
         } else {
-            start = $("#sbcontentview").find(".submenu_item:first").data('link');
+            start = $("#sbpagesview").find(".submenu_item:first").data('link');
         }
     }
     init_sitecontent_page(start, brand);

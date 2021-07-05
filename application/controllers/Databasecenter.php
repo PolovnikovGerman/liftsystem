@@ -206,6 +206,46 @@ class Databasecenter extends MY_Controller
                 }
                 $content_options['sbitemsview'] = $this->_prepare_itemdata_view('SB');
             } elseif ($row['item_link']=='#sbpages') {
+                $bt_options = [];
+                $bt_options['sbhomeview'] = $this->load->view('content/template_view',['link'=>'sbhomeview'], TRUE);
+                $bt_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
+                $bt_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
+                $bt_options['sbaboutusview'] = $this->load->view('content/template_view',['link'=>'sbaboutusview'], TRUE);
+                $bt_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
+                $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
+                $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
+                $submenu = [];
+                $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
+                $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped'];
+                $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
+                $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us'];
+                $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ'];
+                $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us'];
+                $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms'];
+                $submenu_options = [
+                    'menus' => $submenu,
+                    'brand' => 'SB',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['sbpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
+                $head['styles'][] = array('style' => '/css/content/contentpage.css');
+                $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
+                // Content
+                $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
+                $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
+                $head['styles'][]=array('style'=>'/css/content/extraservices.css');
+                $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
+                $head['styles'][]=array('style'=>'/css/content/aboutus.css');
+                $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
+                $head['styles'][]=array('style'=>'/css/content/faqpage.css');
+                $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
+                $head['styles'][]=array('style'=>'/css/content/contactus.css');
+                $head['scripts'][]=array('src'=>'/js/content/contactus.js');
+                $head['styles'][]=array('style'=>'/css/content/terms.css');
+                $head['scripts'][]=array('src'=>'/js/content/terms.js');
+                $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+
             }
         }
 

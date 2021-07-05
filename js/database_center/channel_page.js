@@ -14,6 +14,9 @@ function show_dbcenter_channelcontent(act) {
     if (act=='sbitems') {
         $("#sbitemsview").show();
         init_itemslist_view('SB');
+    } else if (act=='sbpages') {
+        $("#sbpagesview").show();
+        init_sitecontent('SB');
     }
 }
 
