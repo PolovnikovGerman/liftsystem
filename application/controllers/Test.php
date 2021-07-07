@@ -308,7 +308,7 @@ class Test extends CI_Controller
         $this->email->message($email_body);
         $this->email->send();
         $this->email->clear(TRUE);
-        echo 'Email Send';
+        echo 'Email Send'.PHP_EOL;
     }
 
 }
