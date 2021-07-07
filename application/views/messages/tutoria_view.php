@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <td style="width: 2%">&nbsp;</td>
-                    <td style="width: 94%; background: #f6f6f6;">
+                    <td style="width: 94%; background: #f6f6f6; padding: 0.9rem;">
                         <!-- Body table -->
                         <table width="100%" cellpadding="0" cellspacing="0"
                                style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
