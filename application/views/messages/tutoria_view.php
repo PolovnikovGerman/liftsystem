@@ -1,28 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Welcome</title>
+    <title>New Template</title>
     <style type="text/css">
-        body {
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            box-sizing: border-box; font-size: 14px;
-            -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: none;
-            width: 100% !important;
-            height: 100%;
-            line-height: 1.6;
-            background: #f6f6f6;
-            margin: 0;
-            padding: 0;
-        }
-        table.main {
-            background: #f6f6f6;
-            font-size: 14px;
-        }
         img {
             max-width: 100%;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: none;
+            /* width: 100% !important; */
+            height: 100%;
+            line-height: 1.6;
+        }
+
+        body {
+            background-color: #f6f6f6;
         }
 
         .mobile_contacts {
@@ -52,46 +47,46 @@
 
     </style>
 </head>
-<body>
+<body style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6; background: #f6f6f6; margin: 0; padding: 0;">
 <!-- header -->
-<table class="main">
+<table style="background: #f6f6f6; font-size: 14px;">
     <tr>
         <td width="10px">&nbsp;</td>
         <td width="700" style="padding-top: 15px">
             <table style="background: #757575; width: 100%;">
                 <tr>
-                    <td style="width: 5%;" >&nbsp;</td>
-                    <td style="width: 90%; background: #757575; text-align: center;">
-                        <table style="background: #757575; width: 40%;">
-                            <tr>
-                                <td style="width: 100%; text-align: center; vertical-align: baseline; padding: 1.1rem 0;">
-<!--                                    <div style="width: 40%;margin: 17px auto;">-->
-                                        <img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo"/>
-<!--                                    </div>-->
+                    <td style="width: 15px">&nbsp;</td>
+                    <td style="width: 670px; background: #757575; text-align: center;">
+                        <table style="background: #757575; width: 100%;">
+                            <tr style="height: 2.5rem;">
+                                <td style="width: 100%; text-align: center; vertical-align: baseline">
+                                    <div style="width: 60%;margin: 0 auto;">
+                                        <div style="width: 30%;float: left;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
                     </td>
-                    <td style="width: 5%;" >&nbsp;</td>
+                    <td style="width: 15px">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td style="width: 5%;" >&nbsp;</td>
-                    <td style="width: 90%; background: #f6f6f6; padding: 0.9rem; height: 4rem;">
-                        <!-- Text -->
-                        <!-- End Text -->
+                    <td style="width: 15px">&nbsp;</td>
+                    <td style="width: 670px; background: #f6f6f6;">
+                        <!-- Body table -->
+                        &nbsp;
                     </td>
-                    <td style="width: 5%;">&nbsp;</td>
+                    <td style="width: 15px">&nbsp;</td>
                 </tr>
             </table>
             <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
-                    <td style="padding-left:2%; text-align: center; width: 100%;">Hast du Fragen?</td>
+                    <td style="padding-left:2%; text-align: center;">Hast du Fragen?</td>
                 </tr>
                 <tr class="mobile_contacts">
-                    <td style="padding-left: 2%; width: 100%;">
+                    <td style="padding-left: 2%">
                         <div style="width: 60%;margin: 0 auto;">
                             <!-- width: 14%; -->
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-red.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
+                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-blue.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
                             <span style="margin-left: 2%;font-size: 110%; float: left;">0800 111 12 36</span>
                         </div>
                     </td>
@@ -99,8 +94,8 @@
                 <tr class="mobile_contacts">
                     <td style="padding-left: 2%;border-bottom: 1px solid #bdbdbd;">
                         <div style="width: 60%;margin: 0 auto;">
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-red.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
-                            <span style="margin-left: 2%;font-size: 110%; float: left;">info@jetztnachhilfe.de</span>
+                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-blue.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
+                            <span style="margin-left: 2%;font-size: 110%; float: left;">info@tutoria.de</span>
                         </div>
                     </td>
                 </tr>
@@ -117,7 +112,7 @@
                 </tr>
                 <tr>
                     <td style="padding-left: 2%">
-                        jetztnachhilfe Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
+                        tutoria Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
                     </td>
                 </tr>
                 <tr>
@@ -138,4 +133,3 @@
 
 </body>
 </html>
-
