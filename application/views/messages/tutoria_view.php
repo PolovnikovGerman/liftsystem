@@ -145,7 +145,7 @@
                 </tr>
                 <tr class="mobile_contacts">
                     <td style="border-bottom: 1px solid #bdbdbd;">
-                        <div style="width: 70%;margin: 0 auto;">
+                        <div style="width: 80%;margin: 0 auto;">
                             <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-red.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
                             <span style="margin-left: 2%;font-size: 110%; float: left;">info@jetztnachhilfe.de</span>
                         </div>
