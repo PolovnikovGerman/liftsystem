@@ -54,20 +54,20 @@
 </head>
 <body>
 <!-- header -->
-<!--<table class="main">-->
-<!--    <tr>-->
-<!--        <td width="10px">&nbsp;</td>-->
-<!--        <td width="700" style="padding-top: 15px">-->
+<table class="main">
+    <tr>
+        <td width="10px">&nbsp;</td>
+        <td width="700" style="padding-top: 15px">
             <table style="background: #757575; width: 100%;">
                 <tr>
                     <td style="width: 5%;" >&nbsp;</td>
                     <td style="width: 90%; background: #757575; text-align: center;">
-                        <table style="background: #757575; width: 100%;">
-                            <tr style="height: 2.5rem;">
-                                <td style="width: 100%; text-align: center; vertical-align: baseline">
-                                    <div style="width: 40%;margin: 17px auto;">
+                        <table style="background: #757575; width: 40%;">
+                            <tr>
+                                <td style="width: 100%; text-align: center; vertical-align: baseline; padding: 1.1rem 0;">
+<!--                                    <div style="width: 40%;margin: 17px auto;">-->
                                         <img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo"/>
-                                    </div>
+<!--                                    </div>-->
                                 </td>
                             </tr>
                         </table>
@@ -85,10 +85,10 @@
             </table>
             <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
-                    <td style="padding-left:2%; text-align: center;">Hast du Fragen?</td>
+                    <td style="padding-left:2%; text-align: center; width: 100%;">Hast du Fragen?</td>
                 </tr>
                 <tr class="mobile_contacts">
-                    <td style="padding-left: 2%">
+                    <td style="padding-left: 2%; width: 100%;">
                         <div style="width: 60%;margin: 0 auto;">
                             <!-- width: 14%; -->
                             <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-red.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
@@ -131,10 +131,10 @@
                     </td>
                 </tr>
             </table>
-<!--        </td>-->
-<!--        <td width="10px">&nbsp;</td>-->
-<!--    </tr>-->
-<!--</table>-->
+        </td>
+        <td width="10px">&nbsp;</td>
+    </tr>
+</table>
 
 </body>
 </html>
