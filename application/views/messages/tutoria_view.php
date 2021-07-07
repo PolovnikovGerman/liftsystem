@@ -61,7 +61,7 @@
                             <tr style="height: 2.5rem;">
                                 <td style="width: 100%; text-align: center; vertical-align: baseline">
                                     <div style="width: 60%;margin: 0 auto;">
-                                        <div style="width: 30%;float: left;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
+                                        <div style="width: 100%;float: left;border: 1px dotted #ffffff;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
                                     </div>
                                 </td>
                             </tr>
@@ -80,48 +80,48 @@
             </table>
             <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
-                    <td style="padding-left:2%; text-align: center;">Hast du Fragen?</td>
+                    <td style="text-align: center;">Hast du Fragen?</td>
                 </tr>
                 <tr class="mobile_contacts">
-                    <td style="padding-left: 2%">
+                    <td style="">
                         <div style="width: 60%;margin: 0 auto;">
                             <!-- width: 14%; -->
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-blue.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
+                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-red.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
                             <span style="margin-left: 2%;font-size: 110%; float: left;">0800 111 12 36</span>
                         </div>
                     </td>
                 </tr>
                 <tr class="mobile_contacts">
-                    <td style="padding-left: 2%;border-bottom: 1px solid #bdbdbd;">
+                    <td style="border-bottom: 1px solid #bdbdbd;">
                         <div style="width: 60%;margin: 0 auto;">
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-blue.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
-                            <span style="margin-left: 2%;font-size: 110%; float: left;">info@tutoria.de</span>
+                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-red.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
+                            <span style="margin-left: 2%;font-size: 110%; float: left;">info@jetztnachhilfe.de</span>
                         </div>
                     </td>
                 </tr>
                 <!-- Desktop Contacts -->
                 <tr>
-                    <td style="padding-left: 2%">&copy; 2021 Studienkreis GmbH. Alle Rechte vorbehalten.</td>
+                    <td style="">&copy; 2021 Studienkreis GmbH. Alle Rechte vorbehalten.</td>
                 </tr>
                 <tr style="height: 28px;line-height: 28px;">
-                    <td style="padding-left: 2%">
+                    <td style="">
                         <a style="color: #ffffff; text-decoration: none; font-weight: 600;" href="https://www.tutoria.de/allgemeine-gesch%C3%A4ftsbedingungen">AGB</a> |
                         <a style="color: #ffffff; text-decoration: none; font-weight: 600;" href="https://www.tutoria.de/datenschutz">Datenschutz</a>  |
                         <a style="color: #ffffff; text-decoration: none; font-weight: 600;" href="https://www.tutoria.de/impressum">Impressum</a>
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-left: 2%">
+                    <td style="">
                         tutoria Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-left: 2%">
+                    <td style="">
                         Geschäftsführer: Lorenz Haase
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-left: 2%">
+                    <td style="">
                         Registergericht: HRB 4581 | USt-IdNr.: DE124086608
                     </td>
                 </tr>
