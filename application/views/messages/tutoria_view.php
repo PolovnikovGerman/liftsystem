@@ -133,7 +133,7 @@
                                     style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                     valign="top">
                                     Wenn du Fragen oder Anmerkungen hast, kannst du uns jederzeit unter
-                                    info@tutoria.de oder unter 0800 111 12 36 kontaktieren.<br>
+                                    info@jetztnachhilfe.de oder unter 0800 111 12 36 kontaktieren.<br>
                                     <br>
                                     Wir wünschen dir viel Erfolg auf tutoria!<br>
                                     Mit freundlichen Grüßen,<br>
