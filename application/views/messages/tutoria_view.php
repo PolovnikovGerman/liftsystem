@@ -1,9 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>New Template</title>
+    <title>Welcome</title>
     <style type="text/css">
         body {
             font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
@@ -24,19 +24,7 @@
         img {
             max-width: 100%;
         }
-
-        body {
-            -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: none;
-            /* width: 100% !important; */
-            height: 100%;
-            line-height: 1.6;
-        }
-
-        body {
-            background-color: #f6f6f6;
-        }
-
+        
         .mobile_contacts {
             /* display: none; */
         }
