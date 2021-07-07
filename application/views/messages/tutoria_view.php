@@ -55,8 +55,8 @@
         <td width="700" style="padding-top: 15px">
             <table style="background: #757575; width: 100%;">
                 <tr>
-                    <td style="width: 15px">&nbsp;</td>
-                    <td style="width: 670px; background: #757575; text-align: center;">
+                    <td style="width: 2%px">&nbsp;</td>
+                    <td style="width: 96%; background: #757575; text-align: center;">
                         <table style="background: #757575; width: 100%;">
 <!--                            <tr style="height: 2.5rem;">-->
                             <tr>
@@ -68,24 +68,24 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="width: 15px">&nbsp;</td>
+                    <td style="width: 2%">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td style="width: 15px">&nbsp;</td>
-                    <td style="width: 670px; background: #f6f6f6;">
+                    <td style="width: 2%">&nbsp;</td>
+                    <td style="width: 96%; background: #f6f6f6;">
                         <!-- Body table -->
                         &nbsp;
                     </td>
-                    <td style="width: 15px">&nbsp;</td>
+                    <td style="width: 2%;">&nbsp;</td>
                 </tr>
             </table>
-            <table style="background: #757575; width: 102%; color: #ffffff">
+            <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
                     <td style="text-align: center;padding-left: 2%;">Hast du Fragen?</td>
                 </tr>
                 <tr class="mobile_contacts">
                     <td style="padding-left: 2%;">
-                        <div style="width: 70%;margin: 0 auto;">
+                        <div style="width: 80%;margin: 0 auto;">
                             <!-- width: 14%; -->
                             <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-red.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
                             <span style="margin-left: 2%;font-size: 110%; float: left;">0800 111 12 36</span>
