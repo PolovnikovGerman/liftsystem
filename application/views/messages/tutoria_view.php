@@ -60,8 +60,8 @@
         <td width="700" style="padding-top: 15px">
             <table style="background: #757575; width: 100%;">
                 <tr>
-                    <td style="width: 15px" >&nbsp;</td>
-                    <td style="width: 670px; background: #757575; text-align: center;">
+                    <td style="width: 5%;" >&nbsp;</td>
+                    <td style="width: 90%; background: #757575; text-align: center;">
                         <table style="background: #757575; width: 100%;">
                             <tr style="height: 2.5rem;">
                                 <td style="width: 100%; text-align: center; vertical-align: baseline">
@@ -72,15 +72,15 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="width: 15px" >&nbsp;</td>
+                    <td style="width: 5%;" >&nbsp;</td>
                 </tr>
                 <tr>
-                    <td style="width: 15px" >&nbsp;</td>
-                    <td style="width: 670px; background: #f6f6f6; padding: 0.9rem; height: 4rem;">
+                    <td style="width: 5%;" >&nbsp;</td>
+                    <td style="width: 90%; background: #f6f6f6; padding: 0.9rem; height: 4rem;">
                         <!-- Text -->
                         <!-- End Text -->
                     </td>
-                    <td style="width: 15px">&nbsp;</td>
+                    <td style="width: 5%;">&nbsp;</td>
                 </tr>
             </table>
             <table style="background: #757575; width: 100%; color: #ffffff">
