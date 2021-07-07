@@ -294,9 +294,13 @@ class Test extends CI_Controller
     public function testmessage() {
         $email_body = $this->load->view('messages/tutoria_view',[], TRUE);
         $this->load->library('email');
-        $config = $this->config->item('email_setup');
-        $this->email->initialize($config);
-        $this->email->set_newline("\r\n");
+        $email_conf = array(
+            'protocol' => 'sendmail',
+            'charset' => 'utf-8',
+            'wordwrap' => TRUE,
+            'mailtype' => 'html',
+        );
+        $this->email->initialize($email_conf);
         $this->email->to('polovnikov.german@gmail.com');
         $from = $this->config->item('email_notification_sender');
         $this->email->from($from);
