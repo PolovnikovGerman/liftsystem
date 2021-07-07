@@ -291,4 +291,20 @@ class Test extends CI_Controller
         echo 'File '.$file.' ready '.PHP_EOL;
     }
 
+    public function testmessage() {
+        $email_body = $this->load->view('messages/tutoria_view',[], TRUE);
+        $this->load->library('email');
+        $config = $this->config->item('email_setup');
+        $this->email->initialize($config);
+        $this->email->set_newline("\r\n");
+        $this->email->to('polovnikov.german@gmail.com');
+        $from = $this->config->item('email_notification_sender');
+        $this->email->from($from);
+        $this->email->subject('Vielen Dank für deine Registrierung bei tutoria!');
+        $this->email->message($email_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+        echo 'Email Send';
+    }
+
 }
