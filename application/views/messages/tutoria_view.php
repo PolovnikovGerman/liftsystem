@@ -55,12 +55,12 @@
         <td width="700" style="padding-top: 15px">
             <table style="background: #757575; width: 100%;">
                 <tr>
-                    <td style="width: 2%px">&nbsp;</td>
-                    <td style="width: 96%; background: #757575; text-align: center;">
+                    <td style="width: 2%;">&nbsp;</td>
+                    <td style="width: 94%; background: #757575; text-align: center;">
                         <table style="background: #757575; width: 100%;">
 <!--                            <tr style="height: 2.5rem;">-->
                             <tr>
-                                <td style="width: 100%; text-align: center; vertical-align: middle">
+                                <td style="width: 100%; text-align: center; vertical-align: middle; padding: 1.2rem 0;">
                                     <div style="width: 60%;margin: 0 auto;">
                                         <div style="width: 100%;float: left;border: 1px dotted #ffffff;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
                                     </div>
@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <td style="width: 2%">&nbsp;</td>
-                    <td style="width: 96%; background: #f6f6f6;">
+                    <td style="width: 94%; background: #f6f6f6;">
                         <!-- Body table -->
                         &nbsp;
                     </td>
