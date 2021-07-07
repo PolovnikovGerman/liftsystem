@@ -62,7 +62,7 @@
                             <tr>
                                 <td style="width: 100%; text-align: center; vertical-align: middle; padding: 1.2rem 0;">
                                     <div style="width: 60%;margin: 0 auto;">
-                                        <div style="width: 100%;float: left;border: 1px dotted #ffffff;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
+                                        <div style="width: 100%;float: left;"><img src="https://www.tutoria.de/img/logo_jetztnachhilfe.png" alt="Logo" style="max-width: 100%"></div>
                                     </div>
                                 </td>
                             </tr>
