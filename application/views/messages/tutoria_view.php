@@ -54,10 +54,10 @@
 </head>
 <body>
 <!-- header -->
-<table class="main">
-    <tr>
-        <td width="10px">&nbsp;</td>
-        <td width="700" style="padding-top: 15px">
+<!--<table class="main">-->
+<!--    <tr>-->
+<!--        <td width="10px">&nbsp;</td>-->
+<!--        <td width="700" style="padding-top: 15px">-->
             <table style="background: #757575; width: 100%;">
                 <tr>
                     <td style="width: 5%;" >&nbsp;</td>
@@ -131,10 +131,10 @@
                     </td>
                 </tr>
             </table>
-        </td>
-        <td width="10px">&nbsp;</td>
-    </tr>
-</table>
+<!--        </td>-->
+<!--        <td width="10px">&nbsp;</td>-->
+<!--    </tr>-->
+<!--</table>-->
 
 </body>
 </html>
