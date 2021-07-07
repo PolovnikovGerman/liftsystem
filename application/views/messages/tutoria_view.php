@@ -74,7 +74,58 @@
                     <td style="width: 2%">&nbsp;</td>
                     <td style="width: 94%; background: #f6f6f6;">
                         <!-- Body table -->
-                        &nbsp;
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                               style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+                            <tr style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+                                <td class="content-block"
+                                    style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 20px; font-weight:bold; vertical-align: top; margin: 0; padding: 0 0 20px;"
+                                    valign="top">
+                                    Hallo {{name}}!
+                                </td>
+                            </tr>
+                            <tr style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+                                <td class="content-block"
+                                    style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
+                                    valign="top">
+                                    Wir freuen uns, dich bei tutoria begrüßen zu dürfen. Bei tutoria verbinden wir
+                                    dich mit Nachhilfelehrern ganz bei dir in der Nähe. Es liegt uns am Herzen den
+                                    richtigen Nachhilfelehrer für dich zu finden. <br>
+                                    <br>
+                                    Wie kannst du den perfekten Nachhilfelehrer für dich finden? Ganz einfach! Gib
+                                    einfach über das Feld „Nachhilfelehrer finden“ ein, in welcher Region du einen
+                                    Nachhilfelehrer suchst und in welchem Fach. <br><br>
+                                    Dann werden dir alle Nachhilfelehrer bei dir in der Nähe angezeigt und du kannst
+                                    den passenden Nachhilfelehrer für dich auswählen. Wenn du auf den Button
+                                    klickst, kannst du direkt mit der Suche starten!
+                                </td>
+                            </tr>
+                            <tr style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+                                <td class="content-block"
+                                    style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
+                                    valign="top">
+                                    <a href="{{ link }}" class="btn-primary"
+                                       style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px;  background: #348eda; margin: 0; padding: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">Nachhilfelehrer
+                                        finden</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ link }}
+                                <td>
+                            </tr>
+                            <tr style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+                                <td class="content-block"
+                                    style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
+                                    valign="top">
+                                    Wenn du Fragen oder Anmerkungen hast, kannst du uns jederzeit unter
+                                    info@jetztnachhilfe.de oder unter 0800 111 12 36 kontaktieren.<br>
+                                    <br>
+                                    Wir wünschen dir viel Erfolg auf tutoria!<br>
+                                    Mit freundlichen Grüßen,<br>
+                                    dein jetztnachhilfe Team
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- End Body Table -->
                     </td>
                     <td style="width: 2%;">&nbsp;</td>
                 </tr>
