@@ -8,6 +8,8 @@ class Databasecenter extends MY_Controller
     private $STRESSBALL_TEMPLATE='Stressball';
     private $OTHER_TEMPLATE='Other Item';
     private $MAX_PROMOPRICES = 10;
+    protected $PERPAGE=1000;
+    private $session_error = 'Edit session lost. Please, reload page';
 
     public function __construct()
     {
@@ -131,6 +133,18 @@ class Databasecenter extends MY_Controller
                 $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
                 $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
+            } elseif ($row['item_link']=='#masterinventory') {
+
+            } elseif ($row['item_link']=='#mastersettings') {
+                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
+                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
+                $head['styles'][] = array('style' => '/css/settings/calendars.css');
+                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
+                $head['styles'][] = array('style' => '/css/database_center/master_settings.css');
+                // Datepicker
+                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+                $content_options['settingsview'] = $this->_prepare_mastersettings_view();
             }
 
         }
@@ -285,6 +299,33 @@ class Databasecenter extends MY_Controller
             'curpage'=>0,
         );
         $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_mastersettings_view() {
+        $this->load->model('calendars_model');
+        $totals = $this->calendars_model->count_calendars('ALL');
+        $orderby='calendar_id';
+        $direc='asc';
+
+        $options=array(
+            'total'=>$totals,
+            'perpage'=>$this->PERPAGE,
+            'orderby'=>$orderby,
+            'direct'=>$direc,
+        );
+        $calendar_view=$this->load->view('settings/calendars_view',$options,TRUE);
+        $this->load->model('shipping_model');
+        $search_templates=$this->shipping_model->get_country_search_templates();
+        $options = [
+            'search_templ' => $search_templates,
+        ];
+        $countries_view=$this->load->view('settings/countries_view', $options,TRUE);
+        $setting_options = [
+            'calendar_view' => $calendar_view,
+            'countries_view' => $countries_view,
+        ];
+        $content = $this->load->view('database_center/master_settings_view', $setting_options, TRUE);
         return $content;
     }
 

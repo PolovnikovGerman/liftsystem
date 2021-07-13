@@ -7,6 +7,9 @@
             <?php if (isset($vendorsview)) { ?>
                 <div class="dbcontentarea" id="vendorsview" style="display: none;"><?=$vendorsview?></div>
             <?php } ?>
+            <?php if (isset($settingsview)) { ?>
+                <div class="dbcontentarea" id="settingsview" style="display: none;"><?=$settingsview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>
