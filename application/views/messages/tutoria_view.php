@@ -132,23 +132,8 @@
             </table>
             <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
-                    <td style="text-align: center;padding-left: 2%;">Hast du Fragen?</td>
-                </tr>
-                <tr class="mobile_contacts">
-                    <td style="padding-left: 2%;">
-                        <div style="width: 80%;margin: 0 auto;">
-                            <!-- width: 14%; -->
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/phone-red.png" alt="Phone" class="img-fluid" style="max-width: 100%"></div>
-                            <span style="margin-left: 2%;font-size: 110%; float: left;">0800 111 12 36</span>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="mobile_contacts">
-                    <td style="border-bottom: 1px solid #bdbdbd;">
-                        <div style="width: 80%;margin: 0 auto;">
-                            <div style="width: 10%;margin-left: 2%;float: left;"><img src="https://www.tutoria.de/img/envelope-red.png" alt="Email" class="img-fluid" style="max-width: 100%"></div>
-                            <span style="margin-left: 2%;font-size: 110%; float: left;">info@jetztnachhilfe.de</span>
-                        </div>
+                    <td style="text-align: center;">
+                        <img src="https://www.tutoria.de/img/messages/email_footer.png"
                     </td>
                 </tr>
                 <!-- Desktop Contacts -->
@@ -164,7 +149,7 @@
                 </tr>
                 <tr>
                     <td style="padding-left: 2%;">
-                        tutoria Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
+                        jetztnachhilfe Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
                     </td>
                 </tr>
                 <tr>
