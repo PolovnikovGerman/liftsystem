@@ -133,7 +133,7 @@
             <table style="background: #757575; width: 100%; color: #ffffff">
                 <tr>
                     <td style="text-align: center;">
-                        <img src="https://www.tutoria.de/img/messages/email_footer_2.png"
+                        <img src="https://www.tutoria.de/img/messages/email_footer_3.png"
                     </td>
                 </tr>
                 <!-- Desktop Contacts -->
