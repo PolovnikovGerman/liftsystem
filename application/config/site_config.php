@@ -51,7 +51,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['sean_email']='sean@bluetrack.com';
         $config['sage_email']='sage@bluetrack.com';
         $config['taisen_email']='taisen@bluetrack.com';
-        $config['email_notification_sender']='support@bluetrack.com';
+        $config['email_notification_sender']='sales@bluetrack.com';
         $config['redraw_email']='redraw@bluetrack.com';
         $config['art_dept_email']="art@bluetrack.com";
         $config['customer_notification_sender']='sales@bluetrack.com';
