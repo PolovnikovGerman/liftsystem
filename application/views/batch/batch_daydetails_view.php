@@ -50,8 +50,8 @@
                     <img src="/img/icons/edit.png" alt="edit" class="editbatchrow" id="editbatchrow<?=$row['batch_id']?>" />
                 </div>
                 <div class="batchpaytable_ordernum"><?=$row['order_num']?></div>
-                <div class="batchpaytable_note <?=$row['batchnote_class']?>" title="<?=$row['batchnote_title']?>" id="batchnote<?=$row['batch_id']?>"><?=$row['batchnote']?></div>
-                <div class="batchpaytable_customer" title="<?=$row['customer_name']?>"><?=$row['customer_name']?></div>
+                <div class="batchpaytable_note <?=$row['batchnote_class']?>" data-content="<?=$row['batchnote_title']?>" title="<?=$row['batchnote_title']?>" id="batchnote<?=$row['batch_id']?>"><?=$row['batchnote']?></div>
+                <div class="batchpaytable_customer" title="<?=$row['customer_name']?>" data-content="<?=$row['customer_name']?>"><?=$row['customer_name']?></div>
             </div>
             <div class="batchpaytable_totalvalues">
                 <div class="batchpaytable_vmd <?=$row['vmd_class']?>"><?=$row['batch_vmd']?></div>
