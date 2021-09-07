@@ -11,7 +11,7 @@
             <img src="/img/icons/close.png" alt="Cancel"  id="cancenbatchrow" />
         </div>
         <div class="batchpaytable_ordernum"><?=$order_num?></div>
-        <div class="batchpaytable_customer" title="<?=$customer_name?>">
+        <div class="batchpaytable_customer" title="<?=$customer_name?>" data-content="<?=$customer_name?>">
             <?=$customer_name?>
         </div>                        
     </div>

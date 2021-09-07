@@ -348,3 +348,23 @@ span.batchcalendar_totals_title {
 span.batchcalendar_totals_sums {
     color: #000cff;
 }
+input.input_batch {
+    width: 90%;
+}
+.savebatchnote {
+    background: url("/img/accounting/addnew.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 29px;
+    margin-top: 3px;
+    padding-top: 2px;
+    text-align: center;
+    width: 89px;
+    color: #FFF;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.qtip-light {
+    font-size: 14px!important;
+    padding: 7px!important;
+}
