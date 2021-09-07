@@ -66,6 +66,26 @@ function init_batches() {
             $("#batchcalmaxdate").val(response.data.max_date);
             $("#batchcalmindate").val(response.data.min_date);
             /* View full data about customer & note */
+            $("div.batchnoteview").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    my: 'bottom left',
+                    at: 'top right',
+                },
+                style: 'qtip-light'
+            });
+            $("div.batchpaytable_customer").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    my: 'bottom left',
+                    at: 'top right',
+                },
+                style: 'qtip-light'
+            });
             /* $("div.batchnoteview").bt({
                 fill : '#FFFFFF',
                 cornerRadius: 10,
@@ -141,6 +161,7 @@ function change_received(obj) {
             });
             $("span.pendcc").empty().html(response.data.pendcc);
             $("span.openterm").empty().html(response.data.terms);
+            init_batches_management();
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {
@@ -209,6 +230,7 @@ function change_batchview() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#batchdetailsview").empty().html(response.data.details);
+            init_batches_management();
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -232,6 +254,7 @@ function del_batchrow(obj) {
                 $("div#batch"+response.data.batch_due).empty().html(response.data.calendar_view);
                 $("span.pendcc").empty().html(response.data.pendcc);
                 $("span.openterm").empty().html(response.data.terms);
+                init_batches_management();
             } else {
                 show_error(response);
             }
@@ -247,7 +270,7 @@ function edit_batchrow(obj) {
             $("div#batchrow"+batch_id).empty().html(response.data.content);
             /* Init management */
             $("img#cancenbatchrow").click(function(){
-                cancel_batchedit();
+                cancel_batchedit(batch_id);
             })
             $("input#dueedit").datepicker();
             $("input#dueedit").unbind('change').change(function(){
@@ -332,6 +355,7 @@ function save_batchedit() {
             if (response.data.calend_change=='2') {
                 $("div#batch"+response.data.batch_due_second).empty().html(response.data.calendar_view_second);
             }
+            init_batches_management();
         } else {
             alert(response.errors);
             show_error(response);
@@ -339,15 +363,16 @@ function save_batchedit() {
     }, 'json');
 }
 
-function cancel_batchedit() {
+function cancel_batchedit(batch) {
     var url="/accounting/batch_canceledit";
     var params = new Array();
-    params.push({name: 'batch_id', value: $("form#editbatchdata input#batch_id").val()});
+    params.push({name: 'batch_id', value: batch}); // $("form#editbatchdata input#batch_id").val()
     params.push({name: 'filter', value: $("#batchfilter").val()});
     params.push({name: 'brand', value: $("#finbatchesbrand").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#batchday"+response.data.batch_date).empty().html(response.data.content);
+            init_batches_management();
         } else {
             alert(response.errors);
             if(response.data.url !== undefined) {

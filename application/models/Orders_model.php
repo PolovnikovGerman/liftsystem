@@ -3024,6 +3024,12 @@ Class Orders_model extends MY_Model
         $empty_val='&mdash;';
         $kilolimit=10000;
         // Prepare sub-query
+        $this->db->query('SET SESSION sql_mode =
+                  REPLACE(REPLACE(REPLACE(
+                  @@sql_mode,
+                  "ONLY_FULL_GROUP_BY,", ""),
+                  ",ONLY_FULL_GROUP_BY", ""),
+                  "ONLY_FULL_GROUP_BY", "")');
         $field_list = 'select date_format(from_unixtime(order_date),\'%Y\') as ordyear, count(order_id) as cntord, sum(revenue) as sumrevenue, sum(profit) as sumprofit from ts_orders where is_canceled=0';
         if ($brand!=='ALL') {
             $field_list.=' and brand = \''.$brand.'\'';
