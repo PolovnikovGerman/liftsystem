@@ -176,52 +176,7 @@ function show_curent_calend() {
             $("#totalsbymonth").empty().html(response.data.monthtotal);
             $("#tableinfotab2").empty().html(response.data.content);
             $(".profitdate-selected-monthname").empty().html(response.data.monthname);
-            $("div.cell-dayinfo").qtip({
-                content : {
-                    text: function(event, api) {
-                        $.ajax({
-                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                        }).then(function(content) {
-                            // Set the tooltip content upon successful retrieval
-                            api.set('content.text', content);
-                        }, function(xhr, status, error) {
-                            // Upon failure... set the tooltip content to error
-                            api.set('content.text', status + ': ' + error);
-                        });
-                        return 'Loading...'; // Set some initial text
-                    }
-                },
-                show: {
-                    event: 'click',
-                    effect: function() { $(this).fadeIn(250); }
-                },
-                // hide: {
-                //     delay: 200,
-                //     fixed: true, // <--- add this
-                //     effect: function() { $(this).fadeOut(250); }
-                // },
-                position: {
-                    my: 'bottom center',
-                    at: 'middle center',
-                    viewport: $(window),
-                },
-                style: {
-                    classes: 'qtip-dark dayorders_tooltip'
-                },
-            });
-            $("div.shippingdataview").qtip({
-                content: {
-                    attr: 'data-shippingview'
-                },
-                position: {
-                    my: 'left center',
-                    at: 'center right',
-                },
-                style: {
-                    classes: 'orderdata_tooltip'
-                }
-
-            });
+            jQuery.balloon.init();
             init_profit_date();
         } else {
             show_error(response);

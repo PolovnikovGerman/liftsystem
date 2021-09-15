@@ -3,7 +3,8 @@
 <div class="line-week">
 <?php foreach ($data_results as $row) { ?>
     <?php if (intval($row['week'])!=$nweek) {?>
-        <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-shippingview="<?=$weeks_results[$nweek]['shipping_view']?>">
+    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>"
+    <?=$weeks_results[$nweek]['shipping_class']=='' ? '' : 'data-bgcolor="#fff" data-position="right" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$weeks_results[$nweek]['shipping_view'].'"' ?>>
             <div class="cell-weekinfo-profitperc">                                
                 <div class="cell-weekinfo-profitperc-value">
                     <?=$weeks_results[$nweek]['profit_perc']?>
@@ -19,7 +20,7 @@
         </div>
         <div class="line-week">
     <?php }  ?>
-    <div class="cell-dayinfo <?=($row['day_class'])?>" id="calday<?=$row['curdate']?>" data-viewsrc="/accounting/dayresults/?day=<?=$row['curdate']?>&brand=<?=$brand?>">
+    <div class="cell-dayinfo <?=$row['day_class']?>" data-bgcolor="#f0f0f0" data-addclose="false" data-event="click" data-bordercolor="#999" data-textcolor="#333" data-balloon= "{ajax} /accounting/dayresults/?day=<?=$row['curdate']?>&brand=<?=$brand?>" style="">
         <div class="cell-dayinfo-profitperc">
             <div class="cell-dayinfo-day"><?=$row['day']?></div>
             <div class="cell-dayinfo-profitval <?=$row['profit_class']?>">
@@ -32,8 +33,9 @@
             <div class="cell-dayinfo-revenue"><?=$row['revenue']?></div>
         </div>
     </div>
-<?php } ?>            
-    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-shippingview="<?=$weeks_results[$nweek]['shipping_view']?>">
+<?php } ?>
+    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>"
+        <?=$weeks_results[$nweek]['shipping_class']=='' ? '' : 'data-bgcolor="#fff" data-position="right" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$weeks_results[$nweek]['shipping_view'].'"' ?>>
         <div class="cell-weekinfo-profitperc">                                
             <div class="cell-weekinfo-profitperc-value">
                 <?=$weeks_results[$nweek]['profit_perc']?>
