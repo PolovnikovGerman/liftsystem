@@ -3140,7 +3140,8 @@ Class Orders_model extends MY_Model
                 if ($proj_ord != 0) {
                     $out['proj_ord'] = $proj_ord;
                     $out['proj_perc'] = round($proj_ord / $total_ord * 100, 0) . '%';
-                    $out['proj_link'] = $detail_url."?type=projprof&year=" . $year."&brand=".$brand;
+                    // $out['proj_link'] = $detail_url."?type=projprof&year=" . $year."&brand=".$brand;
+                    $out['proj_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#001072" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=projprof&year=" . $year."&brand=".$brand.'"';
                 }
                 $proj_revenue = round(floatval($res['proj_revenue']), 0);
                 if ($proj_revenue > 0) {
@@ -3164,7 +3165,8 @@ Class Orders_model extends MY_Model
                 if ($green_ord != 0) {
                     $out['green_ord'] = $green_ord;
                     $out['green_perc'] = round($green_ord / $total_ord * 100, 0) . '%';
-                    $out['green_link'] = $detail_url."?type=green&year=" . $year."&brand=".$brand;
+                    $out['green_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#00e947" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=green&year=" . $year."&brand=".$brand.'"';
+                    // $out['green_link'] = $detail_url."?type=green&year=" . $year."&brand=".$brand;
                 }
                 $green_revenue = round(floatval($res['green_revenue']), 0);
                 if ($green_revenue != 0) {
@@ -3188,7 +3190,8 @@ Class Orders_model extends MY_Model
                 if ($white_ord != 0) {
                     $out['white_ord'] = $white_ord;
                     $out['white_perc'] = round($white_ord / $total_ord * 100, 0) . '%';
-                    $out['white_link'] = $detail_url."?type=white&year=" . $year."&brand=".$brand;
+                    // $out['white_link'] = $detail_url."?type=white&year=" . $year."&brand=".$brand;
+                    $out['white_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#fff" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=white&year=" . $year."&brand=".$brand.'"';
                 }
                 $white_revenue = round(floatval($res['white_revenue']), 0);
                 if ($white_revenue != 0) {
@@ -3212,7 +3215,8 @@ Class Orders_model extends MY_Model
                 if ($orange_ord != 0) {
                     $out['orange_ord'] = $orange_ord;
                     $out['orange_perc'] = round($orange_ord / $total_ord * 100, 0) . '%';
-                    $out['orange_link'] = $detail_url."?type=orange&year=" . $year."&brand=".$brand;
+                    // $out['orange_link'] = $detail_url."?type=orange&year=" . $year."&brand=".$brand;
+                    $out['orange_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#ea8a0e" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=orange&year=" . $year."&brand=".$brand.'"';
                 }
                 $orange_revenue = round(floatval($res['orange_revenue']), 0);
                 if ($orange_revenue != 0) {
@@ -3236,7 +3240,8 @@ Class Orders_model extends MY_Model
                 if ($red_ord != 0) {
                     $out['red_ord'] = $red_ord;
                     $out['red_perc'] = round($red_ord / $total_ord * 100, 0) . '%';
-                    $out['red_link'] = $detail_url."?type=red&year=" . $year."&brand=".$brand;
+                    // $out['red_link'] = $detail_url."?type=red&year=" . $year."&brand=".$brand;
+                    $out['red_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#ff0000" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=red&year=" . $year."&brand=".$brand.'"';
                 }
                 $red_revenue = round(floatval($res['red_revenue']), 0);
                 if ($red_revenue != 0) {
@@ -3260,7 +3265,8 @@ Class Orders_model extends MY_Model
                 if ($maroon_ord != 0) {
                     $out['maroon_ord'] = $maroon_ord;
                     $out['maroon_perc'] = round($maroon_ord / $total_ord * 100, 0) . '%';
-                    $out['maroon_link'] = $detail_url."?type=moroon&year=" . $year."&brand=".$brand;
+                    // $out['maroon_link'] = $detail_url."?type=moroon&year=" . $year."&brand=".$brand;
+                    $out['maroon_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#6d0303" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=moroon&year=" . $year."&brand=".$brand.'"';
                 }
                 $maroon_revenue = round(floatval($res['maroon_revenue']), 0);
                 if ($maroon_revenue != 0) {
@@ -3284,7 +3290,8 @@ Class Orders_model extends MY_Model
                 if ($black_ord != 0) {
                     $out['black_ord'] = $black_ord;
                     $out['black_perc'] = round($black_ord / $total_ord * 100, 0) . '%';
-                    $out['black_link'] = $detail_url."?type=black&year=" . $year."&brand=".$brand;
+                    // $out['black_link'] = $detail_url."?type=black&year=" . $year."&brand=".$brand;
+                    $out['black_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#000" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=black&year=" . $year."&brand=".$brand.'"';
                 }
                 $black_revenue = round(floatval($res['black_revenue']), 0);
                 if ($black_revenue != 0) {
