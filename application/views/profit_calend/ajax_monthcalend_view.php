@@ -3,7 +3,7 @@
 <div class="line-week">
 <?php foreach ($data_results as $row) { ?>
     <?php if (intval($row['week'])!=$nweek) {?>
-    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>"
+    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-css="shipping_toltip"
     <?=$weeks_results[$nweek]['shipping_class']=='' ? '' : 'data-bgcolor="#fff" data-position="right" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$weeks_results[$nweek]['shipping_view'].'"' ?>>
             <div class="cell-weekinfo-profitperc">                                
                 <div class="cell-weekinfo-profitperc-value">
@@ -34,7 +34,7 @@
         </div>
     </div>
 <?php } ?>
-    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>"
+    <div class="cell-weekinfo <?=$weeks_results[$nweek]['profit_class']?> <?=$weeks_results[$nweek]['shipping_class']?>" data-css="shipping_toltip"
         <?=$weeks_results[$nweek]['shipping_class']=='' ? '' : 'data-bgcolor="#fff" data-position="right" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$weeks_results[$nweek]['shipping_view'].'"' ?>>
         <div class="cell-weekinfo-profitperc">                                
             <div class="cell-weekinfo-profitperc-value">
