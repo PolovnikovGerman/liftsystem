@@ -2545,7 +2545,8 @@ Class Orders_model extends MY_Model
             if ($colorres['cnt_colors']>1) {
                 $row['color'] = $this->multicolor;
                 $row['coloropt'] = 'multicolor';
-                $row['colordata']='data-viewsrc="/accounting/get_ordercolordetails?id='.$row['order_id'].'"';
+                $row['colordata'] = 'data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-bgcolor="#fff" data-balloon="{ajax} /accounting/get_ordercolordetails?id='.$row['order_id'].'" data-css="lowprofit_tooltip"';
+                // $row['colordata']='data-viewsrc="/accounting/get_ordercolordetails?id='.$row['order_id'].'"';
             }
             $row['lineclass']='';
 
@@ -2640,7 +2641,8 @@ Class Orders_model extends MY_Model
                     $row['profit_class']=orderProfitClass($row['profit_perc']);
                     if ($row['profit_perc']<$this->config->item('minimal_profitperc') && !empty($row['reason'])) {
                         $row['proftitleclass']='lowprofittitle';
-                        $row['proftitle']='data-content="'.$row['reason'].'"';
+                        $row['proftitle']='data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-bgcolor="#fff" data-balloon="'.$row['reason'].'" data-css="lowprofit_tooltip"';
+                        // $row['proftitle']='data-content="'.$row['reason'].'"';
                     }
                     $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
                     if ($admin_mode==0) {

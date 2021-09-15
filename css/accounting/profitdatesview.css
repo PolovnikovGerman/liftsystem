@@ -1007,3 +1007,11 @@ select.filter {
 .odrdate_tablerow.customitem {
     font-weight: bold;
 }
+.shipping_toltip {
+    width: 315px!important;
+    max-width: 315px!important;
+    padding: 10px!important;
+    font-size: 14px!important;
+    text-align: justify!important;
+    line-height: 20px!important;
+}

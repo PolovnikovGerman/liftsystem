@@ -66,11 +66,11 @@ input.search_input {
 }
 .red, .redprofit {
     background-color: #ff0000!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .black, .blackprofit {
     background-color: #000000!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .orange, .orangeprofit {
     background-color: #ea8a0e!important;
@@ -78,15 +78,15 @@ input.search_input {
 }
 .cancelprof {
     background: #919191!important;
-    color: #000000;
+    color: #000000!important;
 }
 .moroon, .moroonprofit {
     background-color: #6d0303!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .white, .whiteprofit {
     background-color: #ffffff!important;
-    color: #000000;
+    color: #000000!important;
 }
 .green_tooltip {
     background-color: #86FF80!important;
@@ -141,6 +141,14 @@ input.search_input {
     line-height: 18px!important;
     border: 1px solid #000000!important;
     padding: 10px!important;
+}
+.searchtotal_tooltip {
+    line-height: 18px!important;
+    padding: 10px!important;
+    font-size: 15px!important;
+    background-color: #fff!important;
+    color: #000000!important;
+    border-color: #000000!important;
 }
 /*
 

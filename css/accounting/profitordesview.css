@@ -781,7 +781,7 @@ select.profitorder-filtrer {
     float: left;
     background: #ffffff;
     width: 198px;
-    padding: 15px;
+/*    padding: 15px; */
 }
 .profit_tooltip_content > div {
     float: left;
@@ -819,9 +819,10 @@ select.profitorder-filtrer {
     text-align: right!important;
     width: 72%;
 }
+.lowprofittitle {
+    cursor: pointer;
+}
 .lowprofit_tooltip {
-    background: #ffffff!important;
-    color: #000!important;
     font-size: 14px!important;
     width: 300px!important;
     max-width: 300px!important;
