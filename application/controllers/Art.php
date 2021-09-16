@@ -126,8 +126,12 @@ class Art extends MY_Controller {
 //        /* Flash MSG */
 //        $head['scripts'][]=array('src'=>'/js/jsflash/flash.js');
 //        $head['styles'][]=array('style'=>'/css/jsflash/flash.css');
-        $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
-        $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
+        // $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
+        // $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
+        // Ballons Tips
+        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
+        $head['styles'][] = ['style' => '/css/mb_balloons/mb.balloon.css'];
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -480,13 +484,13 @@ class Art extends MY_Controller {
             if (count($ordersdat)==0) {
                 $content=$this->load->view('artorder/order_emptydat_view',array(),TRUE);
             } else {
-                $orders = [];
-                foreach ($ordersdat as $row) {
-                    $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
-                    $orders[]=$row;
-                }
+//                $orders = [];
+//                foreach ($ordersdat as $row) {
+//                    $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
+//                    $orders[]=$row;
+//                }
                 $data=array(
-                    'orders'=>$orders,
+                    'orders'=>$ordersdat,
                 );
                 $content = $this->load->view('artorder/order_tabledat_view',$data, TRUE);
             }

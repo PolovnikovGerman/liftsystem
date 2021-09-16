@@ -18,23 +18,23 @@
         <div class="proof_item_dat"><?=$row['email_item_name']?></div>
         <div class="proof_qty_dat"><?=$row['email_qty']?></div>
         <div class="artdataarea" data-proofid="<?=$row['email_id']?>">
-            <div class="proof_art artdata <?=$row['art_class']?>  <?=$row['art_title']?>" data-messageview="<?=$row['lastmsg']?>">
+            <div class="proof_art artdata <?=$row['art_class']?>  <?=$row['art_title']?>" <?=$row['art_msg']?>>
                 <?=$row['art_cell']?>
             </div>
-            <div class="proof_redrawn artdata <?=$row['redrawn_class']?> <?=$row['redrawn_title']?>" data-messageview="<?=$row['lastmsg']?>">
+            <div class="proof_redrawn artdata <?=$row['redrawn_class']?> <?=$row['redrawn_title']?>" <?=$row['redrawn_msg']?>>
                 <?=$row['redrawn_cell']?>
             </div>
-            <div class="proof_vector artdata <?=$row['vectorized_class']?> <?=$row['vectorized_title']?>" data-messageview="<?=$row['lastmsg']?>">
+            <div class="proof_vector artdata <?=$row['vectorized_class']?> <?=$row['vectorized_title']?>" <?=$row['vectorized_msg']?>>
                 <?=$row['vectorized_cell']?>
             </div>
-            <div class="proof_proofed artdata <?=$row['proofed_class']?> <?=$row['proofed_title']?>" data-messageview="<?=$row['lastmsg']?>">
+            <div class="proof_proofed artdata <?=$row['proofed_class']?> <?=$row['proofed_title']?>" <?=$row['proofed_msg']?>>
                 <?=$row['proofed_cell']?>
             </div>
-            <div class="proof_approve artdata <?=$row['approved_class']?> <?=$row['approved_title']?>" data-messageview="<?=$row['lastmsg']?>">
+            <div class="proof_approve artdata <?=$row['approved_class']?> <?=$row['approved_title']?>" <?=$row['approved_msg']?>">
                 <?=$row['approved_cell']?>
             </div>
         </div>
-        <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title']=='' ? '' : 'data-content="'.$row['note_title'].'"')?>><?=$row['proof_note']?></div>
+        <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title'])?>><?=$row['proof_note']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

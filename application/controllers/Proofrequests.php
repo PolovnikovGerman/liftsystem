@@ -85,12 +85,12 @@ class Proofrequests extends MY_Controller
             if (count($email_dat)==0) {
                 $content = $this->load->view('artrequest/proofs_emptytabledat_view',array(), TRUE);
             } else {
-                $emails = [];
-                foreach ($email_dat as $row) {
-                    $row['lastmsg']='/proofrequests/proof_lastmessage?d='.$row['email_id'];
-                    $emails[]=$row;
-                }
-                $data=array('email_dat'=>$emails);
+                // $emails = [];
+                // foreach ($email_dat as $row) {
+                //    $row['lastmsg']='/proofrequests/proof_lastmessage?d='.$row['email_id'];
+                //    $emails[]=$row;
+                // }
+                $data=array('email_dat'=>$email_dat);
                 $content = $this->load->view('artrequest/proofs_tabledat_view',$data, TRUE);
             }
             $mdata['content']=$content;

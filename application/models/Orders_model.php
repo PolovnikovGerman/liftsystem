@@ -384,10 +384,12 @@ Class Orders_model extends MY_Model
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
             $artlastupdat="artlastmessageview";
+            $msglnk='data-event="hover" data-css="art_lastmessage" data-bgcolor="#1DCD19" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} /art/order_lastmessage?d='.$row['order_id'].'"';
             $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
             $row['out_code']=($row['order_code']=='' ? '&nbsp;' : $row['order_code']);
             $row['rush_class']=($row['order_rush']==0 ? '' : 'rushorder');
+            $row['art_msg']=$row['redrawn_msg']=$row['vectorized_msg']=$row['proofed_msg']=$row['approved_msg']='';
             if ($row['order_blank']==1) {
                 $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']=$artclass;
                 $row['art_cell']=$row['redrawn_cell']=$row['vectorized_cell']=$row['proofed_cell']=$row['approved_cell']=$curimg;
@@ -406,6 +408,7 @@ Class Orders_model extends MY_Model
                         $row['art_class']=$artclass;
                         $row['art_cell']=$curimg;
                         $row['art_title']=$artlastupdat;
+                        $row['art_msg']=$msglnk;
                         break;
                     case $this->NO_VECTOR:
                         $row['art_class']=$artclass;
@@ -417,6 +420,7 @@ Class Orders_model extends MY_Model
                         $row['art_cell']=$prvimg;
                         $row['redrawn_cell']=$curimg;
                         $row['redrawn_title']=$artlastupdat;
+                        $row['redrawn_msg']=$msglnk;
                         break;
                     case $this->TO_PROOF:
                         $row['art_class']=$artclass;
@@ -428,6 +432,7 @@ Class Orders_model extends MY_Model
                         $row['art_cell']=$prvimg;
                         $row['vectorized_cell']=$curimg;
                         $row['vectorized_title']=$artlastupdat;
+                        $row['vectorized_msg']=$msglnk;
                         break;
                     case $this->JUST_APPROVED:
                         $row['art_class']=$artclass;
@@ -443,6 +448,7 @@ Class Orders_model extends MY_Model
                         $row['proofed_cell']=$prvimg;
                         $row['approved_cell']=$curimg;
                         $row['approved_title']=$artlastupdat;
+                        $row['approved_msg']=$msglnk;
                         break;
                     case $this->NEED_APPROVAL:
                         $row['art_class']=$artclass;
@@ -457,6 +463,7 @@ Class Orders_model extends MY_Model
                         $row['vectorized_cell']=$prvimg;
                         $row['proofed_cell']=$curimg;
                         $row['proofed_title']=$artlastupdat;
+                        $row['proofed_msg']=$msglnk;
                         break;
                     default :
                         $row['art_class']=$artclass;
@@ -470,6 +477,7 @@ Class Orders_model extends MY_Model
                         $row['proofed_cell']=$prvimg;
                         $row['approved_cell']=$curimg;
                         $row['approved_title']=$artlastupdat;
+                        $row['approved_msg']=$msglnk;
                         break;
                 }
             }
