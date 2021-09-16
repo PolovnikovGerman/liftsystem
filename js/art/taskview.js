@@ -84,16 +84,17 @@ function init_tasks_page() {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").qtip({
-                content: {
-                    attr: 'data-content'
-                },
-                position: {
-                    'my': 'bottom center',
-                    'at': 'top center'
-                },
-                style: 'qtip_light task_detailview',
-            });
+            jQuery.balloon.init();
+            // $("div.taskview_order").qtip({
+            //     content: {
+            //         attr: 'data-content'
+            //     },
+            //     position: {
+            //         'my': 'bottom center',
+            //         'at': 'top center'
+            //     },
+            //     style: 'qtip_light task_detailview',
+            // });
         } else {
             $("#loader").hide();
             show_error(response);
@@ -142,18 +143,19 @@ function change_approved_view(stage) {
                 var task_id=$(this).data('taskid');
                 call_reminder(task_id);
             });
-            $("div.taskview_order").qtip({
-                content: {
-                    attr: 'data-content'
-                },
-                position: {
-                    my: 'bottom right',
-                    at: 'top left',
-                },
-                style: 'qtip_light task_detailview',
-                show: 'click',
-                hide: 'click'
-            });
+            jQuery.balloon.init();
+            // $("div.taskview_order").qtip({
+            //     content: {
+            //         attr: 'data-content'
+            //     },
+            //     position: {
+            //         my: 'bottom right',
+            //         at: 'top left',
+            //     },
+            //     style: 'qtip_light task_detailview',
+            //     show: 'click',
+            //     hide: 'click'
+            // });
             $("#loader").hide();
         } else {
             $("#loader").hide();
