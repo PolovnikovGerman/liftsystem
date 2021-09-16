@@ -824,33 +824,34 @@ function totalyears() {
             $("div#totalcntorders").empty().html(response.data.content);
             $("div.profitordertotalarea").empty().html(response.data.content);
             $("div.profitordertotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
+            jQuery.balloon.init();
             /* Hover */
-            $(".orders_totals").find('div.totalorder').qtip({
-                content : {
-                    text: function(event, api) {
-                        $.ajax({
-                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                        }).then(function(content) {
-                            // Set the tooltip content upon successful retrieval
-                            api.set('content.text', content);
-                        }, function(xhr, status, error) {
-                            // Upon failure... set the tooltip content to error
-                            api.set('content.text', status + ': ' + error);
-                        });
-                        return 'Loading...'; // Set some initial text
-                    }
-                },
-                show: {
-                    event: 'click'
-                },
-                /* position: {
-                    my: 'bottom center',
-                    at: 'middle center',
-                },*/
-                style: {
-                    classes: 'orderdetails_tooltip'
-                },
-            });
+            // $(".orders_totals").find('div.totalorder').qtip({
+            //     content : {
+            //         text: function(event, api) {
+            //             $.ajax({
+            //                 url: api.elements.target.data('viewsrc') // Use href attribute as URL
+            //             }).then(function(content) {
+            //                 // Set the tooltip content upon successful retrieval
+            //                 api.set('content.text', content);
+            //             }, function(xhr, status, error) {
+            //                 // Upon failure... set the tooltip content to error
+            //                 api.set('content.text', status + ': ' + error);
+            //             });
+            //             return 'Loading...'; // Set some initial text
+            //         }
+            //     },
+            //     show: {
+            //         event: 'click'
+            //     },
+            //     /* position: {
+            //         my: 'bottom center',
+            //         at: 'middle center',
+            //     },*/
+            //     style: {
+            //         classes: 'orderdetails_tooltip'
+            //     },
+            // });
             slidermargin=parseInt($("div.profitordertotalarea").css('margin-left'));
             init_profitorder_slider();
         } else {

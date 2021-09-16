@@ -471,11 +471,17 @@ Class Artproof_model extends MY_Model
             $row['ordnum']=$ordnum;
             $row['email']=($row['email_sendermail']=='' ? '' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>');
             $row['emailparsed']=($row['email_webpage']=='EMAILPARSER' ? $parsericon : '&nbsp;');
-            $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'data-content="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
+            $row['emailparsed_title']='';
+            if ($row['email_webpage']=='EMAILPARSER') {
+                $row['emailparsed_title']='data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"';;
+            }
+            // $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'data-content="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
             $row['email_date']=date('m/d/y',strtotime($row['email_date']));
             $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
             $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
             $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
+            $row['art_msg']=$row['redrawn_msg']=$row['vectorized_msg']=$row['proofed_msg']=$row['approved_msg']='';
+            $msglnk='data-event="hover" data-css="art_lastmessage" data-bgcolor="#1DCD19" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} /proofrequests/proof_lastmessage?d='.$row['email_id'].'"';
             switch ($row['order_proj_status']) {
                 case $this->NO_ART:
                     // $curstage='art_stage';
@@ -484,6 +490,7 @@ Class Artproof_model extends MY_Model
                     $row['art_class']='chk-ordoption';
                     $row['art_cell']=$curimg;
                     $row['art_title']=$artlastupdat;
+                    $row['art_msg']=$msglnk;
                     break;
                 case $this->NO_VECTOR:
                     $row['art_class']='chk-ordoption';
@@ -495,6 +502,7 @@ Class Artproof_model extends MY_Model
                     $row['art_cell']=$prvimg;
                     $row['redrawn_cell']=$curimg;
                     $row['redrawn_title']=$artlastupdat;
+                    $row['redrawn_msg']=$msglnk;
                     break;
                 case $this->TO_PROOF:
                     $row['art_class']='chk-ordoption';
@@ -506,6 +514,7 @@ Class Artproof_model extends MY_Model
                     $row['art_cell']=$prvimg;
                     $row['vectorized_cell']=$curimg;
                     $row['vectorized_title']=$artlastupdat;
+                    $row['vectorized_msg']=$msglnk;
                     break;
                 case $this->NEED_APPROVAL:
                     $row['art_class']='chk-ordoption';
@@ -519,6 +528,7 @@ Class Artproof_model extends MY_Model
                         $row['redrawn_class']='chk-ordoption';
                         $row['redrawn_cell']=$prvimg;
                     }
+                    $row['proofed_msg']=$msglnk;
                     break;
                 case $this->JUST_APPROVED:
                     $curstage='approved_stage';
@@ -531,6 +541,7 @@ Class Artproof_model extends MY_Model
                     $row['proofed_cell']=$prvimg;
                     $row['approved_cell']=$curimg;
                     $row['approved_title']=$artlastupdat;
+                    $row['approved_msg']=$msglnk;
                     if ($row['redraw_bypass']==0) {
                         $row['redrawn_class']='chk-ordoption';
                         $row['redrawn_cell']=$prvimg;
@@ -549,6 +560,7 @@ Class Artproof_model extends MY_Model
                     $row['proofed_cell']=$prvimg;
                     $row['approved_cell']=$curimg;
                     $row['approved_title']=$artlastupdat;
+                    $row['approved_msg']=$msglnk;
                     break;
             }
             $row['assigned']=($row['lead_id']=='' ? 'leadassign' : '');
@@ -556,13 +568,12 @@ Class Artproof_model extends MY_Model
             $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
             $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
             $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
-
+            $row['note_title']='';
             if ($row['email_questions']=='') {
                 $row['proof_note']=$emptynote;
-                $row['note_title']='';
             } else {
                 $row['proof_note']=$fullnote;
-                $row['note_title']=$row['email_questions'];
+                $row['note_title']='data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$row['email_questions'].'"';
             }
             if ($row['email_status']==$this->void_status) {
                 $row['action_icon']=$revert_icon;

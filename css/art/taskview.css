@@ -347,11 +347,13 @@ select.ordproofview {
 }
 /* Popover */
 .task_detailview {
-    background-color: #EDEDED!important;
-    float: left;
-    padding: 0px;
+    /*background-color: #EDEDED!important;*/
+    /*float: left;*/
+    /*padding: 0px;*/
+    /*color: #000!important;*/
+    /*border-color: #000000!important;*/
     font-size: 13px!important;
-    color: #000!important;
     text-align: justify!important;
-    border-color: #000000!important;
+    max-width: 320px!important;
+    width: 320px!important;
 }

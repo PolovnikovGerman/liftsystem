@@ -384,10 +384,12 @@ Class Orders_model extends MY_Model
             $row['tax']=(floatval($row['tax'])==0 ? '-' : '$'.number_format($row['tax'], 2, '.', ',') );
             $row['title_ccfee']='$'.number_format($row['cc_fee'], 2, '.', ',');
             $artlastupdat="artlastmessageview";
+            $msglnk='data-event="hover" data-css="art_lastmessage" data-bgcolor="#1DCD19" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} /art/order_lastmessage?d='.$row['order_id'].'"';
             $row['lastmsg']='/art/order_lastmessage?d='.$row['order_id'];
             $row['email']=($row['customer_email']=='' ? '&nbsp;' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['customer_email'].'" />');
             $row['out_code']=($row['order_code']=='' ? '&nbsp;' : $row['order_code']);
             $row['rush_class']=($row['order_rush']==0 ? '' : 'rushorder');
+            $row['art_msg']=$row['redrawn_msg']=$row['vectorized_msg']=$row['proofed_msg']=$row['approved_msg']='';
             if ($row['order_blank']==1) {
                 $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']=$artclass;
                 $row['art_cell']=$row['redrawn_cell']=$row['vectorized_cell']=$row['proofed_cell']=$row['approved_cell']=$curimg;
@@ -406,6 +408,7 @@ Class Orders_model extends MY_Model
                         $row['art_class']=$artclass;
                         $row['art_cell']=$curimg;
                         $row['art_title']=$artlastupdat;
+                        $row['art_msg']=$msglnk;
                         break;
                     case $this->NO_VECTOR:
                         $row['art_class']=$artclass;
@@ -417,6 +420,7 @@ Class Orders_model extends MY_Model
                         $row['art_cell']=$prvimg;
                         $row['redrawn_cell']=$curimg;
                         $row['redrawn_title']=$artlastupdat;
+                        $row['redrawn_msg']=$msglnk;
                         break;
                     case $this->TO_PROOF:
                         $row['art_class']=$artclass;
@@ -428,6 +432,7 @@ Class Orders_model extends MY_Model
                         $row['art_cell']=$prvimg;
                         $row['vectorized_cell']=$curimg;
                         $row['vectorized_title']=$artlastupdat;
+                        $row['vectorized_msg']=$msglnk;
                         break;
                     case $this->JUST_APPROVED:
                         $row['art_class']=$artclass;
@@ -443,6 +448,7 @@ Class Orders_model extends MY_Model
                         $row['proofed_cell']=$prvimg;
                         $row['approved_cell']=$curimg;
                         $row['approved_title']=$artlastupdat;
+                        $row['approved_msg']=$msglnk;
                         break;
                     case $this->NEED_APPROVAL:
                         $row['art_class']=$artclass;
@@ -457,6 +463,7 @@ Class Orders_model extends MY_Model
                         $row['vectorized_cell']=$prvimg;
                         $row['proofed_cell']=$curimg;
                         $row['proofed_title']=$artlastupdat;
+                        $row['proofed_msg']=$msglnk;
                         break;
                     default :
                         $row['art_class']=$artclass;
@@ -470,6 +477,7 @@ Class Orders_model extends MY_Model
                         $row['proofed_cell']=$prvimg;
                         $row['approved_cell']=$curimg;
                         $row['approved_title']=$artlastupdat;
+                        $row['approved_msg']=$msglnk;
                         break;
                 }
             }
@@ -3140,7 +3148,8 @@ Class Orders_model extends MY_Model
                 if ($proj_ord != 0) {
                     $out['proj_ord'] = $proj_ord;
                     $out['proj_perc'] = round($proj_ord / $total_ord * 100, 0) . '%';
-                    $out['proj_link'] = $detail_url."?type=projprof&year=" . $year."&brand=".$brand;
+                    // $out['proj_link'] = $detail_url."?type=projprof&year=" . $year."&brand=".$brand;
+                    $out['proj_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#001072" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=projprof&year=" . $year."&brand=".$brand.'"';
                 }
                 $proj_revenue = round(floatval($res['proj_revenue']), 0);
                 if ($proj_revenue > 0) {
@@ -3164,7 +3173,8 @@ Class Orders_model extends MY_Model
                 if ($green_ord != 0) {
                     $out['green_ord'] = $green_ord;
                     $out['green_perc'] = round($green_ord / $total_ord * 100, 0) . '%';
-                    $out['green_link'] = $detail_url."?type=green&year=" . $year."&brand=".$brand;
+                    $out['green_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#00e947" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=green&year=" . $year."&brand=".$brand.'"';
+                    // $out['green_link'] = $detail_url."?type=green&year=" . $year."&brand=".$brand;
                 }
                 $green_revenue = round(floatval($res['green_revenue']), 0);
                 if ($green_revenue != 0) {
@@ -3188,7 +3198,8 @@ Class Orders_model extends MY_Model
                 if ($white_ord != 0) {
                     $out['white_ord'] = $white_ord;
                     $out['white_perc'] = round($white_ord / $total_ord * 100, 0) . '%';
-                    $out['white_link'] = $detail_url."?type=white&year=" . $year."&brand=".$brand;
+                    // $out['white_link'] = $detail_url."?type=white&year=" . $year."&brand=".$brand;
+                    $out['white_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#fff" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=white&year=" . $year."&brand=".$brand.'"';
                 }
                 $white_revenue = round(floatval($res['white_revenue']), 0);
                 if ($white_revenue != 0) {
@@ -3212,7 +3223,8 @@ Class Orders_model extends MY_Model
                 if ($orange_ord != 0) {
                     $out['orange_ord'] = $orange_ord;
                     $out['orange_perc'] = round($orange_ord / $total_ord * 100, 0) . '%';
-                    $out['orange_link'] = $detail_url."?type=orange&year=" . $year."&brand=".$brand;
+                    // $out['orange_link'] = $detail_url."?type=orange&year=" . $year."&brand=".$brand;
+                    $out['orange_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#ea8a0e" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} '.$detail_url."?type=orange&year=" . $year."&brand=".$brand.'"';
                 }
                 $orange_revenue = round(floatval($res['orange_revenue']), 0);
                 if ($orange_revenue != 0) {
@@ -3236,7 +3248,8 @@ Class Orders_model extends MY_Model
                 if ($red_ord != 0) {
                     $out['red_ord'] = $red_ord;
                     $out['red_perc'] = round($red_ord / $total_ord * 100, 0) . '%';
-                    $out['red_link'] = $detail_url."?type=red&year=" . $year."&brand=".$brand;
+                    // $out['red_link'] = $detail_url."?type=red&year=" . $year."&brand=".$brand;
+                    $out['red_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#ff0000" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=red&year=" . $year."&brand=".$brand.'"';
                 }
                 $red_revenue = round(floatval($res['red_revenue']), 0);
                 if ($red_revenue != 0) {
@@ -3260,7 +3273,8 @@ Class Orders_model extends MY_Model
                 if ($maroon_ord != 0) {
                     $out['maroon_ord'] = $maroon_ord;
                     $out['maroon_perc'] = round($maroon_ord / $total_ord * 100, 0) . '%';
-                    $out['maroon_link'] = $detail_url."?type=moroon&year=" . $year."&brand=".$brand;
+                    // $out['maroon_link'] = $detail_url."?type=moroon&year=" . $year."&brand=".$brand;
+                    $out['maroon_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#6d0303" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=moroon&year=" . $year."&brand=".$brand.'"';
                 }
                 $maroon_revenue = round(floatval($res['maroon_revenue']), 0);
                 if ($maroon_revenue != 0) {
@@ -3284,7 +3298,8 @@ Class Orders_model extends MY_Model
                 if ($black_ord != 0) {
                     $out['black_ord'] = $black_ord;
                     $out['black_perc'] = round($black_ord / $total_ord * 100, 0) . '%';
-                    $out['black_link'] = $detail_url."?type=black&year=" . $year."&brand=".$brand;
+                    // $out['black_link'] = $detail_url."?type=black&year=" . $year."&brand=".$brand;
+                    $out['black_link'] = 'data-event="click" data-css="orderdetails_tooltip" data-bgcolor="#000" data-bordercolor="#fff" data-textcolor="#fff" data-balloon="{ajax} '.$detail_url."?type=black&year=" . $year."&brand=".$brand.'"';
                 }
                 $black_revenue = round(floatval($res['black_revenue']), 0);
                 if ($black_revenue != 0) {
