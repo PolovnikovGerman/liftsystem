@@ -85,16 +85,6 @@ function init_tasks_page() {
                 call_reminder(task_id);
             });
             jQuery.balloon.init();
-            // $("div.taskview_order").qtip({
-            //     content: {
-            //         attr: 'data-content'
-            //     },
-            //     position: {
-            //         'my': 'bottom center',
-            //         'at': 'top center'
-            //     },
-            //     style: 'qtip_light task_detailview',
-            // });
         } else {
             $("#loader").hide();
             show_error(response);
@@ -144,18 +134,6 @@ function change_approved_view(stage) {
                 call_reminder(task_id);
             });
             jQuery.balloon.init();
-            // $("div.taskview_order").qtip({
-            //     content: {
-            //         attr: 'data-content'
-            //     },
-            //     position: {
-            //         my: 'bottom right',
-            //         at: 'top left',
-            //     },
-            //     style: 'qtip_light task_detailview',
-            //     show: 'click',
-            //     hide: 'click'
-            // });
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -281,7 +259,8 @@ function call_details(obj) {
     var objid=obj.id;
     if (objid.substr(0,3)=='ord') {
         var order_id=objid.substr(3);
-        order_artstage(order_id,'art_tasks');
+        var brand=$("#arttasksviewbrand").val();
+        order_artstage(order_id,'art_tasks', brand);
     } else {
         var mailid=objid.substr(2);
         artproof_lead(mailid);

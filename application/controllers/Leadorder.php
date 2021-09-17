@@ -4623,12 +4623,15 @@ class Leadorder extends MY_Controller
 
     private function _profit_data_view($order) {
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
+        $hlpcolor = orderProfitBg($order['profit_perc']);
         $options=array(
             'profit_perc'=>$order['profit_perc'],
             'profit'=>$order['profit'],
             'profit_view'=>'',
             'profit_class'=>orderProfitClass($order['profit_perc']),
             'order_id'=>$order['order_id'],
+            'helpborder' => $hlpcolor['border'],
+            'helpbg' => $hlpcolor['bgcolor'],
         );
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';

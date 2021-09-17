@@ -1838,8 +1838,9 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 398px;
-    max-width: 398px!important;
+    width: 420px;
+    max-width: 420px!important;
+    padding: 10px!important;
 }
 .button_save {
     float: left;
@@ -2040,13 +2041,17 @@ input.artrepeat {
     width: 16px;
 }
 .icon_glass {
+/*
     background-image: url(/img/leadorder/icon_glass.png);
     background-repeat: no-repeat;
-    width: 13px;
-    height: 13px;
+*/
+    width: 21px;
+    height: 21px;
     float: left;
-    margin-top: 2px;
+    /*margin-top: 2px;
     margin-left: 4px;
+     */
+    text-align: center;
 }
 .icon_glass.active {
     cursor: pointer;
@@ -2556,11 +2561,13 @@ select.imprintlocationchoice {
 }
 .imprinttabledata > .locationsamplerow > .locattempl {
     float: left;
-    margin-left: 3px;
-    width: 18px;
+    /* margin-left: 3px; */
+    width: 21px;
+    height: 21px;
+    text-align: center;
 }
 .imprinttabledata > .locationsamplerow > .locattempl.active {
-    background: url('/img/leadorder/icon_glass.png') no-repeat transparent;
+    /* background: url('/img/leadorder/icon_glass.png') no-repeat transparent; */
 }
 .saveimprintdetailsarea {
     clear: both;
@@ -3624,11 +3631,11 @@ a.historydetailsview {
 }
 /* COG Details Popup */
 .ordercogdetailsviewarea {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -khtml-border-radius: 10px; /* for old Konqueror browsers */    
-    border-radius: 10px; /* future proofing */
-    border: 1px solid;
+    /*-moz-border-radius: 10px;*/
+    /*-webkit-border-radius: 10px;*/
+    /*-khtml-border-radius: 10px; !* for old Konqueror browsers *!    */
+    /*border-radius: 10px; !* future proofing *!*/
+    /*border: 1px solid;*/
     float: left;    
     padding: 10px;
     width: 406px;
@@ -3657,7 +3664,7 @@ a.historydetailsview {
     color: #000000;
 }
 .ordercogdetailsviewarea.green {
-    background-color: #00e947;
+    background-color: #86FF80;
     color: #000000;    
 }
 .ordercogdetailsviewarea > .title {
