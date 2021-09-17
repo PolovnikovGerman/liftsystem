@@ -137,7 +137,9 @@
                     <div class="numpp"><?=$numpp?></div>
                     <div class="locatname"><?=$row['item_inprint_location']?></div>
                     <div class="locatsize"><?=$row['item_inprint_size']?></div>
-                    <div class="locattempl active" data-content="/leadorder/viewimprintloc?id=<?=$row['item_inprint_id']?>">&nbsp;</div>
+                    <div class="locattempl active" data-event="hover" data-bgcolor="#fff" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax}/leadorder/viewimprintloc?id=<?=$row['item_inprint_id']?>">
+                        <img src="/img/leadorder/icon_glass.png" alt="Glass"/>
+                    </div>
                 </div>
                 <?php $numpp++;?>
                 <?php } ?>

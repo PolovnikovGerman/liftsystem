@@ -5,9 +5,13 @@
         <div class="items_content_item2"><?=$row['item_number']?>
             <?php if ($row['item_row']==1) { ?>
                 <?php if ($item_id>0) { ?>
-                    <div class="icon_glass newactive" data-viewsrc="/leadorder/viewitemimage?id=<?=$item_id?>">&nbsp;</div>
+                    <div class="icon_glass newactive" data-event="hover" data-bgcolor="#fff" data-bordercolor="#000" data-balloon="{ajax} /leadorder/viewitemimage?id=<?=$item_id?>">
+                        <img src="/img/leadorder/icon_glass.png" alt="Glass">
+                    </div>
                 <?php } else { ?>
-                    <div class="icon_glass">&nbsp;</div>
+                    <div class="icon_glass">
+                        <img src="/img/leadorder/icon_glass.png" alt="Glass">
+                    </div>
                 <?php } ?>                
             <?php } ?>
         </div>

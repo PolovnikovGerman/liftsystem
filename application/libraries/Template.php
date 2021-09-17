@@ -471,10 +471,10 @@ class Template
             }
             if (abs($ord_data['discount_val'])>0 && empty($ord_data['discount_descript'])) {
                 $discount_options['discnt_class']='discountdescription_red';
-                $discount_options['discnt_title']='All Discounts Must Have Valid Reason Explaining Why';
+                $discount_options['discnt_title']='data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#000" data-textcolor="#000" data-balloon="All Discounts Must Have Valid Reason Explaining Why"';
             } elseif (abs($ord_data['discount_val'])>0 && !empty($ord_data['discount_descript'])) {
                 $discount_options['discnt_class']='icon_file';
-                $discount_options['discnt_title']=$ord_data['discount_descript'];
+                $discount_options['discnt_title']='data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$ord_data['discount_descript'].'"';
             }
             if ($edit==1) {
                 $orddata['discounts_view']=$this->CI->load->view('leadorderdetails/discounts_data_edit', $discount_options, TRUE);
@@ -495,12 +495,16 @@ class Template
         $message['edit']=$edit;
         $data['messages_view']=$this->CI->load->view('leadorderdetails/message_view', $message, TRUE);
 
-
+        $profclass=orderProfitClass($orddata['profit_perc']);
+        $hlpcolor = orderProfitBg($orddata['profit_perc']);
         $profoptions=array(
             'profit_perc'=>$orddata['profit_perc'],
             'profit'=>$orddata['profit'],
             'profit_view'=>'',
             'order_id'=>$ord_data['order_id'],
+            'profit_class' => $profclass,
+            'helpborder' => $hlpcolor['border'],
+            'helpbg' => $hlpcolor['bgcolor'],
         );
         if ($usrdat['profit_view']=='Points') {
             $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';

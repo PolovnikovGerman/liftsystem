@@ -366,6 +366,32 @@ if (!function_exists('orderProfitClass')) {
     }
 }
 
+if (!function_exists('orderProfitBg')) {
+    function orderProfitBg($profit_perc) {
+        $out=['bgcolor' => '', 'border'=> ''];
+        if (round($profit_perc,0)<=0) {
+            $out['bgcolor']='#000';
+            $out['border']='#fff';
+        } elseif ($profit_perc>0 && $profit_perc<10) {
+            $out['bgcolor']='#6d0303';
+            $out['border']='#fff';
+        } elseif ($profit_perc>=10 && $profit_perc<20) {
+            $out['bgcolor']='#ff0000';
+            $out['border']='#fff';
+        } elseif ($profit_perc>=20 && $profit_perc<30) {
+            $out['bgcolor']='#ea8a0e';
+            $out['border']='#000';
+        } elseif ($profit_perc>=30 && $profit_perc<40) {
+            $out['bgcolor']='#fff';
+            $out['border']='#000';
+        } elseif ($profit_perc>=40) {
+            $out['bgcolor']='#86FF80';
+            $out['border']='#000';
+        }
+        return $out;
+    }
+}
+
 if (!function_exists('leadProfdocOut')) {
     function leadProfdocOut($profdocs, $edit=0) {
         $ci=&get_instance();

@@ -25,7 +25,7 @@
             <input type="text" class="items_input2 input_border_gray inputleaddiscount" data-field="discount_label" data-entity="order" placeholder="Courtesy Discount" value="<?=$discount_label?>"/>
         </div>
         <div class="itemdiscounticon">
-            <div class="discountdescript <?=$discnt_class?> active" title="<?=$discnt_title?>"><i class="fa fa-file-text-o" aria-hidden="true"></i></div>
+            <div class="discountdescript <?=$discnt_class?> active" <?=$discnt_title?>><i class="fa fa-file-text-o" aria-hidden="true"></i></div>
         </div>
         <div class="itemdiscountvalue">
             <input type="text" class="items_input3 input_border_gray input_text_right inputleaddiscount" data-field="discount_val" data-entity="order" value="<?=  number_format($discount_val,2)?>"/>

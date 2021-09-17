@@ -191,44 +191,6 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         edit_note(mailid);
     });
-    // $("div.proof_note_dat").qtip({
-    //     content: {
-    //         attr: 'data-content'
-    //     },
-    //     position: {
-    //         my: 'bottom right',
-    //         at: 'top left',
-    //     },
-    //     style: 'qtip-light'
-    // });
-    // $("div.proof_parsedata").qtip({
-    //     content: {
-    //         attr: 'data-content'
-    //     },
-    //     position: {
-    //         my: 'bottom right',
-    //         at: 'top left',
-    //     },
-    //     style: 'qtip-light'
-    // });
-
-    // $('div.prooflastmessageview').qtip({
-    //     content: {
-    //         text: function(event, api) {
-    //             $.ajax({
-    //                 url: api.elements.target.data('messageview') // Use href attribute as URL
-    //             }).then(function(content) {
-    //                 // Set the tooltip content upon successful retrieval
-    //                 api.set('content.text', content);
-    //             }, function(xhr, status, error) {
-    //                 // Upon failure... set the tooltip content to error
-    //                 api.set('content.text', status + ': ' + error);
-    //             });
-    //             return 'Loading...'; // Set some initial text
-    //         }
-    //     },
-    //     style: 'art_lastmessage'
-    // });
 
     $("div.proof_includ_dat").click(function(){
         var mailid=$(this).data('proofid');

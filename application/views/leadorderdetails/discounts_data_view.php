@@ -9,7 +9,7 @@
     <input type="text" class="items_input2 input_border_gray" readonly="readonly" placeholder="Courtesy Discount" value="<?= $discount_label ?>"/>
 </div>
 <div class="items_content2_bl3">
-    <div class="discountdescript <?=$discnt_class?>" title="<?=$discnt_title?>" style="margin: 41px 2px 0 5px;">
+    <div class="discountdescript <?=$discnt_class?>" <?=$discnt_title?> style="margin: 41px 2px 0 5px;">
         <i class="fa fa-file-text-o" aria-hidden="true"></i>
     </div>
     <input type="text" class="items_input3 input_border_gray input_text_right" readonly="readonly" value="<?=MoneyOutput($mischrg_val1) ?>"/>

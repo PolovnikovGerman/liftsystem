@@ -40,6 +40,7 @@ function navigation_init() {
             }
         }
     })
+    jQuery.balloon.init();
     $("input.artlocationinpt").prop('disabled', true);
     // Show Art Locat Images and AI
     init_showartlocs();
@@ -151,11 +152,11 @@ function navigation_init() {
         show_chargeattempts(order);
     })
     // Show Order Discount 
-    $("div.discountdescript.icon_file").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'right'
-    });
+    // $("div.discountdescript.icon_file").popover({
+    //     html: true,
+    //     trigger: 'hover',
+    //     placement: 'right'
+    // });
 }
 
 
@@ -1192,21 +1193,21 @@ function save_leadorderrdnote(artloc) {
 
 function init_showartlocs() {
     // View Item Images
-    $("div.icon_glass.newactive").hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('viewsrc'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'right',
-                    html: true
-                }).popover('show');
-            });
-        },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+    // $("div.icon_glass.newactive").hover(
+    //     function(){
+    //         var e=$(this);
+    //         $.get(e.data('viewsrc'),function(d) {
+    //             e.popover({
+    //                 content: d,
+    //                 placement: 'right',
+    //                 html: true
+    //             }).popover('show');
+    //         });
+    //     },
+    //     function(){
+    //         $(this).popover('hide');
+    //     }
+    // );
     $("div.uploadproofdoc").popover({
         html: true,
         trigger: 'hover',
@@ -1634,6 +1635,7 @@ function show_leadorder_imprint(orderitem) {
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             // Init Save functions
+            jQuery.balloon.init();
             init_imprint_details();
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();             
@@ -1753,27 +1755,27 @@ function init_imprint_details() {
         },'json');
     });
     // View Location
-    $("div.locattempl.active").qtip({
-        content: {
-            text: function(event, api) {
-                $.ajax({
-                    url: api.elements.target.data('content') // Use href attribute as URL
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        position: {
-            my: 'bottom right',
-            at: 'top left',
-        },
-        style: 'qtip-light'
-    });
+    // $("div.locattempl.active").qtip({
+    //     content: {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: api.elements.target.data('content') // Use href attribute as URL
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     position: {
+    //         my: 'bottom right',
+    //         at: 'top left',
+    //     },
+    //     style: 'qtip-light'
+    // });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $("#artNextModal").modal('hide');
@@ -3268,39 +3270,39 @@ function init_orderbottom_content(edit_mode) {
         },'json');
     });
     // Profit
-    $("div.profitdetailsviewarea").qtip({
-        content : {
-            text: function(event, api) {
-                $.ajax({
-                    // url: href // Use href attribute as URL
-                    // url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                    url: $(this).data('viewsrc')
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        position: {
-            my: 'bottom right',
-            at: 'middle left',
-        },
-        style: {
-            classes: 'qtip-dark profitdetails_tooltip'
-        },
-        show: {
-            effect: function() { $(this).fadeIn(250); }
-        },
-        hide: {
-           delay: 200,
-            fixed: true, // <--- add this
-           effect: function() { $(this).fadeOut(250); }
-        },
-    });
+    // $("div.profitdetailsviewarea").qtip({
+    //     content : {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 // url: href // Use href attribute as URL
+    //                 // url: api.elements.target.data('viewsrc') // Use href attribute as URL
+    //                 url: $(this).data('viewsrc')
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     position: {
+    //         my: 'bottom right',
+    //         at: 'middle left',
+    //     },
+    //     style: {
+    //         classes: 'qtip-dark profitdetails_tooltip'
+    //     },
+    //     show: {
+    //         effect: function() { $(this).fadeIn(250); }
+    //     },
+    //     hide: {
+    //        delay: 200,
+    //         fixed: true, // <--- add this
+    //        effect: function() { $(this).fadeOut(250); }
+    //     },
+    // });
 
 }
 
