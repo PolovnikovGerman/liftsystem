@@ -130,6 +130,8 @@ textarea.aprovemail_message {
     text-align: justify!important;
     border-color: #000000!important;
     font-family: arial, verdana, sans-serif;
+    max-width: 430px;
+    line-height: 20px;
 }
 /*
 

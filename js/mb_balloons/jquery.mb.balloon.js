@@ -112,7 +112,7 @@
 		},
 
 		show: function (event, opt, anim) {
-
+			$(".mbBalloon").remove();
 			if (typeof anim == "undefined")
 				anim = true;
 

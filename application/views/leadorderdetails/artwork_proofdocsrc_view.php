@@ -4,9 +4,11 @@
             <img src="/img/leadorder/star_white.png" width="18" height="18" alt="star_white">
         </div>
         <div class="proofs_line2_bl1">
-            <div class="proofs_line2_bl2 text_blue uploadproofdoc" data-content="<?=$source_name?>" data-proofdoc="<?=$artwork_proof_id?>"><?=$out_proofname?></div>
+            <div class="proofs_line2_bl2 text_blue uploadproofdoc"  data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#999" data-textcolor="#333"
+                 data-balloon="<?=$source_name?>" data-proofdoc="<?=$artwork_proof_id?>"><?=$out_proofname?></div>
             <div class="proofs_line2_bl3">                
-                <div class="proofs_line2_bl2_txt <?=$sended==0 ? '' : 'sendedproofdoc'?>" <?=$sended==0 ? '' : 'data-content="'.date('m/d/Y h:iA',$sended_time).'"'?>>
+                <div class="proofs_line2_bl2_txt <?=$sended==0 ? '' : 'sendedproofdoc'?>" <?=$sended==0 ? '' : 'data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#999" data-textcolor="#333"
+                 data-balloon="'.date('m/d/Y h:iA',$sended_time).'"'?>>
                     <?=($sended==0 ? '&nbsp;' : 'sent')?>
                 </div>                
                 <?php if ($edit==1) { ?>
