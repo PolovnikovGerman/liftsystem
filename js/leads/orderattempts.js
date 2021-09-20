@@ -50,46 +50,7 @@ function init_attempts_details() {
                 $("#pageModal").find('div.modal-dialog').css('width','1267px');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
                 $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $("div.artsubmitlog").qtip({
-                    content: {
-                        text: function(event, api) {
-                            $.ajax({
-                                url: api.elements.target.data('content') // Use href attribute as URL
-                            }).then(function(content) {
-                                // Set the tooltip content upon successful retrieval
-                                api.set('content.text', content);
-                            }, function(xhr, status, error) {
-                                // Upon failure... set the tooltip content to error
-                                api.set('content.text', status + ': ' + error);
-                            });
-                            return 'Loading...'; // Set some initial text
-                        }
-                    },
-                    position: {
-                        my: 'center right',  // Position my top left...
-                        at: 'center left', // at the bottom right of...
-                    },
-                    show: {
-                        event: 'click',
-                    },
-                    hide: {
-                        event: 'click'
-                    },
-                    style: {
-                        classes: 'artsubmitlog_tooltip'
-                    }
-                });
-                // Show full data of truncated values
-                $("div.truncateoverflowtext").qtip({
-                    content: {
-                        attr: 'data-content'
-                    },
-                    position: {
-                        my: 'bottom right',
-                        at: 'top left',
-                    },
-                    style: 'artsubmitlogdata_tooltip'
-                });
+                jQuery.balloon.init();
             } else {
                 show_error(response);
             }

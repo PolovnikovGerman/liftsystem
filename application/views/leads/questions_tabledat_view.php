@@ -14,7 +14,7 @@
         <div class="quest_custommail"><?=$row['email_sendermail']?></div>
         <div class="quest_customphone"><?=$row['email_senderphone']?></div>
         <div class="quest_type"><?=$row['email_subtype']?></div>
-        <div class="quest_text" data-content="<?=$row['email_text']?>"><?=$row['email_text']?></div>
+        <div class="quest_text" data-event="hover" data-css="question_tooltip" data-bgcolor="#fff" data-bordercolor="#000" data-textcolor="#000" data-balloon="<?=$row['email_text']?>"><?=$row['email_text']?></div>
         <div class="quest_webpage"><?=$row['email_webpage']?></div>
     </div>
     <?php $nrow++;?>

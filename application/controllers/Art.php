@@ -126,11 +126,6 @@ class Art extends MY_Controller {
 //        /* Flash MSG */
 //        $head['scripts'][]=array('src'=>'/js/jsflash/flash.js');
 //        $head['styles'][]=array('style'=>'/css/jsflash/flash.css');
-        // $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
-        // $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
-        // Ballons Tips
-        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
-        $head['styles'][] = ['style' => '/css/mb_balloons/mb.balloon.css'];
 
         $options = [
             'title' => $head['title'],
