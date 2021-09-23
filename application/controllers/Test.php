@@ -324,7 +324,7 @@ class Test extends CI_Controller
         echo 'Check Baches '.PHP_EOL;
         foreach ($batches as $batch) {
             $found=0;
-            foreach ($logs) {
+            foreach ($logs as $log) {
                 if ($batch['order_id']==$log['order_id']) {
                     if ($batch['cnt']!==$log['cnt']) {
                         echo 'Order ID ' . $batch['order_id'] . ' Logs ' . $log['cnt'] . ' Batch ' . $batch['cnt'] . PHP_EOL;
