@@ -334,7 +334,7 @@ class Test extends CI_Controller
                 }
             }
             if ($found==0) {
-                echo 'Order ID '.$batch['order_id'].' Batches not found'.PHP_EOL;
+                echo 'Order ID '.$batch['order_id'].' Logs not found'.PHP_EOL;
             }
         }
 
