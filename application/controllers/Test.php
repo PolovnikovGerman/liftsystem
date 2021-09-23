@@ -307,7 +307,6 @@ class Test extends CI_Controller
         $this->db->group_by('o.order_id');
         $batches = $this->db->get()->result_array();
         foreach ($logs as $log) {
-            $ordid = $log['order_id'];
             $found=0;
             foreach ($batches as $batch) {
                 if ($batch['order_id']==$log['order_id']) {
@@ -322,6 +321,23 @@ class Test extends CI_Controller
                 echo 'Order ID '.$log['order_id'].' Batches not found'.PHP_EOL;
             }
         }
+        echo 'Check Baches '.PHP_EOL;
+        foreach ($batches as $batch) {
+            $found=0;
+            foreach ($logs) {
+                if ($batch['order_id']==$log['order_id']) {
+                    if ($batch['cnt']!==$log['cnt']) {
+                        echo 'Order ID ' . $batch['order_id'] . ' Logs ' . $log['cnt'] . ' Batch ' . $batch['cnt'] . PHP_EOL;
+                    }
+                    $found=1;
+                    break;
+                }
+            }
+            if ($found==0) {
+                echo 'Order ID '.$batch['order_id'].' Batches not found'.PHP_EOL;
+            }
+        }
+
         echo 'Finished'.PHP_EOL;
     }
 }
