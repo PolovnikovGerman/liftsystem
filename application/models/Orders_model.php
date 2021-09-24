@@ -6264,6 +6264,16 @@ Class Orders_model extends MY_Model
                 $this->db->set('cardcode', $orddata['payment_card_vn']);
                 $this->db->set('autopay', 1);
                 $this->db->insert('ts_order_payments');
+                // Insert payment log
+                $this->db->set('paylog_date', date('Y-m-d H:i:s'));
+                $this->db->set('order_id', $neword);
+                $this->db->set('paysum',$orddata['order_total']);
+                $this->db->set('card_num', $orddata['payment_card_number']);
+                $this->db->set('card_system',$orddata['payment_card_type']);
+                $this->db->set('cvv',1);
+                $this->db->set('paysucces',1);
+                $this->db->set('api_response',$orddata['transaction_id']);
+                $this->db->insert('ts_order_paymentlog');
             }
             $out['artsync']=$artsync;
         }
