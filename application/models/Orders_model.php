@@ -5634,7 +5634,7 @@ Class Orders_model extends MY_Model
         $defrepl = 'XX';
         $datemin=new DateTime();
         $datemin->modify("-5 min");
-        $this->db->select('order_id, order_confirmation');
+        $this->db->select('order_id, order_confirmation, order_total');
         $this->db->from('sb_orders');
         $this->db->where('order_num is null');
         $this->db->where('is_void', 0);
@@ -5848,6 +5848,11 @@ Class Orders_model extends MY_Model
                         }
                     }
                 }
+                $history_msg = 'Order charged online by customer. Sum '.MoneyOutput($row['order_total']);
+                $this->db->set('artwork_id', $artw_id);
+                $this->db->set('message', $history_msg);
+                $this->db->insert('ts_artwork_history');
+
                 // Insert into ts_artdata_sync
                 $this->db->set('order_id', $artsync['order_id']);
                 $this->db->set('customer', $artsync['customer']);
