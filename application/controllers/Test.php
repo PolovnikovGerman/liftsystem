@@ -291,4 +291,53 @@ class Test extends CI_Controller
         echo 'File '.$file.' ready '.PHP_EOL;
     }
 
+    public function compare_payments() {
+        $this->db->select('o.order_id, count(p.order_paymentlog_id) as cnt');
+        $this->db->from('ts_order_paymentlog p');
+        $this->db->join('ts_orders o','p.order_id = o.order_id');
+        $this->db->where('p.paysucces',1);
+        $this->db->where('o.order_date >= ', strtotime('2021-08-01'));
+        $this->db->group_by('o.order_id');
+        $logs=$this->db->get()->result_array();
+        $this->db->select('o.order_id, count(b.batch_id) as cnt');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->where('b.batch_transaction is not null');
+        $this->db->where('o.order_date >= ', strtotime('2021-08-01'));
+        $this->db->group_by('o.order_id');
+        $batches = $this->db->get()->result_array();
+        foreach ($logs as $log) {
+            $found=0;
+            foreach ($batches as $batch) {
+                if ($batch['order_id']==$log['order_id']) {
+                    if ($batch['cnt']!==$log['cnt']) {
+                        echo 'Order ID ' . $log['order_id'] . ' Logs ' . $log['cnt'] . ' Batch ' . $batch['cnt'] . PHP_EOL;
+                    }
+                    $found=1;
+                    break;
+                }
+            }
+            if ($found==0) {
+                echo 'Order ID '.$log['order_id'].' Batches not found'.PHP_EOL;
+            }
+        }
+        echo 'Check Baches '.PHP_EOL;
+        foreach ($batches as $batch) {
+            $found=0;
+            foreach ($logs as $log) {
+                if ($batch['order_id']==$log['order_id']) {
+                    if ($batch['cnt']!==$log['cnt']) {
+                        echo 'Order ID ' . $batch['order_id'] . ' Logs ' . $log['cnt'] . ' Batch ' . $batch['cnt'] . PHP_EOL;
+                    }
+                    $found=1;
+                    break;
+                }
+            }
+            if ($found==0) {
+                echo 'Order ID '.$batch['order_id'].' Logs not found'.PHP_EOL;
+            }
+        }
+
+        echo 'Finished'.PHP_EOL;
+    }
 }
