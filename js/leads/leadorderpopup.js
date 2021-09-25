@@ -3196,7 +3196,8 @@ function init_leadorder_charges() {
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 if (response.data.ordersystem=='new') {
                     openbalancemanage(response.data.balanceopen);
-                }                
+                }
+                $("div.block_6_historytext").empty().html(response.data.history);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 $("#loader").hide();

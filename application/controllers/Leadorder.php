@@ -2538,6 +2538,10 @@ class Leadorder extends MY_Controller
                         }
                     }
                     $mdata['total_due'] = $this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+                    $msgoptions=array(
+                        'history'=>$leadorder['message']['history'],
+                    );
+                    $mdata['history']=$this->load->view('leadorderdetails/history_message_view', $msgoptions, TRUE);
                 }
             }
             // Calc new period for lock

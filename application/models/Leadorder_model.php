@@ -2665,6 +2665,22 @@ Class Leadorder_model extends My_Model {
                 'batch_transaction'=>$transres['transaction_id'],
             );
             $batch_id=$this->batches_model->save_batch($batch_data, $order, $usr_id);
+            // Update history
+            $artwork = $leadorder['artwork'];
+            $newhistory = [
+                'artwork_id' => $artwork['artwork_id'],
+                'user_id' => $usr_id,
+                'update_msg' => 'Order charged. Sum '.MoneyOutput($charge['amount']),
+            ];
+            $this->load->model('artwork_model');
+            $this->artwork_model->artwork_history_update($newhistory);
+            // New history
+            $arthistory = $this->artwork_model->get_artmsg_history($artwork['artwork_id']);
+            $artwork['art_history']=$arthistory;
+            $leadorder['artwork']=$artwork;
+            $message=$leadorder['message'];
+            $message['history']=$arthistory;
+            $leadorder['message']=$message;
             // Get New list of Payments
             $payments=$this->get_leadorder_payments($order_id);
             $total=0;
@@ -4011,6 +4027,15 @@ Class Leadorder_model extends My_Model {
         // Save Artwork
         $artres=$this->artlead_model->save_artwork($artwork, $user_id);
         $artwork_id=$artres;
+        if ($savepayment==1 && $finres['result']==$this->success_result) {
+            $newhistory = [
+                'artwork_id' => $artwork_id,
+                'user_id' => $user_id,
+                'update_msg' => 'Order charged. Sum '.MoneyOutput($finres['paytotal']),
+            ];
+            $this->load->model('artwork_model');
+            $this->artwork_model->artwork_history_update($newhistory);
+        }
         // Save order Locations
         $locations=$leadorder['artlocations'];
         if ($order_type=='new') {
@@ -5957,7 +5982,7 @@ Class Leadorder_model extends My_Model {
             'exp_month'=>'',
             'exp_year'=>'',
         );
-
+        $total_payment = 0;
         foreach ($res as $row) {
             $chkpay=0;
             if (empty($row['cardnum'])) {
@@ -6022,13 +6047,16 @@ Class Leadorder_model extends My_Model {
                     );
                     $batch_id=$this->batches_model->save_batch($batch_data, $order_data, $user_id);
                     $this->_save_order_paymentlog($order_id, $user_id, $transres['transaction_id'], $pay_options, 1);
+                    $total_payment+=$row['amount'];
                 }
             } else {
                 $this->_save_order_paymentlog($order_id, $user_id, $out['msg']);
                 return $out;
             }
         }
+        $out['paytotal'] = $total_payment;
         $out['result']=$this->success_result;
+
         return $out;
     }
 
