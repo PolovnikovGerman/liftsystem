@@ -8250,7 +8250,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=> $this->error_result, 'msg'=> 'Attempts Not Found');
         $this->db->select('l.paylog_date, u.user_name, l.paysum, l.card_num, l.card_system, l.cvv, l.paysucces, l.api_response');
         $this->db->from('ts_order_paymentlog l');
-        $this->db->join('users u','u.user_id=l.user_id');
+        $this->db->join('users u','u.user_id=l.user_id','left');
         $this->db->where('l.order_id', $order_id);
         $this->db->order_by('l.paylog_date');
         $res=$this->db->get()->result_array();
