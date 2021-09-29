@@ -5,7 +5,7 @@
 </div>
 <div class="leadclosedreportdata">
     <div class="weekdatarowtotal">
-        <div class="weekday" data-bgcolor="#a7a7a7" data-css="yeartodate_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} /leads/leadsclosed_yeartotals?brand=<?=$brand?>">
+        <div class="weekday" data-bgcolor="#a7a7a7" data-css="yeartodate_tooltip" data-event="click" data-textcolor="#000" data-bordercolor="#000" data-balloon="{ajax} /leads/leadsclosed_yeartotals?brand=<?=$brand?>">
             Year to Date
         </div>
         <div class="newleads"><?=$totals['newleads']?></div>

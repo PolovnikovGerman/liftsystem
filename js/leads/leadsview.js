@@ -249,32 +249,32 @@ function init_leadclosed_content() {
     //         init_weekleads_tips(id);
     //     }
     // });
-    $("div.weekdatarowtotal").children('div.weekday').qtip({
-        content: {
-            text: function(event, api) {
-                $.ajax({
-                    url: '/leads/leadsclosed_yeartotals?brand='+$("#leadsveiwbrand").val() // Use href attribute as URL
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        show : {
-            'event' : 'click',
-        },
-        position: {
-            my: 'bottom right',
-            at: 'middle left',
-        },
-        style: {
-            classes : 'qtip-plain yeartodate_tooltip',
-        }
-    });
+    // $("div.weekdatarowtotal").children('div.weekday').qtip({
+    //     content: {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: '/leads/leadsclosed_yeartotals?brand='+$("#leadsveiwbrand").val() // Use href attribute as URL
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     show : {
+    //         'event' : 'click',
+    //     },
+    //     position: {
+    //         my: 'bottom right',
+    //         at: 'middle left',
+    //     },
+    //     style: {
+    //         classes : 'qtip-plain yeartodate_tooltip',
+    //     }
+    // });
 }
 
 // function init_weekorders_tips(id) {

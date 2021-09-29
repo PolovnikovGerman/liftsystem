@@ -1309,11 +1309,12 @@ input.lead_searchinput {
     border: 2px solid #000000; */
 }
 .yeartodate_tooltip {
-    width: 557px;
-    max-width: 557px;
+    width: 556px;
+    padding: 8px!important;
+/*    max-width: 557px;
     float: left;
     background: #a7a7a7;
-    border: 2px solid #000000;
+    border: 2px solid #000000;*/
 }
 .weekuserorder_tooltip {
     width: 425px;
