@@ -417,12 +417,13 @@ class Test extends CI_Controller
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
         if ($fh) {
-            $msg='Item #;Item Name;Color;Qty at '.date('M d, Y', $datebgn).';Qty deducted;Qty added;Qty at '.date('M d, Y', ($dateend-1)).';Price EA;'.PHP_EOL;
+            $msg='Item #;Item Name;Color;Qty at '.date('M d, Y', $datebgn).';Qty deducted;Qty added;Qty at '.date('M d, Y', ($dateend-1)).';Price EA;Total Cost;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($data as $row) {
                 if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
                     $rest=$row['rest']+$row['income']-$row['outcome'];
-                    $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.PHP_EOL;
+                    $total=$row['rest']*$row['price'];
+                    $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
                     fwrite($fh, $msg);
                 }
             }
