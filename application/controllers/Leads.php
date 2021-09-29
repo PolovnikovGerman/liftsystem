@@ -298,10 +298,10 @@ class Leads extends My_Controller {
                 $out_options['weeks']=$data['weeks'];
                 $out_options['curweek']=$data['curweek'];
                 $out_options['totals']=$data['totals'];
+                $out_options['brand'] = $brand;
                 $mdata['content']=$this->load->view('leads/leads_closedata_view', $out_options, TRUE);
             }
             $this->ajaxResponse($mdata,$error);
-
         }
         show_404();
     }

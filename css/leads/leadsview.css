@@ -780,7 +780,8 @@ input.lead_searchinput {
     background: none #a7a7a7;
     float: left;
     padding: 4px 10px 10px;
-    width: 388px;
+    /* width: 388px; */
+    width: 411px;
 }
 .ordertotaldetailrow {
     clear: both;
@@ -1301,9 +1302,11 @@ input.lead_searchinput {
 }
 /* Tooltips */
 .curpoints_tooltip {
-    width: 198px;
-    background: #a7a7a7;
-    border: 2px solid #000000;
+    /* width: 198px; */
+    width: 233px;
+    padding: 8px!important;
+    /* background: #a7a7a7;
+    border: 2px solid #000000; */
 }
 .yeartodate_tooltip {
     width: 557px;
@@ -1313,18 +1316,21 @@ input.lead_searchinput {
     border: 2px solid #000000;
 }
 .weekuserorder_tooltip {
-    width: 420px;
-    max-width: 420px;
-    float: left;
-    background: #a7a7a7;
-    border: 2px solid #000000;
+    width: 425px;
+    padding: 8px!important;
+    /*max-width: 420px;*/
+    /*float: left;*/
+    /*background: #a7a7a7;*/
+    /*border: 2px solid #000000;*/
 }
 .weekuserleads_tooltip {
-    width: 405px;
-    max-width: 405px;
+    width: 428px;
+    /*max-width: 405px;
     float: left;
     background: #a7a7a7;
     border: 2px solid #000000;
+     */
+    padding: 8px!important;
 }
 /* Beauty Tips */
 .green_tooltip {
