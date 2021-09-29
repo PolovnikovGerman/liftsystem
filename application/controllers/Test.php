@@ -342,7 +342,7 @@ class Test extends CI_Controller
     }
 
     public function inventory_year_report() {
-        $datebgn=strtotime('2021-01-01');
+        $datebgn=strtotime('2020-01-01');
         // $dateend=strtotime('2018-12-27');
         $dateend = strtotime(date('Y-m-d'));
         $this->load->model('printshop_model');
