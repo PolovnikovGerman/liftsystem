@@ -340,4 +340,97 @@ class Test extends CI_Controller
 
         echo 'Finished'.PHP_EOL;
     }
+
+    public function inventory_year_report() {
+        $datebgn=strtotime('2020-01-01');
+        // $dateend=strtotime('2018-12-27');
+        $dateend = strtotime(date('Y-m-d'));
+        $this->load->model('printshop_model');
+        // $extracost=$this->printshop_model->invaddcost();
+        $this->db->select('c.printshop_color_id, i.item_num, i.item_name, c.color, c.price');
+        $this->db->from('ts_printshop_colors c');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->order_by('i.item_num, c.color');
+        $items=$this->db->get()->result_array();
+        $data=[];
+        $keys=[];
+        foreach ($items as $irow) {
+            $data[]=[
+                'printshop_color_id'=>$irow['printshop_color_id'],
+                'item_num'=>$irow['item_num'],
+                'item_name'=>$irow['item_name'],
+                'color'=>$irow['color'],
+                'rest'=>0,
+                'income'=>0,
+                'outcome'=>0,
+                'saved'=>0,
+                'price'=>$irow['price'],
+            ];
+            array_push($keys, $irow['printshop_color_id']);
+        }
+        // Get a rest
+        $this->db->select('printshop_color_id, sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop_color_id is not null');
+        $this->db->where('amount_date < ', $datebgn);
+        $this->db->group_by('printshop_color_id');
+        $restout=$this->db->get()->result_array();
+        foreach ($restout as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['rest']-=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
+        }
+        $this->db->select('printshop_color_id, sum(instock_amnt) as instock_amnt');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('instock_date < ', $datebgn);
+        $this->db->group_by('printshop_color_id');
+        $restin=$this->db->get()->result_array();
+        foreach ($restin as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['rest']+=$rrow['instock_amnt'];
+        }
+        // Income
+        $this->db->select('printshop_color_id, sum(instock_amnt) as instock_amnt');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('instock_date >= ', $datebgn);
+        $this->db->where('instock_date < ', $dateend);
+        $this->db->group_by('printshop_color_id');
+        $income=$this->db->get()->result_array();
+        foreach ($income as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['income']+=$rrow['instock_amnt'];
+        }
+        // Outcome
+        $this->db->select('printshop_color_id, price, sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop_color_id is not null');
+        $this->db->where('amount_date >= ', $datebgn);
+        $this->db->where('amount_date < ', $dateend);
+        $this->db->group_by('printshop_color_id, price');
+        $outcome=$this->db->get()->result_array();
+        foreach ($outcome as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['outcome']+=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
+            $data[$key]['price']=($rrow['price']);
+        }
+
+        $file=$this->config->item('upload_path_preload').'inventoryreport_price_'.date('Y', $datebgn).'.csv';
+        @unlink($file);
+        $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg='Item #;Item Name;Color;Qty at '.date('M d, Y', $datebgn).';Qty deducted;Qty added;Qty at '.date('M d, Y', ($dateend-1)).';Price EA;Total Cost;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($data as $row) {
+                if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
+                    $rest=$row['rest']+$row['income']-$row['outcome'];
+                    $total=$row['rest']*$row['price'];
+                    $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+            }
+            fclose($fh);
+        }
+        echo $file.' ready '.PHP_EOL;
+        //
+    }
+
 }
