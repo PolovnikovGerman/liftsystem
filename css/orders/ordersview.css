@@ -754,11 +754,8 @@ select.selectorderitem {
     height: 200px;
 }
 .itemcolor_tooltip {
-    background: #ffffff;
-    border: 2px solid #000000;
     width: 200px;
-    color: #000000;
-    padding: 10px;
+    padding: 8px!important;
     text-align: center;
     font-size: 13px;
     line-height: 18px;

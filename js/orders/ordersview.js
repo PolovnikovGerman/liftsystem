@@ -88,6 +88,7 @@ function pageLeadorderCallback(page_index) {
         if (response.errors=='') {
             $("div.leadorder_dataarea").empty().html(response.data.content);
             // Init new content manage
+            jQuery.balloon.init();
             init_leadorder_content();
             $("#leadorderpage").val(page_index);
             $("#loader").hide();
@@ -106,32 +107,12 @@ function init_leadorder_content() {
         $("input#leadorderactivate").val('');
         edit_leadorder(activesearch);
     }
-    // $("select.selectreplic").unbind('change').change(function(){
-    //     var repl=$(this).val();
-    //     var order=$(this).data('order');
-    //     var url="/orders/leadorder_apply";
-    //     $.post(url,{'replic': repl,'order_id':order}, function(response){
-    //         if (response.errors!='') {
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
     // Edit Order
     $("div.ordernum").unbind('click').click(function(){
         var order=$(this).parent('div').data('order');
         edit_leadorder(order);
     });
     // View full item Color
-    $("div.itemcolor.wide").qtip({
-        content: {
-            attr: 'data-content'
-        },
-        position: {
-            my: 'center right',
-            at: 'center left',
-        },
-        style: 'itemcolor_tooltip'
-    })
 }
 
 
