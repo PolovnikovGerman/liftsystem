@@ -188,38 +188,6 @@ function search_profit_data() {
             $("#totaltab1").val(response.data.totals);
             $("#curpagetab1").val(0);
             $("#orders-total-row").empty().html(response.data.total_row);
-            // $("div.profitotaltooltip").qtip({
-            //     content : {
-            //         text: function(event, api) {
-            //             $.ajax({
-            //                 // url: href // Use href attribute as URL
-            //                 url: api.elements.target.data('viewsrc') // Use href attribute as URL
-            //             }).then(function(content) {
-            //                 // Set the tooltip content upon successful retrieval
-            //                 api.set('content.text', content);
-            //             }, function(xhr, status, error) {
-            //                 // Upon failure... set the tooltip content to error
-            //                 api.set('content.text', status + ': ' + error);
-            //             });
-            //             return 'Loading...'; // Set some initial text
-            //         }
-            //     },
-            //     position: {
-            //         my: 'bottom right',
-            //         at: 'middle left',
-            //     },
-            //     style: {
-            //         classes: 'qtip-dark curpoints_tooltip'
-            //     },
-            //     show: {
-            //         effect: function() { $(this).fadeIn(250); }
-            //     },
-            //     hide: {
-            //         delay: 200,
-            //         fixed: true, // <--- add this
-            //         effect: function() { $(this).fadeOut(250); }
-            //     },
-            // });
             initProfitOrderPagination();
         } else {
             show_error(response);

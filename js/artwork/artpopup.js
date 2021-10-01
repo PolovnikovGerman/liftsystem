@@ -33,7 +33,7 @@ function artproof_lead(mailid, callpage) {
             $("#artModalLabel").empty().html('Artwork Edit');
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artModal").modal({keyboard: false, show: true}); // {backdrop: 'static', keyboard: false, show: true}
             // $("div#pop_content").empty().html(response.data.content);
             /* SAVE, EMAIL, etc buttons */
             init_popupcontent();
@@ -49,6 +49,7 @@ function init_popupcontent() {
     // $("a#popupContactClose").click(function(){
     //    disablePopup();
     // })
+    jQuery.balloon.init();
     $("div.artpopup_save").click(function(){
         save_art();
     })
@@ -873,23 +874,23 @@ function init_locations() {
         trigger: 'hover',
         placement: 'left'
     });
-    $("div.artworksource.viewsource").qtip({
-        content: {
-            text: function(event, api) {
-                $.ajax({
-                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        // style: 'art_lastmessage'
-    });
+    // $("div.artworksource.viewsource").qtip({
+    //     content: {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: api.elements.target.data('viewsrc') // Use href attribute as URL
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     // style: 'art_lastmessage'
+    // });
 }
 function change_usertxt(art_id) {
     var params=new Array();
