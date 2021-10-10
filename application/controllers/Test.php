@@ -433,4 +433,81 @@ class Test extends CI_Controller
         //
     }
 
+    public function gallery_fix() {
+        $this->db->select('custom_galleryitem_id, item_source, brand, item_deleted');
+        $this->db->from('sb_custom_galleryitems');
+        $items = $this->db->get()->result_array();
+        $path = $this->config->item('gallery_images_relative');
+        $files = $this->list_files($path);
+        foreach ($files as $file) {
+            $filename = $this->config->item('gallery_images').$file;
+            echo 'Search '.$file.PHP_EOL;
+            $find = 0;
+            foreach ($items as $item) {
+                if ($item['item_source']==$filename) {
+                    $find=1;
+                    break;
+                }
+            }
+            if ($find==1) {
+                if ($item['item_deleted']==1 || empty($item['brand'])) {
+                    @unlink($this->config->item('gallery_images_relative').$file);
+                }
+            } else {
+                @unlink($this->config->item('gallery_images_relative').$file);
+            }
+        }
+    }
+
+    function list_files($path)
+    {
+        $files = array();
+
+        if(is_dir($path))
+        {
+            if($handle = opendir($path))
+            {
+                while(($name = readdir($handle)) !== false)
+                {
+                    if(!preg_match("#^\.#", $name))
+                        if(is_dir($path . "/" . $name))
+                        {
+                            $files[$name] = list_files($path . "/" . $name);
+                        }
+                        else
+                        {
+                            $files[] = $name;
+                        }
+                }
+
+                closedir($handle);
+            }
+        }
+
+        return $files;
+    }
+
+    public function transform_galery() {
+        $this->db->select('custom_galleryitem_id, item_source');
+        $this->db->from('sb_custom_galleryitems');
+        $this->db->where('brand','SB');
+        $this->db->where('item_deleted',0);
+        $items = $this->db->get()->result_array();
+        $path = $this->config->item('gallery_images_relative');
+        $pathdest = $this->config->item('gallery_icons_relative');
+        // $files = $this->list_files($path);
+        $width = $height = '225';
+        foreach ($items as $item) {
+            $filename = str_replace($this->config->item('gallery_images'),'',$item['item_source']);
+            $fullpath = $path.$filename;
+            $writeTo = $pathdest.$filename;
+            $cmd = 'convert -quality 75 -strip -resize '.$width.'x'.$height.' '.$fullpath.' '.$writeTo;
+            exec($cmd);
+            echo 'Image '.$filename.' Converted'.PHP_EOL;
+            $this->db->where('custom_galleryitem_id', $item['custom_galleryitem_id']);
+            $this->db->set('item_icon',$this->config->item('gallery_icons').$filename);
+            $this->db->update('sb_custom_galleryitems');
+        }
+    }
+
 }
