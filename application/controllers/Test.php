@@ -341,80 +341,96 @@ class Test extends CI_Controller
         echo 'Finished'.PHP_EOL;
     }
 
-    public function gallery_fix() {
-        $this->db->select('custom_galleryitem_id, item_source, brand, item_deleted');
-        $this->db->from('sb_custom_galleryitems');
-        $items = $this->db->get()->result_array();
-        $path = $this->config->item('gallery_images_relative');
-        $files = $this->list_files($path);
-        foreach ($files as $file) {
-            $filename = $this->config->item('gallery_images').$file;
-            echo 'Search '.$file.PHP_EOL;
-            $find = 0;
-            foreach ($items as $item) {
-                if ($item['item_source']==$filename) {
-                    $find=1;
-                    break;
+    public function inventory_year_report() {
+        $datebgn=strtotime('2020-01-01');
+        // $dateend=strtotime('2018-12-27');
+        $dateend = strtotime(date('Y-m-d'));
+        $this->load->model('printshop_model');
+        // $extracost=$this->printshop_model->invaddcost();
+        $this->db->select('c.printshop_color_id, i.item_num, i.item_name, c.color, c.price');
+        $this->db->from('ts_printshop_colors c');
+        $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+        $this->db->order_by('i.item_num, c.color');
+        $items=$this->db->get()->result_array();
+        $data=[];
+        $keys=[];
+        foreach ($items as $irow) {
+            $data[]=[
+                'printshop_color_id'=>$irow['printshop_color_id'],
+                'item_num'=>$irow['item_num'],
+                'item_name'=>$irow['item_name'],
+                'color'=>$irow['color'],
+                'rest'=>0,
+                'income'=>0,
+                'outcome'=>0,
+                'saved'=>0,
+                'price'=>$irow['price'],
+            ];
+            array_push($keys, $irow['printshop_color_id']);
+        }
+        // Get a rest
+        $this->db->select('printshop_color_id, sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop_color_id is not null');
+        $this->db->where('amount_date < ', $datebgn);
+        $this->db->group_by('printshop_color_id');
+        $restout=$this->db->get()->result_array();
+        foreach ($restout as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['rest']-=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
+        }
+        $this->db->select('printshop_color_id, sum(instock_amnt) as instock_amnt');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('instock_date < ', $datebgn);
+        $this->db->group_by('printshop_color_id');
+        $restin=$this->db->get()->result_array();
+        foreach ($restin as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['rest']+=$rrow['instock_amnt'];
+        }
+        // Income
+        $this->db->select('printshop_color_id, sum(instock_amnt) as instock_amnt');
+        $this->db->from('ts_printshop_instock');
+        $this->db->where('instock_date >= ', $datebgn);
+        $this->db->where('instock_date < ', $dateend);
+        $this->db->group_by('printshop_color_id');
+        $income=$this->db->get()->result_array();
+        foreach ($income as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['income']+=$rrow['instock_amnt'];
+        }
+        // Outcome
+        $this->db->select('printshop_color_id, price, sum(shipped) as shipped, sum(kepted) as kepted, sum(misprint) as misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop_color_id is not null');
+        $this->db->where('amount_date >= ', $datebgn);
+        $this->db->where('amount_date < ', $dateend);
+        $this->db->group_by('printshop_color_id, price');
+        $outcome=$this->db->get()->result_array();
+        foreach ($outcome as $rrow) {
+            $key= array_search($rrow['printshop_color_id'], $keys);
+            $data[$key]['outcome']+=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
+            $data[$key]['price']=($rrow['price']);
+        }
+
+        $file=$this->config->item('upload_path_preload').'inventoryreport_price_'.date('Y', $datebgn).'.csv';
+        @unlink($file);
+        $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg='Item #;Item Name;Color;Qty at '.date('M d, Y', $datebgn).';Qty deducted;Qty added;Qty at '.date('M d, Y', ($dateend-1)).';Price EA;Total Cost;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($data as $row) {
+                if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
+                    $rest=$row['rest']+$row['income']-$row['outcome'];
+                    $total=$row['rest']*$row['price'];
+                    $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
+                    fwrite($fh, $msg);
                 }
             }
-            if ($find==1) {
-                if ($item['item_deleted']==1 || empty($item['brand'])) {
-                    @unlink($this->config->item('gallery_images_relative').$file);
-                }
-            } else {
-                @unlink($this->config->item('gallery_images_relative').$file);
-            }
+            fclose($fh);
         }
+        echo $file.' ready '.PHP_EOL;
+        //
     }
 
-    function list_files($path)
-    {
-        $files = array();
-
-        if(is_dir($path))
-        {
-            if($handle = opendir($path))
-            {
-                while(($name = readdir($handle)) !== false)
-                {
-                    if(!preg_match("#^\.#", $name))
-                        if(is_dir($path . "/" . $name))
-                        {
-                            $files[$name] = list_files($path . "/" . $name);
-                        }
-                        else
-                        {
-                            $files[] = $name;
-                        }
-                }
-
-                closedir($handle);
-            }
-        }
-
-        return $files;
-    }
-
-    public function transform_galery() {
-        $this->db->select('custom_galleryitem_id, item_source');
-        $this->db->from('sb_custom_galleryitems');
-        $this->db->where('brand','SB');
-        $this->db->where('item_deleted',0);
-        $items = $this->db->get()->result_array();
-        $path = $this->config->item('gallery_images_relative');
-        $pathdest = $this->config->item('gallery_icons_relative');
-        // $files = $this->list_files($path);
-        $width = $height = '225';
-        foreach ($items as $item) {
-            $filename = str_replace($this->config->item('gallery_images'),'',$item['item_source']);
-            $fullpath = $path.$filename;
-            $writeTo = $pathdest.$filename;
-            $cmd = 'convert -quality 75 -strip -resize '.$width.'x'.$height.' '.$fullpath.' '.$writeTo;
-            exec($cmd);
-            echo 'Image '.$filename.' Converted'.PHP_EOL;
-            $this->db->where('custom_galleryitem_id', $item['custom_galleryitem_id']);
-            $this->db->set('item_icon',$this->config->item('gallery_icons').$filename);
-            $this->db->update('sb_custom_galleryitems');
-        }
-    }
 }
