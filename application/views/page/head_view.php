@@ -19,3 +19,6 @@
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>
 <script src="/js/adminpage/jquery.qtip.js"></script>
+<?php if ($gmaps==1) { ?>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('googlemapapi')?>&libraries=places&v=weekly" async></script>
+<?php } ?>

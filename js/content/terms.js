@@ -1,5 +1,5 @@
 function init_terms_view(brand) {
-    window_alignment();
+    // window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -10,7 +10,7 @@ function init_terms_view(brand) {
     $(".displaytermsdata").unbind('click').click(function(){
         display_terms();
     });
-    $(".edit_button[data-page='terms']").unbind('click').click(function () {
+    $(".edit_button[data-link='termsview']").unbind('click').click(function () {
         init_termspage_edit(brand);
     });
 }
@@ -43,8 +43,12 @@ function init_termspage_edit(brand) {
         if (response.errors == '') {
             if (brand=='BT') {
                 $("#bttermsview").empty().html(response.data.content);
-            } else {
+                $(".submenu_manage[data-link='bttermsview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='bttermsview']").find('div.buttons').empty().html(response.data.buttons);
+            } else if (brand=='SB') {
                 $("#sbtermsview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbtermsview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
             }
             $(".content_preview").on('click', function () {
                 var url = $("#terms_previewurl").val();

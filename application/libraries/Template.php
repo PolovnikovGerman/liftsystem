@@ -31,6 +31,9 @@ class Template
         if (isset($options['styles'])) {
             $styles=$options['styles'];
         }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
         $scripts=[];
         if (isset($options['scripts'])) {
             $scripts=$options['scripts'];
@@ -60,6 +63,9 @@ class Template
         $styles=[];
         if (isset($options['styles'])) {
             $styles=$options['styles'];
+        }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
         }
         $scripts=[];
         if (isset($options['scripts'])) {
@@ -123,6 +129,7 @@ class Template
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => ifset($options, 'gmaps', 0),
         ];
 
         $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);

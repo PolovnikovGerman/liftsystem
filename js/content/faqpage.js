@@ -1,5 +1,5 @@
 function init_faqpage_view(brand) {
-    window_alignment();
+    // window_alignment();
     // Show / hide content, other
     $(".displaymeta").unbind('click').click(function () {
         display_metadata();
@@ -11,7 +11,7 @@ function init_faqpage_view(brand) {
         var section = $(this).data('faqsection');
         display_faqsection(section);
     });
-    $(".edit_button[data-page='faq']").unbind('click').click(function () {
+    $(".edit_button[data-link='faqview']").unbind('click').click(function () {
         init_faqpage_edit(brand);
     });
 }
@@ -44,8 +44,12 @@ function init_faqpage_edit(brand) {
         if (response.errors=='') {
             if (brand=='SB') {
                 $("#sbfaqview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbfaqview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbfaqview']").find('div.buttons').empty().html(response.data.buttons);
             } else {
                 $("#btfaqview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='btfaqview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='btfaqview']").find('div.buttons').empty().html(response.data.buttons);
             }
             $(".content_preview").on('click',function () {
                 var url=$("#faq_previewurl").val();
