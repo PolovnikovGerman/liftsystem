@@ -3,19 +3,92 @@ html {
     font-family: Helvetica;
 }
 body {
-    margin-left: auto;
-    margin-right: auto;
-    font-family: Helvetica;
-    background-color: #fff;
-    margin-top: 0;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    font-family: Helvetica!important;
+    background-color: #fff!important;
+    margin-top: 0!important;
 }
+
 /* Common classes */
 input::placeholder {
     font-style: italic;
 }
 body div {
-    float: left;
+    /* float: left; */
 }
+.header {
+    background: #252525;
+}
+.login-form {
+    background: #252525;
+    height: 780px;
+    overflow: hidden;
+    background: #252525;
+}
+.signin_form {
+    width: 45%;
+    margin-right: auto;
+    margin-left: auto;
+    background: url(/img/signin/signin_form.png) no-repeat;
+    background-position: bottom right;
+}
+.go {
+    cursor: pointer;
+    float: right;
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+    bottom: 4.8rem;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .signin_form {
+        background-position: bottom 3.2rem right;
+    }
+    .go {
+        bottom: 4.6rem;
+    }
+}
+
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .signin_form {
+        width: 60%;
+        background-position: bottom 2.8rem right;
+    }
+    .go {
+        bottom: 4.3rem;
+    }
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .signin_form {
+        width: 70%;
+        background-position: bottom 3.3rem right;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .signin_form {
+        width: 85%;
+        background-position: bottom 2.8rem right;
+    }
+    .go {
+        bottom: 4.2rem;
+    }
+}
+
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .signin_form {
+        width: 95%;
+        background-position: bottom 0.8rem right;
+        height: 8.3rem;
+    }
+}
+/*
 .datarow {
     clear: both;
     width: 100%;
@@ -63,3 +136,4 @@ input.signinformelement {
     top: -61px;
     border-radius: 50%;
 }
+ */
