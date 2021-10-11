@@ -1,3 +1,7 @@
+.maincontent div {
+    float: unset!important;
+    line-height: unset!important;
+}
 .maincontentmenuarea {
     padding: 10px!important;
 }
