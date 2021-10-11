@@ -1,0 +1,136 @@
+.maincontentmenuarea {
+    padding: 10px!important;
+}
+.dbcenter_pagetitle {
+    margin: 0.8rem 0 0.95rem 1.6rem;
+    height: 2.25rem;
+    line-height: 2.25rem!important;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+}
+.dbcenter_master_title {
+    height: 2.25rem;
+    line-height: 2.25rem!important;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+}
+.dbcenter_master_item {
+    background-image: url('/img/database_center/master_item_btn.png');
+    width: 95%;
+    height: auto;
+    color: #ffffff;
+    cursor: pointer;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.dbcenter_master_item:hover {
+    background-image: url('/img/database_center/master_itemhover_btn.png');
+}
+.dbcenter_master_item > .mastrelabel {
+    font-size: 0.9375rem;
+    font-weight: bold;
+    text-shadow: 0.1rem 0 0.2rem #333333;
+    margin-top: 0.75rem;
+}
+.dbcenter_master_item > .itemlabel {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0.1875rem 0 0.375rem #333333;
+    text-transform: uppercase;
+}
+.dbcenter_channels_title {
+    height: 2rem;
+    line-height: 2rem!important;
+    margin-top: 4rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+.dbcenter_channel_item {
+    background-image: url('/img/database_center/channel_item_btn.png');
+    width: 95%;
+    cursor: pointer;
+    height: 60px;
+    line-height: 55px!important;
+    font-size: 21px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-repeat: no-repeat;
+    /* background-size: 100%; */
+}
+.dbcenter_channel_item:hover {
+    background-image: url('/img/database_center/channel_itemhover_btn.png');
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .dbcenter_master_item {
+        height: 6.8rem;
+    }
+    .dbcenter_master_item > .mastrelabel {
+    }
+    .dbcenter_master_item > .itemlabel {
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .dbcenter_master_item {
+        height: 5.6rem;
+    }
+    .dbcenter_master_item > .mastrelabel {
+    }
+    .dbcenter_master_item > .itemlabel {
+    }
+    .dbcenter_channel_item {
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .dbcenter_master_item {
+        height: 7.2rem;
+    }
+    .dbcenter_master_item > .mastrelabel {
+        font-size: 1.5rem;
+        margin-top: 1rem;    }
+    .dbcenter_master_item > .itemlabel {
+        font-size: 1.75rem;
+    }
+    .dbcenter_channel_item {
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .dbcenter_master_item {
+        height: 4.8rem;
+    }
+    .dbcenter_master_item > .mastrelabel {
+    }
+    .dbcenter_master_item > .itemlabel {
+    }
+    .dbcenter_channel_item {
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .dbcenter_master_item {
+        height: 3.6rem;
+    }
+    .dbcenter_master_item > .mastrelabel {
+        font-size: 0.8rem;
+        margin-top: 0.2rem;
+    }
+    .dbcenter_master_item > .itemlabel {
+        font-size: 1.1rem;
+    }
+    .dbcenter_channel_item {
+    }
+    .pl-sm-0 {
+        padding-left: 0!important;
+    }
+    .pr-sm-0 {
+        padding-right: 0!important;
+    }
+}

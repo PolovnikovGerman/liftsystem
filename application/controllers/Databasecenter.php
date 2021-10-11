@@ -98,12 +98,12 @@ class Databasecenter extends MY_Controller
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
         // Add main page management
-        $head['styles'][] = array('style' => '/css/database_center/main_page.css');
+        $head['styles'][] = array('style' => '/css/database_center/main_addoptpage.css');
         $head['scripts'][] = array('src' => '/js/database_center/main_page.js');
         // Item details
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_view = $this->load->view('database_center/page_view', $content_options, TRUE);
+        $content_view = $this->load->view('database_center/page_device_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
