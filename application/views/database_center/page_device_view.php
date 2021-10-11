@@ -45,23 +45,123 @@
                         </div>
                     <?php } ?>
                     <?php if ($channelcnt==1) { ?>
-                        <div class="row">
+                        <div class="row mb-lg-3">
                             <div class="col-12 dbcenter_channels_title">Channel Lists:</div>
                         </div>
                         <div class="row">
-                            <?php if (isset($channelsb) && !empty($channelsb)) { ?>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+                            <?php if (isset($channelsb) && count($channelsb)>0) { ?>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="col-12 channel_logo sblogo"><img src="/img/database_center/stressballs_logo.png" class="img-responsive img-fluid" alt="Stressball"/></div>
-                                    <div class="row mt-3">
+                                    <div class="row mt-3 mb-3">
                                         <?php foreach ($channelsb as $item) { ?>
                                             <?php if ($item['item_link']=='#sbitems') { ?>
-                                                <div class="col-12 dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                </div>
                                             <?php } elseif ($item['item_link']=='#sbcustomers')  { ?>
-                                                <div class="col-12 dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Customers</div>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Customers</div>
+                                                </div>
                                             <?php } elseif ($item['item_link']=='#sbpages') { ?>
-                                                <div class="col-12 dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Pages</div>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Pages</div>
+                                                </div>
                                             <?php } elseif ($item['item_link']=='#sbsettings') { ?>
-                                                <div class="col-12 dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Settings</div>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="stressballs" data-start="<?=str_replace('#', '', $item['item_link'])?>">Settings</div>
+                                                </div>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (isset($channelnsb) && count($channelnsb)>0) { ?>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                                    <div class="channel_logo natsblogo"><img src="/img/database_center/national_sb_logo.png" class="img-responsive img-fluid" alt="Nat Stressball"/></div>
+                                    <div class="row mt-3 mb-3">
+                                        <?php foreach ($channelnsb as $item) { ?>
+                                            <?php if ($item['item_link']=='#nsbitems') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="nationalsb" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#nsbcustomers') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="nationalsb" data-start="<?=str_replace('#', '', $item['item_link'])?>">Customers</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#nsbpages') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="nationalsb" data-start="<?=str_replace('#', '', $item['item_link'])?>">Pages</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#nsbsettings') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="nationalsb" data-start="<?=str_replace('#', '', $item['item_link'])?>">Settings</div>
+                                                </div>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (isset($channelbt) && count($channelbt)>0) { ?>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                                    <div class="channel_logo btlogo"><img src="/img/database_center/bluetrack_logo.png" class="img-responsive img-fluid" alt="Bluetrack"/></div>
+                                    <div class="row mt-3 mb-3">
+                                        <?php foreach ($channelbt as $item) { ?>
+                                            <?php if ($item['item_link']=='#btitems') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="bluetrack" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btcustomers') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="bluetrack" data-start="<?=str_replace('#', '', $item['item_link'])?>">Customers</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btpages') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="bluetrack" data-start="<?=str_replace('#', '', $item['item_link'])?>">Pages</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btsettings') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="bluetrack" data-start="<?=str_replace('#', '', $item['item_link'])?>">Settings</div>
+                                                </div>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (isset($channellbt) && count($channellbt)>0) { ?>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                                    <div class="channel_logo btleglogo"><img src="/img/database_center/bluetrack_legacy_logo.png" class="img-responsive img-fluid" alt="Bluetrack Legal"/></div>
+                                    <div class="row mt-3 mb-3">
+                                        <?php foreach ($channellbt as $item) { ?>
+                                            <?php if ($item['item_link']=='#btlegitems') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="btlegacy" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btlegcustomers') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="btlegacy" data-start="<?=str_replace('#', '', $item['item_link'])?>">Customers</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btlegpages') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="btlegacy" data-start="<?=str_replace('#', '', $item['item_link'])?>">Pages</div>
+                                                </div>
+                                            <?php } elseif ($item['item_link']=='#btlegsettings') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="btlegacy" data-start="<?=str_replace('#', '', $item['item_link'])?>">Settings</div>
+                                                </div>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (isset($channelamz) && count($channelamz)>0) { ?>
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                                    <div class="channel_logo amazlogo"><img src="/img/database_center/amazon_logo.png" class="img-responsive img-fluid" alt="Amazon"/></div>
+                                    <div class="row mt-3 mb-3">
+                                        <?php foreach ($channelamz as $item) { ?>
+                                            <?php if ($item['item_link']=='#amazitems') { ?>
+                                                <div class="col-12">
+                                                    <div class="dbcenter_channel_item" data-brand="amazon" data-start="<?=str_replace('#', '', $item['item_link'])?>">Items</div>
+                                                </div>
                                             <?php } ?>
                                         <?php } ?>
                                     </div>
