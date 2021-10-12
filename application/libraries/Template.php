@@ -131,8 +131,12 @@ class Template
             'title' => ($this->CI->config->item('system_name').$pagetitle),
             'gmaps' => ifset($options, 'gmaps', 0),
         ];
+        if (ifset($options,'adaptive',0)==1) {
+            $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
+        } else {
+            $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
+        }
 
-        $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
 
         $topmenu_options = [
             'user_name' => $options['user_name'],
@@ -146,7 +150,12 @@ class Template
             'resourcechk' => $resource_permissions,
             'resourceold' => $resource_old,
         ];
-        $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        if (ifset($options,'adaptive',0)==1) {
+            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
+        } else {
+            $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        }
+
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);
         return $dat;
     }

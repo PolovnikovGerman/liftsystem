@@ -101,7 +101,15 @@ class Databasecenter extends MY_Controller
         $head['styles'][] = array('style' => '/css/database_center/main_addoptpage.css');
         $head['scripts'][] = array('src' => '/js/database_center/main_page.js');
         // Item details
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'adaptive' => 1,
+        ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_view = $this->load->view('database_center/page_device_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
@@ -118,7 +126,7 @@ class Databasecenter extends MY_Controller
             'menu' => $menu,
             'start' => $start,
         ];
-        $page_menu = $this->load->view('database_center/master_head_menu', $menu_options, TRUE);
+        $page_menu = $this->load->view('database_center/master_adptive_headmenu', $menu_options, TRUE);
         // Add main page management
         $content_options=[
             'page_menu' => $page_menu,
@@ -127,7 +135,7 @@ class Databasecenter extends MY_Controller
             if ($row['item_link']=='#mastercustomer') {
 
             } elseif ($row['item_link']=='#mastervendors') {
-                $head['styles'][]=array('style'=>'/css/database_center/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/database_center/vendorsadapview.css');
                 $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
                 $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
                 $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
@@ -148,7 +156,7 @@ class Databasecenter extends MY_Controller
             }
 
         }
-        $head['styles'][] = array('style' => '/css/database_center/master_page.css');
+        $head['styles'][] = array('style' => '/css/database_center/master_adaptivepage.css');
         $head['scripts'][] = array('src' => '/js/database_center/master_page.js');
 
         // Utils
@@ -163,7 +171,16 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],'gmaps' => ifset($head, 'gmaps', 0)];
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0),
+            'adaptive' => 1,
+        ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
@@ -298,7 +315,7 @@ class Databasecenter extends MY_Controller
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_adaptive_view', $options, TRUE);
         return $content;
     }
 
