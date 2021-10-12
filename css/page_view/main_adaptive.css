@@ -54,78 +54,156 @@ input::placeholder {
 body div {
     /* float: left; */
 }
+.mainheader {
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 10px;
+    background: #252525;
+}
+.bluetrack_logo img {
+    height: 27px;
+    width: auto;
+}
+.bluetrack_logo {
+    float: left;
+}
+.lift_logo {
+    float: left;
+}
+.lift_logo img {
+    padding-top: 20px;
+    padding-left: 4px;
+}
 .datarow {
     clear: both;
     width: 100%;
+    line-height: 1rem;
 }
-.mainheader {
-    /* width: calc(100% - 10px); */
-    width: 100%;
-    /* height: 66px;
-    background: #252525;
-    padding: 7px 5px; */
-    /* height: 73px; */
-    float: left;
-    background: #252525;
-    padding: 7px 10px;
+.lm-userinfo {
+
 }
-.mainheader div {
-/*    float: left;
-    line-height: initial;*/
+.lm-userinfo .signout {
+    color: #82f8ff;
+    font-family: Helvetica-Oblique;
+    font-size: 12px;
+    font-style: italic;
+    width: 50px;
+    padding-top: 1px;
+    float: right!important;
+    cursor: pointer;
 }
-.brands-logos {
-    /* width: 282px; */
-}
-.brands-logos > .bluetrack_logo {
-    height: 32px;
-    width: 107px;
-}
-.brands-logos > .stressballs_logo {
-    height: 32px;
-    width: 119px;
-}
-.brands-logos > .lift_logo {
-    height: 17px;
-    padding-top: 15px;
-    width: 49px;
-}
-.period_analitic_info {
-    border: 1px solid #9b9b9b;
-}
-.period_analitic_info div {
-    height: 24px;
-    line-height: 24px;
+.lm-userinfo .usersigninfo {
+    float: right!important;
+    padding-right: 7px;
+    text-align: right;
     color: #ffffff;
+    font-family: Helvetica-Oblique;
+    font-style: italic;
+    font-size: 14px;
 }
-.period_analitic_info .period_name {
+.lm-userinfo .dateinfo {
+    float: right!important;
+    padding-right: 7px;
+    text-align: right;
+    color: #979797;
+    font-family: Helvetica;
+    font-size: 0.8rem;
+    line-height: 0.9rem;
+}
+.lm-period_analitic_info {
+    margin-top: 0.7rem;
+    border: 1px solid #9b9b9b;
+    float: left;
+}
+.lm-period_analitic_info .period_name {
     width: 86px;
     text-align: center;
     font-family: Arial;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 0.85rem;
     color: #55aeff;
     text-transform: uppercase;
+    line-height: 1.4rem;
 }
-.period_analitic_info .param_value_label {
+.lm-period_analitic_info div {
+    height: 24px;
+    line-height: 24px;
+    color: #ffffff;
+}
+.lm-period_analitic_info .param_value_label {
     text-align: right;
     padding-right: 7px;
     text-transform: uppercase;
     font-family: Helvetica CE;
-    font-size: 12px;
+    font-size: 0.75rem;
     cursor: pointer;
+    line-height: 1.5rem;
 }
-.period_analitic_info .param_value {
+.lm-period_analitic_info .param_value {
     min-width: 26px;
     font-family: Helvetica-Bold;
-    font-size: 18px;
+    font-size: 1.1rem;
     padding-right: 7px;
     cursor: pointer;
+    line-height: 1.4rem;
 }
-.period_analitic_info .param_value.money {
+.lm-period_analitic_info .param_value.money {
     min-width: 45px;
     border-left: 1px solid #9b9b9b;
     padding-left: 7px;
     cursor: pointer;
+    line-height: 1.4rem;
+}
+.lm-period_analitic_info div {
+    float: left;
+    line-height: initial;
+}
+.lm-publicsearch {
+    margin-top: 0.2rem;
+    float: left;
+}
+.lm-publicsearch > input.publicsearch_template {
+    border: 1px solid #088aff;
+    height: 26px;
+    line-height: 26px;
+    font-size: 14px;
+    font-family: Arial;
+    padding-left: 6px;
+    width: 111px;
+}
+.lm-publicsearch > .publicsearch_btn {
+    position: relative;
+    float: right;
+    left: -21px;
+    top: -1px;
+    cursor: pointer;
+}
+.lm-menuitem-list .nav-link {
+    padding: 0!important;
+}
+.lm-menuitem-list {
+    float: right;
+    margin-top: 1.1rem;
+}
+.lm-menuitem-list .dropdown-menu {
+    right: 0;
+    left: auto;
+    color: #d7d7d7;
+    background-color: #6b6b6b;
+    border: none;
+    border-radius: 0.25rem;
+}
+.lm-menuitem-list .dropdown-item {
+    color: #d7d7d7;
+    font-family: Arial;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+.dropdown-toggle::after {
+    display: none!important;
+}
+#dropdownMenu2 {
+    padding: 0.175rem .175rem;
 }
 .publicsearch {
     margin-left: 5px;
@@ -639,6 +717,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     cursor: pointer;
     min-width: 60px;
     padding: 0 16px;
+    float: left;
 }
 .menuitem.oldver {
     padding: 0 16px 0 4px!important;
@@ -675,16 +754,23 @@ div.oldvesionlabel {
     margin-right: -15px;
 }
 .menurow > .row {
-    width: 100%;
+    /* width: 100%; */
+    margin-bottom: 0.4rem;
 }
 .marketmenusection {
     margin-left: 40px;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .mobilemainmenu {
+        display: none;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
+    .mobilemainmenu {
+        display: none;
+    }
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {

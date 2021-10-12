@@ -150,7 +150,12 @@ class Template
             'resourcechk' => $resource_permissions,
             'resourceold' => $resource_old,
         ];
-        $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        if (ifset($options,'adaptive',0)==1) {
+            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
+        } else {
+            $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        }
+
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);
         return $dat;
     }
