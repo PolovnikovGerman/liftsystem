@@ -131,8 +131,12 @@ class Template
             'title' => ($this->CI->config->item('system_name').$pagetitle),
             'gmaps' => ifset($options, 'gmaps', 0),
         ];
+        if (ifset($options,'adaptive',0)==1) {
+            $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
+        } else {
+            $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
+        }
 
-        $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
 
         $topmenu_options = [
             'user_name' => $options['user_name'],

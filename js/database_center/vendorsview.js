@@ -111,7 +111,7 @@ function pageVendorCallback(page_index) {
     $.post('/vendors/vendordata', params, function(response){
         if (response.errors=='') {
             $("#loader").hide();
-            $("div#vendorinfo").empty().html(response.data.content);
+            // $("div#vendorinfo").empty().html(response.data.content);
             init_vendor_content();
         } else {
             $("#loader").hide();
