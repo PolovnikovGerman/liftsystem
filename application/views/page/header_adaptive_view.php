@@ -38,9 +38,9 @@
                         <img src="/img/page_view/icon-menu.png">
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">Action</button>
-                        <button class="dropdown-item" type="button">Another action</button>
-                        <button class="dropdown-item" type="button">Something else here</button>
+                        <?php foreach ($menu as $menurow) { ?>
+                            <button class="dropdown-item" type="button" data-menulink="<?= $menurow['item_link'] ?>"><?=$menurow['item_name']?></button>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

@@ -79,6 +79,8 @@ class Template
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
         ];
         $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
+        // Mobile menu
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
         // Admin and Alerts
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
@@ -132,6 +134,7 @@ class Template
             'gmaps' => ifset($options, 'gmaps', 0),
         ];
         if (ifset($options,'adaptive',0)==1) {
+            $head_options['menu'] = $mobpermissions;
             $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
         } else {
             $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);

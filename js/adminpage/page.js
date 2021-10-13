@@ -64,6 +64,10 @@ $(document).ready(function () {
     $("#showtotalthisweek").unbind('click').click(function () {
         window.location.href='/orders';
     })
+    $("button.dropdown-item").unbind('click').click(function () {
+        var url = $(this).data('menulink');
+        window.location.href=url;
+    })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
 });
