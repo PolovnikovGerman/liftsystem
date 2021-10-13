@@ -23,16 +23,46 @@
                 </div>
             </div>
         </div>
-        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
-            <div class="testsitelabel">TEST</div>
+        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="testsitelabel">TEST</div>
+                </div>
+            </div>
         <?php } ?>
         <div class="row">
             <div class="col-9 pr-0">
+                <?php if ($reportchk) { ?>
+                    <div class="inforeports" id="reports">
+                        <div class="icon">
+                            <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                        </div>
+                        <div class="infotext">Reports</div>
+                    </div>
+                <?php } ?>
                 <div class="lm-period_analitic_info">
                     <?=$total_view?>
                 </div>
             </div>
             <div class="col-3 pl-0">
+                <div class="desctopadminmenu">
+                    <?php if ($adminchk) { ?>
+                        <div class="infoalerts" id="admin">
+                            <div class="alerticon admin">
+                                <img src="/img/icons/cog_white.svg" class="img-responsive"/>
+                            </div>
+                            <div class="alerttext">Admin</div>
+                        </div>
+                    <?php } ?>
+                    <?php if ($resourcechk) { ?>
+                        <div class="infoalerts resources" id="resources">
+                            <div class="alerticon">
+                                <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                            </div>
+                            <div class="alerttext">Resources</div>
+                        </div>
+                    <?php } ?>
+                </div>
                 <div class="dropdown lm-menuitem-list mobilemainmenu">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="/img/page_view/icon-menu.png">

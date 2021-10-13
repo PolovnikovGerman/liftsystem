@@ -276,8 +276,9 @@ body div {
     height: 26px;
     color: #ffffff;
     width: 105px;
-    margin: 0.25rem 4px 0 4px;
+    margin: 0.7rem 4px 0 4px;
     cursor: pointer;
+    float: left;
 }
 .inforeports:hover {
     background: #000080;
@@ -289,6 +290,7 @@ body div {
     width: 15px;
     padding-top: 4px;
     margin-left: 12px;
+    float: left;
 }
 .inforeports.oldver .icon {
     margin-left: -3px!important;
@@ -296,6 +298,7 @@ body div {
 .inforeports .icon img {
     width: 100%;
     height: auto;
+    float: left;
 }
 .inforeports .infotext {
     padding-left: 7px;
@@ -303,6 +306,7 @@ body div {
     font-size: 14px;
     height: 26px;
     line-height: 26px!important;
+    float: left;
 }
 .infoalerts {
     border: 1px solid #9b9b9b;
@@ -310,8 +314,10 @@ body div {
     color: #ffffff;
     width: 90px;
     margin-right: 4px;
+    margin-top: 0.7rem;
     float: right!important;
     cursor: pointer;
+    float: left;
 }
 .infoalerts:hover {
     background: #000080;
@@ -324,6 +330,7 @@ body div {
     width: 15px;
     padding-top: 6px;
     margin-left: 12px;
+    float: left;
 }
 .resources.oldver .alerticon {
     margin-left: -3px;
@@ -337,6 +344,7 @@ body div {
 .infoalerts .alerticon img {
     width: 100%;
     height: auto;
+    float: left;
 }
 .alerttext {
     padding-left: 7px;
@@ -344,6 +352,7 @@ body div {
     font-size: 14px;
     height: 26px;
     line-height: 26px!important;
+    float: left;
 }
 .menurow {
     padding-top: 7px;
@@ -770,11 +779,17 @@ div.oldvesionlabel {
     .mobilemainmenu {
         display: none;
     }
+    .desctopadminmenu {
+        display: flex;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
     .mobilemainmenu {
         display: none;
+    }
+    .desctopadminmenu {
+        display: flex;
     }
 }
 /* Portrait tablets and small desktops */
@@ -782,7 +797,13 @@ div.oldvesionlabel {
     .menuitem {
         display: none;
     }
+    .desctopadminmenu {
+        display: none;
+    }
     .infoalerts {
+        display: none;
+    }
+    .inforeports {
         display: none;
     }
     .menuitem.activelink {
@@ -791,10 +812,16 @@ div.oldvesionlabel {
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
+    .desctopadminmenu {
+        display: none;
+    }
     .menuitem {
         display: none;
     }
     .infoalerts {
+        display: none;
+    }
+    .inforeports {
         display: none;
     }
     .menuitem.activelink {
@@ -803,13 +830,26 @@ div.oldvesionlabel {
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
+    .desctopadminmenu {
+        display: none;
+    }
     .menuitem {
         display: none;
     }
     .infoalerts {
         display: none;
     }
+    .inforeports {
+        display: none;
+    }
     .menuitem.activelink {
         display: block;
     }
+    .testsitelabel {
+        font-size: 14px!important;
+    }
+}
+.testsitelabel {
+    margin-left: 0!important;
+    margin-top: -30px;
 }

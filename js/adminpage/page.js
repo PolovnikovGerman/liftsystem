@@ -3,9 +3,7 @@ var timeLapse = 600000;
 $(document).ready(function () {
     clearTimeout(timerId);
     // Calc
-    var allwidth = parseInt(window.innerWidth);
-    var freespace = (allwidth - (parseInt($(".finmenusection").css('width')) + parseInt($(".marketmenusection").css('width')) + parseInt($(".contentmenusection").css('width'))))/2;
-    $(".marketmenusection").css('margin-left',freespace+'px');
+    rebuild_market_offset()
     // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     // $(window).resize(function() {
@@ -71,6 +69,16 @@ $(document).ready(function () {
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
 });
+
+$(window).resize(function() {
+    rebuild_market_offset();
+});
+
+function rebuild_market_offset() {
+    var allwidth = parseInt(window.innerWidth);
+    var freespace = (allwidth - (parseInt($(".finmenusection").css('width')) + parseInt($(".marketmenusection").css('width')) + parseInt($(".contentmenusection").css('width'))))/2;
+    $(".marketmenusection").css('margin-left',freespace+'px');
+}
 
 function autocollapse(resize) {
     var tabs = $("#mainmenutabs");
