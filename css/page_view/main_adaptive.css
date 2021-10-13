@@ -188,6 +188,7 @@ body div {
 .lm-menuitem-list .dropdown-menu {
     right: 0;
     left: auto;
+    /* left: -15px!important;*/
     color: #d7d7d7;
     background-color: #6b6b6b;
     border: none;
@@ -198,6 +199,10 @@ body div {
     font-family: Arial;
     font-size: 0.9rem;
     font-weight: bold;
+}
+.lm-menuitem-list .dropdown-item.activelink {
+    background-color: #0000ff;
+    color: #ffffff;
 }
 .dropdown-toggle::after {
     display: none!important;
