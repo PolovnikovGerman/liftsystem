@@ -40,7 +40,20 @@
                     <div class="totaldata"><?=QTYOutput($total)?> Records</div>
                 </div>
             </div>
-
         </div>
+        <div class="datatitle">
+            <div class="status">
+                <div class="addnewvendor">+ add</div>
+            </div>
+            <div class="type">Type</div>
+            <div class="slug sortable" data-sortcell="vendor_slug">Vend #</div>
+            <div class="name sortable active" data-sortcell="vendor_name">Vendor Name  <div class="ascsort">&nbsp;</div></div>
+            <div class="altname sortable" data-sortcell="alt_name">Alternate Name</div>
+            <div class="asinumber sortable" data-sortcell="alt_name">ASI #</div>
+            <div class="website">Website</div>
+            <div class="phone">Phone</div>
+            <div class="itemqty">Our Items</div>
+        </div>
+        <div class="dataarea" id="vendorinfo"></div>
     </div>
 </main>
