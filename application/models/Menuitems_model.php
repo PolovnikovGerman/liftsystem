@@ -845,5 +845,16 @@ Class Menuitems_model extends MY_Model
         return $menuitems;
     }
 
+    public function get_user_mobpermissions($user_id) {
+        $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.newver');
+        $this->db->from('menu_items m');
+        $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
+        $this->db->where('u.user_id', $user_id);
+        $this->db->where('u.permission_type > ', 0);
+        $this->db->where('m.parent_id is null');
+        $this->db->order_by('m.menu_order, m.menu_section');
+        $menu = $this->db->get()->result_array();
+        return $menu;
+    }
 
 }
