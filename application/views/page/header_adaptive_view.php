@@ -38,8 +38,13 @@
                         <img src="/img/page_view/icon-menu.png">
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <?php $cursection = $menu[0]['menu_section'];?>
                         <?php foreach ($menu as $menurow) { ?>
-                            <button class="dropdown-item" type="button" data-menulink="<?= $menurow['item_link'] ?>"><?=$menurow['item_name']?></button>
+                            <?php if ($menurow['menu_section']!=$cursection) { ?>
+                                <div class="dropdown-divider"></div>
+                                <?php $cursection = $menurow['menu_section'];?>
+                            <?php } ?>
+                            <button class="dropdown-item <?=$menurow['item_link'] == $activelnk ? 'activelink' : ''?>" type="button" data-menulink="<?= $menurow['item_link'] ?>"><?=$menurow['item_name']?></button>
                         <?php } ?>
                     </div>
                 </div>

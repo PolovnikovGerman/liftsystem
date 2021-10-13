@@ -135,6 +135,7 @@ class Template
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
+            $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
             $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
         } else {
             $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
