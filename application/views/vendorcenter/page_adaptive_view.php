@@ -6,11 +6,11 @@
 <main class="container-fluid">
     <div class="vendordataview">
         <div class="pageheader">
-            <div class="row">
-                <div class="col-12 col-sm-3 col-md-3 col-lg-2 col-xl-2">
+            <div class="row pt-2">
+                <div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                     <div class="pagetitle">Vendor Database</div>
                 </div>
-                <div class="col-12 col-sm-9 col-md-9 col-lg-4 col-xl-4">
+                <div class="col-12 col-sm-9 col-md-9 col-lg-9 col-xl-9">
                     <div class="row mb-3">
                         <div class="col-6">
                             <input type="text" id="vedorsearch" class="searchinpt form-control " placeholder="Enter keyword"/>
@@ -19,7 +19,7 @@
                         <a class="btn btn-default datacleanbtn">Clear</a>
                     </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-9 col-xl-9">
                     <span class="filterlabel" for="filterdata">Display:</span>
                     <select class="filterdata form-control form-group" id="filtertype">
                         <option value="">All Vendors Types</option>
@@ -41,23 +41,21 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 datatitle">
-                <div class="status">
-                    <div class="addnewvendor">+ add</div>
-                </div>
-                <div class="type">Type</div>
-<!--                <div class="slug sortable" data-sortcell="vendor_slug">Vend #</div>-->
-                <div class="name sortable active" data-sortcell="vendor_name">Vendor Name  <div class="ascsort">&nbsp;</div></div>
-<!--                <div class="altname sortable" data-sortcell="alt_name">Alternate Name</div>-->
-                <div class="asinumber sortable" data-sortcell="alt_name">ASI #</div>
-<!--                <div class="website">Website</div>-->
-                <div class="phone">Phone</div>
-<!--                <div class="itemqty">Our Items</div>-->
-            </div>
-        </div>
+
         <div class="datatitle">
+            <div class="status">
+                <div class="addnewvendor">+ add</div>
+            </div>
+            <div class="type">Type</div>
+<!--                <div class="slug sortable" data-sortcell="vendor_slug">Vend #</div>-->
+            <div class="name sortable active" data-sortcell="vendor_name">Vendor Name  <div class="ascsort">&nbsp;</div></div>
+<!--                <div class="altname sortable" data-sortcell="alt_name">Alternate Name</div>-->
+            <div class="asinumber sortable" data-sortcell="alt_name">ASI #</div>
+<!--                <div class="website">Website</div>-->
+            <div class="phone">Phone</div>
+<!--                <div class="itemqty">Our Items</div>-->
         </div>
+
         <div class="dataarea" id="vendorinfo"></div>
     </div>
 </main>
