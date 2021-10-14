@@ -26,10 +26,6 @@ body div {
     overflow: hidden;
     background: #252525;
 }
-.navbar-brand img {
-    max-width: 150%;
-    width: 150%;
-}
 .signin_form {
     width: 25%;
     margin-right: auto;
@@ -53,6 +49,9 @@ body div {
     .go {
         bottom: 4.6rem;
     }
+    .navbar-brand img {
+        max-width: 70%;
+    }
 }
 
 /* Portrait tablets and medium desktops */
@@ -64,6 +63,9 @@ body div {
     .go {
         bottom: 4.3rem;
     }
+    .navbar-brand img {
+        max-width: 55%;
+    }
 }
 
 /* Portrait tablets and small desktops */
@@ -71,6 +73,9 @@ body div {
     .signin_form {
         width: 54%;
         background-position: bottom 3.3rem right;
+    }
+    .navbar-brand img {
+        max-width: 45%;
     }
 }
 /* Landscape phones and portrait tablets */
@@ -82,6 +87,9 @@ body div {
     .go {
         bottom: 4.2rem;
     }
+    .navbar-brand img {
+        max-width: 50%;
+    }
 }
 
 /* Landscape phones and smaller */
@@ -91,53 +99,7 @@ body div {
         background-position: bottom 0.8rem right;
         height: 8.3rem;
     }
+    .navbar-brand img {
+        max-width: 40%;
+    }
 }
-/*
-.datarow {
-    clear: both;
-    width: 100%;
-}
-.maincontent {
-    width: 100%;
-    height: 780px;
-    overflow: hidden;
-    background: #252525;
-}
-.signin_logo {
-    padding-top: 10px;
-    padding-left: 10px;
-}
-.openincome {
-    position: relative;
-    top: 14px;
-    left: -64px;
-    width: 12px;
-}
-.signin_form {
-    margin: 268px 0 0 568px;
-    width: 355px;
-    height: 133px;
-    background: url(/img/signin/signin_form.png) no-repeat;
-    background-position: bottom right;
-}
-.signin_form > .datarow {
-    margin-bottom: 13px;
-}
-input.signinformelement {
-    background: #ffffff;
-    width: 273px;
-    height: 35px;
-    padding-left: 5px;
-    font-family: Arial;
-    font-size: 18px;
-    color: #000;
-}
-.go {
-    float: right!important;
-    width: 63px;
-    height: 63px;
-    position: relative;
-    top: -61px;
-    border-radius: 50%;
-}
- */
