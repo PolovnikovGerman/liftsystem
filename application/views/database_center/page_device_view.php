@@ -52,7 +52,7 @@
                             <?php if (isset($channelsb) && count($channelsb)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="channel_logo sblogo"><img src="/img/database_center/stressballs_logo4.png" class="img-responsive img-fluid" alt="Stressball"/></div>
-                                    <div class="row mt-3 mb-3">
+                                    <div class="row mt-1 mb-3">
                                         <?php foreach ($channelsb as $item) { ?>
                                             <?php if ($item['item_link']=='#sbitems') { ?>
                                                 <div class="col-12">
@@ -78,7 +78,7 @@
                             <?php if (isset($channelnsb) && count($channelnsb)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="channel_logo natsblogo"><img src="/img/database_center/national_sb_logo2.png" class="img-responsive img-fluid" alt="Nat Stressball"/></div>
-                                    <div class="row mt-3 mb-3">
+                                    <div class="row mt-1 mb-3">
                                         <?php foreach ($channelnsb as $item) { ?>
                                             <?php if ($item['item_link']=='#nsbitems') { ?>
                                                 <div class="col-12">
@@ -104,7 +104,7 @@
                             <?php if (isset($channelbt) && count($channelbt)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="channel_logo btlogo"><img src="/img/database_center/bluetrack_logo3.png" class="img-responsive img-fluid" alt="Bluetrack"/></div>
-                                    <div class="row mt-3 mb-3">
+                                    <div class="row mt-1 mb-3">
                                         <?php foreach ($channelbt as $item) { ?>
                                             <?php if ($item['item_link']=='#btitems') { ?>
                                                 <div class="col-12">
@@ -130,7 +130,7 @@
                             <?php if (isset($channellbt) && count($channellbt)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="channel_logo btleglogo"><img src="/img/database_center/bluetrack_legacy_logo2.png" class="img-responsive img-fluid" alt="Bluetrack Legal"/></div>
-                                    <div class="row mt-3 mb-3">
+                                    <div class="row mt-1 mb-3">
                                         <?php foreach ($channellbt as $item) { ?>
                                             <?php if ($item['item_link']=='#btlegitems') { ?>
                                                 <div class="col-12">
@@ -156,7 +156,7 @@
                             <?php if (isset($channelamz) && count($channelamz)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                     <div class="channel_logo amazlogo"><img src="/img/database_center/amazon_logo4.png" class="img-responsive img-fluid" alt="Amazon"/></div>
-                                    <div class="row mt-3 mb-3">
+                                    <div class="row mt-1 mb-3">
                                         <?php foreach ($channelamz as $item) { ?>
                                             <?php if ($item['item_link']=='#amazitems') { ?>
                                                 <div class="col-12">
