@@ -51,7 +51,7 @@
                         <div class="row">
                             <?php if (isset($channelsb) && count($channelsb)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                                    <div class="col-12 channel_logo sblogo"><img src="/img/database_center/stressballs_logo4.png" class="img-responsive img-fluid" alt="Stressball"/></div>
+                                    <div class="col-12 channel_logo sblogo"><img src="/img/database_center/stressballs_logo3.png" class="img-responsive img-fluid" alt="Stressball"/></div>
                                     <div class="row mt-3 mb-3">
                                         <?php foreach ($channelsb as $item) { ?>
                                             <?php if ($item['item_link']=='#sbitems') { ?>
@@ -155,7 +155,7 @@
                             <?php } ?>
                             <?php if (isset($channelamz) && count($channelamz)>0) { ?>
                                 <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                                    <div class="channel_logo amazlogo"><img src="/img/database_center/amazon_logo3.png" class="img-responsive img-fluid" alt="Amazon"/></div>
+                                    <div class="channel_logo amazlogo"><img src="/img/database_center/amazon_logo4.png" class="img-responsive img-fluid" alt="Amazon"/></div>
                                     <div class="row mt-3 mb-3">
                                         <?php foreach ($channelamz as $item) { ?>
                                             <?php if ($item['item_link']=='#amazitems') { ?>
