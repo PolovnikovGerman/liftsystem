@@ -4,7 +4,7 @@
             <nav class="navbar navbar-expand-md">
                 <div class="container">
                     <a class="navbar-brand" href="/">
-                        <img src="/img/page_view/signin_logo.png" class="img-responsive img-fluid">
+                        <img src="/img/page_view/signin_logo-big.png" class="img-responsive img-fluid">
                     </a>
                 </div>
             </nav>
