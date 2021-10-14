@@ -1,17 +1,17 @@
-<div class="header">
-    <section class="section-header">
-        <nav class="navbar navbar-expand-md">
-            <div class="container">
-                <a class="navbar-brand" href="/">
-                    <img src="/img/page_view/signin_logo.png" class="img-responsive img-fluid">
-                </a>
-            </div>
-        </nav>
-    </section>
-</div>
-<section class="login-form">
-    <main class="container">
-
+<div class="container-fluid pl-0 pr-0">
+    <div class="header">
+        <section class="section-header">
+            <nav class="navbar navbar-expand-md">
+                <div class="container">
+                    <a class="navbar-brand" href="/">
+                        <img src="/img/page_view/signin_logo.png" class="img-responsive img-fluid">
+                    </a>
+                </div>
+            </nav>
+        </section>
+    </div>
+    <section class="login-form">
+    <main class="container-fluid">
         <div class="row wrapper">
             <div class="signin_form">
                 <div class="col-10 col-sm-10 col-md-10 col-lg-10">
@@ -27,4 +27,5 @@
             </div>
         </div>
     </main>
-</section>
+    </section>
+</div>
