@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="datarow menurow"><?=$menu_view?></div>
+        <div class="row"><div class="datarow menurow"><?=$menu_view?></div></div>
         <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
     </div>
 </div>
