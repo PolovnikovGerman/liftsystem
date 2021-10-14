@@ -1,7 +1,7 @@
 <div class="container-fluid pr-0 pl-0">
     <div class="mainheader">
         <div class="row">
-            <div class="col-6 pr-0">
+            <div class="col-6 col-sm-6 col-md-6 col-lg-7 col-xl-7 pr-0">
                 <div class="lm-brands-logos">
                     <div class="bluetrack_logo">
                         <img src="/img/page_view/bluetrack_logo_new.png">
@@ -10,8 +10,37 @@
                         <img src="/img/page_view/lift_logo_new.png">
                     </div>
                 </div>
+                <?php if ($reportchk) { ?>
+                    <div class="inforeports" id="reports">
+                        <div class="icon">
+                            <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                        </div>
+                        <div class="infotext">Reports</div>
+                    </div>
+                <?php } ?>
+                <div class="lm-period_analitic_info desctopadminmenu">
+                    <?=$total_view?>
+                </div>
             </div>
-            <div class="col-6 pl-0">
+            <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 pl-0">
+                <div class="desctopadminmenu">
+                    <?php if ($adminchk) { ?>
+                        <div class="infoalerts" id="admin">
+                            <div class="alerticon admin">
+                                <img src="/img/icons/cog_white.svg" class="img-responsive"/>
+                            </div>
+                            <div class="alerttext">Admin</div>
+                        </div>
+                    <?php } ?>
+                    <?php if ($resourcechk) { ?>
+                        <div class="infoalerts resources" id="resources">
+                            <div class="alerticon">
+                                <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                            </div>
+                            <div class="alerttext">Resources</div>
+                        </div>
+                    <?php } ?>
+                </div>
                 <div class="lm-userinfo">
                     <div class="datarow">
                         <div class="signout" id="signout">[sign out]</div>
@@ -32,37 +61,11 @@
         <?php } ?>
         <div class="row">
             <div class="col-9 pr-0">
-                <?php if ($reportchk) { ?>
-                    <div class="inforeports" id="reports">
-                        <div class="icon">
-                            <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
-                        </div>
-                        <div class="infotext">Reports</div>
-                    </div>
-                <?php } ?>
-                <div class="lm-period_analitic_info">
+                <div class="lm-period_analitic_info mobilemainmenu">
                     <?=$total_view?>
                 </div>
             </div>
             <div class="col-3 pl-0">
-                <div class="desctopadminmenu">
-                    <?php if ($adminchk) { ?>
-                        <div class="infoalerts" id="admin">
-                            <div class="alerticon admin">
-                                <img src="/img/icons/cog_white.svg" class="img-responsive"/>
-                            </div>
-                            <div class="alerttext">Admin</div>
-                        </div>
-                    <?php } ?>
-                    <?php if ($resourcechk) { ?>
-                        <div class="infoalerts resources" id="resources">
-                            <div class="alerticon">
-                                <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
-                            </div>
-                            <div class="alerttext">Resources</div>
-                        </div>
-                    <?php } ?>
-                </div>
                 <div class="dropdown lm-menuitem-list mobilemainmenu">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="/img/page_view/icon-menu.png">
