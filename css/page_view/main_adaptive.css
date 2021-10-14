@@ -80,7 +80,7 @@ body div {
     line-height: 1rem;
 }
 .lm-userinfo {
-
+    float: right;
 }
 .lm-userinfo .signout {
     color: #82f8ff;
@@ -276,7 +276,7 @@ body div {
     height: 26px;
     color: #ffffff;
     width: 105px;
-    margin: 0.7rem 4px 0 4px;
+    margin: 0.7rem 0.25rem 0 0.5rem;
     cursor: pointer;
     float: left;
 }
@@ -774,6 +774,9 @@ div.oldvesionlabel {
 .marketmenusection {
     margin-left: 40px;
 }
+.desctopadminmenu {
+    float: left;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .mobilemainmenu {
@@ -781,6 +784,9 @@ div.oldvesionlabel {
     }
     .desctopadminmenu {
         display: flex;
+    }
+    .lm-userinfo {
+        margin-top: 0.5rem;
     }
 }
 /* Portrait tablets and medium desktops */
@@ -790,6 +796,9 @@ div.oldvesionlabel {
     }
     .desctopadminmenu {
         display: flex;
+    }
+    .lm-userinfo {
+        margin-top: 0.5rem;
     }
 }
 /* Portrait tablets and small desktops */
@@ -809,6 +818,9 @@ div.oldvesionlabel {
     .menuitem.activelink {
         display: block;
     }
+    .testsitelabel {
+        margin-top: -30px;
+    }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
@@ -826,6 +838,9 @@ div.oldvesionlabel {
     }
     .menuitem.activelink {
         display: block;
+    }
+    .testsitelabel {
+        margin-top: -30px;
     }
 }
 /* Landscape phones and smaller */
@@ -847,9 +862,9 @@ div.oldvesionlabel {
     }
     .testsitelabel {
         font-size: 14px!important;
+        margin-top: -30px;
     }
 }
 .testsitelabel {
     margin-left: 0!important;
-    margin-top: -30px;
 }
