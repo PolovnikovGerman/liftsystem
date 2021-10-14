@@ -61,6 +61,6 @@
             <?php } ?>
         </div>
     </div>
-    <div class="datarow menurow"><?=$menu_view?></div>
+    <div class="datarow menurow"><div class="row"><?=$menu_view?></div></div>
     <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
 </div>
