@@ -26,8 +26,12 @@ body div {
     overflow: hidden;
     background: #252525;
 }
+.navbar-brand img {
+    max-width: 150%;
+    width: 150%;
+}
 .signin_form {
-    width: 45%;
+    width: 25%;
     margin-right: auto;
     margin-left: auto;
     background: url(/img/signin/signin_form.png) no-repeat;
@@ -54,7 +58,7 @@ body div {
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
     .signin_form {
-        width: 60%;
+        width: 40%;
         background-position: bottom 2.8rem right;
     }
     .go {
@@ -65,14 +69,14 @@ body div {
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
     .signin_form {
-        width: 70%;
+        width: 54%;
         background-position: bottom 3.3rem right;
     }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
     .signin_form {
-        width: 85%;
+        width: 58%;
         background-position: bottom 2.8rem right;
     }
     .go {

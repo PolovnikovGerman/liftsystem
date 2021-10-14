@@ -91,6 +91,8 @@ body div {
     padding-top: 1px;
     float: right!important;
     cursor: pointer;
+    z-index: 10;
+    position: relative;
 }
 .lm-userinfo .usersigninfo {
     float: right!important;
