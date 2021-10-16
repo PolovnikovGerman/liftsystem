@@ -433,4 +433,171 @@ class Test extends CI_Controller
         //
     }
 
+    public function conversation_vendors() {
+        $this->db->select('*');
+        $this->db->from('convesation_vendors');
+        $rows = $this->db->get()->result_array();
+        foreach ($rows as $row) {
+            // search in lift_vendors
+            $this->db->select('count(vendor_id) as cnt, max(vendor_id) max_id');
+            $this->db->from('lift_vendors');
+            $this->db->where('vendor_name',$row['name_old']);
+            $chkold = $this->db->get()->row_array();
+            if ($chkold['cnt']==1) {
+                $this->db->set('old_vendor_id',$chkold['max_id']);
+                $this->db->where('id', $row['id']);
+                $this->db->update('convesation_vendors');
+                $this->db->where('vendor_id', $chkold['max_id']);
+                $this->db->set('convert_id', $row['id']);
+                $this->db->update('lift_vendors');
+            } elseif ($chkold['cnt']>1) {
+                echo 'OLD Multi '.$row['name_old'].PHP_EOL;
+            }
+            // Search in vendors
+            $this->db->select('count(vendor_id) as cnt, max(vendor_id) max_id');
+            $this->db->from('vendors');
+            $this->db->where('vendor_name', $row['name_new']);
+            $chknew = $this->db->get()->row_array();
+            if ($chknew['cnt']==1) {
+                $this->db->set('new_vendor_id',$chkold['max_id']);
+                $this->db->where('id', $row['id']);
+                $this->db->update('convesation_vendors');
+            } elseif ($chknew['cnt']>1) {
+                echo 'NEW Multi '.$row['name_new'].PHP_EOL;
+            } else {
+                $this->db->select('count(vendor_id) as cnt, max(vendor_id) max_id');
+                $this->db->from('vendors');
+                $this->db->like('vendor_name', $row['name_old'],'after');
+                $chknew = $this->db->get()->row_array();
+                if ($chknew['cnt']==1) {
+                    $this->db->set('new_vendor_id',$chkold['max_id']);
+                    $this->db->where('id', $row['id']);
+                    $this->db->update('convesation_vendors');
+                }
+            }
+        }
+    }
+
+    public function update_vendors() {
+        $this->db->select('*');
+        $this->db->from('convesation_vendors');
+        $rows = $this->db->get()->result_array();
+        foreach ($rows as $row) {
+            echo 'Vendor # '.$row['vendor_number'].PHP_EOL;
+            $this->db->select('v.*, c.country_id');
+            $this->db->from('new_vendors v');
+            $this->db->join('sb_countries c','c.country_name=v.country');
+            $this->db->where('vendor_num', $row['vendor_number']);
+            $details = $this->db->get()->row_array();
+            if (ifset($details,'id',0)!==0) {
+                $vcode = intval(str_replace('v-', '', $details['vendor_num']));
+                $paytype = $details['pay_type'];
+                $this->db->set('vendor_code', $vcode);
+                $this->db->set('vendor_slug', 'V-'.$vcode);
+                $this->db->set('vendor_zipcode', $row['zip_old']);
+                $this->db->set('calendar_id', $this->config->item('bank_calendar'));
+                $this->db->set('vendor_name', $details['name']);
+                $this->db->set('alt_name', $details['alt_name']);
+                $this->db->set('vendor_type', $details['vend_type']);
+                $this->db->set('country_id', $details['country_id']);
+                $this->db->set('vendor_asinumber', $details['asi_num']);
+                $this->db->set('our_account_number', $details['our_acct']);
+                $this->db->set('vendor_website', $details['website']);
+                $this->db->set('vendor_phone',$details['main_phone']);
+                $this->db->set('address_line1',$details['address_l1']);
+                $this->db->set('address_line2', $details['address_l2']);
+                $this->db->set('address_city', $details['city']);
+                $this->db->set('address_state', $details['state']);
+                $this->db->set('address_zip', $details['zip']);
+                $this->db->set('address_country', $details['Country_1']);
+                $this->db->set('general_note',$details['notes_Internal']);
+                $this->db->set('po_contact', $details['po_contact']);
+                $this->db->set('po_phone', $details['po_phone']);
+                $this->db->set('po_email', $details['po_email']);
+                $this->db->set('po_ccemail', $details['po_email_2']);
+                $this->db->set('po_bcemail', $details['po_email_3']);
+                $this->db->set('shipaddr_line1', $details['ship_from_address']);
+                $this->db->set('shipaddr_line2', $details['ship_from_address_2']);
+                $this->db->set('shipaddr_city', $details['ship_from_city']);
+                $this->db->set('shipaddr_state', $details['ship_from_state']);
+                if (!empty($details['ship_from_zip'])) {
+                    $this->db->set('vendor_zipcode', $details['ship_from_zip']);
+                }
+                $this->db->set('shipaddr_country', $details['ship_from_country']);
+                $this->db->set('po_note', $details['po_notes']);
+                $this->db->set('payment_contact', $details['payment_contact']);
+                $this->db->set('payment_phone', $details['payment_phone']);
+                $this->db->set('payment_email', $details['payment_email']);
+                // Pay Type
+                if (!empty($paytype)) {
+                    if ($paytype=='Prepay') {
+                        $this->db->set('payment_prepay',1);
+                    }
+                    if ($paytype=='Terms') {
+                        $this->db->set('payment_terms',1);
+                    }
+                }
+                if (!empty($details['accepted_methods'])) {
+                    if ($details['accepted_methods']=='Wire') {
+                        $this->db->set('payment_accept_wire',1);
+                    } elseif ($details['accepted_methods']=='Visa/MC, Check, ACH, Wire') {
+                        $this->db->set('payment_accept_wire',1);
+                        $this->db->set('payment_accept_visa',1);
+                        $this->db->set('payment_accept_check',1);
+                        $this->db->set('payment_accept_ach',1);
+                    } elseif ($details['accepted_methods']=='Visa, MC, Amex, Check, ACH, Wire') {
+                        $this->db->set('payment_accept_wire',1);
+                        $this->db->set('payment_accept_visa',1);
+                        $this->db->set('payment_accept_amex',1);
+                        $this->db->set('payment_accept_check',1);
+                        $this->db->set('payment_accept_ach',1);
+                    }
+                }
+                // accepted_methods
+                // $this->db->set('', $details['ach_info']);
+                $this->db->set('payment_note', $details['payment_notes_internal']);
+                $this->db->set('pricing_contact', $details['pricing_contact']);
+                $this->db->set('pricing_phone', $details['pricing_phone']);
+                $this->db->set('pricing_email', $details['pricing_email']);
+                $this->db->set('customer_contact', $details['customer_service_contact']);
+                $this->db->set('customer_phone', $details['customer_service_phone']);
+                $this->db->set('customer_email', $details['customer_service_email']);
+                if ($row['new_vendor_id']==0) {
+                    $this->db->insert('vendors');
+                } else {
+                    $this->db->where('vendor_id', $row['new_vendor_id']);
+                    $this->db->update('vendors');
+                }
+            } else {
+                if ($row['new_vendor_id']>0) {
+                    $vcode = intval(str_replace('v-', '', $row['vendor_number']));
+                    $this->db->set('vendor_code', $vcode);
+                    $this->db->set('vendor_slug', 'V-'.$vcode);
+                    $this->db->where('vendor_id', $row['new_vendor_id']);
+                    $this->db->update('vendors');
+                }
+            }
+        }
+    }
+
+    public function merge_venditems() {
+        $this->db->select('vendor_id');
+        $this->db->from('vendors');
+        $this->db->where('vendor_code',null);
+        $rows = $this->db->get()->result_array();
+        foreach ($rows as $row) {
+            $this->db->select('new_vendor_id');
+            $this->db->from('convesation_vendors');
+            $this->db->where('old_vendor_id', $row['vendor_id']);
+            $mergevend=$this->db->get()->row_array();
+            if (ifset($mergevend,'new_vendor_id', 0)>0) {
+                $this->db->where('vendor_item_vendor', $row['vendor_id']);
+                $this->db->set('vendor_item_vendor', $mergevend['new_vendor_id']);
+                $this->db->update('sb_vendor_items');
+            }
+            $this->db->where('vendor_id', $row['vendor_id']);
+            $this->db->delete('vendors');
+        }
+    }
+
 }

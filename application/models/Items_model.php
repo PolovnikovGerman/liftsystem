@@ -625,7 +625,6 @@ Class Items_model extends My_Model
             }
         }
         $res = $this->db->get()->result_array();
-        log_message('ERROR','SQL '.$this->db->last_query());
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {

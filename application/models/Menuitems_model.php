@@ -854,6 +854,7 @@ Class Menuitems_model extends MY_Model
         $this->db->where('m.parent_id is null');
         $this->db->order_by('m.menu_order, m.menu_section');
         $menu = $this->db->get()->result_array();
+        log_message('ERROR','SQL '.$this->db->last_query());
         return $menu;
     }
 
