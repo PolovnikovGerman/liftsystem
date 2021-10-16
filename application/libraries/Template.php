@@ -81,6 +81,9 @@ class Template
         $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
         // Mobile menu
         $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        foreach ($mobpermissions as $mobpermission) {
+            log_message('Error', 'Item - '.$mobpermission['item_name'].' Section - '.$mobpermission['menu_section']);
+        }
         // Admin and Alerts
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
