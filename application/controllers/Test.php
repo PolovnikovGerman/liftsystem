@@ -463,6 +463,8 @@ class Test extends CI_Controller
             if ($maxcnt > 0) {
                 for ($i=1; $i<=$maxcnt; $i++) {
                     $vendoritems[$vendidx]['qty'.$i]=0;
+                }
+                for ($i=1; $i<=$maxcnt; $i++) {
                     $vendoritems[$vendidx]['price'.$i]=0;
                 }
                 $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
