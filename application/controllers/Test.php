@@ -469,7 +469,7 @@ class Test extends CI_Controller
                 $this->db->from('sb_vendor_prices');
                 $this->db->where('vendor_item_id', $item['vendor_item_id']);
                 $prices = $this->db->get()->result_array();
-                if (cont($prices)>0) {
+                if (count($prices)>0) {
                     $priceidx = 1;
                     foreach ($prices as $price) {
                         $vendoritems[$vendidx]['qty'.$priceidx]=$price['vendorprice_qty'];
