@@ -465,7 +465,7 @@ class Test extends CI_Controller
                     $vendoritems[$vendidx]['qty'.$i]=0;
                     $vendoritems[$vendidx]['price'.$i]=0;
                 }
-                $this->db->select('vendorprice_qty, vendorprice_val');
+                $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
                 $this->db->from('sb_vendor_prices');
                 $this->db->where('vendor_item_id', $item['vendor_item_id']);
                 $prices = $this->db->get()->result_array();
@@ -477,7 +477,7 @@ class Test extends CI_Controller
                     }
                     $priceidx = 1;
                     foreach ($prices as $price) {
-                        $vendoritems[$vendidx]['price'.$priceidx]=$price['vendorprice_val'];
+                        $vendoritems[$vendidx]['price'.$priceidx]=$price['vendorprice_color'];
                         $priceidx++;
                     }
                 }
