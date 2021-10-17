@@ -433,4 +433,25 @@ class Test extends CI_Controller
         //
     }
 
+    public function vendor_items() {
+        $vendor_id = 3;
+        $file_name = 'ariel_items.csv';
+        // Calc max # of prices
+        $this->db->select('*');
+        $this->db->from('sb_vendor_items');
+        $this->db->where('vendor_item_vendor', $vendor_id);
+        $items = $this->db->get()->result_array();
+        $maxcnt = 0;
+        foreach ($items as $item) {
+            $this->db->select('count(vendorprice_id) as cnt');
+            $this->db->from('sb_vendor_prices');
+            $this->db->where('vendor_item_id', $item['vendor_item_id']);
+            $cntres = $this->db->get()->row_array();
+            if ($cntres['cnt']>$maxcnt) {
+                $maxcnt=$cntres['cnt'];
+            }
+        }
+        echo 'Max CNT '.$maxcnt;
+    }
+
 }
