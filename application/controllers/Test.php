@@ -451,7 +451,63 @@ class Test extends CI_Controller
                 $maxcnt=$cntres['cnt'];
             }
         }
-        echo 'Max CNT '.$maxcnt;
+        $vendoritems = [];
+        foreach ($items as $item) {
+            $vendoritems[] = [
+                // 'vendor_item_id' => $item['vendor_item_id'],
+                'vendor_item_number' => $item['vendor_item_number'],
+                'vendor_item_name' => $item['vendor_item_name'],
+                'base_cost' => $item['vendor_item_cost'],
+            ];
+            $vendidx = count($vendoritems) - 1;
+            if ($maxcnt > 0) {
+                for ($i=1; $i<=$maxcnt; $i++) {
+                    $vendoritems[$vendidx]['qty'.$i]=0;
+                    $vendoritems[$vendidx]['price'.$i]=0;
+                }
+                $this->db->select('vendorprice_qty, vendorprice_val');
+                $this->db->from('sb_vendor_prices');
+                $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                $prices = $this->db->get()->result_array();
+                if (cont($prices)>0) {
+                    $priceidx = 1;
+                    foreach ($prices as $price) {
+                        $vendoritems[$vendidx]['qty'.$priceidx]=$price['vendorprice_qty'];
+                        $priceidx++;
+                    }
+                    $priceidx = 1;
+                    foreach ($prices as $price) {
+                        $vendoritems[$vendidx]['price'.$priceidx]=$price['vendorprice_val'];
+                        $priceidx++;
+                    }
+                }
+            }
+        }
+        $file = $this->config->item('upload_path_preload').$file_name;
+        @unlink($file);
+        $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg='Item #; Item Name; Base Cost;';
+            for ($i=1; $i<=$maxcnt; $i++) {
+                $msg.='Qty '.$i.';';
+            }
+            for ($i=1; $i<=$maxcnt; $i++) {
+                $msg.='Price '.$i.';';
+            }
+            $msg.=PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($vendoritems as $vendoritem) {
+                $msg='';
+                foreach ($vendoritem as $key=>$val) {
+                    $msg.='"'.$vendoritem[$val].'";';
+                }
+                $msg.=PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo $file.' Ready'.PHP_EOL;
+        }
+
     }
 
 }
