@@ -498,9 +498,8 @@ class Test extends CI_Controller
             fwrite($fh, $msg);
             foreach ($vendoritems as $vendoritem) {
                 $msg='';
-                foreach ($vendoritem as $key=>$val) {
-                    echo $key.PHP_EOL;
-                    $msg.='"'.$vendoritem[$val].'";';
+                foreach ($vendoritem as $row) {
+                    $msg.='"'.$row.'";';
                 }
                 $msg.=PHP_EOL;
                 fwrite($fh, $msg);
