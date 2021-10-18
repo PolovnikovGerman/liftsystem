@@ -7,7 +7,7 @@
                         <div class="col-12 dbcenter_pagetitle">Database Center</div>
                     </div>
                     <?php if (!empty($master)) { ?>
-                        <div class="row mb-2">
+                        <div class="row mb-3">
                             <div class="col-12 dbcenter_master_title">Master Lists:</div>
                         </div>
                         <div class="row">
