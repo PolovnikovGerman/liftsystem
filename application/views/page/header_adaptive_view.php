@@ -1,7 +1,7 @@
 <div class="container-fluid pr-0 pl-0">
     <div class="mainheader">
         <div class="row">
-            <div class="col-6 col-sm-6 col-md-6 col-lg-7 col-xl-7 pr-0">
+            <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 pr-0">
                 <div class="lm-brands-logos">
                     <div class="bluetrack_logo">
                         <img src="/img/page_view/bluetrack_logo_new.png">
@@ -22,7 +22,15 @@
                     <?=$total_view?>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 pl-0">
+            <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 pl-0">
+                <div class="desctopadminmenu">
+                    <div class="lm-publicsearch">
+                        <input type="text" class="publicsearch_template" id="publicdescsearch_template" placeholder="Find Orders">
+                        <div class="publicsearch_btn" id="publicdescsearch_btn">
+                            <img src="/img/page_view/search_icon_blue.png">
+                        </div>
+                    </div>
+                </div>
                 <div class="desctopadminmenu">
                     <?php if ($adminchk) { ?>
                         <div class="infoalerts" id="admin">
@@ -84,10 +92,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 mobilemainmenu">
                 <div class="lm-publicsearch">
                     <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders">
-                    <div class="publicsearch_btn">
+                    <div class="publicsearch_btn" id="publicsearch_btn">
                         <img src="/img/page_view/search_icon_blue.png">
                     </div>
                 </div>

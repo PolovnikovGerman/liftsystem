@@ -454,7 +454,7 @@ class Test extends CI_Controller
         $vendoritems = [];
         foreach ($items as $item) {
             $vendoritems[] = [
-                // 'vendor_item_id' => $item['vendor_item_id'],
+                'vendor_item_id' => $item['vendor_item_id'],
                 'vendor_item_number' => $item['vendor_item_number'],
                 'vendor_item_name' => $item['vendor_item_name'],
                 'base_cost' => $item['vendor_item_cost'],
@@ -462,10 +462,10 @@ class Test extends CI_Controller
             $vendidx = count($vendoritems) - 1;
             if ($maxcnt > 0) {
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['qty'.$i]=0;
+                    $vendoritems[$vendidx]['qty'.$i]='';
                 }
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['price'.$i]=0;
+                    $vendoritems[$vendidx]['price'.$i]='';
                 }
                 $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
                 $this->db->from('sb_vendor_prices');
@@ -489,12 +489,18 @@ class Test extends CI_Controller
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
         if ($fh) {
-            $msg='Item #; Item Name; Base Cost;';
+            $msg='VItem ID;Vendor Item #;Vendor Item Name; Base Cost;';
             for ($i=1; $i<=$maxcnt; $i++) {
                 $msg.='Qty '.$i.';';
             }
             for ($i=1; $i<=$maxcnt; $i++) {
                 $msg.='Price '.$i.';';
+            }
+            $msg.='Item #; Item Name; Active;';
+            $j=1;
+            foreach ($this->config->item('price_types') as $ptype) {
+                $msg.='QTY'.$j.';';
+                $j++;
             }
             $msg.=PHP_EOL;
             fwrite($fh, $msg);
@@ -503,6 +509,55 @@ class Test extends CI_Controller
                 foreach ($vendoritem as $row) {
                     $msg.='"'.$row.'";';
                 }
+                $this->db->select('*');
+                $this->db->from('sb_items');
+                $this->db->where('vendor_item_id', $vendoritem['vendor_item_id']);
+                $itemres = $this->db->get()->row_array();
+                if (ifset($itemres,'item_id',0)>0) {
+                    $msg.='"'.$itemres['item_number'].'";"'.$itemres['item_name'].'";"'.($itemres['item_active']==1 ? 'YES': 'NO').'";';
+                    if ($itemres['item_template']=='Stressball') {
+                        $this->db->select('*');
+                        $this->db->from('sb_item_prices');
+                        $this->db->where('item_price_itemid', $itemres['item_id']);
+                        $prices = $this->db->get()->row_array();
+                        if (ifset($prices,'item_price_id',0)>0) {
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$ptype['type'].'";';
+                                }
+                            }
+                            $msg.=PHP_EOL;
+                            fwrite($fh, $msg);
+                            // empty row
+                            $msg='';
+                            foreach ($vendoritem as $row) {
+                                $msg.='" ";';
+                            }
+                            for ($i=0; $i<3; $i++) {
+                                $msg.='" ";';
+                            }
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                }
+                            }
+                            $msg.=PHP_EOL;
+                            fwrite($fh, $msg);
+                            $msg='';
+                            foreach ($vendoritem as $row) {
+                                $msg.='" ";';
+                            }
+                            for ($i=0; $i<3; $i++) {
+                                $msg.='" ";';
+                            }
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                }
+                            }
+                        }
+                    }
+                }
                 $msg.=PHP_EOL;
                 fwrite($fh, $msg);
             }
@@ -510,83 +565,6 @@ class Test extends CI_Controller
             echo $file.' Ready'.PHP_EOL;
         }
 
-    }
-
-    public function gallery_fix() {
-        $this->db->select('custom_galleryitem_id, item_source, brand, item_deleted');
-        $this->db->from('sb_custom_galleryitems');
-        $items = $this->db->get()->result_array();
-        $path = $this->config->item('gallery_images_relative');
-        $files = $this->list_files($path);
-        foreach ($files as $file) {
-            $filename = $this->config->item('gallery_images').$file;
-            echo 'Search '.$file.PHP_EOL;
-            $find = 0;
-            foreach ($items as $item) {
-                if ($item['item_source']==$filename) {
-                    $find=1;
-                    break;
-                }
-            }
-            if ($find==1) {
-                if ($item['item_deleted']==1 || empty($item['brand'])) {
-                    @unlink($this->config->item('gallery_images_relative').$file);
-                }
-            } else {
-                @unlink($this->config->item('gallery_images_relative').$file);
-            }
-        }
-    }
-
-    function list_files($path)
-    {
-        $files = array();
-
-        if(is_dir($path))
-        {
-            if($handle = opendir($path))
-            {
-                while(($name = readdir($handle)) !== false)
-                {
-                    if(!preg_match("#^\.#", $name))
-                        if(is_dir($path . "/" . $name))
-                        {
-                            $files[$name] = list_files($path . "/" . $name);
-                        }
-                        else
-                        {
-                            $files[] = $name;
-                        }
-                }
-
-                closedir($handle);
-            }
-        }
-
-        return $files;
-    }
-
-    public function transform_galery() {
-        $this->db->select('custom_galleryitem_id, item_source');
-        $this->db->from('sb_custom_galleryitems');
-        $this->db->where('brand','SB');
-        $this->db->where('item_deleted',0);
-        $items = $this->db->get()->result_array();
-        $path = $this->config->item('gallery_images_relative');
-        $pathdest = $this->config->item('gallery_icons_relative');
-        // $files = $this->list_files($path);
-        $width = $height = '225';
-        foreach ($items as $item) {
-            $filename = str_replace($this->config->item('gallery_images'),'',$item['item_source']);
-            $fullpath = $path.$filename;
-            $writeTo = $pathdest.$filename;
-            $cmd = 'convert -quality 75 -strip -resize '.$width.'x'.$height.' '.$fullpath.' '.$writeTo;
-            exec($cmd);
-            echo 'Image '.$filename.' Converted'.PHP_EOL;
-            $this->db->where('custom_galleryitem_id', $item['custom_galleryitem_id']);
-            $this->db->set('item_icon',$this->config->item('gallery_icons').$filename);
-            $this->db->update('sb_custom_galleryitems');
-        }
     }
 
     public function conversation_vendors() {
@@ -755,4 +733,5 @@ class Test extends CI_Controller
             $this->db->delete('vendors');
         }
     }
+
 }
