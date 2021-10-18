@@ -791,6 +791,9 @@ div.oldvesionlabel {
     .lm-userinfo {
         margin-top: 0.5rem;
     }
+    .lm-publicsearch {
+        margin-top: 0.7rem;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
@@ -802,6 +805,9 @@ div.oldvesionlabel {
     }
     .lm-userinfo {
         margin-top: 0.5rem;
+    }
+    .lm-publicsearch {
+        margin-top: 0.7rem;
     }
 }
 /* Portrait tablets and small desktops */

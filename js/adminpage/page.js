@@ -29,12 +29,20 @@ $(document).ready(function () {
     })
     $("#publicsearch_template").keypress(function (event) {
         if (event.which == 13) {
-            liftsite_search();
+            liftsite_search('mobile');
         }
     });
-    $(".publicsearch_btn").unbind('click').click(function () {
-        liftsite_search();
+    $("#publicsearch_btn").unbind('click').click(function () {
+        liftsite_search('mobile');
     });
+    $("#publicdescsearch_template").keypress(function (event) {
+        if (event.which == 13) {
+            liftsite_search('desktop');
+        }
+    })
+    $("#publicdescsearch_btn").unbind('click').click(function () {
+        liftsite_search('desktop');
+    })
     // $("select.publicsearch_type").unbind('change').change(function(){
     //     var newval = $(this).val();
     //     if (newval=='Orders') {
@@ -164,10 +172,13 @@ function matchStart(params, data) {
     return null;
 }
 
-function liftsite_search() {
+function liftsite_search(searchtype) {
     var params = new Array();
-    // params.push({name: 'search_type', value: $("select.publicsearch_type").val()});
-    params.push({name: 'search_template', value: $("#publicsearch_template").val()});
+    if (searchtype=='mobile') {
+        params.push({name: 'search_template', value: $("#publicsearch_template").val()});
+    } else {
+        params.push({name: 'search_template', value: $("#publicdescsearch_template").val()});
+    }
     var url="/welcome/liftsite_search";
     $.post(url, params, function(response) {
         if (response.errors=='') {

@@ -71,9 +71,10 @@
     }
     .dbcenter_master_item > .mastrelabel {
         font-size: 1rem;
-        padding-top: 0.75rem;
+        padding-top: 0.5rem;
     }
     .dbcenter_master_item > .itemlabel {
+        padding-bottom: 0.35rem;
     }
     .dbcenter_channel_item {
         background-size: 100%;
@@ -85,14 +86,15 @@
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
-    .dbcenter_master_item {
-        height: 5rem;
+    dbcenter_master_item {
+        height: 4.2rem;
     }
     .dbcenter_master_item > .mastrelabel {
         margin-top: 0;
         padding-top: 0.35rem;
     }
     .dbcenter_master_item > .itemlabel {
+        padding-bottom: 0.35rem;
     }
     .dbcenter_channel_item {
         background-size: 100%;

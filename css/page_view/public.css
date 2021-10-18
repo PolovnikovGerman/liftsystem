@@ -26,6 +26,9 @@ body div {
     overflow: hidden;
     background: #252525;
 }
+.navbar-brand {
+    margin-top: 1rem;
+}
 .signin_form {
     width: 25%;
     margin-right: auto;
@@ -95,9 +98,12 @@ body div {
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
     .signin_form {
-        width: 95%;
+        width: 85%;
         background-position: bottom 0.8rem right;
         height: 8.3rem;
+    }
+    .signin_form input {
+        width: 96%;
     }
     .navbar-brand img {
         max-width: 40%;
