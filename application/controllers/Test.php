@@ -462,10 +462,10 @@ class Test extends CI_Controller
             $vendidx = count($vendoritems) - 1;
             if ($maxcnt > 0) {
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['qty'.$i]=0;
+                    $vendoritems[$vendidx]['qty'.$i]='';
                 }
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['price'.$i]=0;
+                    $vendoritems[$vendidx]['price'.$i]='';
                 }
                 $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
                 $this->db->from('sb_vendor_prices');
