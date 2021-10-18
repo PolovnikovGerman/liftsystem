@@ -50,7 +50,7 @@
                         </div>
                         <div class="row">
                             <?php if (isset($channelsb) && count($channelsb)>0) { ?>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2 offset-xl-1">
                                     <div class="channel_logo sblogo"><img src="/img/database_center/stressballs_logo4.png" class="img-responsive img-fluid" alt="Stressball"/></div>
                                     <div class="row mt-3 mb-3">
                                         <?php foreach ($channelsb as $item) { ?>
