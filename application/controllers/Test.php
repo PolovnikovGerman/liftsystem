@@ -434,8 +434,8 @@ class Test extends CI_Controller
     }
 
     public function vendor_items() {
-        $vendor_id = 4;
-        $file_name = 'alpi_items.csv';
+        $vendor_id = 1;
+        $file_name = 'mailine_items.csv';
         // Calc max # of prices
         $this->db->select('*');
         $this->db->from('sb_vendor_items');
