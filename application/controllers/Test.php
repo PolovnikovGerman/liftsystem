@@ -454,7 +454,7 @@ class Test extends CI_Controller
         $vendoritems = [];
         foreach ($items as $item) {
             $vendoritems[] = [
-                // 'vendor_item_id' => $item['vendor_item_id'],
+                'vendor_item_id' => $item['vendor_item_id'],
                 'vendor_item_number' => $item['vendor_item_number'],
                 'vendor_item_name' => $item['vendor_item_name'],
                 'base_cost' => $item['vendor_item_cost'],
@@ -462,10 +462,10 @@ class Test extends CI_Controller
             $vendidx = count($vendoritems) - 1;
             if ($maxcnt > 0) {
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['qty'.$i]=0;
+                    $vendoritems[$vendidx]['qty'.$i]='';
                 }
                 for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['price'.$i]=0;
+                    $vendoritems[$vendidx]['price'.$i]='';
                 }
                 $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
                 $this->db->from('sb_vendor_prices');
@@ -489,12 +489,18 @@ class Test extends CI_Controller
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
         if ($fh) {
-            $msg='Item #; Item Name; Base Cost;';
+            $msg='VItem ID;Vendor Item #;Vendor Item Name; Base Cost;';
             for ($i=1; $i<=$maxcnt; $i++) {
                 $msg.='Qty '.$i.';';
             }
             for ($i=1; $i<=$maxcnt; $i++) {
                 $msg.='Price '.$i.';';
+            }
+            $msg.='Item #; Item Name; Active;';
+            $j=1;
+            foreach ($this->config->item('price_types') as $ptype) {
+                $msg.='QTY'.$j.';';
+                $j++;
             }
             $msg.=PHP_EOL;
             fwrite($fh, $msg);
@@ -502,6 +508,55 @@ class Test extends CI_Controller
                 $msg='';
                 foreach ($vendoritem as $row) {
                     $msg.='"'.$row.'";';
+                }
+                $this->db->select('*');
+                $this->db->from('sb_items');
+                $this->db->where('vendor_item_id', $vendoritem['vendor_item_id']);
+                $itemres = $this->db->get()->row_array();
+                if (ifset($itemres,'item_id',0)>0) {
+                    $msg.='"'.$itemres['item_number'].'";"'.$itemres['item_name'].'";"'.($itemres['item_active']==1 ? 'YES': 'NO').'";';
+                    if ($itemres['item_template']=='Stressball') {
+                        $this->db->select('*');
+                        $this->db->from('sb_item_prices');
+                        $this->db->where('item_price_itemid', $itemres['item_id']);
+                        $prices = $this->db->get()->row_array();
+                        if (ifset($prices,'item_price_id',0)>0) {
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$ptype['type'].'";';
+                                }
+                            }
+                            $msg.=PHP_EOL;
+                            fwrite($fh, $msg);
+                            // empty row
+                            $msg='';
+                            foreach ($vendoritem as $row) {
+                                $msg.='" ";';
+                            }
+                            for ($i=0; $i<3; $i++) {
+                                $msg.='" ";';
+                            }
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                }
+                            }
+                            $msg.=PHP_EOL;
+                            fwrite($fh, $msg);
+                            $msg='';
+                            foreach ($vendoritem as $row) {
+                                $msg.='" ";';
+                            }
+                            for ($i=0; $i<3; $i++) {
+                                $msg.='" ";';
+                            }
+                            foreach ($this->config->item('price_types') as $ptype) {
+                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                }
+                            }
+                        }
+                    }
                 }
                 $msg.=PHP_EOL;
                 fwrite($fh, $msg);
