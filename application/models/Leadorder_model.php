@@ -2200,7 +2200,7 @@ Class Leadorder_model extends My_Model {
 
     // Save changes in Ship Address
     public function change_shipaddres($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
-        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'multicity' => 0);
         $this->load->model('shipping_model');
         $shipaddr=$leadorder['shipping_address'];
         $shipping=$leadorder['shipping'];
@@ -2332,15 +2332,26 @@ Class Leadorder_model extends My_Model {
             } else {
                 $seachzip = $newval;
             }
-            $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id');
+            $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
             $this->db->from('ts_geoipdata gdata');
             $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
             $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
             $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
             $this->db->where('gdata.postal_code',$seachzip);
             $this->db->where('cntr.country_id',$shipaddr[$shipidx]['country_id']);
-            $validres = $this->db->get()->row_array();
-            if (ifset($validres,'geoip_city_id',0)>0) {
+            $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+            $this->db->order_by('cntcity','desc');
+            $validdata = $this->db->get()->result_array();
+            if (count($validdata)>0) {
+                $validres = $validdata[0];
+                if (count($validdata)>1) {
+                    $out['multicity']=1;
+                    $shpcity = [];
+                    foreach ($validdata as $vrow) {
+                        array_push($shpcity,$vrow['city_name']);
+                    }
+                    $out['validcity']=$shpcity;
+                }
                 $shipaddr[$shipidx]['city']=$validres['city_name'];
                 if ($shipaddr[$shipidx]['out_country']=='US' || $shipaddr[$shipidx]['out_country']=='CA') {
                     if (!empty($validres['state'])) {
