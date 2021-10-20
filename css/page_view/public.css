@@ -28,6 +28,7 @@ body div {
 }
 .navbar-brand {
     margin-top: 1rem;
+    margin-left: 1.3125rem;
 }
 .signin_form {
     width: 25%;
@@ -53,7 +54,7 @@ body div {
         bottom: 4.6rem;
     }
     .navbar-brand img {
-        max-width: 70%;
+        max-width: 10.96875rem;
     }
 }
 
@@ -67,7 +68,7 @@ body div {
         bottom: 4.3rem;
     }
     .navbar-brand img {
-        max-width: 55%;
+        max-width: 10.96875rem;
     }
 }
 
@@ -78,7 +79,7 @@ body div {
         background-position: bottom 3.3rem right;
     }
     .navbar-brand img {
-        max-width: 45%;
+        max-width: 10.96875rem;
     }
 }
 /* Landscape phones and portrait tablets */
@@ -91,7 +92,7 @@ body div {
         bottom: 4.2rem;
     }
     .navbar-brand img {
-        max-width: 50%;
+        max-width: 7.65rem;
     }
 }
 
@@ -106,6 +107,6 @@ body div {
         width: 96%;
     }
     .navbar-brand img {
-        max-width: 40%;
+        max-width: 7.65rem;
     }
 }
