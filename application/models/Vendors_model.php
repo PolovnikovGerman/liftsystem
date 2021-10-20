@@ -255,13 +255,13 @@ Class Vendors_model extends My_Model
             $qty = $this->db->get()->row_array();
             // $result['item_qty'] = $qty['cnt'];
             $result['item_qty'] = 0;
-            $this->db->select('contact_name, contact_phone, contact_cellphone, contact_email');
-            $this->db->from('vendor_contacts');
-            $this->db->where('vendor_id', $result['vendor_id']);
-            $contact = $this->db->get()->row_array();
-            $result['contact_name'] = ifset($contact, 'contact_name','');
-            $result['contact_phone'] = ifset($contact, 'contact_phone','');
-            $result['contact_email'] = ifset($contact, 'contact_email','');
+            // $this->db->select('contact_name, contact_phone, contact_cellphone, contact_email');
+            // $this->db->from('vendor_contacts');
+            // $this->db->where('vendor_id', $result['vendor_id']);
+            // $contact = $this->db->get()->row_array();
+            // $result['contact_name'] = ifset($contact, 'contact_name','');
+            // $result['contact_phone'] = ifset($contact, 'contact_phone','');
+            // $result['contact_email'] = ifset($contact, 'contact_email','');
             $res[]= $result;
         }
         return $res;
