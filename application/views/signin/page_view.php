@@ -2,11 +2,11 @@
     <div class="header">
         <section class="section-header">
             <nav class="navbar navbar-expand-md">
-                <div class="container">
+<!--                <div class="container">-->
                     <a class="navbar-brand" href="/">
                         <img src="/img/page_view/signin_logo-big.png" class="img-responsive img-fluid">
                     </a>
-                </div>
+<!--                </div>-->
             </nav>
         </section>
     </div>
@@ -16,11 +16,11 @@
             <div class="signin_form">
                 <div class="col-10 col-sm-10 col-md-10 col-lg-10">
                     <div class="form-group">
-                        <input id="email" type="text" class="form-control" placeholder="email address"/>
+                        <input id="email" type="text" class="form-control signinformelement" placeholder="email address"/>
                     </div>
 
                     <div class="form-group">
-                        <input id="passwd" type="password" class="form-control" placeholder="password"/>
+                        <input id="passwd" type="password" class="form-control signinformelement" placeholder="password"/>
                     </div>
                 </div>
                 <div class="go" id="letsgo">&nbsp;</div>
