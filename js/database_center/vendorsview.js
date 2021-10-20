@@ -175,7 +175,6 @@ function edit_vendor(vendor_id) {
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
             $("#vendorDetailsModal").find('div.modal-dialog').css('max-width','1333px');
-            $("#vendorDetailsModal").find('div.modal-dialog').css('width','1333px');
             $("#vendorDetailsModal").modal({keyboard: false, show: true});
             if (parseInt(response.data.editmode)==0) {
                 $("#vendorDetailsModal").find('div.modal-header').addClass(response.data.status);
