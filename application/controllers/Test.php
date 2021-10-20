@@ -434,8 +434,8 @@ class Test extends CI_Controller
     }
 
     public function vendor_items() {
-        $vendor_id = 5;
-        $file_name = 'pinnacle_items.csv';
+        $vendor_id = 3;
+        $file_name = 'ariel_items_correct.csv';
         // Calc max # of prices
         $this->db->select('*');
         $this->db->from('sb_vendor_items');
@@ -552,7 +552,7 @@ class Test extends CI_Controller
                             }
                             foreach ($this->config->item('price_types') as $ptype) {
                                 if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
-                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                    $msg.='"'.$prices['item_sale_'.$ptype['type']].'";';
                                 }
                             }
                         }
