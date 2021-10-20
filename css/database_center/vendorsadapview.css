@@ -51,7 +51,7 @@ select.filterdata {
     font-size: 0.8125rem;
     font-weight: bold;
     float: left;
-    border-right: 1px solid #ffffff;
+    border-right: 1px solid #545454;
 }
 .vendordataview .datatitle .status {
     width: 4.2rem;
