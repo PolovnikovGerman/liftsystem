@@ -18,10 +18,21 @@
     background-color: #346af5!important;
 }
 #vendorDetailsModal .modal-header .close {
+    /*margin-top: -12px;*/
+    /*margin-right: -7px;*/
+    /*opacity: 1;*/
+    /*position: relative;*/
+    /* Adaptive */
     margin-top: -12px;
     margin-right: -7px;
     opacity: 1;
-    position: relative;
+    position: absolute;
+    right: -9px;
+    top: -3px;
+}
+/* Adaptive */
+.modal-title {
+    width: 100%;
 }
 #vendorDetailsModal .modal-body {
     padding: 0;
@@ -100,13 +111,21 @@
     color: #ffffff;
 }
 .vendordetails-header .vendoreditarea {
+    /*float: right!important;*/
+    /*background-color: #6a636a;*/
+    /*width: 152px;*/
+    /*height: 40px;*/
+    /*border-radius: 0px 10px 0 0;*/
+    /*margin-left: 40px;*/
+    /*margin-right: -20px;*/
+    /* Adaptive */
     float: right!important;
     background-color: #6a636a;
     width: 152px;
     height: 40px;
     border-radius: 0px 10px 0 0;
     margin-left: 40px;
-    margin-right: -20px;
+    margin-right: 0px;
 }
 .vendordetails-header .vendoreditarea:before {
     content: "";
