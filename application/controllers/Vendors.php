@@ -385,8 +385,9 @@ class Vendors extends MY_Controller
                         'pricedocview' => $pricedoc_view,
                         'otherdocs' => count($data['vendor_otherdocs']),
                     ];
-                    $mdata['header'] = $this->load->view('vendorcenter/header_view', $profile_options, TRUE);
-                    $general_info = $this->load->view('vendorcenter/profile_general_info', $profile_options, TRUE);
+                    $mdata['header'] = $this->load->view('vendorcenter/header_adaptive_view', $profile_options, TRUE);
+                    $mdata['mobheader'] = $this->load->view('vendorcenter/mobile_header_view', $profile_options, TRUE);
+                    $general_info = $this->load->view('vendorcenter/profilepage_general_info', $profile_options, TRUE);
                     $purchase_info = $this->load->view('vendorcenter/profile_purchase_info', $profile_options, TRUE);
                     $pament_info =  $this->load->view('vendorcenter/profile_payment_info', $profile_options, TRUE);
                     $prices_info = $this->load->view('vendorcenter/profile_prices_info', $profile_options, TRUE);
@@ -401,16 +402,11 @@ class Vendors extends MY_Controller
                         'customer_view' => $customer_info,
                         'otherdoc_view' => $document_info,
                     ];
-                    $profile_view = $this->load->view('vendorcenter/profile_view', $profview_options, TRUE);
+                    $profile_view = $this->load->view('vendorcenter/profile_adaptive_view', $profview_options, TRUE);
                     $options = [
                         'profile_view' => $profile_view,
                         'editmode' => $editmode,
                     ];
-                    // $contacts_view = $this->load->view('vendorcenter/contacts_view', $options, TRUE);
-                    // $docs_view = $this->load->view('vendorcenter/vedordocs_view', $options, TRUE);
-                    // $options['contacts'] = $contacts_view;
-                    // $options['docs'] = $docs_view;
-                    // $options['contacts'] = $options['docs'] = '';
 
                     $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
                     // $mdata['content']= '';

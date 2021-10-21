@@ -1,0 +1,463 @@
+#vendorDetailsModal .modal-content {
+    padding: 0.625rem;
+    background: #4c4c4c;
+}
+#vendorDetailsModal .modal-header {
+    padding: 0;
+    background-color: #d5d5d5;
+    height: 42px;
+    border: 1px solid #000;
+    border-top-left-radius: 0.625rem;
+    border-top-right-radius: 0.625rem;
+}
+#vendorDetailsModal .modal-header.inactive {
+    background-color: #3d3d3d;
+}
+#vendorDetailsModal .modal-header.editmode {
+    background-color: #346af5!important;
+}
+#vendorDetailsModal .modal-header .close {
+    margin-top: -12px;
+    margin-right: -7px;
+    opacity: 1;
+    position: absolute;
+    right: -9px;
+    top: -3px;
+}
+/* Adaptive */
+.modal-title {
+    width: 100%;
+}
+#vendorDetailsModal .modal-body {
+    padding: 0;
+    background: #ffffff;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
+    width: 100%;
+}
+#vendorDetailsModal .modal-footer {
+    padding: 0px;
+}
+.vendordetails-header div {
+    float: left;
+}
+.vendordetails-header .vendorstatusarea {
+    background-color: #000385;
+    color: #ffffff;
+    width: 146px;
+    height: 40px;
+    border-radius: 0.625rem 0 0 0;
+    margin-right: 2.5rem;
+}
+.vendordetails-header .vendorstatusarea:after{
+    content: "";
+    display: block;
+    position: relative;
+    left: 9.125rem;
+    border-top: 0px solid #000385;
+    border-right: 2.5rem solid transparent;
+    border-bottom: 2.5rem solid transparent;
+    border-left: 2.5rem solid #000385;
+}
+.vendordetails-header .vendorstatusarea.inactive {
+    background-color: #000000;
+}
+.vendordetails-header .vendorstatusarea.inactive:after{
+    border-top: 0px solid #000000;
+    border-left: 2.5rem solid #000000;
+}
+.vendorstatustxt {
+    width: 100%;
+    text-align: center;
+    font-size: 0.625rem;
+}
+.vendorstatuslabel {
+    width: 100%;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+.vendornameview {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+    margin-left: 0.3125rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+}
+.vendornameview.inactive {
+    color: #ffffff;
+}
+.vendorslugview {
+    font-size: 0.9375rem;
+    font-weight: bold;
+    color: #0000ff;
+    height: 2.5rem;
+    line-height: 2.9375rem;
+    margin-left: 0.3125rem;
+}
+.vendorslugview.inactive {
+    color: #ffffff;
+}
+.vendordetails-header .vendoreditarea {
+    float: right!important;
+    background-color: #6a636a;
+    width: 9.5rem;
+    height: 40px;
+    border-radius: 0px 0.625rem 0 0;
+    margin-left: 2.5rem;
+    margin-right: 0px;
+}
+.vendordetails-header .vendoreditarea:before {
+    content: "";
+    display: block;
+    position: relative;
+    right: 2.4375rem;
+    border-top: 2.5rem solid #6a636a;
+    border-right: 0px solid #6a636a;
+    border-bottom: 2.5rem solid transparent;
+    border-left: 2.5rem solid transparent;
+}
+.managemodelabel {
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    width: 4.1875rem;
+    position: relative;
+    top: -5rem;
+}
+.vendoractivatetbtn {
+    background: url('/img/vendors/edit_btn.png') no-repeat;
+    position: relative;
+    top: -4.8125rem;
+    width: 4.125rem;
+    height: 2.4375rem;
+    cursor: pointer;
+}
+.vendorsaveactionbtn {
+    background: url('/img/vendors/save_btn.png') no-repeat;
+    position: relative;
+    top: -4.8125rem;
+    width: 4.4375rem;
+    height: 2.4375rem;
+    cursor: pointer;
+}
+.vendordetails-body {
+    padding-top: 0.375rem;
+    width: 100%;
+}
+.vendordetails-body div {
+}
+.vendordata-tabs {
+    margin-left: 0.5rem;
+}
+.vendordata-tabs div {
+    float: left;
+}
+.vendor-tab {
+    height: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0 1.5625rem;
+    color: #000000;
+    opacity: 0.25;
+    background-color: #eaeaea;
+    font-size: 0.9375rem;
+    border-radius: 0.625rem 0.625rem 0 0;
+    margin-right: 0.625rem;
+}
+.vendor-tab.current {
+    opacity: 1;
+    font-weight: bold;
+    background-color: #d5d5d5;
+}
+.vendordata-tabs.inactive .vendor-tab.current {
+    background-color: #3d3d3d;
+    color: #ffffff;
+}
+.vendordata-content {
+    clear: both;
+    width: 100%;
+    display: none;
+    background-color: #d5d5d5;
+    padding: 0.9375rem 0 0.9375rem 0;
+}
+.vendordata-content.inactive {
+    background-color: #3d3d3d;
+}
+.vendordata-content.current {
+    display: block;
+}
+.vendordetails-section {
+    width: 17.6875rem;
+    /* margin-right: 1.8125rem; */
+    margin: 0 auto;
+}
+.vendordetails-section.pricesview, .vendordetails-section.customserviceview {
+    margin-bottom: 1.75rem;
+}
+.vendordetails-section-header {
+    background-color: #0072ff;
+    border-radius: 0.625rem 0.625rem 0px 0px;
+    color: #ffffff;
+    font-size: 1.0625rem;
+    font-weight: bold;
+    padding-left: 0.625rem;
+    width: 100%;
+    height: 2.125rem;
+    line-height: 2.125rem;
+}
+.vendordata-content.inactive .vendordetails-section-header {
+    background-color: #000000;
+}
+.vendordetails-section-body {
+    background-color: #ffffff;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-radius: 0px 0px 0.4375rem 0.4375rem;
+}
+.vendordetails-section-body .content-row {
+    width: 100%;
+    padding: 0.6875rem;
+    min-height: 2.625rem;
+}
+.vendordetails-section-body fieldset {
+    border: 1px solid #c7c7c7;
+    border-radius: 8px;
+}
+.vendordetails-section-body legend {
+    color: #c7c7c7;
+    font-size: 0.8125rem;
+    float: left;
+    margin-top: -0.625rem;
+    background-color: #fff;
+    margin-left: 0.5625rem;
+    width: fit-content;
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+.vendordata-content.editmode legend {
+    color: #0000ff!important;
+}
+.vendorparam_value {
+    padding-left: 0.5625rem;
+    font-weight: bold;
+    font-size: 0.9375rem;
+    width: 93%;
+    padding-bottom: 0.3125rem;
+    color: #000000;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorslug_value {
+    width: 8rem;
+}
+.vendorparam_value .fulladdress {
+    width: 14.8125rem;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .cityaddress {
+    width: 8.4375rem;
+    margin-right: 0.3125rem;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .stateaddress {
+    width: 1.5625rem;
+    margin-right: 0.3125rem;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.vendorparam_value .zipaddress {
+    width: 3.75rem;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.vendorname_value, .vendoraltname_value, .vendorweb_value, .vendorphone_value, .vendoraddress_value, .vendorinnernote_value {
+    width: 16.25rem;
+}
+.vendorweb_value .vendorparam_value {
+    color: #0000ff;
+}
+.vedorouraccount_value, .vendorcountry_value, .vendortype_value, .vendorasi_value  {
+    width: 7.8125rem;
+}
+.vendortype_value, .vendorasi_value {
+    margin-right: 0.4375rem;
+}
+/* Mobile header */
+.modal-container {
+    background: #4c4c4c;
+    width: 100%;
+    padding: 7px;
+}
+.modalvendor-title {
+    background: #d5d5d5;
+    border: 1px solid #000;
+    border-radius: 5px 5px 0 0;
+    padding: 0 7px 7px;
+}
+.mob-vendornameview {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    margin-left: 5px;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+}
+.mob-vendorslugview {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0000ff;
+    height: 40px;
+    line-height: 47px;
+    margin-left: 5px;
+    display: inline-block;
+}
+.mob-vendorstatusarea {
+    background-color: #000385;
+    color: #ffffff;
+    height: 40px;
+    border-radius: 7px 0 0 7px;
+    padding-top: .25rem;
+}
+.mob-vendorstatustxt {
+    width: 100%;
+    text-align: center;
+    font-size: .8rem;
+    line-height: .8rem;
+}
+.mob-vendorstatuslabel {
+    width: 100%;
+    font-size: 1.1rem;
+    line-height: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+.mob-vendorarea {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 23px 0 0;
+    border-color: #000385 #6a636a;
+    display: inline-flex;
+}
+.mob-vendoreditarea {
+    background-color: #6a636a;
+    height: 40px;
+    border-radius: 0px 7px 7px 0;
+}
+.mob-managemodelabel {
+    color: #ffffff;
+    font-size: .9rem;
+    line-height: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    padding-top: .2rem;
+}
+.mob-vendoractivatetbtn {
+    background: url(/img/vendors/edit_btn.png) no-repeat;
+    position: relative;
+    width: 66px;
+    top: -10px;
+    height: 39px;
+    cursor: pointer;
+    display: inline-block;
+}
+.modalvendor-title .close {
+    margin-top: -12px;
+    margin-right: -7px;
+    opacity: 1;
+    position: absolute;
+    right: 7px;
+    top: 10px;
+}
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        display: block;
+    }
+}
+
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        display: block;
+    }
+    .vendor-tab {
+        padding: 0 1.5625rem;
+        font-size: 0.9375rem;
+        margin-right: 0.625rem;
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        display: block;
+    }
+    .vendor-tab {
+        padding: 0 1.5625rem;
+        font-size: 0.9375rem;
+        margin-right: 0.625rem;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .mobileviewonly {
+        display: block;
+    }
+    .desktopviewonly {
+        display: none;
+    }
+    .vendor-tab {
+        padding: 0 0.525rem;
+        font-size: 0.8rem;
+        margin-right: 0.325rem;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .mobileviewonly {
+        display: block;
+    }
+    .desktopviewonly {
+        display: none;
+    }
+    .vendor-tab {
+        padding: 0 0.525rem;
+        font-size: 0.8rem;
+        margin-right: 0.325rem;
+    }
+}
