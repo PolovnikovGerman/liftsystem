@@ -136,7 +136,7 @@ class Databasecenter extends MY_Controller
 
             } elseif ($row['item_link']=='#mastervendors') {
                 $head['styles'][]=array('style'=>'/css/database_center/vendorsadapview.css');
-                $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
+                $head['styles'][]=array('style'=>'/css/database_center/vendordetails_adaptive.css');
                 $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
                 $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
                 $head['gmaps']=1;

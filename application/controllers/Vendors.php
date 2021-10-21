@@ -401,7 +401,7 @@ class Vendors extends MY_Controller
                         'customer_view' => $customer_info,
                         'otherdoc_view' => $document_info,
                     ];
-                    $profile_view = $this->load->view('vendorcenter/profile_view', $profview_options, TRUE);
+                    $profile_view = $this->load->view('vendorcenter/profile_adaptive_view', $profview_options, TRUE);
                     $options = [
                         'profile_view' => $profile_view,
                         'editmode' => $editmode,

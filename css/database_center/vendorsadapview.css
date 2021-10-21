@@ -233,7 +233,7 @@ select.filterdata {
         margin-right: 0.5rem;
     }
     .vendordataview .dataarea {
-        max-height: 40.3125rem;
+        max-height: 28.3125rem;
     }
 }
 /* Portrait tablets and small desktops */
@@ -245,7 +245,7 @@ select.filterdata {
         width: 17.4rem;
     }
     .vendordataview .dataarea {
-        max-height: 40.3125rem;
+        max-height: 32.3125rem;
     }
 }
 /* Landscape phones and portrait tablets */
@@ -256,7 +256,7 @@ select.filterdata {
         width: 13.2rem;
     }
     .vendordataview .dataarea {
-        max-height: 40.3125rem;
+        max-height: 21.3125rem;
     }
 }
 /* Landscape phones and smaller */
@@ -268,6 +268,6 @@ select.filterdata {
         width: 13.2rem;
     }
     .vendordataview .dataarea {
-        max-height: 40.3125rem;
+        max-height: 22.3125rem;
     }
 }
