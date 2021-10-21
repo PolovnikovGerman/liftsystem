@@ -172,6 +172,7 @@ function edit_vendor(vendor_id) {
     $.post(url,{'vendor_id':vendor_id},function(response){
         if (response.errors=='') {
             $("#vendorDetailsModal").find('div.modal-header').removeClass('editmode');
+            $("#mobileheadercontent").empty().html(response.data.mobheader);
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
             $("#vendorDetailsModal").find('div.modal-dialog').css('max-width','1333px');
