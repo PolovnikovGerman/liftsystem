@@ -556,10 +556,12 @@ select.pricelistyearselect {
     font-size: 0.8125rem;
     font-weight: normal;
     margin-right: 0.3125rem;
+    float: left;
 }
 .pricedoc_year {
     font-size: 0.9375rem;
     font-weight: bold;
+    float: left;
 }
 .pricedocs_view {
     font-size: 0.9375rem;
@@ -586,6 +588,7 @@ select.pricelistyearselect {
 .historicpricedoc_icon, .otherdocdel_icon {
     width: 1.875rem;
     text-align: center;
+    float: left;
 }
 .historicpricedoc_icon i, .otherdocdel_icon i {
     font-size: 0.9375rem;
@@ -598,6 +601,7 @@ select.pricelistyearselect {
 }
 .historicpricedoc_label {
     width: 7.5rem;
+    float: left;
 }
 .hidepricelists {
     height: 2rem;
