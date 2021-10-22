@@ -196,7 +196,7 @@
 .vendordetails-section {
     width: 17.6875rem;
     /* margin-right: 1.8125rem; */
-    margin: 0 auto;
+    margin: 0 auto 0.6rem auto;
 }
 .vendordetails-section.pricesview, .vendordetails-section.customserviceview {
     margin-bottom: 1.75rem;
@@ -302,15 +302,49 @@
 .vendortype_value, .vendorasi_value {
     margin-right: 0.4375rem;
 }
+/* Purchase */
+.vendorpocontact_value, .vendorpophone_value, .vendorpoemail_value, .vendorshipaddr_value {
+    width: 16.25rem;
+}
+.vendorpoemail_value .vendorparam_value {
+    color: #0000ff;
+}
+/* Payment */
+.vendorpaymentcontact_value, .vendorpaymentphone_value, .vendorpaymentemail_value, .vendorpaymentterms_value, .vendorpaymentmethod_value, .vendoraccountdetail_value {
+    width: 16.25rem;
+}
+.vendorpaymentemail_value .vendorparam_value {
+    color: #0000ff;
+}
+.vedorpaymentterm, .vedorpaymentmethod {
+    padding-left: 0.9375rem;
+    font-weight: bold;
+    font-size: 0.9375rem;
+    width: 7.25rem;
+    padding-bottom: 0.3125rem;
+    color: #cccccc;
+}
+.vedorpaymentterm.checked, .vedorpaymentmethod.checked {
+    color: #000000;
+}
+.vendoraccountdetail_value .vendorparam_value {
+    text-align: center;
+    color: #0000ff;
+    padding: 2rem 0;
+    width: 100%;
+}
 /* Mobile header */
 .modal-container {
     background: #4c4c4c;
     width: 100%;
-    padding: 7px;
+    /* padding: 7px; */
 }
 .modalvendor-title {
     background: #d5d5d5;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
     border-radius: 5px 5px 0 0;
     padding: 0 7px 7px;
 }
@@ -403,6 +437,15 @@
     .desktopviewonly {
         display: block;
     }
+    .vendorshipaddr_value {
+        margin-top: 7.25rem;
+    }
+    .vendorpaymentterms_value {
+        margin-top: 1.875rem;
+    }
+    .vendoraccountdetail_value {
+        margin-top: 2.1875rem;
+    }
 }
 
 /* Portrait tablets and medium desktops */
@@ -422,10 +465,10 @@
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
     .mobileviewonly {
-        display: none;
+        display: block;
     }
     .desktopviewonly {
-        display: block;
+        display: none;
     }
     .vendor-tab {
         padding: 0 1.5625rem;
@@ -446,6 +489,9 @@
         font-size: 0.8rem;
         margin-right: 0.325rem;
     }
+    .vendorparam_value {
+        font-size: 0.8125rem;
+    }
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
@@ -459,5 +505,8 @@
         padding: 0 0.525rem;
         font-size: 0.8rem;
         margin-right: 0.325rem;
+    }
+    .vendorparam_value {
+        font-size: 0.8125rem;
     }
 }
