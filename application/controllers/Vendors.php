@@ -388,10 +388,10 @@ class Vendors extends MY_Controller
                     $mdata['header'] = $this->load->view('vendorcenter/header_adaptive_view', $profile_options, TRUE);
                     $mdata['mobheader'] = $this->load->view('vendorcenter/mobile_header_view', $profile_options, TRUE);
                     $general_info = $this->load->view('vendorcenter/profilepage_general_info', $profile_options, TRUE);
-                    $purchase_info = $this->load->view('vendorcenter/profile_purchase_info', $profile_options, TRUE);
-                    $pament_info =  $this->load->view('vendorcenter/profile_payment_info', $profile_options, TRUE);
-                    $prices_info = $this->load->view('vendorcenter/profile_prices_info', $profile_options, TRUE);
-                    $customer_info = $this->load->view('vendorcenter/profile_customers_info', $profile_options, TRUE);
+                    $purchase_info = $this->load->view('vendorcenter/profilepage_purchase_info', $profile_options, TRUE);
+                    $pament_info =  $this->load->view('vendorcenter/profilepage_payment_info', $profile_options, TRUE);
+                    $prices_info = $this->load->view('vendorcenter/profilepage_prices_info', $profile_options, TRUE);
+                    $customer_info = $this->load->view('vendorcenter/profilepage_customers_info', $profile_options, TRUE);
                     $document_info = $this->load->view('vendorcenter/profile_otherdoc_info', $profile_options, TRUE);
 
                     $profview_options = [
