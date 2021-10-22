@@ -317,12 +317,23 @@
     color: #0000ff;
 }
 .vedorpaymentterm, .vedorpaymentmethod {
-    padding-left: 0.9375rem;
+    /* padding-left: 0.9375rem; */
     font-weight: bold;
     font-size: 0.9375rem;
-    width: 7.25rem;
+    /* width: 7.25rem; */
     padding-bottom: 0.3125rem;
     color: #cccccc;
+    float: left;
+}
+.vendorparam_icon {
+    cursor: pointer;
+    margin-right: 5px;
+    float: left;
+}
+.vendorparamcheck {
+    cursor: pointer;
+    margin-right: 5px;
+    float: left;
 }
 .vedorpaymentterm.checked, .vedorpaymentmethod.checked {
     color: #000000;
@@ -332,6 +343,9 @@
     color: #0000ff;
     padding: 2rem 0;
     width: 100%;
+}
+.vendorname_value, .vendoraltname_value, .vendorweb_value, .vendorphone_value, .vendoraddress_value, .vendorinnernote_value {
+    width: 16.25rem;
 }
 /* Mobile header */
 .modal-container {
