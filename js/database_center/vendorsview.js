@@ -191,6 +191,24 @@ function edit_vendor(vendor_id) {
 }
 
 function init_vendordetails_view() {
+    $(".mob-vendoractivatetbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'vendor_id', value: $("#vendorid").val()});
+        params.push({name: 'editmode', value: 1});
+        var url="/vendors/vendor_edit";
+        $.post(url,params,function(response) {
+            if (response.errors=='') {
+                $("#vendorDetailsModalLabel").empty().html(response.data.header);
+                $("#mobileheadercontent").empty().html(response.data.mobheader);
+                $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                $("#vendorDetailsModal").find('div.modal-header').addClass('editmode');
+                init_vendordetails_edit();
+                initAddressAutocomplete();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
     $(".vendoractivatetbtn").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'vendor_id', value: $("#vendorid").val()});
