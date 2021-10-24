@@ -772,6 +772,10 @@ input.documentdesciption {
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    #vendorDetailsModal .modal-dialog {
+        width: 1333px;
+        max-width: 1333px;
+    }
     .mobileviewonly {
         display: none;
     }
@@ -791,6 +795,9 @@ input.documentdesciption {
 
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
+    #vendorDetailsModal .modal-dialog {
+        max-width: 992px;
+    }
     .mobileviewonly {
         display: none;
     }
@@ -805,6 +812,9 @@ input.documentdesciption {
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
+    #vendorDetailsModal .modal-dialog {
+        max-width: 736px;
+    }
     .mobileviewonly {
         display: block;
     }
@@ -819,6 +829,9 @@ input.documentdesciption {
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
+    #vendorDetailsModal .modal-dialog {
+        max-width: 636px;
+    }
     .mobileviewonly {
         display: block;
     }

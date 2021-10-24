@@ -210,6 +210,9 @@ select.filterdata {
 
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .maincontent_view {
+        min-height: 41.75rem;
+    }
     .vendordataview .pagetitle {
         height: 2.5rem;
         font-size: 1.5rem;
@@ -219,12 +222,15 @@ select.filterdata {
         margin-right: 0.5rem;
     }
     .vendordataview .dataarea {
-        max-height: 29.9rem;
+        max-height: 32.85rem;
     }
 }
 
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
+    .maincontent_view {
+        min-height: 35.75rem;
+    }
     .vendordataview .pagetitle {
 
     }
@@ -233,11 +239,14 @@ select.filterdata {
         margin-right: 0.5rem;
     }
     .vendordataview .dataarea {
-        max-height: 28.3125rem;
+        max-height: 26.5rem;
     }
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
+    .maincontent_view {
+        min-height: 47rem;
+    }
     .vendordataview .pagetitle {
 
     }
@@ -245,22 +254,28 @@ select.filterdata {
         width: 17.4rem;
     }
     .vendordataview .dataarea {
-        max-height: 32.3125rem;
+        max-height: 34.75rem;
     }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
+    .maincontent_view {
+        min-height: 26.25rem;
+    }
     .vendordataview .pagetitle {
     }
     select.filterdata {
         width: 13.2rem;
     }
     .vendordataview .dataarea {
-        max-height: 21.3125rem;
+        max-height: 14.5rem;
     }
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
+    .maincontent_view {
+        min-height: 40rem;
+    }
     .vendordataview .pagetitle {
         font-size: 1.5rem;
     }
@@ -268,6 +283,6 @@ select.filterdata {
         width: 13.2rem;
     }
     .vendordataview .dataarea {
-        max-height: 22.3125rem;
+        max-height: 23.85rem;
     }
 }

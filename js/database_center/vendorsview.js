@@ -175,7 +175,7 @@ function edit_vendor(vendor_id) {
             $("#mobileheadercontent").empty().html(response.data.mobheader);
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
-            $("#vendorDetailsModal").find('div.modal-dialog').css('max-width','1333px');
+            // $("#vendorDetailsModal").find('div.modal-dialog').css('max-width','1333px');
             $("#vendorDetailsModal").modal({keyboard: false, show: true});
             if (parseInt(response.data.editmode)==0) {
                 $("#vendorDetailsModal").find('div.modal-header').addClass(response.data.status);
@@ -300,6 +300,18 @@ function init_vendordetails_view() {
 
 function init_vendordetails_edit() {
     $(".vendorsaveactionbtn").unbind('click').click(function () {
+        var params = prepare_vendor_edit();
+        var url = '/vendors/vendordata_save';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#vendorDetailsModal").modal('hide');
+                search_vendors();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".mob-vendorsaveactionbtn").unbind('click').click(function () {
         var params = prepare_vendor_edit();
         var url = '/vendors/vendordata_save';
         $.post(url, params, function (response) {
@@ -454,7 +466,10 @@ function init_vendordetails_edit() {
                 $("#editModal").find('.modal-dialog').css('width', '300px');
                 $("#editModal").find('div.modal-body').empty().html(response.data.content);
                 $("#editModal").modal({show: true, keyboard: false });
-                init_venorprice_upload()
+                init_venorprice_upload();
+                $('#editModal').on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
             } else {
                 show_error(response);
             }
