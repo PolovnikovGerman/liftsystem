@@ -1,7 +1,7 @@
 <div class="vendordetails-section-header">General Info:</div>
 <div class="vendordetails-section-body">
     <div class="row content-row">
-        <div class="col-12">
+        <div class="col-6">
             <div class="vendorslug_value">
                 <fieldset>
                     <legend>Vendor #</legend>
@@ -10,12 +10,14 @@
                     </div>
                 </fieldset>
             </div>
-            <?php if ($editmode==1) { ?>
+        </div>
+        <?php if ($editmode==1) { ?>
+            <div class="col-6">
                 <div class="vendorchangemode">
                     <?=$vendor['vendor_status']==1 ? 'Make Inactive' : 'Make Active'?>
                 </div>
-            <?php } ?>
-        </div>
+            </div>
+        <?php } ?>
     </div>
     <div class="row content-row">
         <div class="col-12">
