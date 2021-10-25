@@ -268,13 +268,13 @@ Class Vendors_model extends My_Model
     }
 
     public function add_vendor() {
-        $this->db->select('count(vendor_id) as cnt, max(vendor_id) as maxval');
+        $this->db->select('count(vendor_id) as cnt, max(vendor_id) as maxval, max(vendor_code) as vcode');
         $this->db->from('vendors');
         $res = $this->db->get()->row_array();
         if ($res['cnt']==0) {
-            $newid = 1;
+            $newid = 50000;
         } else {
-            $newid = $res['maxval'] + 1;
+            $newid = $res['vcode'] + 1;
         }
         $vendor=array(
             'vendor_id' => 0,
@@ -313,7 +313,7 @@ Class Vendors_model extends My_Model
             'po_note' => '',
             'internal_po_note' => '',
             'vendor_status' => 1,
-            'vendor_slug' => 'V-5'.str_pad($newid,4,'0', STR_PAD_LEFT),
+            'vendor_slug' => 'V-'.$newid,
             'general_note' => '',
             'po_contact' => '',
             'po_phone' => '',
@@ -819,9 +819,20 @@ Class Vendors_model extends My_Model
                 if ($vendor_id > 0) {
                     $out['result'] = $this->success_result;
                     if ($newrec==1) {
-                        $newslug = 'V-5'.str_pad($vendor_id,4,'0', STR_PAD_LEFT);
+                        $this->db->select('max(vendor_code) last_code, count(vendor_id) as cnt');
+                        $this->db->from('vendors');
+                        $vdres = $this->db->get()->row_array();
+                        if ($vdres['cnt']==0) {
+                            $vcode = 'V-50000';
+                            $newcode = 50000;
+                        } else {
+                            $newcode = $vdres['last_code']+1;
+                            $vcode = 'V-'.$newcode;
+                        }
+                        // $newslug = 'V-5'.str_pad($vendor_id,4,'0', STR_PAD_LEFT);
                         $this->db->where('vendor_id', $vendor_id);
-                        $this->db->set('vendor_slug', $newslug);
+                        $this->db->set('vendor_slug', $vcode);
+                        $this->db->set('vendor_code', $newcode);
                         $this->db->update('vendors');
                     }
                     // Contacts
