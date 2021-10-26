@@ -342,9 +342,9 @@ class Test extends CI_Controller
     }
 
     public function inventory_year_report() {
-        $datebgn=strtotime('2020-01-01');
-        // $dateend=strtotime('2018-12-27');
-        $dateend = strtotime(date('Y-m-d'));
+        $datebgn=strtotime('2018-01-01');
+        $dateend=strtotime('2019-01-01');
+        // $dateend = strtotime(date('Y-m-d'));
         $this->load->model('printshop_model');
         // $extracost=$this->printshop_model->invaddcost();
         $this->db->select('c.printshop_color_id, i.item_num, i.item_name, c.color, c.price');
