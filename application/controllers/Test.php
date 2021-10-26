@@ -421,8 +421,8 @@ class Test extends CI_Controller
             foreach ($data as $row) {
                 if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
                     $rest=$row['rest']+$row['income']-$row['outcome'];
-                    $total=$row['rest']*$row['price'];
-                    if ($row['item_num']=='i001') {
+                    $total=intval($row['rest'])*floatval($row['price']);
+                    if ($row['item_num']=='i001' && $row['color']=='Beige') {
                         echo 'Rest '.$rest.' Price '.$row['price'].' Total '.$total.PHP_EOL;
                     }
                     $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
