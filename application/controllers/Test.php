@@ -413,7 +413,7 @@ class Test extends CI_Controller
             $data[$key]['outcome']+=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
             $data[$key]['price']=($rrow['price']);
         }
-
+        echo 'Report Year '.date('Y', $datebgn).PHP_EOL;
         $file=$this->config->item('upload_path_preload').'inventoryreport_price_'.date('Y', $datebgn).'.csv';
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
