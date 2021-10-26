@@ -238,7 +238,6 @@ select.filterdata {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-right: none;
 }
 .vendordataview .dataarea .datarow .email {
     width: 198px;
@@ -269,6 +268,9 @@ select.filterdata {
     .vendordataview .dataarea {
         max-height: 32.85rem;
         width: 66.6rem;
+    }
+    .vendordataview .dataarea .datarow {
+        height: 1.5rem!important;
     }
 }
 

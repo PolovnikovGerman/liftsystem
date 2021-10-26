@@ -4,7 +4,6 @@
         <div class="status">
             <?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?>
         </div>
-        <!---- <div class="numpp"><?php //=$vendor['numpp']?></div>  -->
         <div class="type"><?=$vendor['vendor_type']?></div>
         <div class="slug"><?=$vendor['vendor_slug']?></div>
         <div class="name"><?=$vendor['vendor_name']?></div>
