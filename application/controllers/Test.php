@@ -343,6 +343,7 @@ class Test extends CI_Controller
 
     public function inventory_year_report() {
         $datebgn=strtotime('2018-01-01');
+        echo 'Start '.date('d M Y', $datebgn).PHP_EOL;
         $dateend=strtotime('2019-01-01');
         // $dateend = strtotime(date('Y-m-d'));
         $this->load->model('printshop_model');
