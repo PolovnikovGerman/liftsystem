@@ -342,8 +342,8 @@ class Test extends CI_Controller
     }
 
     public function inventory_year_report() {
-        $datebgn=strtotime('2019-01-01');
-        $dateend=strtotime('2020-01-01');
+        $datebgn=strtotime('2018-01-01');
+        $dateend=strtotime('2019-01-01');
         // $dateend = strtotime(date('Y-m-d'));
         // $this->load->model('printshop_model');
         // $extracost=$this->printshop_model->invaddcost();
@@ -422,6 +422,9 @@ class Test extends CI_Controller
                 if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
                     $rest=$row['rest']+$row['income']-$row['outcome'];
                     $total=$row['rest']*$row['price'];
+                    if ($row['item_num']=='i001') {
+                        echo 'Rest '.$rest.' Price '.$row['price'].' Total '.$total.PHP_EOL;
+                    }
                     $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
                     fwrite($fh, $msg);
                 }
