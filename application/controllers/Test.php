@@ -346,7 +346,7 @@ class Test extends CI_Controller
         echo 'Start '.date('H:i:s, d M', $datebgn).' Year '.date('Y', $datebgn).PHP_EOL;
         $dateend=strtotime('2019-01-01');
         // $dateend = strtotime(date('Y-m-d'));
-        $this->load->model('printshop_model');
+        // $this->load->model('printshop_model');
         // $extracost=$this->printshop_model->invaddcost();
         $this->db->select('c.printshop_color_id, i.item_num, i.item_name, c.color, c.price');
         $this->db->from('ts_printshop_colors c');
