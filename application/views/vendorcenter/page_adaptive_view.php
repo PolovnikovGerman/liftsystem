@@ -7,35 +7,41 @@
     <div class="vendordataview">
         <div class="pageheader">
             <div class="row pt-2">
-                <div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                <div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-2">
                     <div class="pagetitle">Vendor Database</div>
                 </div>
-                <div class="col-12 col-sm-9 col-md-9 col-lg-9 col-xl-9">
+                <div class="col-12 col-sm-9 col-md-9 col-lg-9 col-xl-6">
                     <div class="row mb-3">
                         <div class="col-6">
-                            <input type="text" id="vedorsearch" class="searchinpt form-control " placeholder="Enter keyword"/>
+                            <input type="text" id="vedorsearch" class="searchinpt " placeholder="Enter keyword"/>
                         </div>
                         <a class="btn btn-default datasearchbtn">Search</a>
                         <a class="btn btn-default datacleanbtn">Clear</a>
                     </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-9 col-xl-9">
-                    <span class="filterlabel" for="filterdata">Display:</span>
-                    <select class="filterdata form-control form-group" id="filtertype">
-                        <option value="">All Vendors Types</option>
-                        <option value="Supplier">Supplier</option>
-                        <option value="Artwork">Artwork</option>
-                        <option value="Shipping">Shipping</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <span class="filterlabel" for="filterdata form-control">Display:</span>
-                    <select class="filterdata form-control form-group" name="filerdata" id="filterdata">
-                        <option value="0">All Vendors Status</option>
-                        <option value="1" selected="selected">Active Vendors</option>
-                        <option value="2">Non-Active Vendors</option>
-                    </select>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-7 col-xl-6">
+<!--                    <span class="filterlabel" for="filterdata">Display:</span>-->
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="filterdata" id="filtertype">
+                                <option value="">All Vendors Types</option>
+                                <option value="Supplier">Supplier</option>
+                                <option value="Artwork">Artwork</option>
+                                <option value="Shipping">Shipping</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <!--                    <span class="filterlabel" for="filterdata form-control">Display:</span>-->
+                        <div class="col-6">
+                            <select class="filterdata" name="filerdata" id="filterdata">
+                                <option value="0">All Vendors Status</option>
+                                <option value="1" selected="selected">Active Vendors</option>
+                                <option value="2">Non-Active Vendors</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-2 mt-2">
                     <div class="paginator" id="vendorPagination"></div>
                     <div class="totaldata"><?=QTYOutput($total)?> Records</div>
                 </div>
