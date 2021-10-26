@@ -342,9 +342,8 @@ class Test extends CI_Controller
     }
 
     public function inventory_year_report() {
-        $datebgn=strtotime('2018-01-01');
-        echo 'Start '.date('H:i:s, d M', $datebgn).' Year '.date('Y', $datebgn).PHP_EOL;
-        $dateend=strtotime('2019-01-01');
+        $datebgn=strtotime('2019-01-01');
+        $dateend=strtotime('2020-01-01');
         // $dateend = strtotime(date('Y-m-d'));
         // $this->load->model('printshop_model');
         // $extracost=$this->printshop_model->invaddcost();
@@ -413,7 +412,6 @@ class Test extends CI_Controller
             $data[$key]['outcome']+=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
             $data[$key]['price']=($rrow['price']);
         }
-        echo 'Report Year '.date('Y-m-d H:i:s', $datebgn).PHP_EOL;
         $file=$this->config->item('upload_path_preload').'inventoryreport_price_'.date('Y', $datebgn).'.csv';
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
