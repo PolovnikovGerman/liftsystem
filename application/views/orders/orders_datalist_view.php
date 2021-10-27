@@ -9,7 +9,10 @@
         <?php if (empty($row['itemcolor'])) { ?>
             <div class="itemcolor">&nbsp;</div>
         <?php } else { ?>
-            <div class="itemcolor <?=$row['itemcolorclass']?>" <?=$row['itemcolorclass']=='wide' ? 'data-content="'.$row['itemcolor'].'"' : ''?> ><?=$row['itemcolor']?></div>
+            <div class="itemcolor <?=$row['itemcolorclass']?>"
+            <?=$row['itemcolorclass']=='wide' ? 'data-bgcolor="#fff" data-css="itemcolor_tooltip" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$row['itemcolor'].'"' : ''?> >
+                <?=$row['itemcolor']?>
+            </div>
         <?php } ?>
         <div class="item <?=($row['custom_order']==1 ? 'customorder' : '')?>"><?=$row['out_item']?></div>
         <div class="revenue"><?=$row['revenue']?></div>

@@ -171,9 +171,6 @@ class Leads extends My_Controller {
         // Searchable
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
-        // Ballons Tips
-        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
-        $head['styles'][] = ['style' => '/css/mb_balloons/mb.balloon.css'];
 
         $options = [
             'title' => $head['title'],
@@ -301,10 +298,10 @@ class Leads extends My_Controller {
                 $out_options['weeks']=$data['weeks'];
                 $out_options['curweek']=$data['curweek'];
                 $out_options['totals']=$data['totals'];
+                $out_options['brand'] = $brand;
                 $mdata['content']=$this->load->view('leads/leads_closedata_view', $out_options, TRUE);
             }
             $this->ajaxResponse($mdata,$error);
-
         }
         show_404();
     }

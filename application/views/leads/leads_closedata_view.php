@@ -5,7 +5,9 @@
 </div>
 <div class="leadclosedreportdata">
     <div class="weekdatarowtotal">
-        <div class="weekday">Year to Date</div>
+        <div class="weekday" data-bgcolor="#a7a7a7" data-css="yeartodate_tooltip" data-event="click" data-textcolor="#000" data-bordercolor="#000" data-balloon="{ajax} /leads/leadsclosed_yeartotals?brand=<?=$brand?>">
+            Year to Date
+        </div>
         <div class="newleads"><?=$totals['newleads']?></div>
         <div class="workleads"><?=$totals['wrkleads']?></div>
         <div class="outcalls"><?=$totals['outcalls']?></div>
@@ -39,13 +41,19 @@
         <?php foreach ($weeks as $row) { ?>
             <div class="weekdatarow <?=($numpp%2==0 ? 'white' :  'grey')?>" data-week="<?=$row['week']?>" data-start="<?=$row['bgn']?>" data-end="<?=$row['end']?>">
                 <div class="weekday <?=$row['weekclass']?>"><?=$row['label']?></div>
-                <div class="newleads" id="newlead<?=$row['bgn']?>" data-viewsrc="<?=$row['newleadsurl']?>"><?=$row['newleads']?></div>
-                <div class="workleads" id="wrklead<?=$row['bgn']?>" data-viewsrc="<?=$row['wrkleadsurl']?>"><?=$row['wrkleads']?></div>
+                <div class="newleads" id="newlead<?=$row['bgn']?>"
+                <?=$row['newleadsurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="weekuserleads_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['newleadsurl'].'"'?>><?=$row['newleads']?></div>
+                <div class="workleads" id="wrklead<?=$row['bgn']?>"
+                <?=$row['wrkleadsurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="weekuserleads_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['wrkleadsurl'].'"' ?>><?=$row['wrkleads']?></div>
                 <div class="outcalls"><?=$row['outcalls']?></div>
-                <div class="ordersnum" id="orders<?=$row['bgn']?>" div-viewsrc="<?=$row['ordersurl']?>"><?=$row['orders']?></div>
-                <div class="ordersrevenue" id="ordrevenue<?=$row['bgn']?>" data-viewsrc="<?=$row['ordersurl']?>"><?=$row['revenue']?></div>
-                <div class="ordersprofit" id="ordprofit<?=$row['bgn']?>" data-viewsrc="<?=$row['ordersurl']?>"><?=$row['profit']?></div>
-                <div class="curpoints" id="points<?=$row['bgn']?>" data-viewsrc="<?=$row['cmporderurl']?>"><?=$row['points']?></div>
+                <div class="ordersnum" id="orders<?=$row['bgn']?>"
+                <?=$row['ordersurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="weekuserorder_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['ordersurl'].'"' ?>><?=$row['orders']?></div>
+                <div class="ordersrevenue" id="ordrevenue<?=$row['bgn']?>"
+                <?=$row['ordersurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="weekuserorder_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['ordersurl'].'"' ?>><?=$row['revenue']?></div>
+                <div class="ordersprofit" id="ordprofit<?=$row['bgn']?>"
+                <?=$row['ordersurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="weekuserorder_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['ordersurl'].'"' ?>><?=$row['profit']?></div>
+                <div class="curpoints" id="points<?=$row['bgn']?>"
+                <?=$row['cmporderurl']=='' ? '' : 'data-bgcolor="#a7a7a7" data-css="curpoints_tooltip" data-event="click" data-bordercolor="#000" data-balloon="{ajax} '.$row['cmporderurl'].'"' ?>><?=$row['points']?></div>
                 <div class="goalpoints"><?=$row['goals']?></div>
                 <div class="procgoals <?=$row['goalperc_class']?>"><?=$row['goalperc']?></div>
             </div>

@@ -1887,7 +1887,8 @@ Class Orders_model extends MY_Model
             }
             $artsubmit = $this->count_artlogs($dat['session_id']);
             if ($artsubmit != 0) {
-                $out['artsubm'] = '<div id="artsubmitlog' . $cart_id . '" class="artsubmitlog" data-content="/leads/artsubmitlog?d=' . $dat['session_id'] . '"><img src="/img/lead/art.png"/></div>';
+                $out['artsubm'] = '<div id="artsubmitlog' . $cart_id . '" class="artsubmitlog" data-event="click" data-css="artsubmitlog_tooltip" data-bgcolor="#f0f0f0" 
+                data-bordercolor="#999" data-textcolor="#333" data-balloon="{ajax} /leads/artsubmitlog?d=' . $dat['session_id'] . '"><img src="/img/lead/art.png"/></div>';
             }
         }
 

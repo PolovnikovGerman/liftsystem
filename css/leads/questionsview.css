@@ -298,12 +298,13 @@ textarea.msgtext {
     resize: none;
 }
 .question_tooltip {
-    background: #ffffff!important;
-    color: #2F2F2F!important;
+    /*background: #ffffff!important;*/
+    /*color: #2F2F2F!important;*/
+    /*border: 2px solid #252525!important;*/
     font-size: 13px!important;
     text-align: center;
-    border: 2px solid #252525!important;
-    line-height: 16px!important;
-    max-width: 540px!important;
-    width: 540px;
+    line-height: 20px!important;
+    max-width: 480px!important;
+    width: 480px!important;
+    padding: 10px!important;
 }

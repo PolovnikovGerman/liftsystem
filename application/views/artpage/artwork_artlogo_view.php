@@ -2,7 +2,8 @@
     <div class="artworkdata_content">
         <div class="artworkdata <?=$location_state?>" data-artworkartid="<?=$artwork_art_id?>">
             <div class="artworklabel" data-artworkartid="<?=$artwork_art_id?>"><?=$artlabel?></div>
-            <div class="artworksource <?=$imagesourceclass?>  truncateoverflowtext" data-artworkartid="<?=$artwork_art_id?>" data-viewsrc="<?=$imagesourceview?>">
+            <div class="artworksource <?=$imagesourceclass?>  truncateoverflowtext" data-artworkartid="<?=$artwork_art_id?>"
+                 data-bgcolor="#fff" data-event="hover" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} <?=$imagesourceview?>">
                 <?=$logo_src?>
             </div>
             <div class="artworkredraw" data-artworkartid="<?=$artwork_art_id?>">

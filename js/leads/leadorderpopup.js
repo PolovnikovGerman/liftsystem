@@ -265,6 +265,7 @@ function edit_currentorder() {
 
 function init_onlineleadorder_edit() {
     // Create Edit Timer
+    jQuery.balloon.init();
     create_editorder_timer();
     // Save
     $("div.orderdatasave").unbind('click').click(function(){
@@ -1238,16 +1239,16 @@ function init_showartlocs() {
     //         $(this).popover('hide');
     //     }
     // );
-    $("div.uploadproofdoc").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'right'
-    });
-    $("div.sendedproofdoc").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'right'
-    });
+    // $("div.uploadproofdoc").popover({
+    //     html: true,
+    //     trigger: 'hover',
+    //     placement: 'right'
+    // });
+    // $("div.sendedproofdoc").popover({
+    //     html: true,
+    //     trigger: 'hover',
+    //     placement: 'right'
+    // });
     $("div.uploadproofdoc").unbind('click').click(function () {
         var profdoc = $(this).data('proofdoc');
         var params=new Array();
@@ -1791,27 +1792,6 @@ function init_imprint_details() {
         },'json');
     });
     // View Location
-    // $("div.locattempl.active").qtip({
-    //     content: {
-    //         text: function(event, api) {
-    //             $.ajax({
-    //                 url: api.elements.target.data('content') // Use href attribute as URL
-    //             }).then(function(content) {
-    //                 // Set the tooltip content upon successful retrieval
-    //                 api.set('content.text', content);
-    //             }, function(xhr, status, error) {
-    //                 // Upon failure... set the tooltip content to error
-    //                 api.set('content.text', status + ': ' + error);
-    //             });
-    //             return 'Loading...'; // Set some initial text
-    //         }
-    //     },
-    //     position: {
-    //         my: 'bottom right',
-    //         at: 'top left',
-    //     },
-    //     style: 'qtip-light'
-    // });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $("#artNextModal").modal('hide');
@@ -3389,41 +3369,6 @@ function init_orderbottom_content(edit_mode) {
             }
         },'json');
     });
-    // Profit
-    // $("div.profitdetailsviewarea").qtip({
-    //     content : {
-    //         text: function(event, api) {
-    //             $.ajax({
-    //                 // url: href // Use href attribute as URL
-    //                 // url: api.elements.target.data('viewsrc') // Use href attribute as URL
-    //                 url: $(this).data('viewsrc')
-    //             }).then(function(content) {
-    //                 // Set the tooltip content upon successful retrieval
-    //                 api.set('content.text', content);
-    //             }, function(xhr, status, error) {
-    //                 // Upon failure... set the tooltip content to error
-    //                 api.set('content.text', status + ': ' + error);
-    //             });
-    //             return 'Loading...'; // Set some initial text
-    //         }
-    //     },
-    //     position: {
-    //         my: 'bottom right',
-    //         at: 'middle left',
-    //     },
-    //     style: {
-    //         classes: 'qtip-dark profitdetails_tooltip'
-    //     },
-    //     show: {
-    //         effect: function() { $(this).fadeIn(250); }
-    //     },
-    //     hide: {
-    //        delay: 200,
-    //         fixed: true, // <--- add this
-    //        effect: function() { $(this).fadeOut(250); }
-    //     },
-    // });
-
 }
 
 function save_orderticket() {

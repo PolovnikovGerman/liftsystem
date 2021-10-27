@@ -90,6 +90,7 @@ function pageQuestionsCallback(page_index) {
             $("div.question_tabledat").empty().html(response.data.content);
             $("#curpagequest").val(page_index);
             /* change size */
+            jQuery.balloon.init();
             init_questions_content();
             $("#loader").css('display','none');
         } else {
@@ -101,16 +102,6 @@ function pageQuestionsCallback(page_index) {
 }
 
 function init_questions_content() {
-    $(".quest_tabrow").find('.quest_text').qtip({
-        content: {
-            attr: 'data-content'
-        },
-        position: {
-            my: 'right center',
-            at: 'center left',
-        },
-        style: 'question_tooltip'
-    });
     $("div.quest_tabrow").hover(
         function(){
             $(this).addClass("current_row");
