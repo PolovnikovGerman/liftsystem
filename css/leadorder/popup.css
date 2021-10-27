@@ -238,7 +238,8 @@ input.calendarinpt[readonly="readonly"] {
     padding-left: 5px;
 }
 .block_4_text1.hidden {
-    opacity: 0.33;
+    opacity: 0.33!important;
+    display: block!important;
 }
 .block_4_text1.active {
     opacity: 1;
@@ -248,7 +249,7 @@ input.calendarinpt[readonly="readonly"] {
     float: left;
 }
 .block_4_text2.hidden {
-    opacity: 0.33;
+    opacity: 0.33!important;
     display: block!important;
 }
 .block_4_text2.active {

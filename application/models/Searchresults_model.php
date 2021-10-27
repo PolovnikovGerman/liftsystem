@@ -136,7 +136,7 @@ class Searchresults_model extends My_Model
             $this->db->where('brand', $brand);
         }
         $this->db->group_by('search_date,search_result');
-        $this->db->order_by('search_time');
+        $this->db->order_by('search_date');
         $res_ar=$this->db->get()->result_array();
 
         foreach ($res_ar as $row) {

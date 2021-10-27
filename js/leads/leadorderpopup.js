@@ -57,6 +57,9 @@ function navigation_init() {
                 $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
             } else {
                 show_error(response);                
             }
@@ -71,6 +74,9 @@ function navigation_init() {
                 $("#artNextModal").find('.modal-title').empty().html('Credit Account List');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_creditappfunc();
             } else {
                 show_error(response);
@@ -206,16 +212,16 @@ function order_navigate(order, brand) {
             $(".moveprvorder").data('order',response.data.prvorder);            
             $(".moveprvorder").removeClass('active');
             if (parseInt(response.data.prvorder)===0) {                
-                $(".moveprvorder").addClass('hidden');
+                $(".moveprvorder").removeClass('active').addClass('hidden');
             } else {                
-                $(".moveprvorder").addClass('active');
+                $(".moveprvorder").removeClass('hidden').addClass('active');
             }
             $(".movenxtorder").data('order',response.data.nxtorder);
             $(".movenxtorder").removeClass('active');            
             if (parseInt(response.data.nxtorder)===0) {
-                $(".movenxtorder").addClass('hidden');
+                $(".movenxtorder").removeClass('active').addClass('hidden');
             } else {
-                $(".movenxtorder").addClass('active');
+                $(".movenxtorder").removeClass('hidden').addClass('active');
             }
             $("div.block_4_text2.sendorder").removeClass('hidden').removeClass('active');
             $("div.block_4_text2.pdfprintorder").removeClass('hidden').removeClass('active');
@@ -617,6 +623,9 @@ function init_onlineleadorder_edit() {
                 $("#artNextModal").find('.modal-title').empty().html('New Manual Payment');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_newpayment();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -641,7 +650,9 @@ function init_onlineleadorder_edit() {
             $("#artNextModal").find('.modal-title').empty().html(response.data.title);
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             $("div.vectorsave_data").show();
             $("textarea.artworkusertext").focus();
             $("input#loctimeout").val(response.data.loctime);
@@ -759,6 +770,9 @@ function show_leadorditemsearch() {
             $("#artNextModal").find('.modal-title').empty().html('Order Item');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             if (response.data.showother=='1') {
                 $("div.order_itemedit_text").show();
             } else {
@@ -845,6 +859,9 @@ function init_leadorder_artmanage() {
                 }
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_imagelogoupload();
                 $("div.artlogouploadsave_data").unbind('click').click(function(){
                     save_newleadlogoartloc(loctype);
@@ -860,6 +877,9 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").find('.modal-title').empty().html('New Repeat Location');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("div.orderarchive_save").click(function(){
                     var order_num=$("input#archiveord").val();
                     var artwork_id=$("input#newartid").val();
@@ -975,7 +995,9 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").find('.modal-title').empty().html('Proof Doc Email');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("div.addbccapprove").click(function(){
                     var bcctype=$(this).data('applybcc');
                     if (bcctype=='hidden') {
@@ -1038,6 +1060,9 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").find('.modal-title').empty().html('Redo Message');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("div.vectorsave_data").show();
                 $("textarea.artworkusertext").focus();
                 $("div.vectorsave_data").unbind('click').click(function(){
@@ -1099,7 +1124,9 @@ function change_artcustomer_text(artloc) {
             $("#artNextModal").find('.modal-title').empty().html('Location Customer Text');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             $("div#popupwin").empty().html(response.data.content);
             $("div.vectorsave_data").show();
             $("textarea.artworkusertext").focus();
@@ -1126,6 +1153,9 @@ function change_leadartlockfont(art_id) {
             $("#artNextModal").find('.modal-title').empty().html('Select Font');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
@@ -1325,6 +1355,9 @@ function init_showartlocs() {
                     $("#artNextModal").find('.modal-title').empty().html('Item Template');
                     $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                     $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#artNextModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    })
                 } else {
                     for (index = 0; index < response.data.templates.length; ++index) {                    
                         openai(response.data.templates[index]['fileurl'], response.data.templates[index]['filename']);
@@ -1633,6 +1666,9 @@ function show_leadorder_imprint(orderitem) {
             $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             // Init Save functions
             init_imprint_details();
             $("input#loctimeout").val(response.data.loctime);
@@ -2005,6 +2041,9 @@ function init_confirmshipcost(content) {
     $("#artNextModal").find('.modal-title').empty().html('Change Shipping Cost');
     $("#artNextModal").find('div.modal-body').empty().html(content);
     $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+    $("#artNextModal").on('hidden.bs.modal', function (e) {
+        $(document.body).addClass('modal-open');
+    })
     /* Init restore shipcost */
     $("div.restoreoldshipcost").unbind('click').click(function(){
         var fldname='shipping';
@@ -2498,6 +2537,9 @@ function init_leadorder_shipping() {
                 $("#artNextModal").find('.modal-title').empty().html('Tax Exception Doc');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_taxdocupload(shipaddr);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -2518,6 +2560,9 @@ function init_leadorder_shipping() {
                 $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("div.manageship.save").hide();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
@@ -2539,6 +2584,9 @@ function init_leadorder_shipping() {
                 $("#artNextModal").find('.modal-title').empty().html('Shipping Address');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
@@ -3171,6 +3219,9 @@ function init_leadorder_charges() {
                 $("#artNextModal").find('.modal-title').empty().html('Credit App Doc');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_taxdocupload();
                 $("div.artlogouploadsave_data").unbind('click').click(function(){
                     var newdoc=$("input#filename").val();
@@ -3236,6 +3287,9 @@ function init_orderbottom_content(edit_mode) {
                 $("#artNextModal").find('.modal-title').empty().html('Tickets');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                });
                 $("form#tickededitform").find("input#order_num").prop('readonly','readonly');
                 // $("form#tickededitform").find("select#type").prop('disabled',true);
                 $("a.saveticketdat").unbind('click').click(function(){
@@ -3259,6 +3313,9 @@ function init_orderbottom_content(edit_mode) {
                 $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 init_orderstatus_change(edit_mode);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
@@ -3695,6 +3752,9 @@ function place_neworder() {
             $("#artNextModal").find('.modal-title').empty().html('Place Order');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             // Init choice
             $("div.leavesamepayment").unbind('click').click(function(){
                 $("#artNextModal").modal('hide');
@@ -3801,6 +3861,9 @@ function prepare_send_invoice() {
             $("#artNextModal").find('.modal-title').empty().html('Send Email Message');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             $("div.addbccapprove").click(function(){
                 var bcctype=$(this).data('applybcc');
                 if (bcctype=='hidden') {
@@ -3895,6 +3958,9 @@ function timershow() {
                     $("#artNextModal").find('.modal-title').empty().html('Extend Edit Time');
                     $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                     $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#artNextModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    })
                     init_extendtime();
                 } else {
                     show_error(response);
@@ -3951,6 +4017,9 @@ function show_updatedetails(history) {
             $("#artNextModal").find('.modal-title').empty().html('Update Details');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
         } else {
             show_error(response);
         }
@@ -3967,6 +4036,9 @@ function show_chargeattempts(order) {
             $("#artNextModal").find('.modal-title').empty().html('Charge Attempts');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
         } else {
             show_error(response);
         }
@@ -4210,6 +4282,9 @@ function prepare_approve_creditapp(creditapp) {
             $("#pageModal").find('.modal-title').empty().html('Approve Credit APP');
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
             init_creditappapproveedit(creditapp);
         } else {
             show_error(response);
