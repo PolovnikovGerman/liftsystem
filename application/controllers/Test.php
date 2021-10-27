@@ -342,10 +342,10 @@ class Test extends CI_Controller
     }
 
     public function inventory_year_report() {
-        $datebgn=strtotime('2020-01-01');
-        // $dateend=strtotime('2018-12-27');
-        $dateend = strtotime(date('Y-m-d'));
-        $this->load->model('printshop_model');
+        $datebgn=strtotime('2018-01-01');
+        $dateend=strtotime('2019-01-01');
+        // $dateend = strtotime(date('Y-m-d'));
+        // $this->load->model('printshop_model');
         // $extracost=$this->printshop_model->invaddcost();
         $this->db->select('c.printshop_color_id, i.item_num, i.item_name, c.color, c.price');
         $this->db->from('ts_printshop_colors c');
@@ -412,7 +412,6 @@ class Test extends CI_Controller
             $data[$key]['outcome']+=($rrow['shipped']+$rrow['kepted']+$rrow['misprint']);
             $data[$key]['price']=($rrow['price']);
         }
-
         $file=$this->config->item('upload_path_preload').'inventoryreport_price_'.date('Y', $datebgn).'.csv';
         @unlink($file);
         $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
@@ -422,7 +421,10 @@ class Test extends CI_Controller
             foreach ($data as $row) {
                 if (abs($row['rest'])+abs($row['income'])+abs($row['outcome'])>0) {
                     $rest=$row['rest']+$row['income']-$row['outcome'];
-                    $total=$row['rest']*$row['price'];
+                    $total=intval($row['rest'])*floatval($row['price']);
+                    if ($row['item_num']=='i001' && $row['color']=='Beige') {
+                        echo 'Rest '.$rest.' Price '.$row['price'].' Total '.$total.PHP_EOL;
+                    }
                     $msg='"'.$row['item_num'].'";"'.$row['item_name'].'";"'.$row['color'].'";'.$row['rest'].';'.$row['outcome'].';'.$row['income'].';'.$rest.';'.$row['price'].';'.$total.';'.PHP_EOL;
                     fwrite($fh, $msg);
                 }
