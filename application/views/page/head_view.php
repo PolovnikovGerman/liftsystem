@@ -26,3 +26,4 @@
 <?php if ($gmaps==1) { ?>
     <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('googlemapapi')?>&libraries=places&v=weekly" async></script>
 <?php } ?>
+<script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
