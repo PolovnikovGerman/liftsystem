@@ -96,7 +96,8 @@ function init_contentpage(page_name, brand) {
                 if (brand=='SB') {
                     $("#sbcustomshappedview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbcustomshappedview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 } else {
                     $("#btcustomshappedview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('View Mode');
@@ -107,7 +108,8 @@ function init_contentpage(page_name, brand) {
                 if (brand=='SB') {
                     $("#sbfaqview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbfaqview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbfaqview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbfaqview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find(".submenu_manage[data-link='sbfaqview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 } else {
                     $("#btfaqview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='btfaqview']").find('div.submenu_label').empty().html('View Mode');
@@ -122,7 +124,8 @@ function init_contentpage(page_name, brand) {
                 } else if (brand=='SB') {
                     $("#sbtermsview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbtermsview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 }
                 init_terms_view(brand);
             } else if (page_name=='about') {
@@ -133,7 +136,8 @@ function init_contentpage(page_name, brand) {
                 } else if (brand=='SB') {
                     $("#sbaboutusview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbaboutusview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbaboutusview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbaboutusview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbaboutusview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 }
                 init_aboutpage_view(brand);
             } else if (page_name=='contactus') {
@@ -144,7 +148,8 @@ function init_contentpage(page_name, brand) {
                 } else if (brand=='SB') {
                     $("#sbcontactusview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbcontactusview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbcontactusview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbcontactusview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbcontactusview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 }
                 init_contactus_view(brand);
             } else if (page_name=='extraservice') {
@@ -155,8 +160,8 @@ function init_contentpage(page_name, brand) {
                 } else {
                     $("#sbserviceview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbserviceview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbserviceview']").find('div.buttons').empty().html(response.data.buttons);
-
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbserviceview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbserviceview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 }
                 init_service_page(brand);
             }

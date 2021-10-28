@@ -31,7 +31,7 @@ class Content extends MY_Controller
                 $error = '';
                 $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
-                $meta_view = $this->load->view('content/metadata_view', $meta, TRUE);
+                $meta_view = $this->load->view('content/metadata_adoptive_view', $meta, TRUE);
                 $special_content = '';
                 if ($page_name == 'home') {
                     $page_name_full = 'Homepage';

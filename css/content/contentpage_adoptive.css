@@ -34,8 +34,20 @@
     float: right!important;
     width: 62%;
 }
+.buttonmanagecontent {
+    text-align: center;
+}
+.buttonmanagecontent i {
+    margin-right: 0.3rem;
+}
 .contentpagearea {
-    display: none!important;
+    /* display: none!important; */
+    border: 5px solid #1f5ef7;
+    display: none;
+    width: 1141px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-left: 167px;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -149,5 +161,11 @@
         width: 98px;
         cursor: pointer;
         float: right;
+    }
+    .buttonmanagecontent i {
+        font-size: 0.7rem;
+    }
+    .buttonmanagecontent span {
+        font-size: 0.7rem;
     }
 }
