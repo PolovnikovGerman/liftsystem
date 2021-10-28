@@ -7050,20 +7050,20 @@ Class Leadorder_model extends My_Model {
                 );
             }
             $imprints=$row['imprints'];
-
-            foreach ($imprints as $irow) {
-                if ($irow['imprint_description']!='&nbsp;') {
-                    $item_details[]=array(
-                        'item_num'=>'',
-                        'item_description'=>$irow['imprint_description'],
-                        'item_qty'=>$irow['imprint_qty'],
-                        'item_price'=>$irow['imprint_price'],
-                        'item_subtotal'=>$irow['imprint_subtotal'],
-                        'item_color'=>'#000000',
-                    );
+            if ($order['order_blank']==0) {
+                foreach ($imprints as $irow) {
+                    if ($irow['imprint_description']!='&nbsp;') {
+                        $item_details[]=array(
+                            'item_num'=>'',
+                            'item_description'=>$irow['imprint_description'],
+                            'item_qty'=>$irow['imprint_qty'],
+                            'item_price'=>$irow['imprint_price'],
+                            'item_subtotal'=>$irow['imprint_subtotal'],
+                            'item_color'=>'#000000',
+                        );
+                    }
                 }
             }
-
         }
 
         if (floatval($order['mischrg_val1'])!=0) {
