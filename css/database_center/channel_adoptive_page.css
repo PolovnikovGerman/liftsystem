@@ -1,0 +1,49 @@
+.maincontentmenuarea {
+    padding: 0.625rem!important;
+}
+.menupage_head {
+    background: #fff;
+    padding: 0.4375rem;
+    margin-bottom: 0.5625rem;
+    width: 100%;
+}
+.channelmenu_head {
+    width: 100%;
+}
+.channelmenu_head .menulabel {
+    width: 9.4375rem;
+    text-align: center;
+    font-size: 1.76625rem;
+    font-weight: bold;
+    line-height: 2.5625rem;
+}
+.channelmenu_head .menulabel.stressballs {
+    background: url('/img/database_center/stressballs_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head .menulabel.nationalsb {
+    background: url('/img/database_center/national_sb_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head .menulabel.bluetrack {
+    background: url('/img/database_center/bluetrack_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head .menulabel.btlegacy {
+    background: url('/img/database_center/bluetrack_legacy_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
+.channelmenu_head .menulabel.amazon {
+    background: url('/img/database_center/amazon_logo.png') no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+}
