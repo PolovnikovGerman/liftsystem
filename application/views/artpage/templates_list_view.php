@@ -5,7 +5,7 @@
         <div class="template_data_itemname"><?= $row['item_name'] ?></div>
         <div class="template_data_itemfile">
             <div style="float:left;padding-left: 3px">
-                <img id="il<?= $row['item_id'] ?>" src="/img/play-green.png" class="player"/>
+                <img id="il<?= $row['item_id'] ?>" src="/img/database/play-green.png" class="player"/>
                 <a href="javascript:void(0);" <?= ($row['item_vector_img'] == '' ? 'onclick="empty_vectorfile();"' : 'onclick="openai(\'' . $row['item_vector_img'] . '\',\''.$row['item_name'].'\');"') ?>>open in Illustrator</a>
             </div>
         </div>
