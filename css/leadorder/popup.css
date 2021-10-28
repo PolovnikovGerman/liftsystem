@@ -3739,10 +3739,35 @@ a.historydetailsview {
 .confirmshipcost_container div {
     float: left;
 }
+.confirmshipcost_container  > .validatecitylabel {
+    font-size: 14px;
+    margin-right: 7px;
+}
 .confirmshipcost_container > .title {
     text-align: center;
     font-size: 14px;
     width: 100%;
+    height: 25px;
+    line-height: 25px;
+}
+.confirmshipcost_container > .shipoptions {
+    width: 100%;
+    padding-left: 20px;
+    height: 25px;
+    line-height: 25px;
+}
+.confirmshipcost_container > .shipoptions > .shipoption {
+    margin-right: 7px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.confirmshipcost_container > .savewarning {
+    width: 100%;
+    padding-right: 15px;
+}
+.confirmshipcost_container > .savewarning img {
+    float: right;
+    cursor: pointer;
 }
 .confirmshipcost_container > .confirmshipcost_manage {
     clear: both;

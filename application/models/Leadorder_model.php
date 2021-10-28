@@ -2200,7 +2200,7 @@ Class Leadorder_model extends My_Model {
 
     // Save changes in Ship Address
     public function change_shipaddres($leadorder, $shipaddr_id, $fldname, $newval, $ordersession) {
-        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'multicity' => 0);
         $this->load->model('shipping_model');
         $shipaddr=$leadorder['shipping_address'];
         $shipping=$leadorder['shipping'];
@@ -2246,8 +2246,8 @@ Class Leadorder_model extends My_Model {
             $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
         } elseif ($fldname=='zip') {
             // Try to validate Address
-            $this->load->library('United_parcel_service');
-            $upsserv=new United_parcel_service();
+            // $this->load->library('United_parcel_service');
+            // $upsserv=new United_parcel_service();
             $items=$leadorder['order_items'];
             $qty=0;
             foreach ($items as $row) {
@@ -2304,15 +2304,59 @@ Class Leadorder_model extends My_Model {
 
             }
             // Validate Address
-            if ($shipaddr[$shipidx]['out_country']=='US') {
-                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
-                if ($tracking['result']==$this->success_result) {
-                    if (!empty($tracking['city'])) {
-                        $shipaddr[$shipidx]['city']=$tracking['city'];
+//            if ($shipaddr[$shipidx]['out_country']=='US') {
+//                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
+//                if ($tracking['result']==$this->success_result) {
+//                    if (!empty($tracking['city'])) {
+//                        $shipaddr[$shipidx]['city']=$tracking['city'];
+//                    }
+//                    if (!empty($tracking['state'])) {
+//                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
+//                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
+//                        if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
+//                            $shipaddr[$shipidx]['taxcalc']=0;
+//                            $shipaddr[$shipidx]['taxview']=1;
+//                            if ($shipaddr[$shipidx]['tax_exempt']==0) {
+//                                $shipaddr[$shipidx]['taxcalc']=1;
+//                            }
+//                        } else {
+//                            $shipaddr[$shipidx]['taxcalc']=0;
+//                            $shipaddr[$shipidx]['taxview']=0;
+//                        }
+//                    }
+//                }
+//            }
+            // Build select
+            if ($shipaddr[$shipidx]['out_country']=='CA') {
+                $seachzip = substr($newval,0, 3);
+            } else {
+                $seachzip = $newval;
+            }
+            $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
+            $this->db->from('ts_geoipdata gdata');
+            $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+            $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+            $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+            $this->db->where('gdata.postal_code',$seachzip);
+            $this->db->where('cntr.country_id',$shipaddr[$shipidx]['country_id']);
+            $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+            $this->db->order_by('cntcity','desc');
+            $validdata = $this->db->get()->result_array();
+            if (count($validdata)>0) {
+                $validres = $validdata[0];
+                if (count($validdata)>1) {
+                    $out['multicity']=1;
+                    $shpcity = [];
+                    foreach ($validdata as $vrow) {
+                        array_push($shpcity,$vrow['city_name']);
                     }
-                    if (!empty($tracking['state'])) {
-                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
-                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
+                    $out['validcity']=$shpcity;
+                }
+                $shipaddr[$shipidx]['city']=$validres['city_name'];
+                if ($shipaddr[$shipidx]['out_country']=='US' || $shipaddr[$shipidx]['out_country']=='CA') {
+                    if (!empty($validres['state'])) {
+                        $shipaddr[$shipidx]['state_id']=$validres['state_id'];
+                        $shipaddr[$shipidx]['out_zip']=$validres['state'].' '.$newval;
                         if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
                             $shipaddr[$shipidx]['taxcalc']=0;
                             $shipaddr[$shipidx]['taxview']=1;
@@ -2324,6 +2368,11 @@ Class Leadorder_model extends My_Model {
                             $shipaddr[$shipidx]['taxview']=0;
                         }
                     }
+                } else {
+                    $shipaddr[$shipidx]['state_id']='';
+                    $shipaddr[$shipidx]['out_zip']=$newval;
+                    $shipaddr[$shipidx]['taxcalc']=0;
+                    $shipaddr[$shipidx]['taxview']=0;
                 }
             }
         } elseif ($fldname=='tax_exempt') {
@@ -3670,17 +3719,33 @@ Class Leadorder_model extends My_Model {
         if ($fldname=='item_qty' || $fldname=='zip') {
             if ($fldname=='zip') {
                 // Validate ZIP
-                $this->load->library('United_parcel_service');
-                $upsserv=new United_parcel_service();
-                $tracking=$upsserv->validaddress($newval, $shipping_address[$idx]['out_country']);
+//                $this->load->library('United_parcel_service');
+//                $upsserv=new United_parcel_service();
+//                $tracking=$upsserv->validaddress($newval, $shipping_address[$idx]['out_country']);
+                if ($shipping_address[$idx]['out_country']=='CA') {
+                    $seachzip = substr($newval,0, 3);
+                } else {
+                    $seachzip = $newval;
+                }
+                $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id');
+                $this->db->from('ts_geoipdata gdata');
+                $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+                $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+                $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+                $this->db->where('gdata.postal_code',$seachzip);
+                $this->db->where('cntr.country_id',$shipping_address[$idx]['country_id']);
+                $validres = $this->db->get()->row_array();
 
-                if ($tracking['result']==$this->success_result) {
-                    if (!empty($tracking['city'])) {
-                        $shipping_address[$idx]['city']=$tracking['city'];
+                if (ifset($validres,'geoip_city_id',0)>0) {
+                    if (!empty($validres['city_name'])) {
+                        $shipping_address[$idx]['city']=$validres['city_name'];
                     }
-                    if (!empty($tracking['state'])) {
-                        $shipping_address[$idx]['state_id']=$tracking['state_id'];
-                        $shipping_address[$idx]['out_zip']=$tracking['state'].' '.$newval;
+                    if ($shipping_address[$idx]['out_country']=='US' || $shipping_address[$idx]['out_country']=='CA') {
+                        $shipping_address[$idx]['state_id']=$validres['state_id'];
+                        $shipping_address[$idx]['out_zip']=$validres['state'].' '.$newval;
+                    } else {
+                        $shipping_address[$idx]['state_id']='';
+                        $shipping_address[$idx]['out_zip']=$newval;
                     }
                 }
             }
