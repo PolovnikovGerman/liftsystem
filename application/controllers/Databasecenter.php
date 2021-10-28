@@ -221,7 +221,7 @@ class Databasecenter extends MY_Controller
             'brand' => $brand,
         ];
         $content_options=[];
-        $content_options['page_menu'] = $this->load->view('database_center/channel_head_menu', $menu_options, TRUE);
+        $content_options['page_menu'] = $this->load->view('database_center/channel_adaptive_headmenu', $menu_options, TRUE); // channel_head_menu
         // Add
         $itemslist = 0;
         foreach ($menu as $row) {
@@ -259,8 +259,9 @@ class Databasecenter extends MY_Controller
                     'brand' => 'SB',
                 ];
                 $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $bt_options['mob_submenu'] = $this->load->view('content/mob_submenu_view',$submenu_options, TRUE);
                 $content_options['sbpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
-                $head['styles'][] = array('style' => '/css/content/contentpage.css');
+                $head['styles'][] = array('style' => '/css/content/contentpage_adoptive.css'); // contentpage.css
                 $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
                 // Content
                 $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
@@ -282,7 +283,7 @@ class Databasecenter extends MY_Controller
         }
 
         // Item details
-        $head['styles'][] = array('style' => '/css/database_center/channel_page.css');
+        $head['styles'][] = array('style' => '/css/database_center/channel_adoptive_page.css'); // channel_page.css
         $head['scripts'][] = array('src' => '/js/database_center/channel_page.js');
         //  Utils
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
@@ -299,7 +300,8 @@ class Databasecenter extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
-            'gmaps' => ifset($head, 'gmaps', 0)
+            'gmaps' => ifset($head, 'gmaps', 0),
+            'adaptive' => 1,
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $this->load->view('database_center/channel_page_view', $content_options, TRUE);

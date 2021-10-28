@@ -85,7 +85,8 @@ function init_contentpage(page_name, brand) {
                 if (brand=='SB') {
                     $("#sbhomeview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='sbhomeview']").find('div.submenu_label').empty().html('View Mode');
-                    $(".submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".desktopviewonly").find("div.submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                    $(".mobileviewonly").find("div.submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.mobilebuttons);
                 } else if(brand=='BT') {
                     $("#bthomeview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='bthomeview']").find('div.submenu_label').empty().html('View Mode');

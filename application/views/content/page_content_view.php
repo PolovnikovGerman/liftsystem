@@ -1,4 +1,7 @@
-<div class="sitecontent_submenu">
+<div class="datarow pl-3 pr-3 pt-2 mobileviewonly">
+    <?=$mob_submenu?>
+</div>
+<div class="sitecontent_submenu desktopviewonly">
     <?=$submenu?>
 </div>
 <?php if (isset($sbhomeview)) { ?>

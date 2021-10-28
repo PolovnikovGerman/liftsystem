@@ -66,11 +66,13 @@ class Content extends MY_Controller
                 }
                 $button_options = ['page' => $pagelink, 'content_name' => $page_name_full, 'brand' => $brand];
                 $buttons_view = $this->load->view('content/content_viewbuttons_view', $button_options, TRUE);
+                $buttons_mobile = $this->load->view('content/mobile_viewbuttons_view', $button_options, TRUE);
                 $options = [
                     'meta_view' => $meta_view, // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,];
                 $mdata['content'] = $this->load->view('content/staticpage_view', $options, TRUE);
                 $mdata['buttons'] = $buttons_view;
+                $mdata['mobilebuttons'] = $buttons_mobile;
             }
             $this->ajaxResponse($mdata, $error);
         }

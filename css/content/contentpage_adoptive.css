@@ -1,0 +1,153 @@
+.sitecontent_submenu {
+    margin-top: 0.4375rem;
+    margin-left: 0.4375rem;
+    width: 10rem;
+    position: fixed;
+}
+.submenu_item {
+    background-image: url('/img/contents/menu_subitem_bg.png');
+    background-repeat: no-repeat;
+    background-size: auto;
+    color: #ffffff;
+}
+.submenu_item.active {
+    background-image: url('/img/contents/menu_subitemactive_bg.png');
+}
+.submenu_manage {
+    display: none;
+    /* margin-right: 11px;
+    width: 149px; */
+}
+.submenu_manage.active {
+    display: block;
+}
+.submenu_manage .submenu_label {
+    height: 1.5625rem;
+    line-height: 1.5625rem!important;
+    font-size: 0.9375rem;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+    text-transform: uppercase;
+}
+.submenu_manage .buttons {
+    float: right!important;
+    width: 62%;
+}
+.contentpagearea {
+    display: none!important;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        display: block;
+    }
+    .submenu_item {
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 6px 9px 0 11px;
+        height: 1.6875rem;
+        line-height: 1.6875rem!important;
+        cursor: pointer;
+        padding-left: 0.4375rem;
+        width: 8.625rem;
+    }
+    .submenu_manage .buttons .edit_button {
+        background: url(/img/contents/edit_button_bg.png);
+        height: 31px;
+        width: 98px;
+        cursor: pointer;
+        float: right!important;
+    }
+    .submenu_manage .buttons .cancel_button {
+        background: url(/img/contents/cancel_button_bg.png);
+        height: 31px;
+        width: 98px;
+        cursor: pointer;
+        float: right;
+    }
+    .submenu_manage .buttons .save_button {
+        background: url(/img/contents/save_button_bg.png);
+        height: 31px;
+        width: 98px;
+        cursor: pointer;
+        float: right;
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        display: block;
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .mobileviewonly {
+        display: block;
+    }
+    .desktopviewonly {
+        display: none;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .mobileviewonly {
+        display: block;
+    }
+    .desktopviewonly {
+        display: none;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .mobileviewonly {
+        display: block;
+    }
+    .desktopviewonly {
+        display: none;
+    }
+    .submenu_item {
+        font-size: 0.7rem;
+        font-weight: bold;
+        height: 1.5rem;
+        line-height: 1.5rem!important;
+        cursor: pointer;
+        text-align: center;
+        width: 4.15rem;
+    }
+    .submenu_manage .submenu_label {
+        height: 1.3rem;
+        line-height: 1.3rem!important;
+        font-size: 0.6rem;
+    }
+    .submenu_manage .buttons .edit_button {
+        background-color: #ba00cb;
+        color: #ffffff;
+        font-size: 0.7rem;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        width: 3.7rem;
+        cursor: pointer;
+        float: right!important;
+    }
+    .submenu_manage .buttons .cancel_button {
+        background: url(/img/contents/cancel_button_bg.png);
+        height: 31px;
+        width: 98px;
+        cursor: pointer;
+        float: right;
+    }
+    .submenu_manage .buttons .save_button {
+        background: url(/img/contents/save_button_bg.png);
+        height: 31px;
+        width: 98px;
+        cursor: pointer;
+        float: right;
+    }
+}
