@@ -2045,42 +2045,72 @@ function init_confirmshipcost(content) {
         $(document.body).addClass('modal-open');
     })
     /* Init restore shipcost */
-    // $("div.restoreoldshipcost").unbind('click').click(function(){
-    //     var fldname='shipping';
-    //     var newval=$("input#orderoldshipcostvalue").val();
-    //     // Change Shipcost input
-    //     $("input.shippingcost").val(newval);
-    //     var params=new Array();
-    //     params.push({name: 'entity', value:'order'});
-    //     params.push({name: 'fldname', value: 'shipping'});
-    //     params.push({name: 'newval', value: $("input#orderoldshipcostvalue").val()});
-    //     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    //     var url="/leadorder/change_leadorder_item";
-    //     $("#loader").show();
-    //     $.post(url, params, function(response){
-    //         if (response.errors=='') {
-    //             $("#artNextModal").modal('hide');
-    //             $(".totalduedataviewarea").empty().html(response.data.total_due);
-    //             $("#ordertotaloutput").empty().html(response.data.order_revenue);
-    //             $("input.salestaxcost").val(response.data.tax);
-    //             $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
-    //             $("div#leadorderprofitarea").empty().html(response.data.profit_content);
-    //             if (response.data.ordersystem=='new') {
-    //                 openbalancemanage(response.data.balanceopen);
-    //             }
-    //             $("input#loctimeout").val(response.data.loctime);
-    //             init_onlineleadorder_edit();
-    //             $("#loader").hide();
-    //         } else {
-    //             $("#loader").hide();
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
-    // $("div.leavenewshipcost").unbind('click').click(function(){
-    //     $("#artNextModal").modal('hide');
-    //     init_onlineleadorder_edit();
-    // });
+    $("div.restoreoldshipcost").unbind('click').click(function(){
+        var fldname='shipping';
+        var newval=$("input#orderoldshipcostvalue").val();
+        // Change Shipcost input
+        $("input.shippingcost").val(newval);
+        var params=new Array();
+        params.push({name: 'entity', value:'order'});
+        params.push({name: 'fldname', value: 'shipping'});
+        params.push({name: 'newval', value: $("input#orderoldshipcostvalue").val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_item";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                if (parseInt($("#citychangevalid").val())!==0) {
+                    // Send info to change City URL
+                    var paramcity = new Array();
+                    paramcity.push({name: 'shipadr', value: $("#citychangevalid").val()});
+                    paramcity.push({name: 'fldname', value: 'city'});
+                    paramcity.push({name: 'newval', value: $("select.validcity").val()});
+                    paramcity.push({name: 'ordersession', value: $("input#ordersession").val()});
+                    var cityurl = '/leadorder/change_shipadrress';
+                    $.post(cityurl, paramcity, function(response) {
+                        if (response.errors=='') {
+                            $(".ship_tax_input1[data-shipadr='"+$("#citychangevalid").val()+"']").val($("select.validcity").val());
+                            $("input#loctimeout").val(response.data.loctime);
+                        }
+                    },'json');
+                }
+                $("#artNextModal").modal('hide');
+                $(".totalduedataviewarea").empty().html(response.data.total_due);
+                $("#ordertotaloutput").empty().html(response.data.order_revenue);
+                $("input.salestaxcost").val(response.data.tax);
+                $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
+                $("div#leadorderprofitarea").empty().html(response.data.profit_content);
+                if (response.data.ordersystem=='new') {
+                    openbalancemanage(response.data.balanceopen);
+                }
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+    $("div.leavenewshipcost").unbind('click').click(function(){
+        if (parseInt($("#citychangevalid").val())!==0) {
+            // Send info to change City URL
+            var paramcity = new Array();
+            paramcity.push({name: 'shipadr', value: $("#citychangevalid").val()});
+            paramcity.push({name: 'fldname', value: 'city'});
+            paramcity.push({name: 'newval', value: $("select.validcity").val()});
+            paramcity.push({name: 'ordersession', value: $("input#ordersession").val()});
+            var cityurl = '/leadorder/change_shipadrress';
+            $.post(cityurl, paramcity, function(response) {
+                if (response.errors=='') {
+                    $(".ship_tax_input1[data-shipadr='"+$("#citychangevalid").val()+"']").val($("select.validcity").val());
+                    $("input#loctimeout").val(response.data.loctime);
+                }
+            },'json');
+        }
+        $("#artNextModal").modal('hide');
+        init_onlineleadorder_edit();
+    });
     $("div.confirmshipcost_container").find('div.shipoption').unbind('click').click(function(){
         var stype="old";
         if ($(this).hasClass('newship')) {
