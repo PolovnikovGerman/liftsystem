@@ -752,7 +752,7 @@ class Test extends CI_Controller
         $this->email->to($email_to);
         $this->email->cc($email_cc);
         $this->email->from($email_from);
-        $mail_subj = 'Deine Rechnung von jetztnachhilfe.de ' . date('m/d/Y');
+        $mail_subj = 'Deine Rechnung von jetztnachhilfe.de ' . date('m/d/Y H:i:s');
         $this->email->subject($mail_subj);
         $this->email->message($message_body);
         $this->email->send();
