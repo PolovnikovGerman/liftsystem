@@ -736,4 +736,27 @@ class Test extends CI_Controller
         }
     }
 
+    public function test_email() {
+        $this->load->library('email');
+        $email_to = 'polovnikov.german@gmail.com';
+        $email_cc = 'to_german@yaoo.com';
+        $email_from = 'fulfillment@bluetrack.com';
+        $message_body = $this->load->view('test/test_payment',[],TRUE);
+        $email_conf = array(
+            'protocol' => 'sendmail',
+            'charset' => 'utf-8',
+            'wordwrap' => TRUE,
+            'mailtype' => 'html',
+        );
+        $this->email->initialize($email_conf);
+        $this->email->to($email_to);
+        $this->email->cc($email_cc);
+        $this->email->from($email_from);
+        $mail_subj = 'Deine Rechnung von jetztnachhilfe.de ' . date('m/d/Y');
+        $this->email->subject($mail_subj);
+        $this->email->message($message_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+    }
+
 }
