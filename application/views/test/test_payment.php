@@ -1,152 +1,297 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="width=device-width"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Account Löschung jetztnachhilfe de</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sunday Invitation Email</title>
+    <!-- Designed by https://github.com/kaytcat -->
+    <!-- Header image designed by Freepik.com -->
+
+
     <style type="text/css">
-        img {
-            max-width: 100%;
+        /* Take care of image borders and formatting */
+
+        img { max-width: 600px; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}
+        a img { border: none; }
+        table { border-collapse: collapse !important; }
+        #outlook a { padding:0; }
+        .ReadMsgBody { width: 100%; }
+        .ExternalClass {width:100%;}
+        .backgroundTable {margin:0 auto; padding:0; width:100% !important;}
+        table td {border-collapse: collapse;}
+        .ExternalClass * {line-height: 115%;}
+
+
+        /* General styling */
+
+        td {
+            font-family: Arial, sans-serif;
         }
+
         body {
-            -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: none;
-            width: 100% !important;
+            -webkit-font-smoothing:antialiased;
+            -webkit-text-size-adjust:none;
+            width: 100%;
             height: 100%;
-            line-height: 1.6;
-            background-color: #f6f6f6;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            box-sizing: border-box;
-            font-size: 14px;
+            color: #6f6f6f;
+            font-weight: 400;
+            font-size: 18px;
         }
-        body {
+
+
+        h1 {
+            margin: 10px 0;
         }
-        @media  only screen and (max-width: 640px) {
-            h1 {
-                font-weight: 600 !important; margin: 20px 0 5px !important;
+
+        a {
+            color: #27aa90;
+            text-decoration: none;
+        }
+
+        .force-full-width {
+            width: 100% !important;
+        }
+
+
+        .body-padding {
+            padding: 0 75px;
+        }
+
+
+        .force-width-80 {
+            width: 80% !important;
+        }
+
+
+    </style>
+
+    <style type="text/css" media="screen">
+        @media screen {
+            @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,900);
+            /* Thanks Outlook 2013! */
+            * {
+                font-family: 'Source Sans Pro', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
             }
-            h2 {
-                font-weight: 600 !important; margin: 20px 0 5px !important;
+            .w280 {
+                width: 280px !important;
             }
-            h3 {
-                font-weight: 600 !important; margin: 20px 0 5px !important;
+
+        }
+    </style>
+
+    <style type="text/css" media="only screen and (max-width: 480px)">
+        /* Mobile styles */
+        @media only screen and (max-width: 480px) {
+
+            table[class*="w320"] {
+                width: 320px !important;
             }
-            h4 {
-                font-weight: 600 !important; margin: 20px 0 5px !important;
+
+            td[class*="w320"] {
+                width: 280px !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
             }
-            h1 {
+
+            img[class*="w320"] {
+                width: 250px !important;
+                height: 67px !important;
+            }
+
+            td[class*="mobile-spacing"] {
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            *[class*="mobile-hide"] {
+                display: none !important;
+            }
+
+            *[class*="mobile-br"] {
+                font-size: 12px !important;
+            }
+
+            td[class*="mobile-w20"] {
+                width: 20px !important;
+            }
+
+            img[class*="mobile-w20"] {
+                width: 20px !important;
+            }
+
+            td[class*="mobile-center"] {
+                text-align: center !important;
+            }
+
+            table[class*="w100p"] {
+                width: 100% !important;
+            }
+
+            td[class*="activate-now"] {
+                padding-right: 0 !important;
+                padding-top: 20px !important;
+            }
+
+            td[class*="mobile-resize"] {
                 font-size: 22px !important;
+                padding-left: 15px !important;
             }
-            h2 {
-                font-size: 18px !important;
-            }
-            h3 {
-                font-size: 16px !important;
-            }
-            .container {
-                width: 100% !important;
-            }
-            .content {
-                padding: 10px !important;
-            }
-            .content-wrapper {
-                padding: 10px !important;
-            }
-            .invoice {
-                width: 100% !important;
-            }
-        }
-        @media only screen and (max-device-width: 480px) {
-            /* mobile portarait */
-            table[class=contenttable] {
-                width: 350px!important;
-                margin: 0 auto;
-                background: #757575;
-                color: #ffffff;
-            }
-            img.logo {
-                width: 240px!important;
-                padding: 10px 0;
-            }
-            td.mainmessagecontent {
-                background: #f6f6f6;
-                padding: 2%;
-                color: #000;
-            }
-            p.title {
-                font-size: 16px;
-                font-weight: 600;
-                padding: 0 0 20px;
-            }
-            p.textmessage {
-                text-indent: 10px;
-            }
-            td.footerlinks {
-                padding-left: 3%;
-            }
-            a.homelink {
-                color: #ffffff;
-                text-decoration: none;
-                font-weight: 600;
-            }
+
         }
     </style>
 </head>
-<body>
-<table class="contenttable">
+<body  offset="0" class="body" style="padding:0; margin:0; display:block; background:#eeebeb; -webkit-text-size-adjust:none" bgcolor="#eeebeb">
+<table align="center" cellpadding="0" cellspacing="0" width="100%" height="100%">
     <tr>
-        <td colspan="3" align="center">
-            <img class="logo" src="https://jetztnachhilfe.de/img/message/logo_jetztnachhilfe.png" alt="Logo">
-        </td>
-    </tr>
-    <tr>
-        <td width="2%">&nbsp;</td>
-        <td width="94%" class="mainmessagecontent">
-            <p class="title">Hallo {{name}}!</p>
-            <p class="textmessage">
-                Danke, dass du dich für jetztnachhilfe.de entschieden hast! Durch deinen Kauf hast du ab jetzt 30
-                Tage Zugriff auf über 10.000 Nachhilfelehrer. Nach 30 Tagen endet deine Mitgliedschaft automatisch. Deine Rechnung erhältst du mit dieser Mail.</p>
+        <td align="center" valign="top" style="background-color:#eeebeb" width="100%">
 
-            Du kannst nun alle Tutoren kontaktieren und so den richtigen Nachhilfelehrer für dich finden. Zusammen mit unseren Tutoren kannst du daran arbeiten deine schulischen Ziele zu erreichen. Wir wünschen dir viel Erfolg bei der Nachhilfelehrer Suche!<br><br>
-            Anbei findest du deine Rechung.<br><br>
-            Bei Fragen kannst du uns gerne unter info@jetztnachhilfe.de kontaktieren oder unter 0800 1111236 anrufen.<br><br>
-            Viele Grüße,<br><br>
-            Dein jetztnachhilfe Team<br>
+            <center>
 
-            </p>
-        </td>
-        <td width="2%">&nbsp;</td>
-    </tr>
-    <tr>
-        <td colspan="3">
-            <img class="footerimage" src="https://jetztnachhilfe.de/img/message/email_footer_3.png"/>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="footerlinks">
-            &copy; 2021 Studienkreis GmbH. Alle Rechte vorbehalten.
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="footerlinks">
-            <a class="homelink" href="https://jetztnachhilfe.de/allgemeine-gesch%C3%A4ftsbedingungen">AGB</a> |
-            <a class="homelink" href="https://jetztnachhilfe.de/datenschutz">Datenschutz</a>  |
-            <a class="homelink" href="https://jetztnachhilfe.de/impressum">Impressum</a>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="footerlinks">
-            jetztnachhilfe de Teil der Studienkreis GmbH | Universitätsstraße 104 | 44799 Bochum
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="footerlinks">
-            Geschäftsführer: Lorenz Haase
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" class="footerlinks">
-            Registergericht: HRB 4581 | USt-IdNr.: DE124086608
+                <table cellspacing="0" cellpadding="0" width="600" class="w320">
+                    <tr>
+                        <td align="center" valign="top">
+
+
+                            <table style="margin:0 auto;" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <a href="#"><img class="w320" width="311" height="83" src="https://www.filepicker.io/api/file/HotdLrI8SCq4ZW3NRAUh" alt="company logo" ></a>
+                                    </td>
+                                </tr>
+                            </table>
+
+
+                            <table cellspacing="0" cellpadding="0" width="100%" style="background-color:#3bcdb0;">
+                                <tr>
+                                    <td style="background-color:#3bcdb0;">
+
+                                        <table cellspacing="0" cellpadding="0" width="100%">
+                                            <tr>
+                                                <td style="font-size:40px; font-weight: 600; color: #ffffff; text-align:center;" class="mobile-spacing">
+                                                    <div class="mobile-br">&nbsp;</div>
+                                                    Check this out!
+                                                    <br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size:24px; text-align:center; padding: 0 75px; color:#6f6f6f;" class="w320 mobile-spacing; ">
+                                                    Come check out my stuff on Awesome Co!
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <table cellspacing="0" cellpadding="0" width="100%">
+                                            <tr>
+                                                <td>
+                                                    <img src="https://www.filepicker.io/api/file/4BgENLefRVCrgMGTAENj" style="max-width:100%; display:block;">
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table cellspacing="0" cellpadding="0" class="force-full-width" bgcolor="#ffffff" >
+                                <tr>
+                                    <td style="background-color:#ffffff;">
+                                        <br><br>
+
+                                        <center>
+
+                                            <table style="margin: 0 auto" cellpadding="0" cellspacing="0" class="force-width-80">
+                                                <tr>
+                                                    <td style="font-size:12px; text-align: center;">
+                                                        <img width="90" height="90" src="https://www.filepicker.io/api/file/Dmnj8hKTwucmkwdgExw4" alt="User Profile"><br>
+                                                        User:<a style="text-decoration:none;color:#f5774e;" href="#">Jon Doe</a>
+                                                    </td>
+                                                    <td class="mobile-resize" style="color:#27aa90; font-size: 30px; font-weight: 600; padding-left:30px; text-align: left; vertical-align: top;">
+                                                        Sign up now and receive a 20% discount!
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <table style="margin: 0 auto;" cellspacing="0" cellpadding="0" class="force-width-80">
+                                                <tr>
+                                                    <td style="text-align:left; color: #6f6f6f;">
+                                                        <br>
+                                                        I set up an Awesome Co profile where I can do tons of really awesome stuff. I want you to followw me so we can keep in touch!<br><br>
+                                                        Because I invited you, you'll now receive 20% off when you sign up. See you soon!<br><br>
+                                                        John Doe
+                                                </tr>
+                                            </table>
+                                        </center>
+
+
+                                        <table style="margin:0 auto;" cellspacing="0" cellpadding="10" width="100%">
+                                            <tr>
+                                                <td style="text-align:center; margin:0 auto;">
+                                                    <br>
+                                                    <div><!--[if mso]>
+                                                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:180px;" stroke="f" fillcolor="#f5774e">
+                                                            <w:anchorlock/>
+                                                            <center>
+                                                        <![endif]-->
+                                                        <a href="http://"
+                                                           style="background-color:#f5774e;color:#ffffff;display:inline-block;font-family:'Source Sans Pro', Helvetica, Arial, sans-serif;font-size:18px;font-weight:400;line-height:45px;text-align:center;text-decoration:none;width:180px;-webkit-text-size-adjust:none;">Sign up!</a>
+                                                        <!--[if mso]>
+                                                        </center>
+                                                        </v:rect>
+                                                        <![endif]--></div>
+                                                    <br>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+
+                                        <table cellspacing="0" cellpadding="0" bgcolor="#363636"  class="force-full-width">
+                                            <tr>
+                                                <td style="background-color:#363636; text-align:center;">
+                                                    <br>
+                                                    <br>
+                                                    <img width="62" height="56" img src="https://www.filepicker.io/api/file/FjkhDKXsTFyaHnXhhBCw">
+                                                    <img width="68" height="56" src="https://www.filepicker.io/api/file/W6gXqm5BRL6qSvQRcI7u">
+                                                    <img width="61" height="56" src="https://www.filepicker.io/api/file/eV9YfQkBTiaOu9PA9gxv">
+                                                    <br>
+                                                    <br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#f0f0f0; font-size: 14px; text-align:center; padding-bottom:4px;">
+                                                    © 2014 All Rights Reserved
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#27aa90; font-size: 14px; text-align:center;">
+                                                    <a href="#">View in browser</a> | <a href="#">Contact</a> | <a href="#">Unsubscribe</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size:12px;">
+                                                    &nbsp;
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+
+
+
+
+
+
+                        </td>
+                    </tr>
+                </table>
+
+            </center>
+
+
+
+
         </td>
     </tr>
 </table>
