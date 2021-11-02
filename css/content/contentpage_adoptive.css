@@ -41,14 +41,92 @@
     margin-right: 0.3rem;
 }
 .contentpagearea {
-    /* display: none!important; */
-    border: 5px solid #1f5ef7;
     display: none;
-    width: 1141px;
-    margin-top: 7px;
-    margin-bottom: 7px;
-    margin-left: 167px;
 }
+.statcipage_content input {
+    padding-left: 0.5rem;
+    height: 1.5rem;
+    border: 1px solid #000;
+    float: left;
+}
+.statcipage_content input:read-only {
+    border: 1px solid #c0c0c0;
+}
+.statcipage_content textarea {
+    border: 1px solid #000;
+    padding-top: 0.5rem;
+    padding-left: 0.5rem;
+    resize: none;
+    overflow-y: auto;
+}
+.statcipage_content textarea:read-only {
+    border: 1px solid #c0c0c0!important;
+}
+.statcipage_content .metainfotitle,
+.statcipage_content .contentinfotitle {
+    width: 100%;
+    height: 1.75rem;
+    line-height: 1.75rem!important;
+    background: #595959;
+    color: #ffffff;
+    font-size: 1.0625rem;
+}
+.statcipage_content .metainfotitle .displaymeta,
+.statcipage_content .contentinfotitle .displaycontent {
+    width: 1.5rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    float: left;
+}
+.statcipage_content .metainfotitle .title,
+.statcipage_content .contentinfotitle .title {
+    margin-left: 0.3125rem;
+    line-height: 1.75rem!important;
+    float: left;
+}
+.statcipage_content .metaleftpart {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+}
+.statcipage_content .metarightpart {
+    margin-top: 1rem;
+}
+.statcipage_content div.label {
+    height: 1.5rem;
+    line-height: 1.1875rem!important;
+    font-family: Helvetica-Bold;
+    font-size: 0.9375rem;
+    color: #000;
+    font-weight: normal;
+    text-align: left;
+    vertical-align: unset;
+    border-radius: 0;
+}
+.statcipage_content div.metatitle {
+    /* width: 86px;  */
+}
+.statcipage_content div.metakeywords {
+    margin-top: 0.625rem;
+    /* width: 128px; */
+}
+.statcipage_content div.metadescription {
+    /* width: 132px; */
+}
+.statcipage_content input.metatitle {
+    /* width: 448px; */
+    width: 98%;
+    height: 1.5rem;
+}
+.statcipage_content textarea.metakeywords {
+    margin-top: 0.625rem;
+    height: 6.1875rem;
+    width: 98%;
+}
+.statcipage_content textarea.metadescription {
+    height: 8.3125rem;
+    width: 98%;
+}
+
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .mobileviewonly {
@@ -87,6 +165,13 @@
         width: 98px;
         cursor: pointer;
         float: right;
+    }
+    .contentpagearea {
+        width: 1141px;
+        margin-top: 7px;
+        margin-bottom: 7px;
+        margin-left: 167px;
+        border: 5px solid #1f5ef7;
     }
 }
 /* Portrait tablets and medium desktops */
@@ -167,5 +252,17 @@
     }
     .buttonmanagecontent span {
         font-size: 0.7rem;
+    }
+    .contentpagearea {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-top: 0.3125rem solid #1f5ef7;
+        border-bottom: 0.3125rem solid #1f5ef7;
+    }
+    .statcipage_content .metaleftpart {
+        padding-left: 0.55rem;
+    }
+    .statcipage_content .metarightpart {
+        padding-left: 0.55rem;
     }
 }

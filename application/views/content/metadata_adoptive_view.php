@@ -1,20 +1,45 @@
-<div class="metainfotitle">
-    <div class="displaymeta show">
-        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+<div class="row">
+    <div class="col-12">
+        <div class="metainfotitle">
+            <div class="displaymeta show">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </div>
+            <div class="title">Meta Info</div>
+        </div>
     </div>
-    <div class="title">Meta Info</div>
 </div>
-<div class="custom_metadata_area">
-    <div class="metaleftpart">
-        <div class="label metatitle">Meta Title:</div>
-        <input type="text" class="metatitle" readonly="readonly" value="<?=$meta_title?>"/>
-        <div class="label metakeywords">Meta Keywords:</div>
-        <textarea class="metakeywords" readonly="readonly"><?=$meta_keywords?></textarea>
-        <!--        <div class="label internalkeywords">Internal Keywords:</div>-->
-        <!--        <textarea class="internalkeywords" readonly="readonly">--><?//=$internal_keywords?><!--</textarea>-->
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="metaleftpart">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2">
+                    <div class="label metatitle">Meta Title:</div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+                    <input type="text" class="metatitle" readonly="readonly" value="<?=$meta_title?>"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2">
+                    <div class="label metakeywords">Meta Keywords:</div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+                    <textarea class="metakeywords" readonly="readonly"><?=$meta_keywords?></textarea>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="metarightpart">
-        <div class="label metadescription">Meta Description:</div>
-        <textarea class="metadescription" readonly="readonly"><?=$meta_description?></textarea>
+
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="metarightpart">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2">
+                    <div class="label metadescription">Meta Description:</div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+                    <textarea class="metadescription" readonly="readonly"><?=$meta_description?></textarea>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
