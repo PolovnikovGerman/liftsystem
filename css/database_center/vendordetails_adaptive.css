@@ -773,8 +773,8 @@ input.documentdesciption {
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     #vendorDetailsModal .modal-dialog {
-        width: 1333px;
-        max-width: 1333px;
+        width: 1194px;
+        max-width: 1194px;
     }
     .mobileviewonly {
         display: none;
