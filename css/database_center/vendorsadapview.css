@@ -246,7 +246,7 @@ select.filterdata {
     text-overflow: ellipsis;
 }
 .vendordataview .dataarea .datarow .itemqty {
-    width: 4.5rem;
+    width: 4.8rem;
     border-right: none!important;
     text-align: center;
 }
