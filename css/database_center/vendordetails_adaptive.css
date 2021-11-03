@@ -780,7 +780,7 @@ input.documentdesciption {
         display: none;
     }
     .desktopviewonly {
-        display: block;
+        /* display: inline-block; */
     }
     .vendorshipaddr_value {
         margin-top: 7.25rem;
@@ -802,7 +802,7 @@ input.documentdesciption {
         display: none;
     }
     .desktopviewonly {
-        display: block;
+        /* display: inline-block; */
     }
     .vendor-tab {
         padding: 0 1.5625rem;
@@ -816,7 +816,7 @@ input.documentdesciption {
         max-width: 736px;
     }
     .mobileviewonly {
-        display: block;
+        /* display: inline-flex; */
     }
     .desktopviewonly {
         display: none;
@@ -833,7 +833,7 @@ input.documentdesciption {
         max-width: 636px;
     }
     .mobileviewonly {
-        display: block;
+        /* display: inline-flex; */
     }
     .desktopviewonly {
         display: none;
@@ -850,7 +850,7 @@ input.documentdesciption {
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
     .mobileviewonly {
-        display: block;
+        /* display: inline-block;*/
     }
     .desktopviewonly {
         display: none;
