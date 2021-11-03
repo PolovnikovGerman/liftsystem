@@ -63,10 +63,16 @@ select.filterdata {
 }
 .vendordataview .datatitle .sortable {
     cursor: pointer;
+    margin: 0.3125rem 0;
+    height: 1.1875rem;
+    line-height: 1.1875rem;
 }
 .vendordataview .datatitle .sortable.active {
     background: #ebffd3;
     color: #000000;
+/*    margin: 0.3125rem 0;
+    height: 1.1875rem;
+    line-height: 1.1875rem;*/
 }
 .vendordataview .datatitle .ascsort {
     width: 0;
@@ -116,20 +122,14 @@ select.filterdata {
     width: 3.75rem;
 }
 .vendordataview .datatitle .name {
-    width: 15.4rem;
-    margin: 0.3125rem;
-    height: 1.1875rem;
-    line-height: 1.1875rem;
+    width: 15.8rem;
 }
 .vendordataview .datatitle .altname {
-    width: 15.4rem;
-    margin: 0.3125rem;
-    height: 1.1875rem;
-    line-height: 1.1875rem;
+    width: 15.8rem;
     border-right: 3px solid #545454;
 }
 .vendordataview .datatitle .asinumber {
-    width: 2.6rem;
+    width: 3rem;
 }
 .vendordataview .datatitle .website {
     width: 9rem;
@@ -187,16 +187,17 @@ select.filterdata {
 .vendordataview .dataarea .datarow .slug {
     width: 3.75rem;
     text-align: center;
-    font-weight: 600;
 }
 .vendordataview .dataarea .datarow .name, .vendordataview .dataarea .datarow .altname {
     /* width: 18.18rem; */
     width: 15.8rem;
     padding-left: 0.625rem;
-    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .name {
+    font-weight: 600;
 }
 .vendordataview .dataarea .datarow .altname {
     border-right: 3px solid #000000!important;

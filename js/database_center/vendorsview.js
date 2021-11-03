@@ -92,8 +92,11 @@ function sort_vendorlist(fld) {
         $('#orderbyvend').val(fld);
     }
     var pageindex = $('#curpagevend').val();
-    pageVendorCallback(pageindex);
-
+    if ($("#devicetype").val()=='desktop') {
+        pageVendorCallbackDesktop(pageindex);
+    } else {
+        pageVendorCallbackMobile(pageindex);
+    }
 }
 
 function initVendorPagination() {
@@ -227,8 +230,21 @@ function init_vendor_content() {
         var vendor = $(this).data('vendor');
         edit_vendor(vendor);
     });
+    $(".vendorwebsiteshow").unbind('click').click(function () {
+        var url = $(this).data('weburl');
+        // window.open('http:://www.alpi.net','_blank');
+        // window.open(url,'_blank');
+        // window.open(url);
+        openInNewTab("//"+url);
+    })
 }
 
+function openInNewTab(href) {
+    Object.assign(document.createElement('a'), {
+        target: '_blank',
+        href: href,
+    }).click();
+}
 
 function edit_vendor(vendor_id) {
     var url="/vendors/vendor_edit";

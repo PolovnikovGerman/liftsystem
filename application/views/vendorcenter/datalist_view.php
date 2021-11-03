@@ -9,7 +9,9 @@
         <div class="name"><?=$vendor['vendor_name']?></div>
         <div class="altname"><?=$vendor['alt_name']?></div>
         <div class="asinumber"><?=empty($vendor['vendor_asinumber']) ? '-' : $vendor['vendor_asinumber']?></div>
-        <div class="website"><?=$vendor['vendor_website']?></div>
+        <div class="website <?=empty($vendor['vendor_website']) ? '' : 'vendorwebsiteshow'?>" data-weburl="<?=$vendor['vendor_website']?>">
+            <?=$vendor['vendor_website']?>
+        </div>
         <div class="phone"><?=$vendor['vendor_phone']?></div>
         <div class="itemqty"><?=intval($vendor['item_qty'])==0 ? '' : QTYOutput($vendor['item_qty'])?></div>
     </div>
