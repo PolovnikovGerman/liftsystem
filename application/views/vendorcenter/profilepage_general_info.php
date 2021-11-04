@@ -126,7 +126,7 @@
             <div class="vendorweb_value">
                 <fieldset>
                     <legend>Website</legend>
-                    <div class="vendorparam_value">
+                    <div class="vendorparam_value <?=empty($vendor['vendor_website']) ? '' : 'vendorweburl'?>" data-weburl="<?=$vendor['vendor_website']?>">
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['vendor_website']) ? '&nbsp;': $vendor['vendor_website']?>
                         <?php } else { ?>

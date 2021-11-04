@@ -247,8 +247,8 @@
 }
 .vendorparam_value {
     padding-left: 0.5625rem;
-    font-weight: bold;
-    font-size: 0.9375rem;
+    font-weight: 600;
+    font-size: 0.78rem;
     width: 93%;
     padding-bottom: 0.3125rem;
     color: #000000;
