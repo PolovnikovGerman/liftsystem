@@ -185,7 +185,7 @@
     width: 100%;
     display: none;
     background-color: #d5d5d5;
-    padding: 0.9375rem 0 0.9375rem 0;
+    padding: 0.9375rem 0.3rem 0.9375rem 0.3rem;
 }
 .vendordata-content.inactive {
     background-color: #3d3d3d;
@@ -773,8 +773,8 @@ input.documentdesciption {
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     #vendorDetailsModal .modal-dialog {
-        width: 1194px;
-        max-width: 1194px;
+        width: 1225px;
+        max-width: 1225px;
     }
     .mobileviewonly {
         display: none;
