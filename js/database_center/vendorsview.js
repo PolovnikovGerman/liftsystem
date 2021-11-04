@@ -305,6 +305,10 @@ function init_vendordetails_view() {
             }
         }, 'json');
     });
+    $(".vendorweburl").unbind('click').click(function () {
+        var url = $(this).data('weburl');
+        openInNewTab("//"+url);
+    })
     $(".pricedoc_icon").unbind('click').click(function () {
         var docurl = $(this).data('file');
         var docsrc = $(this).data('source');
