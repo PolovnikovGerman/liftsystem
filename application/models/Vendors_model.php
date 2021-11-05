@@ -732,7 +732,7 @@ Class Vendors_model extends My_Model
     }
 
     public function save_vendordata($session_data, $session_id) {
-        $out = ['result' => $this->error_result, 'msg' => 'Path for save not correct'];
+        $out = ['result' => $this->error_result, 'msg' => 'Path for save not correct','errfld' => []];
         // Check doc path
         $pathdoc_sh = $this->config->item('vendor_docs');
         $chkpath = createPath($pathdoc_sh);
@@ -740,6 +740,7 @@ Class Vendors_model extends My_Model
             // Check data
             $chkres = $this->_checkvendordata($session_data);
             $out['msg'] = $chkres['msg'];
+            $out['errfld'] = $chkres['fieds'];
             if ($chkres['result']==$this->success_result) {
                 $newrec = 0;
                 $vendor = $session_data['vendor'];
@@ -945,17 +946,23 @@ Class Vendors_model extends My_Model
     private function _checkvendordata($session_data) {
         $out = ['result' => $this->success_result, 'msg' => ''];
         $vendor = $session_data['vendor'];
+        // Type, Vendor Name, Country
         // $vendor_contacts = $session_data['vendor_contacts'];
         $errmsg = '';
+        $errorfld = [];
         // Empty name
         if (empty($vendor['vendor_name'])) {
             $errmsg.='Empty Vendor Name'.PHP_EOL;
+            array_push($errorfld,'vendor_name');
+            $out['result'] = $this->error_result;
         }
-        if (empty($vendor['alt_name'])) {
-            $errmsg.='Empty Vendor Alt Name'.PHP_EOL;
-        }
+        // if (empty($vendor['alt_name'])) {
+        //    $errmsg.='Empty Vendor Alt Name'.PHP_EOL;
+        // }
         if (empty($vendor['vendor_slug'])) {
             $errmsg.='Empty Vendor Number'.PHP_EOL;
+            array_push($errorfld,'vendor_slug');
+            $out['result'] = $this->error_result;
         } else {
             $this->db->select('count(vendor_id) as cnt');
             $this->db->from('vendors');
@@ -964,8 +971,21 @@ Class Vendors_model extends My_Model
             $slugchk = $this->db->get()->row_array();
             if ($slugchk['cnt'] > 0) {
                 $errmsg.='Vendor # Not Unique'.PHP_EOL;
+                array_push($errorfld,'vendor_slug');
+                $out['result'] = $this->error_result;
             }
         }
+        if (empty($vendor['vendor_type'])) {
+            $errmsg.='Empty Vendor Type'.PHP_EOL;
+            array_push($errorfld,'vendor_type');
+            $out['result'] = $this->error_result;
+        }
+        if (empty($vendor['country_id'])) {
+            $errmsg.='Empty Vendor Country'.PHP_EOL;
+            array_push($errorfld,'country_id');
+            $out['result'] = $this->error_result;
+        }
+        // vendor_type, country_id
         // Contacts
 //        $idx =1;
 //        foreach ($vendor_contacts as $vendor_contact) {
@@ -977,10 +997,9 @@ Class Vendors_model extends My_Model
 //            }
 //            $idx++;
 //        }
-        if (!empty($errmsg)) {
-            $out['result'] = $this->error_result;
-            $out['msg'] = $errmsg;
-        }
+
+        $out['msg'] = $errmsg;
+        $out['fieds'] = $errorfld;
         return $out;
     }
 
