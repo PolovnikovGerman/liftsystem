@@ -28,7 +28,7 @@
 }
 .mastermenu_head .returndbcenter {
     float: right!important;
-    margin-right: 7px;
+    /* margin-right: 7px; */
     cursor: pointer;
 }
 /* Large desktops and laptops */
@@ -101,10 +101,10 @@
         width: 8.6rem;
     }
     .bigdeviceview {
-        display: block;
+        display: none;
     }
     .smallmobile {
-        display: none;
+        display: block;
     }
 }
 /* Landscape phones and smaller */

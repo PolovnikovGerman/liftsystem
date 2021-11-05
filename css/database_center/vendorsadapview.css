@@ -443,10 +443,19 @@ select.filterdata {
     .vendordataview .datatitle .itemqty {
         display: none;
     }
+    .vendordataview .datatitle .asinumber {
+        display: none;
+    }
+    .vendordataview .datatitle .phone {
+        display: none;
+    }
+    .vendordataview .datatitle .name {
+        width: 13.8rem;
+    }
     /* Data columns */
     .vendordataview .dataarea {
-        /* width: 40.53rem; */
-        width: 32.1rem;
+        /* width: 32.1rem; */
+        width: 20.9rem;
     }
     .vendordataview .dataarea .datarow .numpp {
         display: none;
@@ -462,5 +471,14 @@ select.filterdata {
     }
     .vendordataview .dataarea .datarow .itemqty{
         display: none;
+    }
+    .vendordataview .dataarea .datarow .asinumber {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .phone {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .name {
+        width: 13.8rem;
     }
 }
