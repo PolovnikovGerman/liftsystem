@@ -186,6 +186,9 @@
 .vendor-tab.editmode {
     background-color: #346af5;
 }
+.vendor-tab.editmode.current {
+    color: #fff;
+}
 .vendordata-content {
     clear: both;
     width: 100%;

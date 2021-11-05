@@ -407,7 +407,6 @@ class Vendors extends MY_Controller
                         'profile_view' => $profile_view,
                         'editmode' => $editmode,
                     ];
-
                     $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
                     // $mdata['content']= '';
                     $mdata['editmode'] = $editmode;
