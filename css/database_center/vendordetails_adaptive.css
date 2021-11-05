@@ -191,7 +191,7 @@
     width: 100%;
     display: none;
     background-color: #d5d5d5;
-    padding: 0.9375rem 0.3rem 0.9375rem 0.3rem;
+    padding: 0.9375rem 0;
 }
 .vendordata-content.inactive {
     background-color: #3d3d3d;
@@ -247,6 +247,16 @@
 .editmode .vendordetails-section-body fieldset {
     border: 1px solid #000000;
 }
+.vendordetails-section-body fieldset.error {
+    border: 1px solid #ff0000;
+}
+.vendormandatoryfld {
+    display: none;
+    color: #ff0000;
+    font-size: 0.7rem;
+    font-style: italic;
+    width: 100%;
+}
 .vendordetails-section-body legend {
     color: #c7c7c7;
     font-size: 0.8125rem;
@@ -254,9 +264,11 @@
     margin-top: -0.625rem;
     background-color: #fff;
     margin-left: 0.5625rem;
-    width: fit-content;
+    width: unset;
+    max-width: unset;
     margin-bottom: 0;
     border-bottom: 0;
+    padding: 0 0.3rem;
 }
 .vendordata-content.editmode legend {
     color: #0000ff!important;

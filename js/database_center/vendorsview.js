@@ -385,12 +385,14 @@ function init_vendordetails_edit() {
     $(".vendorsaveactionbtn").unbind('click').click(function () {
         var params = prepare_vendor_edit();
         var url = '/vendors/vendordata_save';
+        $(".vendorvaluearea").find('fieldset').removeClass('error');
+        $(".vendorvaluearea").find('.vendormandatoryfld').hide();
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#vendorDetailsModal").modal('hide');
                 search_vendors();
             } else {
-                show_error(response);
+                show_errorfld(response);
             }
         },'json');
     });
@@ -787,5 +789,15 @@ function del_vendor(vendor_id) {
                 show_error(response);
             }
         }, 'json');
+    }
+}
+
+function show_errorfld(response) {
+    var fld = response.data.errorfld;
+    for (i=0; i<fld.length;i++) {
+        var fldname = fld[i];
+        console.log('Fld '+fldname);
+        $(".vendorvaluearea[data-item='"+fldname+"']").find('fieldset').addClass('error');
+        $(".vendorvaluearea[data-item='"+fldname+"']").find('.vendormandatoryfld').show();
     }
 }
