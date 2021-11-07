@@ -736,27 +736,23 @@ class Test extends CI_Controller
         }
     }
 
-    public function test_email() {
-        $this->load->library('email');
-        $email_to = 'polovnikov.german@gmail.com';
-        $email_cc = 'to_german@yaoo.com';
-        $email_from = 'fulfillment@bluetrack.com';
-        $message_body = $this->load->view('test/test_payment',[],TRUE);
-        $email_conf = array(
-            'protocol' => 'sendmail',
-            'charset' => 'utf-8',
-            'wordwrap' => TRUE,
-            'mailtype' => 'html',
-        );
-        $this->email->initialize($email_conf);
-        $this->email->to($email_to);
-        $this->email->cc($email_cc);
-        $this->email->from($email_from);
-        $mail_subj = 'Deine Rechnung von jetztnachhilfe.de ' . date('m/d/Y H:i:s');
-        $this->email->subject($mail_subj);
-        $this->email->message($message_body);
-        $this->email->send();
-        $this->email->clear(TRUE);
+    public function blog_articles() {
+        for ($i=1; $i<20; $i++) {
+           $this->db->set('brand','SB');
+           $this->db->set('user_created',1);
+           $this->db->set('date_created', date('Y-m-d H:i:s'));
+           $this->db->set('user_updated',1);
+           $this->db->set('user_published',1);
+           $this->db->set('date_published', time());
+           $this->db->set('article_title','Pellentesque semper eros nec lacus dapibus semper ante maximus');
+           $this->db->set('article_text','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed metus dictum lacus dictum interdum. Nunc et justo cursus justo condimentum pharetra ac et dolor. Integer sodales, lorem sed accumsan porttitor, nisl magna commodo dolor, malesuada convallis');
+           $this->db->set('status',1);
+           $this->db->insert('sb_blog_articles');
+           $artid = $this->db->insert_id();
+           $catid = rand(1, 5);
+           $this->db->set('blog_article_id', $artid);
+           $this->db->set('blog_category_id', $catid);
+           $this->db->insert('sb_blog_articlecategory');
+        }
     }
-
 }
