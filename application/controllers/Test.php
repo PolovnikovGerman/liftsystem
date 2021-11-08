@@ -737,22 +737,30 @@ class Test extends CI_Controller
     }
 
     public function blog_articles() {
-        for ($i=1; $i<20; $i++) {
-           $this->db->set('brand','SB');
-           $this->db->set('user_created',1);
-           $this->db->set('date_created', date('Y-m-d H:i:s'));
-           $this->db->set('user_updated',1);
-           $this->db->set('user_published',1);
-           $this->db->set('date_published', time());
-           $this->db->set('article_title','Pellentesque semper eros nec lacus dapibus semper ante maximus');
-           $this->db->set('article_text','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed metus dictum lacus dictum interdum. Nunc et justo cursus justo condimentum pharetra ac et dolor. Integer sodales, lorem sed accumsan porttitor, nisl magna commodo dolor, malesuada convallis');
-           $this->db->set('status',1);
-           $this->db->insert('sb_blog_articles');
-           $artid = $this->db->insert_id();
-           $catid = rand(1, 5);
-           $this->db->set('blog_article_id', $artid);
-           $this->db->set('blog_category_id', $catid);
-           $this->db->insert('sb_blog_articlecategory');
+        $this->load->helper('url');
+        for ($i=1; $i<27; $i++) {
+            $catid = rand(1, 5);
+            $this->db->select('*');
+            $this->db->from('sb_blog_categories');
+            $this->db->where('blog_category_id', $catid);
+            $catdat = $this->db->get()->row_array();
+            $title = $catdat['category_name'].' -  Article '.$i;
+            $slug = url_title($title, 'dash', TRUE);
+            $this->db->set('brand','SB');
+            $this->db->set('user_created',1);
+            $this->db->set('date_created', date('Y-m-d H:i:s'));
+            $this->db->set('user_updated',1);
+            $this->db->set('user_published',1);
+            $this->db->set('date_published', time());
+            $this->db->set('article_title', $title);
+            $this->db->set('article_slug', $slug);
+            $this->db->set('article_annotation','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sed metus dictum lacus dictum interdum. Nunc et justo cursus justo condimentum pharetra ac et dolor. Integer sodales, lorem sed accumsan porttitor, nisl magna commodo dolor, malesuada convallis');
+            $this->db->set('status',1);
+            $this->db->insert('sb_blog_articles');
+            $artid = $this->db->insert_id();
+            $this->db->set('blog_article_id', $artid);
+            $this->db->set('blog_category_id', $catid);
+            $this->db->insert('sb_blog_articlecategory');
         }
     }
 }
