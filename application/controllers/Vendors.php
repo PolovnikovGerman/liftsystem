@@ -407,7 +407,6 @@ class Vendors extends MY_Controller
                         'profile_view' => $profile_view,
                         'editmode' => $editmode,
                     ];
-
                     $mdata['content']=$this->load->view('vendorcenter/details_view',$options,TRUE);
                     // $mdata['content']= '';
                     $mdata['editmode'] = $editmode;
@@ -430,8 +429,10 @@ class Vendors extends MY_Controller
                 $this->load->model('vendors_model');
                 $res = $this->vendors_model->save_vendordata($session_data, $session_id);
                 $error = $res['msg'];
+                $mdata['errorfld'] = $res['errfld'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata['errorfld'] = [];
                 }
             }
             $this->ajaxResponse($mdata, $error);

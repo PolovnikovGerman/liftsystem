@@ -21,7 +21,7 @@
     </div>
     <div class="row content-row">
         <div class="col-12">
-            <div class="vendorname_value">
+            <div class="vendorname_value vendorvaluearea" data-item="vendor_name">
                 <fieldset>
                     <legend>Vendor Name</legend>
                     <div class="vendorparam_value">
@@ -32,6 +32,7 @@
                         <?php } ?>
                     </div>
                 </fieldset>
+                <span class="vendormandatoryfld">*Required</span>
             </div>
         </div>
     </div>
@@ -53,7 +54,7 @@
     </div>
     <div class="row content-row">
         <div class="col-6">
-            <div class="vendortype_value">
+            <div class="vendortype_value vendorvaluearea" data-item="vendor_type">
                 <fieldset>
                     <legend>Type</legend>
                     <div class="vendorparam_value">
@@ -69,10 +70,11 @@
                         <?php } ?>
                     </div>
                 </fieldset>
+                <span class="vendormandatoryfld">*Required</span>
             </div>
         </div>
         <div class="col-6">
-            <div class="vendorcountry_value">
+            <div class="vendorcountry_value vendorvaluearea" data-item="country_id">
                 <fieldset>
                     <legend>Country</legend>
                     <div class="vendorparam_value">
@@ -88,6 +90,7 @@
                         <?php } ?>
                     </div>
                 </fieldset>
+                <span class="vendormandatoryfld">*Required</span>
             </div>
         </div>
     </div>
@@ -126,7 +129,7 @@
             <div class="vendorweb_value">
                 <fieldset>
                     <legend>Website</legend>
-                    <div class="vendorparam_value">
+                    <div class="vendorparam_value <?=empty($vendor['vendor_website']) ? '' : 'vendorweburl'?>" data-weburl="<?=$vendor['vendor_website']?>">
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['vendor_website']) ? '&nbsp;': $vendor['vendor_website']?>
                         <?php } else { ?>

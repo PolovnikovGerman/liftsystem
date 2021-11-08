@@ -1,4 +1,8 @@
 function init_vendorpage() {
+    var docwidth = parseInt($(document).width());
+    if (docwidth > 992) {
+        $("#devicetype").val('desktop');
+    }
     initVendorPagination();
     $(".addnewvendor").unbind('click').click(function(){
         edit_vendor(-1);
@@ -8,21 +12,39 @@ function init_vendorpage() {
 
 function init_vendor_search() {
     $("#filterdata").unbind('change').change(function () {
-        search_vendors();
+        search_vendors('mobile');
     });
     $("#filtertype").unbind('change').change(function () {
-        search_vendors();
+        search_vendors('mobile');
     });
     $(".datasearchbtn").unbind('click').click(function () {
-        search_vendors();
+        search_vendors('mobile');
     });
     $(".datacleanbtn").unbind('click').click(function () {
         $("#vedorsearch").val('');
-        search_vendors();
+        search_vendors('mobile');
     });
     $("#vedorsearch").keypress(function(event){
         if (event.which == 13) {
-            search_vendors();
+            search_vendors('mobile');
+        }
+    });
+    $("#filterdata_desktop").unbind('change').change(function () {
+        search_vendors('desktop');
+    });
+    $("#filtertype_desktop").unbind('change').change(function () {
+        search_vendors('desktop');
+    });
+    $(".datasearchbtn_desktop").unbind('click').click(function () {
+        search_vendors('desktop');
+    });
+    $(".datacleanbtn_desktop").unbind('click').click(function () {
+        $("#vedorsearch_desktop").val('');
+        search_vendors('desktop');
+    });
+    $("#vedorsearch_desktop").keypress(function(event){
+        if (event.which == 13) {
+            search_vendors('desktop');
         }
     });
     $(".vendordataview .datatitle").find(".sortable").unbind('click').click(function () {
@@ -31,15 +53,15 @@ function init_vendor_search() {
     });
 }
 
-function search_vendors() {
-    var params = prepare_list_filter();
+function search_vendors(searchtype) {
+    var params = prepare_list_filter(searchtype);
     var url='/vendors/vendor_search';
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $("#totalvend").val(response.data.totals);
             $(".totaldata").empty().html(response.data.total_txt);
             $("#curpagevend").val(0);
-            initVendorPagination();
+            initVendorPagination(searchtype);
         } else {
             show_error(response);
         }
@@ -70,24 +92,35 @@ function sort_vendorlist(fld) {
         $('#orderbyvend').val(fld);
     }
     var pageindex = $('#curpagevend').val();
-    pageVendorCallback(pageindex);
-
+    if ($("#devicetype").val()=='desktop') {
+        pageVendorCallbackDesktop(pageindex);
+    } else {
+        pageVendorCallbackMobile(pageindex);
+    }
 }
 
 function initVendorPagination() {
+    if ($("#devicetype").val()=='mobile') {
+        initVendorPaginationMobile();
+    } else {
+        initVendorPaginationDesktop()
+    }
+}
+
+function initVendorPaginationMobile() {
     // count entries inside the hidden content
     var num_entries = $('#totalvend').val();
     // var perpage = itemsperpage;
     var perpage = $("#perpagevend").val();
     if (parseInt(num_entries) < parseInt(perpage)) {
         $("#vendorPagination").empty();
-        pageVendorCallback(0);
+        pageVendorCallbackMobile(0);
     } else {
         var curpage = $("#curpageart").val();
         // Create content inside pagination element
         $("#vendorPagination").mypagination(num_entries, {
             current_page: curpage,
-            callback: pageVendorCallback,
+            callback: pageVendorCallbackMobile,
             items_per_page: perpage, // Show only one item per page
             load_first_page: true,
             num_edge_entries : 1,
@@ -96,12 +129,35 @@ function initVendorPagination() {
             next_text : '>>'
         });
     }
-
 }
 
-function pageVendorCallback(page_index) {
+function initVendorPaginationDesktop() {
+    // count entries inside the hidden content
+    var num_entries = $('#totalvend').val();
     // var perpage = itemsperpage;
-    var params = prepare_list_filter();
+    var perpage = $("#perpagevend").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $("#vendorPagination_desktop").empty();
+        pageVendorCallbackDesktop(0);
+    } else {
+        var curpage = $("#curpageart").val();
+        // Create content inside pagination element
+        $("#vendorPagination_desktop").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pageVendorCallbackDesktop,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
+    }
+}
+
+function pageVendorCallbackMobile(page_index) {
+    // var perpage = itemsperpage;
+    var params = prepare_list_filter('mobile');
     params.push({name: 'offset', value: page_index});
     params.push({name: 'limit', value: $("#perpagevend").val()});
     params.push({name: 'order_by', value: $("#orderbyvend").val()});
@@ -123,35 +179,45 @@ function pageVendorCallback(page_index) {
     },'json');
 }
 
-function prepare_list_filter() {
+function pageVendorCallbackDesktop(page_index) {
+    // var perpage = itemsperpage;
+    var params = prepare_list_filter('desktop');
+    params.push({name: 'offset', value: page_index});
+    params.push({name: 'limit', value: $("#perpagevend").val()});
+    params.push({name: 'order_by', value: $("#orderbyvend").val()});
+    params.push({name: 'direction', value: $("#directionvend").val()});
+    params.push({name: 'maxval', value: $('#totalvend').val()});
+    $("#loader").show();
+    $.post('/vendors/vendordata', params, function(response){
+        if (response.errors=='') {
+            $("#loader").hide();
+            $("div#vendorinfo").empty().html(response.data.content);
+            init_vendor_content();
+        } else {
+            $("#loader").hide();
+            alert(response.errors);
+            if(response.data.url !== undefined) {
+                window.location.href=response.data.url;
+            }
+        }
+    },'json');
+}
+
+function prepare_list_filter(searchtype) {
     var params = new Array();
-    params.push({name: 'vendor_status', value: $("#filterdata").val()});
-    params.push({name: 'search', value: $("#vedorsearch").val()});
-    params.push({name: 'vtype', value: $("#filtertype").val()});
+    if (searchtype=='mobile') {
+        params.push({name: 'vendor_status', value: $("#filterdata").val()});
+        params.push({name: 'search', value: $("#vedorsearch").val()});
+        params.push({name: 'vtype', value: $("#filtertype").val()});
+    } else {
+        params.push({name: 'vendor_status', value: $("#filterdata_desktop").val()});
+        params.push({name: 'search', value: $("#vedorsearch_desktop").val()});
+        params.push({name: 'vtype', value: $("#filtertype_desktop").val()});
+    }
     return params;
 }
 
 function init_vendor_content() {
-    // $("input.vendpayincl").unbind('change').change(function(){
-    //     var vendid=$(this).data('vendorid');
-    //     var incl=0;
-    //     if ($(this).prop('checked')==true) {
-    //         incl=1;
-    //     }
-    //     var url="/database/vendor_includereport";
-    //     $.post(url, {'vendor_id':vendid, 'payinclude':incl}, function(response){
-    //         if (response.errors=='') {
-    //
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     }, 'json');
-    // });
-    // $(".deletevend").unbind('click').click(function(){
-    //     var vendor = $(this).data('vendor');
-    //     del_vendor(vendor);
-    // });
-
     $(".vendordataview").find('div.datarow').hover(
         function () {
             $(this).addClass('activerow');
@@ -164,8 +230,21 @@ function init_vendor_content() {
         var vendor = $(this).data('vendor');
         edit_vendor(vendor);
     });
+    $(".vendorwebsiteshow").unbind('click').click(function () {
+        var url = $(this).data('weburl');
+        // window.open('http:://www.alpi.net','_blank');
+        // window.open(url,'_blank');
+        // window.open(url);
+        openInNewTab("//"+url);
+    })
 }
 
+function openInNewTab(href) {
+    Object.assign(document.createElement('a'), {
+        target: '_blank',
+        href: href,
+    }).click();
+}
 
 function edit_vendor(vendor_id) {
     var url="/vendors/vendor_edit";
@@ -226,6 +305,10 @@ function init_vendordetails_view() {
             }
         }, 'json');
     });
+    $(".vendorweburl").unbind('click').click(function () {
+        var url = $(this).data('weburl');
+        openInNewTab("//"+url);
+    })
     $(".pricedoc_icon").unbind('click').click(function () {
         var docurl = $(this).data('file');
         var docsrc = $(this).data('source');
@@ -302,12 +385,14 @@ function init_vendordetails_edit() {
     $(".vendorsaveactionbtn").unbind('click').click(function () {
         var params = prepare_vendor_edit();
         var url = '/vendors/vendordata_save';
+        $(".vendorvaluearea").find('fieldset').removeClass('error');
+        $(".vendorvaluearea").find('.vendormandatoryfld').hide();
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#vendorDetailsModal").modal('hide');
                 search_vendors();
             } else {
-                show_error(response);
+                show_errorfld(response);
             }
         },'json');
     });
@@ -704,5 +789,15 @@ function del_vendor(vendor_id) {
                 show_error(response);
             }
         }, 'json');
+    }
+}
+
+function show_errorfld(response) {
+    var fld = response.data.errorfld;
+    for (i=0; i<fld.length;i++) {
+        var fldname = fld[i];
+        console.log('Fld '+fldname);
+        $(".vendorvaluearea[data-item='"+fldname+"']").find('fieldset').addClass('error');
+        $(".vendorvaluearea[data-item='"+fldname+"']").find('.vendormandatoryfld').show();
     }
 }
