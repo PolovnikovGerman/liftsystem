@@ -1656,7 +1656,7 @@ Class Leadorder_model extends My_Model {
         $itemsqty=0;
         foreach ($items as $row) {
             $subtotal+=$items[$ridx]['item_price']*$items[$ridx]['item_qty'];
-            array_push($prices, $items[$ridx]['item_id'].'|'.$items[$ridx]['item_price']);
+            array_push($prices, $items[$ridx]['item_id'].'|'.PriceOutput($items[$ridx]['item_price']));
             $items[$ridx]['item_subtotal']=  MoneyOutput($items[$ridx]['item_price']*$items[$ridx]['item_qty']);
             array_push($item_subtotals,$items[$ridx]['item_id'].'|'.$items[$ridx]['item_subtotal']);
             $itemsqty+=$items[$ridx]['item_qty'];
@@ -7044,7 +7044,7 @@ Class Leadorder_model extends My_Model {
                     'item_num'=>$irow['item_number'],
                     'item_description'=>$item_description,
                     'item_qty'=>$irow['item_qty'],
-                    'item_price'=>$irow['item_price'],
+                    'item_price'=>PriceOutput($irow['item_price']),
                     'item_subtotal'=>$irow['item_subtotal'],
                     'item_color'=>'#000000',
                 );
