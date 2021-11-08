@@ -16,7 +16,7 @@
             <input type="text" class="orderitem_qty input_text_right orderitem_input input_border_gray" data-field="item_qty" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>" value="<?=$row['item_qty']?>" />
         </div>
         <div class="items_content_each2 bord_l">
-            <input type="text" class="orderitem_price input_text_right orderitem_input input_border_gray <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>" data-field="item_price" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>" value="<?=number_format($row['item_price'],3)?>" />
+            <input type="text" class="orderitem_price input_text_right orderitem_input input_border_gray <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>" data-field="item_price" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>" value="<?=PriceOutput($row['item_price'])?>" />
         </div>
         <div class="items_content_sub_total2 bord_l" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>"><?=$row['item_subtotal']?></div>
         <div class="items_content_trash2 bord_l">
