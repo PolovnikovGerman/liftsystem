@@ -483,7 +483,13 @@ class Leadorder extends MY_Controller
                         if ($order['shipping']!=$oldshipcost && $oldshipcost!=0) {
                             $mdata['warning']=1;
                             // Prepare new view
-                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($oldshipcost, $order['shipping']);
+                            $options = [
+                                'newship' => $order['shipping'],
+                                'citychange' => 0,
+                                'costchange' => 1,
+                                'oldship' => $oldshipcost,
+                            ];
+                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($options); // $oldshipcost, $order['shipping']
                         }
                         if ($entity=='order' && $fldname=='order_date') {
                             $mdata['order_dateview']=$this->load->view('leadorderdetails/orderdate_edit_view', $order, TRUE);
@@ -1797,8 +1803,14 @@ class Leadorder extends MY_Controller
                         $mdata['warning']=0;
                         if ($order['shipping']!=$oldshipcost && $oldshipcost!=0) {
                             $mdata['warning']=1;
+                            $options = [
+                                'newship' => $order['shipping'],
+                                'citychange' => 0,
+                                'costchange' => 1,
+                                'oldship' => $oldshipcost,
+                            ];
                             // Prepare new view
-                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($oldshipcost, $order['shipping']);
+                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($options); // $oldshipcost, $order['shipping']
                         }
                         $shipping=$leadorder['shipping'];
                         $shipping_address=$leadorder['shipping_address'];
@@ -2261,10 +2273,25 @@ class Leadorder extends MY_Controller
                         $leadorder=usersession($ordersession);
                         $order=$leadorder['order'];
                         $mdata['warning']=0;
-                        if ($order['shipping']!=$oldshipcost && $oldshipcost!=0) {
+                        if ($res['multicity']!==0 || ($order['shipping']!=$oldshipcost && $oldshipcost!=0)) {
                             $mdata['warning']=1;
+                            $options = [
+                                'newship' => $order['shipping'],
+                                'citychange' => 0,
+                                'costchange' => 0,
+                                'oldship' => 0,
+                            ];
+                            if ($res['multicity']!==0) {
+                                $options['citylist'] = $res['validcity'];
+                                $options['citychange'] = $shipaddr_id;
+                            }
+                            if ($order['shipping']!=$oldshipcost && $oldshipcost!=0) {
+                                $options['oldship'] = $oldshipcost;
+                                $options['costchange'] = 1;
+                            }
+                            // $oldshipcost, $order['shipping']
                             // Prepare new view
-                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($oldshipcost, $order['shipping']);
+                            $mdata['shipwarn']=$this->_shipwarning_confirm_view($options);
                         }
                         $shipping=$leadorder['shipping'];
                         $shipping_address=$leadorder['shipping_address'];
@@ -4642,11 +4669,12 @@ class Leadorder extends MY_Controller
         return $content;
     }
 
-    private function _shipwarning_confirm_view($oldshipcost, $newshipcost) {
-        $options=array(
-            'oldship'=>$oldshipcost,
-            'newship'=>$newshipcost,
-        );
+    private function _shipwarning_confirm_view($options) {
+//        $oldshipcost, $newshipcost
+//        $options=array(
+//            'oldship'=>$oldshipcost,
+//            'newship'=>$newshipcost,
+//        );
         $content=$this->load->view('leadorderdetails/shipcost_warning_view', $options, TRUE);
         return $content;
     }
