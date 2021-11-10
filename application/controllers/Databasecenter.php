@@ -264,7 +264,7 @@ class Databasecenter extends MY_Controller
                 $head['styles'][] = array('style' => '/css/content/contentpage_adoptive.css'); // contentpage.css
                 $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
                 // Content
-                $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
+                $head['styles'][]=array('style'=>'/css/content/customshape_adoptive_page.css');
                 $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
                 $head['styles'][]=array('style'=>'/css/content/extraservices.css');
                 $head['scripts'][]=array('src'=>'/js/content/extraservices.js');

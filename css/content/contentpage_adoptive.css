@@ -126,7 +126,10 @@
     height: 8.3125rem;
     width: 98%;
 }
-
+.statcipage_content .customcontent-area {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .mobileviewonly {

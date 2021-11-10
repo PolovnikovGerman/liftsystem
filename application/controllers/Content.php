@@ -1098,7 +1098,7 @@ class Content extends MY_Controller
                 $page_options['session'] = $session;
             }
             if ($edit_mode == 0) {
-                $content = $this->load->view('content/customshaped_custom_view', $page_options, TRUE);
+                $content = $this->load->view('content/customshaped_adaptive_view', $page_options, TRUE);
             } else {
                 $content = $this->load->view('content/customshaped_custom_edit', $page_options, TRUE);
                 // Save data to session
