@@ -1,28 +1,19 @@
 div.custom_maintitle {
-    width: 5.625rem;
+    /* width: 5.625rem; */
 }
 input.custom_maintitle {
     width: 12.375rem;
 }
 div.custom_secondarytext {
     width: 4.875rem;
-    margin-left: 0.75rem;
+    /* margin-left: 0.75rem; */
 }
 input.custom_secondarytext {
     width: 22.125rem;
 }
-.custom_mainimagearea {
-    clear: both;
-    width: 39.0625rem;
-}
-div.custom_mainimage {
-    width: 5.6875rem;
-}
 .custom_imagesubtitle {
     color: #000000;
     font-family: Helvetica-Oblique;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
 }
 .custom_imagesubtitlesize {
     color: #000000;
@@ -34,7 +25,6 @@ div.custom_mainimage {
 .custom_mainimageempty {
     width: 33.3125rem;
     height: 13.9375rem;
-    border: 1px solid #ededed;
 }
 .custom_mainimagesrc img {
     width: 100%;
@@ -59,18 +49,6 @@ div.custom_mainimage {
 .custom_mainimageupload {
     margin-left: 3.375rem;
     margin-top: 5.3125rem;
-}
-.custom_homeimagearea {
-    width: 27.625rem;
-}
-.custom_homepageimage {
-    width: 12rem;
-}
-.custom_homepageimagesrc,
-.custom_homepageimageempty {
-    width: 14.625rem;
-    height: 14.8125rem;
-    border: 1px solid #ededed;
 }
 .custom_homepageimagesrc img {
     width: 100%;
@@ -597,6 +575,31 @@ textarea.custom_casestudyexpand {
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    div.custom_secondarytext {
+        margin-left: 0.75rem;
+    }
+    .custom_mainimagearea {
+        clear: both;
+        width: 39.0625rem;
+    }
+    div.custom_mainimage {
+        width: 5.6875rem;
+    }
+    .custom_imagesubtitle {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+    .custom_homeimagearea {
+        width: 27.625rem;
+    }
+    .custom_homepageimage {
+        width: 12rem;
+    }
+    .custom_homepageimagesrc,
+    .custom_homepageimageempty {
+        width: 14.625rem;
+        height: 14.8125rem;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
@@ -609,4 +612,32 @@ textarea.custom_casestudyexpand {
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
+    input.custom_maintitle {
+        width: 98%;
+        margin-bottom: 0.3rem;
+    }
+    input.custom_secondarytext {
+        width: 98%;
+        margin-bottom: 0.3rem;
+    }
+    .custom_imagesubtitle {
+        font-size: 0.75rem;
+        margin-top: 0.1rem;
+    }
+    .custom_mainimagesrc,
+    .custom_mainimageempty {
+        width: 98%;
+        height: unset;
+    }
+    .custom_homeimagearea {
+        width: 98%;
+    }
+    .custom_homepageimage {
+        width: 98%
+    }
+    .custom_homepageimagesrc,
+    .custom_homepageimageempty {
+        width: 14.625rem;
+        height: unset;
+    }
 }

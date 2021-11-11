@@ -247,7 +247,7 @@ class Databasecenter extends MY_Controller
                 $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
                 $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
                 $submenu = [];
-                $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
+                // $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
                 $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped'];
                 $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
                 $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us'];
