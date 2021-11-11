@@ -410,6 +410,59 @@ select.filterdata {
     }
 }
 /* Landscape phones and smaller */
+@media (max-width: 540px) {
+    /* Head columns */
+    .vendordataview .datatitle .slug {
+        /* display: none; */
+    }
+    .vendordataview .datatitle .altname {
+        display: none;
+    }
+    .vendordataview .datatitle .website {
+        display: none;
+    }
+    .vendordataview .datatitle .itemqty {
+        display: none;
+    }
+    .vendordataview .datatitle .asinumber {
+        display: none;
+    }
+    .vendordataview .datatitle .phone {
+        /* display: none; */
+    }
+    .vendordataview .datatitle .name {
+        width: 13.8rem;
+    }
+    /* Data columns */
+    .vendordataview .dataarea {
+        /* width: 32.1rem; */
+        width: 31.05rem;
+    }
+    .vendordataview .dataarea .datarow .numpp {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .slug {
+        /* display: none; */
+    }
+    .vendordataview .dataarea .datarow .altname {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .website {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .itemqty{
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .asinumber {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .phone {
+        /* display: none; */
+    }
+    .vendordataview .dataarea .datarow .name {
+        width: 13.8rem;
+    }
+}
 @media (max-width: 480px) {
     .maincontent_view {
         min-height: 40rem;
