@@ -379,6 +379,14 @@ function init_vendordetails_view() {
             }
         },'json');
     });
+    $(".checkoutlockdata").unbind('click').click(function () {
+        $(".checkoutlockdata").hide();
+        $(".checkoutunlockdata").show();
+    })
+    $(".checkoutunlockdata").unbind('click').click(function () {
+        $(".checkoutunlockdata").hide();
+        $(".checkoutlockdata").show();
+    });
 }
 
 function init_vendordetails_edit() {
@@ -435,6 +443,26 @@ function init_vendordetails_edit() {
             }
         },'json');
     });
+    $("input.vendordetailsphone").focusin(function() {
+        var phone = $(this).val();
+        var edtphone = phone.replaceAll('-','');
+        $( this ).val(edtphone);
+    });
+    $("input.vendordetailsphone").unbind('change').change(function () {
+        var params = prepare_vendor_edit();
+        var fldname = $(this).data('item');
+        params.push({name: 'entity', value: 'vendor'});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/vendors/update_vendor_phone';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("input[data-item='"+fldname+"']").val(response.data.newval);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
     $("input.vendoraddress").unbind('change').change(function () {
         var params = prepare_vendor_edit();
         params.push({name: 'entity', value: 'vendor'});
@@ -671,6 +699,10 @@ function init_vendordetails_edit() {
             },'json');
         }
     });
+    $(".checkoutlockdata").unbind('click').click(function () {
+        $(".checkoutlockdata").hide();
+        $(".checkoutunlockdata").show();
+    })
 }
 
 function init_venorprice_upload() {

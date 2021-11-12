@@ -23,9 +23,9 @@
                     <legend>Pricing Phone</legend>
                     <div class="vendorparam_value">
                         <?php if ($editmode==0) { ?>
-                            <?=empty($vendor['pricing_phone']) ? '&nbsp;' : $vendor['pricing_phone']?>
+                            <?=empty($vendor['pricing_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['pricing_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="form-group vendordetailsinpt" data-item="pricing_phone" value="<?=$vendor['pricing_phone']?>"/>
+                            <input type="text" class="form-group vendordetailsphone" data-item="pricing_phone" value="<?=formatPhoneNumber($vendor['pricing_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>

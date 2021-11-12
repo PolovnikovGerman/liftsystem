@@ -444,22 +444,6 @@ if (!function_exists('creditcard_format')) {
     }
 }
 
-if (!function_exists('formatPhoneNumber')) {
-    function formatPhoneNumber($phoneNumber)
-    {
-        $plusdig = 0;
-        if (substr($phoneNumber, 0, 1) == '+') {
-            $plusdig = 1;
-            $phoneNumber = substr($phoneNumber, 1);
-        }
-        $areaCode = substr($phoneNumber, 0, 3);
-        $nextThree = substr($phoneNumber, 3, 3);
-        $lastFour = substr($phoneNumber, 6);
-        $phoneNumber = ($plusdig == 1 ? '+' : '') . $areaCode . '-' . $nextThree . '-' . $lastFour;
-        return $phoneNumber;
-    }
-}
-
 if (!function_exists('getVMDDueDate')) {
     function getVMDDueDate($batch_date, $paymethod) {
         if ($paymethod=='PAYPAL') {
@@ -639,6 +623,40 @@ if (!function_exists('PriceOutput')) {
             $output = substr($output,0,-1);
         }
         return $output;
+    }
+}
+
+if (!function_exists('formatPhoneNumber')) {
+    function formatPhoneNumber($phoneNumber,$ext=0) {
+        if (!empty($phoneNumber)) {
+            $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+
+            if(strlen($phoneNumber) > 10) {
+                $countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
+                $areaCode = substr($phoneNumber, -10, 3);
+                $nextThree = substr($phoneNumber, -7, 3);
+                $lastFour = substr($phoneNumber, -4, 4);
+
+                $phoneNumber = '+'.$countryCode.' ('.$areaCode.') '.$nextThree.'-'.$lastFour;
+            }
+            else if(strlen($phoneNumber) == 10) {
+                $areaCode = substr($phoneNumber, 0, 3);
+                $nextThree = substr($phoneNumber, 3, 3);
+                $lastFour = substr($phoneNumber, 6, 4);
+                if ($ext==1) {
+                    $phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
+                } else {
+                    $phoneNumber = $areaCode.'-'.$nextThree.'-'.$lastFour;
+                }
+            }
+            else if(strlen($phoneNumber) == 7) {
+                $nextThree = substr($phoneNumber, 0, 3);
+                $lastFour = substr($phoneNumber, 3, 4);
+
+                $phoneNumber = $nextThree.'-'.$lastFour;
+            }
+        }
+        return $phoneNumber;
     }
 }
 
