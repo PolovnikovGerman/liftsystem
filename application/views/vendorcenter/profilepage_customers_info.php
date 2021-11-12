@@ -25,7 +25,7 @@
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['customer_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['customer_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="form-group vendordetailsinpt" data-item="customer_phone" value="<?=$vendor['customer_phone']?>"/>
+                            <input type="text" class="form-group vendordetailsphone" data-item="customer_phone" value="<?=formatPhoneNumber($vendor['customer_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>

@@ -405,7 +405,7 @@
 .vendordocument_value {
     width: 16.25rem;
 }
-input.vendordetailsinpt {
+input.vendordetailsinpt, input.vendordetailsphone {
     border: none;
     height: 1.5rem;
     padding-left: 0.3125rem;

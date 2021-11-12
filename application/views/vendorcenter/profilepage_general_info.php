@@ -149,7 +149,7 @@
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['vendor_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['vendor_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="vendordetailsinpt" data-item="vendor_phone" value="<?=$vendor['vendor_phone']?>"/>
+                            <input type="text" class="vendordetailsphone" data-item="vendor_phone" value="<?=formatPhoneNumber($vendor['vendor_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>

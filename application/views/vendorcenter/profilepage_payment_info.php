@@ -25,7 +25,7 @@
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['payment_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['payment_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                            <input type="text" class="vendordetailsphone" data-item="payment_phone" value="<?=formatPhoneNumber($vendor['payment_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>
@@ -41,7 +41,7 @@
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['payment_email']) ? '&nbsp;' : $vendor['payment_email']?>
                         <?php } else { ?>
-                            <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                            <input type="text" class="vendordetailsinpt" data-item="payment_email" value="<?=$vendor['payment_email']?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>
