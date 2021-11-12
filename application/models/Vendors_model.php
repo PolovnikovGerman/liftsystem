@@ -310,6 +310,7 @@ Class Vendors_model extends My_Model
             'payment_accept_check' => 0,
             'payment_accept_wire' => 0,
             'payment_accept_paypal' => 0,
+            'checkout_details' => '',
             'po_note' => '',
             'internal_po_note' => '',
             'vendor_status' => 1,
@@ -791,7 +792,7 @@ Class Vendors_model extends My_Model
                 $this->db->set('payment_accept_ach', $vendor['payment_accept_ach']);
                 $this->db->set('payment_accept_paypal', $vendor['payment_accept_paypal']);
                 $this->db->set('payment_accept_wire', $vendor['payment_accept_wire']);
-                // Wire account
+                $this->db->set('checkout_details', $vendor['checkout_details']);
                 $this->db->set('payment_note', $vendor['payment_note']);
                 $this->db->set('pricing_contact', $vendor['pricing_contact']);
                 $this->db->set('pricing_phone', $vendor['pricing_phone']);

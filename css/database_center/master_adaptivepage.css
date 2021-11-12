@@ -28,7 +28,6 @@
 }
 .mastermenu_head .returndbcenter {
     float: right!important;
-    /* margin-right: 7px; */
     cursor: pointer;
 }
 /* Large desktops and laptops */
@@ -43,9 +42,9 @@
         font-size: 1.2rem;
         line-height: 2.25rem;
     }
-    .bigdeviceview {
+    /*.bigdeviceview {
         display: block;
-    }
+    }*/
     .smallmobile {
         display: none;
     }
@@ -62,9 +61,9 @@
         line-height: 2.35rem;
         width: 8.6rem;
     }
-    .bigdeviceview {
+    /*.bigdeviceview {
         display: block;
-    }
+    }*/
     .smallmobile {
         display: none;
     }
@@ -81,9 +80,9 @@
         line-height: 2.35rem;
         width: 8.6rem;
     }
-    .bigdeviceview {
+    /*.bigdeviceview {
         display: block;
-    }
+    }*/
     .smallmobile {
         display: none;
     }
@@ -100,15 +99,15 @@
         line-height: 2.35rem;
         width: 8.6rem;
     }
-    .bigdeviceview {
+    /* .bigdeviceview {
         display: none;
-    }
+    } */
     .smallmobile {
-        display: block;
+        display: none;
     }
 }
 /* Landscape phones and smaller */
-@media (max-width: 480px) {
+@media (max-width: 540px) {
     .mastermenu_head .menulabel {
         font-size: 1.25rem;
         line-height: 2rem!important;
@@ -124,5 +123,13 @@
     }
     .smallmobile {
         display: block;
+    }
+    .mastermenu_head .returndbcenter {
+        margin-top: -2rem;
+    }
+}
+@media (max-width: 480px) {
+    .mastermenu_head .returndbcenter {
+        width: 5rem;
     }
 }

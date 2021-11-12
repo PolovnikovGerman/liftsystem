@@ -23,9 +23,9 @@
                     <legend>PO Phone</legend>
                     <div class="vendorparam_value">
                         <?php if ($editmode==0) { ?>
-                            <?=empty($vendor['po_phone']) ? '&nbsp;' : $vendor['po_phone']?>
+                            <?=empty($vendor['po_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['po_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="form-group vendordetailsinpt" data-item="po_phone" value="<?=$vendor['po_phone']?>"/>
+                            <input type="text" class="form-group vendordetailsphone" data-item="po_phone" value="<?=formatPhoneNumber($vendor['po_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>
@@ -158,7 +158,7 @@
             <div class="vendorinnernote_value">
                 <fieldset>
                     <legend>Note to go on ALL POs</legend>
-                    <div class="vendorparam_value">
+                    <div class="vendorparam_value ponotesarea">
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['po_note']) ? '&nbsp;' : nl2br($vendor['po_note'])?>
                         <?php } else { ?>

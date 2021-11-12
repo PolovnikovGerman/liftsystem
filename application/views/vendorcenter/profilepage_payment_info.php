@@ -23,9 +23,9 @@
                     <legend>Payment Phone</legend>
                     <div class="vendorparam_value">
                         <?php if ($editmode==0) { ?>
-                            <?=empty($vendor['payment_phone']) ? '&nbsp;' : $vendor['payment_phone']?>
+                            <?=empty($vendor['payment_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['payment_phone'])?>
                         <?php } else { ?>
-                            <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                            <input type="text" class="vendordetailsphone" data-item="payment_phone" value="<?=formatPhoneNumber($vendor['payment_phone'])?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>
@@ -41,7 +41,7 @@
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['payment_email']) ? '&nbsp;' : $vendor['payment_email']?>
                         <?php } else { ?>
-                            <input type="text" class="vendordetailsinpt" data-item="payment_phone" value="<?=$vendor['payment_phone']?>"/>
+                            <input type="text" class="vendordetailsinpt" data-item="payment_email" value="<?=$vendor['payment_email']?>"/>
                         <?php } ?>
                     </div>
                 </fieldset>
@@ -180,7 +180,16 @@
                 <fieldset>
                     <legend>ACH / Wire / Paypal / Check Details</legend>
                     <div class="vendorparam_value">
-                        <i class="fa fa-lock" aria-hidden="true"></i> Unlock to view
+                        <div class="checkoutlockdata">
+                            <i class="fa fa-lock unlockcheckdetails" aria-hidden="true"></i> Unlock to view
+                        </div>
+                        <div class="checkoutunlockdata">
+                            <?php if ($editmode==0) { ?>
+                                <?=empty($vendor['checkout_details']) ? '&nbsp;' : nl2br($vendor['checkout_details'])?>
+                            <?php } else { ?>
+                                <textarea class="vendordetailsinpt notes" data-item="checkout_details"><?=$vendor['checkout_details']?></textarea>
+                            <?php } ?>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -191,8 +200,12 @@
             <div class="vendorinnernote_value">
                 <fieldset>
                     <legend>Payment Notes (Internal Use Only)</legend>
-                    <div class="vendorparam_value">
-                        <?=empty($vendor['payment_note']) ? '&nbsp;' : nl2br($vendor['payment_note'])?>
+                    <div class="vendorparam_value paymentnotearea">
+                        <?php if ($editmode==0) { ?>
+                            <?=empty($vendor['payment_note']) ? '&nbsp;' : nl2br($vendor['payment_note'])?>
+                        <?php } else { ?>
+                            <textarea class="vendordetailsinpt notes" data-item="payment_note"><?=$vendor['payment_note']?></textarea>
+                        <?php } ?>
                     </div>
                 </fieldset>
             </div>
