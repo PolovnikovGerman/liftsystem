@@ -23,7 +23,7 @@
                     <legend>Customer Service Phone</legend>
                     <div class="vendorparam_value">
                         <?php if ($editmode==0) { ?>
-                            <?=empty($vendor['customer_phone']) ? '&nbsp;' : $vendor['customer_phone']?>
+                            <?=empty($vendor['customer_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['customer_phone'])?>
                         <?php } else { ?>
                             <input type="text" class="form-group vendordetailsinpt" data-item="customer_phone" value="<?=$vendor['customer_phone']?>"/>
                         <?php } ?>

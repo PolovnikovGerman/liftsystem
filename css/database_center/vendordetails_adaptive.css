@@ -370,10 +370,20 @@
     color: #000000;
 }
 .vendoraccountdetail_value .vendorparam_value {
+}
+.checkoutlockdata {
+    cursor: pointer;
     text-align: center;
     color: #0000ff;
-    padding: 2rem 0;
+    padding: 1.85rem 0;
     width: 100%;
+}
+.checkoutunlockdata {
+    display: none;
+}
+.checkoutunlockdata {
+    /* margin: -2rem 0; */
+    min-height: 4.8rem;
 }
 .vendorname_value, .vendoraltname_value, .vendorweb_value, .vendorphone_value, .vendoraddress_value, .vendorinnernote_value {
     width: 16.25rem;
@@ -816,13 +826,22 @@ input.documentdesciption {
         /* display: inline-block; */
     }
     .vendorshipaddr_value {
-        margin-top: 7.25rem;
+        margin-top: 7.1rem;
     }
     .vendorpaymentterms_value {
         margin-top: 1.875rem;
     }
     .vendoraccountdetail_value {
         margin-top: 2.1875rem;
+    }
+    .generalnotearea {
+        min-height: 3rem;
+    }
+    .ponotesarea {
+        min-height: 3rem;
+    }
+    .paymentnotearea {
+        min-height: 2.29rem;
     }
 }
 

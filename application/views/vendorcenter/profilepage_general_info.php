@@ -147,7 +147,7 @@
                     <legend>Main Phone</legend>
                     <div class="vendorparam_value">
                         <?php if ($editmode==0) { ?>
-                            <?=empty($vendor['vendor_phone']) ? '&nbsp;' : $vendor['vendor_phone']?>
+                            <?=empty($vendor['vendor_phone']) ? '&nbsp;' : formatPhoneNumber($vendor['vendor_phone'])?>
                         <?php } else { ?>
                             <input type="text" class="vendordetailsinpt" data-item="vendor_phone" value="<?=$vendor['vendor_phone']?>"/>
                         <?php } ?>
@@ -234,7 +234,7 @@
             <div class="vendorinnernote_value">
                 <fieldset>
                     <legend>Notes (Internal Use Only)</legend>
-                    <div class="vendorparam_value">
+                    <div class="vendorparam_value generalnotearea">
                         <?php if ($editmode==0) { ?>
                             <?=empty($vendor['general_note']) ? '&nbsp;' : nl2br($vendor['general_note'])?>
                         <?php } else { ?>

@@ -379,6 +379,14 @@ function init_vendordetails_view() {
             }
         },'json');
     });
+    $(".checkoutlockdata").unbind('click').click(function () {
+        $(".checkoutlockdata").hide();
+        $(".checkoutunlockdata").show();
+    })
+    $(".checkoutunlockdata").unbind('click').click(function () {
+        $(".checkoutunlockdata").hide();
+        $(".checkoutlockdata").show();
+    });
 }
 
 function init_vendordetails_edit() {
@@ -671,6 +679,10 @@ function init_vendordetails_edit() {
             },'json');
         }
     });
+    $(".checkoutlockdata").unbind('click').click(function () {
+        $(".checkoutlockdata").hide();
+        $(".checkoutunlockdata").show();
+    })
 }
 
 function init_venorprice_upload() {
