@@ -384,9 +384,13 @@ select.filterdata {
     }
     .vendordataview .dataarea {
         max-height: 14.5rem;
-        width: 35.9rem;
+        /* width: 35.9rem; */
+        width: 33.1rem;
     }
     .vendordataview .datatitle .altname {
+        display: none;
+    }
+    .vendordataview .datatitle .asinumber {
         display: none;
     }
     .vendordataview .datatitle .website {
@@ -400,6 +404,9 @@ select.filterdata {
         display: none;
     }
     .vendordataview .dataarea .datarow .altname {
+        display: none;
+    }
+    .vendordataview .dataarea .datarow .asinumber {
         display: none;
     }
     .vendordataview .dataarea .datarow .website {
