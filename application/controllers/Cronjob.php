@@ -738,8 +738,7 @@ Class Cronjob extends CI_Controller
 
     public function check_ordermath() {
 
-        // $dateend=strtotime(date('Y-m-d'));
-        $dateend=strtotime('2021-12-18');
+        $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // $brands = ['BT','SB'];
         $brands = ['BT'];
