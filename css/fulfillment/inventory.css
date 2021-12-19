@@ -1819,7 +1819,8 @@ input.addlcostinpt {
     width: 66px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available {
-    width: 65px;
+    width: 64px;
+    border-right: none!important;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available,
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .instock,
