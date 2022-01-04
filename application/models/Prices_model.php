@@ -294,8 +294,8 @@ Class Prices_model extends My_Model
         return $profitval;
     }
 
-    /* Recalc Stress Profit */
-    public function recalc_stress_profit($prices, $vendprice, $price_types) {
+    // Recalc Stress Profit
+    public function recalc_stress_profit($prices, $vendprices, $price_types) {
         /* IDX of Vendor Prices */
         /* Init Profits array */
         $profits=array();
@@ -347,7 +347,7 @@ Class Prices_model extends My_Model
             'profit_perc'=>'',
             'profit_class'=>'empty',
         );
-        $new_profit=$this->recalc_profit($vendprice, $profits);
+        $new_profit=$this->recalc_profit($vendprices, $profits);
         $profit=array();
         foreach ($new_profit as $profrow) {
             if ($profrow['type']=='qty') {
@@ -367,6 +367,67 @@ Class Prices_model extends My_Model
         return $profit;
     }
 
+    // Recalc Promo Profit
+    public function recalc_promo_profit($prices, $vendprices, $commonprices)
+    {
+        /* IDX of Vendor Prices */
+        /* Init Profits array */
+        $profits = array();
+        foreach ($prices as $row) {
+            $base_cost = 0;
+            if (floatval($row['sale_price']) != 0) {
+                $base_cost = floatval($row['sale_price']);
+            } elseif (floatval($prices['price']) != 0) {
+                $base_cost = floatval($prices['price']);
+            }
+            $profits[] = array(
+                'price_id' => $row['promo_price_id'],
+                'type' => 'qty',
+                'base' => $row['item_qty'],
+                'vendprice' => $commonprices['base_cost'],
+                'base_cost' => $base_cost,
+                'profit' => '',
+                'profit_perc' => '',
+                'profit_class' => 'empty',
+            );
+        }
+        /* Add 2 special prices */
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_print']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_print']);
+        } elseif (floatval($commonprices['item_price_print'])) {
+            $base_cost = floatval($commonprices['item_price_print']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'print',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_exprint']) == 0 ? 0 : floatval($commonprices['vendor_item_exprint'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_setup']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_setup']);
+        } elseif (floatval($commonprices['item_price_setup'])) {
+            $base_cost = floatval($commonprices['item_price_setup']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'setup',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_setup']) == 0 ? 0 : floatval($commonprices['vendor_item_setup'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $new_profit = $this->recalc_profit($vendprices, $profits);
+        return $new_profit;
+    }
+
     private function recalc_profit($vendprice, $profits) {
         $out = array();
         foreach ($profits as $row) {
@@ -377,8 +438,8 @@ Class Prices_model extends My_Model
                         $proof = 0;
                     }
                     foreach ($vendprice as $qrow) {
-                        if ($qrow['qty'] <= $row['base']) {
-                            $row['vendprice'] = $qrow['price'];
+                        if ($qrow['vendorprice_qty'] <= $row['base'] && !empty($qrow['vendorprice_color'])) {
+                            $row['vendprice'] = $qrow['vendorprice_color'];
                         }
                     }
                     if (floatval($row['vendprice']) != 0) {

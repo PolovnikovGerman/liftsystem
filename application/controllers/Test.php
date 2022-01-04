@@ -569,4 +569,98 @@ class Test extends CI_Controller
 
     }
 
+    function set_item_profit() {
+        $price_types = $this->config->item('price_types');
+
+        $this->db->select('i.item_id, i.item_template, i.item_number, i.item_name, ip.*');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_item_prices ip', 'ip.item_price_itemid=i.item_id', 'left');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            echo '# '.$row['item_number'].' - '.$row['item_name'].PHP_EOL;
+            $profit = array();
+            $promoprof = array();
+            if ($row['item_template'] != 'Stressball') {
+                $this->db->select('*');
+                $this->db->from('sb_promo_price');
+                $this->db->where('item_id', $row['item_id']);
+                $promos = $this->db->get()->result_array();
+                foreach ($promos as $promo) {
+                    $base = 0;
+                    if (floatval($promo['sale_price']) != 0) {
+                        $base = floatval($promo['sale_price']);
+                    } elseif (floatval($promo['price']) != 0) {
+                        $base = floatval($promo['price']);
+                    }
+                    if ($base) {
+                        $this->db->select('get_profit_qty(' . $base . ' , ' . $row['item_id'] . ' , ' . $promo['item_qty'] . ' ) as itm_profit', FALSE);
+                        $prof = $this->db->get()->row_array();
+                        if ($prof['itm_profit']) {
+                            $promoprof[] = array('idx' => $promo['promo_price_id'], 'value' => $prof['itm_profit']);
+                        }
+                    }
+                }
+            } else {
+                foreach ($price_types as $pricerow) {
+                    $base = 0;
+                    if (floatval($row['item_sale_' . $pricerow['type']]) != 0) {
+                        $base = floatval($row['item_sale_' . $pricerow['type']]);
+                    } elseif (floatval($row['item_price_' . $pricerow['type']]) != 0) {
+                        $base = floatval($row['item_price_' . $pricerow['type']]);
+                    }
+
+                    if ($base) {
+                        $this->db->select('get_profit_qty(' . $base . ' , ' . $row['item_id'] . ' , ' . $pricerow['type'] . ' ) as itm_profit', FALSE);
+                        $prof = $this->db->get()->row_array();
+
+                        if ($prof['itm_profit']) {
+                            $profit[] = array('type' => 'profit_' . $pricerow['type'], 'value' => $prof['itm_profit']);
+                        }
+                    }
+                }
+            }
+            $base = 0;
+            if (floatval($row['item_sale_print']) != 0) {
+                $base = floatval($row['item_sale_print']);
+            } elseif (floatval($row['item_price_print']) != 0) {
+                $base = floatval($row['item_price_print']);
+            }
+            if ($base) {
+                $this->db->select('get_profit_print(' . $base . ',' . $row['item_id'] . ') as itm_profit', FALSE);
+                $prof = $this->db->get()->row_array();
+                if ($prof['itm_profit']) {
+                    $profit[] = array('type' => 'profit_print', 'value' => $prof['itm_profit']);
+                }
+            }
+            $base = 0;
+            if (floatval($row['item_sale_setup']) != 0) {
+                $base = floatval($row['item_sale_setup']);
+            } elseif (floatval($row['item_price_setup']) != 0) {
+                $base = floatval($row['item_price_setup']);
+            }
+            if ($base) {
+                $this->db->select('get_profit_setup(' . $base . ',' . $row['item_id'] . ') as itm_profit', FALSE);
+                $prof = $this->db->get()->row_array();
+                if ($prof['itm_profit']) {
+                    $profit[] = array('type' => 'profit_setup', 'value' => $prof['itm_profit']);
+                }
+            }
+
+            if (count($profit) > 0) {
+                foreach ($profit as $prof) {
+                    $this->db->set($prof['type'], $prof['value']);
+                }
+                $this->db->where('item_price_id', $row['item_price_id']);
+                $this->db->update('sb_item_prices');
+            }
+            if (count($promoprof) > 0) {
+                foreach ($promoprof as $prof) {
+                    $this->db->set('profit', $prof['value']);
+                    $this->db->where('promo_price_id', $prof['idx']);
+                    $this->db->update('sb_promo_price');
+                }
+            }
+        }
+    }
+
 }

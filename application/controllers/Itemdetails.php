@@ -113,9 +113,13 @@ class Itemdetails extends MY_Controller
                              'faces'=> '', // $faces,
                          );
                          $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
-                     } elseif ($res['entity']=='item_prices') {
+                     }
+                     $mdata['profitview'] = $res['profitrecalc'];
+                     if ($res['profitrecalc']==1) {
                          $profit = $res['profit'];
                          $mdata['profitdat'] = $this->load->view('itemdetails/stressball_profit_view', array('prices' => $profit, 'price_types' => $this->config->item('price_types')), TRUE);
+                     }
+                     if (isset($res['research'])) {
                          $mdata['research']=$res['research'];
                      }
                  }
