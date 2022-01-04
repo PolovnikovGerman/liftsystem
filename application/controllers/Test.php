@@ -575,6 +575,7 @@ class Test extends CI_Controller
         $this->db->select('i.item_id, i.item_template, i.item_number, i.item_name, ip.*');
         $this->db->from('sb_items i');
         $this->db->join('sb_item_prices ip', 'ip.item_price_itemid=i.item_id', 'left');
+        $this->db->order_by('i.item_number');
         $res = $this->db->get()->result_array();
         foreach ($res as $row) {
             echo '# '.$row['item_number'].' - '.$row['item_name'].PHP_EOL;
