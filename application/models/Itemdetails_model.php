@@ -170,6 +170,10 @@ Class Itemdetails_model extends My_Model
                 $out['result']=$this->success_result;
                 if ($fld=='vendor_item_cost') {
                     $profitrecalc = 1;
+                } elseif ($fld=='vendor_item_setup') {
+                    $profitrecalc = 1;
+                } elseif ($fld=='vendor_item_exprint') {
+                    $profitrecalc = 1;
                 }
             }
         } elseif ($entity=='vendor_prices') {
