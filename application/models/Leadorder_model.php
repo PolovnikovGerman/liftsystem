@@ -968,7 +968,7 @@ Class Leadorder_model extends My_Model {
                 $out['states']=$states;
             }
             if ($newshipcalc==1) {
-                
+
             }
             $out['result']=$this->success_result;
             usersession($ordersession, $leadorder);
