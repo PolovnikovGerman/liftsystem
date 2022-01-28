@@ -846,7 +846,10 @@ Class Leadorder_model extends My_Model {
             if ($entity=='shipping' && $fldname=='event_date') {
                 $data['out_eventdate']=date('m/d/y',$newval);
             }
-
+            $newshipcalc = 0;
+            if ($entity=='order' && $fldname=='order_date') {
+                $newshipcalc = 1;
+            }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
                 $params=explode("-", $newval);
@@ -963,6 +966,9 @@ Class Leadorder_model extends My_Model {
                     $states=$this->shipping_model->get_country_states($cntid);
                 }
                 $out['states']=$states;
+            }
+            if ($newshipcalc==1) {
+                
             }
             $out['result']=$this->success_result;
             usersession($ordersession, $leadorder);
