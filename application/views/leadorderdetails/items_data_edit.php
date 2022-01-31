@@ -4,7 +4,7 @@
     <div class="items_table_line bord_b <?=($nrow%2==0 ? '' : 'items_line_gray')?>">
         <div class="items_content_item2 short"><?=$row['item_number']?></div>
         <div class="itemdescription_data long bord_l">
-            <input type="text" class="<?=($row['item_color_add']==1 ? 'orderitem_description_short' : 'orderitem_description_long')?> orderitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>"  value="<?=htmlspecialchars($row['item_description'])?>" />
+            <input type="text" class="orderitem_description_long orderitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>"  value="<?=htmlspecialchars($row['item_description'])?>" />
             <?php if ($row['item_color_add']) { ?>
             <div class="itemcoloradd text_green" data-item="<?=$row['order_item_id']?>" data-orderitem="<?=$row['order_item_id']?>">+color</div>
             <?php } ?>            

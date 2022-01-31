@@ -8863,12 +8863,12 @@ Class Leadorder_model extends My_Model {
         $descripXPos = 38;
         $descripWidth = 0;
 
-        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg.png';
+        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg2.png';
         $itemqtyXPos = 126;
         $itemqtyWidth = 0;
 
-        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg.png';
-        $priceXPos = 142;
+        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg2.png';
+        $priceXPos = 146;
         $priceWidth = 0;
 
         $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.png';
@@ -8884,8 +8884,8 @@ Class Leadorder_model extends My_Model {
         $tableWidths = [
             33,
             88,
-            16,
-            31,
+            18,
+            29,
             32.5,
         ];
         $numpp = 1;
@@ -8901,7 +8901,7 @@ Class Leadorder_model extends My_Model {
             $pdf->SetX(5);
             $pdf->Cell($tableWidths[0], 10, $detail['item_num'], 0, 0,'C', $fillcell);
             $pdf->Cell($tableWidths[1], 10, $detail['item_description'],0,0,'L',$fillcell);
-            $pdf->Cell($tableWidths[2], 10, $detail['item_qty'],0, 0, 'C', $fillcell);
+            $pdf->Cell($tableWidths[2], 10, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
             $pdf->Cell($tableWidths[3], 10, $detail['item_price'],0,0,'C', $fillcell);
             $pdf->Cell($tableWidths[4], 10, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
@@ -8915,12 +8915,12 @@ Class Leadorder_model extends My_Model {
         }
         // Totals
         $invtotalXPos = 115;
-        $invtotalYPos = 231;
+        $invtotalYPos = 252;
         $invtotalWidth = 88;
         $invtotalHeght = 27 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,231.5);
+        $pdf->SetXY(116,252.5);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
