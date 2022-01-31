@@ -6,16 +6,16 @@
                 <div class="items_content_item2 <?= $numpp == 0 ? 'text_green imprintdetails' : '' ?>" >
                     <?= $numpp == 0 ? 'Print Details:' : '&nbsp;' ?>
                 </div>
-                <div class="items_content_description3 bord_l">
+                <div class="inprint_content_description bord_l">
                     <?= $row['imprint_description'] ?>            
                 </div>                
-                <div class="items_content_qty2 bord_l">
-                    <?= $row['imprint_qty'] == 0 ? '&nbsp;' : $row['imprint_qty'] ?>
+                <div class="items_content_qty_view bord_l">
+                    <?= $row['imprint_qty'] == 0 ? '&nbsp;' : QTYOutput($row['imprint_qty']) ?>
                 </div>
-                <div class="items_content_each2 bord_l <?=$row['imprint_price_class']?>" title="<?=$row['imprint_price_title']?>" <?= $row['imprint_price'] == 0 ? 'style="text-align: center"' : ''?>>
+                <div class="items_content_price_view bord_l <?=$row['imprint_price_class']?>" title="<?=$row['imprint_price_title']?>" <?= $row['imprint_price'] == 0 ? 'style="text-align: center"' : ''?>>
                     <?= $row['imprint_price'] == 0 ? '--' : MoneyOutput($row['imprint_price']) ?>
                 </div>
-                <div class="items_content_sub_total2 bord_l"><?= $row['imprint_subtotal'] ?></div>
+                <div class="items_content_subtotal_view bord_l"><?= $row['imprint_subtotal'] ?></div>
             </div>    
             <?php $numpp++; ?>            
         <?php } ?>
