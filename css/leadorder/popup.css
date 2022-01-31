@@ -3128,7 +3128,7 @@ textarea.proofrequestnotes {
     text-align: right;    
 }
 .multishipsubtitle > .eventdatevalue {
-    padding-top: 4px;
+    /* padding-top: 4px; */
     width: 59px;
 }
 .multishipsubtitle > .rushselectarea {
@@ -3140,7 +3140,7 @@ textarea.proofrequestnotes {
     width: 152px;
 }
 .multishipsubtitle > .rushpricevalue {
-    padding-top: 4px;
+    /* padding-top: 4px; */
     width: 67px;
 }
 .multishipadressarea {

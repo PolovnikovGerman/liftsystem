@@ -375,6 +375,16 @@ function init_onlineleadorder_edit() {
                 // $("input.calendarinpt").val(response.data.order_items);
                 $("div.orderdatechange").empty().html(response.data.order_dateview);
                 $("input#loctimeout").val(response.data.loctime);
+                // Change rush options
+                if (parseInt(response.data.shipcal)==1) {
+                    $("div#rushdatalistarea").empty().html(response.data.rushview);
+                    if (parseInt(response.data.cntshipadrr)===1) {
+                        $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                    } else {
+                        $("div.multishipadresslist").empty().html(response.data.shipcost);
+                    }
+                    $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                }
                 init_onlineleadorder_edit();
                 $("#loader").hide();
             } else {
@@ -2224,6 +2234,9 @@ function init_leadorder_shipping() {
                     $("input.shippingcost").val(response.data.shipping);
                     if (parseInt(response.data.cntshipadrr)===1) {
                         $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                    } else {
+                        console.log('Ship Address '+response.data.cntshipadrr);
+                        $("div.multishipadresslist").empty().html(response.data.shipcost);
                     }
                 }
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
@@ -2709,6 +2722,11 @@ function edit_multishipaddress() {
 
 // Multiship View
 function init_multiaddress_ship() {
+    $("#artNextModal").find('button.close').unbind('click').click(function () {
+        $("#artNextModal").find('div.modal-body').empty();
+        $("#artNextModal").modal('hide');
+        init_onlineleadorder_edit();
+    });
     $("input.eventdatevalue").datepicker({
         autoclose: true,
         todayHighlight: true

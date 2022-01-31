@@ -848,7 +848,10 @@ Class Leadorder_model extends My_Model {
             }
             $newshipcalc = 0;
             if ($entity=='order' && $fldname=='order_date') {
-                $newshipcalc = 1;
+                $shipping = $leadorder['shipping'];
+                if (!empty($shipping['rush_idx'])) {
+                    $newshipcalc = 1;
+                }
             }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
@@ -920,6 +923,7 @@ Class Leadorder_model extends My_Model {
                                 );
                                 if ($row['current']==1) {
                                     $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                    $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
                                     $shiprate+=$row['Rate'];
                                 }
                                 $newidx++;
@@ -968,9 +972,106 @@ Class Leadorder_model extends My_Model {
                 $out['states']=$states;
             }
             if ($newshipcalc==1) {
-
+                // Calc new shipping time
+                $this->load->model('shipping_model');
+                $order = $leadorder['order'];
+                $item_id = $order['item_id'];
+                if ($order['order_blank']==0) {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                }
+                $out['rushlist']=$rush;
+                $shipping=$leadorder['shipping'];
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                        $order['shipdate']=$row['date'];
+                        $out['current']=$row['id'];
+                    }
+                }
+                $leadorder['shipping']=$shipping;
+                $leadorder['order']=$order;
+                $out['shipdate']=$shipping['shipdate'];
+                $out['rush_price']=$shipping['rush_price'];
+                // Calculate shipping
+                $this->load->model('shipping_model');
+                $shiprate=0;
+                $items=$leadorder['order_items'];
+                $shipaddr=$leadorder['shipping_address'];
+                if (count($shipaddr)==1) {
+                    $shipaddr[0]['item_qty']=$order['order_qty'];
+                }
+                $shipping=$leadorder['shipping'];
+                $shipidx=0;
+                $cnt=0;
+                foreach ($shipaddr as $shprow) {
+                    if (!empty($shprow['zip'])) {
+                        // Get Old Shipping Method
+                        $default_ship_method='';
+                        if (isset($shprow['shipping_cost'])) {
+                            $oldcosts=$shprow['shipping_costs'];
+                            foreach ($oldcosts as $costrow) {
+                                if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                    $default_ship_method=$costrow['shipping_method'];
+                                }
+                            }
+                        }
+                        $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                        if ($cntres['result']==$this->error_result) {
+                            $out['msg']=$cntres['msg'];
+                            usersession($ordersession, $leadorder);
+                            return $out;
+                        } else {
+                            $rates=$cntres['ships'];
+                            $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                            $cidx=0;
+                            foreach ($shipcost as $row) {
+                                $shipcost[$cidx]['delflag']=1;
+                                $cidx++;
+                            }
+                            $newidx=count($shipcost)+1;
+                            foreach ($rates as $row) {
+                                $shipcost[]=array(
+                                    'order_shipcost_id'=>$newidx*(-1),
+                                    'shipping_method'=>$row['ServiceName'],
+                                    'shipping_cost'=>$row['Rate'],
+                                    'arrive_date'=>$row['DeliveryDate'],
+                                    'current'=>$row['current'],
+                                    'delflag'=>0,
+                                );
+                                if ($row['current']==1) {
+                                    $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                    $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
+                                    $shiprate+=$row['Rate'];
+                                }
+                                $newidx++;
+                            }
+                            $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                        }
+                    }
+                    $shipidx++;
+                    $cnt++;
+                }
+                $out['shipping']=$shiprate;
+                $order['shipping']=$shiprate;
+                $out['cntshipadrr']=$cnt;
+                if ($cnt==1) {
+                    $out['shipaddr']=$shipaddr[0];
+                } else {
+                    $out['shipaddress']=$shipaddr;
+                }
+                // Save data into Session
+                $leadorder['order']=$order;
+                $leadorder['shipping']=$shipping;
+                $leadorder['shipping_address']=$shipaddr;
             }
             $out['result']=$this->success_result;
+            $out['shipcalc'] = $newshipcalc;
             usersession($ordersession, $leadorder);
             // Rebuild Totals of order
             if ($leadorder['order_system']=='new') {
@@ -3524,6 +3625,7 @@ Class Leadorder_model extends My_Model {
                             );
                             if ($row['current']==1) {
                                 $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
                                 $shiprate+=$row['Rate'];
                             }
                             $newidx++;
@@ -8472,7 +8574,8 @@ Class Leadorder_model extends My_Model {
 
     private function _dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations) {
         $total_item=0;
-        $total_qty=0;
+        // $total_qty=0;
+        $total_qty=$neworder['order_qty'];
         $total_imprint=0;
         $itemidx=0;
         foreach ($neworder_items as $row) {
