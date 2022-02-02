@@ -173,6 +173,7 @@ function edit_leadorder(order) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true})
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 navigation_init();
             }
@@ -218,6 +219,7 @@ function add_leadorder(brand) {
             $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_onlineleadorder_edit();
+            init_rushpast();
         } else {
             show_error(response);
         }

@@ -8950,6 +8950,117 @@ Class Leadorder_model extends My_Model {
 
     }
 
+    public function change_order_rushpast($leadorder, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
+        $this->load->model('shipping_model');
+        // Calc proof date
+        $order = $leadorder['order'];
+        $shipping = $leadorder['shipping'];
+        $item_id = $order['item_id'];
+        if ($order['order_blank']==1) {
+            $proofdate = $newval;
+        } else {
+            $proofdate = $this->shipping_model->calc_proofdate($item_id, $newval);
+        }
+        // Get new rush
+        if ($order['order_blank']==0) {
+            $rush=$this->shipping_model->get_rushlist($item_id, $proofdate);
+        } else {
+            $rush=$this->shipping_model->get_rushlist_blank($item_id, $proofdate);
+        }
+        $out['rushlist']=$rush;
+        $shipping['rush_list']=serialize($rush);
+        $shipping['out_rushlist']=$rush;
+        foreach ($rush['rush'] as $row) {
+            if ($row['current']==1) {
+                $shipping['shipdate']=$row['date'];
+                $shipping['rush_price']=$row['price'];
+                $shipping['rush_idx']=$row['id'];
+                $order['shipdate']=$row['date'];
+                $out['current']=$row['id'];
+            }
+        }
+        $leadorder['shipping']=$shipping;
+        $leadorder['order']=$order;
+        $out['shipdate']=$shipping['shipdate'];
+        $out['rush_price']=$shipping['rush_price'];
+        // Calculate shipping
+        $shiprate=0;
+        $items=$leadorder['order_items'];
+        $shipaddr=$leadorder['shipping_address'];
+        if (count($shipaddr)==1) {
+            $shipaddr[0]['item_qty']=$order['order_qty'];
+        }
+        $shipping=$leadorder['shipping'];
+        $shipidx=0;
+        $cnt=0;
+        foreach ($shipaddr as $shprow) {
+            if (!empty($shprow['zip'])) {
+                // Get Old Shipping Method
+                $default_ship_method='';
+                if (isset($shprow['shipping_cost'])) {
+                    $oldcosts=$shprow['shipping_costs'];
+                    foreach ($oldcosts as $costrow) {
+                        if ($costrow['delflag']==0 && $costrow['current']==1) {
+                            $default_ship_method=$costrow['shipping_method'];
+                        }
+                    }
+                }
+                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                if ($cntres['result']==$this->error_result) {
+                    $out['msg']=$cntres['msg'];
+                    usersession($ordersession, $leadorder);
+                    return $out;
+                } else {
+                    $rates=$cntres['ships'];
+                    $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                    $cidx=0;
+                    foreach ($shipcost as $row) {
+                        $shipcost[$cidx]['delflag']=1;
+                        $cidx++;
+                    }
+                    $newidx=count($shipcost)+1;
+                    foreach ($rates as $row) {
+                        $shipcost[]=array(
+                            'order_shipcost_id'=>$newidx*(-1),
+                            'shipping_method'=>$row['ServiceName'],
+                            'shipping_cost'=>$row['Rate'],
+                            'arrive_date'=>$row['DeliveryDate'],
+                            'current'=>$row['current'],
+                            'delflag'=>0,
+                        );
+                        if ($row['current']==1) {
+                            $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                            $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
+                            $shiprate+=$row['Rate'];
+                        }
+                        $newidx++;
+                    }
+                    $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                }
+            }
+            $shipidx++;
+            $cnt++;
+        }
+        $out['shipping']=$shiprate;
+        $order['shipping']=$shiprate;
+        $out['cntshipadrr']=$cnt;
+        if ($cnt==1) {
+            $out['shipaddr']=$shipaddr[0];
+        } else {
+            $out['shipaddress']=$shipaddr;
+        }
+        // Save data into Session
+        $leadorder['order']=$order;
+        $leadorder['shipping']=$shipping;
+        $leadorder['shipping_address']=$shipaddr;
+        $out['result']=$this->success_result;
+        usersession($ordersession, $leadorder);
+        // Rebuild Totals of order
+        $this->_leadorder_totals($leadorder, $ordersession);
+        return $out;
+    }
+
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
