@@ -238,7 +238,8 @@ input.calendarinpt[readonly="readonly"] {
     padding-left: 5px;
 }
 .block_4_text1.hidden {
-    opacity: 0.33;
+    opacity: 0.33!important;
+    display: block!important;
 }
 .block_4_text1.active {
     opacity: 1;
@@ -248,7 +249,7 @@ input.calendarinpt[readonly="readonly"] {
     float: left;
 }
 .block_4_text2.hidden {
-    opacity: 0.33;
+    opacity: 0.33!important;
     display: block!important;
 }
 .block_4_text2.active {
@@ -432,13 +433,25 @@ input.order_itemqty_input {
     float: left;
     padding-right: 2px;
     text-align: right;
-    width: 41px;
+    width: 53px;
+}
+.items_content_qty_view {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 53px;
 }
 .items_content_each {
     float: left;
     width: 45px;
 }
 .items_content_each2 {
+    float: left;
+    width: 41px;
+    text-align: right;
+    padding-right: 2px;
+}
+.items_content_price_view {
     float: left;
     width: 41px;
     text-align: right;
@@ -452,8 +465,13 @@ input.order_itemqty_input {
     float: left;
     padding-right: 2px;
     text-align: right;
-    /* width: 63px; */
-    width: 58px;
+    width: 65px;
+}
+.items_content_subtotal_view {
+    float: left;
+    padding-right: 5px;
+    text-align: right;
+    width: 80px;
 }
 .items_content_trash {
     float: left;
@@ -2204,8 +2222,13 @@ input.artrepeat {
     padding-left: 2px;
     width: 180px;    
 }
+.itemdescription_data_view {
+    float: left;
+    padding-left: 2px;
+    width: 180px;
+}
 .itemdescription_data.long {
-    width: 201px;
+    width: 198px;
 }
 .itemcolor_head {
     float: left;
@@ -2214,17 +2237,27 @@ input.artrepeat {
 .itemcolor_data {
     float: left;
     padding-left: 2px;
-    width: 93px;    
+    width: 91px;
+}
+.itemcolor_data_view {
+    float: left;
+    padding-left: 2px;
+    width: 93px;
 }
 .items_content_description3 {
     float: left;
     padding-left: 2px;
     width: 276px;
 }
+.inprint_content_description {
+    float: left;
+    padding-left: 2px;
+    width: 273px;
+}
 select.orderitemcolors {
     font-size: 11px;
     height: 19px;
-    width: 90px;
+    width: 87px;
 }
 input.orderitem_input {
     height: 16px;
@@ -2243,10 +2276,10 @@ input.orderitem_colorinpt {
     width: 83px;
 }
 input.orderitem_qty {
-   width: 35px;
+   width: 49px;
 }
 input.orderitem_price {
-    width: 34px;
+    width: 37px;
 }
 .items_table_lineaddcolor {
     float: left;    
@@ -3127,7 +3160,7 @@ textarea.proofrequestnotes {
     text-align: right;    
 }
 .multishipsubtitle > .eventdatevalue {
-    padding-top: 4px;
+    /* padding-top: 4px; */
     width: 59px;
 }
 .multishipsubtitle > .rushselectarea {
@@ -3139,7 +3172,7 @@ textarea.proofrequestnotes {
     width: 152px;
 }
 .multishipsubtitle > .rushpricevalue {
-    padding-top: 4px;
+    /* padding-top: 4px; */
     width: 67px;
 }
 .multishipadressarea {
@@ -3738,10 +3771,35 @@ a.historydetailsview {
 .confirmshipcost_container div {
     float: left;
 }
+.confirmshipcost_container  > .validatecitylabel {
+    font-size: 14px;
+    margin-right: 7px;
+}
 .confirmshipcost_container > .title {
     text-align: center;
     font-size: 14px;
     width: 100%;
+    height: 25px;
+    line-height: 25px;
+}
+.confirmshipcost_container > .shipoptions {
+    width: 100%;
+    padding-left: 20px;
+    height: 25px;
+    line-height: 25px;
+}
+.confirmshipcost_container > .shipoptions > .shipoption {
+    margin-right: 7px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.confirmshipcost_container > .savewarning {
+    width: 100%;
+    padding-right: 15px;
+}
+.confirmshipcost_container > .savewarning img {
+    float: right;
+    cursor: pointer;
 }
 .confirmshipcost_container > .confirmshipcost_manage {
     clear: both;

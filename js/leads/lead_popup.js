@@ -221,6 +221,9 @@ function init_leadpopupedit() {
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").find('div.modal-dialog').css('width','570px');
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $('#artNextModal').on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
                 $("div.leadreplicadddatasave").unbind('click').click(function(){
                     addnewleaderpl();
                 });

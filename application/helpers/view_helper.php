@@ -605,4 +605,15 @@ if ( ! function_exists('show_403'))
     }
 }
 
+if (!function_exists('PriceOutput')) {
+    function PriceOutput($total, $decimal = 3, $thousdelim = ',')
+    {
+        $output = number_format($total, $decimal);
+        if (substr($output,-1)=='0') {
+            $output = substr($output,0,-1);
+        }
+        return $output;
+    }
+}
+
 ?>

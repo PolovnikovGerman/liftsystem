@@ -5882,7 +5882,7 @@ Class Orders_model extends MY_Model
             }
             $art = $this->get_order_artwork($order_id);
             $blank = 0;
-            if ($orddata['imprinting'] == 0 && count($art) == 0) {
+            if (($orddata['imprinting'] == 0 && $orddata['inprinting_price']) || count($art) == 0) { //&& count($art) == 0
                 $blank = 1;
             }
             $db_table = 'ts_orders';

@@ -17,7 +17,7 @@ Class Seo_model extends My_Model {
     public function get_geolocation($user_ip) {
         $out = ['result'=> $this->error_result];
         $api_key = $this->config->item('geo_apikey');
-        $d = file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
+        $d = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
         //Use backup server if cannot make a connection
         if (!$d) {
             return $out; // Failed to open connection
