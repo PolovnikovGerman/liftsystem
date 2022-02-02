@@ -4201,13 +4201,15 @@ Class Leadorder_model extends My_Model {
         $artres=$this->artlead_model->save_artwork($artwork, $user_id);
         $artwork_id=$artres;
         if ($savepayment==1 && $finres['result']==$this->success_result) {
-            $newhistory = [
-                'artwork_id' => $artwork_id,
-                'user_id' => $user_id,
-                'update_msg' => 'Order charged. Sum '.MoneyOutput($finres['paytotal']),
-            ];
-            $this->load->model('artwork_model');
-            $this->artwork_model->artwork_history_update($newhistory);
+            if (isset($finres['paytotal'])) {
+                $newhistory = [
+                    'artwork_id' => $artwork_id,
+                    'user_id' => $user_id,
+                    'update_msg' => 'Order charged. Sum '.MoneyOutput($finres['paytotal']),
+                ];
+                $this->load->model('artwork_model');
+                $this->artwork_model->artwork_history_update($newhistory);
+            }
         }
         // Save order Locations
         $locations=$leadorder['artlocations'];
