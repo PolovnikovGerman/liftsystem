@@ -164,7 +164,7 @@ class Template
         return $dat;
     }
 
-    public function _prepare_leadorder_view($res,$user_id, $edit=0) {
+    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $edit=0) {
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
@@ -364,6 +364,7 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
+                    'user_role' => $user_role,
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);

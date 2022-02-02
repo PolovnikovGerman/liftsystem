@@ -100,6 +100,7 @@ function navigation_init() {
                     $("#artModal").find('div.modal-body').empty().html(response.data.content);
                     clearTimeout(timerId);
                     init_onlineleadorder_edit();
+                    init_rushpast();
                     $("#loader").hide();
                 } else {
                     $("#loader").hide();
@@ -256,7 +257,8 @@ function edit_currentorder() {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
             clearTimeout(timerId);            
-            init_onlineleadorder_edit();            
+            init_onlineleadorder_edit();
+            init_rushpast();
         } else {
             show_error(response);
         }
@@ -360,31 +362,41 @@ function init_onlineleadorder_edit() {
         todayHighlight: true
     });
     var order_date=$("input.calendarinpt").data('order');
-    $("#order_date").datepicker({
-        autoclose: true,
-        todayHighlight: true
-    }).on('changeDate', function (e){
-        var newdate = e.format(0,"yyyy-mm-dd");
-        var params=new Array();
-        params.push({name: 'entity', value:'order'});
-        params.push({name: 'fldname', value: 'order_date'});
-        params.push({name: 'newval', value: newdate});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        var url="/leadorder/change_leadorder_item";
-        $("#loader").show();
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                // $("input.calendarinpt").val(response.data.order_items);
-                $("div.orderdatechange").empty().html(response.data.order_dateview);
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();
-                $("#loader").hide();
-            } else {
-                $("#loader").hide();
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("#order_date").datepicker({
+    //     autoclose: true,
+    //     todayHighlight: true
+    // }).on('changeDate', function (e){
+    //     var newdate = e.format(0,"yyyy-mm-dd");
+    //     var params=new Array();
+    //     params.push({name: 'entity', value:'order'});
+    //     params.push({name: 'fldname', value: 'order_date'});
+    //     params.push({name: 'newval', value: newdate});
+    //     params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    //     var url="/leadorder/change_leadorder_item";
+    //     $("#loader").show();
+    //     $.post(url, params, function(response){
+    //         if (response.errors=='') {
+    //             // $("input.calendarinpt").val(response.data.order_items);
+    //             $("div.orderdatechange").empty().html(response.data.order_dateview);
+    //             $("input#loctimeout").val(response.data.loctime);
+    //             // Change rush options
+    //             if (parseInt(response.data.shipcal)==1) {
+    //                 $("div#rushdatalistarea").empty().html(response.data.rushview);
+    //                 if (parseInt(response.data.cntshipadrr)===1) {
+    //                     $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+    //                 } else {
+    //                     $("div.multishipadresslist").empty().html(response.data.shipcost);
+    //                 }
+    //                 $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+    //             }
+    //             init_onlineleadorder_edit();
+    //             $("#loader").hide();
+    //         } else {
+    //             $("#loader").hide();
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
     // $("select.order_itemnumber_select").searchable();
     $("select.order_itemnumber_select").unbind('change').change(function(){
         var params=new Array();        
@@ -2206,6 +2218,9 @@ function init_leadorder_shipping() {
                     $("input.shippingcost").val(response.data.shipping);
                     if (parseInt(response.data.cntshipadrr)===1) {
                         $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                    } else {
+                        console.log('Ship Address '+response.data.cntshipadrr);
+                        $("div.multishipadresslist").empty().html(response.data.shipcost);
                     }
                 }
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
@@ -2691,6 +2706,11 @@ function edit_multishipaddress() {
 
 // Multiship View
 function init_multiaddress_ship() {
+    $("#artNextModal").find('button.close').unbind('click').click(function () {
+        $("#artNextModal").find('div.modal-body').empty();
+        $("#artNextModal").modal('hide');
+        init_onlineleadorder_edit();
+    });
     $("input.eventdatevalue").datepicker({
         autoclose: true,
         todayHighlight: true
@@ -4546,3 +4566,37 @@ function custom_lock() {
     $("select#custom_issue_id").attr('readonly', true);
 }
 
+function init_rushpast() {
+    // Edit Rush date in past
+    console.log('Init Rush Past');
+    $("#rushpast").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e){
+        var newdate = e.format(0,"yyyy-mm-dd");
+        var params=new Array();
+        params.push({name: 'newval', value: newdate});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_rushpast";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // $("div.orderdatechange").empty().html(response.data.order_dateview);
+                $("input#loctimeout").val(response.data.loctime);
+                // Change rush options
+                $("div#rushdatalistarea").empty().html(response.data.rushview);
+                if (parseInt(response.data.cntshipadrr)===1) {
+                    $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                } else {
+                    $("div.multishipadresslist").empty().html(response.data.shipcost);
+                }
+                $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+}

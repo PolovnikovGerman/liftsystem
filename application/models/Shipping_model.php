@@ -1014,6 +1014,46 @@ Class Shipping_model extends MY_Model
         return $result;
     }
 
+    public function calc_proofdate($item_id, $newval) {
+        // Select data about itttem
+        $proofdate = $newval;
+        $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id');
+        $this->db->from("sb_items i");
+        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
+        $this->db->where('i.item_id',$item_id);
+        $leads = $this->db->get()->row_array();
+        if (!isset($leads['calendar_id'])) {
+            $leads['calendar_id']=$this->shipping_model->_get_default_calend();
+        }
+        if (!isset($leads['item_lead_a'])) {
+            $leads['item_lead_a']=0;
+        }
+        if (!isset($leads['item_lead_b'])) {
+            $leads['item_lead_b']=0;
+        }
+        if (!isset($leads['item_lead_c'])) {
+            $leads['item_lead_c']=0;
+        }
+        $min = ($leads['item_lead_a']==0 ? ($leads['item_lead_b']==0 ? $leads['item_lead_c'] : $leads['item_lead_b']) : $leads['item_lead_a']);
+        if ($min!=0) {
+            $i=0;$cnt=0;
+            while ($i <= 140) {
+                $dat=strtotime(date("Y-m-d", $newval) . " -".$i." days");
+                $day=$dat;
+                if ($this->_chk_business_day($day, $item_id)) {
+                    $cnt++;
+                }
+                if ($cnt > $min) {
+                    $proofdate = $day;
+                    break;
+                }
+                $i++;
+            }
+        }
+        return $proofdate;
+    }
 
 
 }

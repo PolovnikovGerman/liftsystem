@@ -440,7 +440,9 @@ function init_itemdetails_edit() {
         var url="/itemdetails/change_parameter";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                $("#profitdataview").empty().html(response.data.profitdat);
+                if (parseInt(response.data.profitview)==1) {
+                    $("#profitdataview").empty().html(response.data.profitdat);
+                }
                 var rowdat;
                 for (var key in response.data.research) {
                     rowdat=response.data.research[key];
@@ -560,6 +562,10 @@ function init_itemdetails_edit() {
                 $("input.vendorinputvalues[data-fld='vendor_item_zipcode']").val(response.data.vendor_item_zipcode);
                 $("textarea.vendorinputvalues[data-fld='vendor_item_notes']").val(response.data.vendor_item_notes);
                 $(".vendorprices").empty().html(response.data.vendorprices);
+                if (parseInt(response.data.profitview)==1) {
+                    $("#profitdataview").empty().html(response.data.profitdat);
+                }
+
                 // $("#vendor_item_name").val(response.data.vendor_item_name);
                 // $("#vendor_item_name").attr('readonly',false)
                 // $("#vendor_item_cost").val(response.data.vendor_item_cost);
@@ -592,6 +598,9 @@ function init_itemdetails_edit() {
         var url = "/itemdetails/change_parameter";
         $.post(url, params, function (response) {
             if (response.errors == '') {
+                if (parseInt(response.data.profitview)==1) {
+                    $("#profitdataview").empty().html(response.data.profitdat);
+                }
             } else {
                 show_error(response);
             }

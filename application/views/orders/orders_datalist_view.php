@@ -5,7 +5,7 @@
         <div class="ordernum <?=$row['ordernum_class']?>"><?=$row['order_num']?></div>
         <div class="confirmnum <?=$row['order_confirmclass']?>"><?=$row['out_confirm']?></div>
         <div class="customer"><?=(empty($row['customer_name']) ? '&nbsp;' : $row['customer_name'])?></div>
-        <div class="qty" ><?=($row['order_qty']==0 ? '&nbsp;' : $row['order_qty'])?></div>
+        <div class="qty" ><?=($row['order_qty']==0 ? '&nbsp;' : QTYOutput($row['order_qty']))?></div>
         <?php if (empty($row['itemcolor'])) { ?>
             <div class="itemcolor">&nbsp;</div>
         <?php } else { ?>

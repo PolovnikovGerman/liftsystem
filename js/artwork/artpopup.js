@@ -13,6 +13,7 @@ function order_artstage(order_id, callpage, brand) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(order_id)==0) {
                 init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 navigation_init();
             }

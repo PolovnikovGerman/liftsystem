@@ -15,18 +15,17 @@
                 <?php } ?>                
             <?php } ?>
         </div>
-        <div class="itemdescription_data bord_l">
-            <input type="text" class="orderitem_description orderitem_input input_border_hidden" readonly="readonly" value="<?=htmlspecialchars($row['item_description'])?>" />
+        <div class="itemdescription_data_view bord_l">
+            <?=htmlspecialchars($row['item_description'])?>
         </div>
-        <div class="itemcolor_data bord_l"><?=(empty($row['item_color']) ? '&nbsp;' : $row['item_color'])?></div>
-        <div class="items_content_qty2 bord_l">
-            <input type="text" class="orderitem_qty input_text_right orderitem_input input_border_hidden" readonly="readonly"  value="<?=$row['item_qty']?>" />
+        <div class="itemcolor_data_view bord_l"><?=(empty($row['item_color']) ? '&nbsp;' : $row['item_color'])?></div>
+        <div class="items_content_qty_view bord_l">
+            <?=(empty($row['item_qty']) ? '&nbsp;' : QTYOutput($row['item_qty']))?>
         </div>
-        <div class="items_content_each2 bord_l">
-            <input type="text" class="orderitem_price input_text_right orderitem_input input_border_hidden <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>" readonly="readonly" value="<?=PriceOutput($row['item_price'])?>" />
+        <div class="items_content_price_view bord_l">
+            <?=PriceOutput($row['item_price'])?>
         </div>
-        <div class="items_content_sub_total2 bord_l"><?=$row['item_subtotal']?></div>
-        <div class="items_content_trash2">&nbsp;</div>
+        <div class="items_content_subtotal_view bord_l"><?=$row['item_subtotal']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

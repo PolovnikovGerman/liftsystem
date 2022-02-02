@@ -2,7 +2,13 @@
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">edit ship details</div>
         <div class="shipotherparamsarea">
-            <div class="rushselectarea">
+            <?php if ($user_role=='masteradmin') { ?>
+                <div class="rushadmindate">
+                    <label>Ship in past:</label>
+                    <input type="text" readonly="readonly" class="shiprushpast input_border_black" id="rushpast" value=""/>
+                </div>
+            <?php } ?>
+            <div class="rushselectarea <?=$user_role=='masteradmin' ? 'admin' : ''?>">
                 <div class="label">Ships on:</div>
                 <div class="rushdataselect" id="rushdatalistarea"><?= $rushview ?></div>
             </div>
