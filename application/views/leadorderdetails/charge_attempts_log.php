@@ -4,7 +4,7 @@
         <div class="user">User</div>
         <div class="paysum">Pay Sum</div>
         <div class="cardnum">Card #</div>
-        <div class="cardsys">Card System</div>
+        <div class="cardsys">CC System</div>
         <div class="cvv">CVV</div>
         <div class="response">Response</div>
     </div>

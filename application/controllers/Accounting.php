@@ -887,7 +887,7 @@ class Accounting extends MY_Controller
                 $error='Unknown batch';
             } else {
                 $mail=$this->input->post('mail');
-                $this->load->model('');
+                $this->load->model('batches_model');
                 $res=$this->batches_model->batchmailed($batch_id,$mail);
                 $error='Batch wasn\'t updated';
                 if ($res==$this->success_result) {
@@ -917,13 +917,15 @@ class Accounting extends MY_Controller
                     $error = '';
                     /* Get data about current day - according to filter statement */
                     $batch_data=$this->batches_model->get_batch_detail($batch_id);
-                    $batch_date=$batch_data['batch_date'];
+                    $batch_date=strtotime(date('Y-m-d',$batch_data['batch_date']));
+                    $batch_enddate = strtotime(date("Y-m-d", $batch_date) . " +1days");
                     $mdata['batch_date']=$batch_date;
                     $mdata['batch_due']=$batch_data['batch_due'];
 
                     /* prepare new day content */
                     $filter=array(
                         'batch_date'=>$batch_date,
+                        'batch_enddate' => $batch_enddate,
                         'brand' => $brand,
                     );
                     if ($filtr!='') {
@@ -943,7 +945,7 @@ class Accounting extends MY_Controller
                     /* Calendar */
                     $options=array(
                         'batch_due'=>$batch_data['batch_due'],
-                        'brand' => $options['brand'],
+                        'brand' => $brand,
                     );
                     if ($filtr!='') {
                         $options['received']=$filtr;
@@ -1057,10 +1059,13 @@ class Accounting extends MY_Controller
             if (!isset($batchdata['batch_id'])) {
                 $error='Incorrect batch ID';
             } else {
-                $mdata['batch_date']=$batchdata['batch_date'];
-                $batch_date=$batchdata['batch_date'];
+                $mdata['batch_date']=strtotime(date('Y-m-d', $batchdata['batch_date']));
+                // $batch_date=$batchdata['batch_date'];
+                $batch_date = $mdata['batch_date'];
+                $batch_enddate = strtotime(date("Y-m-d", $batch_date) . " +1days");
                 $options=array(
                     'batch_date'=>$batch_date,
+                    'batch_enddate' => $batch_enddate,
                     'brand' => $brand,
                 );
                 if ($filtr!='') {
@@ -1097,8 +1102,9 @@ class Accounting extends MY_Controller
                 $options['order_revenue']=$order_data['revenue'];
                 $old_batch_due=$batch_data['batch_due'];
                 $batch_date=$batch_data['batch_date'];
-                $mdata['batch_date']=$batch_date;
+                $mdata['batch_date']=strtotime(date('Y-m-d', $batch_date));
                 $options['batch_date']=$batch_data['batch_date'];
+                $options['batch_writeoff'] = ifset($options,'batch_writeoff',0);
                 $res=$this->batches_model->save_batchrow($options,$user_id);
             } else {
                 $options['batch_date']=$batch_data['batch_date'];
@@ -1112,8 +1118,13 @@ class Accounting extends MY_Controller
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $new_batch_due=$res['batch_due'];
+
+                $batch_datestart = $mdata['batch_date'];
+                $batch_enddate = strtotime(date("Y-m-d", $batch_datestart) . " +1days");
+
                 $options=array(
-                    'batch_date'=>$batch_date,
+                    'batch_date'=>$batch_datestart,
+                    'batch_enddate' => $batch_enddate,
                     'brand' => $brand,
                 );
                 if ($filtr!='') {

@@ -47,6 +47,7 @@ class Batches_model extends My_Model
             $this->db->join('ts_orders o', 'o.order_id=b.order_id');
             $this->db->where('o.brand', $options['brand']);
         }
+        $this->db->group_by('b.batch_due');
         $this->db->order_by('b.batch_due');
         $res=$this->db->get()->result_array();
 
@@ -243,7 +244,7 @@ class Batches_model extends My_Model
         ini_set('memory_limit', '-1');
 
         $empty='---';
-        $this->db->select('b.batch_date as batch_date, count(b.batch_id) as total_orders, sum(if(b.batch_vmd!=0,b.batch_amount,0)) as inv_vmd');
+        $this->db->select('date_format(from_unixtime(b.batch_date),\'%Y-%m-%d\') as batch_date, count(b.batch_id) as total_orders, sum(if(b.batch_vmd!=0,b.batch_amount,0)) as inv_vmd');
         $this->db->select('sum(if(b.batch_amex!=0,b.batch_amount,0)) as inv_amex, sum(if(b.batch_other!=0,b.batch_amount,0)) as inv_other');
         $this->db->select('sum(if(b.batch_term!=0,b.batch_amount,0)) as inv_term, sum(if(b.batch_writeoff!=0,b.batch_amount,0)) as inv_writeoff');
         $this->db->select('(-1)*sum(if(b.batch_vmd!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_vmd, (-1)*sum(if(b.batch_amex!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_amex');
@@ -271,7 +272,7 @@ class Batches_model extends My_Model
             $this->db->join('ts_orders o','o.order_id=b.order_id');
             $this->db->where('o.brand', $options['brand']);
         }
-        $this->db->group_by('b.batch_date');
+        $this->db->group_by('date_format(from_unixtime(b.batch_date),\'%Y-%m-%d\')');
         $this->db->order_by('batch_date','desc');
         $res=$this->db->get()->result_array();
         $out=array();
@@ -290,7 +291,8 @@ class Batches_model extends My_Model
             } else {
                 $row['day_results']='&nbsp;';
             }
-            $row['out_date']=date('D M j, Y',$row['batch_date']);
+            // $row['out_date']=date('D M j, Y',$row['batch_date']);
+            $row['out_date']=date('D M j, Y',strtotime($row['batch_date']));
             $sum=floatval($row['inv_vmd']);
             $row['inv_vmdclass']='';
             if ($sum<0) {
@@ -373,9 +375,9 @@ class Batches_model extends My_Model
             }
             $totals=$row;
             $batch_date=$row['batch_date'];
-            $datebgn=strtotime(date('Y-m-d',$batch_date));
+            // $datebgn=strtotime(date('Y-m-d',$batch_date));
+            $datebgn=strtotime($batch_date);
             $dateend=strtotime(date("Y-m-d", $datebgn) . " +1days");
-
             /* Select Lines */
             $this->db->select('b.*,o.order_num, o.customer_name');
             $this->db->from('ts_order_batches b');
@@ -393,6 +395,7 @@ class Batches_model extends My_Model
             }
             $this->db->order_by('batch_id');
             $lines=$this->db->get()->result_array();
+            // log_message('ERROR','detlines SQL 1 '.$this->db->last_query());
             $outlines=array();
             foreach($lines as $lrow) {
                 $lrow['emailed_class']=($lrow['batch_email']==1 ? 'emailed' : '');
@@ -473,7 +476,12 @@ class Batches_model extends My_Model
         $this->db->select('sum(if(b.batch_writeoff!=0,b.batch_amount,0)*(b.batch_received)) as receiv_writeoff');
         $this->db->select('sum(b.batch_vmd*b.batch_received+b.batch_amex*b.batch_received+b.batch_other*b.batch_received+b.batch_term*b.batch_received+b.batch_writeoff*b.batch_received) as receiv_total');
         $this->db->from('ts_order_batches b');
-        $this->db->where('b.batch_date',$options['batch_date']);
+        if (isset($options['batch_enddate'])) {
+            $this->db->where('b.batch_date >= ',$options['batch_date']);
+            $this->db->where('b.batch_date < ',$options['batch_enddate']);
+        } else {
+            $this->db->where('b.batch_date',$options['batch_date']);
+        }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=b.order_id');
             $this->db->where('o.brand', $options['brand']);
@@ -481,9 +489,10 @@ class Batches_model extends My_Model
         $res=$this->db->get()->row_array();
 
         $total=array();
-        if (isset($res['batch_date'])) {
+        // if (isset($res['batch_date'])) {
+        if (isset($res['total_orders'])) {
             $total['batch_date']=$options['batch_date'];
-            $total['out_date']=date('D M j, Y',$res['batch_date']);
+            $total['out_date']=date('D M j, Y',$options['batch_date']);
             $sum=floatval($res['inv_vmd']);
             $total['inv_vmdclass']='';
             if ($sum<0) {
@@ -600,7 +609,13 @@ class Batches_model extends My_Model
         $this->db->select('b.*,o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id','left');
-        $this->db->where('b.batch_date',$options['batch_date']);
+        // $this->db->where('b.batch_date',$options['batch_date']);
+        if (isset($options['batch_enddate'])) {
+            $this->db->where('b.batch_date >= ',$options['batch_date']);
+            $this->db->where('b.batch_date < ',$options['batch_enddate']);
+        } else {
+            $this->db->where('b.batch_date',$options['batch_date']);
+        }
         if (isset($options['received'])) {
             if ($options['received']==0) {
                 $this->db->where('batch_received',0);
@@ -1017,7 +1032,8 @@ class Batches_model extends My_Model
         $num_sum-=($batch_writeoff==0 ? 0 : 1);
         $new_paidsum=$options['batch_sum']+$total_sum;
         $datedue=$options['datedue'];
-        $batch_date=strtotime($options['batch_date']);
+        // $batch_date=strtotime($options['batch_date']);
+        $batch_date=$options['batch_date'];
         if ($total_sum==0) {
             $out['msg']='Empty batch amount';
         } elseif ($num_sum<0) {

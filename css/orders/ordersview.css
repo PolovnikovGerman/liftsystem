@@ -119,7 +119,7 @@ select.leadord_filterselect {
     border: 1px solid #979797;
     clear: both;
     color: #FFFFFF;
-    width: 1003px;
+    width: 1013px;
 }
 .leadorder_datahead > div {
     height: 21px;
@@ -151,7 +151,7 @@ select.leadord_filterselect {
 .leadorder_datahead > .qty {
     border-right: 1px solid #000000;
     float: left;
-    width: 50px;
+    width: 60px;
 }
 .leadorder_datahead > .itemcolor {
     border-right: 1px solid #000000;
@@ -201,7 +201,7 @@ select.leadord_filterselect {
     margin-bottom: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    width: 1005px;
+    width: 1015px;
 }
 .leadorder_datarow {
     clear: both;
@@ -266,7 +266,7 @@ select.leadord_filterselect {
     border-right: 1px solid #000000;
     float: left;
     text-align: center;
-    width: 50px;
+    width: 60px;
 }
 .leadorder_datarow > .itemcolor {
     border-right: 1px solid #000000;
