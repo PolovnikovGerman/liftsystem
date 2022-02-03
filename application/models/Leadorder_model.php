@@ -844,7 +844,7 @@ Class Leadorder_model extends My_Model {
                 }
             }
             if ($entity=='shipping' && $fldname=='event_date') {
-                $data['out_eventdate']=date('m/d/y',$newval);
+                $data['out_eventdate']=empty($newval) ? '' : date('m/d/y',$newval);
             }
             $newshipcalc = 0;
             if ($entity=='order' && $fldname=='order_date') {
@@ -9061,6 +9061,26 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
+    public function change_order_arrivepast($leadorder, $newval, $ordersession)
+    {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
+        $shipping = $leadorder['shipping'];
+        $shipping['arrive_date'] = $newval;
+        $shipping['out_arrivedate'] = date('m/d/y', $newval);
+        if (!empty($shipping['event_date'])) {
+            if ($shipping['arrive_date']>$shipping['event_date']) {
+                $shipping['arriveclass']='arrivelate';
+            } else {
+                $shipping['arriveclass']='';
+            }
+        } else {
+            $shipping['arriveclass']='';
+        }
+        $leadorder['shipping'] = $shipping;
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
