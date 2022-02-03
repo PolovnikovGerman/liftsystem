@@ -505,8 +505,9 @@ class Leadorder extends MY_Controller
                             $dateoptions=array(
                                 'edit'=>1,
                                 'shipping'=>$shipping,
+                                'user_role' => $this->USR_ROLE,
                             );
-                            $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+                            $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                         } else {
                             $mdata['shipdate']=$order['shipdate'];
                             //$mdata['rush_price']=$order['rush_price'];
@@ -2402,8 +2403,9 @@ class Leadorder extends MY_Controller
                         $dateoptions=array(
                             'edit'=>1,
                             'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
                         );
-                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     }
                 }
             }
@@ -2480,8 +2482,9 @@ class Leadorder extends MY_Controller
                             $dateoptions=array(
                                 'edit'=>1,
                                 'shipping'=>$shipping,
+                                'user_role' => $this->USR_ROLE,
                             );
-                            $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+                            $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                         }
                     }
                 }
@@ -4070,8 +4073,9 @@ class Leadorder extends MY_Controller
                         $dateoptions=array(
                             'edit'=>1,
                             'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
                         );
-                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     }
                 }
             }
@@ -4828,8 +4832,9 @@ class Leadorder extends MY_Controller
                     $dateoptions=array(
                         'edit'=>1,
                         'shipping'=>$shipping,
+                        'user_role' => $this->USR_ROLE,
                     );
-                    $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+                    $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     if ($mdata['cntshipadrr']==1) {
                         // Buld rate view
                         $shipcost=$shipping_address[0]['shipping_costs'];
@@ -4849,6 +4854,44 @@ class Leadorder extends MY_Controller
                         }
                         $mdata['shipcost']=$cost_view;
                     }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_leadorder_arrivepast() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $newval=strtotime($postdata['newval']);
+                $res = $this->leadorder_model->change_order_arrivepast($leadorder, $newval, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder=usersession($ordersession);
+                    $shipping=$leadorder['shipping'];
+                    $dateoptions=array(
+                        'edit'=>1,
+                        'shipping'=>$shipping,
+                        'user_role' => $this->USR_ROLE,
+                    );
+                    $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                 }
             }
             // Calc new period for lock

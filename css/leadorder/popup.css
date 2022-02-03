@@ -754,11 +754,15 @@ span.text_bold {
     float: left;
     width: 70px;
 }
-input.eventdatevalue {
+input.eventdatevalue, input.rushpastvalue {
     height: 22px;
     font-size: 11px;
-    width: 59px;
+    width: 64px;
     line-height: 22px;
+}
+input.rushpastvalue.arrivelate {
+    color: #FFFFFF;
+    background-color: #FF0000;
 }
 .rushadmindate {
     float: left;

@@ -2172,7 +2172,8 @@ function init_confirmshipcost(content) {
 function init_leadorder_shipping() {
     $("input.eventdatevalue").datepicker({
         autoclose: true,
-        todayHighlight: true
+        todayHighlight: true,
+        clearBtn: true
     });
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
@@ -2197,7 +2198,8 @@ function init_leadorder_shipping() {
                     // alert(response.data.shipwarn);
                     init_confirmshipcost(response.data.shipwarn);
                 }
-                init_onlineleadorder_edit();                
+                init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 show_error(response);
             }
@@ -2243,7 +2245,8 @@ function init_leadorder_shipping() {
                     // alert(response.data.shipwarn);
                     init_confirmshipcost(response.data.shipwarn);
                 }
-                init_onlineleadorder_edit();                
+                init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -2502,6 +2505,7 @@ function init_leadorder_shipping() {
                 }                
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 $("#loader").hide();                
                 show_error(response);
@@ -2536,6 +2540,7 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 $("#loader").hide(); 
                 init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 $("#loader").hide();                
                 show_error(response);
@@ -3067,7 +3072,8 @@ function init_multiaddress_ship() {
                     openbalancemanage(response.data.balanceopen);
                 }                
                 $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();                
+                init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 show_error(response);
             }
@@ -4568,7 +4574,6 @@ function custom_lock() {
 
 function init_rushpast() {
     // Edit Rush date in past
-    console.log('Init Rush Past');
     $("#rushpast").datepicker({
         autoclose: true,
         todayHighlight: true
@@ -4592,6 +4597,7 @@ function init_rushpast() {
                 }
                 $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
                 init_onlineleadorder_edit();
+                init_rushpast();
                 $("#loader").hide();
             } else {
                 $("#loader").hide();
@@ -4599,4 +4605,29 @@ function init_rushpast() {
             }
         },'json');
     });
+    $("#arrivedatepast").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e){
+        var newdate = e.format(0,"yyyy-mm-dd");
+        var params=new Array();
+        params.push({name: 'newval', value: newdate});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_arrivepast";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                // Change rush options
+                $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                init_onlineleadorder_edit();
+                init_rushpast();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+
 }

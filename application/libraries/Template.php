@@ -364,7 +364,6 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
-                    'user_role' => $user_role,
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
@@ -394,8 +393,14 @@ class Template
             $dateoptions=array(
                 'edit'=>$edit,
                 'shipping'=>$shipping,
+                'user_role' => $user_role,
             );
-            $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+            if ($edit==1) {
+                $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+            } else {
+                $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+            }
+
             // Shipping data
             $orddata['shiptax']='&nbsp;';
             $billing=$res['order_billing'];
