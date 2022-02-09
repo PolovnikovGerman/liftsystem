@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='2.01865';
-$config['css_version']='2.01865';
+$config['js_version']='2.01863';
+$config['css_version']='2.01863';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -105,7 +105,6 @@ $config['localserver']=array(
     'tempsys.golden-team.org',
     'lift_stressballs.local',
     'lift.local',
-    'lifttest.stressballs.com',
 );
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
@@ -256,7 +255,6 @@ if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bl
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
 }
 $config['geo_apikey']='4b81812eeadb21fdb1ee0927218859cc46d35d0b88e0aa802ce28d25a774d8ef';
-$config['googlemapapi'] = 'AIzaSyCgboqcBZF286ISpDYK3Wlz2Yvmcmi65Ws';
 $config['message_subject']='Bluetrack.com Research Question';
 switch ($_SERVER['SERVER_NAME']) {
     case 'bluetrack.sys':

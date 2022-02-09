@@ -4039,7 +4039,7 @@ Class Leadorder_model extends My_Model {
             'proof_stage'=>0,
             'approv_stage'=>0,
         );
-        if ($leadorder['order_system']=='new') {
+        if ($order['order_system']=='new') {
             $order_type='new';
             $chkres=$this->_check_new_order($leadorder);
         } else {

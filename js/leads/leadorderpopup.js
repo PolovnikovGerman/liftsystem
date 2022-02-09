@@ -37,6 +37,8 @@ function navigation_init() {
                 search_leadorders();
             } else if (callpage=='profitlist') {
                 search_profit_data();
+            } else if (callpage=='accrecive') {
+                init_accounts_receivable();
             }
         }
     })
@@ -308,23 +310,25 @@ function init_onlineleadorder_edit() {
             search_profit_data();
         } else if (callpage=='paymonitor') {
             search_paymonitor();
+        } else if (callpage=='accrecive') {
+            init_accounts_receivable();
         }
         if (callpage=='finance') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                init_profit_orders();
-            } else if (callpage=='art_order') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                initGeneralPagination();
-            } else if (callpage=='inventory') {
-                disablePopup('leadorderdetailspopup');           
-                $("#pop_content").empty();
-                invetory_exitorder(response.data.color);                
+            disablePopup('leadorderdetailspopup');
+            $("#pop_content").empty();
+            init_profit_orders();
+        } else if (callpage=='art_order') {
+            disablePopup('leadorderdetailspopup');
+            $("#pop_content").empty();
+            initGeneralPagination();
+        } else if (callpage=='inventory') {
+            disablePopup('leadorderdetailspopup');
+            $("#pop_content").empty();
+            invetory_exitorder(response.data.color);
 /*            } else {
-                var curpage=$("input#leadorderpage").val();
-                pageLeadorderCallback(curpage); */
-            }
+            var curpage=$("input#leadorderpage").val();
+            pageLeadorderCallback(curpage); */
+        }
     });
     // Revert
     // $("div.button_revert_text").unbind('click').click(function(){
@@ -2221,7 +2225,6 @@ function init_leadorder_shipping() {
                     if (parseInt(response.data.cntshipadrr)===1) {
                         $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
                     } else {
-                        console.log('Ship Address '+response.data.cntshipadrr);
                         $("div.multishipadresslist").empty().html(response.data.shipcost);
                     }
                 }
