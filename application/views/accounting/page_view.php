@@ -36,6 +36,9 @@
             <?php if (isset($expensesview)) { ?>
                 <div class="accountcontentarea" id="expensesview" style="display: none;"><?=$expensesview?></div>
             <?php } ?>
+            <?php if (isset($accreceivview)) { ?>
+                <div class="accountcontentarea" id="accreceivview" style="display: none;"><?=$accreceivview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

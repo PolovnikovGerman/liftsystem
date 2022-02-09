@@ -6814,4 +6814,101 @@ Class Orders_model extends MY_Model
         $res = $this->db->get()->result_array();
         return $res;
     }
+
+    public function accountreceiv_totals($period, $brand) {
+        // Owned
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('yearorder');
+        $ownsrc = $this->db->get()->result_array();
+        $totalown = 0;
+        foreach ($ownsrc as $ownr) {
+            $totalown+=$ownr['balance'];
+        }
+        $this->db->select('sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->where('batch_due < ',$daystart);
+        $pastres = $this->db->get()->row_array();
+        $pastown = $pastres['balance'];
+
+        // Refund
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        $this->db->group_by('yearorder');
+        $refsrc = $this->db->get()->result_array();
+        $totalref = 0;
+        foreach ($refsrc as $refr) {
+            $totalref+=$refr['balance'];
+        }
+
+        $own = [];
+        $refund = [];
+        if ($limit_year==0) {
+            $this->db->select('min(yearorder) as yearorder');
+            $this->db->from('v_order_balances');
+            $yearres = $this->db->get()->row_array();
+            $limit_year = $yearres['yearorder'];
+        }
+        for ($i=0; $i<1000; $i++) {
+            $yearown=0;
+            $yearref=0;
+            foreach ($ownsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearown=$row['balance'];
+                    break;
+                }
+            }
+            foreach ($refsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearref=$row['balance'];
+                    break;
+                }
+            }
+
+            $own[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearown,
+            ];
+
+            $refund[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearref,
+            ];
+            if (($cur_year - $i)<=$limit_year) {
+                break;
+            }
+        }
+        return array(
+            'totalown' => $totalown,
+            'pastown' => $pastown,
+            'totalrefund' => $totalref,
+            'own' => $own,
+            'refund' => $refund,
+            'balance' => $totalown+$totalref,
+        );
+    }
 }

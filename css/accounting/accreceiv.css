@@ -1,0 +1,196 @@
+/* CSS for page Accounts Receivable */
+.accreceiv-content {
+    width: 1292px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.accreceive-title {
+    width: 770px;
+    margin-bottom: 16px;
+}
+.accreceive-title div {
+    height: 34px;
+    line-height: 34px;
+}
+.accreceiv-label {
+    font-size: 24px;
+    font-weight: bold;
+}
+.accreceiv-period {
+    width: 209px;
+    float: right!important;
+    text-align: right;
+}
+.accreceiv-period span {
+    font-size: 14px;
+    margin-right: 5px;
+}
+.accreceiv-period select {
+    width: 130px;
+    font-size: 14px;
+    padding: 2px 0 2px 5px;
+}
+#accreceivebrandmenu {
+    margin-top: -3px;
+}
+.accreceiv-totals, .accreceiv-details {
+    width: 100%;
+}
+.accreceiv-content-left {
+    width: 460px;
+    margin-right: 67px;
+}
+.accreceiv-content-center {
+    width: 460px;
+    margin-right: 67px;
+}
+.accreceiv-content-right {
+    width: 238px;
+}
+.accreceiv-totalown {
+    width: 230px;
+}
+.accreceiv-totalown-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    height: 28px;
+    line-height: 28px!important;
+    width: 87px;
+}
+.accreceiv-totalown-value {
+    border: 1.5px solid #000000;
+    font-size: 19px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+    padding-right: 5px;
+    text-align: right;
+    width: 137px;
+}
+.accreceiv-totalpast {
+    width: 94px;
+    float: right!important;
+    margin-top: -9px;
+}
+.accreceiv-totalpast-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #ff0000;
+    width: 100%;
+}
+.accreceiv-totalpast-value {
+    font-weight: bold;
+    font-size: 17px;
+    width: 100%;
+}
+.accreceiv-totalown-table {
+    width: 100%;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+.accreceiv-totalown-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    height: 28px;
+}
+.accreceiv-totalown-cell-year {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    padding-left: 8px;
+    line-height: 28px!important;
+}
+.accreceiv-totalown-cell-value {
+    font-size: 14px;
+    font-weight: bold;
+    padding-right: 11px;
+    text-align: right;
+    line-height: 28px!important;
+    float: right!important;
+}
+.accreceiv-totalrefund {
+    width: 360px;
+}
+.accreceiv-totalrefund-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    height: 28px;
+    line-height: 28px!important;
+    width: 163px;
+}
+.accreceiv-totalrefund-value {
+    border: 1.5px solid #000000;
+    font-size: 19px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+    padding-right: 5px;
+    text-align: right;
+    width: 137px;
+}
+.accreceiv-totalrefund-table {
+    width: 100%;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+.accreceiv-totalrefund-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    color: #ff0000;
+}
+.accreceiv-totalrefund-cell-year {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    padding-left: 8px;
+    height: 28px;
+    line-height: 28px!important;
+}
+.accreceiv-totalrefund-cell-value {
+    color: #ff0000;
+    font-size: 14px;
+    font-weight: bold;
+    padding-right: 11px;
+    text-align: right;
+    height: 28px;
+    line-height: 28px!important;
+    float: right!important;
+}
+.accreceiv-totalrefund-cell-value.empty {
+    color: #000000;
+    text-align: left;
+    float: left!important;
+    padding-left: 20px;
+}
+.accreceiv-totals {
+    width: 100%;
+    margin-bottom: 8px;
+}
+.accreceiv-totals-title {
+    width: 108px;
+    margin-right: 16px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: right;
+    height: 28px;
+    line-height: 28px!important;
+    color: #0000ff;
+}
+.accreceiv-totals-value {
+    width: 114px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+    padding-right: 7px;
+}
+.accreceiv-totals-value.totalbalance {
+    border: 1px solid #000000;
+}
+.accreceiv-totals-value.refund {
+    color: #ff0000;
+}

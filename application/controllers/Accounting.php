@@ -153,6 +153,20 @@ class Accounting extends MY_Controller
                 ];
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['expensesview'] = $this->_prepare_expensives_view($brand, $top_menu);
+            } elseif ($row['item_link']=='#accreceiv') {
+                $head['styles'][]=array('style'=>'/css/accounting/accreceiv.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands)==0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['accreceivview'] = $this->_prepare_accreceiv_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
@@ -2991,6 +3005,20 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function accountreceiv_totals() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $res = $this->orders_model->accountreceiv_totals($period, $brand);
+            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;
@@ -3894,6 +3922,14 @@ class Accounting extends MY_Controller
             'vendors' => $vendors,
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+    }
+
+    private function _prepare_accreceiv_view($brand, $top_menu) {
+        $options=[
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        return $this->load->view('accreceiv/page_view',$options, TRUE);
     }
 
 }
