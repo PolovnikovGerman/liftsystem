@@ -14,6 +14,9 @@
     <div id="accreceivebrandmenu">
         <?=$top_menu?>
     </div>
-    <div class="accreceiv-totals"></div>
-    <div class="accreceiv-details"></div>
+    <div class="accreceiv-content-data">
+        <div class="accreceiv-totals"></div>
+        <div class="accreceiv-details"></div>
+    </div>
+    <div class="accreceiv-content-right"></div>
 </div>

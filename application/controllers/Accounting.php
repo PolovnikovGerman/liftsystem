@@ -3013,6 +3013,21 @@ class Accounting extends MY_Controller
             $brand = ifset($postdata,'brand', 'ALL');
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
             $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function accountreceiv_details() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $res = $this->orders_model->accountreceiv_details($period, $brand);
+            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }

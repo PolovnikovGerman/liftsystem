@@ -6858,6 +6858,9 @@ Class Orders_model extends MY_Model
         if ($limit_year!==0) {
             $this->db->where('yearorder >= ', $limit_year);
         }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $this->db->group_by('yearorder');
         $refsrc = $this->db->get()->result_array();
         $totalref = 0;
@@ -6909,6 +6912,44 @@ Class Orders_model extends MY_Model
             'own' => $own,
             'refund' => $refund,
             'balance' => $totalown+$totalref,
+        );
+    }
+
+    public function accountreceiv_details($period, $brand) {
+        // $this->db->select('')
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by('order_num', 'desc');
+        $owns = $this->db->get()->result_array();
+        // Refund
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by('order_num', 'desc');
+        $refunds = $this->db->get()->result_array();
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+            'daystart' => $daystart,
         );
     }
 }
