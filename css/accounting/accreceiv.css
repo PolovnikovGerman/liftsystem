@@ -256,6 +256,13 @@
     height: 28px;
     line-height: 28px!important;
 }
+.ownsort {
+    cursor: pointer;
+}
+.ownsort span {
+    font-size: 9px;
+    font-weight: normal;
+}
 .accreceiv-owndetails-headnum {
     width: 24px;
 }
@@ -338,98 +345,6 @@
     padding-right: 5px;
     width: 214px;
 }
-.accreceiv-owndetails-head {
-    width: 100%;
-    border: 1px solid #000000;
-}
-.accreceiv-owndetails-head > div {
-    background: #545454;
-    color: #ffffff;
-    text-align: center;
-    font-size: 13px;
-    font-weight: bold;
-    height: 28px;
-    line-height: 28px!important;
-}
-.accreceiv-owndetails-headnum {
-    width: 24px;
-}
-.accreceiv-owndetails-headdue {
-    width: 63px;
-}
-.accreceiv-owndetails-headbalance {
-    width: 92px;
-}
-.accreceiv-owndetails-headorder {
-    width: 65px;
-}
-.accreceiv-owndetails-headcustomer {
-    width: 214px;
-}
-.accreceiv-owndetails-body {
-    border-left: 1px solid #000000;
-    border-bottom: 1px solid #000000;
-    border-right: 1px solid #000000;
-    margin-bottom: 20px;
-    width: 100%;
-}
-.accreceiv-owndetails-bodyrow {
-    width: 100%;
-}
-.accreceiv-owndetails-bodyrow > div {
-    height: 25px;
-    line-height: 25px;
-    font-size: 14px;
-}
-.accreceiv-owndetails-bodyrow.current_row > div {
-    background: #0000ff;
-    color: #ffffff!important;
-}
-.accreceiv-owndetails-bodyrow.empty {
-    color: #ff0000;
-    text-align: center;
-    height: 25px;
-    line-height: 25px!important;
-    width: 100%;
-}
-.accreceiv-owndetails-bodynum {
-    text-align: center;
-    width: 23px;
-    border-right: 1px solid #000000;
-    font-weight: bold;
-}
-.accreceiv-owndetails-bodydue {
-    text-align: center;
-    width: 63px;
-    border-right: 1px solid #000000;
-}
-.accreceiv-owndetails-bodydue.pastdue {
-    color: #ff0000;
-    font-size: 11px;
-}
-.accreceiv-owndetails-bodybalance {
-    text-align: right;
-    padding-right: 5px;
-    font-weight: bold;
-    border-right: 1px solid #000000;
-    width: 92px;
-}
-.accreceiv-owndetails-bodyorder {
-    border-right: 1px solid #000000;
-    font-weight: bold;
-    color: #0000ff;
-    width: 65px;
-    cursor: pointer;
-    text-align: center;
-}
-.accreceiv-owndetails-bodycustomer {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding-left: 5px;
-    padding-right: 5px;
-    width: 214px;
-}
 /* Refund */
 .accreceiv-refunddetails-head {
     width: 100%;
@@ -444,14 +359,22 @@
     height: 28px;
     line-height: 28px!important;
 }
+.refundsort {
+    cursor: pointer;
+}
+.refundsort span {
+    font-size: 9px;
+    font-weight: normal;
+}
 .accreceiv-refunddetails-headnum {
-    width: 21px;
+    width: 15px;
 }
 .accreceiv-refunddetails-headorderdate {
-    width: 69px;
+    /* width: 69px; */
+    width: 81px;
 }
 .accreceiv-refunddetails-headbalance {
-    width: 89px;
+    width: 83px;
 }
 .accreceiv-refunddetails-headorder {
     width: 65px;

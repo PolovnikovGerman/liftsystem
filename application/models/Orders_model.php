@@ -6933,7 +6933,7 @@ Class Orders_model extends MY_Model
         );
     }
 
-    public function accountreceiv_details($period, $brand) {
+    public function accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec) {
         // $this->db->select('')
         $daystart = strtotime(date('Y-m-d'));
         $cur_year = intval(date('Y'));
@@ -6950,9 +6950,18 @@ Class Orders_model extends MY_Model
         if ($brand!=='ALL') {
             $this->db->where('brand', $brand);
         }
-        $this->db->order_by('order_num', 'desc');
+        $this->db->order_by($ownsort, $owndirec);
         $owns = $this->db->get()->result_array();
         // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
         $this->db->select('*');
         $this->db->from('v_order_balances');
         $this->db->where('balance < 0');
@@ -6962,12 +6971,16 @@ Class Orders_model extends MY_Model
         if ($brand!=='ALL') {
             $this->db->where('brand', $brand);
         }
-        $this->db->order_by('order_num', 'desc');
+        $this->db->order_by($refundsort, $refunddir);
         $refunds = $this->db->get()->result_array();
         return array(
             'owns' => $owns,
             'refunds' => $refunds,
             'daystart' => $daystart,
+            'ownsort' => $ownsort,
+            'owndir' => $owndirec,
+            'refundsort' => $refundsort,
+            'refunddir' => $refunddirec,
         );
     }
 }

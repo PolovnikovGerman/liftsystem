@@ -43,6 +43,10 @@ function init_accreceive_details() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+    params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
+    params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+    params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
+    params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {
@@ -127,5 +131,35 @@ function init_accreceive_content() {
             }
         },'json');
     })
-
+    // Sorting own
+    $(".ownsort").unbind('click').click(function () {
+        var newsort = $(this).data('sort');
+        var oldsort = $("#accreciveownsort").val();
+        var newdir = 'desc';
+        if (newsort==oldsort) {
+            var olddir = $("#accreciveowndir").val();
+            if (olddir=='desc') {
+                newdir='asc';
+            }
+        }
+        $("#accreciveownsort").val(newsort);
+        $("#accreciveowndir").val(newdir);
+        init_accreceive_details();
+    });
+    // Sorting refund
+    $(".refundsort").unbind('click').click(function () {
+        var newsort = $(this).data('sort');
+        var oldsort = $("#accreceiverefundsort").val();
+        var newdir = 'desc';
+        if (newsort==oldsort) {
+            var olddir = $("#accreceiverefunddir").val();
+            if (olddir=='desc') {
+                newdir='asc';
+            }
+        }
+        $("#accreceiverefundsort").val(newsort);
+        $("#accreceiverefunddir").val(newdir);
+        init_accreceive_details();
+    })
+    
 }

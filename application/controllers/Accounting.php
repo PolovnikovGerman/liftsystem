@@ -3025,7 +3025,11 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
-            $res = $this->orders_model->accountreceiv_details($period, $brand);
+            $ownsort = ifset($postdata,'ownsort', 'batch_due');
+            $owndirec = ifset($postdata,'owndirec', 'desc');
+            $refundsort = ifset($postdata,'refundsort','order_date');
+            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
             $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
