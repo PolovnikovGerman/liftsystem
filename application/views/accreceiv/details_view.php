@@ -14,10 +14,10 @@
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
-                    <div class="accreceiv-owndetails-bodydue <?=$own['batch_due'] > $daystart ? 'pastdue' : ''?>">
-                        <?=$own['batch_due'] > $daystart ? 'PAST DUE' : date('m/d/y', $own['batch_due'])?>
+                    <div class="accreceiv-owndetails-bodydue <?=$own['batch_due'] < $daystart ? 'pastdue' : ''?>">
+                        <?=$own['batch_due'] < $daystart ? 'PAST DUE' : date('m/d/y', $own['batch_due'])?>
                     </div>
-                    <div class="accreceiv-owndetails-bodybalance"><?=MoneyOutput($own['balance'])?></div>
+                    <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                 </div>
@@ -45,7 +45,7 @@
                     <div class="accreceiv-refunddetails-bodyorderdate">
                         <?=date('m/d/y', $refund['order_date'])?>
                     </div>
-                    <div class="accreceiv-refunddetails-bodybalance">(<?=MoneyOutput(abs($refund['balance']))?>)</div>
+                    <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
                     <div class="accreceiv-refunddetails-bodyorder" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>
                     <div class="accreceiv-refunddetails-bodycustomer"><?=$refund['customer_name']?></div>
                 </div>
