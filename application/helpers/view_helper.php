@@ -13,7 +13,13 @@ if (!function_exists('MoneyOutput')) {
         return $output;
     }
 }
-
+if (!function_exists('TotalOutput')) {
+    function TotalOutput($total) {
+        $fraction = str_pad(round(($total-intval($total))*100,0),2,'0',STR_PAD_LEFT);
+        $total_str=MoneyOutput(intval($total),0).'<span>'.$fraction.'</span>';
+        return $total_str;
+    }
+}
 if (!function_exists('QTYOutput')) {
     function QTYOutput($qty, $decimal = 0, $thousdelim = ',', $show_positiv = 0)
     {
