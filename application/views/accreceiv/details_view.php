@@ -1,9 +1,21 @@
 <div class="accreceiv-content-left">
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
-        <div class="accreceiv-owndetails-headdue">Due</div>
-        <div class="accreceiv-owndetails-headbalance">Balance</div>
-        <div class="accreceiv-owndetails-headorder">Order</div>
+        <?php if ($ownsort=='batch_due') { ?>
+            <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due <span></span></div>
+        <?php } ?>
+        <?php if ($ownsort=='balance') { ?>
+            <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span></span></div>
+        <?php } ?>
+        <?php if ($ownsort=='order_num') { ?>
+            <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span></span></div>
+        <?php } ?>
         <div class="accreceiv-owndetails-headcustomer">Customer</div>
     </div>
     <div class="accreceiv-owndetails-body">
@@ -29,9 +41,21 @@
 <div class="accreceiv-content-center">
     <div class="accreceiv-refunddetails-head">
         <div class="accreceiv-refunddetails-headnum">#</div>
-        <div class="accreceiv-refunddetails-headorderdate">Order Date</div>
-        <div class="accreceiv-refunddetails-headbalance">Refund</div>
-        <div class="accreceiv-refunddetails-headorder">Order</div>
+        <?php if ($refundsort=='order_date') { ?>
+            <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php } else { ?>
+            <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date</div>
+        <?php } ?>
+        <?php if ($refundsort=='balance') { ?>
+            <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php } else { ?>
+            <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund</div>
+        <?php } ?>
+        <?php if ($refundsort=='order_num') { ?>
+            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php } else { ?>
+            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order</div>
+        <?php } ?>
         <div class="accreceiv-refunddetails-headcustomer">Customer</div>
     </div>
     <div class="accreceiv-refunddetails-body">
