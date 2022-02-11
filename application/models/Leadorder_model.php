@@ -4023,12 +4023,12 @@ Class Leadorder_model extends My_Model {
             'proof_stage'=>0,
             'approv_stage'=>0,
         );
-        if ($order['order_system']=='new') {
-            $order_type='new';
-            $chkres=$this->_check_new_order($leadorder);
-        } else {
+        if ($order['order_system']=='old') {
             $order_type='old';
             $chkres=$this->_check_old_order($order);
+        } else {
+            $order_type='new';
+            $chkres=$this->_check_new_order($leadorder);
         }
         if ($chkres['result']==$this->error_result) {
             $out['msg']=$chkres['msg'];
