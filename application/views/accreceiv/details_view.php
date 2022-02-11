@@ -27,7 +27,7 @@
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
                     <div class="accreceiv-owndetails-bodydue <?=$own['batch_due'] < $daystart ? 'pastdue' : ''?>">
-                        <?=$own['batch_due'] < $daystart ? 'PAST DUE' : date('m/d/y', $own['batch_due'])?>
+                        <?=date('m/d/y', $own['batch_due'])?>
                     </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
