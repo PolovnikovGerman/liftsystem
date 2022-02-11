@@ -314,7 +314,7 @@
 }
 .accreceiv-owndetails-bodydue.pastdue {
     color: #ff0000;
-    font-size: 11px;
+    /*font-size: 11px;*/
     font-weight: bold;
 }
 .accreceiv-owndetails-bodybalance {
