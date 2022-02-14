@@ -4023,12 +4023,12 @@ Class Leadorder_model extends My_Model {
             'proof_stage'=>0,
             'approv_stage'=>0,
         );
-        if ($order['order_system']=='new') {
-            $order_type='new';
-            $chkres=$this->_check_new_order($leadorder);
-        } else {
+        if ($order['order_system']=='old') {
             $order_type='old';
             $chkres=$this->_check_old_order($order);
+        } else {
+            $order_type='new';
+            $chkres=$this->_check_new_order($leadorder);
         }
         if ($chkres['result']==$this->error_result) {
             $out['msg']=$chkres['msg'];
@@ -8899,15 +8899,15 @@ Class Leadorder_model extends My_Model {
                 $pdf->SetTextColor(0,0,0);
             }
             $pdf->SetX(5);
-            $pdf->Cell($tableWidths[0], 10, $detail['item_num'], 0, 0,'C', $fillcell);
-            $pdf->Cell($tableWidths[1], 10, $detail['item_description'],0,0,'L',$fillcell);
-            $pdf->Cell($tableWidths[2], 10, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
-            $pdf->Cell($tableWidths[3], 10, $detail['item_price'],0,0,'C', $fillcell);
-            $pdf->Cell($tableWidths[4], 10, $detail['item_subtotal'],0, 1,'C', $fillcell);
+            $pdf->Cell($tableWidths[0], 9, $detail['item_num'], 0, 0,'C', $fillcell);
+            $pdf->Cell($tableWidths[1], 9, $detail['item_description'],0,0,'L',$fillcell);
+            $pdf->Cell($tableWidths[2], 9, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
+            $pdf->Cell($tableWidths[3], 9, $detail['item_price'],0,0,'C', $fillcell);
+            $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
         if (!empty($options['invoice_message'])) {
-            $pdf->SetXY(5,231);
+            $pdf->SetXY(5,228);
             $pdf->SetFont('','',13);
             // $pdf->Cell(105, 0, $options['invoice_message'],1);
             $pdf->MultiCell(100, 6, $options['invoice_message'], 1, 'L', FALSE);
@@ -8915,12 +8915,12 @@ Class Leadorder_model extends My_Model {
         }
         // Totals
         $invtotalXPos = 115;
-        $invtotalYPos = 252;
+        $invtotalYPos = 228;
         $invtotalWidth = 88;
-        $invtotalHeght = 27 + 8*$options['payments_count'];
+        $invtotalHeght = 26 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,252.5);
+        $pdf->SetXY(116,228.5);
         $pdf->SetFont('','',13);
         $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
 
