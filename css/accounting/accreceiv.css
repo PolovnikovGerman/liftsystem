@@ -144,7 +144,7 @@
 }
 .accreceiv-totalrefund-value {
     border: 2px solid #000000;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
     color: #ff0000;
     height: 28px;
@@ -202,6 +202,9 @@
 .accreceiv-totals {
     width: 100%;
     margin-bottom: 2px;
+}
+.accreceiv-totals:first-child {
+    margin-bottom: -3px;
 }
 .accreceiv-totals-title {
     width: 108px;
