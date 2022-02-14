@@ -8032,6 +8032,7 @@ Class Leadorder_model extends My_Model {
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
         $this->_invoice_pdfdoc_create($options, $file_out);
+        // $this->_invoice_test($options, $file_out);
         // pdf_create($html, $file_out, true);
         if (file_exists($file_out)) {
             $out['result']=$this->success_result;
@@ -8728,7 +8729,7 @@ Class Leadorder_model extends My_Model {
         $logoXPos = 5;
         $logoYPos = 10;
         $logoWidth = 105.655;
-        $logoHeight = 12.88;
+        $logoHeight = 12.855;
         $logoType = 'JPG';
 
         $invnumImg = FCPATH.'/img/invoice/invoice_num.png';
@@ -8946,6 +8947,40 @@ Class Leadorder_model extends My_Model {
         $pdf->Cell(28.2,8,$options['balance'],0,1);
         // Save file
         $pdf->Output('F', $file_out);
+        return TRUE;
+
+    }
+
+    private function _invoice_test($options, $file_out) {
+        $this->load->library('Pdf');
+
+        // Prepare
+        $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        $logoXPos = 5;
+        $logoYPos = 10;
+        $logoWidth = 105.655;
+        $logoHeight = 12.855;
+        $logoType = 'JPG';
+
+//        $invnumImg = FCPATH.'/img/invoice/logos.ai';
+//        $invnumXPos = 5;
+//        $invnumYPos = 35;
+//        $invnumWidth = 105.655;
+//        $invnumHeigth = 12.855;
+//        $invnumType = 'PNG';
+
+
+        $pdf = new Pdf('P','mm','A4');
+        $pdf->AddPage();
+        $pdf->SetFont('Times','',9.035143);
+        $pdf->SetTextColor(65, 65, 65);
+        // $pdf->SetMargins(14,14,14);
+        // Logo
+        $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight,'',false);
+        // Inv #
+        // $pdf->ImageEps($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth);
+
+        $pdf->Output($file_out,'F');
         return TRUE;
 
     }
