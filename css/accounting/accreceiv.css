@@ -42,12 +42,12 @@
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 510px;
-    margin-right: 17px;
+    width: 520px;
+    margin-right: 45px;
 }
 .accreceiv-content-center {
-    width: 510px;
-    margin-right: 17px;
+    width: 459px;
+    /* margin-right: 17px; */
 }
 .accreceiv-content-right {
     width: 220px;
@@ -284,7 +284,7 @@
     width: 189px;
 }
 .accreceiv-owndetails-headtype {
-    width: 75px;
+    width: 85px;
 }
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
@@ -355,8 +355,9 @@
     width: 189px;
 }
 .accreceiv-owndetails-bodytype {
-    width: 76px;
+    width: 86px;
     text-align: center;
+    font-size: 13px!important;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
@@ -396,11 +397,11 @@
     width: 65px;
 }
 .accreceiv-refunddetails-headcustomer {
-    width: 189px;
+    width: 213px;
 }
-.accreceiv-refunddetails-headtype {
-    width: 75px;
-}
+/*.accreceiv-refunddetails-headtype {*/
+/*    width: 75px;*/
+/*}*/
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -461,18 +462,18 @@
     text-align: center;
 }
 .accreceiv-refunddetails-bodycustomer {
-    border-right: 1px solid #000000;
+    /*border-right: 1px solid #000000;*/
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 189px;
+    width: 214px;
 }
-.accreceiv-refunddetails-bodytype {
-    width: 76px;
-    text-align: center;
-}
-.accreceiv-refunddetails-bodytype.creditcard {
-    color: #0000ff;
-}
+/*.accreceiv-refunddetails-bodytype {*/
+/*    width: 76px;*/
+/*    text-align: center;*/
+/*}*/
+/*.accreceiv-refunddetails-bodytype.creditcard {*/
+/*    color: #0000ff;*/
+/*}*/
