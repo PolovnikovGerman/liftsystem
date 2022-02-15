@@ -8031,8 +8031,8 @@ Class Leadorder_model extends My_Model {
         $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n','%'),'_',$order['order_items']).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
-        // $this->_invoice_pdfdoc_create($options, $file_out);
-        $this->_invoice_test($options, $file_out);
+        $this->_invoice_pdfdoc_create($options, $file_out);
+        // $this->_invoice_test($options, $file_out);
         // pdf_create($html, $file_out, true);
         if (file_exists($file_out)) {
             $out['result']=$this->success_result;
