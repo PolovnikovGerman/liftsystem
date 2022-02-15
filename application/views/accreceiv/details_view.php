@@ -17,6 +17,7 @@
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span></span></div>
         <?php } ?>
         <div class="accreceiv-owndetails-headcustomer">Customer</div>
+        <div class="accreceiv-owndetails-headtype">Type</div>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
@@ -32,6 +33,7 @@
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
+                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
                 </div>
                 <?php $numpp++;?>
             <?php } ?>
@@ -57,6 +59,7 @@
             <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order</div>
         <?php } ?>
         <div class="accreceiv-refunddetails-headcustomer">Customer</div>
+<!--        <div class="accreceiv-refunddetails-headtype">Type</div>-->
     </div>
     <div class="accreceiv-refunddetails-body">
         <?php if (count($refunds)==0) { ?>
@@ -72,6 +75,7 @@
                     <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
                     <div class="accreceiv-refunddetails-bodyorder" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>
                     <div class="accreceiv-refunddetails-bodycustomer"><?=$refund['customer_name']?></div>
+<!--                    <div class="accreceiv-refunddetails-bodytype --><?//=$refund['typeclass']?><!--">--><?//=$refund['type']?><!--</div>-->
                 </div>
                 <?php $numpp++; ?>
             <?php } ?>
