@@ -6978,26 +6978,26 @@ Class Orders_model extends MY_Model
             $this->db->where('brand', $brand);
         }
         $this->db->order_by($refundsort, $refunddir);
-        $refunddats = $this->db->get()->result_array();
-        $refunds=[];
-        foreach ($refunddats as $refunddat) {
-            // $stype = 'Credit Card';
-            $sclass = '';
-            if ($refunddat['balance_manage']==3) {
-                $stype = $this->accrec_terms;
-            } elseif ($refunddat['balance_manage']==2) {
-                $stype = $this->accrec_prepay;
-            } elseif ($refunddat['balance_manage']==1) {
-                $stype = $this->accrec_willupd;
-                if (!empty($refunddat['cntcard'])) {
-                    $stype = $this->accrec_credit;
-                    $sclass='creditcard';
-                }
-            }
-            $refunddat['type']=$stype;
-            $refunddat['typeclass'] = $sclass;
-            $refunds[]=$refunddat;
-        }
+        $refunds = $this->db->get()->result_array();
+//        $refunds=[];
+//        foreach ($refunddats as $refunddat) {
+//            // $stype = 'Credit Card';
+//            $sclass = '';
+//            if ($refunddat['balance_manage']==3) {
+//                $stype = $this->accrec_terms;
+//            } elseif ($refunddat['balance_manage']==2) {
+//                $stype = $this->accrec_prepay;
+//            } elseif ($refunddat['balance_manage']==1) {
+//                $stype = $this->accrec_willupd;
+//                if (!empty($refunddat['cntcard'])) {
+//                    $stype = $this->accrec_credit;
+//                    $sclass='creditcard';
+//                }
+//            }
+//            $refunddat['type']=$stype;
+//            $refunddat['typeclass'] = $sclass;
+//            $refunds[]=$refunddat;
+//        }
 
         return array(
             'owns' => $owns,
