@@ -35,21 +35,22 @@
     margin-top: -3px;
 }
 .accreceiv-content-data {
-    width: 1054px;
+    /* width: 1054px; */
+    width: 1072px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 460px;
-    margin-right: 67px;
+    width: 510px;
+    margin-right: 17px;
 }
 .accreceiv-content-center {
-    width: 460px;
-    margin-right: 67px;
+    width: 510px;
+    margin-right: 17px;
 }
 .accreceiv-content-right {
-    width: 238px;
+    width: 220px;
 }
 .accreceiv-totalown {
     width: 230px;
@@ -207,8 +208,8 @@
     margin-bottom: -3px;
 }
 .accreceiv-totals-title {
-    width: 108px;
-    margin-right: 16px;
+    width: 103px;
+    margin-right: 9px;
     text-align: right;
     font-size: 14px;
     font-weight: bold;
@@ -221,7 +222,7 @@
     font-size: 16px;
 }
 .accreceiv-totals-value {
-    width: 114px;
+    width: 105px;
     text-align: right;
     font-size: 16px;
     font-weight: bold;
@@ -280,7 +281,10 @@
     width: 65px;
 }
 .accreceiv-owndetails-headcustomer {
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-owndetails-headtype {
+    width: 75px;
 }
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
@@ -342,12 +346,20 @@
     text-align: center;
 }
 .accreceiv-owndetails-bodycustomer {
+    border-right: 1px solid #000000;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-owndetails-bodytype {
+    width: 76px;
+    text-align: center;
+}
+.accreceiv-owndetails-bodytype.creditcard {
+    color: #0000ff;
 }
 /* Refund */
 .accreceiv-refunddetails-head {
@@ -384,7 +396,10 @@
     width: 65px;
 }
 .accreceiv-refunddetails-headcustomer {
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-refunddetails-headtype {
+    width: 75px;
 }
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
@@ -446,10 +461,18 @@
     text-align: center;
 }
 .accreceiv-refunddetails-bodycustomer {
+    border-right: 1px solid #000000;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-refunddetails-bodytype {
+    width: 76px;
+    text-align: center;
+}
+.accreceiv-refunddetails-bodytype.creditcard {
+    color: #0000ff;
 }
