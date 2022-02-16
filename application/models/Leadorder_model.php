@@ -7878,8 +7878,10 @@ Class Leadorder_model extends My_Model {
         $payments_details = [];
         foreach ($leadorder['payments'] as $prow) {
             $label = '';
+            $type = 'payment';
             if ($prow['batch_amount']<0) {
                 $label.='Refund ';
+                $type = 'refund';
             } else {
                 // if ($)
                 $label.='Payment ';
@@ -7887,7 +7889,8 @@ Class Leadorder_model extends My_Model {
             $label.='- '.date('m/d/y', $prow['batch_date']);
             $payments_details[]=[
                 'label' => $label,
-                'value' => MoneyOutput($prow['batch_amount']),
+                'value' => MoneyOutput(abs($prow['batch_amount'])),
+                'type' => $type,
             ];
         }
 
@@ -8918,34 +8921,42 @@ Class Leadorder_model extends My_Model {
         $totalbgn = $pdf->GetY();
         $invtotalXPos = 115;
         $invtotalYPos = $totalbgn+5;
-        $invtotalWidth = 88;
+        $invtotalWidth = 90;
         $invtotalHeght = 26 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(116,$totalbgn+5.5);
         $pdf->SetFont('','',13);
-        $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
+        // $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax '.$options['tax'],0,1);
+        $pdf->Cell(52, 8, 'NJ '.$options['tax_term'].'% Sales Tax ',0, 0);
+        $pdf->Cell(35.9, 8, $options['tax'],0,1);
 
         $pdf->SetX(116);
         $pdf->SetFont('','B');
         $pdf->Cell(52, 8, 'Total',0, 0);
         $pdf->SetTextColor(8,0,255);
-        $pdf->Cell(28.2, 8, $options['total'],0,1);
+        $pdf->Cell(35.9, 8, $options['total'],0,1);
 
         if ($options['payments_count'] > 0) {
             foreach ($options['payments_detail'] as $payments_detail) {
                 $pdf->SetX(115.5);
                 $pdf->SetTextColor(0,0,0);
                 $pdf->SetFont('','');
-                $pdf->Cell(58.4, 8, $payments_detail['label'],0,0,'L',true);
-                $pdf->Cell(28.2, 8,$payments_detail['value'],0,1,'L',true);
+                $pdf->Cell(52.4, 8, $payments_detail['label'],0,0,'L',true);
+                if ($payments_detail['type']=='refund') {
+                    $pdf->Cell(35.9, 8,'+'.$payments_detail['value'],0,1,'L',true);
+                } else {
+                    $pdf->SetTextColor(255,0,0);
+                    $pdf->Cell(35.9, 8,'-'.$payments_detail['value'],0,1,'L',true);
+                    $pdf->SetTextColor(0,0,0);
+                }
             }
         }
         $pdf->SetX(115.5);
         $pdf->SetFont('','B');
         $pdf->Cell(52,8,'Balance Due',0,0);
         $pdf->SetTextColor(0,0,255);
-        $pdf->Cell(28.2,8,$options['balance'],0,1);
+        $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Save file
         $pdf->Output('F', $file_out);
         return TRUE;
