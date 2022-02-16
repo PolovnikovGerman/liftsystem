@@ -7878,8 +7878,10 @@ Class Leadorder_model extends My_Model {
         $payments_details = [];
         foreach ($leadorder['payments'] as $prow) {
             $label = '';
+            $type = 'payment';
             if ($prow['batch_amount']<0) {
                 $label.='Refund ';
+                $type = 'refund';
             } else {
                 // if ($)
                 $label.='Payment ';
@@ -7887,7 +7889,8 @@ Class Leadorder_model extends My_Model {
             $label.='- '.date('m/d/y', $prow['batch_date']);
             $payments_details[]=[
                 'label' => $label,
-                'value' => MoneyOutput($prow['batch_amount']),
+                'value' => MoneyOutput(abs($prow['batch_amount'])),
+                'type' => $type,
             ];
         }
 
@@ -8924,7 +8927,7 @@ Class Leadorder_model extends My_Model {
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(116,$totalbgn+5.5);
         $pdf->SetFont('','',13);
-        $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
+        $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax '.$options['tax'],0,1);
 
         $pdf->SetX(116);
         $pdf->SetFont('','B');
@@ -8937,8 +8940,15 @@ Class Leadorder_model extends My_Model {
                 $pdf->SetX(115.5);
                 $pdf->SetTextColor(0,0,0);
                 $pdf->SetFont('','');
-                $pdf->Cell(58.4, 8, $payments_detail['label'],0,0,'L',true);
-                $pdf->Cell(28.2, 8,$payments_detail['value'],0,1,'L',true);
+                $pdf->Cell(52.4, 8, $payments_detail['label'],0,0,'L',true);
+                if ($payments_detail['type']=='refund') {
+                    $pdf->Cell(28.2, 8,$payments_detail['value'],0,1,'L',true);
+                } else {
+                    $pdf->SetTextColor(255,0,0);
+                    $pdf->Cell(28.2, 8,'-'.$payments_detail['value'],0,1,'L',true);
+                    $pdf->SetTextColor(0,0,0);
+                }
+
             }
         }
         $pdf->SetX(115.5);
