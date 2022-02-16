@@ -8770,14 +8770,19 @@ Class Leadorder_model extends My_Model {
         $invnumYPos = 10;
         $invnumWidth = 0;
         $invnumHeigth = 16.5;
-        $invnumType = 'PNG';
+
+        $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+        $dateXPos = 158;
+        $dateYPos = 28.7;
+        $dateWidth = 0;
+        $dateHeight = 9;
 
         $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
-        $ponumXPos = 125;
-        $ponumYPos = 36.7;
+        $ponumXPos = 90;
+        $ponumYPos = 28.7;
         $ponumWidth = 0;
-        $ponumHeight = 11;
-        $ponumType = 'PNG';
+        $ponumHeight = 9;
+
 
         $invoiceimgHeadType = 'PNG';
         $invoiceimgHeadHeight = 8.5;
@@ -8833,16 +8838,19 @@ Class Leadorder_model extends My_Model {
         $pdf->Text(5,39.88, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
         $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->Text(5,45.88,'www.bluetrack.com', 'http://www.bluetrack.com');
+        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+        $pdf->SetTextColor(65, 65, 65);
+        $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('', '', 13.552714);
-        $pdf->Text(154.8, 33.88, 'Invoice Date: '.$options['order_date']);
+        $pdf->SetXY(177, 29);
+        $pdf->Cell(27, 8, $options['order_date'],0,0, 'C');
+        // $pdf->Text(179.8, 35.88, $options['order_date']);
         if (!empty($options['customer_code'])) {
             $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
-            // $pdf->Image($ponumImage, $ponumXPos, $ponumYPos);
-            $pdf->SetXY(173.5,37.8);
+            $pdf->SetXY(127,29);
             $pdf->SetFont('','B');
-            $pdf->Cell(29,8.8,$options['customer_code'],0,0,'C');
+            $pdf->Cell(27,8,$options['customer_code'],0,0,'C');
         }
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
