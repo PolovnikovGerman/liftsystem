@@ -667,11 +667,11 @@ class Test extends CI_Controller
     function updatekeyinfo() {
         $this->db->select('item_id, item_number, item_size');
         $this->db->from('sb_items');
-        $this->db->like('item_size','&amp;amp;amp;amp;quot;','both');
+        $this->db->like('item_size','&amp;amp;amp;amp;amp;amp;quot;','both');
         $res = $this->db->get()->result_array();
         echo 'Find SIZE '.count($res).PHP_EOL;
         foreach ($res as $row) {
-            $new_size=str_replace('&amp;amp;amp;amp;quot;','"', $row['item_size']);
+            $new_size=str_replace('&amp;amp;amp;amp;amp;amp;quot;','"', $row['item_size']);
             echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
             $this->db->where('item_id', $row['item_id']);
             $this->db->set('item_size', $new_size);
