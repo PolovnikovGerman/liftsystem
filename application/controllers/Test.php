@@ -673,6 +673,9 @@ class Test extends CI_Controller
         foreach ($res as $row) {
             $new_size=str_replace('&amp;amp;quot;','"', $row['item_size']);
             echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_size', $new_size);
+            $this->db->update('sb_items');
         }
     }
 
