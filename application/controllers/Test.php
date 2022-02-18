@@ -670,7 +670,10 @@ class Test extends CI_Controller
         $this->db->like('item_size','&amp;amp;quot;','both');
         $res = $this->db->get()->result_array();
         echo 'Find '.count($res).PHP_EOL;
-
+        foreach ($res as $row) {
+            $new_size=str_replace('&amp;amp;quot;','"', $row['item_size']);
+            echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
+        }
     }
 
 }
