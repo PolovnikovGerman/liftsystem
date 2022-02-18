@@ -1,0 +1,479 @@
+/* CSS for page Accounts Receivable */
+.accreceiv-content {
+    width: 1292px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.accreceive-title {
+    /* width: 770px; */
+    width: 100%;
+    margin-bottom: 16px;
+}
+.accreceive-title div {
+    height: 34px;
+    line-height: 34px;
+}
+.accreceiv-label {
+    font-size: 24px;
+    font-weight: bold;
+}
+.accreceiv-period {
+    width: 209px;
+    float: right!important;
+    text-align: right;
+}
+.accreceiv-period span {
+    font-size: 14px;
+    margin-right: 5px;
+}
+.accreceiv-period select {
+    width: 130px;
+    font-size: 14px;
+    padding: 2px 0 2px 5px;
+}
+#accreceivebrandmenu {
+    margin-top: -3px;
+}
+.accreceiv-content-data {
+    /* width: 1054px; */
+    width: 1067px;
+}
+.accreceiv-totals, .accreceiv-details {
+    width: 100%;
+}
+.accreceiv-content-left {
+    width: 520px;
+    margin-right: 45px;
+}
+.accreceiv-content-center {
+    width: 459px;
+    /* margin-right: 17px; */
+}
+.accreceiv-content-right {
+    width: 225px;
+}
+.accreceiv-totalown {
+    width: 230px;
+}
+.accreceiv-totalown-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    height: 28px;
+    line-height: 28px!important;
+    width: 87px;
+}
+.accreceiv-totalown-value {
+    border: 2px solid #000000;
+    font-size: 18px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 24px!important;
+    padding-right: 5px;
+    text-align: right;
+    width: 137px;
+}
+.accreceiv-totalown-value span {
+    font-size: 12px;
+    position: relative;
+    top: -4px;
+    margin-left: 1px;
+}
+.accreceiv-totalpast {
+    width: 94px;
+    float: right!important;
+    margin-top: -9px;
+}
+.accreceiv-totalpast-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #ff0000;
+    width: 100%;
+}
+.accreceiv-totalpast-value {
+    font-weight: bold;
+    font-size: 17px;
+    width: 100%;
+}
+.accreceiv-totalpast-value span {
+    font-size: 12px;
+    position: relative;
+    top: -4px;
+    margin-left: 1px;
+}
+.accreceiv-totalown-table {
+    width: 100%;
+    margin-bottom: 1px;
+    margin-top: 7px;
+}
+.accreceiv-totalown-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    height: 28px;
+}
+.accreceiv-totalown-cell-year {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    padding-left: 8px;
+    line-height: 28px!important;
+}
+.accreceiv-totalown-cell-value {
+    font-size: 14px;
+    font-weight: bold;
+    padding-right: 11px;
+    text-align: right;
+    line-height: 28px!important;
+    float: right!important;
+}
+.accreceiv-totalown-cell-value span {
+    font-size: 9px;
+    position: relative;
+    top: -3px;
+    margin-left: 0.5px;
+}
+.accreceiv-totalrefund {
+    width: 360px;
+}
+.accreceiv-totalrefund-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    height: 28px;
+    line-height: 28px!important;
+    width: 163px;
+}
+.accreceiv-totalrefund-value {
+    border: 2px solid #000000;
+    font-size: 17px;
+    font-weight: bold;
+    color: #ff0000;
+    height: 28px;
+    line-height: 24px!important;
+    padding-right: 5px;
+    text-align: right;
+    width: 137px;
+}
+.accreceiv-totalrefund-value span {
+    font-size: 12px;
+    position: relative;
+    top: -4px;
+    margin-left: 1px;
+}
+.accreceiv-totalrefund-table {
+    width: 100%;
+    margin-bottom: 1px;
+    margin-top: 7px;
+}
+.accreceiv-totalrefund-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    color: #ff0000;
+}
+.accreceiv-totalrefund-cell-year {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0000ff;
+    padding-left: 8px;
+    height: 28px;
+    line-height: 28px!important;
+}
+.accreceiv-totalrefund-cell-value {
+    color: #ff0000;
+    font-size: 14px;
+    font-weight: bold;
+    padding-right: 11px;
+    text-align: right;
+    height: 28px;
+    line-height: 28px!important;
+    float: right!important;
+}
+.accreceiv-totalrefund-cell-value span {
+    font-size: 9px;
+    position: relative;
+    top: -3px;
+    margin-left: 0.5px;
+}
+.accreceiv-totalrefund-cell-value.empty {
+    color: #000000;
+    text-align: left;
+    float: left!important;
+    padding-left: 20px;
+}
+.accreceiv-totals {
+    width: 100%;
+    margin-bottom: 2px;
+}
+.accreceiv-totals:first-child {
+    margin-bottom: -3px;
+}
+.accreceiv-totals-title {
+    width: 108px;
+    margin-right: 9px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: right;
+    height: 28px;
+    line-height: 28px!important;
+    color: #0000ff;
+}
+.accreceiv-totals-title.totalar {
+    font-size: 16px;
+}
+.accreceiv-totals-value {
+    width: 105px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+    padding-right: 7px;
+}
+.accreceiv-totals-value span {
+    font-size: 11px;
+    position: relative;
+    top: -4px;
+    margin-left: 2px;
+}
+.accreceiv-totals-value.totalbalance {
+    border: 2px solid #000000;
+    line-height: 24px!important;
+}
+.accreceiv-totals-value.refund {
+    color: #ff0000;
+    font-size: 14px;
+}
+.accreceiv-totals-value.refund span {
+    font-size: 9px;
+    top: -4px;
+}
+.accreceiv-owndetails-head {
+    width: 100%;
+    border: 1px solid #000000;
+}
+.accreceiv-owndetails-head > div {
+    background: #545454;
+    color: #ffffff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+}
+.ownsort {
+    cursor: pointer;
+}
+.ownsort span {
+    font-size: 9px;
+    font-weight: normal;
+}
+.accreceiv-owndetails-headnum {
+    width: 24px;
+}
+.accreceiv-owndetails-headdue {
+    width: 63px;
+}
+.accreceiv-owndetails-headbalance {
+    width: 92px;
+}
+.accreceiv-owndetails-headorder {
+    width: 65px;
+}
+.accreceiv-owndetails-headcustomer {
+    width: 189px;
+}
+.accreceiv-owndetails-headtype {
+    width: 85px;
+}
+.accreceiv-owndetails-body {
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    margin-bottom: 20px;
+}
+.accreceiv-owndetails-bodyrow {
+    width: 100%;
+}
+.accreceiv-owndetails-bodyrow > div {
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+}
+.accreceiv-owndetails-bodyrow.current_row > div {
+    background: #0000ff;
+    color: #ffffff!important;
+}
+.accreceiv-owndetails-bodyrow.empty {
+    color: #ff0000;
+    text-align: center;
+}
+.accreceiv-owndetails-bodynum {
+    text-align: center;
+    width: 23px;
+    border-right: 1px solid #000000;
+    font-weight: bold;
+}
+.accreceiv-owndetails-bodydue {
+    text-align: center;
+    width: 63px;
+    border-right: 1px solid #000000;
+}
+.accreceiv-owndetails-bodydue.pastdue {
+    color: #ff0000;
+    /*font-size: 11px;*/
+    font-weight: bold;
+}
+.accreceiv-owndetails-bodybalance {
+    text-align: right;
+    padding-right: 5px;
+    font-weight: bold;
+    border-right: 1px solid #000000;
+    width: 92px;
+}
+.accreceiv-owndetails-bodybalance span {
+    font-size: 9px;
+    position: relative;
+    top: -4px;
+    margin-left: 0.5px;
+}
+.accreceiv-owndetails-bodyorder {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    color: #0000ff;
+    width: 65px;
+    cursor: pointer;
+    text-align: center;
+}
+.accreceiv-owndetails-bodycustomer {
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 189px;
+}
+.accreceiv-owndetails-bodytype {
+    width: 86px;
+    text-align: center;
+    font-size: 13px!important;
+}
+.accreceiv-owndetails-bodytype.creditcard {
+    color: #0000ff;
+}
+/* Refund */
+.accreceiv-refunddetails-head {
+    width: 100%;
+    border: 1px solid #000000;
+}
+.accreceiv-refunddetails-head > div {
+    background: #545454;
+    color: #ffffff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px!important;
+}
+.refundsort {
+    cursor: pointer;
+}
+.refundsort span {
+    font-size: 9px;
+    font-weight: normal;
+}
+.accreceiv-refunddetails-headnum {
+    width: 15px;
+}
+.accreceiv-refunddetails-headorderdate {
+    /* width: 69px; */
+    width: 81px;
+}
+.accreceiv-refunddetails-headbalance {
+    width: 83px;
+}
+.accreceiv-refunddetails-headorder {
+    width: 65px;
+}
+.accreceiv-refunddetails-headcustomer {
+    width: 213px;
+}
+/*.accreceiv-refunddetails-headtype {*/
+/*    width: 75px;*/
+/*}*/
+.accreceiv-refunddetails-body {
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    margin-bottom: 20px;
+    width: 100%;
+}
+.accreceiv-refunddetails-bodyrow {
+    width: 100%;
+}
+.accreceiv-refunddetails-bodyrow > div {
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+}
+.accreceiv-refunddetails-bodyrow.current_row > div {
+    background: #0000ff;
+    color: #ffffff!important;
+}
+.accreceiv-refunddetails-bodyrow.empty {
+    color: #ff0000;
+    text-align: center;
+    height: 25px;
+    line-height: 25px!important;
+    width: 100%;
+}
+.accreceiv-refunddetails-bodynum {
+    text-align: center;
+    width: 23px;
+    border-right: 1px solid #000000;
+    font-weight: bold;
+}
+.accreceiv-refunddetails-bodyorderdate {
+    text-align: center;
+    width: 63px;
+    border-right: 1px solid #000000;
+}
+.accreceiv-refunddetails-bodybalance {
+    text-align: right;
+    padding-right: 5px;
+    font-weight: bold;
+    color: #ff0000;
+    border-right: 1px solid #000000;
+    width: 92px;
+}
+.accreceiv-refunddetails-bodybalance span {
+    font-size: 9px;
+    position: relative;
+    top: -4px;
+    margin-left: 0.5px;
+}
+.accreceiv-refunddetails-bodyorder {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    color: #0000ff;
+    width: 65px;
+    cursor: pointer;
+    text-align: center;
+}
+.accreceiv-refunddetails-bodycustomer {
+    /*border-right: 1px solid #000000;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 214px;
+}
+/*.accreceiv-refunddetails-bodytype {*/
+/*    width: 76px;*/
+/*    text-align: center;*/
+/*}*/
+/*.accreceiv-refunddetails-bodytype.creditcard {*/
+/*    color: #0000ff;*/
+/*}*/

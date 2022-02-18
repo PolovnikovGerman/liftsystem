@@ -16,7 +16,9 @@ Class Itemdetails_model extends My_Model
         $out=['result'=>$this->error_result,'msg'=>'Unknown parameter'];
         $entity = ifset($data,'entity','noname');
         $out['entity']=$entity;
+        $profitrecalc = 0;
         $fld = ifset($data,'fld','noname');
+        $out['fldname']=$fld;
         $newval=ifset($data,'newval');
         $key = ifset($data,'idx',0);
         if ($entity=='item') {
@@ -63,6 +65,7 @@ Class Itemdetails_model extends My_Model
             }
         } elseif ($entity=='item_prices') {
             $out['msg']='Price Not Found';
+            $profitrecalc = 1;
             $prices=$session_data['item_prices'];
             $item = $session_data['item'];
             if ($item['item_template']=='Stressball') {
@@ -72,29 +75,8 @@ Class Itemdetails_model extends My_Model
                     $out['result'] = $this->success_result;
                     $session_data['item_prices'] = $prices;
                     usersession($session_id, $session_data);
-                    $pricetype = str_replace(['item_price_', 'item_sale_'], '', $fld);
 
-                    $vend_prices = $session_data['vendor_prices'];
-                    $vendor = $session_data['vendor'];
-                    $vendor_prices = [];
-                    foreach ($vend_prices as $vrow) {
-                        if (!empty($vrow['qty'])) {
-                            $vendor_prices[] = $vrow;
-                        }
-                    }
-                    // Add base price
-                    $prices['base_cost'] = $prices['vendor_item_exprint'] = $prices['vendor_item_setup'] = 0;
-                    if (!empty($vendor['vendor_item_cost'])) {
-                        $prices['base_cost'] = $vendor['vendor_item_cost'];
-                    }
-                    if (!empty($vendor['vendor_item_exprint'])) {
-                        $prices['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
-                    }
-                    if (!empty($vendor['vendor_item_setup'])) {
-                        $prices['vendor_item_setup'] = $vendor['vendor_item_setup'];
-                    }
-                    $this->load->model('prices_model');
-                    $out['profit'] = $this->prices_model->recalc_stress_profit($prices, $vendor_prices, $this->config->item('price_types'));
+                    $pricetype = str_replace(['item_price_', 'item_sale_'], '', $fld);
                     // Other vendor prices
                     $other_prices = $session_data['research_prices'];
                     $base = 0;
@@ -129,7 +111,6 @@ Class Itemdetails_model extends My_Model
                     usersession($session_id, $session_data);
                     $out['msg'] = '';
                     $out['result'] = $this->success_result;
-
                 } else {
                     $found = 0;
                     $idx = 0;
@@ -187,20 +168,115 @@ Class Itemdetails_model extends My_Model
                 usersession($session_id, $session_data);
                 $out['msg']='';
                 $out['result']=$this->success_result;
+                if ($fld=='vendor_item_cost') {
+                    $profitrecalc = 1;
+                } elseif ($fld=='vendor_item_setup') {
+                    $profitrecalc = 1;
+                } elseif ($fld=='vendor_item_exprint') {
+                    $profitrecalc = 1;
+                }
             }
         } elseif ($entity=='vendor_prices') {
             $out['msg']='Vendor price Not Found';
             $vendor_prices = $session_data['vendor_prices'];
             $idx = 0;
+            $found = 0;
             foreach ($vendor_prices as $row) {
                 if ($row['vendorprice_id']==$key) {
                     $out['result']=$this->success_result;
                     $vendor_prices[$idx][$fld]=$newval;
                     $session_data['vendor_prices']=$vendor_prices;
                     usersession($session_id, $session_data);
+                    $found = 1;
                     break;
                 }
                 $idx++;
+            }
+            if ($found==1) {
+                $profitrecalc = 1;
+            }
+        }
+        $out['profitrecalc'] = $profitrecalc;
+        if ($profitrecalc==1) {
+            $prices=$session_data['item_prices'];
+            $item = $session_data['item'];
+            $vend_prices = $session_data['vendor_prices'];
+            $vendor = $session_data['vendor'];
+            $vendor_prices = [];
+            foreach ($vend_prices as $vrow) {
+                if (!empty($vrow['vendorprice_qty'])) {
+                    $vendor_prices[] = $vrow;
+                }
+            }
+            $this->load->model('prices_model');
+            if ($item['item_template']=='Stressball') {
+                // Add base price
+                $prices['base_cost'] = $prices['vendor_item_exprint'] = $prices['vendor_item_setup'] = 0;
+                if (!empty($vendor['vendor_item_cost'])) {
+                    $prices['base_cost'] = $vendor['vendor_item_cost'];
+                }
+                if (!empty($vendor['vendor_item_exprint'])) {
+                    $prices['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
+                }
+                if (!empty($vendor['vendor_item_setup'])) {
+                    $prices['vendor_item_setup'] = $vendor['vendor_item_setup'];
+                }
+                $profit = $this->prices_model->recalc_stress_profit($prices, $vendor_prices, $this->config->item('price_types'));
+                $itemprices = $session_data['item_prices'];
+                foreach ($this->config->item('price_types') as $pricetype) {
+                    $itemprices['profit_'.$pricetype['type']] = $profit['profit_'.$pricetype['type']];
+                }
+                $itemprices['profit_print'] = $profit['profit_print'];
+                $itemprices['profit_setup'] = $profit['profit_setup'];
+                $session_data['item_prices'] = $itemprices;
+                usersession($session_id, $session_data);
+                $out['profit'] = $profit;
+            } else {
+                $commonprice = $session_data['common_prices'];
+                // Add base price
+                $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
+                if (!empty($vendor['vendor_item_cost'])) {
+                    $commonprice['base_cost'] = $vendor['vendor_item_cost'];
+                }
+                if (!empty($vendor['vendor_item_exprint'])) {
+                    $commonprice['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
+                }
+                if (!empty($vendor['vendor_item_setup'])) {
+                    $commonprice['vendor_item_setup'] = $vendor['vendor_item_setup'];
+                }
+                $profits = $this->prices_model->recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $newprofit = [];
+                foreach ($profits as $profit) {
+                    if ($profit['type']=='qty') {
+                        $idx = 0;
+                        foreach ($prices as $price) {
+                            if ($price['promo_price_id']==$profit['price_id']) {
+                                $prices[$idx]['profit']=$profit['profit'];
+                                break;
+                            }
+                            $idx++;
+                        }
+                    } elseif ($profit['type']=='print') {
+                        $commonprice['profit_print'] = $profit['profit'];
+                    } elseif ($profit['type']=='setup') {
+                        $commonprice['profit_setup'] = $profit['profit'];
+                    }
+                    if ($profit['type']=='qty') {
+                        $newprofit['profit_' . $profit['base']] = $profit['profit'];
+                        $newprofit['profit_' . $profit['base'] . '_perc'] = $profit['profit_perc'];
+                        $newprofit['profit_' . $profit['base'] . '_class'] = $profit['profit_class'];
+                    } elseif ($profit['type']=='print') {
+                        $newprofit['profit_print'] = $profit['profit'];
+                        $newprofit['profit_print_perc'] = $profit['profit_perc'];
+                        $newprofit['profit_print_class'] = $profit['profit_class'];
+                    } elseif ($profit['type']=='setup') {
+                        $newprofit['profit_setup'] = $profit['profit'];
+                        $newprofit['profit_setup_perc'] = $profit['profit_perc'];
+                        $newprofit['profit_setup_class'] = $profit['profit_class'];
+                    }
+                }
+                $out['profit'] = $newprofit;
+                // $out['profitrecalc'] = 0;
             }
         }
         return $out;
@@ -789,7 +865,7 @@ Class Itemdetails_model extends My_Model
         if (empty(ifset($detal,'item_number',''))) {
             $out_mgs.='Item # required.'.PHP_EOL;
         } else {
-            $this->db->select('count(item_id) as cnt')->from('sb_items')->where('item_number',$detal['item_number'])->where('item_id != ',$detal['item_id']);
+            $this->db->select('count(item_id) as cnt')->from('sb_items')->where('item_number',$detal['item_number'])->where('brand ',$detal['brand'])->where('item_id != ',$detal['item_id']);
             $det = $this->db->get()->row_array();
             if ($det['cnt']>0) {
                 $out_mgs.='Item Number is not unique'.PHP_EOL;
@@ -877,7 +953,7 @@ Class Itemdetails_model extends My_Model
 
     private function _save_iteminfo($item, $user_id) {
         $this->db->set('item_number', $item['item_number']);
-        $this->db->set('item_name', $item['item_name']);
+        $this->db->set('item_name', htmlspecialchars_decode($item['item_name']));
         $this->db->set('item_active', $item['item_active']);
         $this->db->set('item_new', $item['item_new']);
         $this->db->set('item_template', $item['item_template']);
@@ -886,14 +962,14 @@ Class Itemdetails_model extends My_Model
         $this->db->set('item_lead_c', empty($item['item_lead_c']) ? null : intval($item['item_lead_c']));
         $this->db->set('item_material', $item['item_material']);
         $this->db->set('item_weigth', floatval($item['item_weigth']));
-        $this->db->set('item_size', $item['item_size']);
+        $this->db->set('item_size', htmlspecialchars_decode($item['item_size']));
         $this->db->set('item_keywords', $item['item_keywords']);
         $this->db->set('item_url', $item['item_url']);
-        $this->db->set('item_meta_title', $item['item_meta_title']);
-        $this->db->set('item_metadescription', $item['item_metadescription']);
-        $this->db->set('item_metakeywords', $item['item_metakeywords']);
-        $this->db->set('item_description1', $item['item_description1']);
-        $this->db->set('item_description2',$item['item_description2']);
+        $this->db->set('item_meta_title', htmlspecialchars_decode($item['item_meta_title']));
+        $this->db->set('item_metadescription', htmlspecialchars_decode($item['item_metadescription']));
+        $this->db->set('item_metakeywords', htmlspecialchars_decode($item['item_metakeywords']));
+        $this->db->set('item_description1', htmlspecialchars_decode($item['item_description1']));
+        $this->db->set('item_description2',htmlspecialchars_decode($item['item_description2']));
         $this->db->set('item_vector_img', $item['item_vector_img']);
         $this->db->set('vendor_item_id', $item['vendor_item_id']);
         $this->db->set('common_terms', $item['common_terms']);
@@ -1073,13 +1149,16 @@ Class Itemdetails_model extends My_Model
             $type=$item['type'];
             $this->db->set('item_price_'.$type,(empty($prices['item_price_'.$type]) ? NULL : floatval($prices['item_price_'.$type])));
             $this->db->set('item_sale_'.$type,(empty($prices['item_sale_'.$type]) ? NULL : floatval($prices['item_sale_'.$type])));
+            $this->db->set('profit_'.$type, (empty($prices['profit_'.$type])? NULL : floatval($prices['profit_'.$type])));
         }
         // item_price_print: "0.35"
         // item_price_setup: "50.00"
         $this->db->set('item_price_print',(empty($prices['item_price_print']) ? NULL : floatval($prices['item_price_print'])));
         $this->db->set('item_sale_print',(empty($prices['item_sale_print']) ? NULL : floatval($prices['item_sale_print'])));
+        $this->db->set('profit_print', (empty($prices['profit_print'])? NULL : floatval($prices['profit_print'])));
         $this->db->set('item_price_setup',(empty($prices['item_price_setup']) ? NULL : floatval($prices['item_price_setup'])));
         $this->db->set('item_sale_setup',(empty($prices['item_sale_setup']) ? NULL : floatval($prices['item_sale_setup'])));
+        $this->db->set('profit_setup', (empty($prices['profit_setup'])? NULL : floatval($prices['profit_setup'])));
         if ($prices['item_price_id']<0) {
             $this->db->set('item_price_itemid', $item_id);
             $this->db->insert('sb_item_prices');

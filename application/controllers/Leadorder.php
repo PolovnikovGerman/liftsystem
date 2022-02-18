@@ -550,6 +550,15 @@ class Leadorder extends MY_Controller
                                 );
                                 $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
                                 $mdata['shipaddress']=$shipping_address[0]['order_shipaddr_id'];
+                            } else {
+                                $cost_view = '';
+                                $numpp = 1;
+                                foreach ($shipping_address as $srow) {
+                                    $srow['numpp'] = $numpp;
+                                    $cost_view.=$this->load->view('leadorderdetails/shipping_datarow_view', $srow, TRUE);
+                                    $numpp++;
+                                }
+                                $mdata['shipcost']=$cost_view;
                             }
                         } elseif ($fldname=='country_id' && $entity=='billing') {
                             $states=$res['out_states'];
@@ -596,6 +605,42 @@ class Leadorder extends MY_Controller
                                     $leftcont=$this->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
                                 }
                                 $mdata['leftbilling']=$leftcont;
+                            }
+                        }
+                        $mdata['shipcal'] = $res['shipcalc'];
+                        if ($res['shipcalc']==1) {
+                            $order=$leadorder['order'];
+                            // $mdata['order_revenue']=MoneyOutput($order['revenue']);
+                            $shipping=$leadorder['shipping'];
+                            $shipping_address=$leadorder['shipping_address'];
+                            $mdata['cntshipadrr']=count($shipping_address);
+                            /* Rush */
+                            $rushlist=$res['rushlist'];
+                            $rushopt=array(
+                                'edit'=>1,
+                                'rush'=>$rushlist['rush'],
+                                'current'=>$res['current'],
+                                'shipdate'=>$shipping['shipdate'],
+                            );
+                            $mdata['rushview']=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
+                            if ($mdata['cntshipadrr']==1) {
+                                // Buld rate view
+                                $shipcost=$shipping_address[0]['shipping_costs'];
+                                $costoptions=array(
+                                    'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
+                                    'shipcost'=>$shipcost,
+                                );
+                                $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                                $mdata['shipaddress']=$shipping_address[0]['order_shipaddr_id'];
+                            } else {
+                                $cost_view = '';
+                                $numpp = 1;
+                                foreach ($shipping_address as $srow) {
+                                    $srow['numpp'] = $numpp;
+                                    $cost_view.=$this->load->view('leadorderdetails/shipping_datarow_view', $srow, TRUE);
+                                    $numpp++;
+                                }
+                                $mdata['shipcost']=$cost_view;
                             }
                         }
                     }
@@ -3689,11 +3734,11 @@ class Leadorder extends MY_Controller
                     if ($res['result']==$this->error_result) {
                         $error=$res['msg'];
                     } else {
+                        $multishipping=usersession($shipsession);
                         $shipping_address=$multishipping['shipping_address'];
                         $order=$multishipping['order'];
                         $order_qty=$order['order_qty'];
                         if ($fldname=='rush_idx' && $entity=='shipping') {
-                            $multishipping=usersession($shipsession);
                             $shipping=$multishipping['shipping'];
                             $mdata['shipdate']=date('m/d/Y',$order['shipdate']);
                             $mdata['shipcontent']=$this->_build_shippadress_view($shipping_address, $shipping, $order_qty, 1);

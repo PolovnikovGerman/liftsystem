@@ -33,6 +33,11 @@ Class Orders_model extends MY_Model
     private $art_sendlater = "I'll send it later";
     private $art_sendbefore = "I already sent it";
 
+    private $accrec_terms = 'Terms';
+    private $accrec_willupd = 'Will Update';
+    private $accrec_credit = 'Credit Card';
+    private $accrec_prepay = 'Prepay';
+    // Terms, Will Update, Credit Card, Prapy
     /* Start date for check email 03/28/2013 */
     protected $req_email_date = 1364421600;
 
@@ -6813,5 +6818,195 @@ Class Orders_model extends MY_Model
         $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
         $res = $this->db->get()->result_array();
         return $res;
+    }
+
+    public function accountreceiv_totals($period, $brand) {
+        // Owned
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('yearorder');
+        $ownsrc = $this->db->get()->result_array();
+        $totalown = 0;
+        foreach ($ownsrc as $ownr) {
+            $totalown+=$ownr['balance'];
+        }
+        $this->db->select('sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->where('batch_due < ',$daystart);
+        $pastres = $this->db->get()->row_array();
+        $pastown = $pastres['balance'];
+
+        // Refund
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('yearorder');
+        $refsrc = $this->db->get()->result_array();
+        $totalref = 0;
+        foreach ($refsrc as $refr) {
+            $totalref+=$refr['balance'];
+        }
+
+        $own = [];
+        $refund = [];
+        if ($limit_year==0) {
+            $this->db->select('min(yearorder) as yearorder');
+            $this->db->from('v_order_balances');
+            $yearres = $this->db->get()->row_array();
+            $limit_year = $yearres['yearorder'];
+        }
+        for ($i=0; $i<1000; $i++) {
+            $yearown=0;
+            $yearref=0;
+            foreach ($ownsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearown=$row['balance'];
+                    break;
+                }
+            }
+            foreach ($refsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearref=$row['balance'];
+                    break;
+                }
+            }
+
+            $own[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearown,
+            ];
+
+            $refund[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearref,
+            ];
+            if (($cur_year - $i)<=$limit_year) {
+                break;
+            }
+        }
+        return array(
+            'totalown' => $totalown,
+            'pastown' => $pastown,
+            'totalrefund' => $totalref,
+            'own' => $own,
+            'refund' => $refund,
+            'balance' => $totalown+$totalref,
+        );
+    }
+
+    public function accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec) {
+        // $this->db->select('')
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by($ownsort, $owndirec);
+        $owndats = $this->db->get()->result_array();
+        $owns=[];
+        foreach ($owndats as $owndat) {
+            // $stype = 'Credit Card';
+            $sclass = '';
+            if ($owndat['balance_manage']==3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage']==2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage']==1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass='creditcard';
+                }
+            }
+            $owndat['type']=$stype;
+            $owndat['typeclass'] = $sclass;
+            $owns[]=$owndat;
+        }
+        // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by($refundsort, $refunddir);
+        $refunds = $this->db->get()->result_array();
+//        $refunds=[];
+//        foreach ($refunddats as $refunddat) {
+//            // $stype = 'Credit Card';
+//            $sclass = '';
+//            if ($refunddat['balance_manage']==3) {
+//                $stype = $this->accrec_terms;
+//            } elseif ($refunddat['balance_manage']==2) {
+//                $stype = $this->accrec_prepay;
+//            } elseif ($refunddat['balance_manage']==1) {
+//                $stype = $this->accrec_willupd;
+//                if (!empty($refunddat['cntcard'])) {
+//                    $stype = $this->accrec_credit;
+//                    $sclass='creditcard';
+//                }
+//            }
+//            $refunddat['type']=$stype;
+//            $refunddat['typeclass'] = $sclass;
+//            $refunds[]=$refunddat;
+//        }
+
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+            'daystart' => $daystart,
+            'ownsort' => $ownsort,
+            'owndir' => $owndirec,
+            'refundsort' => $refundsort,
+            'refunddir' => $refunddirec,
+        );
     }
 }

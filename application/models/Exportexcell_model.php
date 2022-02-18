@@ -322,7 +322,7 @@ class Exportexcell_model extends CI_Model
             $this->email->send();
         }
         $this->email->clear();
-        $this->email->to('polovnikov.g@gmail.com');
+        $this->email->to('to_german@yahoo.com');
         $this->email->from('no-replay@bluetrack.com');
         $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
         $mail_body='Report sends successfully';
