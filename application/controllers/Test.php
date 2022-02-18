@@ -687,6 +687,13 @@ class Test extends CI_Controller
         $this->db->like('item_description1','&amp;amp;quot;','both');
         $res = $this->db->get()->result_array();
         echo 'Find Descript_1 '.count($res).PHP_EOL;
+        foreach ($res as $row) {
+            $new_size=str_replace('&amp;amp;quot;','"', $row['item_description1']);
+            echo 'Item '.$row['item_number'].' Descrip '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_description1', $new_size);
+            $this->db->update('sb_items');
+        }
         $this->db->select('item_id, item_number, item_description2');
         $this->db->from('sb_items');
         $this->db->like('item_description2','&amp;amp;quot;','both');
