@@ -20,7 +20,7 @@
         <?php if ($item_meta_title == '') { ?>
             <div class="empty_value" style="width: 230px;">&nbsp;</div>
         <?php } else { ?>
-            <?=$item_meta_title ?>
+            <?=htmlspecialchars_decode($item_meta_title) ?>
         <?php } ?>
     </div>
     <div class="metatitle">Meta Description:</div>
@@ -28,7 +28,7 @@
         <?php if ($item_metadescription == '') { ?>
             <div class="empty_value" style="height:58px;width: 230px">&nbsp;</div>
         <?php } else { ?>
-            <?= $item_metadescription ?>
+            <?= htmlspecialchars_decode($item_metadescription) ?>
         <?php } ?>
     </div>
     <div class="metatitle">Meta Keywords:</div>
@@ -36,7 +36,7 @@
         <?php if ($item_metakeywords == '') { ?>
             <div class="empty_value" style="height:58px;width: 230px"></div>
         <?php } else { ?>
-            <?= $item_metakeywords ?>
+            <?= htmlspecialchars_decode($item_metakeywords) ?>
         <?php } ?>
     </div>
 </div>
