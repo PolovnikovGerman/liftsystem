@@ -686,16 +686,27 @@ class Test extends CI_Controller
         $this->db->from('sb_items');
         $this->db->like('item_description1','&amp;amp;quot;','both');
         $res = $this->db->get()->result_array();
-        echo 'Find Descript 1 '.count($res).PHP_EOL;
+        echo 'Find Descript_1 '.count($res).PHP_EOL;
         $this->db->select('item_id, item_number, item_description2');
         $this->db->from('sb_items');
         $this->db->like('item_description2','&amp;amp;quot;','both');
         $res = $this->db->get()->result_array();
-        echo 'Find NAME '.count($res).PHP_EOL;
-
-//    'item_metadescription',
-//    'item_metakeywords',
-//    'item_meta_title',
+        echo 'Find Descript_2 '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metadescription');
+        $this->db->from('sb_items');
+        $this->db->like('item_metadescription','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaDescript '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metakeywords');
+        $this->db->from('sb_items');
+        $this->db->like('item_metakeywords','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaKeywords '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_meta_title');
+        $this->db->from('sb_items');
+        $this->db->like('item_meta_title','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaTitle '.count($res).PHP_EOL;
 
     }
 
