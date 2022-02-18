@@ -667,16 +667,16 @@ class Test extends CI_Controller
     function updatekeyinfo() {
         $this->db->select('item_id, item_number, item_size');
         $this->db->from('sb_items');
-        $this->db->like('item_size','&amp;amp;quot;','both');
+        $this->db->like('item_size','&quot;','both');
         $res = $this->db->get()->result_array();
         echo 'Find SIZE '.count($res).PHP_EOL;
-//        foreach ($res as $row) {
-//            $new_size=str_replace('&amp;amp;quot;','"', $row['item_size']);
-//            echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
-//            $this->db->where('item_id', $row['item_id']);
-//            $this->db->set('item_size', $new_size);
-//            $this->db->update('sb_items');
-//        }
+        foreach ($res as $row) {
+            $new_size=str_replace('&quot;','"', $row['item_size']);
+            echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_size', $new_size);
+            $this->db->update('sb_items');
+        }
         $this->db->select('item_id, item_number, item_name');
         $this->db->from('sb_items');
         $this->db->like('item_name','&amp;amp;quot;','both');
