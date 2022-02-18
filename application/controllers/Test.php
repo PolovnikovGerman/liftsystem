@@ -664,4 +664,13 @@ class Test extends CI_Controller
         }
     }
 
+    function updatekeyinfo() {
+        $this->db->select('item_id, item_number, item_size');
+        $this->db->from('sb_items');
+        $this->db->like('item_size','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find '.count($res).PHP_EOL;
+
+    }
+
 }
