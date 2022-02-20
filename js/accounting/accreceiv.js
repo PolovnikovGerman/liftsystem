@@ -2,8 +2,8 @@ function init_accounts_receivable() {
     init_accreceive_totals();
     init_accreceive_details();
     $(".accreceiv-period-select").unbind('change').change(function(){
-        init_accreceive_totals();
-        init_accreceive_details();
+         init_accreceive_totals();
+         init_accreceive_details();
     });
     // Change Brand
     $("#accreceivebrandmenu").find("div.brandchoseval").unbind('click').click(function(){
@@ -31,7 +31,9 @@ function init_accreceive_totals() {
     var url = '/accounting/accountreceiv_totals';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-totals").empty().html(response.data.content);
+            $(".accreceiv-content-left").find(".accreceiv-details-totals").empty().html(response.data.totalown);
+            $(".accreceiv-content-center").find(".accreceiv-details-totals").empty().html(response.data.totalrefund);
+            $(".accrecive-totalsarea").empty().html(response.data.totals);
             $(".accreceiv-content-right").empty().html(response.data.totals);
         } else {
             show_error(response);

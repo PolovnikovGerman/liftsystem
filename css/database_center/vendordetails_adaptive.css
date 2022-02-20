@@ -819,12 +819,6 @@ input.documentdesciption {
         width: 1225px;
         max-width: 1225px;
     }
-    .mobileviewonly {
-        display: none;
-    }
-    .desktopviewonly {
-        /* display: inline-block; */
-    }
     .vendorshipaddr_value {
         margin-top: 7.1rem;
     }
@@ -850,12 +844,6 @@ input.documentdesciption {
     #vendorDetailsModal .modal-dialog {
         max-width: 992px;
     }
-    .mobileviewonly {
-        display: none;
-    }
-    .desktopviewonly {
-        /* display: inline-block; */
-    }
     .vendor-tab {
         padding: 0 1.5625rem;
         font-size: 0.9375rem;
@@ -866,12 +854,6 @@ input.documentdesciption {
 @media (min-width: 768px) and (max-width: 991px) {
     #vendorDetailsModal .modal-dialog {
         max-width: 736px;
-    }
-    .mobileviewonly {
-        /* display: inline-flex; */
-    }
-    .desktopviewonly {
-        display: none;
     }
     .vendor-tab {
         padding: 0 1.5625rem;
@@ -884,12 +866,6 @@ input.documentdesciption {
     #vendorDetailsModal .modal-dialog {
         max-width: 636px;
     }
-    .mobileviewonly {
-        /* display: inline-flex; */
-    }
-    .desktopviewonly {
-        display: none;
-    }
     .vendor-tab {
         padding: 0 0.525rem;
         font-size: 0.8rem;
@@ -901,12 +877,6 @@ input.documentdesciption {
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
-    .mobileviewonly {
-        /* display: inline-block;*/
-    }
-    .desktopviewonly {
-        display: none;
-    }
     .vendor-tab {
         padding: 0 0.525rem;
         font-size: 0.8rem;

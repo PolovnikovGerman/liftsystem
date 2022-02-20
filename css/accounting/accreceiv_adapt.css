@@ -1,0 +1,307 @@
+/* CSS for page Accounts Receivable */
+.accreceivedataview  .pagetitle {
+    font-weight: bold;
+}
+.accreceiv-period {
+    text-align: end;
+}
+.accreceiv-period span {
+    margin-right: 0.1rem;
+}
+.accreceiv-period-select {
+    font-size: 0.9rem;
+    height: 1.9rem;
+    padding: 0 0.3rem;
+}
+.accreceiv-totals {
+    /* width: 100%; */
+    margin-bottom: 0.125rem;
+}
+.accreceiv-totals:first-child {
+    margin-bottom: -0.1875rem;
+}
+.accreceiv-totals-title {
+    padding-right: 0.5625rem;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: bold;
+    height: 1.75rem;
+    line-height: 1.75rem!important;
+    color: #0000ff;
+}
+.accreceiv-totals-title.totalar {
+    font-size: 1rem;
+}
+.accreceiv-totals-value {
+    text-align: right;
+    font-size: 1rem;
+    font-weight: bold;
+    height: 1.75rem;
+    line-height: 1.75rem!important;
+    padding-right: 0.4375rem;
+}
+.accreceiv-totals-value span {
+    font-size: 0.6875rem;
+    position: relative;
+    top: -0.25rem;
+    margin-left: 0.125rem;
+}
+.accreceiv-totals-value.totalbalance {
+    border: 2px solid #000000;
+    line-height: 1.5rem!important;
+}
+.accreceiv-totals-value.refund {
+    color: #ff0000;
+    font-size: 0.875rem;
+}
+.accreceiv-totals-value.refund span {
+    font-size: 0.5625rem;
+    top: -0.25rem;
+}
+/* Total OWN */
+.accreceiv-totalown {
+    width: 70%;
+}
+.accreceiv-totalown-title {
+    font-weight: bold;
+    color: #0000ff;
+}
+.accreceiv-totalown-value {
+    border: 2px solid #000000;
+    font-weight: bold;
+    padding-right: 0.2rem;
+    text-align: right;
+}
+.accreceiv-totalpast {
+    margin-top: -0.5rem;
+}
+.accreceiv-totalpast-title {
+    font-weight: bold;
+    color: #ff0000;
+    width: 100%;
+}
+.accreceiv-totalpast-value {
+    font-weight: bold;
+    width: 100%;
+}
+.accreceiv-totalpast-value span {
+    position: relative;
+}
+.accreceiv-totalown-table {
+    width: 100%;
+}
+.accreceiv-totalown-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    float: left;
+}
+.accreceiv-totalown-cell-year {
+    font-weight: bold;
+    color: #0000ff;
+    float: left;
+}
+.accreceiv-totalown-cell-value {
+    font-weight: bold;
+    text-align: right;
+    float: right!important;
+}
+.accreceiv-totalown-cell-value span {
+    position: relative;
+}
+/* Refund Totals */
+.accreceiv-totalrefund {
+    /* width: 360px; */
+
+}
+.accreceiv-totalrefund-title {
+    font-weight: bold;
+    color: #0000ff;
+}
+.accreceiv-totalrefund-value {
+    border: 2px solid #000000;
+    font-weight: bold;
+    color: #ff0000;
+    text-align: right;
+}
+.accreceiv-totalrefund-value span {
+    position: relative;
+}
+.accreceiv-totalrefund-table {
+    width: 100%;
+    margin-bottom: 1px;
+    margin-top: 7px;
+}
+.accreceiv-totalrefund-cell {
+    border: 1px solid #000000;
+    width: 33.33%;
+    color: #ff0000;
+    float: left;
+}
+.accreceiv-totalrefund-cell-year {
+    font-weight: bold;
+    color: #0000ff;
+    float: left;
+}
+.accreceiv-totalrefund-cell-value {
+    color: #ff0000;
+    font-weight: bold;
+    text-align: right;
+    float: right!important;
+}
+.accreceiv-totalrefund-cell-value span {
+    position: relative;
+}
+.accreceiv-totalrefund-cell-value.empty {
+    color: #000000;
+    text-align: left;
+    float: left!important;
+}
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .accreceivedataview .pagetitle {
+        height: 2.5rem;
+        font-size: 1.5rem;
+    }
+    .accreceiv-period span {
+        font-size: 1.1rem;
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .accreceivedataview  .pagetitle {
+        font-size: 1.5rem;
+    }
+    .accreceiv-period span {
+        font-size: 1.05rem;
+    }
+
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .accreceivedataview  .pagetitle {
+        font-size: 1.5rem;
+    }
+    .accreceiv-period span {
+        font-size: 1.05rem;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .accreceivedataview  .pagetitle {
+        font-size: 1.2rem;
+    }
+    .accreceiv-period span {
+        font-size: 1.05rem;
+    }
+}
+/* Surface Duo */
+@media (max-width: 540px) {
+    .accreceivedataview  .pagetitle {
+        font-size: 1.2rem;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .accreceivedataview  .pagetitle {
+        font-size: 1.5rem;
+    }
+    .accreceiv-period {
+        text-align: inherit;
+    }
+    .accreceiv-totalown-title {
+        font-size: 0.78rem;
+        height: 1.7rem;
+        line-height: 1.7rem!important;
+    }
+    .accreceiv-totalown-value {
+        font-size: 0.8rem;
+        height: 1.7rem;
+        line-height: 1.4rem!important;
+    }
+    .accreceiv-totalown-value span {
+        font-size: 0.6rem;
+        position: relative;
+        top: -0.18rem;
+        margin-left: 0.125rem;
+    }
+    .accreceiv-totalpast-title {
+        font-size: 0.8rem;
+    }
+    .accreceiv-totalpast-value {
+        font-size: 0.75rem;
+    }
+    .accreceiv-totalpast-value span {
+        font-size: 0.6rem;
+        top: -0.18rem;
+        margin-left: 0.125rem;
+    }
+    .accreceiv-totalown-table {
+        margin-bottom: 0.0625rem;
+        margin-top: 0.4375rem;
+    }
+    .accreceiv-totalown-cell {
+        height: 1.75rem;
+    }
+    .accreceiv-totalown-cell-year {
+        font-size: 0.8rem;
+        padding-left: 0.25rem;
+        line-height: 1.75rem!important;
+    }
+    .accreceiv-totalown-cell-value {
+        padding-right: 0.25rem;
+        font-size: 0.8rem;
+        line-height: 1.75rem!important;
+        float: right!important;
+    }
+    .accreceiv-totalown-cell-value span {
+        font-size: 0.6rem;
+        top: -0.18rem;
+        margin-left: 0.125rem;
+    }
+    .accreceiv-totalrefund {
+        margin-top: 0.5rem;
+    }
+    .accreceiv-totalrefund-title {
+        font-size: 0.78rem;
+        height: 1.7rem;
+        line-height: 1.7rem!important;
+    }
+    .accreceiv-totalrefund-value {
+        font-size: 0.8rem;
+        height: 1.7rem;
+        line-height: 1.4rem!important;
+    }
+    .accreceiv-totalrefund-value span {
+        font-size: 0.6rem;
+        top: -0.18rem;
+        margin-left: 0.125rem;
+    }
+    .accreceiv-totalrefund-table {
+        margin-bottom: 0.0625rem;
+        margin-top: 0.4375rem;
+    }
+    .accreceiv-totalrefund-cell {
+        height: 1.75rem;
+    }
+    .accreceiv-totalrefund-cell-year {
+        font-size: 0.8rem;
+        padding-left: 0.25rem;
+        line-height: 1.75rem!important;
+    }
+    .accreceiv-totalrefund-cell-value {
+        padding-right: 0.25rem;
+        font-size: 0.8rem;
+        line-height: 1.75rem!important;
+        float: right!important;
+    }
+    .accreceiv-totalrefund-cell-value span {
+        font-size: 0.6rem;
+        top: -0.18rem;
+        margin-left: 0.125rem;
+    }
+    .accreceiv-totalrefund-cell-value.empty {
+        padding-left: 1.25rem;
+    }
+
+}
