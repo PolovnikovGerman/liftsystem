@@ -52,7 +52,7 @@ function init_accreceive_details() {
     var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-details").empty().html(response.data.content);
+            $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
             init_accreceive_content();
         } else {
             show_error(response);

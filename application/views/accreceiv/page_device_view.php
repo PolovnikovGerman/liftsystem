@@ -29,7 +29,7 @@
             <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xs-8 accreceiv-content-data">
                 <div class="row accreceiv-content-left">
                     <div class="col-12 accreceiv-details-totals"></div>
-                    <div class="row accreceiv-details"></div>
+                    <div class="col-12 accreceiv-details"></div>
                 </div>
                 <div class="accreceiv-content-center">
                     <div class="accreceiv-details-totals"></div>
