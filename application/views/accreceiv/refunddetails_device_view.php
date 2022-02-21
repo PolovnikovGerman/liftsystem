@@ -3,7 +3,7 @@
     <?php if ($refundsort=='order_date') { ?>
         <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
     <?php } else { ?>
-        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date</div>
+        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Date</div>
     <?php } ?>
     <?php if ($refundsort=='balance') { ?>
         <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
