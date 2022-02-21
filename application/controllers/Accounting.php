@@ -3033,6 +3033,11 @@ class Accounting extends MY_Controller
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
+            $maxwidth = ifset($postdata,'maxwidth',0);
+            $res['datelabel']='Order Date';
+            if ($maxwidth < 540) {
+                $res['datelabel']='Date';
+            }
             $mdata['owndetails'] = $this->load->view('accreceiv/owndetails_device_view', $res, TRUE);
             $mdata['refunddetails'] = $this->load->view('accreceiv/refunddetails_device_view', $res, TRUE);
             $error = '';

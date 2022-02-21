@@ -43,12 +43,14 @@ function init_accreceive_totals() {
 
 function init_accreceive_details() {
     var params = new Array();
+    var maxwidth = parseInt(window.innerWidth);
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
     params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
     params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
+    params.push({name: 'maxwidth', value: maxwidth});
     var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {

@@ -1,9 +1,9 @@
 <div class="accreceiv-refunddetails-head">
     <div class="accreceiv-refunddetails-headnum">#</div>
     <?php if ($refundsort=='order_date') { ?>
-        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Date <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date"><?=$datelabel?> <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
     <?php } else { ?>
-        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Date</div>
+        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date"><?=$datelabel?></div>
     <?php } ?>
     <?php if ($refundsort=='balance') { ?>
         <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
