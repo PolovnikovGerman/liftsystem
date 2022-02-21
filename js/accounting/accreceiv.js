@@ -53,6 +53,7 @@ function init_accreceive_details() {
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
+            $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
             init_accreceive_content();
         } else {
             show_error(response);
