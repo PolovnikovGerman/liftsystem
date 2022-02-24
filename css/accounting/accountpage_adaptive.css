@@ -30,7 +30,7 @@
 .headmenuitem.active {
     background: #f9f9f9;
     color: #0000c4;
-    border: 1px solid #e6e6e6;
+    border: 1.5px solid #000000;
 }
 .headmenuitem > .oldvesionlabel {
     float: left;
