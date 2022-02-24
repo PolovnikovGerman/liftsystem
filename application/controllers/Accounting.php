@@ -3034,7 +3034,8 @@ class Accounting extends MY_Controller
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
             $maxwidth = ifset($postdata,'maxwidth',0);
-            $res['datelabel']='Order Date';
+            // $res['datelabel']='Order Date';
+            $res['datelabel']='Date';
             if ($maxwidth < 540) {
                 $res['datelabel']='Date';
             }

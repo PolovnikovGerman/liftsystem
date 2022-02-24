@@ -27,13 +27,15 @@
         <div class="row">
             <div class="col-12 mb-3 accrecive-totalsarea mobileviewonly"></div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xs-8 accreceiv-content-data">
-                <div class="row accreceiv-content-left">
-                    <div class="col-12 accreceiv-details-totals"></div>
-                    <div class="col-12 accreceiv-details"></div>
-                </div>
-                <div class="accreceiv-content-center">
-                    <div class="accreceiv-details-totals"></div>
-                    <div class="accreceiv-details"></div>
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6 accreceiv-content-left">
+                        <div class="accreceiv-details-totals"></div>
+                        <div class="accreceiv-details"></div>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6 accreceiv-content-center">
+                        <div class="accreceiv-details-totals"></div>
+                        <div class="accreceiv-details"></div>
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-4 accreceiv-content-right desktopviewonly"></div>
