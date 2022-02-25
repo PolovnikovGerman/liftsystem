@@ -176,7 +176,11 @@ function show_curent_calend() {
             $("#totalsbymonth").empty().html(response.data.monthtotal);
             $("#tableinfotab2").empty().html(response.data.content);
             $(".profitdate-selected-monthname").empty().html(response.data.monthname);
-            jQuery.balloon.init();
+            try {
+                jQuery.balloon.init();
+            } catch (e) {
+                console.log('Ballone not init');
+            }
             init_profit_date();
         } else {
             show_error(response);
