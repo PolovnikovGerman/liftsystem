@@ -188,6 +188,38 @@ function search_profit_data() {
             $("#totaltab1").val(response.data.totals);
             $("#curpagetab1").val(0);
             $("#orders-total-row").empty().html(response.data.total_row);
+            $("div.profitotaltooltip").qtip({
+                content : {
+                    text: function(event, api) {
+                        $.ajax({
+                            // url: href // Use href attribute as URL
+                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                        }).then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Loading...'; // Set some initial text
+                    }
+                },
+                position: {
+                    my: 'bottom right',
+                    at: 'middle left',
+                },
+                style: {
+                    classes: 'qtip-dark curpoints_tooltip'
+                },
+                show: {
+                    effect: function() { $(this).fadeIn(250); }
+                },
+                hide: {
+                    delay: 200,
+                    fixed: true, // <--- add this
+                    effect: function() { $(this).fadeOut(250); }
+                },
+            });
             initProfitOrderPagination();
         } else {
             show_error(response);
@@ -233,7 +265,11 @@ function pageProfitOrederCallback(page_index) {
         if (response.errors=='') {
             $("#curpagetab1").val(page_index);
             $('#tableinfotab1').empty().html(response.data.content);
-            jQuery.balloon.init();
+            try {
+                jQuery.balloon.init();
+            } catch (e) {
+                console.log('Ballone not init');
+            }
             init_profitorder_manage();
         } else {
             show_error(response);
@@ -272,9 +308,45 @@ function init_profitorder_manage() {
         var order_id=$(this).data('orderid');
         edit_item(order_id);
     });
+    $("div.lowprofittitle").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'right center',
+            at: 'center left',
+        },
+        style: {
+            classes: 'qtip-dark lowprofit_tooltip'
+        }
+    });
     $("div.profitorder_shipping_calc").find('i').unbind('click').click(function(){
         var order=$(this).parent('div.profitorder_shipping_calc').data('order');
         edit_shipping(order);
+    });
+    // Show by hover
+    $("div.multicolor").qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        style: {
+            classes : 'qtip-dark lowprofit_tooltip',
+        }
     });
 }
 
@@ -794,34 +866,34 @@ function totalyears() {
             $("div#totalcntorders").empty().html(response.data.content);
             $("div.profitordertotalarea").empty().html(response.data.content);
             $("div.profitordertotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
-            jQuery.balloon.init();
+            // jQuery.balloon.init();
             /* Hover */
-            // $(".orders_totals").find('div.totalorder').qtip({
-            //     content : {
-            //         text: function(event, api) {
-            //             $.ajax({
-            //                 url: api.elements.target.data('viewsrc') // Use href attribute as URL
-            //             }).then(function(content) {
-            //                 // Set the tooltip content upon successful retrieval
-            //                 api.set('content.text', content);
-            //             }, function(xhr, status, error) {
-            //                 // Upon failure... set the tooltip content to error
-            //                 api.set('content.text', status + ': ' + error);
-            //             });
-            //             return 'Loading...'; // Set some initial text
-            //         }
-            //     },
-            //     show: {
-            //         event: 'click'
-            //     },
-            //     /* position: {
-            //         my: 'bottom center',
-            //         at: 'middle center',
-            //     },*/
-            //     style: {
-            //         classes: 'orderdetails_tooltip'
-            //     },
-            // });
+            $(".orders_totals").find('div.totalorder').qtip({
+                content : {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                        }).then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Loading...'; // Set some initial text
+                    }
+                },
+                show: {
+                    event: 'click'
+                },
+                /* position: {
+                    my: 'bottom center',
+                    at: 'middle center',
+                },*/
+                style: {
+                    classes: 'orderdetails_tooltip'
+                },
+            });
             slidermargin=parseInt($("div.profitordertotalarea").css('margin-left'));
             init_profitorder_slider();
         } else {
