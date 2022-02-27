@@ -461,10 +461,8 @@ function manage_purchase_methods() {
     var url="/purchaseorders/purchasemethods_edit";
     $.post(url,{}, function (response) {
         if (response.errors=='') {
-            $("#pageModal").find('div.modal-dialog').css('width','304px');
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#modalManage").find('div.modal-body').empty().html(response.data.content);
+            $("#modalManage").modal({backdrop: 'static', keyboard: false, show: true});
             init_managemethods_edit();
         } else {
             show_error(response);
