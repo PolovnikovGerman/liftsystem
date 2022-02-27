@@ -447,8 +447,78 @@ function change_totalvendors(year) {
         if (response.errors=='') {
             $("div.paymethods").empty().html(response.data.content);
             init_vendorpayments();
+            // Manage Purchase methods
+            $(".manage-purchase-methods").unbind('click').click(function () {
+                manage_purchase_methods();
+            });
         } else {
             show_error(response);
         }
     },'json');
+}
+
+function manage_purchase_methods() {
+    var url="/purchaseorders/purchasemethods_edit";
+    $.post(url,{}, function (response) {
+        if (response.errors=='') {
+            $("#pageModal").find('div.modal-dialog').css('width','304px');
+            $("#pageModalLabel").empty().html(response.data.title);
+            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_managemethods_edit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_managemethods_edit() {
+    $(".purchmethodaction.deactivate").unbind('click').click(function () {
+        if (confirm('Deactivate purchase method ?')==true) {
+            var params = new Array();
+            params.push({name: 'method', value: $(this).data('method')});
+            params.push({name: 'action', value: 0});
+            var url = '/purchaseorders/purchasemethod_status';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#activemethods").empty().html(response.data.active);
+                    $("#inactivemethods").empty().html(response.data.inactive);
+                    init_managemethods_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+    $(".purchmethodaction.activate").unbind('click').click(function () {
+        if (confirm('Activate purchase method ?')==true) {
+            var params = new Array();
+            params.push({name: 'method', value: $(this).data('method')});
+            params.push({name: 'action', value: 1});
+            var url = '/purchaseorders/purchasemethod_status';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#activemethods").empty().html(response.data.active);
+                    $("#inactivemethods").empty().html(response.data.inactive);
+                    init_managemethods_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".addmethodbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'method', value: $(".addnewpurchase").val()});
+        var url = '/purchaseorders/purchasemethod_new';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#activemethods").empty().html(response.data.active);
+                $(".addnewpurchase").val('');
+                init_managemethods_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
