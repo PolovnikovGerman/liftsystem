@@ -389,4 +389,79 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function purchasemethods_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $mdata['title'] = 'PO Payment Methods';
+            $this->load->model('payments_model');
+            $active = $this->payments_model->get_purchase_methods(1);
+            $options = [];
+            $options['active']='';
+            if (count($active)>0) {
+                $options['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+            }
+            $inactive = $this->payments_model->get_purchase_methods(0);
+            $options['inactive']='';
+            if (count($inactive)>0) {
+                $options['inactive']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
+            }
+            $mdata['content'] = $this->load->view('fulfillment/manage_purchase_view', $options, true);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchasemethod_status() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $method_id = ifset($postdata,'method',0);
+            $status = ifset($postdata, 'action',0);
+
+            $this->load->model('payments_model');
+            $res = $this->payments_model->update_method_status($method_id, $status);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $active = $this->payments_model->get_purchase_methods(1);
+
+                $mdata['active']='';
+                if (count($active)>0) {
+                    $mdata['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+                }
+                $inactive = $this->payments_model->get_purchase_methods(0);
+                $mdata['inactive']='';
+                if (count($inactive)>0) {
+                    $mdata['inactive']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function purchasemethod_new() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata = $this->input->post();
+            $method_name = ifset($postdata,'method','');
+            $this->load->model('payments_model');
+            $res = $this->payments_model->purchase_method_add($method_name);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $active = $this->payments_model->get_purchase_methods(1);
+
+                $mdata['active']='';
+                if (count($active)>0) {
+                    $mdata['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
 }

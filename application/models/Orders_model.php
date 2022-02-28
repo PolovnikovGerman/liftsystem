@@ -2135,6 +2135,7 @@ Class Orders_model extends MY_Model
         $this->db->select('m.method_id, m.method_name, cntord.cnt');
         $this->db->from('purchase_methods m');
         $this->db->join('(select method_id, count(order_id) as cnt from ts_orders group by method_id) cntord','cntord.method_id=m.method_id','left');
+        $this->db->where('m.active',1);
         $this->db->order_by('m.method_name');
         $res=$this->db->get()->result_array();
         return $res;
