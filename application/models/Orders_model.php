@@ -6991,4 +6991,67 @@ Class Orders_model extends MY_Model
             'refunddir' => $refunddirec,
         );
     }
+    public function purchaseorder_totals($inner, $brand) {
+        // Get Not placed
+        $this->db->select('a.order_proj_status as status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_artstage a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $this->db->group_by('a.order_proj_status');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        if ($inner==1) {
+
+        }
+        $totals = $this->db->get()->result_array();
+        $totaltab = [];
+        $totaltab['toplace'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toapprove'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toproof'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        foreach ($totals as $total) {
+            if ($total['status']==$this->JUST_APPROVED) {
+                $totaltab['toplace']['qty'] += $total['totalqty'];
+                $totaltab['toplace']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->NEED_APPROVAL) {
+                $totaltab['toapprove']['qty'] += $total['totalqty'];
+                $totaltab['toapprove']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->TO_PROOF || $total['status']==$this->NO_ART) {
+                $totaltab['toproof']['qty'] += $total['totalqty'];
+                $totaltab['toproof']['total'] += $total['totalsum'];
+            }
+        }
+        return $totaltab;
+    }
+
+    public function purchase_fulltotals() {
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_artstage a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $res = $this->db-get()->row_array();
+
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_artstage a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        // $this->db->where('a.')
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $resfree = $this->db-get()->row_array();
+
+    }
+
 }

@@ -3951,7 +3951,13 @@ class Accounting extends MY_Controller
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
         */
+        $inner = 0;
+        $this->load->model('orders_model');
+        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+        $totals = [];
         $options=[
+            'totaltab' => $totaltab,
+            'inner' => $inner,
             'brand' => $brand,
             'top_menu' => $top_menu,
         ];
