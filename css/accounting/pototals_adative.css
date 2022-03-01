@@ -138,32 +138,60 @@
         font-weight: bold;
     }
     .pototalsdataview .manage-purchase-methods {
+        width: 3.7rem;
+        height: 2rem;
+        line-height: 1rem;
+        border-radius: 0.3rem;
     }
     .pototals-placetitle {
+        font-size: 0.8rem;
+        padding-top: 0.3rem;
     }
     .pototals-placefiltr {
+        font-size: 0.7rem;
+        padding-top: 0.4rem;
     }
     .pototals-placeresult {
+        font-size: 0.7rem;
     }
     .poplace-tablehead > div {
+        height: 1.3rem;
+        line-height: 1.3rem;
+        font-size: 0.75rem;
     }
     .addnonlistedpo {
+        font-size: 0.8rem;
     }
     .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
     }
     .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
     }
     .poplace-tablerow > div {
+        font-size: 0.7rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
     }
     .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
     }
     .poplace-rush {
+        font-size: 0.8rem;
     }
     .poplace-late {
+        padding-right: 0.15rem;
     }
     .poplace-tablerow .poplace-item {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
     }
     .poplace-tablerow .poplace-vendor {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
     }
 }
 /* Portrait tablets and medium desktops */
@@ -172,44 +200,73 @@
         font-size: 1.3rem;
     }
     .pototalsdataview .manage-purchase-methods {
+        width: 3.7rem;
+        height: 2rem;
+        line-height: 1rem;
+        border-radius: 0.3rem;
     }
     .pototals-placetitle {
+        font-size: 0.8rem;
+        padding-top: 0.3rem;
     }
     .pototals-placefiltr {
+        font-size: 0.7rem;
+        padding-top: 0.4rem;
     }
     .pototals-placeresult {
+        font-size: 0.7rem;
     }
     .poplace-tablehead > div {
+        height: 1.3rem;
+        line-height: 1.3rem;
+        font-size: 0.75rem;
     }
     .addnonlistedpo {
+        font-size: 0.8rem;
     }
     .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
     }
     .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
     }
     .poplace-tablerow > div {
+        font-size: 0.7rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
     }
     .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
     }
     .poplace-rush {
+        font-size: 0.8rem;
     }
     .poplace-late {
+        padding-right: 0.15rem;
     }
     .poplace-tablerow .poplace-item {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
     }
     .poplace-tablerow .poplace-vendor {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
     }
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
     .pototalsdataview .pagetitle {
-        font-size: 1.3rem;
+        font-size: 1.7rem;
     }
     .pototalsdataview .manage-purchase-methods {
-        width: 3.9rem;
-        height: 2.2rem;
-        line-height: 1.1rem;
-        border-radius: 0.4rem;
+        width: 4.9rem;
+        height: 2.5rem;
+        line-height: 1.25rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
     }
     .pototals-placetitle {
         font-size: 1rem;
@@ -223,14 +280,14 @@
         font-size: 0.8rem;
     }
     .poplace-tablehead > div {
-        height: 1.6rem;
-        line-height: 1.6rem;
-        font-size: 0.8rem;
+        height: 1.8rem;
+        line-height: 1.8rem;
+        font-size: 0.9rem;
     }
     .addnonlistedpo {
-        font-size: 0.95rem;
-        height: 1.4rem;
-        line-height: 1.4rem;
+        font-size: 1rem;
+        height: 2rem;
+        line-height: 2rem;
     }
     .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
         font-size: 1.1rem;
@@ -239,7 +296,7 @@
         font-size: 0.9rem;
     }
     .poplace-tablerow > div {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         height: 1.5625rem;
         line-height: 1.625rem;
     }
@@ -250,18 +307,19 @@
         margin-top: 0.15rem;
     }
     .poplace-rush {
+        padding-left: 0.15rem;
         font-size: 0.9rem;
     }
     .poplace-late {
-        padding-right: 0.2rem;
+        padding-right: 0.25rem;
     }
     .poplace-tablerow .poplace-item {
-        padding-left: 0.2rem;
-        padding-right: 0.2rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
     }
     .poplace-tablerow .poplace-vendor {
-        padding-left: 0.2rem;
-        padding-right: 0.2rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
     }
 }
 /* Landscape phones and portrait tablets */

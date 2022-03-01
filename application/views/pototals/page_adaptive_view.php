@@ -3,16 +3,16 @@
     <div class="pototalsdataview">
         <div class="pageheader">
             <div class="row pt-2">
-                <div class="col-7">
+                <div class="col-7 col-lg-5">
                     <div class="pagetitle">PO TOTALS</div>
                 </div>
-                <div class="col-5">
+                <div class="col-5 col-lg-5">
                     <div class="manage-purchase-methods">Manage Methods</div>
                 </div>
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-3 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
                 <div class="row">
                     <div class="col-4 pototals-placetitle">POs to Place</div>
                     <div class="col-4 pototals-placefiltr">
