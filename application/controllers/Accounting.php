@@ -70,8 +70,8 @@ class Accounting extends MY_Controller
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
             } elseif ($row['item_link']=='#purchaseordersview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+                $head['styles'][]=array('style'=>'/css/accounting/pototals_adative.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pototals_adative.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -3901,7 +3901,7 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_purchaseorders_view($brand, $top_menu) {
-        $this->load->model('orders_model');
+        /* $this->load->model('orders_model');
         $this->load->model('payments_model');
         $this->load->model('vendors_model');
         // $search_form
@@ -3950,6 +3950,12 @@ class Accounting extends MY_Controller
             'vendors' => $vendors,
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+        */
+        $options=[
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+        return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
     }
 
     private function _prepare_accreceiv_view($brand, $top_menu) {

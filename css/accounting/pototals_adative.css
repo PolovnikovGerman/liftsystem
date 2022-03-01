@@ -1,0 +1,457 @@
+/* CSS for page PO totals */
+.pototalsdataview .pagetitle {
+    font-weight: bold;
+}
+.pototalsdataview .manage-purchase-methods {
+    background: #5252ff;
+    color: #ffffff;
+    font-size: 0.75rem;
+    text-align: center;
+    float: right;
+}
+.pototals-placetitle {
+    font-weight: 600;
+}
+.pototals-placefiltr {
+    font-style: italic;
+}
+.pototals-placeresult span {
+    font-weight: 600;
+}
+.poplace-tablehead {
+    display: inline-flex;
+}
+.poplace-tablehead > div {
+    background: #545454;
+    color: #ffffff;
+    text-align: center;
+    font-weight: 600;
+}
+.poplace-tablehead .poplace-timehead {
+    width: 17.5%;
+    text-align: right;
+    padding-right: 0.3rem;
+}
+.poplace-tablehead .poplace-orderhead {
+    width: 13.7%;
+}
+.poplace-tablehead .poplace-itemhead {
+    width: 27.7%;
+}
+.poplace-tablehead .poplace-vendorhead {
+    width: 16.9%;
+}
+.poplace-tablehead .poplace-esttotalhead {
+    width: 14%;
+}
+.poplace-tablehead .poplace-actionhead {
+    width: 10.2%;
+}
+.addnonlistedpo {
+    max-width: 60%;
+    background: #5e5eff;
+    color: #ffffff;
+    padding: 0 1rem;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 0.5rem;
+}
+.pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+    color: #078f00;
+    float: left;
+    width: 75.8%;
+    font-weight: 600;
+    font-style: italic;
+}
+.pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+    font-weight: 600;
+    width: 24%;
+    float: left;
+}
+.poplace-unsigntablebody, .poplace-approvtablebody, .poplace-prooftablebody {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+.poplace-tablerow {
+    display: inline-flex;
+    width: 100%;
+}
+.poplace-tablerow .poplace-time {
+    border-right: 1px #000000 solid;
+    width: 17.5%;
+}
+.poplace-tablerow .poplace-order {
+    border-right: 1px #000000 solid;
+    text-align: center;
+    color: #0000ff;
+    font-weight: 600;
+    width: 13.7%;
+}
+.poplace-tablerow .poplace-item {
+    border-right: 1px #000000 solid;
+    width: 27.7%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.poplace-tablerow .poplace-item.customitem {
+    font-weight: 600;
+}
+.poplace-tablerow .poplace-vendor {
+    border-right: 1px #000000 solid;
+    width: 16.9%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.poplace-tablerow .poplace-esttotal {
+    border-right: 1px #000000 solid;
+    width: 14%;
+    text-align: center;
+}
+.poplace-tablerow .poplace-poaction {
+    width: 10.2%;
+}
+.poplace-poactionbtn {
+    color: #ffffff;
+    background: #5757ff;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 0.3rem;
+}
+.poplace-rush {
+    color: #ff0000;
+    width: 7.5%;
+}
+.poplace-late {
+    border-right: 1px #000000 solid;
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+    width: 10%;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .pototalsdataview .pagetitle {
+        font-weight: bold;
+    }
+    .pototalsdataview .manage-purchase-methods {
+    }
+    .pototals-placetitle {
+    }
+    .pototals-placefiltr {
+    }
+    .pototals-placeresult {
+    }
+    .poplace-tablehead > div {
+    }
+    .addnonlistedpo {
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+    }
+    .poplace-tablerow > div {
+    }
+    .poplace-poactionbtn {
+    }
+    .poplace-rush {
+    }
+    .poplace-late {
+    }
+    .poplace-tablerow .poplace-item {
+    }
+    .poplace-tablerow .poplace-vendor {
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .pototalsdataview .pagetitle {
+        font-size: 1.3rem;
+    }
+    .pototalsdataview .manage-purchase-methods {
+    }
+    .pototals-placetitle {
+    }
+    .pototals-placefiltr {
+    }
+    .pototals-placeresult {
+    }
+    .poplace-tablehead > div {
+    }
+    .addnonlistedpo {
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+    }
+    .poplace-tablerow > div {
+    }
+    .poplace-poactionbtn {
+    }
+    .poplace-rush {
+    }
+    .poplace-late {
+    }
+    .poplace-tablerow .poplace-item {
+    }
+    .poplace-tablerow .poplace-vendor {
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .pototalsdataview .pagetitle {
+        font-size: 1.3rem;
+    }
+    .pototalsdataview .manage-purchase-methods {
+        width: 3.9rem;
+        height: 2.2rem;
+        line-height: 1.1rem;
+        border-radius: 0.4rem;
+    }
+    .pototals-placetitle {
+        font-size: 1rem;
+        padding-top: 0.7rem;
+    }
+    .pototals-placefiltr {
+        font-size: 0.8rem;
+        padding-top: 0.85rem;
+    }
+    .pototals-placeresult {
+        font-size: 0.8rem;
+    }
+    .poplace-tablehead > div {
+        height: 1.6rem;
+        line-height: 1.6rem;
+        font-size: 0.8rem;
+    }
+    .addnonlistedpo {
+        font-size: 0.95rem;
+        height: 1.4rem;
+        line-height: 1.4rem;
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
+    }
+    .poplace-tablerow > div {
+        font-size: 0.75rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
+    }
+    .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
+    }
+    .poplace-rush {
+        font-size: 0.9rem;
+    }
+    .poplace-late {
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-item {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-vendor {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .pototalsdataview .pagetitle {
+        font-size: 1.3rem;
+    }
+    .pototalsdataview .manage-purchase-methods {
+        width: 3.9rem;
+        height: 2.2rem;
+        line-height: 1.1rem;
+        border-radius: 0.4rem;
+    }
+    .pototals-placetitle {
+        font-size: 1rem;
+        padding-top: 0.7rem;
+    }
+    .pototals-placefiltr {
+        font-size: 0.8rem;
+        padding-top: 0.85rem;
+    }
+    .pototals-placeresult {
+        font-size: 0.8rem;
+    }
+    .poplace-tablehead > div {
+        height: 1.6rem;
+        line-height: 1.6rem;
+        font-size: 0.8rem;
+    }
+    .addnonlistedpo {
+        font-size: 0.95rem;
+        height: 1.4rem;
+        line-height: 1.4rem;
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
+    }
+    .poplace-tablerow > div {
+        font-size: 0.75rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
+    }
+    .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
+    }
+    .poplace-rush {
+        font-size: 0.9rem;
+    }
+    .poplace-late {
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-item {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-vendor {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+}
+/* Surface Duo */
+@media (max-width: 540px) {
+    .pototalsdataview .pagetitle {
+        font-size: 1.3rem;
+    }
+    .pototalsdataview .manage-purchase-methods {
+        width: 3.9rem;
+        height: 2.2rem;
+        line-height: 1.1rem;
+        border-radius: 0.4rem;
+    }
+    .pototals-placetitle {
+        font-size: 1rem;
+        padding-top: 0.7rem;
+    }
+    .pototals-placefiltr {
+        font-size: 0.8rem;
+        padding-top: 0.85rem;
+    }
+    .pototals-placeresult {
+        font-size: 0.8rem;
+    }
+    .poplace-tablehead > div {
+        height: 1.6rem;
+        line-height: 1.6rem;
+        font-size: 0.8rem;
+    }
+    .addnonlistedpo {
+        font-size: 0.95rem;
+        height: 1.4rem;
+        line-height: 1.4rem;
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
+    }
+    .poplace-tablerow > div {
+        font-size: 0.75rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
+    }
+    .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
+    }
+    .poplace-rush {
+        font-size: 0.9rem;
+    }
+    .poplace-late {
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-item {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+    .poplace-tablerow .poplace-vendor {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .pototalsdataview .pagetitle {
+        font-size: 1.3rem;
+    }
+    .pototalsdataview .manage-purchase-methods {
+        width: 3.7rem;
+        height: 2rem;
+        line-height: 1rem;
+        border-radius: 0.3rem;
+    }
+    .pototals-placetitle {
+        font-size: 0.8rem;
+        padding-top: 0.3rem;
+    }
+    .pototals-placefiltr {
+        font-size: 0.7rem;
+        padding-top: 0.4rem;
+    }
+    .pototals-placeresult {
+        font-size: 0.7rem;
+    }
+    .poplace-tablehead > div {
+        height: 1.3rem;
+        line-height: 1.3rem;
+        font-size: 0.75rem;
+    }
+    .addnonlistedpo {
+        font-size: 0.8rem;
+    }
+    .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+        font-size: 1.1rem;
+    }
+    .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+        font-size: 0.9rem;
+    }
+    .poplace-tablerow > div {
+        font-size: 0.7rem;
+        height: 1.5625rem;
+        line-height: 1.625rem;
+    }
+    .poplace-poactionbtn {
+        max-width: 77%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.15rem;
+    }
+    .poplace-rush {
+        font-size: 0.8rem;
+    }
+    .poplace-late {
+        padding-right: 0.15rem;
+    }
+    .poplace-tablerow .poplace-item {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
+    }
+    .poplace-tablerow .poplace-vendor {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
+    }
+}
+
