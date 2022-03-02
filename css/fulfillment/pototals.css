@@ -529,6 +529,18 @@ textarea.poreasondata {
     line-height: 17px!important;
 }
 /* Manage purchase methods */
+#modalManage .modal-dialog {
+    width: 304px;
+}
+#modalManage .modal-header {
+    background: #000066;
+    color: #ffffff;
+    font-size: 16px;
+}
+#modalManage .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
 .manage-purchase-area {
     width: 273px;
 }

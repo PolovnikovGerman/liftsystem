@@ -1059,4 +1059,24 @@ class Test extends CI_Controller
 
     }
 
+
+    public function markviewed() {
+        $this->db->select('o.order_id, o.order_num');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where('a.order_proj_status','01_notplaced');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id', $result['order_id']);
+            $ordres=$this->db->get()->row_array();
+            $this->db->set('order_artview', $ordres['aprrovview']);
+            $this->db->set('order_placed', $ordres['placeord']);
+            $this->db->where('order_id', $result['order_id']);
+            $this->db->update('ts_orders');
+            echo 'Order # '.$result['order_num'].PHP_EOL;
+        }
+    }
 }
