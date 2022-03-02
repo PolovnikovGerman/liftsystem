@@ -399,14 +399,14 @@ class Purchaseorders extends MY_Controller
             $options = [];
             $options['active']='';
             if (count($active)>0) {
-                $options['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+                $options['active']=$this->load->view('pototals/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
             }
             $inactive = $this->payments_model->get_purchase_methods(0);
             $options['inactive']='';
             if (count($inactive)>0) {
-                $options['inactive']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
+                $options['inactive']=$this->load->view('pototals/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
             }
-            $mdata['content'] = $this->load->view('fulfillment/manage_purchase_view', $options, true);
+            $mdata['content'] = $this->load->view('pototals/manage_purchase_view', $options, true);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -428,12 +428,12 @@ class Purchaseorders extends MY_Controller
 
                 $mdata['active']='';
                 if (count($active)>0) {
-                    $mdata['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+                    $mdata['active']=$this->load->view('pototals/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
                 }
                 $inactive = $this->payments_model->get_purchase_methods(0);
                 $mdata['inactive']='';
                 if (count($inactive)>0) {
-                    $mdata['inactive']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
+                    $mdata['inactive']=$this->load->view('pototals/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -455,7 +455,7 @@ class Purchaseorders extends MY_Controller
 
                 $mdata['active']='';
                 if (count($active)>0) {
-                    $mdata['active']=$this->load->view('fulfillment/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
+                    $mdata['active']=$this->load->view('pototals/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
