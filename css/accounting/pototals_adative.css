@@ -59,6 +59,7 @@
     margin: 0 auto;
     text-align: center;
     border-radius: 0.5rem;
+    cursor: pointer;
 }
 .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
     color: #078f00;
@@ -136,6 +137,7 @@
     margin: 0 auto;
     text-align: center;
     border-radius: 0.3rem;
+    cursor: pointer;
 }
 .poplace-rush {
     color: #ff0000;

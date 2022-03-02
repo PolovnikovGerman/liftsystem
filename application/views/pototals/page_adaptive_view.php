@@ -54,12 +54,6 @@
                             <div class="poplace-unsigntablebody"></div>
                         </div>
                     </div>
-<!--                --><?php //} else { ?>
-<!--                <div class="row mt-1">-->
-<!--                    <div class="col-12">-->
-<!--                        <div class="poplace-unsigntablebody"></div>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <?php } ?>
                 <?php if ($totaltab['toapprove']['qty'] > 0 ) { ?>
                     <div class="row mt-2">
