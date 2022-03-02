@@ -9,6 +9,9 @@
     text-align: center;
     float: right;
 }
+.pototals-toplacehead {
+    margin-bottom: 1.25rem;
+}
 .pototals-placetitle {
     font-weight: 600;
 }
