@@ -3954,9 +3954,10 @@ class Accounting extends MY_Controller
         $inner = 0;
         $this->load->model('orders_model');
         $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
-        $totals = [];
+        $totals = $this->orders_model->purchase_fulltotals($brand);
         $options=[
             'totaltab' => $totaltab,
+            'totals' => $totals,
             'inner' => $inner,
             'brand' => $brand,
             'top_menu' => $top_menu,

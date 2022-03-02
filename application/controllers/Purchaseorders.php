@@ -463,5 +463,36 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function pototals_details() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $inner = ifset($postdata,'inner', 0);
+            $this->load->model('orders_model');
+            $unsign = $this->orders_model->purchaseorder_details('unsign', $inner, $brand);
+            $approv = $this->orders_model->purchaseorder_details('approved', $inner, $brand);
+            $proof = $this->orders_model->purchaseorder_details('proof', $inner, $brand);
+            $unsignview = $approvview = $needproofview = '';
+            if (count($unsign) > 0) {
+                $unsignview = $this->load->view('pototals/pototals_details_view',['datas' => $unsign], TRUE);
+//            } else {
+//                $unsignview = $this->load->view('pototals/test_table_view.php',[],TRUE);
+            }
+            if (count($approv) > 0) {
+                $approvview = $this->load->view('pototals/pototals_details_view',['datas' => $approv], TRUE);
+            }
+            if (count($proof) > 0) {
+                $needproofview = $this->load->view('pototals/pototals_details_view',['datas' => $proof], TRUE);
+            }
+            $mdata['unsignview'] = $unsignview;
+            $mdata['approvview'] = $approvview;
+            $mdata['needproofview'] = $needproofview;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
 }
