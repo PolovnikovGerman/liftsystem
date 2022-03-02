@@ -99,7 +99,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.poplace-tablerow .poplace-item.customitem {
+.poplace-tablerow .poplace-item.customitem, .poplace-tablerow .poplace-vendor.customitem {
     font-weight: 600;
 }
 .poplace-tablerow .poplace-vendor {
