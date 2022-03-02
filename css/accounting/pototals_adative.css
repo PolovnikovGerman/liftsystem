@@ -1,4 +1,18 @@
 /* CSS for page PO totals */
+.poplace-approvtablebody {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    flex-direction: column;
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    -o-flex-wrap: wrap;
+    flex-wrap: wrap;
+    display: flex;
+    align-content: flex-start;
+}
 .pototalsdataview .pagetitle {
     font-weight: bold;
 }
