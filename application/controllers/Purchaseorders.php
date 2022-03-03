@@ -174,7 +174,7 @@ class Purchaseorders extends MY_Controller
                     'reason'=>'',
                 );
                 $order_data=array();
-                $order_view=$this->load->view('fulfillment/purchase_orderinput_view', array(), TRUE);
+                $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {
                 $res=$this->payments_model->get_purchase_order($amount_id);
                 $error = $res['msg'];
@@ -214,7 +214,7 @@ class Purchaseorders extends MY_Controller
                     'editpo_view'=>$editpo_view,
                 );
                 // $content=$this->load->view('finance/edit_purchasenotplaced_view',$options,TRUE);
-                $content=$this->load->view('fulfillment/purchase_orderedit_view',$options,TRUE);
+                $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
                 $mdata['content']=$content;
                 $mdata['title'] = 'Purchase for NOT Placed Order';
             }

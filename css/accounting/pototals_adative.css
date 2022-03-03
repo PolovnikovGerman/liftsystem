@@ -150,6 +150,33 @@
     color: #ff0000;
     width: 10%;
 }
+.purchaseorder_popuparea {
+
+}
+.purchaseorder_popuparea fieldset {
+    border: 1px solid #c7c7c7;
+    border-radius: 0.5rem;
+}
+.purchaseorder_popuparea legend {
+    color: #c7c7c7;
+    font-size: 0.8125rem;
+    float: left;
+    margin-top: -0.625rem;
+    background-color: #fff;
+    margin-left: 0.5625rem;
+    width: unset;
+    max-width: unset;
+    margin-bottom: 0;
+    border-bottom: 0;
+    padding: 0 0.3rem;
+}
+.purchaseorder_popuparea .purchase-orderedit {
+    width: 95%;
+    margin: 0 2.5%;
+}
+input.poeditinpt {
+    width: 100%;
+}
 /* Edit Purchase Methods */
 #modalManage .modal-dialog {
 }
@@ -750,6 +777,11 @@ input.addnewpurchase {
         height: 1.1rem;
         line-height: 1.1rem;
         margin-top: 0.15rem;
+    }
+    /* Popup Purchase Order */
+    h4#pageModalLabel {
+        font-weight: 500;
+        font-size: 1.2rem;
     }
 }
 

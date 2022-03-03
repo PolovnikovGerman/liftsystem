@@ -7,10 +7,10 @@ function init_poorders_content() {
     $(".manage-purchase-methods").unbind('click').click(function () {
         init_manage_methods();
     });
-    $(".pototals-placefiltr").find('i').ubind('click').click(function () {
+    $(".pototals-placefiltr").find('i').unbind('click').click(function () {
         change_inner_filter();
     });
-    $(".addnonlistedpo").unbind('click').click(function () {
+    $(".addnonlistedpo").unbind('click').unbind('click').click(function () {
         add_newamount();
     });
 }
@@ -126,12 +126,165 @@ function add_newamount() {
     var url="/purchaseorders/purchaseorder_edit";
     $.post(url, {'amount_id': amountid}, function(response){
         if (response.errors=='') {
-            $("#pageModal").find('div.modal-dialog').css('width','625px');
+            /* $("#pageModal").find('div.modal-dialog').css('width','625px'); */
             $("#pageModalLabel").empty().html(response.data.title);
             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_poedit();
         } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+/* PO EDIT FUnctions */
+/* Common Edit INIT */
+function init_poedit() {
+    // Change Ship Check
+    // Add Order Data
+    if ($("input#newpoorder").length>0) {
+        // Lock Input fields
+        lock_poeditflds(1);
+        $("input#newpoorder").unbind('change').change(function(){
+            order_purchase_details($(this).val());
+        });
+    } else {
+        lock_poeditflds(0);
+    }
+    $("input#amount_sum").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountsave();
+        save_amntdetails('amount_sum', newval);
+    });
+    $("input#po_shipping").unbind('click').click(function(){
+        var value=0;
+        if ($(this).prop('checked')==true) {
+            value=1;
+        }
+        show_amountsave();
+        save_amntdetails('is_shipping', value);
+    });
+    $("select#vendor_id").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountsave();
+        save_amntdetails('vendor_id', newval);
+    })
+    $("select#method_id").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountsave();
+        save_amntdetails('method_id', newval);
+    });
+    $("textarea#change_comment").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountsave();
+        save_amntdetails('comment', newval);
+    });
+    $("textarea#po_comment").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountsave();
+        save_amntdetails('low_profit', newval);
+    });
+    $("div.poamount-save").unbind('click').click(function(){
+        save_amount();
+    });
+}
+
+/* Lock/Unlock PO Edit fields */
+function lock_poeditflds(type) {
+    if (type==1) {
+        $("input#amount_date").prop('readonly',true);
+        $("input#amount_sum").prop('readonly',true);
+        $("input#po_shipping").prop('disabled',true);
+        $("select#vendor_id").prop('disabled',true);
+        $("select#method_id").prop('disabled',true);
+        $("textarea#po_comment").prop('readonly',true);
+        $("textarea#po_comment").prop('readonly',true);
+    } else {
+        $("input#amount_date").prop('readonly',false);
+        $("input#amount_sum").prop('readonly',false);
+        $("input#po_shipping").prop('disabled',false);
+        $("select#vendor_id").prop('disabled',false);
+        $("select#method_id").prop('disabled',false);
+        $("textarea#po_comment").prop('readonly',false);
+        $("textarea#po_comment").prop('readonly',false);
+        // $("div.poamount-shippinginput").jqTransform();
+        // $("input#po_shipping").ezMark();
+        $("input#amount_date").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+        }).on("change", function() {
+            show_amountsave();
+            save_amntdetails('amount_date', $(this).val());
+        });
+    }
+}
+
+/* Check Order # in mode ADD PO */
+function order_purchase_details(order_num) {
+    var url="/purchaseorders/purchaseorder_details";
+    $.post(url, {'order_num':order_num}, function(response){
+        if (response.errors=='') {
+            $("div#orderdataarea").empty().html(response.data.content);
+            lock_poeditflds(0);
+            show_amountsave();
+        } else {
+            show_error(response);
+            $('input#newpoorder').val('').focus();
+        }
+    }, 'json');
+}
+
+/* Show Save Button () */
+function show_amountsave() {
+    $("div.poamount-save").show();
+}
+/* Save in session AMOUNT DETAILS */
+function save_amntdetails(fldname, newval) {
+    // STOPED THEIR
+    var url="/purchaseorders/purchaseorder_amountchange";
+    $.post(url, {'fld': fldname, 'value':newval}, function(response){
+        if (response.errors=='') {
+            if (response.data.profit_class) {
+                // poprofit-data
+                // $("div.profit_class").removeClass()
+                $("div.poprofit-data").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+                $("div.poprofitperc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+            }
+            if (response.data.profit_perc) {
+                $("div.poprofitperc").empty().html(response.data.profit_perc);
+            }
+            if (response.data.profit) {
+                $("div.poprofit-data").empty().html(response.data.profit);
+            }
+            $("div#lowprofitpercreasonarea").empty().html(response.data.reason);
+            $("textarea#po_comment").unbind('change').change(function(){
+                var newval=$(this).val();
+                show_amountsave();
+                save_amntdetails('reason', newval);
+            });
+            $("textarea#po_comment").unbind('change').change(function(){
+                var newval=$(this).val();
+                show_amountsave();
+                save_amntdetails('reason', newval);
+            });
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+/* Save Amount DATA to DB */
+function save_amount() {
+    var url="/purchaseorders/purchaseorder_amountsave";
+    $("#loader").show();
+    var data = new Array();
+    data.push({name:'brand', value: $("#purchaseordersbrand").val()});
+    $.post(url, data, function(response){
+        if (response.errors=='') {
+            $("input#pototal_total").val(response.data.totals);
+            $("#pageModal").modal('hide');
+            initPurchaseOrderPagination();
+        } else {
+            $("#loader").hide();
             show_error(response);
         }
     }, 'json');
