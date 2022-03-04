@@ -126,10 +126,8 @@ function add_newamount() {
     var url="/purchaseorders/purchaseorder_edit";
     $.post(url, {'amount_id': amountid}, function(response){
         if (response.errors=='') {
-            /* $("#pageModal").find('div.modal-dialog').css('width','625px'); */
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#modalEditpurchase").find('div.modal-body').empty().html(response.data.content);
+            $("#modalEditpurchase").modal({backdrop: 'static', keyboard: false, show: true});
             init_poedit();
         } else {
             show_error(response);
@@ -192,24 +190,20 @@ function init_poedit() {
 /* Lock/Unlock PO Edit fields */
 function lock_poeditflds(type) {
     if (type==1) {
-        $("input#amount_date").prop('readonly',true);
-        $("input#amount_sum").prop('readonly',true);
-        $("input#po_shipping").prop('disabled',true);
-        $("select#vendor_id").prop('disabled',true);
-        $("select#method_id").prop('disabled',true);
-        $("textarea#po_comment").prop('readonly',true);
-        $("textarea#po_comment").prop('readonly',true);
+        $("input.poamntdateinpt").prop('readonly',true);
+        $("input.amountvalueinpt").prop('readonly',true);
+        $("input.po_shipping").prop('disabled',true);
+        $("select.amountvendorselect").prop('disabled',true);
+        $("select.amountmethodselect").prop('disabled',true);
+        $("textarea.poreasondata").prop('readonly',true);
     } else {
-        $("input#amount_date").prop('readonly',false);
-        $("input#amount_sum").prop('readonly',false);
-        $("input#po_shipping").prop('disabled',false);
-        $("select#vendor_id").prop('disabled',false);
-        $("select#method_id").prop('disabled',false);
-        $("textarea#po_comment").prop('readonly',false);
-        $("textarea#po_comment").prop('readonly',false);
-        // $("div.poamount-shippinginput").jqTransform();
-        // $("input#po_shipping").ezMark();
-        $("input#amount_date").datepicker({
+        $("input.poamntdateinpt").prop('readonly',false);
+        $("input.amountvalueinpt").prop('readonly',false);
+        $("input.po_shipping").prop('disabled',false);
+        $("select.amountvendorselect").prop('disabled',false);
+        $("select.amountmethodselect").prop('disabled',false);
+        $("textarea.poreasondata").prop('readonly',false);
+        $("input#podateinpt").datepicker({
             autoclose: true,
             todayHighlight: true,
         }).on("change", function() {
@@ -225,6 +219,14 @@ function order_purchase_details(order_num) {
     $.post(url, {'order_num':order_num}, function(response){
         if (response.errors=='') {
             $("div#orderdataarea").empty().html(response.data.content);
+            $(".orderitemnameplace").empty().html(response.data.item);
+            $(".amountprofitval").empty().html(response.data.profitval);
+            $(".amountprofitprc").empty().html(response.data.profitprc);
+            $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+            $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+            if (parseInt(response.data.vendor_id)>0) {
+                $(".amountvendorselect").val(response.data.vendor_id);
+            }
             lock_poeditflds(0);
             show_amountsave();
         } else {

@@ -173,7 +173,13 @@ class Purchaseorders extends MY_Controller
                     'lowprofit'=>'',
                     'reason'=>'',
                 );
-                $order_data=array();
+                $order_data=array(
+                    'item_name' => '',
+                    'profit_class' => '',
+                    'profit' => '',
+                    'is_shipping' => 0,
+                    ''
+                );
                 $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {
                 $res=$this->payments_model->get_purchase_order($amount_id);
@@ -213,10 +219,9 @@ class Purchaseorders extends MY_Controller
                     'lowprofit_view'=>$lowprofit_view,
                     'editpo_view'=>$editpo_view,
                 );
-                // $content=$this->load->view('finance/edit_purchasenotplaced_view',$options,TRUE);
                 $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
                 $mdata['content']=$content;
-                $mdata['title'] = 'Purchase for NOT Placed Order';
+                $mdata['title'] = 'Enter PO Value';
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -243,7 +248,18 @@ class Purchaseorders extends MY_Controller
                     $order_data=$this->orders_model->get_order_detail($res['order_id']);
                     $amount['order_id']=$res['order_id'];
                     $amount['order_num']=$order_data['order_num'];
-                    $mdata['content']=$this->load->view('fulfillment/purchase_orderdata_view', $order_data, TRUE);
+                    $amount['vendor_id'] = $order_data['vendor_id'];
+                    $mdata['vendor_id'] = $order_data['vendor_id'];
+                    $mdata['profitval'] = (empty()$order_data['profit'];
+                    $mdata['profitclass'] = $order_data['profit_class'];
+                    if ($order_data['profit_class']=='projprof') {
+                        $mdata['profitprc']='PROJ';
+                    } else {
+                        $mdata['profitprc']=$order_data['profit_perc'];
+                    }
+                    $mdata['content']=$this->load->view('pototals/purchase_orderdata_view', $order_data, TRUE);
+                    $mdata['item']=$order_data['order_qty'].' '.$order_data['order_items'];
+
                     // Save new Data To session
                     $newdata=array(
                         'amount'=>$amount,
