@@ -129,6 +129,14 @@ function add_newamount() {
             $("#modalEditpurchase").find('div.modal-body').empty().html(response.data.content);
             $("#modalEditpurchase").modal({backdrop: 'static', keyboard: false, show: true});
             init_poedit();
+            // Date picker
+            $("input#podateinpt").datepicker({
+                autoclose: true,
+                todayHighlight: true,
+            }).on("change", function() {
+                show_amountsave();
+                save_amntdetails('amount_date', $(this).val());
+            });
         } else {
             show_error(response);
         }
@@ -149,12 +157,12 @@ function init_poedit() {
     } else {
         lock_poeditflds(0);
     }
-    $("input#amount_sum").unbind('change').change(function(){
+    $("input.amountvalueinpt").unbind('change').change(function(){
         var newval=$(this).val();
         show_amountsave();
         save_amntdetails('amount_sum', newval);
     });
-    $("input#po_shipping").unbind('click').click(function(){
+    $("input.po_shipping").unbind('click').click(function(){
         var value=0;
         if ($(this).prop('checked')==true) {
             value=1;
@@ -162,12 +170,12 @@ function init_poedit() {
         show_amountsave();
         save_amntdetails('is_shipping', value);
     });
-    $("select#vendor_id").unbind('change').change(function(){
+    $("select.amountvendorselect").unbind('change').change(function(){
         var newval=$(this).val();
         show_amountsave();
         save_amntdetails('vendor_id', newval);
     })
-    $("select#method_id").unbind('change').change(function(){
+    $("select.amountmethodselect").unbind('change').change(function(){
         var newval=$(this).val();
         show_amountsave();
         save_amntdetails('method_id', newval);
@@ -191,25 +199,18 @@ function init_poedit() {
 function lock_poeditflds(type) {
     if (type==1) {
         $("input.poamntdateinpt").prop('readonly',true);
-        $("input.amountvalueinpt").prop('readonly',true);
+        // $("input.amountvalueinpt").prop('readonly',true);
         $("input.po_shipping").prop('disabled',true);
         $("select.amountvendorselect").prop('disabled',true);
         $("select.amountmethodselect").prop('disabled',true);
         $("textarea.poreasondata").prop('readonly',true);
     } else {
         $("input.poamntdateinpt").prop('readonly',false);
-        $("input.amountvalueinpt").prop('readonly',false);
+        // $("input.amountvalueinpt").prop('readonly',false);
         $("input.po_shipping").prop('disabled',false);
         $("select.amountvendorselect").prop('disabled',false);
         $("select.amountmethodselect").prop('disabled',false);
         $("textarea.poreasondata").prop('readonly',false);
-        $("input#podateinpt").datepicker({
-            autoclose: true,
-            todayHighlight: true,
-        }).on("change", function() {
-            show_amountsave();
-            save_amntdetails('amount_date', $(this).val());
-        });
     }
 }
 
@@ -226,6 +227,11 @@ function order_purchase_details(order_num) {
             $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
             if (parseInt(response.data.vendor_id)>0) {
                 $(".amountvendorselect").val(response.data.vendor_id);
+            }
+            if (parseInt(response.data.is_shipping)==1) {
+                $("input.po_shipping").prop('checked',true);
+            } else {
+                $("input.po_shipping").prop('checked',false);
             }
             lock_poeditflds(0);
             show_amountsave();
@@ -247,16 +253,14 @@ function save_amntdetails(fldname, newval) {
     $.post(url, {'fld': fldname, 'value':newval}, function(response){
         if (response.errors=='') {
             if (response.data.profit_class) {
-                // poprofit-data
-                // $("div.profit_class").removeClass()
-                $("div.poprofit-data").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
-                $("div.poprofitperc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+                $("div.amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+                $("div.amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
             }
             if (response.data.profit_perc) {
-                $("div.poprofitperc").empty().html(response.data.profit_perc);
+                $("div.amountprofitprc").empty().html(response.data.profit_perc);
             }
             if (response.data.profit) {
-                $("div.poprofit-data").empty().html(response.data.profit);
+                $("div.amountprofitval").empty().html(response.data.profit);
             }
             $("div#lowprofitpercreasonarea").empty().html(response.data.reason);
             $("textarea#po_comment").unbind('change').change(function(){
@@ -264,11 +268,11 @@ function save_amntdetails(fldname, newval) {
                 show_amountsave();
                 save_amntdetails('reason', newval);
             });
-            $("textarea#po_comment").unbind('change').change(function(){
-                var newval=$(this).val();
-                show_amountsave();
-                save_amntdetails('reason', newval);
-            });
+            // $("textarea#po_comment").unbind('change').change(function(){
+            //     var newval=$(this).val();
+            //     show_amountsave();
+            //     save_amntdetails('reason', newval);
+            // });
         } else {
             show_error(response);
         }
@@ -277,16 +281,21 @@ function save_amntdetails(fldname, newval) {
 /* Save Amount DATA to DB */
 function save_amount() {
     var url="/purchaseorders/purchaseorder_amountsave";
-    $("#loader").show();
     var data = new Array();
-    data.push({name:'brand', value: $("#purchaseordersbrand").val()});
+    data.push({name:'brand', value: $("#pototalsbrand").val()});
+    data.push({name: 'inner', value: $("#pototalsinner").val()});
     $.post(url, data, function(response){
         if (response.errors=='') {
-            $("input#pototal_total").val(response.data.totals);
-            $("#pageModal").modal('hide');
-            initPurchaseOrderPagination();
+            $("#modalEditpurchase").modal('hide');
+            $(".pototals-unsign-tolalqty").empty().html(response.data.toplace_qty);
+            $(".pototals-unsign-tolalsum").empty().html(response.data.toplace_sum);
+            $(".pototals-approved-tolalqty").empty().html(response.data.toapprove_qty);
+            $(".pototals-approved-tolalsum").empty().html(response.data.toapprove_sum);
+            $(".pototals-proof-tolalqty").empty().html(response.data.toproof_qty);
+            $(".pototals-proof-tolalsum").empty().html(response.data.toproof_sum);
+            init_potables_content();
+            // initPurchaseOrderPagination();
         } else {
-            $("#loader").hide();
             show_error(response);
         }
     }, 'json');

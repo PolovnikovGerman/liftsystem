@@ -178,7 +178,6 @@ class Purchaseorders extends MY_Controller
                     'profit_class' => '',
                     'profit' => '',
                     'is_shipping' => 0,
-                    ''
                 );
                 $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {
@@ -250,13 +249,14 @@ class Purchaseorders extends MY_Controller
                     $amount['order_num']=$order_data['order_num'];
                     $amount['vendor_id'] = $order_data['vendor_id'];
                     $mdata['vendor_id'] = $order_data['vendor_id'];
-                    $mdata['profitval'] = (empty()$order_data['profit'];
+                    $mdata['profitval'] = empty($order_data['profit']) ? '&nbsp;' : MoneyOutput($order_data['profit']);
                     $mdata['profitclass'] = $order_data['profit_class'];
                     if ($order_data['profit_class']=='projprof') {
                         $mdata['profitprc']='PROJ';
                     } else {
                         $mdata['profitprc']=$order_data['profit_perc'];
                     }
+                    $mdata['is_shipping'] = $order_data['is_shipping'];
                     $mdata['content']=$this->load->view('pototals/purchase_orderdata_view', $order_data, TRUE);
                     $mdata['item']=$order_data['order_qty'].' '.$order_data['order_items'];
 
@@ -289,7 +289,7 @@ class Purchaseorders extends MY_Controller
                     $error = '';
                     $mdata['profit_class']=$res['profit_class'];
                     $mdata['profit_perc']=$res['profit_perc'];
-                    $mdata['profit']=$res['profit'];
+                    $mdata['profit']=MoneyOutput($res['profit']);
                     $mdata['reason']=$res['reason'];
                 }
             }
@@ -303,7 +303,9 @@ class Purchaseorders extends MY_Controller
             $mdata=array();
             $error='Time for change expired';
             $amntdata=usersession('editpurchase');
-            $brand = $this->input->post('brand');
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $inner = ifset($postdata,'inner',0);
             if (!empty($amntdata)) {
                 $amntdata['user_id']=$this->USR_ID;
                 $amntdata['brand'] = $brand;
@@ -311,14 +313,20 @@ class Purchaseorders extends MY_Controller
                 $res=$this->payments_model->save_poamount($amntdata);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $options=array(
-                        'status'=>'showclosed',
-                        'brand' => $brand,
-                    );
-                    $total_rec=$this->payments_model->get_count_purchorders($options);
-                    $mdata['totals']=$total_rec;
+                    $error = '';
                     // Clean Session
                     usersession('editpurchase', NULL);
+                    $this->load->model('orders_model');
+                    $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+                    $mdata['toplace_qty'] = QTYOutput($totaltab['toplace']['qty']).' TO PLACE';
+                    $mdata['toplace_sum'] = MoneyOutput($totaltab['toplace']['total'],0);
+                    $mdata['toapprove_qty'] = QTYOutput($totaltab['toapprove']['qty']).' TO APPROVE';
+                    $mdata['toapprove_sum'] = MoneyOutput($totaltab['toapprove']['total'],0);
+                    $mdata['toproof_qty'] = QTYOutput($totaltab['toproof']['qty']).' TO PROOF';
+                    $mdata['toproof_sum'] = MoneyOutput($totaltab['toproof']['total'],0);
+                    $totals = $this->orders_model->purchase_fulltotals($brand);
+                    $mdata['total'] = MoneyOutput($totals['total'],0);
+                    $mdata['totalfree'] = MoneyOutput($totals['totalfree'],0);
                 }
             }
             $this->ajaxResponse($mdata, $error);

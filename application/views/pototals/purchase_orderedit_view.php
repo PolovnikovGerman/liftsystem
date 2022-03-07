@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-5 poeditlabel pl-0 pr-0">PO Date:</div>
                 <div class="col-7 poeditinput">
-                    <input type="text" id="podateinpt" class="poamntdateinpt" value="<?=date('m/d/Y', $amount['amount_date'])?>"/>
+                    <input type="text" id="podateinpt" class="poamntdateinpt" readonly="readonly" value="<?=date('m/d/Y', $amount['amount_date'])?>"/>
                 </div>
             </div>
         </div>
