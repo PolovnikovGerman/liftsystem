@@ -1204,4 +1204,21 @@ Class Payments_model extends MY_Model {
         return $out;
     }
 
+    public function get_pototals_years() {
+        $this->db->select('max(amount_date) as maxdate, min(amount_date) as mindate');
+        $this->db->from('ts_order_amounts');
+        $res=$this->db->get()->row_array();
+        $maxyear = date('Y', $res['maxdate']);
+        $minyear = date('Y', $res['mindate']);
+        $years = [];
+        for ($i=0; $i<100; $i++) {
+            $newyear = $maxyear - $i;
+            if ($newyear < $minyear) {
+                break;
+            }
+            $years[] = $newyear;
+        }
+        return $years;
+    }
+
 }

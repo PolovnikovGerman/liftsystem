@@ -3953,14 +3953,29 @@ class Accounting extends MY_Controller
         */
         $inner = 0;
         $this->load->model('orders_model');
+        $this->load->model('payments_model');
+
         $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
         $totals = $this->orders_model->purchase_fulltotals($brand);
+        // Years
+        $years = $this->payments_model->get_pototals_years();
+        $year1 = $year2 = $year3 = $years[0];
+        if (count($years) > 1) {
+            $year2 = $years[1];
+        }
+        if (count($years) > 2) {
+            $year3 = $years[2];
+        }
         $options=[
             'totaltab' => $totaltab,
             'totals' => $totals,
             'inner' => $inner,
             'brand' => $brand,
             'top_menu' => $top_menu,
+            'years' => $years,
+            'year1' => $year1,
+            'year2' => $year2,
+            'year3' => $year3,
         ];
         return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
     }

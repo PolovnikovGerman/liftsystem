@@ -83,7 +83,58 @@
                 <?php } ?>
             </div>
             <!-- Vendor Statements: -->
+            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+                <div class="row">
+                    <div class="col-9 pototals-placetitle">Vendor Statements:</div>
+                </div>
+            </div>
             <!-- PO Reports: -->
+            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+                <div class="row">
+                    <div class="col-9 pototals-placetitle">PO Reports:</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 poreport-sorting">
+                        <span>Sort by:</span>
+                        <select class="poreportsortselect">
+                            <option value="poqty"># of POs</option>
+                            <option value="pocost">Cost</option>
+                            <option value="poprofitprc">Profit %</option>
+                            <option value="poprofit">Profit $$</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">Compare Years:</div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearfirst">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year1 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearsecond">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year2 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearthird">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year3 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="poreporttable">
+
+                </div>
+                <div class="row">
+                    <div class="col-12 poreportPaginator"></div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
