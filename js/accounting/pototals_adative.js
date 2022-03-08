@@ -348,6 +348,7 @@ function pagePOReportCallback(page_index) {
         if (response.errors=='') {
             $("#poreporttable").empty().html(response.data.content);
             $("#poreportcurpage").val(page_index);
+            jQuery.balloon.init();
             init_poorders_content();
         } else {
             show_error(response);

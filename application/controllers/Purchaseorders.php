@@ -562,10 +562,27 @@ class Purchaseorders extends MY_Controller
             $offset = $pagenum*$limit;
             $this->load->model('payments_model');
             $data = $this->payments_model->poreportdata($year1, $year2, $year3, $sort, $offset, $limit, $brand);
-            $mdata['content'] = $this->load->view('pototals/poreport_details_view',['datas' => $data], TRUE);
+            $event = 'hover';
+            if (isMobile()) {
+                if (!isTablet()) {
+                    $event = 'click';
+                }
+            }
+            $mdata['content'] = $this->load->view('pototals/poreport_details_view',['datas' => $data, 'event' => $event, 'brand' => $brand], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function poreport_yeardetails() {
+        $getdata = $this->input->get();
+        $vendor_id = ifset($getdata,'v', 0);
+        $type = ifset($getdata, 't','qty');
+        $year = ifset($getdata,'y',date('Y'));
+        $brand = ifset($getdata,'b', 'ALL');
+        $this->load->model('payments_model');
+        $msg = $this->payments_model->poreport_yeardetails($vendor_id, $type, $year, $brand);
+        echo $msg;
     }
 
 }

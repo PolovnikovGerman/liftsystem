@@ -1278,7 +1278,7 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.brand', $brand);
         }
         $vendorsel = $this->db->get_compiled_select();
-        $this->db->select('v.vendor_name, y1.vqty as qty_year1, y1.cost as cost_year1, y1.profit as profit_year1, y1.avgprofit as avgprof_year1');
+        $this->db->select('v.vendor_id, v.vendor_name, y1.vqty as qty_year1, y1.cost as cost_year1, y1.profit as profit_year1, y1.avgprofit as avgprof_year1');
         $this->db->select('y2.vqty as qty_year2, y2.cost as cost_year2, y2.profit as profit_year2, y2.avgprofit as avgprof_year2');
         $this->db->select('y3.vqty as qty_year3, y3.cost as cost_year3, y3.profit as profit_year3, y3.avgprofit as avgprof_year3');
         $this->db->from('vendors v');
@@ -1317,10 +1317,46 @@ Class Payments_model extends MY_Model {
             if (!empty($data['avgprof_year3'])) {
                 $data['profitclass_year3'] = profitClass($data['avgprof_year3']);
             }
+            $data['year1'] = $year1;
+            $data['year2'] = $year2;
+            $data['year3'] = $year3;
             $out[] = $data;
             $start++;
         }
         return $out;
+    }
+
+    public function poreport_yeardetails($vendor_id, $type, $year, $brand) {
+        $this->db->select('count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $totalres = $this->db->get()->row_array();
+        $this->db->select('count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->where('oa.vendor_id', $vendor_id);
+        $vendres = $this->db->get()->row_array();
+        $msg='';
+        if ($type=='qty') {
+            $vendproc = round($vendres['vqty'] / $totalres['vqty'] *100,0);
+            $msg = $vendproc.'% of '.QTYOutput($totalres['vqty']).' Total POs';
+        } elseif ($type=='cost') {
+            $vendproc = round($vendres['cost'] / $totalres['cost'] *100,0);
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['cost']).' Total Cost';
+        } elseif ($type=='profit') {
+            $vendproc = round($vendres['profit'] / $totalres['profit'] *100,0);
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['profit']).' Total Profit $$';
+        }
+        return $msg;
+
     }
 
 }

@@ -640,4 +640,20 @@ if (!function_exists('formatPhoneNumber')) {
     }
 }
 
+if (!function_exists('isMobile')) {
+    function isMobile() {
+        $ci=&get_instance();
+        $ci->load->library('Mobile_Detect');
+        return intval($ci->mobile_detect->isMobile());
+    }
+}
+
+if (!function_exists('isTablet')) {
+    function isTablet() {
+        $ci=&get_instance();
+        $ci->load->library('Mobile_Detect');
+        return intval($ci->mobile_detect->isTablet());
+    }
+}
+
 ?>
