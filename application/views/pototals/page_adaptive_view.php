@@ -1,5 +1,8 @@
 <input type="hidden" id="pototalsbrand" value="<?=$brand?>">
 <input type="hidden" id="pototalsinner" value="<?=$inner?>"/>
+<input type="hidden" id="poreporttotals" value="<?=$poreporttotals?>"/>
+<input type="hidden" id="poreportperpage" value="<?=$poreportperpage?>"/>
+<input type="hidden" id="poreportcurpage" value="0"/>
 <main class="container-fluid">
     <div class="pototalsdataview">
         <div class="pageheader">
@@ -94,8 +97,10 @@
                     <div class="col-9 pototals-placetitle">PO Reports:</div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-12 poreport-sorting">
+                    <div class="col-3 pr-0 poreport-sorting">
                         <span>Sort by:</span>
+                    </div>
+                    <div class="col-6">
                         <select class="poreportsortselect">
                             <option value="poqty"># of POs</option>
                             <option value="pocost">Cost</option>
@@ -104,8 +109,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-3">Compare Years:</div>
+                <div class="row mt-2">
+                    <div class="col-3 pr-0 pl-0 poreporttablehead">Compare Years:</div>
                     <div class="col-3">
                         <select class="poyearcompare yearfirst">
                             <?php foreach ($years as $year) { ?>
@@ -128,8 +133,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="row" id="poreporttable">
-
+                <div class="row mt-1 mr-0 ml-0">
+                    <div class="col-12 poreporttablebody" id="poreporttable"></div>
                 </div>
                 <div class="row">
                     <div class="col-12 poreportPaginator"></div>

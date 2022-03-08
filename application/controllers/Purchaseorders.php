@@ -547,5 +547,25 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function poreport_content() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata = $this->input->post();
+            $year1 = ifset($postdata, 'year1', date('Y'));
+            $year2 = ifset($postdata, 'year2', date('Y'));
+            $year3 = ifset($postdata, 'year3', date('Y'));
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $sort = ifset($postdata, 'sort', 'poqty');
+            $limit = ifset($postdata, 'limit', 10);
+            $pagenum = ifset($postdata,'offset', 0);
+            $offset = $pagenum*$limit;
+            $this->load->model('payments_model');
+            $data = $this->payments_model->poreportdata($year1, $year2, $year3, $sort, $offset, $limit, $brand);
+            $mdata['content'] = $this->load->view('pototals/poreport_details_view',['datas' => $data], TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
 }
