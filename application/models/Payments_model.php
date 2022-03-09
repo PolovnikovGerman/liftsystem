@@ -1350,10 +1350,10 @@ Class Payments_model extends MY_Model {
             $msg = $vendproc.'% of '.QTYOutput($totalres['vqty']).' Total POs';
         } elseif ($type=='cost') {
             $vendproc = round($vendres['cost'] / $totalres['cost'] *100,0);
-            $msg = $vendproc.'% of '.MoneyOutput($totalres['cost']).' Total Cost';
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['cost'],0).' Total Cost';
         } elseif ($type=='profit') {
             $vendproc = round($vendres['profit'] / $totalres['profit'] *100,0);
-            $msg = $vendproc.'% of '.MoneyOutput($totalres['profit']).' Total Profit $$';
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['profit'],0).' Total Profit $$';
         }
         return $msg;
 

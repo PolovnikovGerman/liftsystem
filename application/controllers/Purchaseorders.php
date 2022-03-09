@@ -562,7 +562,8 @@ class Purchaseorders extends MY_Controller
             $offset = $pagenum*$limit;
             $this->load->model('payments_model');
             $data = $this->payments_model->poreportdata($year1, $year2, $year3, $sort, $offset, $limit, $brand);
-            $event = 'hover';
+            // $event = 'hover';
+            $event = 'click';
             if (isMobile()) {
                 if (!isTablet()) {
                     $event = 'click';
