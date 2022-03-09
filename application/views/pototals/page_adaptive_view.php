@@ -1,5 +1,8 @@
 <input type="hidden" id="pototalsbrand" value="<?=$brand?>">
 <input type="hidden" id="pototalsinner" value="<?=$inner?>"/>
+<input type="hidden" id="poreporttotals" value="<?=$poreporttotals?>"/>
+<input type="hidden" id="poreportperpage" value="<?=$poreportperpage?>"/>
+<input type="hidden" id="poreportcurpage" value="0"/>
 <main class="container-fluid">
     <div class="pototalsdataview">
         <div class="pageheader">
@@ -54,12 +57,6 @@
                             <div class="poplace-unsigntablebody"></div>
                         </div>
                     </div>
-<!--                --><?php //} else { ?>
-<!--                <div class="row mt-1">-->
-<!--                    <div class="col-12">-->
-<!--                        <div class="poplace-unsigntablebody"></div>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <?php } ?>
                 <?php if ($totaltab['toapprove']['qty'] > 0 ) { ?>
                     <div class="row mt-2">
@@ -89,7 +86,86 @@
                 <?php } ?>
             </div>
             <!-- Vendor Statements: -->
+            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+                <div class="row">
+                    <div class="col-9 pototals-placetitle">Vendor Statements:</div>
+                </div>
+            </div>
             <!-- PO Reports: -->
+            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+                <div class="row">
+                    <div class="col-9 pototals-placetitle">PO Reports:</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3 pr-0 poreport-sorting">
+                        <span>Sort by:</span>
+                    </div>
+                    <div class="col-6">
+                        <select class="poreportsortselect">
+                            <option value="poqty"># of POs</option>
+                            <option value="pocost">Cost</option>
+                            <option value="poprofitprc">Profit %</option>
+                            <option value="poprofit">Profit $$</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3 pr-0 pl-0 poreporttablehead">Compare Years:</div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearfirst">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year1 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearsecond">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year2 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <select class="poyearcompare yearthird">
+                            <?php foreach ($years as $year) { ?>
+                                <option value="<?=$year?>" <?=($year==$year3 ? 'selected' : '')?>><?=$year?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-1 mr-0 ml-0">
+                    <div class="col-12 poreporttablebody" id="poreporttable"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12 poreportPaginator"></div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
+
+<div class="modal fade" id="modalManage" tabindex="-1" role="dialog" aria-labelledby="modalManageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalManageLabel">PO Payment Methods</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="float: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditpurchase" tabindex="-1" role="dialog" aria-labelledby="modalEditpurchaseLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalEditpurchaseLabel">Enter PO Value</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="float: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>

@@ -197,6 +197,8 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
+        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -3952,14 +3954,32 @@ class Accounting extends MY_Controller
         */
         $inner = 0;
         $this->load->model('orders_model');
+        $this->load->model('payments_model');
+
         $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
         $totals = $this->orders_model->purchase_fulltotals($brand);
+        // Years
+        $years = $this->payments_model->get_pototals_years($brand);
+        $year1 = $year2 = $year3 = $years[0];
+        if (count($years) > 1) {
+            $year2 = $years[1];
+        }
+        if (count($years) > 2) {
+            $year3 = $years[2];
+        }
+        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
         $options=[
             'totaltab' => $totaltab,
             'totals' => $totals,
             'inner' => $inner,
             'brand' => $brand,
             'top_menu' => $top_menu,
+            'years' => $years,
+            'year1' => $year1,
+            'year2' => $year2,
+            'year3' => $year3,
+            'poreporttotals' => $poreptotals,
+            'poreportperpage' => 10,
         ];
         return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
     }

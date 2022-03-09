@@ -106,9 +106,17 @@ input.search_input {
     background-color: #001072;
     color: #ffffff;
 }
+.grassgreenprofit {
+    background-color: #005B2D!important;
+    color: #ffffff !important;
+}
 .green, .greenprofit {
     background-color: #00e947!important;
     color: #000000 !important;
+}
+.darkredprofit {
+    background-color: #a40000 !important;
+    color: #ffffff;
 }
 .red, .redprofit {
     background-color: #ff0000!important;
