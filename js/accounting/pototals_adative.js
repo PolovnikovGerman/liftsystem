@@ -1,5 +1,5 @@
 function init_purchase_orders() {
-    // init_potables_content();
+    init_potables_content();
     init_poreport_Pagination();
     init_poorders_content();
 }
