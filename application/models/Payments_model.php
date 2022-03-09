@@ -1126,7 +1126,7 @@ Class Payments_model extends MY_Model {
                 $options=array(
                     'reason'=>$amount_data['lowprofit'],
                 );
-                $reason_view=$this->load->view('fulfillment/lowprofit_reason_view', $options,TRUE);
+                $reason_view=$this->load->view('pototals/lowprofit_reason_view', $options,TRUE);
             }
             // Save in temporary array
             $order_data['profit_class']=$profclass;
