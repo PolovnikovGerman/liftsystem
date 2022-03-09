@@ -77,12 +77,7 @@
         </div>
         <div class="col-6 leftpart">&nbsp;</div>
     </div>
-    <div class="row mt-1 showreason">
-        <div class="col-8 pl-0 pr-0 poeditlabel">Why is the profit low on this order?</div>
-        <div class="col-12">
-            <textarea id="po_comment" class="poreasondata" style="width: 100%; resize: none;"><?=$amount['reason']?></textarea>
-        </div>
-    </div>
+    <div class="row mt-1 showreason" id="lowprofitpercreasonarea"></div>
     <div class="row mt-2">
         <div class="col-12 poamount-save">
             <div class="btn btn-success">Save</div>

@@ -11,8 +11,12 @@ function init_poorders_content() {
     $(".pototals-placefiltr").find('i').unbind('click').click(function () {
         change_inner_filter();
     });
-    $(".addnonlistedpo").unbind('click').unbind('click').click(function () {
+    $(".addnonlistedpo").unbind('click').click(function () {
         add_newamount();
+    });
+    $(".poplace-poactionbtn").unbind('click').click(function(){
+        var order = $(this).data('order');
+        add_notplacedpo(order);
     });
     $(".poreportsortselect").unbind('change').change(function () {
         var page = $("#poreportcurpage").val();
@@ -151,6 +155,26 @@ function add_newamount() {
     }, 'json');
 }
 
+function add_notplacedpo(order) {
+    var url="/purchaseorders/purchasenotplaced_add";
+    $.post(url, {'order_id': order}, function(response){
+        if (response.errors=='') {
+            $("#modalEditpurchase").find('div.modal-body').empty().html(response.data.content);
+            $("#modalEditpurchase").modal({backdrop: 'static', keyboard: false, show: true});
+            init_poedit();
+            // Date picker
+            $("input#podateinpt").datepicker({
+                autoclose: true,
+                todayHighlight: true,
+            }).on("change", function() {
+                show_amountsave();
+                save_amntdetails('amount_date', $(this).val());
+            });
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 /* PO EDIT FUnctions */
 /* Common Edit INIT */
 function init_poedit() {
