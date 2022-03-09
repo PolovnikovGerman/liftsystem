@@ -101,13 +101,16 @@ class Purchaseorders extends MY_Controller
             $order_id=$this->input->post('order_id');
             // Get data about order
             $order_data=$this->orders_model->get_order_detail($order_id);
+            if ($order_data['profit_class']=='projprof') {
+                $order_data['profit_perc']='PROJ';
+            }
             $amount_data=array(
                 'amount_id'=>0,
                 'amount_date'=>time(),
                 'order_id'=>$order_id,
                 'amount_sum'=>0,
                 'oldamount_sum'=>0,
-                'vendor_id'=>'',
+                'vendor_id'=>$order_data['vendor_id'],
                 'method_id'=>'',
                 'is_shipping'=>$order_data['is_shipping'],
                 'lowprofit'=>'',
@@ -122,7 +125,7 @@ class Purchaseorders extends MY_Controller
             // Save Data to Session
             usersession('editpurchase', $data);
 
-            $order_view=$this->load->view('fulfillment/purchase_orderdata_view', $order_data,TRUE);
+            $order_view=$this->load->view('pototals/purchase_orderdata_view', $order_data,TRUE);
             $options=array(
                 'order'=>$order_data,
                 'amount'=>$amount_data,
@@ -134,9 +137,9 @@ class Purchaseorders extends MY_Controller
                 'editpo_view'=>'',
             );
             // $content=$this->load->view('finance/edit_purchasenotplaced_view',$options,TRUE);
-            $content=$this->load->view('fulfillment/purchase_orderedit_view',$options,TRUE);
+            $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
             $mdata['content']=$content;
-            $mdata['title'] = 'Purchase for NOT Placed Order';
+            // $mdata['title'] = 'Purchase for NOT Placed Order';
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
