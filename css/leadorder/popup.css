@@ -760,9 +760,13 @@ input.eventdatevalue, input.rushpastvalue {
     width: 64px;
     line-height: 22px;
 }
+.pastmodify {
+    background: #535353!important;
+    color: #ffffff!important;
+}
 input.rushpastvalue.arrivelate {
-    color: #FFFFFF;
-    background-color: #FF0000;
+    color: #FFFFFF!important;
+    background-color: #FF0000!important;
 }
 .rushadmindate {
     float: left;
