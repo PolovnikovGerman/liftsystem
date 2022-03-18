@@ -1164,4 +1164,44 @@ Class Payments_model extends MY_Model {
         return $out;
     }
 
+    public function get_purchase_methods($active = 1) {
+        $this->db->select('*');
+        $this->db->from('purchase_methods');
+        $this->db->where('active', $active);
+        $this->db->order_by('method_name');
+        return $this->db->get()->result_array();
+    }
+
+    public function update_method_status($method_id, $status) {
+        $out = ['result' => $this->error_result, 'msg' => 'Method not found'];
+        $this->db->select('count(method_id) as cnt');
+        $this->db->from('purchase_methods');
+        $this->db->where('method_id', $method_id);
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']>0) {
+            $out['result'] = $this->success_result;
+            $this->db->where('method_id', $method_id);
+            $this->db->set('active', $status);
+            $this->db->update('purchase_methods');
+        }
+        return $out;
+    }
+
+    public function purchase_method_add($method_name) {
+        $out = ['result' => $this->error_result, 'msg' => 'Method Name Empty'];
+        if (!empty($method_name)) {
+            $out['msg'] = 'Non-Unique Purchase Method';
+            $this->db->select('count(method_id) as cnt');
+            $this->db->from('purchase_methods');
+            $this->db->where('method_name', $method_name);
+            $res = $this->db->get()->row_array();
+            if ($res['cnt']==0) {
+                $out['result'] = $this->success_result;
+                $this->db->set('method_name', $method_name);
+                $this->db->insert('purchase_methods');
+            }
+        }
+        return $out;
+    }
+
 }

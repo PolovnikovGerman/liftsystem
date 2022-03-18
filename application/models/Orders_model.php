@@ -33,6 +33,11 @@ Class Orders_model extends MY_Model
     private $art_sendlater = "I'll send it later";
     private $art_sendbefore = "I already sent it";
 
+    private $accrec_terms = 'Terms';
+    private $accrec_willupd = 'Will Update';
+    private $accrec_credit = 'Credit Card';
+    private $accrec_prepay = 'Prepay';
+    // Terms, Will Update, Credit Card, Prapy
     /* Start date for check email 03/28/2013 */
     protected $req_email_date = 1364421600;
 
@@ -2130,6 +2135,7 @@ Class Orders_model extends MY_Model
         $this->db->select('m.method_id, m.method_name, cntord.cnt');
         $this->db->from('purchase_methods m');
         $this->db->join('(select method_id, count(order_id) as cnt from ts_orders group by method_id) cntord','cntord.method_id=m.method_id','left');
+        $this->db->where('m.active',1);
         $this->db->order_by('m.method_name');
         $res=$this->db->get()->result_array();
         return $res;
@@ -6933,7 +6939,26 @@ Class Orders_model extends MY_Model
             $this->db->where('brand', $brand);
         }
         $this->db->order_by($ownsort, $owndirec);
-        $owns = $this->db->get()->result_array();
+        $owndats = $this->db->get()->result_array();
+        $owns=[];
+        foreach ($owndats as $owndat) {
+            // $stype = 'Credit Card';
+            $sclass = '';
+            if ($owndat['balance_manage']==3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage']==2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage']==1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass='creditcard';
+                }
+            }
+            $owndat['type']=$stype;
+            $owndat['typeclass'] = $sclass;
+            $owns[]=$owndat;
+        }
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
@@ -6955,6 +6980,26 @@ Class Orders_model extends MY_Model
         }
         $this->db->order_by($refundsort, $refunddir);
         $refunds = $this->db->get()->result_array();
+//        $refunds=[];
+//        foreach ($refunddats as $refunddat) {
+//            // $stype = 'Credit Card';
+//            $sclass = '';
+//            if ($refunddat['balance_manage']==3) {
+//                $stype = $this->accrec_terms;
+//            } elseif ($refunddat['balance_manage']==2) {
+//                $stype = $this->accrec_prepay;
+//            } elseif ($refunddat['balance_manage']==1) {
+//                $stype = $this->accrec_willupd;
+//                if (!empty($refunddat['cntcard'])) {
+//                    $stype = $this->accrec_credit;
+//                    $sclass='creditcard';
+//                }
+//            }
+//            $refunddat['type']=$stype;
+//            $refunddat['typeclass'] = $sclass;
+//            $refunds[]=$refunddat;
+//        }
+
         return array(
             'owns' => $owns,
             'refunds' => $refunds,

@@ -953,7 +953,7 @@ Class Itemdetails_model extends My_Model
 
     private function _save_iteminfo($item, $user_id) {
         $this->db->set('item_number', $item['item_number']);
-        $this->db->set('item_name', $item['item_name']);
+        $this->db->set('item_name', htmlspecialchars_decode($item['item_name']));
         $this->db->set('item_active', $item['item_active']);
         $this->db->set('item_new', $item['item_new']);
         $this->db->set('item_template', $item['item_template']);
@@ -962,14 +962,14 @@ Class Itemdetails_model extends My_Model
         $this->db->set('item_lead_c', empty($item['item_lead_c']) ? null : intval($item['item_lead_c']));
         $this->db->set('item_material', $item['item_material']);
         $this->db->set('item_weigth', floatval($item['item_weigth']));
-        $this->db->set('item_size', $item['item_size']);
+        $this->db->set('item_size', htmlspecialchars_decode($item['item_size']));
         $this->db->set('item_keywords', $item['item_keywords']);
         $this->db->set('item_url', $item['item_url']);
-        $this->db->set('item_meta_title', $item['item_meta_title']);
-        $this->db->set('item_metadescription', $item['item_metadescription']);
-        $this->db->set('item_metakeywords', $item['item_metakeywords']);
-        $this->db->set('item_description1', $item['item_description1']);
-        $this->db->set('item_description2',$item['item_description2']);
+        $this->db->set('item_meta_title', htmlspecialchars_decode($item['item_meta_title']));
+        $this->db->set('item_metadescription', htmlspecialchars_decode($item['item_metadescription']));
+        $this->db->set('item_metakeywords', htmlspecialchars_decode($item['item_metakeywords']));
+        $this->db->set('item_description1', htmlspecialchars_decode($item['item_description1']));
+        $this->db->set('item_description2',htmlspecialchars_decode($item['item_description2']));
         $this->db->set('item_vector_img', $item['item_vector_img']);
         $this->db->set('vendor_item_id', $item['vendor_item_id']);
         $this->db->set('common_terms', $item['common_terms']);

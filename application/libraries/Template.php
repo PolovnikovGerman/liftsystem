@@ -61,6 +61,9 @@ class Template
         if (isset($options['styles'])) {
             $styles=$options['styles'];
         }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
         $scripts=[];
         if (isset($options['scripts'])) {
             $scripts=$options['scripts'];

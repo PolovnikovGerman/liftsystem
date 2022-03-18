@@ -664,4 +664,57 @@ class Test extends CI_Controller
         }
     }
 
+    function updatekeyinfo() {
+        $this->db->select('item_id, item_number, item_size');
+        $this->db->from('sb_items');
+        $this->db->like('item_size','&quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find SIZE '.count($res).PHP_EOL;
+        foreach ($res as $row) {
+            $new_size=str_replace('&quot;','"', $row['item_size']);
+            echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_size', $new_size);
+            $this->db->update('sb_items');
+        }
+        $this->db->select('item_id, item_number, item_name');
+        $this->db->from('sb_items');
+        $this->db->like('item_name','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find NAME '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_description1');
+        $this->db->from('sb_items');
+        $this->db->like('item_description1','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find Descript_1 '.count($res).PHP_EOL;
+        foreach ($res as $row) {
+            $new_size=str_replace('&amp;amp;quot;','"', $row['item_description1']);
+            echo 'Item '.$row['item_number'].' Descrip '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_description1', $new_size);
+            $this->db->update('sb_items');
+        }
+        $this->db->select('item_id, item_number, item_description2');
+        $this->db->from('sb_items');
+        $this->db->like('item_description2','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find Descript_2 '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metadescription');
+        $this->db->from('sb_items');
+        $this->db->like('item_metadescription','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaDescript '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metakeywords');
+        $this->db->from('sb_items');
+        $this->db->like('item_metakeywords','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaKeywords '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_meta_title');
+        $this->db->from('sb_items');
+        $this->db->like('item_meta_title','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaTitle '.count($res).PHP_EOL;
+
+    }
+
 }

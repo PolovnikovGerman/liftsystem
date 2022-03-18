@@ -1,8 +1,8 @@
 /* CSS for page Accounts Receivable */
 .accreceiv-content {
     width: 1292px;
-    margin-left: 10px;
-    margin-top: 10px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 .accreceive-title {
     /* width: 770px; */
@@ -35,21 +35,22 @@
     margin-top: -3px;
 }
 .accreceiv-content-data {
-    width: 1054px;
+    /* width: 1054px; */
+    width: 1067px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 460px;
-    margin-right: 67px;
+    width: 520px;
+    margin-right: 45px;
 }
 .accreceiv-content-center {
-    width: 460px;
-    margin-right: 67px;
+    width: 459px;
+    /* margin-right: 17px; */
 }
 .accreceiv-content-right {
-    width: 238px;
+    width: 225px;
 }
 .accreceiv-totalown {
     width: 230px;
@@ -144,7 +145,7 @@
 }
 .accreceiv-totalrefund-value {
     border: 2px solid #000000;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
     color: #ff0000;
     height: 28px;
@@ -203,9 +204,12 @@
     width: 100%;
     margin-bottom: 2px;
 }
+.accreceiv-totals:first-child {
+    margin-bottom: -3px;
+}
 .accreceiv-totals-title {
     width: 108px;
-    margin-right: 16px;
+    margin-right: 9px;
     text-align: right;
     font-size: 14px;
     font-weight: bold;
@@ -218,7 +222,7 @@
     font-size: 16px;
 }
 .accreceiv-totals-value {
-    width: 114px;
+    width: 105px;
     text-align: right;
     font-size: 16px;
     font-weight: bold;
@@ -277,7 +281,10 @@
     width: 65px;
 }
 .accreceiv-owndetails-headcustomer {
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-owndetails-headtype {
+    width: 85px;
 }
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
@@ -314,7 +321,7 @@
 }
 .accreceiv-owndetails-bodydue.pastdue {
     color: #ff0000;
-    font-size: 11px;
+    /*font-size: 11px;*/
     font-weight: bold;
 }
 .accreceiv-owndetails-bodybalance {
@@ -339,12 +346,21 @@
     text-align: center;
 }
 .accreceiv-owndetails-bodycustomer {
+    border-right: 1px solid #000000;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 214px;
+    width: 189px;
+}
+.accreceiv-owndetails-bodytype {
+    width: 86px;
+    text-align: center;
+    font-size: 13px!important;
+}
+.accreceiv-owndetails-bodytype.creditcard {
+    color: #0000ff;
 }
 /* Refund */
 .accreceiv-refunddetails-head {
@@ -381,8 +397,11 @@
     width: 65px;
 }
 .accreceiv-refunddetails-headcustomer {
-    width: 214px;
+    width: 213px;
 }
+/*.accreceiv-refunddetails-headtype {*/
+/*    width: 75px;*/
+/*}*/
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -443,6 +462,7 @@
     text-align: center;
 }
 .accreceiv-refunddetails-bodycustomer {
+    /*border-right: 1px solid #000000;*/
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -450,3 +470,10 @@
     padding-right: 5px;
     width: 214px;
 }
+/*.accreceiv-refunddetails-bodytype {*/
+/*    width: 76px;*/
+/*    text-align: center;*/
+/*}*/
+/*.accreceiv-refunddetails-bodytype.creditcard {*/
+/*    color: #0000ff;*/
+/*}*/

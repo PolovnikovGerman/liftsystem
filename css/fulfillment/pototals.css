@@ -516,3 +516,86 @@ textarea.poreasondata {
     resize: none;
     width: 446px;
 }
+.manage-purchase-methods {
+    float: right!important;
+    width: 66px;
+    height: 37px;
+    cursor: pointer;
+    background: url('/img/fulfillment/manage_purchase_methods.png') no-repeat;
+    color: #fff;
+    text-align: center;
+    padding-top: 2px;
+    font-size: 12px;
+    line-height: 17px!important;
+}
+/* Manage purchase methods */
+#modalManage .modal-dialog {
+    width: 304px;
+}
+#modalManage .modal-header {
+    background: #000066;
+    color: #ffffff;
+    font-size: 16px;
+}
+#modalManage .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+.manage-purchase-area {
+    width: 273px;
+}
+input.addnewpurchase {
+    width: 158px;
+    float: left;
+    margin-right: 8px;
+    margin-left: 24px;
+}
+.addmethodbtn {
+    background: url('/img/fulfillment/method_add_btn.png') no-repeat;
+    cursor: pointer;
+    height: 22px;
+    line-height: 22px!important;
+    width: 60px;
+    color: #ffffff;
+    font-size: 12px;
+    font-style: italic;
+    float: left;
+    text-align: center;
+    margin-top: 2px;
+}
+.methodslabel {
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 16px;
+    float: left;
+}
+.methodsdata .datarow > div {
+    float: left;
+}
+.purchmethodname {
+    margin-left: 14px;
+    height: 26px;
+    line-height: 26px!important;
+}
+.purchmethodaction {
+    margin-left: 8px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 22px!important;
+    height: 22px;
+}
+.purchmethodaction.deactivate {
+    background: url('/img/fulfillment/method_deactivate_btn.png');
+    width: 72px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+.purchmethodaction.activate {
+    background: url('/img/fulfillment/method_activate_btn.png');
+    width: 72px;
+    margin-top: 2px;
+    cursor: pointer;
+}
