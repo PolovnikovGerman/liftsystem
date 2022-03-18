@@ -5223,9 +5223,10 @@ Class Leadorder_model extends My_Model {
             $shipping['arrive_date_orig'] = $arrivedate;
             $shipping['arrivedate_class'] = '';
         } else {
-            if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
-                $shipping['arrivedate_class']='pastmodify';
-            }
+            // if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
+            $shipping['arrivedate_class']='pastmodify';
+            $shipping['shipdate_class'] = 'pastmodify';
+            // }
         }
         if ($arrivedate!=0 && intval($shipping['event_date'])>0) {
             $eventdate=$shipping['event_date']+$this->config->item('event_time');
@@ -9166,11 +9167,11 @@ Class Leadorder_model extends My_Model {
         } else {
             $shipping['arriveclass']='';
         }
-        if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
-            $shipping['arrivedate_class']='pastmodify';
-        } else {
-            $shipping['arrivedate_class']='';
-        }
+        $shipping['arrivedate_class']='pastmodify';
+//        if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
+//        } else {
+//            $shipping['arrivedate_class']='';
+//        }
         $leadorder['shipping'] = $shipping;
         usersession($ordersession, $leadorder);
         $out['result'] = $this->success_result;
