@@ -3960,13 +3960,15 @@ class Accounting extends MY_Controller
         $totals = $this->orders_model->purchase_fulltotals($brand);
         // Years
         $years = $this->payments_model->get_pototals_years($brand);
-        $year1 = $year2 = $year3 = $years[0];
-        if (count($years) > 1) {
-            $year2 = $years[1];
-        }
-        if (count($years) > 2) {
-            $year3 = $years[2];
-        }
+//        $year1 = $year2 = $year3 = $years[0];
+//        if (count($years) > 1) {
+//            $year2 = $years[1];
+//        }
+//        if (count($years) > 2) {
+//            $year3 = $years[2];
+//        }
+        // Temporary
+        $year1=2018; $year2=2017; $year3=2016;
         $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
         $options=[
             'totaltab' => $totaltab,

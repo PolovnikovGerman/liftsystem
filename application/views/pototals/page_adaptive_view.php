@@ -16,17 +16,17 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xs-5 pototals-toplacehead">
                 <div class="row">
                     <div class="col-4 pototals-placetitle">POs to Place</div>
                     <div class="col-4 pototals-placefiltr">
                         <i class="fa fa-square-o"></i>
                         hide internal
                     </div>
-                    <div class="col-4 pototals-placeresult pr-0">
+                    <div class="col-4 pototals-placeresult">
                         <div class="row">
-                            <div class="col-12"><span><?=MoneyOutput($totals['total'],0)?></span> Est Value</div>
-                            <div class="col-12"><span><?=MoneyOutput($totals['totalfree'],0)?></span> w/o Internal</div>
+                            <div class="col-12 text-right"><span><?=MoneyOutput($totals['total'],0)?></span> Est Value</div>
+                            <div class="col-12 text-right"><span><?=MoneyOutput($totals['totalfree'],0)?></span> w/o Internal</div>
                         </div>
                     </div>
                 </div>
@@ -86,13 +86,13 @@
                 <?php } ?>
             </div>
             <!-- Vendor Statements: -->
-            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xs-7 pototals-toplacehead">
                 <div class="row">
                     <div class="col-9 pototals-placetitle">Vendor Statements:</div>
                 </div>
             </div>
             <!-- PO Reports: -->
-            <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xs-4 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xs-6 pototals-toplacehead">
                 <div class="row">
                     <div class="col-9 pototals-placetitle">PO Reports:</div>
                 </div>
