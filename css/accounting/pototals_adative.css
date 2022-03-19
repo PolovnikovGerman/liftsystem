@@ -32,21 +32,21 @@
     font-weight: 600;
 }
 .poplace-tablehead .poplace-timehead {
-    width: 17.5%;
+    width: 13.5%;
     text-align: right;
     padding-right: 0.3rem;
 }
 .poplace-tablehead .poplace-orderhead {
-    width: 13.7%;
+    width: 11.7%;
 }
 .poplace-tablehead .poplace-itemhead {
-    width: 27.7%;
+    width: 30.7%;
 }
 .poplace-tablehead .poplace-vendorhead {
-    width: 16.9%;
+    width: 20.9%;
 }
 .poplace-tablehead .poplace-esttotalhead {
-    width: 14%;
+    width: 13%;
 }
 .poplace-tablehead .poplace-actionhead {
     width: 10.2%;
@@ -61,17 +61,21 @@
     border-radius: 0.5rem;
     cursor: pointer;
 }
+.addnonlistedpo:hover {
+    opacity: 0.8;
+}
 .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
     color: #078f00;
     float: left;
-    width: 75.8%;
+    width: 76.8%;
     font-weight: 600;
     font-style: italic;
 }
 .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
     font-weight: 600;
-    width: 24%;
+    width: 14%;
     float: left;
+    text-align: center;
 }
 .poplace-unsigntablebody, .poplace-approvtablebody, .poplace-prooftablebody {
     border-left: 1px solid #000;
@@ -95,20 +99,33 @@
     display: inline-flex;
     width: 100%;
 }
+/*
 .poplace-tablerow .poplace-time {
     border-right: 1px #000000 solid;
     width: 17.5%;
+}
+*/
+.poplace-rush {
+    color: #ff0000;
+    width: 4.5%;
+}
+.poplace-late {
+    border-right: 1px #000000 solid;
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+    width: 9%;
 }
 .poplace-tablerow .poplace-order {
     border-right: 1px #000000 solid;
     text-align: center;
     color: #0000ff;
     font-weight: 600;
-    width: 13.7%;
+    width: 11.7%;
 }
 .poplace-tablerow .poplace-item {
     border-right: 1px #000000 solid;
-    width: 27.7%;
+    width: 30.7%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -118,7 +135,7 @@
 }
 .poplace-tablerow .poplace-vendor {
     border-right: 1px #000000 solid;
-    width: 16.9%;
+    width: 20.9%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -139,16 +156,8 @@
     border-radius: 0.3rem;
     cursor: pointer;
 }
-.poplace-rush {
-    color: #ff0000;
-    width: 7.5%;
-}
-.poplace-late {
-    border-right: 1px #000000 solid;
-    text-align: right;
-    font-weight: bold;
-    color: #ff0000;
-    width: 10%;
+.poplace-poactionbtn:hover {
+    opacity: 0.8;
 }
 /* Edit Purchase Methods */
 #modalManage .modal-dialog {
@@ -284,6 +293,9 @@ input.addnewpurchase {
 .poreportdata span {
     color: #000000;
 }
+.poreportdata.grassgreenprofit span, .poreportdata.redprofit span {
+    color: #ffffff!important;
+}
 .poreport_detailmessage {
     background-color: #ffffff!important;
     float: left;
@@ -308,7 +320,7 @@ input.addnewpurchase {
         border-radius: 0.3rem;
     }
     .pototals-placetitle {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         padding-top: 0.3rem;
     }
     .pototals-placefiltr {
@@ -333,7 +345,7 @@ input.addnewpurchase {
         font-size: 0.9rem;
     }
     .poplace-tablerow > div {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         height: 1.5625rem;
         line-height: 1.75rem;
     }
@@ -344,18 +356,18 @@ input.addnewpurchase {
         margin-top: 0.15rem;
     }
     .poplace-rush {
-        font-size: 0.8rem;
+        padding-left: 0.2rem;
     }
     .poplace-late {
-        padding-right: 0.15rem;
+        padding-right: 0.25rem;
     }
     .poplace-tablerow .poplace-item {
-        padding-left: 0.15rem;
-        padding-right: 0.15rem;
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
     }
     .poplace-tablerow .poplace-vendor {
-        padding-left: 0.15rem;
-        padding-right: 0.15rem;
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
     }
     #modalManage .modal-title {
         font-size: 1.3rem;
@@ -397,13 +409,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -412,6 +424,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -434,7 +451,7 @@ input.addnewpurchase {
         font-size: 0.75rem!important;
     }
     .poreportdatacell {
-        font-size: 0.62rem;
+        font-size: 0.9rem;
     }
     .poreportdatacell.vendornamedat {
         padding-left: 0.2rem;
@@ -460,7 +477,7 @@ input.addnewpurchase {
         border-radius: 0.3rem;
     }
     .pototals-placetitle {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         padding-top: 0.3rem;
     }
     .pototals-placefiltr {
@@ -485,7 +502,7 @@ input.addnewpurchase {
         font-size: 0.9rem;
     }
     .poplace-tablerow > div {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         height: 1.5625rem;
         line-height: 1.625rem;
     }
@@ -496,10 +513,10 @@ input.addnewpurchase {
         margin-top: 0.15rem;
     }
     .poplace-rush {
-        font-size: 0.8rem;
+        padding-left: 0.2rem;
     }
     .poplace-late {
-        padding-right: 0.15rem;
+        padding-right: 0.25rem;
     }
     .poplace-tablerow .poplace-item {
         padding-left: 0.15rem;
@@ -549,13 +566,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -564,6 +581,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -705,13 +727,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -720,6 +742,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -777,6 +804,7 @@ input.addnewpurchase {
     }
     .pototals-placeresult {
         font-size: 0.8rem;
+        padding-right: 0.4rem!important;
     }
     .poplace-tablehead > div {
         height: 1.6rem;
@@ -859,13 +887,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -874,6 +902,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -931,6 +964,7 @@ input.addnewpurchase {
     }
     .pototals-placeresult {
         font-size: 0.8rem;
+        padding-right: 0.4rem!important;
     }
     .poplace-tablehead > div {
         height: 1.6rem;
@@ -1010,13 +1044,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -1025,6 +1059,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -1082,6 +1121,7 @@ input.addnewpurchase {
     }
     .pototals-placeresult {
         font-size: 0.7rem;
+        padding-right: 0.4rem!important;
     }
     .poplace-tablehead > div {
         height: 1.3rem;
@@ -1161,13 +1201,13 @@ input.addnewpurchase {
         line-height: 1.8rem;
     }
     .ordernuminpt {
-        max-width: 3.4rem;
+        max-width: 4.6rem;
     }
     .poamntdateinpt {
-        max-width: 4.4rem;
+        max-width: 4.6rem;
     }
     .amountvalueinpt {
-        max-width: 3.8rem;
+        max-width: 4.6rem;
     }
     .amountprofitval {
         height: 1.5rem;
@@ -1176,6 +1216,11 @@ input.addnewpurchase {
     .amountprofitprc {
         height: 1.5rem;
         line-height: 1.5rem;
+    }
+    .amountvendorselect, .amountmethodselect {
+        height: 1.5622rem;
+        padding: 1px;
+        width: 9.2rem;
     }
     /*PO Reports */
     .poreport-sorting {

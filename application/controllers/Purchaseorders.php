@@ -277,6 +277,37 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function purchaseorder_presearch() {
+        if ($this->isAjax()) {
+            $mdata = ['find' => 0];
+            $error = '';
+            $order_num=$this->input->post('order_num');
+            if ($order_num) {
+                $this->load->model('payments_model');
+                $data=$this->payments_model->get_order_bynum($order_num);
+                if ($data['result']==$this->success_result) {
+                    $mdata['find']=1;
+                    $res = $data['data'];
+                    $this->load->model('orders_model');
+                    $order_data=$this->orders_model->get_order_detail($res['order_id']);
+                    $mdata['vendor_id'] = $order_data['vendor_id'];
+                    $mdata['profitval'] = empty($order_data['profit']) ? '&nbsp;' : MoneyOutput($order_data['profit']);
+                    $mdata['profitclass'] = $order_data['profit_class'];
+                    if ($order_data['profit_class']=='projprof') {
+                        $mdata['profitprc']='PROJ';
+                    } else {
+                        $mdata['profitprc']=$order_data['profit_perc'];
+                    }
+                    $mdata['is_shipping'] = $order_data['is_shipping'];
+                    $mdata['item']=$order_data['order_qty'].' '.$order_data['order_items'];
+                    $mdata['customer'] = $order_data['customer_name'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function purchaseorder_amountchange() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -501,15 +532,21 @@ class Purchaseorders extends MY_Controller
             $unsign = $this->orders_model->purchaseorder_details('unsign', $inner, $brand);
             $approv = $this->orders_model->purchaseorder_details('approved', $inner, $brand);
             $proof = $this->orders_model->purchaseorder_details('proof', $inner, $brand);
+            $event = 'hover';
+            if (isMobile()) {
+                if (!isTablet()) {
+                    $event = 'click';
+                }
+            }
             $unsignview = $approvview = $needproofview = '';
             if (count($unsign) > 0) {
-                $unsignview = $this->load->view('pototals/pototals_details_view',['datas' => $unsign], TRUE);
+                $unsignview = $this->load->view('pototals/pototals_details_view',['datas' => $unsign,'event' => $event], TRUE);
             }
             if (count($approv) > 0) {
-                $approvview = $this->load->view('pototals/pototals_details_view',['datas' => $approv], TRUE);
+                $approvview = $this->load->view('pototals/pototals_details_view',['datas' => $approv,'event' => $event], TRUE);
             }
             if (count($proof) > 0) {
-                $needproofview = $this->load->view('pototals/pototals_details_view',['datas' => $proof], TRUE);
+                $needproofview = $this->load->view('pototals/pototals_details_view',['datas' => $proof,'event' => $event], TRUE);
             }
             $mdata['unsignview'] = $unsignview;
             $mdata['approvview'] = $approvview;
@@ -565,8 +602,7 @@ class Purchaseorders extends MY_Controller
             $offset = $pagenum*$limit;
             $this->load->model('payments_model');
             $data = $this->payments_model->poreportdata($year1, $year2, $year3, $sort, $offset, $limit, $brand);
-            // $event = 'hover';
-            $event = 'click';
+            $event = 'hover';
             if (isMobile()) {
                 if (!isTablet()) {
                     $event = 'click';

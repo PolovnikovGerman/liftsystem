@@ -186,6 +186,10 @@ function init_poedit() {
         $("input#newpoorder").unbind('change').change(function(){
             order_purchase_details($(this).val());
         });
+        $("input#newpoorder").keypress(function(event){
+            var ordernum = $("input#newpoorder").val()+String.fromCharCode(event.which);
+            search_poorderdata(ordernum);
+        });
     } else {
         lock_poeditflds(0);
     }
@@ -245,7 +249,25 @@ function lock_poeditflds(type) {
         $("textarea.poreasondata").prop('readonly',false);
     }
 }
-
+/* Check Order # in mode ADD PO */
+function search_poorderdata(order_num) {
+    var url="/purchaseorders/purchaseorder_presearch";
+    // var  = $("input#newpoorder").val();
+    $.post(url, {'order_num':order_num}, function(response){
+        if (response.errors=='') {
+            if (parseInt(response.data.find)===1) {
+                $(".ordercustomerplace").empty().html(response.data.customer);
+                $(".orderitemnameplace").empty().html(response.data.item);
+                $(".amountprofitval").empty().html(response.data.profitval);
+                $(".amountprofitprc").empty().html(response.data.profitprc);
+                $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+                $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 /* Check Order # in mode ADD PO */
 function order_purchase_details(order_num) {
     var url="/purchaseorders/purchaseorder_details";
