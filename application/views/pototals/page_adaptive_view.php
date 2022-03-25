@@ -10,7 +10,7 @@
                 <div class="col-7 col-lg-5">
                     <div class="pagetitle">PO TOTALS</div>
                 </div>
-                <div class="col-5 col-lg-5">
+                <div class="col-5 col-lg-7">
                     <div class="manage-purchase-methods">Manage Methods</div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                 </div>
             </div>
             <!-- PO Reports: -->
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xs-6 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xs-7 pototals-toplacehead">
                 <div class="row">
                     <div class="col-9 pototals-placetitle">PO Reports:</div>
                 </div>

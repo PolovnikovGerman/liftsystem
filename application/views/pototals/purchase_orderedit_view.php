@@ -1,7 +1,7 @@
 <div class="purchaseorder_popuparea">
     <!-- Common Data -->
     <div id="orderdataarea"><?=$order_view?></div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-6">
             <div class="row">
                 <div class="col-5 poeditlabel pl-0 pr-0">PO Date:</div>
@@ -11,10 +11,10 @@
             </div>
         </div>
         <div class="col-6 leftpart">
-            <div class="orderitemnameplace"><?=$order['item_name']?></div>
+            <div class="orderitemnameplace"><?=$order['order_qty']?>&nbsp;<?=$order['order_items']?></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-6">
             <div class="row">
                 <div class="col-5 poeditlabel pl-0 pr-0">PO Amnt:</div>
@@ -27,7 +27,7 @@
             <div class="amountprofitval <?=$order['profit_class']?>"><?=empty($order['profit']) ? '' : MoneyOutput($order['profit']) ?></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-6">
             <div class="row">
                 <div class="col-2 col-md-5 col-sm-5 col-lg-5 pl-0 pr-0">&nbsp;</div>
@@ -41,7 +41,7 @@
             <div class="amountprofitprc <?=$order['profit_class']?>"><?=empty($order['profit_perc']) ? '&nbsp;' : $order['profit_perc'].'%'?></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-6">
             <div class="row">
                 <div class="col-5 poeditlabel pl-0 pr-0">Vendor:</div>
@@ -59,7 +59,7 @@
         </div>
         <div class="col-6 leftpart">&nbsp;</div>
     </div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-6">
             <div class="row">
                 <div class="col-5 poeditlabel pl-0 pr-0">Method:</div>
