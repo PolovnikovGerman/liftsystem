@@ -3981,7 +3981,7 @@ class Accounting extends MY_Controller
             'year2' => $year2,
             'year3' => $year3,
             'poreporttotals' => $poreptotals,
-            'poreportperpage' => 10,
+            'poreportperpage' => 8,
         ];
         return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
     }

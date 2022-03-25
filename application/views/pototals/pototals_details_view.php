@@ -3,7 +3,10 @@
     <div class="poplace-tablerow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow' ?>">
         <div class="poplace-rush"><?=$data['order_rush']==1 ? '<i class="fa fa-star"></i>' : ''?></div>
         <div class="poplace-late"><?=$data['order_late']==1 ? 'LATE' : ''?></div>
-        <div class="poplace-order" data-order="<?=$data['order_id']?>"><?=$data['order_num']?></div>
+        <div class="poplace-order" data-order="<?=$data['order_id']?>" data-event="<?=$event?>" data-css="poreport_detailmessage"
+             data-bgcolor="#FFFFFF" data-bordercolor="#000" data-textcolor="#000" data-position="up" data-balloon="<?=$data['customer']?>">
+            <?=$data['order_num']?>
+        </div>
         <div class="poplace-item <?=$data['customitem']?>" data-event="<?=$event?>" data-css="poreport_detailmessage"
              data-bgcolor="#FFFFFF" data-bordercolor="#000" data-textcolor="#000" data-position="up" data-balloon="<?=$data['item_name']?>">
             <?=$data['item_name']?>

@@ -72,13 +72,13 @@
 .pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
     color: #078f00;
     float: left;
-    width: 76.8%;
+    width: 75.9%;
     font-weight: 600;
     font-style: italic;
 }
 .pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
     font-weight: 600;
-    width: 14%;
+    width: 13.2%;
     float: left;
     text-align: center;
 }
@@ -282,21 +282,32 @@ input.addnewpurchase {
     float: right;
 }
 .poreporttablebody {
-    border-left: 1px solid #000000;
-    border-top: 1px solid #000000;
+    border-left: 3px solid #000000;
+    border-top: 3px solid #000000;
 }
 .poreportdatacell {
     border-right: 1px solid #000000;
-    border-bottom: 1px solid #000000;
+    border-bottom: 3px solid #000000;
 }
 .poreportdatacell.vendornamedat {
     font-weight: 600;
 }
+.poreportdatacell:last-child {
+    border-right: 3px solid #000000;
+}
 .poreportdata {
     color: #717171;
+    width: 65%;
 }
 .poreportdata span {
     color: #000000;
+}
+.poreportdatagrow {
+    width: 35%;
+    text-align: right;
+}
+.poreportdatagrow span {
+    float: right;
 }
 .poreportdata.grassgreenprofit span, .poreportdata.redprofit span {
     color: #ffffff!important;
@@ -312,6 +323,12 @@ input.addnewpurchase {
 }
 .poreportdatahint {
     display: inline-flex;
+}
+.grownegative {
+    color: #ff0000;
+}
+.growpositive {
+    color: #0000ff;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -439,34 +456,45 @@ input.addnewpurchase {
     }
     /*PO Reports */
     .poreport-sorting {
-        font-size: 0.75rem;
-        line-height: 1.42rem;
+        font-size: 0.85rem;
+        line-height: 1.72rem;
     }
     .poreportsortselect {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         padding: 0.15rem;
     }
     .poreporttablehead {
-        font-size: 0.68rem;
-        line-height: 1.42rem;
+        font-size: 0.85rem;
+        line-height: 1.72rem;
     }
     .poyearcompare {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         padding: 0.15rem;
     }
     .poreportPaginator > .pagination {
-        font-size: 0.75rem!important;
+        font-size: 0.85rem!important;
+    }
+    .poreportPaginator > .pagination span.current {
+        font-size: 0.85rem!important;
     }
     .poreportdatacell {
         font-size: 0.9rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.2rem;
+        padding-left: 0.5rem;
         padding-right: 0.2rem;
+        padding-top: 0.5rem;
     }
     .poreportdata {
         padding-left: 0.2rem;
         padding-right: 0.2rem;
+    }
+    .poreportdatagrow {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+    .growdirection {
+        padding-left: 0.2rem;
     }
     .poreport_detailmessage {
         font-size: 0.75rem;
@@ -620,8 +648,9 @@ input.addnewpurchase {
         font-size: 0.62rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.2rem;
+        padding-left: 0.4rem;
         padding-right: 0.2rem;
+        padding-top: 0.4rem;
     }
     .poreportdata {
         padding-left: 0.2rem;
@@ -629,6 +658,9 @@ input.addnewpurchase {
     }
     .poreport_detailmessage {
         font-size: 0.75rem;
+    }
+    .poreportdatagrow {
+        display: none;
     }
 }
 /* Portrait tablets and small desktops */
@@ -782,8 +814,9 @@ input.addnewpurchase {
         font-size: 0.9rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.35rem;
-        padding-right: 0.35rem;
+        padding-left: 0.5rem;
+        padding-right: 0.2rem;
+        padding-top: 0.5rem;
     }
     .poreportdata {
         padding-left: 0.35rem;
@@ -791,6 +824,9 @@ input.addnewpurchase {
     }
     .poreport_detailmessage {
         font-size: 0.95rem;
+    }
+    .poreportdatagrow {
+        display: none;
     }
 }
 /* Landscape phones and portrait tablets */
@@ -944,8 +980,9 @@ input.addnewpurchase {
         font-size: 0.85rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.3rem;
+        padding-left: 0.5rem;
         padding-right: 0.3rem;
+        padding-top: 0.5rem;
     }
     .poreportdata {
         padding-left: 0.3rem;
@@ -953,6 +990,9 @@ input.addnewpurchase {
     }
     .poreport_detailmessage {
         font-size: 0.92rem;
+    }
+    .poreportdatagrow {
+        display: none;
     }
 }
 /* Surface Duo */
@@ -1103,8 +1143,9 @@ input.addnewpurchase {
         font-size: 0.8rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.25rem;
+        padding-left: 0.35rem;
         padding-right: 0.25rem;
+        padding-top: 0.35rem;
     }
     .poreportdata {
         padding-left: 0.25rem;
@@ -1112,6 +1153,9 @@ input.addnewpurchase {
     }
     .poreport_detailmessage {
         font-size: 0.82rem;
+    }
+    .poreportdatagrow {
+        display: none;
     }
 }
 /* Landscape phones and smaller */
@@ -1262,8 +1306,9 @@ input.addnewpurchase {
         font-size: 0.7rem;
     }
     .poreportdatacell.vendornamedat {
-        padding-left: 0.2rem;
+        padding-left: 0.4rem;
         padding-right: 0.2rem;
+        padding-top: 0.4rem;
     }
     .poreportdata {
         padding-left: 0.2rem;
@@ -1271,6 +1316,9 @@ input.addnewpurchase {
     }
     .poreport_detailmessage {
         font-size: 0.8rem;
+    }
+    .poreportdatagrow {
+        display: none;
     }
 }
 

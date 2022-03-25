@@ -7079,6 +7079,7 @@ Class Orders_model extends MY_Model
             $stagesrc = [$this->NO_ART, $this->TO_PROOF];
         }
         $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
+        $this->db->select('o.customer_name as customer');
         $this->db->from('ts_orders o');
         $this->db->join('v_order_statuses a','a.order_id=o.order_id');
         $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');

@@ -2,6 +2,8 @@
 
 Class Payments_model extends MY_Model {
     private $START_ORDNUM=22000;
+    private $positive_grow_class = 'growpositive';
+    private $negative_grow_class = 'grownegative';
 
     function __construct() {
         parent::__construct();
@@ -1320,6 +1322,79 @@ Class Payments_model extends MY_Model {
             $data['year1'] = $year1;
             $data['year2'] = $year2;
             $data['year3'] = $year3;
+            // Calc grows
+            // QTY
+            $qty1 = $qty2 = 0;
+            $baseqty = $data['qty_year3'];
+            if (empty($baseqty)) {
+                if (!empty($data['qty_year1'])) {
+                    $qty1 = 100;
+                }
+                if (!empty($data['qty_year2'])) {
+                    $qty2 = 100;
+                }
+            } else {
+                $qty1 = ($data['qty_year1']/$baseqty*100)-100;
+                $qty2 = round(($data['qty_year1']/$baseqty*100)-100,0);
+            }
+            // cost
+            $cost1 = $cost2 = 0;
+            $basecost = $data['cost_year3'];
+            if (empty($basecost)) {
+                if (!empty($data['cost_year1'])) {
+                    $cost1 = 100;
+                }
+                if (!empty($data['cost_year2'])) {
+                    $cost2 = 100;
+                }
+            } else {
+                $cost1 = ($data['cost_year1']/$basecost*100)-100;
+                $cost2 = ($data['cost_year2']/$basecost*100)-100;
+            }
+            // profit
+            $profit1 = $profit2 = 0;
+            $baseprofit = $data['profit_year3'];
+            if (empty($baseprofit)) {
+                if (!empty($data['profit_year1'])) {
+                    $profit1 = 100;
+                }
+                if (!empty($data['profit_year2'])) {
+                    $profit2 = 100;
+                }
+            } else {
+                $profit1 = ($data['profit_year1']/$baseprofit*100)-100;
+                $profit2 = ($data['profit_year2']/$baseprofit*100)-100;
+            }
+            // avgprofit
+            $avg1 = $avg2 = 0;
+            $baseavg = $data['avgprof_year3'];
+            if (empty($baseavg)) {
+                if (!empty($data['avgprof_year1'])) {
+                    $avg1 = 100;
+                }
+                if (!empty($data['avgprof_year2'])) {
+                    $avg2 = 100;
+                }
+            } else {
+                $avg1 = (round($data['avgprof_year1'],0)/round($baseavg,0)*100)-100;
+                $avg2 = (round($data['avgprof_year2'],0)/round($baseavg,0)*100)-100;
+            }
+            $data['qtygrow_year1'] = round(abs($qty1),1);
+            $data['qtygrow_class_year1'] = (!empty($qty1) ? ($qty1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['qtygrow_year2'] = round(abs($qty2));
+            $data['qtygrow_class_year2'] = (!empty($qty2) ? ($qty2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['costgrow_year1'] = round(abs($cost1),1);
+            $data['costgrow_class_year1'] = (!empty($cost1) ? ($cost1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['costgrow_year2'] = round(abs($cost2),1);
+            $data['costgrow_class_year2'] = (!empty($cost2) ? ($cost2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['profitgrow_year1'] = round(abs($profit1),1);
+            $data['profitgrow_class_year1'] = (!empty($profit1) ? ($profit1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['profitgrow_year2'] = round(abs($profit2),1);
+            $data['profitgrow_class_year2'] = (!empty($profit2) ? ($profit2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['avggrow_year1'] = round(abs($avg1));
+            $data['avggrow_class_year1'] = (!empty($avg1) ? ($avg1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['avggrow_year2'] = round(abs($avg2));
+            $data['avggrow_class_year2'] = (!empty($avg2) ? ($avg2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
             $out[] = $data;
             $start++;
         }
