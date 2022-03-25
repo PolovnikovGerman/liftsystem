@@ -1325,59 +1325,75 @@ Class Payments_model extends MY_Model {
             // Calc grows
             // QTY
             $qty1 = $qty2 = 0;
-            $baseqty = $data['qty_year3'];
-            if (empty($baseqty)) {
+            $baseqty1 = $data['qty_year2'];
+            $baseqty2 = $data['qty_year3'];
+            if (empty($baseqty1)) {
                 if (!empty($data['qty_year1'])) {
                     $qty1 = 100;
                 }
+            } else {
+                $qty1 = ($data['qty_year1']/$baseqty1*100)-100;
+            }
+            if (empty($baseqty2)) {
                 if (!empty($data['qty_year2'])) {
                     $qty2 = 100;
                 }
             } else {
-                $qty1 = ($data['qty_year1']/$baseqty*100)-100;
-                $qty2 = round(($data['qty_year1']/$baseqty*100)-100,0);
+                $qty2 = ($data['qty_year2']/$baseqty2*100)-100;
             }
             // cost
             $cost1 = $cost2 = 0;
-            $basecost = $data['cost_year3'];
-            if (empty($basecost)) {
+            $basecost1 = $data['cost_year2'];
+            $basecost2 = $data['cost_year3'];
+            if (empty($basecost1)) {
                 if (!empty($data['cost_year1'])) {
                     $cost1 = 100;
                 }
+            } else {
+                $cost1 = ($data['cost_year1']/$basecost1*100)-100;
+            }
+            if (empty($basecost2)) {
                 if (!empty($data['cost_year2'])) {
                     $cost2 = 100;
                 }
             } else {
-                $cost1 = ($data['cost_year1']/$basecost*100)-100;
-                $cost2 = ($data['cost_year2']/$basecost*100)-100;
+                $cost2 = ($data['cost_year2']/$basecost2*100)-100;
             }
             // profit
             $profit1 = $profit2 = 0;
-            $baseprofit = $data['profit_year3'];
-            if (empty($baseprofit)) {
+            $baseprofit1 = $data['profit_year2'];
+            $baseprofit2 = $data['profit_year3'];
+            if (empty($baseprofit1)) {
                 if (!empty($data['profit_year1'])) {
                     $profit1 = 100;
                 }
+            } else {
+                $profit1 = ($data['profit_year1']/$baseprofit1*100)-100;
+            }
+            if (empty($baseprofit2)) {
                 if (!empty($data['profit_year2'])) {
                     $profit2 = 100;
                 }
             } else {
-                $profit1 = ($data['profit_year1']/$baseprofit*100)-100;
-                $profit2 = ($data['profit_year2']/$baseprofit*100)-100;
+                $profit2 = ($data['profit_year2']/$baseprofit2*100)-100;
             }
             // avgprofit
             $avg1 = $avg2 = 0;
-            $baseavg = $data['avgprof_year3'];
-            if (empty($baseavg)) {
+            $baseavg1 = $data['avgprof_year2'];
+            $baseavg2 = $data['avgprof_year3'];
+            if (empty($baseavg1)) {
                 if (!empty($data['avgprof_year1'])) {
                     $avg1 = 100;
                 }
+            } else {
+                $avg1 = (round($data['avgprof_year1'],0)/round($baseavg1,0)*100)-100;
+            }
+            if (empty($baseavg2)) {
                 if (!empty($data['avgprof_year2'])) {
                     $avg2 = 100;
                 }
             } else {
-                $avg1 = (round($data['avgprof_year1'],0)/round($baseavg,0)*100)-100;
-                $avg2 = (round($data['avgprof_year2'],0)/round($baseavg,0)*100)-100;
+                $avg2 = (round($data['avgprof_year2'],0)/round($baseavg2,0)*100)-100;
             }
             $data['qtygrow_year1'] = round(abs($qty1),1);
             $data['qtygrow_class_year1'] = (!empty($qty1) ? ($qty1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
