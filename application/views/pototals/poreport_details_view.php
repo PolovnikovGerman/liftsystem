@@ -17,7 +17,7 @@
                     <?php if (empty($data['qtygrow_year1'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['qtygrow_year1'],1)?>%
+                        <?=number_format($data['qtygrow_year1'],1,'.','')?>%
                         <?php if ($data['qtygrow_class_year1']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -39,7 +39,7 @@
                     <?php if (empty($data['costgrow_year1'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['costgrow_year1'],1)?>%
+                        <?=number_format($data['costgrow_year1'],1,'.','')?>%
                         <?php if ($data['costgrow_class_year1']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -58,7 +58,7 @@
                     <?php if (empty($data['avggrow_year1'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['avggrow_year1'],1)?>%
+                        <?=number_format($data['avggrow_year1'],1,'.','')?>%
                         <?php if ($data['avggrow_class_year1']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -80,7 +80,7 @@
                     <?php if (empty($data['profitgrow_year1'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['profitgrow_year1'],1)?>%
+                        <?=number_format($data['profitgrow_year1'],1,'.','')?>%
                         <?php if ($data['profitgrow_class_year1']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -106,7 +106,7 @@
                     <?php if (empty($data['qtygrow_year2'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['qtygrow_year2'],1)?>%
+                        <?=number_format($data['qtygrow_year2'],1,'.','')?>%
                         <?php if ($data['qtygrow_class_year2']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -128,7 +128,7 @@
                     <?php if (empty($data['costgrow_year2'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['costgrow_year2'],1)?>%
+                        <?=number_format($data['costgrow_year2'],1,'.','')?>%
                         <?php if ($data['costgrow_class_year2']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -147,7 +147,7 @@
                     <?php if (empty($data['avggrow_year2'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['avggrow_year2'],1)?>%
+                        <?=number_format($data['avggrow_year2'],1,'.','')?>%
                         <?php if ($data['avggrow_class_year2']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>
@@ -169,7 +169,7 @@
                     <?php if (empty($data['profitgrow_year2'])) {?>
                         &nbsp;
                     <?php } else { ?>
-                        <?=number_format($data['profitgrow_year2'],1)?>%
+                        <?=number_format($data['profitgrow_year2'],1,'.','')?>%
                         <?php if ($data['profitgrow_class_year2']=='growpositive') {?>
                             <span class="growdirection"><i class="fa fa-long-arrow-up"></i></span>
                         <?php } else { ?>

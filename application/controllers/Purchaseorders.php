@@ -181,6 +181,8 @@ class Purchaseorders extends MY_Controller
                     'profit_class' => '',
                     'profit' => '',
                     'is_shipping' => 0,
+                    'order_qty' => '',
+                    'order_items' => '',
                 );
                 $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {

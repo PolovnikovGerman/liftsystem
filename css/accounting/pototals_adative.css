@@ -297,13 +297,13 @@ input.addnewpurchase {
 }
 .poreportdata {
     color: #717171;
-    width: 65%;
+    width: 61%;
 }
 .poreportdata span {
     color: #000000;
 }
 .poreportdatagrow {
-    width: 35%;
+    width: 39%;
     text-align: right;
 }
 .poreportdatagrow span {
@@ -348,11 +348,11 @@ input.addnewpurchase {
         padding-top: 0.3rem;
     }
     .pototals-placefiltr {
-        font-size: 0.7rem;
-        padding-top: 0.4rem;
+        font-size: 0.9rem;
+        padding-top: 0.7rem;
     }
     .pototals-placeresult {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
     .poplace-tablehead > div {
         height: 1.3rem;
@@ -452,7 +452,7 @@ input.addnewpurchase {
     .amountvendorselect, .amountmethodselect {
         height: 1.5622rem;
         padding: 1px;
-        width: 9.2rem;
+        width: 12.2rem;
     }
     /*PO Reports */
     .poreport-sorting {
@@ -660,7 +660,7 @@ input.addnewpurchase {
         font-size: 0.75rem;
     }
     .poreportdatagrow {
-        display: none;
+        /* display: none; */
     }
 }
 /* Portrait tablets and small desktops */
@@ -826,7 +826,7 @@ input.addnewpurchase {
         font-size: 0.95rem;
     }
     .poreportdatagrow {
-        display: none;
+        /* display: none; */
     }
 }
 /* Landscape phones and portrait tablets */
@@ -987,6 +987,7 @@ input.addnewpurchase {
     .poreportdata {
         padding-left: 0.3rem;
         padding-right: 0.3rem;
+        width: 100%;
     }
     .poreport_detailmessage {
         font-size: 0.92rem;
@@ -1150,6 +1151,7 @@ input.addnewpurchase {
     .poreportdata {
         padding-left: 0.25rem;
         padding-right: 0.25rem;
+        width: 100%;
     }
     .poreport_detailmessage {
         font-size: 0.82rem;
@@ -1313,6 +1315,7 @@ input.addnewpurchase {
     .poreportdata {
         padding-left: 0.2rem;
         padding-right: 0.2rem;
+        width: 100%;
     }
     .poreport_detailmessage {
         font-size: 0.8rem;

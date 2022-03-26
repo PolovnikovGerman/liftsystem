@@ -1343,21 +1343,21 @@ Class Payments_model extends MY_Model {
             }
             // cost
             $cost1 = $cost2 = 0;
-            $basecost1 = $data['cost_year2'];
-            $basecost2 = $data['cost_year3'];
+            $basecost1 = round($data['cost_year2'],0);
+            $basecost2 = round($data['cost_year3'],0);
             if (empty($basecost1)) {
                 if (!empty($data['cost_year1'])) {
                     $cost1 = 100;
                 }
             } else {
-                $cost1 = ($data['cost_year1']/$basecost1*100)-100;
+                $cost1 = (round($data['cost_year1'],0)/$basecost1*100)-100;
             }
             if (empty($basecost2)) {
                 if (!empty($data['cost_year2'])) {
                     $cost2 = 100;
                 }
             } else {
-                $cost2 = ($data['cost_year2']/$basecost2*100)-100;
+                $cost2 = (round($data['cost_year2'],0)/$basecost2*100)-100;
             }
             // profit
             $profit1 = $profit2 = 0;

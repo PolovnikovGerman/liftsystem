@@ -85,14 +85,8 @@
                     </div>
                 <?php } ?>
             </div>
-            <!-- Vendor Statements: -->
-            <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xs-7 pototals-toplacehead">
-                <div class="row">
-                    <div class="col-9 pototals-placetitle">Vendor Statements:</div>
-                </div>
-            </div>
             <!-- PO Reports: -->
-            <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xs-7 pototals-toplacehead">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xs-7 pototals-toplacehead">
                 <div class="row">
                     <div class="col-9 pototals-placetitle">PO Reports:</div>
                 </div>
@@ -138,6 +132,12 @@
                 </div>
                 <div class="row">
                     <div class="col-12 poreportPaginator"></div>
+                </div>
+            </div>
+            <!-- Vendor Statements: -->
+            <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xs-7 pototals-toplacehead">
+                <div class="row">
+                    <div class="col-9 pototals-placetitle">Vendor Statements:</div>
                 </div>
             </div>
         </div>
