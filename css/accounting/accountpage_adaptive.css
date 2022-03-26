@@ -23,6 +23,7 @@
     text-align: center;
     margin-right: 0.5rem;
     margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 .headmenuitem.oldver {
     padding: 0 13px 0 1px;
@@ -40,7 +41,7 @@
     left: 47%;
     background-color: #b53535;
     width: 0.75rem;
-    margin-top: 0px;
+    margin-top: -1px;
     height: 2.45rem;
 }
 
@@ -200,54 +201,77 @@ input.search_input {
 @media (min-width: 1200px) {
     .mastermenu_head .menulabel {
         font-size: 1.5rem;
-        line-height: 2.5625rem!important;
+        /* line-height: 2.5625rem!important; */
+        margin-top: 0.5rem;
     }
     .mastermenu_head .headmenuitem {
         height: 2rem;
-        font-size: 0.75rem;
-        line-height: 2rem;
+        font-size: 0.8rem;
+        line-height: 1.9rem;
     }
     .headmenuitem > .oldvesionlabel {
-        height: 1.9rem;
+        height: 1.92rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
     }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
     .mastermenu_head .menulabel {
         font-size: 1.5rem;
-        line-height: 2.5rem!important;
+        /* line-height: 2.5rem!important; */
+        margin-top: 0.5rem;
     }
     .mastermenu_head .headmenuitem {
         font-size: 1rem;
-        height: 2.5rem;
-        line-height: 2.35rem;
-        /* width: 8.6rem; */
+        height: 1.9rem;
+        line-height: 1.9rem;
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.9rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
     }
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
     .mastermenu_head .menulabel {
         font-size: 1.25rem;
-        line-height: 2rem!important;
+        /* line-height: 2rem!important; */
+        margin-top: 0.5rem;
     }
     .mastermenu_head .headmenuitem {
         font-size: 1rem;
-        height: 2.5rem;
-        line-height: 2.35rem;
-        /* width: 8.6rem; */
+        height: 1.9rem;
+        line-height: 1.9rem;
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.9rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
     }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
     .mastermenu_head .menulabel {
         font-size: 1.25rem;
-        line-height: 2rem!important;
+        /* line-height: 2rem!important; */
+        margin-top: 0.5rem;
     }
     .mastermenu_head .headmenuitem {
         font-size: 1rem;
-        height: 2.5rem;
-        line-height: 2.35rem;
+        height: 1.85rem;
+        line-height: 1.85rem;
         /* width: 8.6rem; */
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.85rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.85rem - 3px)!important;
     }
 }
 /* Surface Duo */
@@ -257,10 +281,16 @@ input.search_input {
         line-height: 2rem!important;
     }
     .mastermenu_head .headmenuitem {
-        font-size: 1rem;
-        height: 2.5rem;
-        line-height: 2.35rem;
+        font-size: 0.9rem;
+        height: 1.7rem;
+        line-height: 1.7rem;
         /* width: 8.4rem; */
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.7rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.7rem - 3px)!important;
     }
 }
 /* Landscape phones and smaller */
