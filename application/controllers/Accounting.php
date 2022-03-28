@@ -70,8 +70,8 @@ class Accounting extends MY_Controller
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
             } elseif ($row['item_link']=='#purchaseordersview') {
-                $head['styles'][]=array('style'=>'/css/accounting/pototals_adative.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/pototals_adative.js');
+                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -154,7 +154,7 @@ class Accounting extends MY_Controller
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['expensesview'] = $this->_prepare_expensives_view($brand, $top_menu);
             } elseif ($row['item_link']=='#accreceiv') {
-                $head['styles'][]=array('style'=>'/css/accounting/accreceiv_adapt.css');
+                $head['styles'][]=array('style'=>'/css/accounting/accreceiv.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
@@ -171,10 +171,10 @@ class Accounting extends MY_Controller
         }
         $content_options['menu'] = $menu;
         $content_options['start'] = $start;
-        $content_view = $this->load->view('accounting/page_device_view', $content_options, TRUE);
+        $content_view = $this->load->view('accounting/page_view', $content_options, TRUE);
         // Add main page management
-        $head['scripts'][] = array('src' => '/js/accounting/page_adaptive.js');
-        $head['styles'][] = array('style' => '/css/accounting/accountpage_adaptive.css');
+        $head['scripts'][] = array('src' => '/js/accounting/page.js');
+        $head['styles'][] = array('style' => '/css/accounting/accountpage.css');
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -192,13 +192,12 @@ class Accounting extends MY_Controller
         // File Download
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
         // Datepicker
-        // $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
-        // $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
-        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
-        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -206,7 +205,6 @@ class Accounting extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
-            'adaptive' => 1,
         ];
 
         $dat = $this->template->prepare_pagecontent($options);
@@ -3014,9 +3012,8 @@ class Accounting extends MY_Controller
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
-            $mdata['totalown'] = $this->load->view('accreceiv/totalsown_device_view', $res, TRUE);
-            $mdata['totalrefund'] = $this->load->view('accreceiv/totalsrefund_device_view', $res, TRUE);
-            $mdata['totals'] = $this->load->view('accreceiv/balances_device_view', $res, TRUE);
+            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -3034,14 +3031,7 @@ class Accounting extends MY_Controller
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-            $maxwidth = ifset($postdata,'maxwidth',0);
-            // $res['datelabel']='Order Date';
-            $res['datelabel']='Date';
-            if ($maxwidth < 540) {
-                $res['datelabel']='Date';
-            }
-            $mdata['owndetails'] = $this->load->view('accreceiv/owndetails_device_view', $res, TRUE);
-            $mdata['refunddetails'] = $this->load->view('accreceiv/refunddetails_device_view', $res, TRUE);
+            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -3902,7 +3892,7 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_purchaseorders_view($brand, $top_menu) {
-        /* $this->load->model('orders_model');
+        $this->load->model('orders_model');
         $this->load->model('payments_model');
         $this->load->model('vendors_model');
         // $search_form
@@ -3951,39 +3941,6 @@ class Accounting extends MY_Controller
             'vendors' => $vendors,
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
-        */
-        $inner = 0;
-        $this->load->model('orders_model');
-        $this->load->model('payments_model');
-
-        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
-        $totals = $this->orders_model->purchase_fulltotals($brand);
-        // Years
-        $years = $this->payments_model->get_pototals_years($brand);
-        $year1 = $year2 = $year3 = $years[0];
-        if (count($years) > 1) {
-            $year2 = $years[1];
-        }
-        if (count($years) > 2) {
-            $year3 = $years[2];
-        }
-        // Temporary
-        $year1=2018; $year2=2017; $year3=2016;
-        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
-        $options=[
-            'totaltab' => $totaltab,
-            'totals' => $totals,
-            'inner' => $inner,
-            'brand' => $brand,
-            'top_menu' => $top_menu,
-            'years' => $years,
-            'year1' => $year1,
-            'year2' => $year2,
-            'year3' => $year3,
-            'poreporttotals' => $poreptotals,
-            'poreportperpage' => 8,
-        ];
-        return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
     }
 
     private function _prepare_accreceiv_view($brand, $top_menu) {
@@ -3991,7 +3948,7 @@ class Accounting extends MY_Controller
             'brand' => $brand,
             'top_menu' => $top_menu,
         ];
-        return $this->load->view('accreceiv/page_device_view',$options, TRUE);
+        return $this->load->view('accreceiv/page_view',$options, TRUE);
     }
 
 }
