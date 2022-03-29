@@ -1,7 +1,7 @@
 <div class="finmenusection">
     <?php foreach ($permissions as $item) { ?>
         <?php if ($item['menu_section']=='finsection') { ?>
-            <div class="menuitem <?=$item['item_link'] == $activelnk ? 'activelink' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-menulink="<?= $item['item_link'] ?>">
+            <div class="menuitem <?=$item['item_name']=='Finance' ? 'finance' : ''?> <?=$item['item_name']=='Finance NEW' ? 'financenew' : ''?> <?=$item['item_link'] == $activelnk ? 'activelink' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-menulink="<?= $item['item_link'] ?>">
                 <?php  if (ifset($item,'newver', 1)==0) { ?>
                     <div class="oldvesionlabel">&nbsp;</div>
                 <?php } ?>

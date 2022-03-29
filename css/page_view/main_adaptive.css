@@ -764,6 +764,10 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     background: #000080;
     color: #ffffff;
 }
+.menuitem.finance {}
+.menuitem.finance:after {}
+.menuitem.financenew {}
+.menuitem.financenew:before {}
 .finmenusection {
     float: right;
     margin-right: -15px;
