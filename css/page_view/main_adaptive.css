@@ -764,13 +764,38 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     background: #000080;
     color: #ffffff;
 }
-.menuitem.finance {}
+.menuitem.finance {
+    border-top-right-radius: 0px;
+    padding-right: 0.7rem!important;
+    position: relative;
+}
 .menuitem.finance:after {
     content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 26px 26px 0 0;
+    border-color: #6b6b6b transparent transparent transparent;
+    position: absolute;
+    top: 0px;
+    right: -26px;
 }
-.menuitem.financenew {}
+.menuitem.financenew {
+    border-top-left-radius: 0;
+    padding-left: 0rem!important;
+    position: relative;
+    margin-left: 30px;
+}
 .menuitem.financenew:before {
     content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 26px 26px;
+    border-color: transparent transparent #6b6b6b transparent;
+    position: absolute;
+    top: 0px;
+    left: -26px;
 }
 .finmenusection {
     float: right;
