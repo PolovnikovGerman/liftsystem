@@ -765,9 +765,13 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     color: #ffffff;
 }
 .menuitem.finance {}
-.menuitem.finance:after {}
+.menuitem.finance:after {
+    content: '';
+}
 .menuitem.financenew {}
-.menuitem.financenew:before {}
+.menuitem.financenew:before {
+    content: '';
+}
 .finmenusection {
     float: right;
     margin-right: -15px;
