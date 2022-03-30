@@ -815,14 +815,14 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     min-width: 20px!important;
     background: #64390e;
 }
-.menuitem.finance span.nameitem {
+.menuitem.finance div.nameitem {
     background: #6b6b6b;
     display: inline-block;
     position: relative;
     top: -3px;
     left: -4px;
 }
-.menuitem.financenew span.nameitem {
+.menuitem.financenew div.nameitem {
     background: #6b6b6b;
     display: inline-block;
     position: relative;
