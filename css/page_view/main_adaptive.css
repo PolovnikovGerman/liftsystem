@@ -801,7 +801,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 }
 .menuitem.finance {
     border-top-right-radius: 0px;
-    padding: 0 0 0 1.2rem!important;
+    padding: 0 0 0 0rem!important;
     position: relative;
     min-width: 20px!important;
     border-radius: 0!important;
@@ -820,7 +820,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     display: inline-block;
     position: relative;
     top: -3px;
-    left: -4px;
+    left: -5px;
     width: 14px;
 }
 .menuitem.financenew div.nameitem {
