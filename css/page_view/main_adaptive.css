@@ -773,7 +773,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border-color: #6b6b6b transparent transparent transparent;
     position: absolute;
     top: 0px;
-    right: -26px;
+    right: -21px;
 }
 .triangle-bottom {
     width: 0;
@@ -783,7 +783,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border-color: transparent transparent #6b6b6b transparent;
     position: absolute;
     top: 0px;
-    left: -26px;
+    left: -21px;
 }
 .menuitem.finance span.bnt-side {
     background: #6b6b6b;
@@ -811,7 +811,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     border-top-left-radius: 0;
     padding-left: 0rem!important;
     position: relative;
-    margin-left: 30px;
+    margin-left: 22px;
     min-width: 20px!important;
     background: #64390e;
 }
@@ -821,6 +821,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     position: relative;
     top: -3px;
     left: -4px;
+    width: 14px;
 }
 .menuitem.financenew div.nameitem {
     background: #6b6b6b;
@@ -828,6 +829,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     position: relative;
     top: -3px;
     right: -5px;
+    width: 14px;
 }
 .menuitem.finance:hover > div.nameitem,
 .menuitem.financenew:hover > div.nameitem,
@@ -840,6 +842,14 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 }
 .menuitem.financenew:hover span.triangle-bottom {
     border-color: transparent transparent #000080 transparent;
+}
+.menuitem.finance div.nameitem span {
+    position: relative;
+    z-index: 20;
+}
+.menuitem.financenew div.nameitem span {
+    position: relative;
+    left: -45px;
 }
 /* END Finance button */
 .finmenusection {
