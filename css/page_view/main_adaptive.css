@@ -851,6 +851,11 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     position: relative;
     left: -45px;
 }
+.menuitem.financenew:hover div.nameitem span {
+    position: relative;
+    left: -45px;
+    z-index: 25;
+}
 /* END Finance button */
 .finmenusection {
     float: right;
