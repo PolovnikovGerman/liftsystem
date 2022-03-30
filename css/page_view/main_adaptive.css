@@ -849,11 +849,11 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 }
 .menuitem.financenew div.nameitem span {
     position: relative;
-    left: -45px;
+    left: -46px;
 }
 .menuitem.financenew:hover div.nameitem span {
     position: relative;
-    left: -45px;
+    left: -46px;
     z-index: 25;
 }
 /* END Finance button */
