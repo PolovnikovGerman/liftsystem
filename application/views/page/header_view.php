@@ -28,8 +28,12 @@
                 </div>
             </div>
         </div>
-        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
-            <div class="testsitelabel">TEST</div>
+        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="testsitelabel">TEST</div>
+                </div>
+            </div>
         <?php } ?>
         <div class="right-box">
             <div class="userinfo">
