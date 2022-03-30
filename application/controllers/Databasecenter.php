@@ -142,7 +142,9 @@ class Databasecenter extends MY_Controller
                 $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link']=='#masterinventory') {
-
+                $head['styles'][]=array('style'=>'/css/database_center/inventory_adaptive.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/inventory_adaptive.js');
+                $content_options['inventoryview'] = $this->_prepare_inventory_view();
             } elseif ($row['item_link']=='#mastersettings') {
                 $head['styles'][] = array('style' => '/css/settings/countriesview.css');
                 $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
@@ -360,6 +362,11 @@ class Databasecenter extends MY_Controller
             'vendors' => $this->vendors_model->get_vendors(),
         ];
         $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_inventory_view() {
+        $content = $this->load->view('masterinvent/page_adaptive_view', [], TRUE);
         return $content;
     }
 

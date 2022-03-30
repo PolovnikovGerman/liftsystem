@@ -17,7 +17,7 @@ function show_dbcenter_mastercontent(act) {
         $("#vendorsview").show();
         init_vendorpage();
     } else if (act=='masterinventory') {
-
+        $("#inventoryview").show();
     } else if (act=='mastersettings') {
         $("#settingsview").show();
         init_master_settings();

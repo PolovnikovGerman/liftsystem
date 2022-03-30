@@ -1,19 +1,78 @@
-
+.inventorydataview .pagetitle {
+    font-weight: bold;
+}
+.invtypebutton {
+    background: #07adad;
+    border: 1px solid #000000;
+    color: #ffffff;
+    float: left;
+    font-weight: 600;
+    text-align: center;
+}
+.invtypebutton .oldvesionlabel {
+    float: left;
+    opacity: 0.6;
+    position: relative;
+    left: 47%;
+    background-color: #b53535;
+    width: 0.75rem;
+    margin-top: 0px;
+    height: 1.7rem;
+    z-index: 100;
+}
+.invtypebutton.active {
+    background: #097676;
+}
+.inventorydataview .filterlabel {
+    text-align: right;
+}
+.inventorydataview .filterdata {
+    float: left;
+    font-size: 0.9rem;
+    height: 1.9rem;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .inventorydataview .pagetitle {
+        height: 2.5rem;
+        font-size: 1.5rem;
+        line-height: 2.5rem;
+    }
+    .invtypebutton {
+        border-radius: 0.4rem;
+        font-size: 0.9375rem;
+        height: 1.75rem;
+        line-height: 1.7rem;
+        margin-top: 0.7rem;
+        margin-right: 0.5rem;
+        width: 8.25rem;
+    }
+    .inventorydataview .filterlabel {
+        font-size: 0.75rem;
+    }
+
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
+    .inventorydataview .pagetitle {
+    }
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
+    .inventorydataview .pagetitle {
+    }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
+    .inventorydataview .pagetitle {
+    }
 }
 /* Surface Duo */
 @media (max-width: 540px) {
 }
 /* Landscape phones and smaller */
 @media (max-width: 480px) {
+    .inventorydataview .pagetitle {
+        font-size: 1.5rem;
+    }
 }
