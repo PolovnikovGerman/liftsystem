@@ -829,11 +829,11 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     top: -3px;
     right: -5px;
 }
-.menuitem.finance:hover span.nameitem,
-.menuitem.financenew:hover span.nameite,
+.menuitem.finance:hover div.nameitem,
+.menuitem.financenew:hover div.nameite,
 .menuitem.finance:hover span.bnt-side
 .menuitem.financenew:hover span.bnt-side {
-    background: #000080;
+    background: #000080!important;
 }
 .menuitem.finance:hover span.triangle-top {
     border-color: #000080 transparent transparent transparent;
