@@ -760,10 +760,11 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     line-height: 30px!important;
     margin-top: -4px;
 }
-.menuitem:hover, .menuitem.finance:after:hover, .menuitem.financenew:before:hover {
+.menuitem:hover {
     background: #000080;
     color: #ffffff;
 }
+/* , .menuitem.finance:after:hover, .menuitem.financenew:before:hover */
 .menuitem.finance {
     border-top-right-radius: 0px;
     padding: 0 0 0 1.2rem!important;
