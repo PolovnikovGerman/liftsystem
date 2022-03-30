@@ -9,7 +9,7 @@
                 </div>
             <?php } elseif ($item['item_name']=='Finance NEW') { ?>
                 <div class="menuitem financenew <?=($activelnk=='/accounting' || $activelnk=='/finances') ? 'activelink' : ''?>" data-menulink="/finances">
-                    <span class="triangle-bootom">&nbsp;</span>
+                    <span class="triangle-bottom">&nbsp;</span>
                     <span class="nameitem">Finance</span>
                     <span class="bnt-side">&nbsp;</span>
                 </div>
