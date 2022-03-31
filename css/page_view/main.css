@@ -768,7 +768,7 @@ div.oldvesionlabel {
 .menuitem.finance div.nameitem span {
     position: relative;
     z-index: 20;
-    left: 4px;
+    left: 0px;
 }
 .menuitem.financenew div.nameitem span {
     position: relative;
@@ -811,10 +811,11 @@ div.oldvesionlabel {
 .menuitem.financenew.activelink span.bnt-side {
     background: #3636ff;
     border-top-right-radius: 7px;
-    font-size: 20px;
+    /*font-size: 20px; */
     display: inline-block;
     width: 18px;
     left: 0;
+    height: 29px;
 }
 .menuitem.financenew.activelink div.nameitem span {
     position: relative;
