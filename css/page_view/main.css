@@ -768,7 +768,7 @@ div.oldvesionlabel {
 .menuitem.finance div.nameitem span {
     position: relative;
     z-index: 20;
-    left: 6px;
+    left: 4px;
 }
 .menuitem.financenew div.nameitem span {
     position: relative;
@@ -788,8 +788,9 @@ div.oldvesionlabel {
     border-width: 0 0 30px 30px;
     border-color: transparent transparent #3636ff transparent;
     position: absolute;
-    top: 0px;
+    top: -1px;
     left: -25px;
+    float: left;
 }
 .menuitem.financenew.activelink span.bnt-side {
     background: #3636ff;
@@ -800,7 +801,7 @@ div.oldvesionlabel {
 }
 .menuitem.financenew.activelink div.nameitem {
     background: #3636ff;
-    display: inline-block;
+    float: left;
     position: relative;
     top: 0px;
     right: -5px;
@@ -817,8 +818,8 @@ div.oldvesionlabel {
 }
 .menuitem.financenew.activelink div.nameitem span {
     position: relative;
-    left: -42px;
-    top: 5px;
+    left: -44px;
+    top: 6px;
     color: #fff;
     z-index: 25;
 }
@@ -826,17 +827,20 @@ div.oldvesionlabel {
     background: #3636ff;
     border-top-left-radius: 7px;
     font-size: 23px;
-    /* display: inline-block; */
-    width: 27px;
+    float: left;
+    width: 18px;
+    position: relative;
+    top: -1px;
 }
 .menuitem.finance.activelink div.nameitem {
     background: #3636ff;
-    /* border-top: 1px solid #000; */
-    /* display: inline-block; */
+    / border-top: 1px solid #000; /
+    float: left;
     position: relative;
-    top: -25px;
-    left: 13px;
+    top: -1px;
+    left: 0;
     width: 14px;
+    line-height: 30px;
 }
 .menuitem.finance.activelink .triangle-top {
     width: 0;
@@ -845,8 +849,9 @@ div.oldvesionlabel {
     border-width: 30px 30px 0 0;
     border-color: #3636ff transparent transparent transparent;
     position: absolute;
-    top: 0px;
+    top: -1px;
     right: -30px;
+    float: left;
 }
 .menuitem.finance.activelink {
     border-top-left-radius: 7px!important;
