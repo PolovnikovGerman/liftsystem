@@ -699,7 +699,7 @@ div.oldvesionlabel {
     height: 0;
     border-style: solid;
     border-width: 0 0 26px 26px;
-    border-color: transparent transparent #6b6b6b transparent;
+    border-color: transparent transparent #9c9c9c transparent;
     position: absolute;
     top: 0px;
     left: -21px;
@@ -712,7 +712,7 @@ div.oldvesionlabel {
     width: 26px;
 }
 .menuitem.financenew span.bnt-side {
-    background: #6b6b6b;
+    background: #9c9c9c;
     border-top-right-radius: 7px;
     font-size: 23px;
     display: inline-block;
@@ -786,14 +786,14 @@ div.oldvesionlabel {
     height: 0;
     border-style: solid;
     border-width: 0 0 30px 30px;
-    border-color: transparent transparent #3636ff transparent;
+    border-color: transparent transparent #1a73e8 transparent;
     position: absolute;
     top: -1px;
     left: -25px;
     float: left;
 }
 .menuitem.financenew.activelink div.nameitem {
-    background: #3636ff;
+    background: #1a73e8;
     float: left;
     position: relative;
     top: 0px;
@@ -802,7 +802,7 @@ div.oldvesionlabel {
     height: 29px;
 }
 .menuitem.financenew.activelink span.bnt-side {
-    background: #3636ff;
+    background: #1a73e8;
     border-top-right-radius: 7px;
     display: inline-block;
     width: 15px;
