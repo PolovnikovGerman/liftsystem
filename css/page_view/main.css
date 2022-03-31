@@ -792,13 +792,6 @@ div.oldvesionlabel {
     left: -25px;
     float: left;
 }
-.menuitem.financenew.activelink span.bnt-side {
-    background: #3636ff;
-    border-top-right-radius: 7px;
-    font-size: 23px;
-    display: inline-block;
-    width: 18px;
-}
 .menuitem.financenew.activelink div.nameitem {
     background: #3636ff;
     float: left;
@@ -811,15 +804,14 @@ div.oldvesionlabel {
 .menuitem.financenew.activelink span.bnt-side {
     background: #3636ff;
     border-top-right-radius: 7px;
-    /*font-size: 20px; */
     display: inline-block;
-    width: 18px;
+    width: 15px;
     left: 0;
     height: 29px;
 }
 .menuitem.financenew.activelink div.nameitem span {
     position: relative;
-    left: -44px;
+    left: -48px;
     top: 6px;
     color: #fff;
     z-index: 25;
