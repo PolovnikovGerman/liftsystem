@@ -768,6 +768,7 @@ div.oldvesionlabel {
 .menuitem.finance div.nameitem span {
     position: relative;
     z-index: 20;
+    left: 6px;
 }
 .menuitem.financenew div.nameitem span {
     position: relative;
@@ -788,7 +789,7 @@ div.oldvesionlabel {
     border-color: transparent transparent #3636ff transparent;
     position: absolute;
     top: 0px;
-    left: -20px;
+    left: -25px;
 }
 .menuitem.financenew.activelink span.bnt-side {
     background: #3636ff;
@@ -852,7 +853,7 @@ div.oldvesionlabel {
 }
 .menuitem.financenew.activelink {
     padding-right: 0!important;
-    margin-left: 22px;
+    margin-left: 28px;
     border-left: none;
 }
 /* END Finance ACTIVE */
