@@ -23,16 +23,112 @@
 .invtypebutton.active {
     background: #097676;
 }
-.inventorydataview .filterlabel {
+.inventorydataview .inventfilterlabel {
     text-align: right;
 }
-.inventorydataview .filterdata {
+.inventorydataview .inventfilterdata {
     float: left;
-    font-size: 0.9rem;
-    height: 1.9rem;
+}
+.totalinvent {
+    border: 1.5px solid #000000;
+}
+.totalinventlabel {
+    font-weight: 600;
+    color: #727272;
+}
+.totalinventvalue {
+    font-weight: 600;
+    color: #000000;
+    text-align: right;
+}
+.mastinvent_left_menu {
+    width: 20.4%;
+    float: left;
+}
+.mastinvent_left_section {
+    width: 100%;
+}
+.mastinvent_left_section.active {
+    background: #252525;
+}
+.mastinvent_left_sectiondata {
+    background: #ebebeb;
+    border: 1px solid #000000;
+    width: 100%;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.inventsectionhead {
+    color: #000000;
+    font-weight: 600;
+}
+.inventsectionvalue {
+    border: 1px solid #000000;
+    background: #6e6e6e;
+}
+.inventsectionvalue_label {
+    color: #ffffff;
+    font-style: italic;
+    float: left;
+}
+.inventsectionvalue_data {
+    color: #32faff;
+    font-weight: 600;
+    float: left;
+}
+.mastinvent_left_sectiondata.active {
+    background: #252525;
+    border: none;
+}
+.mastinvent_left_sectiondata.active > .inventsectionhead {
+    color: #ffffff;
+}
+.mastinvent_left_sectiondata.active > .inventsectionvalue {
+    border: 1px solid #ffffff;
+    background: #252525;
+}
+.mastinvent_databody {
+    background: #252525;
+    float: left;
+    width: 79.6%;
+}
+.masterinventlegend {
+    float: left;
+}
+.masterinventlegend > div {
+    float: left;
+}
+.legendmapicon.severeval {
+    color: #FF0000;
+}
+.legendmapicon.lowval {
+    color: #ff9900;
+}
+.legendmaplabel {
+    color: #ffffff;
+}
+.masterinventexport {
+    float: right;
+    color: #ffffff;
+}
+.masterinventtotals {
+    font-weight: 600;
+    color: #ffffff;
+}
+.masterinventtotals > div {
+    float: left;
+}
+.masterinventtotals .inventtotalmaxshow {
+    color: #8989ff;
+}
+.masterinventtablehead {
+
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .inventorydataview {
+        max-width: 1160px;
+    }
     .inventorydataview .pagetitle {
         height: 2.5rem;
         font-size: 1.5rem;
@@ -47,10 +143,67 @@
         margin-right: 0.5rem;
         width: 8.25rem;
     }
-    .inventorydataview .filterlabel {
+    .inventfilterlabel {
         font-size: 0.75rem;
     }
-
+    .inventfilterdata {
+        font-size: 0.8rem;
+        height: 1.3rem;
+    }
+    .totalinvent {
+        height: 1.8rem;
+        width: 147%;
+        margin-left: -5rem;
+    }
+    .totalinventlabel {
+        font-size: 1rem;
+        line-height: 1.8rem;
+    }
+    .totalinventvalue {
+        font-size: 1rem;
+        line-height: 1.8rem;
+    }
+    .mastinvent_left_section {
+        padding: 0.75rem 0.75rem 0 0;
+    }
+    .inventsectionhead {
+        font-size: 1rem;
+    }
+    .inventsectionvalue {
+        height: 1.375rem;
+    }
+    .inventsectionvalue_label {
+        font-size: 0.75rem;
+        line-height: 1.375rem;
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+    }
+    .inventsectionvalue_data {
+        font-size: 0.9375rem;
+        line-height: 1.375rem;
+    }
+    .legendmapicon {
+        padding-left: 0.7rem;
+        font-size: 0.8rem;
+    }
+    .legendmaplabel {
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+    }
+    .masterinventexport {
+        font-size: 0.875rem;
+        padding-right: 0.7rem;
+    }
+    .masterinventexport i {
+        padding-right: 0.4rem;
+    }
+    .masterinventtotals .inventtotalmaxshow {
+        font-size: 0.6875rem;
+        font-weight: normal;
+    }
+    .masterinventtotals {
+        font-size: 0.875rem;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
