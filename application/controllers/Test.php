@@ -438,7 +438,7 @@ class Test extends CI_Controller
     public function vendor_items() {
         $this->db->select('vendor_id, vendor_name');
         $this->db->from('vendors');
-        $this->db->where_not_in('vendor_id',[1,5,3,4,81, 151, 158]);
+        $this->db->where_not_in('vendor_id',[1,5,3,4,81, 151, 152, 158]);
         $vendors = $this->db->get()->result_array();
         foreach ($vendors as $vendor) {
             $file_name = str_replace([' ','.',',',"'"],'_',$vendor['vendor_name']).'.csv';
