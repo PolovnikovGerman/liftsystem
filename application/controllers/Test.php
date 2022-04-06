@@ -441,7 +441,7 @@ class Test extends CI_Controller
         $this->db->where_not_in('vendor_id',[1,5,3,4,81, 151, 158]);
         $vendors = $this->db->get()->result_array();
         foreach ($vendors as $vendor) {
-            $file_name = str_replace([' ','.'],'_',$vendor['vendor_name']).'.csv';
+            $file_name = str_replace([' ','.',"'"],'_',$vendor['vendor_name']).'.csv';
             echo $file_name.PHP_EOL;
         }
         return true;
