@@ -13,10 +13,7 @@
                 </div>
             </div>
             <?php if ($reportchk) { ?>
-                <div class="inforeports <?=($reportsold==0 ? 'oldver' : '')?>" id="reports">
-                    <?php  if ($reportsold==0) { ?>
-                        <div class="oldvesionlabel">&nbsp;</div>
-                    <?php } ?>
+                <div class="inforeports" id="reports">
                     <div class="icon">
                         <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
                     </div>
@@ -31,8 +28,12 @@
                 </div>
             </div>
         </div>
-        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
-            <div class="testsitelabel">TEST</div>
+        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="testsitelabel">TEST</div>
+                </div>
+            </div>
         <?php } ?>
         <div class="right-box">
             <div class="userinfo">
@@ -47,21 +48,15 @@
                 </div>
             </div>
             <?php if ($adminchk) { ?>
-                <div class="infoalerts admininfo <?=$adminold==0 ? 'oldver' : ''?>" id="admin">
-                    <?php  if ($adminold==0) { ?>
-                        <div class="oldvesionlabel">&nbsp;</div>
-                    <?php } ?>
-                    <div class="alerticon admin ">
+                <div class="infoalerts" id="admin">
+                    <div class="alerticon admin">
                         <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                     </div>
                     <div class="alerttext">Admin</div>
                 </div>
             <?php } ?>
             <?php if ($resourcechk) { ?>
-                <div class="infoalerts resources <?=$resourceold==0 ? 'oldver' : ''?>" id="resources">
-                    <?php  if ($resourceold==0) { ?>
-                        <div class="oldvesionlabel">&nbsp;</div>
-                    <?php } ?>
+                <div class="infoalerts resources" id="resources">
                     <div class="alerticon">
                         <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
                     </div>
@@ -70,6 +65,6 @@
             <?php } ?>
         </div>
     </div>
-    <div class="datarow menurow"><?=$menu_view?></div>
+    <div class="datarow menurow"><div class="row"><?=$menu_view?></div></div>
     <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
 </div>

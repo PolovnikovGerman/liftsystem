@@ -1186,7 +1186,7 @@ Class Leadorder_model extends My_Model {
         if ($fldname=='contact_phone') {
             if (!empty($newval)) {
                 $phone=str_replace('-', '', $newval);
-                $phonenum=formatPhoneNumber($phone);
+                $phonenum=formatPhoneNumber($phone,1);
                 $contacts[$idx]['contact_phone']=$phonenum;
             }
         }
@@ -4631,7 +4631,7 @@ Class Leadorder_model extends My_Model {
         foreach ($contacts as $row) {
             $phone=  str_replace('-', '', $row['contact_phone']);
             if (!empty($phone)) {
-                $phone=formatPhoneNumber($phone);
+                $phone=formatPhoneNumber($phone,1);
             }
             if (!empty($row['contact_emal']) && empty($default_email)) {
                 $default_email=$row['contact_emal'];

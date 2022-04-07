@@ -2,6 +2,8 @@
 
 Class Payments_model extends MY_Model {
     private $START_ORDNUM=22000;
+    private $positive_grow_class = 'growpositive';
+    private $negative_grow_class = 'grownegative';
 
     function __construct() {
         parent::__construct();
@@ -1126,7 +1128,7 @@ Class Payments_model extends MY_Model {
                 $options=array(
                     'reason'=>$amount_data['lowprofit'],
                 );
-                $reason_view=$this->load->view('fulfillment/lowprofit_reason_view', $options,TRUE);
+                $reason_view=$this->load->view('pototals/lowprofit_reason_view', $options,TRUE);
             }
             // Save in temporary array
             $order_data['profit_class']=$profclass;
@@ -1202,6 +1204,250 @@ Class Payments_model extends MY_Model {
             }
         }
         return $out;
+    }
+
+    public function get_pototals_years($brand) {
+        $this->db->select('max(amount_date) as maxdate, min(amount_date) as mindate');
+        $this->db->from('ts_order_amounts');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=ts_order_amounts.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+        $maxyear = date('Y', $res['maxdate']);
+        $minyear = date('Y', $res['mindate']);
+        $years = [];
+        for ($i=0; $i<100; $i++) {
+            $newyear = $maxyear - $i;
+            if ($newyear < $minyear) {
+                break;
+            }
+            $years[] = $newyear;
+        }
+        return $years;
+    }
+
+    public function get_poreport_totals($year1, $year2, $year3, $brand) {
+        $this->db->select('oa.vendor_id, count(oa.amount_id) as cnt');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.vendor_id is not null');
+        $this->db->where('(date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year1.' or date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year2.' or date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year3.')');
+        $this->db->group_by('oa.vendor_id');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $res = $this->db->get()->result_array();
+        return count($res);
+    }
+
+    public function poreportdata($year1, $year2, $year3, $sort, $offset, $limit, $brand ) {
+        $this->db->select('oa.vendor_id, count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit, avg(o.profit_perc) as avgprofit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year1);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->group_by('oa.vendor_id');
+        $yearsql1 = $this->db->get_compiled_select();
+        $this->db->select('oa.vendor_id, count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit, avg(o.profit_perc) as avgprofit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year2);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->group_by('oa.vendor_id');
+        $yearsql2 = $this->db->get_compiled_select();
+        $this->db->select('oa.vendor_id, count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit, avg(o.profit_perc) as avgprofit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year3);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->group_by('oa.vendor_id');
+        $yearsql3 = $this->db->get_compiled_select();
+
+        $this->db->select('oa.vendor_id, count(oa.amount_id) as cnt');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.vendor_id is not null');
+        $this->db->where('(date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year1.' or date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year2.' or date_format(from_unixtime(oa.amount_date),\'%Y\')='.$year3.')');
+        $this->db->group_by('oa.vendor_id');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('o.brand', $brand);
+        }
+        $vendorsel = $this->db->get_compiled_select();
+        $this->db->select('v.vendor_id, v.vendor_name, y1.vqty as qty_year1, y1.cost as cost_year1, y1.profit as profit_year1, y1.avgprofit as avgprof_year1');
+        $this->db->select('y2.vqty as qty_year2, y2.cost as cost_year2, y2.profit as profit_year2, y2.avgprofit as avgprof_year2');
+        $this->db->select('y3.vqty as qty_year3, y3.cost as cost_year3, y3.profit as profit_year3, y3.avgprofit as avgprof_year3');
+        $this->db->from('vendors v');
+        $this->db->join('('.$vendorsel.') vs','vs.vendor_id=v.vendor_id');
+        $this->db->join('('.$yearsql1.') y1','v.vendor_id=y1.vendor_id','left');
+        $this->db->join('('.$yearsql2.') y2','v.vendor_id=y2.vendor_id','left');
+        $this->db->join('('.$yearsql3.') y3','v.vendor_id=y3.vendor_id','left');
+        if ($sort=='poqty') {
+            $this->db->order_by('y1.vqty desc');
+        } elseif ($sort=='pocost') {
+            $this->db->order_by('y1.cost desc');
+        } elseif ($sort=='poprofitprc') {
+            $this->db->order_by('y1.avgprofit desc');
+        } elseif ($sort=='poprofit') {
+            $this->db->order_by('y1.profit desc');
+        }
+        if ($limit > 0) {
+            if ($offset > 0) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $datas = $this->db->get()->result_array();
+        $out = [];
+        $start = $offset+1;
+        foreach ($datas as $data) {
+            $data['vendor_name']=$start.'. '.$data['vendor_name'];
+            $data['profitclass_year1']=$data['profitclass_year2']=$data['profitclass_year3']='';
+            if (!empty($data['avgprof_year1'])) {
+                $data['profitclass_year1'] = profitClass($data['avgprof_year1']);
+            }
+            if (!empty($data['avgprof_year2'])) {
+                $data['profitclass_year2'] = profitClass($data['avgprof_year2']);
+            }
+            if (!empty($data['avgprof_year3'])) {
+                $data['profitclass_year3'] = profitClass($data['avgprof_year3']);
+            }
+            $data['year1'] = $year1;
+            $data['year2'] = $year2;
+            $data['year3'] = $year3;
+            // Calc grows
+            // QTY
+            $qty1 = $qty2 = 0;
+            $baseqty1 = $data['qty_year2'];
+            $baseqty2 = $data['qty_year3'];
+            if (empty($baseqty1)) {
+                if (!empty($data['qty_year1'])) {
+                    $qty1 = 100;
+                }
+            } else {
+                $qty1 = ($data['qty_year1']/$baseqty1*100)-100;
+            }
+            if (empty($baseqty2)) {
+                if (!empty($data['qty_year2'])) {
+                    $qty2 = 100;
+                }
+            } else {
+                $qty2 = ($data['qty_year2']/$baseqty2*100)-100;
+            }
+            // cost
+            $cost1 = $cost2 = 0;
+            $basecost1 = round($data['cost_year2'],0);
+            $basecost2 = round($data['cost_year3'],0);
+            if (empty($basecost1)) {
+                if (!empty($data['cost_year1'])) {
+                    $cost1 = 100;
+                }
+            } else {
+                $cost1 = (round($data['cost_year1'],0)/$basecost1*100)-100;
+            }
+            if (empty($basecost2)) {
+                if (!empty($data['cost_year2'])) {
+                    $cost2 = 100;
+                }
+            } else {
+                $cost2 = (round($data['cost_year2'],0)/$basecost2*100)-100;
+            }
+            // profit
+            $profit1 = $profit2 = 0;
+            $baseprofit1 = $data['profit_year2'];
+            $baseprofit2 = $data['profit_year3'];
+            if (empty($baseprofit1)) {
+                if (!empty($data['profit_year1'])) {
+                    $profit1 = 100;
+                }
+            } else {
+                $profit1 = ($data['profit_year1']/$baseprofit1*100)-100;
+            }
+            if (empty($baseprofit2)) {
+                if (!empty($data['profit_year2'])) {
+                    $profit2 = 100;
+                }
+            } else {
+                $profit2 = ($data['profit_year2']/$baseprofit2*100)-100;
+            }
+            // avgprofit
+            $avg1 = $avg2 = 0;
+            $baseavg1 = $data['avgprof_year2'];
+            $baseavg2 = $data['avgprof_year3'];
+            if (empty($baseavg1)) {
+                if (!empty($data['avgprof_year1'])) {
+                    $avg1 = 100;
+                }
+            } else {
+                $avg1 = (round($data['avgprof_year1'],0)/round($baseavg1,0)*100)-100;
+            }
+            if (empty($baseavg2)) {
+                if (!empty($data['avgprof_year2'])) {
+                    $avg2 = 100;
+                }
+            } else {
+                $avg2 = (round($data['avgprof_year2'],0)/round($baseavg2,0)*100)-100;
+            }
+            $data['qtygrow_year1'] = round(abs($qty1),1);
+            $data['qtygrow_class_year1'] = (!empty($qty1) ? ($qty1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['qtygrow_year2'] = round(abs($qty2));
+            $data['qtygrow_class_year2'] = (!empty($qty2) ? ($qty2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['costgrow_year1'] = round(abs($cost1),1);
+            $data['costgrow_class_year1'] = (!empty($cost1) ? ($cost1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['costgrow_year2'] = round(abs($cost2),1);
+            $data['costgrow_class_year2'] = (!empty($cost2) ? ($cost2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['profitgrow_year1'] = round(abs($profit1),1);
+            $data['profitgrow_class_year1'] = (!empty($profit1) ? ($profit1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['profitgrow_year2'] = round(abs($profit2),1);
+            $data['profitgrow_class_year2'] = (!empty($profit2) ? ($profit2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['avggrow_year1'] = round(abs($avg1));
+            $data['avggrow_class_year1'] = (!empty($avg1) ? ($avg1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $data['avggrow_year2'] = round(abs($avg2));
+            $data['avggrow_class_year2'] = (!empty($avg2) ? ($avg2 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
+            $out[] = $data;
+            $start++;
+        }
+        return $out;
+    }
+
+    public function poreport_yeardetails($vendor_id, $type, $year, $brand) {
+        $this->db->select('count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $totalres = $this->db->get()->row_array();
+        $this->db->select('count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
+        if ($brand!='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        $this->db->where('oa.vendor_id', $vendor_id);
+        $vendres = $this->db->get()->row_array();
+        $msg='';
+        if ($type=='qty') {
+            $vendproc = round($vendres['vqty'] / $totalres['vqty'] *100,0);
+            $msg = $vendproc.'% of '.QTYOutput($totalres['vqty']).' Total POs';
+        } elseif ($type=='cost') {
+            $vendproc = round($vendres['cost'] / $totalres['cost'] *100,0);
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['cost'],0).' Total Cost';
+        } elseif ($type=='profit') {
+            $vendproc = round($vendres['profit'] / $totalres['profit'] *100,0);
+            $msg = $vendproc.'% of '.MoneyOutput($totalres['profit'],0).' Total Profit $$';
+        }
+        return $msg;
+
     }
 
 }

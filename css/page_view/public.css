@@ -3,63 +3,110 @@ html {
     font-family: Helvetica;
 }
 body {
-    margin-left: auto;
-    margin-right: auto;
-    font-family: Helvetica;
-    background-color: #fff;
-    margin-top: 0;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    font-family: Helvetica!important;
+    background-color: #fff!important;
+    margin-top: 0!important;
 }
+
 /* Common classes */
 input::placeholder {
     font-style: italic;
 }
 body div {
-    float: left;
+    /* float: left; */
 }
-.datarow {
-    clear: both;
-    width: 100%;
+.header {
+    background: #252525;
 }
-.maincontent {
-    width: 100%;
+.login-form {
+    background: #252525;
     height: 780px;
     overflow: hidden;
     background: #252525;
 }
-.signin_logo {
-    padding-top: 10px;
-    padding-left: 10px;
-}
-.openincome {
-    position: relative;
-    top: 14px;
-    left: -64px;
-    width: 12px;
+.navbar-brand {
+    margin-top: 1rem;
+    margin-left: 1.3125rem;
 }
 .signin_form {
-    margin: 268px 0 0 568px;
-    width: 355px;
-    height: 133px;
+    width: 25%;
+    margin-right: auto;
+    margin-left: auto;
     background: url(/img/signin/signin_form.png) no-repeat;
     background-position: bottom right;
 }
-.signin_form > .datarow {
-    margin-bottom: 13px;
-}
-input.signinformelement {
-    background: #ffffff;
-    width: 273px;
-    height: 35px;
-    padding-left: 5px;
-    font-family: Arial;
-    font-size: 18px;
-    color: #000;
-}
 .go {
-    float: right!important;
-    width: 63px;
-    height: 63px;
+    cursor: pointer;
+    float: right;
+    width: 4rem;
+    height: 4rem;
     position: relative;
-    top: -61px;
-    border-radius: 50%;
+    bottom: 4.8rem;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .signin_form {
+        background-position: bottom 3.2rem right;
+    }
+    .go {
+        bottom: 4.6rem;
+    }
+    .navbar-brand img {
+        max-width: 10.96875rem;
+    }
+}
+
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .signin_form {
+        width: 40%;
+        background-position: bottom 2.8rem right;
+    }
+    .go {
+        bottom: 4.3rem;
+    }
+    .navbar-brand img {
+        max-width: 10.96875rem;
+    }
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .signin_form {
+        width: 54%;
+        background-position: bottom 3.3rem right;
+    }
+    .navbar-brand img {
+        max-width: 10.96875rem;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .signin_form {
+        width: 58%;
+        background-position: bottom 2.8rem right;
+    }
+    .go {
+        bottom: 4.2rem;
+    }
+    .navbar-brand img {
+        max-width: 7.65rem;
+    }
+}
+
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    .signin_form {
+        width: 85%;
+        background-position: bottom 0.8rem right;
+        height: 8.3rem;
+    }
+    .signin_form input {
+        width: 96%;
+    }
+    .navbar-brand img {
+        max-width: 7.65rem;
+    }
 }

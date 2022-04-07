@@ -31,6 +31,9 @@ class Template
         if (isset($options['styles'])) {
             $styles=$options['styles'];
         }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
         $scripts=[];
         if (isset($options['scripts'])) {
             $scripts=$options['scripts'];
@@ -76,6 +79,8 @@ class Template
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
         ];
         $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
+        // Mobile menu
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
         // Admin and Alerts
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
@@ -126,9 +131,16 @@ class Template
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => ifset($options, 'gmaps', 0),
         ];
+        if (ifset($options,'adaptive',0)==1) {
+            $head_options['menu'] = $mobpermissions;
+            $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
+            $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
+        } else {
+            $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
+        }
 
-        $dat['head_view'] = $this->CI->load->view('page/head_view', $head_options, TRUE);
 
         $topmenu_options = [
             'user_name' => $options['user_name'],
@@ -142,7 +154,12 @@ class Template
             'resourcechk' => $resource_permissions,
             'resourceold' => $resource_old,
         ];
-        $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        if (ifset($options,'adaptive',0)==1) {
+            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
+        } else {
+            $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
+        }
+
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);
         return $dat;
     }

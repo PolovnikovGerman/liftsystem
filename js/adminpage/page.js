@@ -3,9 +3,7 @@ var timeLapse = 600000;
 $(document).ready(function () {
     clearTimeout(timerId);
     // Calc
-    var allwidth = parseInt(window.innerWidth);
-    var freespace = (allwidth - (parseInt($(".finmenusection").css('width')) + parseInt($(".marketmenusection").css('width')) + parseInt($(".contentmenusection").css('width'))))/2;
-    $(".marketmenusection").css('margin-left',freespace+'px');
+    rebuild_market_offset()
     // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     // $(window).resize(function() {
@@ -31,12 +29,20 @@ $(document).ready(function () {
     })
     $("#publicsearch_template").keypress(function (event) {
         if (event.which == 13) {
-            liftsite_search();
+            liftsite_search('mobile');
         }
     });
-    $(".publicsearch_btn").unbind('click').click(function () {
-        liftsite_search();
+    $("#publicsearch_btn").unbind('click').click(function () {
+        liftsite_search('mobile');
     });
+    $("#publicdescsearch_template").keypress(function (event) {
+        if (event.which == 13) {
+            liftsite_search('desktop');
+        }
+    })
+    $("#publicdescsearch_btn").unbind('click').click(function () {
+        liftsite_search('desktop');
+    })
     // $("select.publicsearch_type").unbind('change').change(function(){
     //     var newval = $(this).val();
     //     if (newval=='Orders') {
@@ -64,9 +70,23 @@ $(document).ready(function () {
     $("#showtotalthisweek").unbind('click').click(function () {
         window.location.href='/orders';
     })
+    $("button.dropdown-item").unbind('click').click(function () {
+        var url = $(this).data('menulink');
+        window.location.href=url;
+    })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
 });
+
+$(window).resize(function() {
+    rebuild_market_offset();
+});
+
+function rebuild_market_offset() {
+    var allwidth = parseInt(window.innerWidth);
+    var freespace = (allwidth - (parseInt($(".finmenusection").css('width')) + parseInt($(".marketmenusection").css('width')) + parseInt($(".contentmenusection").css('width'))))/2;
+    $(".marketmenusection").css('margin-left',freespace+'px');
+}
 
 function autocollapse(resize) {
     var tabs = $("#mainmenutabs");
@@ -152,10 +172,13 @@ function matchStart(params, data) {
     return null;
 }
 
-function liftsite_search() {
+function liftsite_search(searchtype) {
     var params = new Array();
-    // params.push({name: 'search_type', value: $("select.publicsearch_type").val()});
-    params.push({name: 'search_template', value: $("#publicsearch_template").val()});
+    if (searchtype=='mobile') {
+        params.push({name: 'search_template', value: $("#publicsearch_template").val()});
+    } else {
+        params.push({name: 'search_template', value: $("#publicdescsearch_template").val()});
+    }
     var url="/welcome/liftsite_search";
     $.post(url, params, function(response) {
         if (response.errors=='') {
