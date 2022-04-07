@@ -154,26 +154,87 @@
                         <div class="col-12">
                             <div class="masterinventtablehead">
                                 <div class="addnewmasterinvent">
-                                    <i class="fa fa-plus"></i>
-                                    <span>add</span>
+                                    <div class="addnewmasterinvbtn">
+                                        <i class="fa fa-plus"></i>
+                                        <span>add</span>
+                                    </div>
                                 </div>
                                 <div class="masterinventseq">Seq</div>
-                                <div class="masterinvent">Master #</div>
-                                <div class="masterinvent">Description</div>
-                                <div class="masterinvent">%</div>
-                                <div class="masterinvent">In Stock</div>
-                                <div class="masterinvent">Reserved</div>
-                                <div class="masterinvent">Available</div>
-                                <div class="masterinvent">Unit</div>
-                                <div class="masterinvent">On Order</div>
-                                <div class="masterinvent">Avg Price</div>
-                                <div class="masterinvent">Total Value</div>
-                                <div class="masterinvent">Details</div>
+                                <div class="masterinventnumber">Master #</div>
+                                <div class="masterinventdescrip">Description</div>
+                                <div class="masterinventpercent">%</div>
+                                <div class="masterinventinstock">In Stock</div>
+                                <div class="masterinventreserv">Reserved</div>
+                                <div class="masterinventavailab">Available</div>
+                                <div class="masterinventunit">Unit</div>
+                                <div class="masterinventonorder">On Order</div>
+                                <div class="masterinventavgprice">Avg Price</div>
+                                <div class="masterinventtotalval">Total Value</div>
+                                <div class="masterinventdetails">Details</div>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="masterinventtablebody">
-
+                                <div class="inventorydatarow masteritem">
+                                    <div class="masterinventstatus">Active</div>
+                                    <div class="masterinventseq">
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                    <div class="masterinventnumber">SSB-0001</div>
+                                    <div class="masterinventdescrip">
+                                        Round Stress Balls
+                                        <span class="addmasterinventory"><i class="fa fa-plus"></i></span>
+                                    </div>
+                                    <div class="masterinventpercent">68%</div>
+                                    <div class="masterinventinstock">48,738</div>
+                                    <div class="masterinventreserv">&nbsp;</div>
+                                    <div class="masterinventavailab">48,738</div>
+                                    <div class="masterinventunit">pc</div>
+                                    <div class="masterinventonorder">&nbsp;</div>
+                                    <div class="masterinventavgprice">$0.232</div>
+                                    <div class="masterinventtotalval">$9,999,999.99</div>
+                                    <div class="masterinventdetails"><i class="fa fa-search"></i></div>
+                                </div>
+                                <div class="inventorydatarow itemcolor whitedatarow">
+                                    <div class="masterinventstatus">Active</div>
+                                    <div class="masterinventseq">
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                    <div class="masterinventnumber">SSB-0001</div>
+                                    <div class="masterinventdescrip">
+                                        Round Stress Balls
+                                        <span class="addmasterinventory"><i class="fa fa-plus"></i></span>
+                                    </div>
+                                    <div class="masterinventpercent">68%</div>
+                                    <div class="masterinventinstock">48,738</div>
+                                    <div class="masterinventreserv">&nbsp;</div>
+                                    <div class="masterinventavailab">48,738</div>
+                                    <div class="masterinventunit">pc</div>
+                                    <div class="masterinventonorder">&nbsp;</div>
+                                    <div class="masterinventavgprice">$0.232</div>
+                                    <div class="masterinventtotalval">$9,999,999.99</div>
+                                    <div class="masterinventdetails"><i class="fa fa-search"></i></div>
+                                </div>
+                                <div class="inventorydatarow itemcolor greydatarow">
+                                    <div class="masterinventstatus">Active</div>
+                                    <div class="masterinventseq">
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                    <div class="masterinventnumber">SSB-0001</div>
+                                    <div class="masterinventdescrip">
+                                        Round Stress Balls
+                                        <span class="addmasterinventory"><i class="fa fa-plus"></i></span>
+                                    </div>
+                                    <div class="masterinventpercent">68%</div>
+                                    <div class="masterinventinstock">48,738</div>
+                                    <div class="masterinventreserv">&nbsp;</div>
+                                    <div class="masterinventavailab">48,738</div>
+                                    <div class="masterinventunit">pc</div>
+                                    <div class="masterinventonorder">&nbsp;</div>
+                                    <div class="masterinventavgprice">$0.232</div>
+                                    <div class="masterinventtotalval">$9,999,999.99</div>
+                                    <div class="masterinventdetails"><i class="fa fa-search"></i></div>
+                                </div>
                             </div>
                         </div>
                     </div>
