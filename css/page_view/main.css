@@ -732,6 +732,7 @@ div.oldvesionlabel {
 .menuitem.financenew {
     border-top-left-radius: 0;
     padding-left: 0rem!important;
+    padding-right: 0rem!important;
     position: relative;
     margin-left: 22px;
     min-width: 20px!important;
