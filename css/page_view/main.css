@@ -719,23 +719,25 @@ div.oldvesionlabel {
     width: 32px;
     height: 26px;
     position: relative;
-    left: -9px;
+    left: 0px;
 }
 .menuitem.finance {
     border-top-right-radius: 0px;
     padding: 0 0 0 0rem!important;
     position: relative;
     min-width: 20px!important;
-    border-radius: 0!important;
-    background: #64390e;
+    /* border-radius: 0!important; */
+    /* background: #64390e; */
 }
 .menuitem.financenew {
     border-top-left-radius: 0;
-    padding-left: 0rem!important;
+    /*padding-left: 0rem!important;
+    padding-right: 0rem!important;*/
+    padding: 0!important;
     position: relative;
     margin-left: 22px;
     min-width: 20px!important;
-    background: #64390e;
+    /* background: #64390e; */
 }
 .menuitem.finance div.nameitem {
     background: #6b6b6b;
@@ -751,7 +753,7 @@ div.oldvesionlabel {
     position: relative;
     top: 4px;
     right: -13px;
-    width: 14px;
+    width: 5px;
 }
 .menuitem.finance:hover > div.nameitem,
 .menuitem.financenew:hover > div.nameitem,
