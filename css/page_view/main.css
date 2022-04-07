@@ -719,7 +719,7 @@ div.oldvesionlabel {
     width: 32px;
     height: 26px;
     position: relative;
-    left: -9px;
+    left: 0px;
 }
 .menuitem.finance {
     border-top-right-radius: 0px;
@@ -753,7 +753,7 @@ div.oldvesionlabel {
     position: relative;
     top: 4px;
     right: -13px;
-    width: 14px;
+    width: 5px;
 }
 .menuitem.finance:hover > div.nameitem,
 .menuitem.financenew:hover > div.nameitem,
