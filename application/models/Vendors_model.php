@@ -1023,4 +1023,27 @@ Class Vendors_model extends My_Model
         return $vprices;
     }
 
+    public function get_vendors_oldlist($options) {
+        $this->db->select('v.*, c.calendar_name');
+        $this->db->from('vendors v');
+        $this->db->join('calendars c','c.calendar_id=v.calendar_id','left');
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['order_by'], $options['direct']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        $results=$this->db->get()->result_array();
+        return $results;
+
+    }
+
 }
