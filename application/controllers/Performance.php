@@ -1,15 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Finances extends MY_Controller
+class Performance extends MY_Controller
 {
 
-    private $pagelink = '/finances';
-    private $order_profit_perpage = 100;
-    private $order_totals_perpage = 100;
-    private $perpage_options = array(100, 250, 500, 1000);
-    private $restore_data_error = 'Edit Connection Lost. Please, recall form';
-    private $weekshow_limit = 104;
+    private $pagelink = '/performance';
+//    private $order_profit_perpage = 100;
+//    private $order_totals_perpage = 100;
+//    private $perpage_options = array(100, 250, 500, 1000);
+//    private $restore_data_error = 'Edit Connection Lost. Please, recall form';
+//    private $weekshow_limit = 104;
 
     public function __construct()
     {
@@ -28,24 +28,22 @@ class Finances extends MY_Controller
                 redirect('/');
             }
         }
-        $this->load->model('orders_model');
-        $this->load->model('balances_model');
     }
 
     public function index()
     {
         $head = [];
-        $head['title'] = 'Finance';
+        $head['title'] = 'Fulfillment';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
         $start = $this->input->get('start', TRUE);
         $content_options = [];
         foreach ($menu as $row) {
-            if ($row['item_link']=='#purchaseordersview') {
-                $head['styles'][]=array('style'=>'/css/accounting/pototals_adative.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/pototals_adative.js');
+            if ($row['item_link']=='#pototalsview') {
+                $head['styles'][] = array('style' => '/css/accounting/pototals_adative.css');
+                $head['scripts'][] = array('src' => '/js/accounting/pototals_adative.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
+                if (count($brands) == 0) {
                     redirect('/');
                 }
                 $brand = $brands[0]['brand'];
@@ -55,28 +53,14 @@ class Finances extends MY_Controller
                 ];
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
-            } elseif ($row['item_link']=='#accreceiv') {
-                $head['styles'][]=array('style'=>'/css/accounting/accreceiv_adapt.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['accreceivview'] = $this->_prepare_accreceiv_view($brand, $top_menu);
             }
         }
         $content_options['menu'] = $menu;
         $content_options['start'] = $start;
-        $content_view = $this->load->view('accounting/page_device_view', $content_options, TRUE);
+        $content_view = $this->load->view('fulfillment/page_device_view', $content_options, TRUE);
         // Add main page management
-        $head['scripts'][] = array('src' => '/js/accounting/page_adaptive.js');
-        $head['styles'][] = array('style' => '/css/accounting/accountpage_adaptive.css');
+        $head['scripts'][] = array('src' => '/js/fulfillment/page_adaptive.js');
+        $head['styles'][] = array('style' => '/css/fulfillment/page_adaptive.css');
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -97,8 +81,8 @@ class Finances extends MY_Controller
         // $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         // $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         // Select 2
-        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
-        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        // $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+        // $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
         $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
         $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
         $options = [
@@ -114,6 +98,7 @@ class Finances extends MY_Controller
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
+
     }
 
     private function _prepare_purchaseorders_view($brand, $top_menu) {
@@ -149,14 +134,6 @@ class Finances extends MY_Controller
             'poreportperpage' => 8,
         ];
         return $this->load->view('pototals/page_adaptive_view',$options,TRUE);
-    }
-
-    private function _prepare_accreceiv_view($brand, $top_menu) {
-        $options=[
-            'brand' => $brand,
-            'top_menu' => $top_menu,
-        ];
-        return $this->load->view('accreceiv/page_device_view',$options, TRUE);
     }
 
 }

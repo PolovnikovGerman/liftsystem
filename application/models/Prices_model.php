@@ -579,39 +579,39 @@ Class Prices_model extends My_Model
         }
         return $res;
     }
-    // Recalc profit for Promo Prices
-    public function recalc_promo_profit($vendor_prices, $item_prices) {
-        $priceidx = 0;
-        foreach ($item_prices  as $item_price) {
-            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
-            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
-                // Calc
-                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
-                $baseqty = intval($item_price['item_qty']);
-                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
-                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
-                foreach ($vendor_prices as $vendor_price) {
-                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
-                        $vendqty=intval($vendor_price['vendorprice_qty']);
-                        $vendprice = floatval($vendor_price['vendorprice_color']);
-                        if ($vendqty > 75) {
-                            $tt=1;
-                        }
-                    }
-                }
-
-                if ($vendprice>0) {
-                    $profit = ($basecost - $vendprice)*$baseqty;
-                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
-                    $item_prices[$priceidx]['profit']=round($profit, 0);
-                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
-                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
-                }
-            }
-            $priceidx++;
-        }
-        return $item_prices;
-    }
+//    // Recalc profit for Promo Prices
+//    public function recalc_promo_profit($vendor_prices, $item_prices) {
+//        $priceidx = 0;
+//        foreach ($item_prices  as $item_price) {
+//            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
+//            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
+//                // Calc
+//                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
+//                $baseqty = intval($item_price['item_qty']);
+//                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
+//                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
+//                foreach ($vendor_prices as $vendor_price) {
+//                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
+//                        $vendqty=intval($vendor_price['vendorprice_qty']);
+//                        $vendprice = floatval($vendor_price['vendorprice_color']);
+//                        if ($vendqty > 75) {
+//                            $tt=1;
+//                        }
+//                    }
+//                }
+//
+//                if ($vendprice>0) {
+//                    $profit = ($basecost - $vendprice)*$baseqty;
+//                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
+//                    $item_prices[$priceidx]['profit']=round($profit, 0);
+//                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
+//                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
+//                }
+//            }
+//            $priceidx++;
+//        }
+//        return $item_prices;
+//    }
     // Recalc inprint and setup Profit
     public function recalc_setup_profit($item, $vendor_item) {
         // Imprint
