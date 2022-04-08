@@ -765,7 +765,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     color: #ffffff;
 }
 /* Finance button */
-.triangle-top {
+.menuitem.finance .triangle-top {
     width: 0;
     height: 0;
     border-style: solid;
@@ -775,7 +775,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     top: 0px;
     right: -21px;
 }
-.triangle-bottom {
+.menuitem.financenew .triangle-bottom {
     width: 0;
     height: 0;
     border-style: solid;
