@@ -118,8 +118,21 @@
 .masterinventtotals > div {
     float: left;
 }
+.inventtotalempty {
+    width: 42%;
+}
 .masterinventtotals .inventtotalmaxshow {
     color: #8989ff;
+    width: 3.9%;
+    text-align: center;
+    cursor: pointer;
+}
+.masterinventtotals .inventtotalinstock {
+    width: 6.8%;
+    text-align: right;
+}
+.masterinventtotals .inventtotalavailable {
+    padding-left: 7.6%;
 }
 .masterinventtablehead {
     background: #000000;
@@ -147,10 +160,10 @@
     width: 8%;
 }
 .masterinventtablehead .masterinventdescrip {
-    width: 25.85%;
+    width: 24.85%;
 }
 .masterinventtablehead .masterinventpercent {
-    width: 3.4%;
+    width: 3.9%;
 }
 .masterinventtablehead .masterinventinstock {
     width: 6.8%;
@@ -174,7 +187,7 @@
     width: 10.2%;
 }
 .masterinventtablehead .masterinventdetails {
-    width: 6.32%;
+    width: 5.82%;
 }
 .masterinventtablebody {
     background: #ffffff;
@@ -209,24 +222,30 @@
     width: 4.87%;
     border-right: 1px solid #000000;
 }
+.inventorydatarow .masterinventstatus.donotreorder {
+    background: #FF0000;
+    color: #ffffff;
+}
 .inventorydatarow .masterinventseq {
     width: 3.4%;
-    font-weight: 600;
+    /* font-weight: 600; */
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventnumber {
     width: 8%;
-    font-weight: 600;
+    /* font-weight: 600; */
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventdescrip {
     width: 25.85%;
     text-align: left;
-    font-weight: 600;
     border-right: 1px solid #000000;
 }
+.inventorydatarow.itemcolor .masterinventdescrip {
+    text-align: right;
+}
 .inventorydatarow .masterinventpercent {
-    width: 3.4%;
+    width: 3.9%;
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventinstock {
@@ -248,6 +267,7 @@
     width: 8.26%;
     color: #5d51ff;
     background: #252525;
+    text-align: left;
 }
 .inventorydatarow .masterinventavgprice {
     width: 6.4%;
@@ -260,8 +280,16 @@
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventdetails {
-    width: 5.32%;
+    width: 4.82%;
     font-weight: 600;
+}
+.lowinstock {
+    background: #ff9900;
+    color: #000000;
+}
+.severevalstock {
+    background: #FF0000;
+    color: #ffffff;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -343,6 +371,15 @@
     .masterinventtotals .inventtotalmaxshow {
         font-size: 0.6875rem;
         font-weight: normal;
+        margin-top: -0.5rem;
+    }
+    .inventtotalinstock {
+        font-size: 0.8125rem;
+        padding-right: 0.2rem;
+    }
+    .inventtotalavailable {
+        font-size: 0.8125rem;
+        padding-right: 0.2rem;
     }
     .masterinventtotals {
         font-size: 0.875rem;
@@ -370,6 +407,13 @@
     }
     .inventorydatarow .masterinventstatus {
         font-size: 0.75rem;
+    }
+    .inventorydatarow .masterinventstatus.donotreorder {
+        font-size: 0.55rem;
+        line-height: 0.6rem;
+        padding-top: 0.1rem;
+    }
+    .inventorydatarow.masteritem .masterinventstatus {
         color: #cccccc;
     }
     .inventorydatarow .masterinventseq {
@@ -381,6 +425,14 @@
     .inventorydatarow .masterinventdescrip {
         font-size: 0.875rem;
         padding-left: 0.3rem;
+    }
+    .inventorydatarow.itemcolor .masterinventdescrip {
+        padding-right: 0.3rem;
+    }
+    .inventorydatarow.masteritem .masterinventseq,
+    .inventorydatarow.masteritem .masterinventnumber,
+    .inventorydatarow.masteritem .masterinventdescrip {
+        font-weight: 600;
     }
     span.addmasterinventory {
         font-size: 0.875rem;
