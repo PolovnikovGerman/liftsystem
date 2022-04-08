@@ -805,7 +805,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     position: relative;
     min-width: 20px!important;
     border-radius: 0!important;
-    background: #64390e;
+    /* background: #64390e; */
 }
 .menuitem.financenew {
     border-top-left-radius: 0;
@@ -813,7 +813,8 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     position: relative;
     margin-left: 22px;
     min-width: 20px!important;
-    background: #64390e;
+    padding: 0!important;
+    /* background: #64390e; */
 }
 .menuitem.finance div.nameitem {
     background: #6b6b6b;
