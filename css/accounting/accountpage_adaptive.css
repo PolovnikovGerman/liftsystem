@@ -1,0 +1,298 @@
+/* Menu */
+.menupage_head {
+    background: #fff;
+    padding: 7px;
+    margin-bottom: 9px;
+    width: 100%;
+}
+.mastermenu_head {
+    width: 100%;
+}
+.mastermenu_head .menulabel {
+    text-align: center;
+    font-weight: bold;
+}
+.headmenuitem {
+    background: #5a5aff;;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 0 0.8rem;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+.headmenuitem.oldver {
+    padding: 0 13px 0 1px;
+}
+.headmenuitem.active {
+    background: #f9f9f9;
+    color: #0000c4;
+    border: 1.5px solid #000000;
+    line-height: calc(2rem - 3px)!important;
+}
+.headmenuitem > .oldvesionlabel {
+    float: left;
+    opacity: 0.6;
+    position: relative;
+    left: 47%;
+    background-color: #b53535;
+    width: 0.75rem;
+    margin-top: -1px;
+    height: 2.45rem;
+}
+
+.legend {
+    font-size: 14px;
+    margin-right: 10px;
+}
+.legend ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.legend ul li {
+    display: inline;
+    float: left;
+    padding-left: 10px;
+    height: 22px;
+    line-height: 22px;
+}
+select.selectrecords {
+    height: 22px;
+    font-size: 12px;
+    width: 180px;
+}
+input.search_input {
+    height: 22px;
+    width: 179px;
+    font-size: 12px;
+    font-style: italic;
+    margin-right: 10px;
+}
+.find_id {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    cursor: pointer;
+}
+.accounting_pagination {
+    float: right!important;
+}
+/* SORTING*/
+.activesortdesc {
+    color: #ffffff;
+    background-color: #0000ff;
+}
+.activesortasc {
+    color: #ffffff;
+    background-color: #0040FF;
+}
+/* */
+.projectcog {
+    color: #c22;
+}
+.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.grassgreenprofit {
+    background-color: #005B2D!important;
+    color: #ffffff !important;
+}
+.green, .greenprofit {
+    background-color: #00e947!important;
+    color: #000000 !important;
+}
+.darkredprofit {
+    background-color: #a40000 !important;
+    color: #ffffff;
+}
+.red, .redprofit {
+    background-color: #ff0000!important;
+    color: #ffffff;
+}
+.black, .blackprofit {
+    background-color: #000000!important;
+    color: #ffffff;
+}
+.orange, .orangeprofit {
+    background-color: #ea8a0e!important;
+    color: #000000 !important;
+}
+.cancelprof {
+    background: #919191!important;
+    color: #000000;
+}
+.moroon, .moroonprofit {
+    background-color: #6d0303!important;
+    color: #ffffff;
+}
+.white, .whiteprofit {
+    background-color: #ffffff!important;
+    color: #000000;
+}
+.green_tooltip {
+    background-color: #86FF80!important;
+    float: left;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
+}
+.white_tooltip {
+    background-color: #FFFFFF!important;
+    float: left!important;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
+}
+.red_tooltip {
+    background-color: #FF0000!important;
+    float: left!important;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
+}
+.orange_tooltip {
+    background-color: #FFA500!important;
+    float: left;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #000!important;
+    text-align: justify!important;
+}
+.black_tooltip {
+    background-color: #000000!important;
+    float: left;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #FFFFFF!important;
+    text-align: justify!important;
+}
+.deepblue_tooltip {
+    background-color: #001072!important;
+    float: left;
+    padding: 0px!important;
+    font-size: 15px!important;
+    color: #ffffff!important;
+    text-align: justify!important;
+}
+.paymonitor_ordernum_tooltip {
+    width: 140px;
+    line-height: 18px!important;
+    border: 1px solid #000000!important;
+    padding: 10px!important;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.5rem;
+        /* line-height: 2.5625rem!important; */
+        margin-top: 0.5rem;
+    }
+    .mastermenu_head .headmenuitem {
+        height: 2rem;
+        font-size: 0.8rem;
+        line-height: 1.9rem;
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.92rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.5rem;
+        /* line-height: 2.5rem!important; */
+        margin-top: 0.5rem;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 1.9rem;
+        line-height: 1.9rem;
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.9rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        /* line-height: 2rem!important; */
+        margin-top: 0.5rem;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 1.9rem;
+        line-height: 1.9rem;
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.9rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.9rem - 3px)!important;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        /* line-height: 2rem!important; */
+        margin-top: 0.5rem;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 1.85rem;
+        line-height: 1.85rem;
+        /* width: 8.6rem; */
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.85rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.85rem - 3px)!important;
+    }
+}
+/* Surface Duo */
+@media (max-width: 540px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        line-height: 2rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 0.9rem;
+        height: 1.7rem;
+        line-height: 1.7rem;
+        /* width: 8.4rem; */
+    }
+    .headmenuitem > .oldvesionlabel {
+        height: 1.7rem;
+    }
+    .headmenuitem.active {
+        line-height: calc(1.7rem - 3px)!important;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+}

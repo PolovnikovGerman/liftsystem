@@ -83,8 +83,8 @@
 <div class="itemkeytextrow_gray">Size</div>
 <div class="itemkeytextrow_white">
     <?php if ($mode=='edit') { ?>
-        <input data-fld="item_size" class="itemactiveinput" value="<?= $item['item_size'] ?>" style="width:103px;" />
+        <input data-fld="item_size" class="itemactiveinput" value="<?=$item['item_size'] ?>" style="width:103px;" />
     <?php } else { ?>
-        <?=($item['item_size']=='' ? '<div class="empty_itemkeyvalue" style="width:103px">&nbsp;</div>' : $item['item_size'])?>
+        <?=($item['item_size']=='' ? '<div class="empty_itemkeyvalue" style="width:103px">&nbsp;</div>' : htmlspecialchars_decode($item['item_size']))?>
     <?php } ?>
 </div>

@@ -14,6 +14,7 @@ $(document).ready(function(){
 });
 
 function init_page(objid) {
+
     $(".accountcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
@@ -49,6 +50,10 @@ function init_page(objid) {
         case 'expensesview':
             $("#expensesview").show();
             init_opercalc();
+            break;
+        case 'accreceiv':
+            $("#accreceivview").show();
+            init_accounts_receivable();
             break;
     }
 

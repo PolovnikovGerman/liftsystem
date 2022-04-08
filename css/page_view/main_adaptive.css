@@ -537,7 +537,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
 .maincontentmenuarea {
     width: 100%;
     /* height: 33px; */
-    padding: 0 10px 10px 10px;
+    /* padding: 0 10px 10px 10px*/;
+    padding: 0.625rem;
 }
 .maincontentmenuarea.adminmenu {
     /* background: #ff1c1c; */
@@ -737,17 +738,17 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     float: left;
 }
 .menuitem.oldver {
-    padding: 0 16px 0 4px!important;
+    padding: 0 1rem 0 0.25rem!important;
 }
-div.oldvesionlabel {
+.menuitem > .oldvesionlabel {
     float: left;
     opacity: 0.6;
     position: relative;
     left: 47%;
     background-color: #b53535;
-    width: 12px;
+    width: 0.75rem;
     margin-top: 0px;
-    height: 24px;
+    height: 1.8rem;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
     background: #3636ff;
@@ -763,9 +764,179 @@ div.oldvesionlabel {
     background: #000080;
     color: #ffffff;
 }
+/* Finance button */
+.menuitem.finance .triangle-top {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 26px 26px 0 0;
+    border-color: #6b6b6b transparent transparent transparent;
+    position: absolute;
+    top: 0px;
+    right: -21px;
+}
+.menuitem.financenew .triangle-bottom {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 26px 26px;
+    border-color: transparent transparent #9c9c9c transparent;
+    position: absolute;
+    top: 0px;
+    left: -21px;
+}
+.menuitem.finance span.bnt-side {
+    background: #6b6b6b;
+    border-top-left-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.financenew span.bnt-side {
+    background: #9c9c9c;
+    border-top-right-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.finance {
+    border-top-right-radius: 0px;
+    padding: 0 0 0 0rem!important;
+    position: relative;
+    min-width: 20px!important;
+    border-radius: 0!important;
+    /* background: #64390e; */
+}
+.menuitem.financenew {
+    border-top-left-radius: 0;
+    padding-left: 0rem!important;
+    position: relative;
+    margin-left: 22px;
+    min-width: 20px!important;
+    padding: 0!important;
+    /* background: #64390e; */
+}
+.menuitem.finance div.nameitem {
+    background: #6b6b6b;
+    display: inline-block;
+    position: relative;
+    top: -3px;
+    left: -5px;
+    width: 14px;
+}
+.menuitem.financenew div.nameitem {
+    background: #9c9c9c;
+    display: inline-block;
+    position: relative;
+    top: -3px;
+    right: -5px;
+    width: 14px;
+}
+.menuitem.finance:hover > div.nameitem,
+.menuitem.financenew:hover > div.nameitem,
+.menuitem.finance:hover > span.bnt-side,
+.menuitem.financenew:hover > span.bnt-side {
+    background: #000080!important;
+}
+.menuitem.finance:hover span.triangle-top {
+    border-color: #000080 transparent transparent transparent;
+}
+.menuitem.financenew:hover span.triangle-bottom {
+    border-color: transparent transparent #000080 transparent;
+}
+.menuitem.finance div.nameitem span {
+    position: relative;
+    z-index: 20;
+}
+.menuitem.financenew div.nameitem span {
+    position: relative;
+    left: -46px;
+}
+.menuitem.financenew:hover div.nameitem span {
+    position: relative;
+    left: -46px;
+    z-index: 25;
+}
+/* END Finance button */
+/* Finance ACTIVE */
+.menuitem.financenew.activelink .triangle-bottom {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 30px 30px;
+    border-color: transparent transparent #1a73e8 transparent;
+    position: absolute;
+    top: 0px;
+    left: -25px;
+}
+.menuitem.financenew.activelink span.bnt-side {
+    background: #3636ff;
+    border-top-right-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.financenew.activelink div.nameitem {
+    background: #1a73e8;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    right: -5px;
+    width: 14px;
+    height: 31px;
+}
+.menuitem.financenew.activelink span.bnt-side {
+    background: #1a73e8;
+    border-top-right-radius: 7px;
+    font-size: 20px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.financenew.activelink div.nameitem span {
+    position: relative;
+    left: -48px;
+    top: 0px;
+    color: #fff;
+    z-index: 25;
+}
+.menuitem.finance.activelink span.bnt-side {
+    background: #3636ff;
+    border-top-left-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.finance.activelink div.nameitem {
+    background: #3636ff;
+    border-top: 1px solid #000;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    left: -5px;
+    width: 14px;
+}
+.menuitem.finance.activelink .triangle-top {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 30px 30px 0 0;
+    border-color: #3636ff transparent transparent transparent;
+    position: absolute;
+    top: 0px;
+    right: -25px;
+}
+.menuitem.finance.activelink {
+    border-top-left-radius: 7px!important;
+}
+.menuitem.financenew.activelink {
+    padding-right: 0!important;
+    margin-left: 22px;
+}
+/* END Finance ACTIVE */
 .finmenusection {
-    float: left;
-    margin-left: -15px;
+    float: right;
+    margin-right: -15px;
+    /* margin-left: -15px; */
     display: inline-flex;
 }
 .contentmenusection {
@@ -787,6 +958,11 @@ div.oldvesionlabel {
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .finmenusection {
+        float: left!important;
+        margin-left: -15px;
+        margin-right: 0;
+    }
     .mobilemainmenu {
         display: none;
     }
@@ -799,9 +975,21 @@ div.oldvesionlabel {
     .lm-publicsearch {
         margin-top: 0.7rem;
     }
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        /* display: inline-block; */
+    }
+
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
+    .finmenusection {
+        float: left!important;
+        margin-left: -15px;
+        margin-right: 0;
+    }
     .mobilemainmenu {
         display: none;
     }
@@ -813,6 +1001,12 @@ div.oldvesionlabel {
     }
     .lm-publicsearch {
         margin-top: 0.7rem;
+    }
+    .mobileviewonly {
+        display: none;
+    }
+    .desktopviewonly {
+        /* display: inline-block; */
     }
 }
 /* Portrait tablets and small desktops */
@@ -835,6 +1029,12 @@ div.oldvesionlabel {
     .testsitelabel {
         margin-top: -30px;
     }
+    .mobileviewonly {
+        /* display: inline-flex; */
+    }
+    .desktopviewonly {
+        display: none;
+    }
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
@@ -855,6 +1055,21 @@ div.oldvesionlabel {
     }
     .testsitelabel {
         margin-top: -30px;
+    }
+    .mobileviewonly {
+        /* display: inline-flex; */
+    }
+    .desktopviewonly {
+        display: none;
+    }
+}
+/* Surface Duo */
+@media (max-width: 540px) {
+    .mobileviewonly {
+        /* display: inline-block;*/
+    }
+    .desktopviewonly {
+        display: none;
     }
 }
 /* Landscape phones and smaller */
@@ -878,7 +1093,181 @@ div.oldvesionlabel {
         font-size: 14px!important;
         margin-top: -30px;
     }
+    .mobileviewonly {
+        /* display: inline-block;*/
+    }
+    .desktopviewonly {
+        display: none;
+    }
 }
 .testsitelabel {
     margin-left: 0!important;
 }
+/* Fulfillment button */
+.menuitem.fulfillment .triangle-top {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 26px 26px 0 0;
+    border-color: #6b6b6b transparent transparent transparent;
+    position: absolute;
+    top: 0px;
+    right: -21px;
+}
+.menuitem.fulfillmentnew .triangle-bottom {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 26px 26px;
+    border-color: transparent transparent #9c9c9c transparent;
+    position: absolute;
+    top: 0px;
+    left: -21px;
+}
+.menuitem.fulfillment span.bnt-side {
+    background: #6b6b6b;
+    border-top-left-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.fulfillmentnew span.bnt-side {
+    background: #9c9c9c;
+    border-top-right-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 31px;
+}
+.menuitem.fulfillment {
+    border-top-right-radius: 0px;
+    padding: 0 0 0 0rem!important;
+    position: relative;
+    min-width: 20px!important;
+    border-radius: 0!important;
+    background: #64390e;
+}
+.menuitem.fulfillmentnew {
+    border-top-left-radius: 0;
+    padding-left: 0rem!important;
+    position: relative;
+    margin-left: 22px;
+    min-width: 20px!important;
+    background: #64390e;
+}
+.menuitem.fulfillment div.nameitem {
+    background: #6b6b6b;
+    display: inline-block;
+    position: relative;
+    top: -3px;
+    left: -5px;
+    width: 14px;
+}
+.menuitem.fulfillmentnew div.nameitem {
+    background: #9c9c9c;
+    display: inline-block;
+    position: relative;
+    top: -3px;
+    right: -5px;
+    width: 14px;
+}
+.menuitem.fulfillment:hover > div.nameitem,
+.menuitem.fulfillmentnew:hover > div.nameitem,
+.menuitem.fulfillment:hover > span.bnt-side,
+.menuitem.fulfillmentnew:hover > span.bnt-side {
+    background: #000080!important;
+}
+.menuitem.fulfillment:hover span.triangle-top {
+    border-color: #000080 transparent transparent transparent;
+}
+.menuitem.fulfillmentnew:hover span.triangle-bottom {
+    border-color: transparent transparent #000080 transparent;
+}
+.menuitem.fulfillment div.nameitem span {
+    position: relative;
+    z-index: 20;
+}
+.menuitem.fulfillmentnew div.nameitem span {
+    position: relative;
+    left: -46px;
+}
+.menuitem.fulfillmentnew:hover div.nameitem span {
+    position: relative;
+    left: -46px;
+    z-index: 25;
+}
+/* END Fulfillment button */
+/* Fulfillment ACTIVE */
+.menuitem.fulfillmentnew.activelink .triangle-bottom {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 30px 30px;
+    border-color: transparent transparent #1a73e8 transparent;
+    position: absolute;
+    top: 0px;
+    left: -25px;
+}
+.menuitem.fulfillmentnew.activelink span.bnt-side {
+    background: #3636ff;
+    border-top-right-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.fulfillmentnew.activelink div.nameitem {
+    background: #1a73e8;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    right: -5px;
+    width: 14px;
+    height: 31px;
+}
+.menuitem.fulfillmentnew.activelink span.bnt-side {
+    background: #1a73e8;
+    border-top-right-radius: 7px;
+    font-size: 20px;
+    display: inline-block;
+    width: 31px;
+}
+.menuitem.fulfillmentnew.activelink div.nameitem span {
+    position: relative;
+    left: -48px;
+    top: 0px;
+    color: #fff;
+    z-index: 25;
+}
+.menuitem.fulfillment.activelink span.bnt-side {
+    background: #3636ff;
+    border-top-left-radius: 7px;
+    font-size: 23px;
+    display: inline-block;
+    width: 18px;
+}
+.menuitem.fulfillment.activelink div.nameitem {
+    background: #3636ff;
+    border-top: 1px solid #000;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    left: -5px;
+    width: 14px;
+}
+.menuitem.fulfillment.activelink .triangle-top {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 30px 30px 0 0;
+    border-color: #3636ff transparent transparent transparent;
+    position: absolute;
+    top: 0px;
+    right: -25px;
+}
+.menuitem.fulfillment.activelink {
+    border-top-left-radius: 7px!important;
+}
+.menuitem.fulfillmentnew.activelink {
+    padding-right: 0!important;
+    margin-left: 22px;
+}
+/* END Fulfillment ACTIVE */

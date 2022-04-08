@@ -846,7 +846,13 @@ Class Leadorder_model extends My_Model {
             if ($entity=='shipping' && $fldname=='event_date') {
                 $data['out_eventdate']=date('m/d/y',$newval);
             }
-
+            $newshipcalc = 0;
+            if ($entity=='order' && $fldname=='order_date') {
+                $shipping = $leadorder['shipping'];
+                if (!empty($shipping['rush_idx'])) {
+                    $newshipcalc = 1;
+                }
+            }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
                 $params=explode("-", $newval);
@@ -917,6 +923,7 @@ Class Leadorder_model extends My_Model {
                                 );
                                 if ($row['current']==1) {
                                     $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                    $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
                                     $shiprate+=$row['Rate'];
                                 }
                                 $newidx++;
@@ -964,7 +971,107 @@ Class Leadorder_model extends My_Model {
                 }
                 $out['states']=$states;
             }
+            if ($newshipcalc==1) {
+                // Calc new shipping time
+                $this->load->model('shipping_model');
+                $order = $leadorder['order'];
+                $item_id = $order['item_id'];
+                if ($order['order_blank']==0) {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                }
+                $out['rushlist']=$rush;
+                $shipping=$leadorder['shipping'];
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                        $order['shipdate']=$row['date'];
+                        $out['current']=$row['id'];
+                    }
+                }
+                $leadorder['shipping']=$shipping;
+                $leadorder['order']=$order;
+                $out['shipdate']=$shipping['shipdate'];
+                $out['rush_price']=$shipping['rush_price'];
+                // Calculate shipping
+                $this->load->model('shipping_model');
+                $shiprate=0;
+                $items=$leadorder['order_items'];
+                $shipaddr=$leadorder['shipping_address'];
+                if (count($shipaddr)==1) {
+                    $shipaddr[0]['item_qty']=$order['order_qty'];
+                }
+                $shipping=$leadorder['shipping'];
+                $shipidx=0;
+                $cnt=0;
+                foreach ($shipaddr as $shprow) {
+                    if (!empty($shprow['zip'])) {
+                        // Get Old Shipping Method
+                        $default_ship_method='';
+                        if (isset($shprow['shipping_cost'])) {
+                            $oldcosts=$shprow['shipping_costs'];
+                            foreach ($oldcosts as $costrow) {
+                                if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                    $default_ship_method=$costrow['shipping_method'];
+                                }
+                            }
+                        }
+                        $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                        if ($cntres['result']==$this->error_result) {
+                            $out['msg']=$cntres['msg'];
+                            usersession($ordersession, $leadorder);
+                            return $out;
+                        } else {
+                            $rates=$cntres['ships'];
+                            $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                            $cidx=0;
+                            foreach ($shipcost as $row) {
+                                $shipcost[$cidx]['delflag']=1;
+                                $cidx++;
+                            }
+                            $newidx=count($shipcost)+1;
+                            foreach ($rates as $row) {
+                                $shipcost[]=array(
+                                    'order_shipcost_id'=>$newidx*(-1),
+                                    'shipping_method'=>$row['ServiceName'],
+                                    'shipping_cost'=>$row['Rate'],
+                                    'arrive_date'=>$row['DeliveryDate'],
+                                    'current'=>$row['current'],
+                                    'delflag'=>0,
+                                );
+                                if ($row['current']==1) {
+                                    $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                    $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
+                                    $shiprate+=$row['Rate'];
+                                }
+                                $newidx++;
+                            }
+                            $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                        }
+                    }
+                    $shipidx++;
+                    $cnt++;
+                }
+                $out['shipping']=$shiprate;
+                $order['shipping']=$shiprate;
+                $out['cntshipadrr']=$cnt;
+                if ($cnt==1) {
+                    $out['shipaddr']=$shipaddr[0];
+                } else {
+                    $out['shipaddress']=$shipaddr;
+                }
+                // Save data into Session
+                $leadorder['order']=$order;
+                $leadorder['shipping']=$shipping;
+                $leadorder['shipping_address']=$shipaddr;
+            }
             $out['result']=$this->success_result;
+            $out['shipcalc'] = $newshipcalc;
             usersession($ordersession, $leadorder);
             // Rebuild Totals of order
             if ($leadorder['order_system']=='new') {
@@ -3518,6 +3625,7 @@ Class Leadorder_model extends My_Model {
                             );
                             if ($row['current']==1) {
                                 $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
                                 $shiprate+=$row['Rate'];
                             }
                             $newidx++;
@@ -3915,12 +4023,12 @@ Class Leadorder_model extends My_Model {
             'proof_stage'=>0,
             'approv_stage'=>0,
         );
-        if ($leadorder['order_system']=='new') {
-            $order_type='new';
-            $chkres=$this->_check_new_order($leadorder);
-        } else {
+        if ($order['order_system']=='old') {
             $order_type='old';
             $chkres=$this->_check_old_order($order);
+        } else {
+            $order_type='new';
+            $chkres=$this->_check_new_order($leadorder);
         }
         if ($chkres['result']==$this->error_result) {
             $out['msg']=$chkres['msg'];
@@ -7770,8 +7878,10 @@ Class Leadorder_model extends My_Model {
         $payments_details = [];
         foreach ($leadorder['payments'] as $prow) {
             $label = '';
+            $type = 'payment';
             if ($prow['batch_amount']<0) {
                 $label.='Refund ';
+                $type = 'refund';
             } else {
                 // if ($)
                 $label.='Payment ';
@@ -7779,7 +7889,8 @@ Class Leadorder_model extends My_Model {
             $label.='- '.date('m/d/y', $prow['batch_date']);
             $payments_details[]=[
                 'label' => $label,
-                'value' => MoneyOutput($prow['batch_amount']),
+                'value' => MoneyOutput(abs($prow['batch_amount'])),
+                'type' => $type,
             ];
         }
 
@@ -7920,7 +8031,7 @@ Class Leadorder_model extends My_Model {
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
 
-        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n'),'_',$order['order_items']).'.pdf';
+        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n','%','#'),'_',$order['order_items']).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
         $this->_invoice_pdfdoc_create($options, $file_out);
@@ -8466,7 +8577,8 @@ Class Leadorder_model extends My_Model {
 
     private function _dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations) {
         $total_item=0;
-        $total_qty=0;
+        // $total_qty=0;
+        $total_qty=$neworder['order_qty'];
         $total_imprint=0;
         $itemidx=0;
         foreach ($neworder_items as $row) {
@@ -8613,71 +8725,76 @@ Class Leadorder_model extends My_Model {
 
     private function _invoice_pdfdoc_create($options, $file_out) {
         define('FPDF_FONTPATH', FCPATH.'font');
-        $this->load->library('fpdf/fpdf');
+        $this->load->library('fpdf/fpdfeps');
         // Prepare
-        $logoFile = FCPATH."/img/invoice/invoice_logo_bluetrack-stressballs.jpg";
+        $logoFile = FCPATH."/img/invoice/logos-2.eps";
         $logoXPos = 5;
         $logoYPos = 10;
         $logoWidth = 105.655;
-        $logoHeight = 12.88;
+        $logoHeight = 12.855;
         $logoType = 'JPG';
 
-        $invnumImg = FCPATH.'/img/invoice/invoice_num.png';
+        $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
         $invnumXPos = 120;
         $invnumYPos = 10;
         $invnumWidth = 0;
         $invnumHeigth = 16.5;
-        $invnumType = 'PNG';
 
-        $ponumImage = FCPATH.'/img/invoice/customer_code_bg.png';
-        $ponumXPos = 125;
-        $ponumYPos = 36.7;
+        $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+        $dateXPos = 158;
+        $dateYPos = 28.7;
+        $dateWidth = 0;
+        $dateHeight = 9;
+
+        $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+        $ponumXPos = 90;
+        $ponumYPos = 28.7;
         $ponumWidth = 0;
-        $ponumHeight = 11;
-        $ponumType = 'PNG';
+        $ponumHeight = 9;
+
 
         $invoiceimgHeadType = 'PNG';
         $invoiceimgHeadHeight = 8.5;
 
-        $termsImage = FCPATH.'/img/invoice/terms_head_bg.png';
+        $termsImage = FCPATH.'/img/invoice/terms_head_bg.eps';
         $termsXPos = 5;
         $termsYPos = 52;
         $termsWidth = 0;
 
-        $paydueImage = FCPATH.'/img/invoice/paymentdue_head_bg.png';
-        $paydueXPos = 51;
+        $paydueImage = FCPATH.'/img/invoice/paymentdue_head_bg.eps';
+        $paydueXPos = 53.5;
         $paydueYPos = 52;
         $paydueWidth = 0;
 
-        $shipdateImage = FCPATH.'/img/invoice/shipdate_head_bg.png';
+        $shipdateImage = FCPATH.'/img/invoice/shipdate_head_bg.eps';
         $shipdateXPos = 112;
         $shipdateYPos = 52;
         $shipdateWidth = 0;
 
-        $arivdateImage = FCPATH.'/img/invoice/deliverydate_head_bg.png';
-        $arivdateXPos = 159;
+        $arivdateImage = FCPATH.'/img/invoice/deliverydate_head_bg.eps';
+        $arivdateXPos = 160;
         $arivdateYPos = 52;
         $arivdateWidth = 0;
 
-        $billadrImage = FCPATH.'/img/invoice/billto_head_bg.png';
+        $billadrImage = FCPATH.'/img/invoice/billto_head_bg.eps';
         $billadrXPos = 5;
         $billadrYPos = 71;
         $billadrWidth = 0;
 
-        $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.png';
+        $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.eps';
         $shipadrXPos = 112;
         $shipadrYPos = 71;
         $shipadrWidth = 0;
 
-        $pdf = new FPDF('P','mm','A4');
+        $pdf = new FPDFEPS('P','mm','A4');
         $pdf->AddPage();
         $pdf->SetFont('Times','',9.035143);
         $pdf->SetTextColor(65, 65, 65);
         // $pdf->SetMargins(14,14,14);
         // Logo
-        $pdf->Image( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight, $logoType );
+        $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
         // Inv #
-        $pdf->Image($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth, $invnumType);
+        $pdf->ImageEps($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth);
         $pdf->SetXY(167, 10.8);
         $pdf->SetFont('','B',16.564429);
         $pdf->SetTextColor(0, 0, 255);
@@ -8690,42 +8807,45 @@ Class Leadorder_model extends My_Model {
         $pdf->Text(5,39.88, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
         $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->text(5,45.88,'www.bluetrack.com','http://www.bluetrack.com');
+        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+        $pdf->SetTextColor(65, 65, 65);
+        $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('', '', 13.552714);
-        $pdf->Text(154.8, 33.88, 'Invoice Date: '.$options['order_date']);
+        $pdf->SetXY(177, 29);
+        $pdf->Cell(27, 8, $options['order_date'],0,0, 'C');
+        // $pdf->Text(179.8, 35.88, $options['order_date']);
         if (!empty($options['customer_code'])) {
-            $pdf->Image($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight, $ponumType);
-            // $pdf->Image($ponumImage, $ponumXPos, $ponumYPos);
-            $pdf->SetXY(173.5,37.8);
+            $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
+            $pdf->SetXY(127,29);
             $pdf->SetFont('','B');
-            $pdf->Cell(29,8.8,$options['customer_code'],0,0,'C');
+            $pdf->Cell(27,8,$options['customer_code'],0,0,'C');
         }
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(65, 65, 65);
         // Terms
-        $pdf->Image($termsImage, $termsXPos, $termsYPos, $termsWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($termsImage, $termsXPos, $termsYPos, $termsWidth, $invoiceimgHeadHeight);
         $pdf->SetXY(5, 61);
         if (!empty($options['terms'])) {
             // $pdf->Ceil(26,73, $options['terms']);
             $pdf->Cell(44,8,$options['terms'],0,0,'C');
         }
         // Payment Due
-        $pdf->Image($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
-        $pdf->SetX(51);
+        $pdf->ImageEps($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth, $invoiceimgHeadHeight);
+        $pdf->SetX(53.5);
         $pdf->Cell(44, 8, $options['payment_due'],0,0,'C');
         // Ship Date
-        $pdf->Image($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth, $invoiceimgHeadHeight);
         $pdf->SetX(112);
         $pdf->Cell(44,8, $options['shipdate'],0,0,'C');
         // Delivery Date
-        $pdf->Image($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
         $pdf->SetX(159);
         $pdf->Cell(44,8, $options['arrive'],0,0,'C');
         // Billing Address
         $pdf->SetFont('','', 12.046857);
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Image($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth, $invoiceimgHeadHeight);
         $pdf->SetXY(7, 80.8);
         // $startY = 88;
         foreach ($options['billing'] as $biladrrow) {
@@ -8735,7 +8855,7 @@ Class Leadorder_model extends My_Model {
             $pdf->Cell(91,5.5, $biladrrow,0,1,'L');
         }
         // Shipping Address
-        $pdf->Image($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth, $invoiceimgHeadHeight);
         $pdf->SetXY(112, 80.8);
 
         foreach ($options['shipping'] as $shipadrrow) {
@@ -8746,37 +8866,37 @@ Class Leadorder_model extends My_Model {
         }
         // Table
         $tableHeadYPos = 110;
-        $itemnumImage = FCPATH.'/img/invoice/itemnum_head_bg.png';
+        $itemnumImage = FCPATH.'/img/invoice/itemnum_head_bg.eps';
         $itemnumXPos = 5;
         $itemnumWidth = 0;
 
-        $descripImage = FCPATH.'/img/invoice/itemdescript_head_bg.png';
+        $descripImage = FCPATH.'/img/invoice/itemdescript_head_bg.eps';
         $descripXPos = 38;
         $descripWidth = 0;
 
-        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg.png';
+        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg2.eps';
         $itemqtyXPos = 126;
         $itemqtyWidth = 0;
 
-        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg.png';
-        $priceXPos = 142;
+        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg-2.eps';
+        $priceXPos = 146;
         $priceWidth = 0;
 
-        $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.png';
+        $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.eps';
         $totalXPos = 175;
         $totalWidth = 0;
 
-        $pdf->Image($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
-        $pdf->Image($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
-        $pdf->Image($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
-        $pdf->Image($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
-        $pdf->Image($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->ImageEps($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight);
         // Table Data
         $tableWidths = [
             33,
             88,
-            16,
-            31,
+            18,
+            29,
             32.5,
         ];
         $numpp = 1;
@@ -8790,51 +8910,60 @@ Class Leadorder_model extends My_Model {
                 $pdf->SetTextColor(0,0,0);
             }
             $pdf->SetX(5);
-            $pdf->Cell($tableWidths[0], 10, $detail['item_num'], 0, 0,'C', $fillcell);
-            $pdf->Cell($tableWidths[1], 10, $detail['item_description'],0,0,'L',$fillcell);
-            $pdf->Cell($tableWidths[2], 10, $detail['item_qty'],0, 0, 'C', $fillcell);
-            $pdf->Cell($tableWidths[3], 10, $detail['item_price'],0,0,'C', $fillcell);
-            $pdf->Cell($tableWidths[4], 10, $detail['item_subtotal'],0, 1,'C', $fillcell);
+            $pdf->Cell($tableWidths[0], 9, $detail['item_num'], 0, 0,'C', $fillcell);
+            $pdf->Cell($tableWidths[1], 9, $detail['item_description'],0,0,'L',$fillcell);
+            $pdf->Cell($tableWidths[2], 9, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
+            $pdf->Cell($tableWidths[3], 9, $detail['item_price'],0,0,'C', $fillcell);
+            $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
         if (!empty($options['invoice_message'])) {
-            $pdf->SetXY(5,231);
+            $pdf->SetXY(5,228);
             $pdf->SetFont('','',13);
             // $pdf->Cell(105, 0, $options['invoice_message'],1);
             $pdf->MultiCell(100, 6, $options['invoice_message'], 1, 'L', FALSE);
 
         }
         // Totals
+        $totalbgn = $pdf->GetY();
         $invtotalXPos = 115;
-        $invtotalYPos = 231;
-        $invtotalWidth = 88;
-        $invtotalHeght = 27 + 8*$options['payments_count'];
+        $invtotalYPos = $totalbgn+5;
+        $invtotalWidth = 90;
+        $invtotalHeght = 26 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,231.5);
+        $pdf->SetXY(116,$totalbgn+5.5);
         $pdf->SetFont('','',13);
-        $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax (0.0%) '.$options['tax'],0,1);
+        // $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax '.$options['tax'],0,1);
+        $pdf->Cell(52, 8, 'NJ '.$options['tax_term'].'% Sales Tax ',0, 0);
+        $pdf->Cell(35.9, 8, $options['tax'],0,1);
 
         $pdf->SetX(116);
         $pdf->SetFont('','B');
         $pdf->Cell(52, 8, 'Total',0, 0);
         $pdf->SetTextColor(8,0,255);
-        $pdf->Cell(28.2, 8, $options['total'],0,1);
+        $pdf->Cell(35.9, 8, $options['total'],0,1);
 
         if ($options['payments_count'] > 0) {
             foreach ($options['payments_detail'] as $payments_detail) {
                 $pdf->SetX(115.5);
                 $pdf->SetTextColor(0,0,0);
                 $pdf->SetFont('','');
-                $pdf->Cell(58.4, 8, $payments_detail['label'],0,0,'L',true);
-                $pdf->Cell(28.2, 8,$payments_detail['value'],0,1,'L',true);
+                $pdf->Cell(52.4, 8, $payments_detail['label'],0,0,'L',true);
+                if ($payments_detail['type']=='refund') {
+                    $pdf->Cell(35.9, 8,'+'.$payments_detail['value'],0,1,'L',true);
+                } else {
+                    $pdf->SetTextColor(255,0,0);
+                    $pdf->Cell(35.9, 8,'-'.$payments_detail['value'],0,1,'L',true);
+                    $pdf->SetTextColor(0,0,0);
+                }
             }
         }
         $pdf->SetX(115.5);
         $pdf->SetFont('','B');
         $pdf->Cell(52,8,'Balance Due',0,0);
         $pdf->SetTextColor(0,0,255);
-        $pdf->Cell(28.2,8,$options['balance'],0,1);
+        $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Save file
         $pdf->Output('F', $file_out);
         return TRUE;

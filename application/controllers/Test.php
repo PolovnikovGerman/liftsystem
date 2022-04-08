@@ -436,136 +436,293 @@ class Test extends CI_Controller
     }
 
     public function vendor_items() {
-        $vendor_id = 5;
-        $file_name = 'pinnacle_items_correct.csv';
-        // Calc max # of prices
-        $this->db->select('*');
-        $this->db->from('sb_vendor_items');
-        $this->db->where('vendor_item_vendor', $vendor_id);
-        $items = $this->db->get()->result_array();
-        $maxcnt = 0;
-        foreach ($items as $item) {
-            $this->db->select('count(vendorprice_id) as cnt');
-            $this->db->from('sb_vendor_prices');
-            $this->db->where('vendor_item_id', $item['vendor_item_id']);
-            $cntres = $this->db->get()->row_array();
-            if ($cntres['cnt']>$maxcnt) {
-                $maxcnt=$cntres['cnt'];
-            }
-        }
-        $vendoritems = [];
-        foreach ($items as $item) {
-            $vendoritems[] = [
-                'vendor_item_id' => $item['vendor_item_id'],
-                'vendor_item_number' => $item['vendor_item_number'],
-                'vendor_item_name' => $item['vendor_item_name'],
-                'base_cost' => $item['vendor_item_cost'],
-            ];
-            $vendidx = count($vendoritems) - 1;
-            if ($maxcnt > 0) {
-                for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['qty'.$i]='';
-                }
-                for ($i=1; $i<=$maxcnt; $i++) {
-                    $vendoritems[$vendidx]['price'.$i]='';
-                }
-                $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
-                $this->db->from('sb_vendor_prices');
-                $this->db->where('vendor_item_id', $item['vendor_item_id']);
-                $prices = $this->db->get()->result_array();
-                if (count($prices)>0) {
-                    $priceidx = 1;
-                    foreach ($prices as $price) {
-                        $vendoritems[$vendidx]['qty'.$priceidx]=$price['vendorprice_qty'];
-                        $priceidx++;
-                    }
-                    $priceidx = 1;
-                    foreach ($prices as $price) {
-                        $vendoritems[$vendidx]['price'.$priceidx]=$price['vendorprice_color'];
-                        $priceidx++;
+        $this->db->select('vendor_id, vendor_name');
+        $this->db->from('vendors');
+        $this->db->where_not_in('vendor_id',[1,5,3,4,81, 151, 152, 158]);
+        $vendors = $this->db->get()->result_array();
+        foreach ($vendors as $vendor) {
+            $file_name = str_replace([' ','.',',',"'",'/'],'_',$vendor['vendor_name']).'.csv';
+            $vendor_id = $vendor['vendor_id'];
+            // $file_name = 'pinnacle_items_correct.csv';
+            // Calc max # of prices
+            $this->db->select('*');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_vendor', $vendor_id);
+            $items = $this->db->get()->result_array();
+            if (count($items > 0)) {
+                $maxcnt = 0;
+                foreach ($items as $item) {
+                    $this->db->select('count(vendorprice_id) as cnt');
+                    $this->db->from('sb_vendor_prices');
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $cntres = $this->db->get()->row_array();
+                    if ($cntres['cnt']>$maxcnt) {
+                        $maxcnt=$cntres['cnt'];
                     }
                 }
-            }
-        }
-        $file = $this->config->item('upload_path_preload').$file_name;
-        @unlink($file);
-        $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
-        if ($fh) {
-            $msg='VItem ID;Vendor Item #;Vendor Item Name; Base Cost;';
-            for ($i=1; $i<=$maxcnt; $i++) {
-                $msg.='Qty '.$i.';';
-            }
-            for ($i=1; $i<=$maxcnt; $i++) {
-                $msg.='Price '.$i.';';
-            }
-            $msg.='Item #; Item Name; Active;';
-            $j=1;
-            foreach ($this->config->item('price_types') as $ptype) {
-                $msg.='QTY'.$j.';';
-                $j++;
-            }
-            $msg.=PHP_EOL;
-            fwrite($fh, $msg);
-            foreach ($vendoritems as $vendoritem) {
-                $msg='';
-                foreach ($vendoritem as $row) {
-                    $msg.='"'.$row.'";';
-                }
-                $this->db->select('*');
-                $this->db->from('sb_items');
-                $this->db->where('vendor_item_id', $vendoritem['vendor_item_id']);
-                $itemres = $this->db->get()->row_array();
-                if (ifset($itemres,'item_id',0)>0) {
-                    $msg.='"'.$itemres['item_number'].'";"'.$itemres['item_name'].'";"'.($itemres['item_active']==1 ? 'YES': 'NO').'";';
-                    if ($itemres['item_template']=='Stressball') {
-                        $this->db->select('*');
-                        $this->db->from('sb_item_prices');
-                        $this->db->where('item_price_itemid', $itemres['item_id']);
-                        $prices = $this->db->get()->row_array();
-                        if (ifset($prices,'item_price_id',0)>0) {
-                            foreach ($this->config->item('price_types') as $ptype) {
-                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
-                                    $msg.='"'.$ptype['type'].'";';
-                                }
+                $vendoritems = [];
+                foreach ($items as $item) {
+                    $vendoritems[] = [
+                        'vendor_item_id' => $item['vendor_item_id'],
+                        'vendor_item_number' => $item['vendor_item_number'],
+                        'vendor_item_name' => $item['vendor_item_name'],
+                        'base_cost' => $item['vendor_item_cost'],
+                    ];
+                    $vendidx = count($vendoritems) - 1;
+                    if ($maxcnt > 0) {
+                        for ($i=1; $i<=$maxcnt; $i++) {
+                            $vendoritems[$vendidx]['qty'.$i]='';
+                        }
+                        for ($i=1; $i<=$maxcnt; $i++) {
+                            $vendoritems[$vendidx]['price'.$i]='';
+                        }
+                        $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color');
+                        $this->db->from('sb_vendor_prices');
+                        $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                        $prices = $this->db->get()->result_array();
+                        if (count($prices)>0) {
+                            $priceidx = 1;
+                            foreach ($prices as $price) {
+                                $vendoritems[$vendidx]['qty'.$priceidx]=$price['vendorprice_qty'];
+                                $priceidx++;
                             }
-                            $msg.=PHP_EOL;
-                            fwrite($fh, $msg);
-                            // empty row
-                            $msg='';
-                            foreach ($vendoritem as $row) {
-                                $msg.='" ";';
-                            }
-                            for ($i=0; $i<3; $i++) {
-                                $msg.='" ";';
-                            }
-                            foreach ($this->config->item('price_types') as $ptype) {
-                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
-                                    $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
-                                }
-                            }
-                            $msg.=PHP_EOL;
-                            fwrite($fh, $msg);
-                            $msg='';
-                            foreach ($vendoritem as $row) {
-                                $msg.='" ";';
-                            }
-                            for ($i=0; $i<3; $i++) {
-                                $msg.='" ";';
-                            }
-                            foreach ($this->config->item('price_types') as $ptype) {
-                                if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
-                                    $msg.='"'.$prices['item_sale_'.$ptype['type']].'";';
-                                }
+                            $priceidx = 1;
+                            foreach ($prices as $price) {
+                                $vendoritems[$vendidx]['price'.$priceidx]=$price['vendorprice_color'];
+                                $priceidx++;
                             }
                         }
                     }
                 }
-                $msg.=PHP_EOL;
-                fwrite($fh, $msg);
+                $file = $this->config->item('upload_path_preload').$file_name;
+                @unlink($file);
+                $fh=fopen($file,FOPEN_READ_WRITE_CREATE);
+                if ($fh) {
+                    $msg='VItem ID;Vendor Item #;Vendor Item Name; Base Cost;';
+                    for ($i=1; $i<=$maxcnt; $i++) {
+                        $msg.='Qty '.$i.';';
+                    }
+                    for ($i=1; $i<=$maxcnt; $i++) {
+                        $msg.='Price '.$i.';';
+                    }
+                    $msg.='Item #; Item Name; Active;';
+                    $j=1;
+                    foreach ($this->config->item('price_types') as $ptype) {
+                        $msg.='QTY'.$j.';';
+                        $j++;
+                    }
+                    $msg.=PHP_EOL;
+                    fwrite($fh, $msg);
+                    foreach ($vendoritems as $vendoritem) {
+                        $msg='';
+                        foreach ($vendoritem as $row) {
+                            $msg.='"'.$row.'";';
+                        }
+                        $this->db->select('*');
+                        $this->db->from('sb_items');
+                        $this->db->where('vendor_item_id', $vendoritem['vendor_item_id']);
+                        $itemres = $this->db->get()->row_array();
+                        if (ifset($itemres,'item_id',0)>0) {
+                            $msg.='"'.$itemres['item_number'].'";"'.$itemres['item_name'].'";"'.($itemres['item_active']==1 ? 'YES': 'NO').'";';
+                            if ($itemres['item_template']=='Stressball') {
+                                $this->db->select('*');
+                                $this->db->from('sb_item_prices');
+                                $this->db->where('item_price_itemid', $itemres['item_id']);
+                                $prices = $this->db->get()->row_array();
+                                if (ifset($prices,'item_price_id',0)>0) {
+                                    foreach ($this->config->item('price_types') as $ptype) {
+                                        if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                            $msg.='"'.$ptype['type'].'";';
+                                        }
+                                    }
+                                    $msg.=PHP_EOL;
+                                    fwrite($fh, $msg);
+                                    // empty row
+                                    $msg='';
+                                    foreach ($vendoritem as $row) {
+                                        $msg.='" ";';
+                                    }
+                                    for ($i=0; $i<3; $i++) {
+                                        $msg.='" ";';
+                                    }
+                                    foreach ($this->config->item('price_types') as $ptype) {
+                                        if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                            $msg.='"'.$prices['item_price_'.$ptype['type']].'";';
+                                        }
+                                    }
+                                    $msg.=PHP_EOL;
+                                    fwrite($fh, $msg);
+                                    $msg='';
+                                    foreach ($vendoritem as $row) {
+                                        $msg.='" ";';
+                                    }
+                                    for ($i=0; $i<3; $i++) {
+                                        $msg.='" ";';
+                                    }
+                                    foreach ($this->config->item('price_types') as $ptype) {
+                                        if (!empty($prices['item_price_'.$ptype['type']]) || !empty($prices['item_sale_'.$ptype['type']])) {
+                                            $msg.='"'.$prices['item_sale_'.$ptype['type']].'";';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $msg.=PHP_EOL;
+                        fwrite($fh, $msg);
+                    }
+                    fclose($fh);
+                    echo $file.' Ready'.PHP_EOL;
+                }
             }
-            fclose($fh);
-            echo $file.' Ready'.PHP_EOL;
         }
+
+    }
+
+    function set_item_profit() {
+        $price_types = $this->config->item('price_types');
+
+        $this->db->select('i.item_id, i.item_template, i.item_number, i.item_name, ip.*');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_item_prices ip', 'ip.item_price_itemid=i.item_id', 'left');
+        $this->db->order_by('i.item_number');
+        $res = $this->db->get()->result_array();
+        foreach ($res as $row) {
+            echo '# '.$row['item_number'].' - '.$row['item_name'].PHP_EOL;
+            $profit = array();
+            $promoprof = array();
+            if ($row['item_template'] != 'Stressball') {
+                $this->db->select('*');
+                $this->db->from('sb_promo_price');
+                $this->db->where('item_id', $row['item_id']);
+                $promos = $this->db->get()->result_array();
+                foreach ($promos as $promo) {
+                    $base = 0;
+                    if (floatval($promo['sale_price']) != 0) {
+                        $base = floatval($promo['sale_price']);
+                    } elseif (floatval($promo['price']) != 0) {
+                        $base = floatval($promo['price']);
+                    }
+                    if ($base) {
+                        $this->db->select('get_profit_qty(' . $base . ' , ' . $row['item_id'] . ' , ' . $promo['item_qty'] . ' ) as itm_profit', FALSE);
+                        $prof = $this->db->get()->row_array();
+                        if ($prof['itm_profit']) {
+                            $promoprof[] = array('idx' => $promo['promo_price_id'], 'value' => $prof['itm_profit']);
+                        }
+                    }
+                }
+            } else {
+                foreach ($price_types as $pricerow) {
+                    $base = 0;
+                    if (floatval($row['item_sale_' . $pricerow['type']]) != 0) {
+                        $base = floatval($row['item_sale_' . $pricerow['type']]);
+                    } elseif (floatval($row['item_price_' . $pricerow['type']]) != 0) {
+                        $base = floatval($row['item_price_' . $pricerow['type']]);
+                    }
+
+                    if ($base) {
+                        $this->db->select('get_profit_qty(' . $base . ' , ' . $row['item_id'] . ' , ' . $pricerow['type'] . ' ) as itm_profit', FALSE);
+                        $prof = $this->db->get()->row_array();
+
+                        if ($prof['itm_profit']) {
+                            $profit[] = array('type' => 'profit_' . $pricerow['type'], 'value' => $prof['itm_profit']);
+                        }
+                    }
+                }
+            }
+            $base = 0;
+            if (floatval($row['item_sale_print']) != 0) {
+                $base = floatval($row['item_sale_print']);
+            } elseif (floatval($row['item_price_print']) != 0) {
+                $base = floatval($row['item_price_print']);
+            }
+            if ($base) {
+                $this->db->select('get_profit_print(' . $base . ',' . $row['item_id'] . ') as itm_profit', FALSE);
+                $prof = $this->db->get()->row_array();
+                if ($prof['itm_profit']) {
+                    $profit[] = array('type' => 'profit_print', 'value' => $prof['itm_profit']);
+                }
+            }
+            $base = 0;
+            if (floatval($row['item_sale_setup']) != 0) {
+                $base = floatval($row['item_sale_setup']);
+            } elseif (floatval($row['item_price_setup']) != 0) {
+                $base = floatval($row['item_price_setup']);
+            }
+            if ($base) {
+                $this->db->select('get_profit_setup(' . $base . ',' . $row['item_id'] . ') as itm_profit', FALSE);
+                $prof = $this->db->get()->row_array();
+                if ($prof['itm_profit']) {
+                    $profit[] = array('type' => 'profit_setup', 'value' => $prof['itm_profit']);
+                }
+            }
+
+            if (count($profit) > 0) {
+                foreach ($profit as $prof) {
+                    $this->db->set($prof['type'], $prof['value']);
+                }
+                $this->db->where('item_price_id', $row['item_price_id']);
+                $this->db->update('sb_item_prices');
+            }
+            if (count($promoprof) > 0) {
+                foreach ($promoprof as $prof) {
+                    $this->db->set('profit', $prof['value']);
+                    $this->db->where('promo_price_id', $prof['idx']);
+                    $this->db->update('sb_promo_price');
+                }
+            }
+        }
+    }
+
+    function updatekeyinfo() {
+        $this->db->select('item_id, item_number, item_size');
+        $this->db->from('sb_items');
+        $this->db->like('item_size','&quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find SIZE '.count($res).PHP_EOL;
+        foreach ($res as $row) {
+            $new_size=str_replace('&quot;','"', $row['item_size']);
+            echo 'Item '.$row['item_number'].' Size '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_size', $new_size);
+            $this->db->update('sb_items');
+        }
+        $this->db->select('item_id, item_number, item_name');
+        $this->db->from('sb_items');
+        $this->db->like('item_name','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find NAME '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_description1');
+        $this->db->from('sb_items');
+        $this->db->like('item_description1','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find Descript_1 '.count($res).PHP_EOL;
+        foreach ($res as $row) {
+            $new_size=str_replace('&amp;amp;quot;','"', $row['item_description1']);
+            echo 'Item '.$row['item_number'].' Descrip '.$new_size.PHP_EOL;
+            $this->db->where('item_id', $row['item_id']);
+            $this->db->set('item_description1', $new_size);
+            $this->db->update('sb_items');
+        }
+        $this->db->select('item_id, item_number, item_description2');
+        $this->db->from('sb_items');
+        $this->db->like('item_description2','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find Descript_2 '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metadescription');
+        $this->db->from('sb_items');
+        $this->db->like('item_metadescription','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaDescript '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_metakeywords');
+        $this->db->from('sb_items');
+        $this->db->like('item_metakeywords','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaKeywords '.count($res).PHP_EOL;
+        $this->db->select('item_id, item_number, item_meta_title');
+        $this->db->from('sb_items');
+        $this->db->like('item_meta_title','&amp;amp;quot;','both');
+        $res = $this->db->get()->result_array();
+        echo 'Find MetaTitle '.count($res).PHP_EOL;
 
     }
 
@@ -761,6 +918,26 @@ class Test extends CI_Controller
             $this->db->set('blog_article_id', $artid);
             $this->db->set('blog_category_id', $catid);
             $this->db->insert('sb_blog_articlecategory');
+        }
+    }
+
+    public function markviewed() {
+        $this->db->select('o.order_id, o.order_num');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where('a.order_proj_status','01_notplaced');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->from('ts_orders');
+            $this->db->where('order_id', $result['order_id']);
+            $ordres=$this->db->get()->row_array();
+            $this->db->set('order_artview', $ordres['aprrovview']);
+            $this->db->set('order_placed', $ordres['placeord']);
+            $this->db->where('order_id', $result['order_id']);
+            $this->db->update('ts_orders');
+            echo 'Order # '.$result['order_num'].PHP_EOL;
         }
     }
 }

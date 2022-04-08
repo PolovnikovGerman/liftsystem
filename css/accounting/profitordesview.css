@@ -286,7 +286,7 @@ select.profitorder-filtrer {
     background-color: #bcbcbc;
     border: 1px solid #919191;
     color: #000000;
-    width: 1013px;
+    width: 1026px;
 }
 .orders-table-title > div {
     font-size: 13px;
@@ -312,7 +312,7 @@ select.profitorder-filtrer {
     width: 132px;
 }
 .orders-table-title > .profitorder_qty {
-    width: 35px;
+    width: 51px;
 }
 .orders-table-title > .profitorder_item {
     width: 131px;
@@ -352,13 +352,13 @@ select.profitorder-filtrer {
     margin-bottom: 9px;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 1014px;
+    width: 1027px;
 }
 .orderprofitcontent-table > .tr {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
     clear: both;
-    /* width: 1022px; */
+    width: 1022px;  /* remove*/
 }
 .orderprofitcontent-table > .tr > div {
     color: #000000;
@@ -421,7 +421,7 @@ select.profitorder-filtrer {
 }
 .profitorder_qty_data {
     border-right: 1px solid #000000;
-    width: 34px;
+    width: 51px;
 }
 .profitorder_item_data {
     border-right: 1px solid #000000;

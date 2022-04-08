@@ -294,8 +294,8 @@ Class Prices_model extends My_Model
         return $profitval;
     }
 
-    /* Recalc Stress Profit */
-    public function recalc_stress_profit($prices, $vendprice, $price_types) {
+    // Recalc Stress Profit
+    public function recalc_stress_profit($prices, $vendprices, $price_types) {
         /* IDX of Vendor Prices */
         /* Init Profits array */
         $profits=array();
@@ -347,7 +347,7 @@ Class Prices_model extends My_Model
             'profit_perc'=>'',
             'profit_class'=>'empty',
         );
-        $new_profit=$this->recalc_profit($vendprice, $profits);
+        $new_profit=$this->recalc_profit($vendprices, $profits);
         $profit=array();
         foreach ($new_profit as $profrow) {
             if ($profrow['type']=='qty') {
@@ -367,6 +367,67 @@ Class Prices_model extends My_Model
         return $profit;
     }
 
+    // Recalc Promo Profit
+    public function recalc_promo_profit($prices, $vendprices, $commonprices)
+    {
+        /* IDX of Vendor Prices */
+        /* Init Profits array */
+        $profits = array();
+        foreach ($prices as $row) {
+            $base_cost = 0;
+            if (floatval($row['sale_price']) != 0) {
+                $base_cost = floatval($row['sale_price']);
+            } elseif (floatval($prices['price']) != 0) {
+                $base_cost = floatval($prices['price']);
+            }
+            $profits[] = array(
+                'price_id' => $row['promo_price_id'],
+                'type' => 'qty',
+                'base' => $row['item_qty'],
+                'vendprice' => $commonprices['base_cost'],
+                'base_cost' => $base_cost,
+                'profit' => '',
+                'profit_perc' => '',
+                'profit_class' => 'empty',
+            );
+        }
+        /* Add 2 special prices */
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_print']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_print']);
+        } elseif (floatval($commonprices['item_price_print'])) {
+            $base_cost = floatval($commonprices['item_price_print']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'print',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_exprint']) == 0 ? 0 : floatval($commonprices['vendor_item_exprint'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_setup']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_setup']);
+        } elseif (floatval($commonprices['item_price_setup'])) {
+            $base_cost = floatval($commonprices['item_price_setup']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'setup',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_setup']) == 0 ? 0 : floatval($commonprices['vendor_item_setup'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $new_profit = $this->recalc_profit($vendprices, $profits);
+        return $new_profit;
+    }
+
     private function recalc_profit($vendprice, $profits) {
         $out = array();
         foreach ($profits as $row) {
@@ -377,8 +438,8 @@ Class Prices_model extends My_Model
                         $proof = 0;
                     }
                     foreach ($vendprice as $qrow) {
-                        if ($qrow['qty'] <= $row['base']) {
-                            $row['vendprice'] = $qrow['price'];
+                        if ($qrow['vendorprice_qty'] <= $row['base'] && !empty($qrow['vendorprice_color'])) {
+                            $row['vendprice'] = $qrow['vendorprice_color'];
                         }
                     }
                     if (floatval($row['vendprice']) != 0) {
@@ -518,39 +579,39 @@ Class Prices_model extends My_Model
         }
         return $res;
     }
-    // Recalc profit for Promo Prices
-    public function recalc_promo_profit($vendor_prices, $item_prices) {
-        $priceidx = 0;
-        foreach ($item_prices  as $item_price) {
-            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
-            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
-                // Calc
-                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
-                $baseqty = intval($item_price['item_qty']);
-                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
-                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
-                foreach ($vendor_prices as $vendor_price) {
-                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
-                        $vendqty=intval($vendor_price['vendorprice_qty']);
-                        $vendprice = floatval($vendor_price['vendorprice_color']);
-                        if ($vendqty > 75) {
-                            $tt=1;
-                        }
-                    }
-                }
-
-                if ($vendprice>0) {
-                    $profit = ($basecost - $vendprice)*$baseqty;
-                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
-                    $item_prices[$priceidx]['profit']=round($profit, 0);
-                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
-                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
-                }
-            }
-            $priceidx++;
-        }
-        return $item_prices;
-    }
+//    // Recalc profit for Promo Prices
+//    public function recalc_promo_profit($vendor_prices, $item_prices) {
+//        $priceidx = 0;
+//        foreach ($item_prices  as $item_price) {
+//            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
+//            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
+//                // Calc
+//                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
+//                $baseqty = intval($item_price['item_qty']);
+//                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
+//                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
+//                foreach ($vendor_prices as $vendor_price) {
+//                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
+//                        $vendqty=intval($vendor_price['vendorprice_qty']);
+//                        $vendprice = floatval($vendor_price['vendorprice_color']);
+//                        if ($vendqty > 75) {
+//                            $tt=1;
+//                        }
+//                    }
+//                }
+//
+//                if ($vendprice>0) {
+//                    $profit = ($basecost - $vendprice)*$baseqty;
+//                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
+//                    $item_prices[$priceidx]['profit']=round($profit, 0);
+//                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
+//                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
+//                }
+//            }
+//            $priceidx++;
+//        }
+//        return $item_prices;
+//    }
     // Recalc inprint and setup Profit
     public function recalc_setup_profit($item, $vendor_item) {
         // Imprint

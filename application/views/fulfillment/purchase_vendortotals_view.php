@@ -22,4 +22,5 @@
         </table>
     </div>
     <div class="billingbymethods-end">&nbsp;</div>
+    <div class="manage-purchase-methods">Manage Methods</div>
 </div>

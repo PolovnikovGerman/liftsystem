@@ -33,6 +33,11 @@ Class Orders_model extends MY_Model
     private $art_sendlater = "I'll send it later";
     private $art_sendbefore = "I already sent it";
 
+    private $accrec_terms = 'Terms';
+    private $accrec_willupd = 'Will Update';
+    private $accrec_credit = 'Credit Card';
+    private $accrec_prepay = 'Prepay';
+    // Terms, Will Update, Credit Card, Prapy
     /* Start date for check email 03/28/2013 */
     protected $req_email_date = 1364421600;
 
@@ -489,7 +494,7 @@ Class Orders_model extends MY_Model
     }
 
     public function get_order_detail($order_id) {
-        $this->db->select('o.*, br.brand_name, itm.item_name as item_name');
+        $this->db->select('o.*, br.brand_name, itm.item_name as item_name, itm.vendor_id as vendor_id');
         $this->db->from('ts_orders o');
         $this->db->join('brands br','br.brand_id=o.brand_id','left');
         $this->db->join('v_itemsearch itm','itm.item_id=o.item_id','left');
@@ -2130,6 +2135,7 @@ Class Orders_model extends MY_Model
         $this->db->select('m.method_id, m.method_name, cntord.cnt');
         $this->db->from('purchase_methods m');
         $this->db->join('(select method_id, count(order_id) as cnt from ts_orders group by method_id) cntord','cntord.method_id=m.method_id','left');
+        $this->db->where('m.active',1);
         $this->db->order_by('m.method_name');
         $res=$this->db->get()->result_array();
         return $res;
@@ -6814,4 +6820,289 @@ Class Orders_model extends MY_Model
         $res = $this->db->get()->result_array();
         return $res;
     }
+
+    public function accountreceiv_totals($period, $brand) {
+        // Owned
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('yearorder');
+        $ownsrc = $this->db->get()->result_array();
+        $totalown = 0;
+        foreach ($ownsrc as $ownr) {
+            $totalown+=$ownr['balance'];
+        }
+        $this->db->select('sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->where('batch_due < ',$daystart);
+        $pastres = $this->db->get()->row_array();
+        $pastown = $pastres['balance'];
+
+        // Refund
+        $this->db->select('yearorder, sum(balance) as balance');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('yearorder');
+        $refsrc = $this->db->get()->result_array();
+        $totalref = 0;
+        foreach ($refsrc as $refr) {
+            $totalref+=$refr['balance'];
+        }
+
+        $own = [];
+        $refund = [];
+        if ($limit_year==0) {
+            $this->db->select('min(yearorder) as yearorder');
+            $this->db->from('v_order_balances');
+            $yearres = $this->db->get()->row_array();
+            $limit_year = $yearres['yearorder'];
+        }
+        for ($i=0; $i<1000; $i++) {
+            $yearown=0;
+            $yearref=0;
+            foreach ($ownsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearown=$row['balance'];
+                    break;
+                }
+            }
+            foreach ($refsrc as $row) {
+                if ($row['yearorder']==($cur_year-$i)) {
+                    $yearref=$row['balance'];
+                    break;
+                }
+            }
+
+            $own[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearown,
+            ];
+
+            $refund[] = [
+                'year' => $cur_year - $i,
+                'balance' => $yearref,
+            ];
+            if (($cur_year - $i)<=$limit_year) {
+                break;
+            }
+        }
+        return array(
+            'totalown' => $totalown,
+            'pastown' => $pastown,
+            'totalrefund' => $totalref,
+            'own' => $own,
+            'refund' => $refund,
+            'balance' => $totalown+$totalref,
+        );
+    }
+
+    public function accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec) {
+        // $this->db->select('')
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by($ownsort, $owndirec);
+        $owndats = $this->db->get()->result_array();
+        // $owndats = [];
+        $owns=[];
+        foreach ($owndats as $owndat) {
+            // $stype = 'Credit Card';
+            $sclass = '';
+            if ($owndat['balance_manage']==3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage']==2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage']==1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass='creditcard';
+                }
+            }
+            $owndat['type']=$stype;
+            $owndat['typeclass'] = $sclass;
+            $owns[]=$owndat;
+        }
+        // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by($refundsort, $refunddir);
+        $refunds = $this->db->get()->result_array();
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+            'daystart' => $daystart,
+            'ownsort' => $ownsort,
+            'owndir' => $owndirec,
+            'refundsort' => $refundsort,
+            'refunddir' => $refunddirec,
+        );
+    }
+
+    public function purchaseorder_totals($inner, $brand) {
+        // Get Not placed
+        $this->db->select('a.order_proj_status as status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $this->db->group_by('a.order_proj_status');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        if ($inner==1) {
+            $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
+            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        }
+        $totals = $this->db->get()->result_array();
+        $totaltab = [];
+        $totaltab['toplace'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toapprove'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toproof'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        foreach ($totals as $total) {
+            if ($total['status']==$this->JUST_APPROVED) {
+                $totaltab['toplace']['qty'] += $total['totalqty'];
+                $totaltab['toplace']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->NEED_APPROVAL) {
+                $totaltab['toapprove']['qty'] += $total['totalqty'];
+                $totaltab['toapprove']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->TO_PROOF || $total['status']==$this->NO_ART) {
+                $totaltab['toproof']['qty'] += $total['totalqty'];
+                $totaltab['toproof']['total'] += $total['totalsum'];
+            }
+        }
+        return $totaltab;
+    }
+
+    public function purchase_fulltotals($brand) {
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand',$brand);
+        }
+        $resall = $this->db->get()->row_array();
+
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand',$brand);
+        }
+        $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        $this->db->where('o.profit_perc is null');
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $rest = $this->db->get()->row_array();
+        return [
+            'total' => $resall['totalsum'],
+            'totalfree' => $rest['totalsum'],
+        ];
+    }
+
+    public function purchaseorder_details($stage, $inner, $brand) {
+        // Get Not placed
+        if ($stage=='unsign') {
+            $stagesrc = [$this->JUST_APPROVED];
+        } elseif ($stage == 'approved') {
+            $stagesrc = [$this->NEED_APPROVAL];
+        } else {
+            $stagesrc = [$this->NO_ART, $this->TO_PROOF];
+        }
+        $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
+        $this->db->select('o.customer_name as customer');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
+        $this->db->where_in('a.order_proj_status',$stagesrc);
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        if ($inner==1) {
+            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        }
+        $details = $this->db->get()->result_array();
+        $out = [];
+        $daytime = 24*60*60;
+        foreach ($details as $detail) {
+            $detail['item_name'] = str_replace(['Stress Balls','Stressballs'],'SB', $detail['order_items']);
+            $detail['customitem'] = ($detail['item_id'] > 0 ? '' : 'customitem');
+            $detail['vendorname'] = (empty($detail['vendor_name']) ? 'OTHER' : $detail['vendor_name']);
+            $detail['order_late'] = ($detail['specialdiff'] > $daytime ? 1 : 0);
+            $out[] = $detail;
+        }
+        return $out;
+    }
+
 }

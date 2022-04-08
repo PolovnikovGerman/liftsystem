@@ -2,7 +2,7 @@
     clear: both;
     float: left;
     padding: 10px 0 0 10px;
-    width: 1012px;
+    width: 1025px;
 }
 .printshopinventor div {
     float: left;
@@ -1819,7 +1819,8 @@ input.addlcostinpt {
     width: 66px;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available {
-    width: 65px;
+    width: 64px;
+    border-right: none!important;
 }
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .available,
 .printshopinventor .inventorytablebody > .inventorytableleft > .inventorydatarow.itemdata > .instock,
