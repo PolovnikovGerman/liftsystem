@@ -265,6 +265,11 @@ function pageProfitOrederCallback(page_index) {
         if (response.errors=='') {
             $("#curpagetab1").val(page_index);
             $('#tableinfotab1').empty().html(response.data.content);
+            try {
+                jQuery.balloon.init();
+            } catch (e) {
+                console.log('Ballone not init');
+            }
             init_profitorder_manage();
         } else {
             show_error(response);

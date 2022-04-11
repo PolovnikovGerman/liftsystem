@@ -358,7 +358,7 @@ select.profitorder-filtrer {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
     clear: both;
-    /* width: 1022px; */
+    width: 1022px;  /* remove*/
 }
 .orderprofitcontent-table > .tr > div {
     color: #000000;

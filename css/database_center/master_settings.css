@@ -1,0 +1,32 @@
+.mastersettingsmenu {
+    padding: 15px 0 0 15px;
+    width: 100%;
+}
+.mastersettingsmenu > .title {
+    width: 280px;
+    height: 53px;
+    line-height: 53px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.mastersettingsmenu_item {
+    margin-top: 8px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px #c7c7c7;
+    background-color: #3765ff;
+    color: #fff;
+    cursor: pointer;
+}
+.mastersettingsmenu_item.active {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
+.mastersettingscontent {
+    padding-left: 15px;
+    width: 100%;
+}

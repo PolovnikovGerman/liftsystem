@@ -1,5 +1,5 @@
-<div class="page_container">
-    <div class="right_maincontent">
+<!--<div class="page_container">-->
+<!--    <div class="right_maincontent">-->
         <input type="hidden" id="totalcalend" value="<?= $total ?>"/>
         <input type="hidden" id="perpagecalend" value="<?= $perpage ?>"/>
         <input type="hidden" id="ordercalend" value="<?= $orderby ?>"/>
@@ -7,17 +7,15 @@
         <div class="calendarscontent">
             <div class="calendartable-head">
                 <div class="calendar-actions">
-                    <div class="newcalend">
-                        <a href="javascript:void(0);" class="addcalend">add calendar</a>
-                    </div>
+                    <div class="newcalend">+ add</div>
                 </div>
                 <div class="calendar_name">Calendar:</div>
                 <div class="calendar_status">Status:</div>
             </div>
             <div id="calendinfo" class="calendartable-data"></div>
         </div>
-
-    </div>
-</div>
+<!---->
+<!--    </div>-->
+<!--</div>-->
 
 

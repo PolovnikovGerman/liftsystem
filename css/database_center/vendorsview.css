@@ -1,0 +1,292 @@
+.vendordataview {
+    clear: both;
+    width: calc(100% - 40px);
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.vendordataview div {
+}
+.vendordataview .pagetitle {
+    width: 410px;
+    height: 53px;
+    line-height: 53px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.vendordataview .pageheader {
+    /* width: 100%; */
+    width: 1380px;
+}
+.vendordataview .datasearch {
+    margin-top: 24px;
+    width: 545px;
+}
+.vendordataview .datatemplate {
+    margin-right: 3px;
+}
+.vendordataview input.searchinpt {
+    width: 219px;
+    padding-left: 5px;
+    height: 23px;
+    font-size: 14px;
+}
+.vendordataview .datasearchbtn {
+    background: url('/img/vendors/searchbtn.png') no-repeat;
+    cursor: pointer;
+    font-size: 14px;
+    width: 66px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    margin-right: 3px;
+}
+.vendordataview .datacleanbtn {
+    background: url('/img/vendors/cleanbtn.png') no-repeat;
+    cursor: pointer;
+    font-size: 14px;
+    width: 55px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+}
+.vendordataview .datafilternavig {
+    width: 420px;
+    float: right;
+}
+.vendordataview .filterdata, .vendordataview .datanavigation {
+    width: 100%;
+}
+.vendordataview .filterdata > label {
+    float: right!important;
+    margin-right: 6px;
+    height: 23px;
+    line-height: 23px;
+}
+.vendordataview select.filterdata {
+    float: right;
+    width: 137px;
+    height: 23px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    margin-right: 11px;
+}
+.vendordataview .totaldata {
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    float: right!important;
+    height: 23px;
+    line-height: 23px;
+    margin-right: 9px;
+}
+.vendordataview .paginator {
+    float: right!important;
+}
+.vendordataview .datatitle {
+    margin-top: 5px;
+    background: #545454;
+    color: #ffffff;
+}
+.vendordataview .datatitle div {
+    height: 29px;
+    line-height: 29px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+}
+.vendordataview .datatitle .sortable {
+    cursor: pointer;
+}
+.vendordataview .datatitle .sortable.active {
+    background: #ebffd3;
+    color: #000000;
+}
+.vendordataview .datatitle .ascsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #555;
+    float: right;
+    position: relative;
+    right: 3px;
+    top: 5px;
+}
+.vendordataview .datatitle .descsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #555;
+    float: right;
+    position: relative;
+    right: 3px;
+    top: 5px;
+}
+.vendordataview .datatitle .numpp {
+    width: 64px;
+}
+.vendordataview .datatitle .status {
+    width: 94px;
+}
+.vendordataview .datatitle .status .addnewvendor {
+    background: url(/img/vendors/addnewbtn.png) no-repeat;
+    width: 50px;
+    text-align: center;
+    height: 22px;
+    line-height: 19px;
+    color: #000000;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 6px;
+    margin-left: 6px;
+    cursor: pointer;
+}
+.vendordataview .datatitle .type {
+    width: 72px;
+}
+.vendordataview .datatitle .slug {
+    width: 60px;
+    margin: 5px;
+    height: 19px;
+    line-height: 19px;
+}
+.vendordataview .datatitle .name, .vendordataview .datatitle .altname {
+    width: 287px;
+    margin: 5px;
+    height: 19px;
+    line-height: 19px;
+}
+.vendordataview .datatitle .asinumber {
+    width: 53px;
+}
+.vendordataview .datatitle .country {
+    width: 82px;
+}
+.vendordataview .datatitle .website {
+    width: 238px;
+}
+.vendordataview .datatitle .ouraccount {
+    width: 91px;
+}
+.vendordataview .datatitle .contact {
+    width: 136px;
+}
+.vendordataview .datatitle .phone {
+    width: 160px;
+}
+.vendordataview .datatitle .email {
+    width: 199px;
+}
+.vendordataview .datatitle .itemqty {
+    width: 92px;
+}
+.vendordataview .dataarea {
+    width: 1373px;
+    /* width: 100%; */
+    max-height: 645px;
+    overflow-y: auto;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    margin-bottom: 10px;
+}
+.vendordataview .dataarea .datarow {
+
+}
+
+.vendordataview .dataarea .datarow div {
+    height: 25px;
+    line-height: 25px!important;
+    color: #252525;
+    border-right: 1px solid #000000;
+}
+.vendordataview .dataarea .datarow.nonactive div {
+    color: #bcbcbc!important;
+}
+.vendordataview .dataarea .datarow.activerow div {
+    color: #ffffff!important;
+    background: #0000ba;
+    font-weight: 600;
+    cursor: pointer;
+}
+.vendordataview .dataarea .datarow .editdata {
+    width: 28px;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+}
+.vendordataview .dataarea .datarow .status {
+    width: 51px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .numpp {
+    width: 42px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .type {
+    width: 72px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .slug {
+    width: 70px;
+    text-align: center;
+    font-weight: 600;
+}
+.vendordataview .dataarea .datarow .name, .vendordataview .dataarea .datarow .altname {
+    width: 296px;
+    padding-left: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .altname {
+    border-right: 3px solid #000000!important;
+}
+.vendordataview .dataarea .datarow .asinumber {
+    width: 54px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .country {
+    width: 82px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .website {
+    width: 240px;
+    color: #0000ff;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .ouraccount {
+    width: 91px;
+    text-align: center;
+}
+.vendordataview .dataarea .datarow .contact {
+    width: 137px;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .phone {
+    width: 160px;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .email {
+    width: 198px;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendordataview .dataarea .datarow .itemqty {
+    width: 75px;
+    border-right: none!important;
+    text-align: center;
+}

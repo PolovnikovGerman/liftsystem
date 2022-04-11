@@ -1,0 +1,135 @@
+.maincontentmenuarea {
+    padding: 10px!important;
+}
+.menupage_head {
+    background: #fff;
+    padding: 7px;
+    margin-bottom: 9px;
+    width: 100%;
+}
+.mastermenu_head {
+    width: 100%;
+}
+.mastermenu_head .menulabel {
+    text-align: center;
+    font-weight: bold;
+}
+.mastermenu_head .headmenuitem {
+    background-image: url('/img/database_center/headmenu_item.png');
+    background-repeat: no-repeat;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+.mastermenu_head .headmenuitem.active {
+    background-image: url('/img/database_center/headmenu_item_active.png');
+    color: #0000c4;
+}
+.mastermenu_head .returndbcenter {
+    float: right!important;
+    cursor: pointer;
+}
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.76625rem;
+        line-height: 2.5625rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        width: 8.6rem;
+        height: 2.5rem;
+        font-size: 1.2rem;
+        line-height: 2.25rem;
+    }
+    /*.bigdeviceview {
+        display: block;
+    }*/
+    .smallmobile {
+        display: none;
+    }
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.5rem;
+        line-height: 2.5rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 2.5rem;
+        line-height: 2.35rem;
+        width: 8.6rem;
+    }
+    /*.bigdeviceview {
+        display: block;
+    }*/
+    .smallmobile {
+        display: none;
+    }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        line-height: 2rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 2.5rem;
+        line-height: 2.35rem;
+        width: 8.6rem;
+    }
+    /*.bigdeviceview {
+        display: block;
+    }*/
+    .smallmobile {
+        display: none;
+    }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        line-height: 2rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 2.5rem;
+        line-height: 2.35rem;
+        width: 8.6rem;
+    }
+    /* .bigdeviceview {
+        display: none;
+    } */
+    .smallmobile {
+        display: none;
+    }
+}
+/* Landscape phones and smaller */
+@media (max-width: 540px) {
+    .mastermenu_head .menulabel {
+        font-size: 1.25rem;
+        line-height: 2rem!important;
+    }
+    .mastermenu_head .headmenuitem {
+        font-size: 1rem;
+        height: 2.5rem;
+        line-height: 2.35rem;
+        width: 8.4rem;
+    }
+    .bigdeviceview {
+        display: none;
+    }
+    .smallmobile {
+        display: block;
+    }
+    .mastermenu_head .returndbcenter {
+        margin-top: -2rem;
+    }
+}
+@media (max-width: 480px) {
+    .mastermenu_head .returndbcenter {
+        width: 5rem;
+    }
+}

@@ -41,77 +41,101 @@
     cursor: pointer;
 }
 .countries_data_title {
-    background: none repeat scroll 0 0 #EBEBEB;
+    /* background: none repeat scroll 0 0 #EBEBEB; */
+    background: #545454;
+    color: #ffffff;
     clear: both;
-    float: left;
-    font-size: 14px;
-    height: 27px;
-    margin-left: 22px;
+    /* float: left; */
+    /* font-size: 14px; */
+    /* height: 27px; */
+    /* margin-left: 22px;*/
     margin-top: 10px;
-    text-align: center;
     width: 719px;
 }
+.countries_data_title > div {
+    text-align: center;
+    height: 32px;
+    line-height: 32px!important;
+    font-size: 17px;
+    font-weight: bold;
+}
 .country_name {
+    /*
     float: left;
     margin-top: 4px;
+    */
     width: 328px;
 }
 .country_code2, .country_code3 {
+    /*
     float: left;
     margin-top: 4px;
+    */
     width: 82px;
 }
 .country_shzone {
+    /*
     float: left;
     margin-top: 4px;
+    */
     width: 120px;
 }
 .country_shipallow {
-    float: left;
-    margin-top: 4px;
+    /*float: left;*/
+    /*margin-top: 4px;*/
     width: 102px;
 }
 .countries_data {
     clear: both;
-    float: left;
-    margin-left: 22px;
-    max-height: 535px;
+    /* float: left; */
+    /* margin-left: 22px; */
+    max-height: 529px;
     overflow-y: auto;
     width: 718px;
     overflow-x: hidden;
     margin-bottom: 15px;
+    border: 1px solid #000000;
 }
 .countries_data_row {
     clear: both;
     color: #000000;
-    float: left;
-    font-size: 13px;
-    font-weight: normal;
-    height: 24px;
-    width: 704px;
+/*     float: left; */
+/*     width: 704px; */
+    width: 100%;
 }
 .countries_data_row.notallowed {
     color: #494948;
 }
+.countries_data_row > div {
+    font-size: 13px;
+    font-weight: normal;
+    height: 24px;
+    line-height: 24px!important;
+    border-right: 1px solid #000000;
+}
+.countries_data_row > div:last-child {
+    border-right: none;
+}
 .country_name_data {
-    float: left;
-    margin-top: 4px;
+    /*float: left;*/
+    /*margin-top: 4px;*/
     padding-left: 5px;
     width: 328px;
 }
 .country_code_dat {
-    float: left;
-    margin-top: 4px;
+    /*float: left;*/
+    /*margin-top: 4px;*/
     text-align: center;
     width: 82px;
 }
 .country_shzone_dat {
-    float: left;
+    /* float: left; */
+    text-align: center;
     width: 120px;
 }
 .country_shipallow_dat {
-    float: left;
-    margin-top: 3px;
+    /*float: left;*/
+    /*margin-top: 3px;*/
     text-align: center;
     width: 87px;
 }

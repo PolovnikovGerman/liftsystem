@@ -494,7 +494,7 @@ Class Orders_model extends MY_Model
     }
 
     public function get_order_detail($order_id) {
-        $this->db->select('o.*, br.brand_name, itm.item_name as item_name');
+        $this->db->select('o.*, br.brand_name, itm.item_name as item_name, itm.vendor_id as vendor_id');
         $this->db->from('ts_orders o');
         $this->db->join('brands br','br.brand_id=o.brand_id','left');
         $this->db->join('v_itemsearch itm','itm.item_id=o.item_id','left');
@@ -2135,6 +2135,7 @@ Class Orders_model extends MY_Model
         $this->db->select('m.method_id, m.method_name, cntord.cnt');
         $this->db->from('purchase_methods m');
         $this->db->join('(select method_id, count(order_id) as cnt from ts_orders group by method_id) cntord','cntord.method_id=m.method_id','left');
+        $this->db->where('m.active',1);
         $this->db->order_by('m.method_name');
         $res=$this->db->get()->result_array();
         return $res;
@@ -6939,6 +6940,7 @@ Class Orders_model extends MY_Model
         }
         $this->db->order_by($ownsort, $owndirec);
         $owndats = $this->db->get()->result_array();
+        // $owndats = [];
         $owns=[];
         foreach ($owndats as $owndat) {
             // $stype = 'Credit Card';
@@ -6979,26 +6981,6 @@ Class Orders_model extends MY_Model
         }
         $this->db->order_by($refundsort, $refunddir);
         $refunds = $this->db->get()->result_array();
-//        $refunds=[];
-//        foreach ($refunddats as $refunddat) {
-//            // $stype = 'Credit Card';
-//            $sclass = '';
-//            if ($refunddat['balance_manage']==3) {
-//                $stype = $this->accrec_terms;
-//            } elseif ($refunddat['balance_manage']==2) {
-//                $stype = $this->accrec_prepay;
-//            } elseif ($refunddat['balance_manage']==1) {
-//                $stype = $this->accrec_willupd;
-//                if (!empty($refunddat['cntcard'])) {
-//                    $stype = $this->accrec_credit;
-//                    $sclass='creditcard';
-//                }
-//            }
-//            $refunddat['type']=$stype;
-//            $refunddat['typeclass'] = $sclass;
-//            $refunds[]=$refunddat;
-//        }
-
         return array(
             'owns' => $owns,
             'refunds' => $refunds,
@@ -7009,4 +6991,118 @@ Class Orders_model extends MY_Model
             'refunddir' => $refunddirec,
         );
     }
+
+    public function purchaseorder_totals($inner, $brand) {
+        // Get Not placed
+        $this->db->select('a.order_proj_status as status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $this->db->group_by('a.order_proj_status');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        if ($inner==1) {
+            $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
+            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        }
+        $totals = $this->db->get()->result_array();
+        $totaltab = [];
+        $totaltab['toplace'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toapprove'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toproof'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        foreach ($totals as $total) {
+            if ($total['status']==$this->JUST_APPROVED) {
+                $totaltab['toplace']['qty'] += $total['totalqty'];
+                $totaltab['toplace']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->NEED_APPROVAL) {
+                $totaltab['toapprove']['qty'] += $total['totalqty'];
+                $totaltab['toapprove']['total'] += $total['totalsum'];
+            }
+            if ($total['status']==$this->TO_PROOF || $total['status']==$this->NO_ART) {
+                $totaltab['toproof']['qty'] += $total['totalqty'];
+                $totaltab['toproof']['total'] += $total['totalsum'];
+            }
+        }
+        return $totaltab;
+    }
+
+    public function purchase_fulltotals($brand) {
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand',$brand);
+        }
+        $resall = $this->db->get()->row_array();
+
+        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand',$brand);
+        }
+        $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
+        $this->db->where('a.order_approved_view',0);
+        $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        $this->db->where('o.profit_perc is null');
+        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
+        $rest = $this->db->get()->row_array();
+        return [
+            'total' => $resall['totalsum'],
+            'totalfree' => $rest['totalsum'],
+        ];
+    }
+
+    public function purchaseorder_details($stage, $inner, $brand) {
+        // Get Not placed
+        if ($stage=='unsign') {
+            $stagesrc = [$this->JUST_APPROVED];
+        } elseif ($stage == 'approved') {
+            $stagesrc = [$this->NEED_APPROVAL];
+        } else {
+            $stagesrc = [$this->NO_ART, $this->TO_PROOF];
+        }
+        $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
+        $this->db->select('o.customer_name as customer');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
+        $this->db->where_in('a.order_proj_status',$stagesrc);
+        $this->db->where('o.profit_perc is null');
+        $this->db->where('a.order_approved_view',0);
+        if ($brand!=='ALL') {
+            $this->db->where('o.brand', $brand);
+        }
+        if ($inner==1) {
+            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        }
+        $details = $this->db->get()->result_array();
+        $out = [];
+        $daytime = 24*60*60;
+        foreach ($details as $detail) {
+            $detail['item_name'] = str_replace(['Stress Balls','Stressballs'],'SB', $detail['order_items']);
+            $detail['customitem'] = ($detail['item_id'] > 0 ? '' : 'customitem');
+            $detail['vendorname'] = (empty($detail['vendor_name']) ? 'OTHER' : $detail['vendor_name']);
+            $detail['order_late'] = ($detail['specialdiff'] > $daytime ? 1 : 0);
+            $out[] = $detail;
+        }
+        return $out;
+    }
+
 }
