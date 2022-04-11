@@ -16,6 +16,7 @@
 .accreceiv-totals {
     /* width: 100%; */
     margin-bottom: 0.125rem;
+    margin-right: 0!important;
 }
 .accreceiv-totals:first-child {
     margin-bottom: -0.1875rem;
@@ -293,7 +294,7 @@
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .accreceivedataview {
-        max-width: 1080px;
+        /* max-width: 1080px; */
     }
     .accreceivedataview .pagetitle {
         height: 2.5rem;
@@ -470,7 +471,7 @@
     .accreceiv-owndetails-bodyrow > div {
         height: 1.725rem;
         line-height: 1.725rem;
-        font-size: 0.7rem;
+        font-size: 0.825rem;
     }
     .accreceiv-owndetails-bodynum {
         width: calc(7.3% - 1px);
@@ -530,7 +531,7 @@
     .accreceiv-refunddetails-bodyrow > div {
         height: 1.725rem;
         line-height: 1.725rem;
-        font-size: 0.75rem;
+        font-size: 0.825rem;
     }
     .accreceiv-refunddetails-bodyrow.empty {
         height: 1.5625rem;
