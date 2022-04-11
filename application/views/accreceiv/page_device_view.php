@@ -7,10 +7,10 @@
     <div class="accreceivedataview">
         <div class="pageheader">
             <div class="row pt-2">
-                <div class="col-12 col-sm-7 col-md-5 col-lg-4 col-xs-5">
+                <div class="col-12 col-sm-7 col-md-5 col-lg-9 col-xs-8">
                     <div class="pagetitle">Accounts Receivable</div>
                 </div>
-                <div class="col-12 col-sm-5 col-md-7 col-lg-8 col-xs-7">
+                <div class="col-12 col-sm-5 col-md-7 col-lg-3 col-xs-4">
                     <div class="row mb-3">
                         <div class="col-12 accreceiv-period">
                             <span>Display: </span>
