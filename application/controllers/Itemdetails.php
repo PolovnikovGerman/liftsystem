@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Itemdetails extends MY_Controller
 {
     private $session_error = 'Edit session lost. Please, reload page';
+    private $MAX_PROMOPRICES = 10;
 
      public function __construct()
     {
@@ -117,7 +118,17 @@ class Itemdetails extends MY_Controller
                      $mdata['profitview'] = $res['profitrecalc'];
                      if ($res['profitrecalc']==1) {
                          $profit = $res['profit'];
-                         $mdata['profitdat'] = $this->load->view('itemdetails/stressball_profit_view', array('prices' => $profit, 'price_types' => $this->config->item('price_types')), TRUE);
+                         if ($session_data['item']['item_template']=='Stressball') {
+                             $mdata['profitdat'] = $this->load->view('itemdetails/stressball_profit_view', array('prices' => $profit, 'price_types' => $this->config->item('price_types')), TRUE);
+                         } else {
+                             $session_data = usersession($session_id);
+                             $price_options=array(
+                                 'prices'=>$session_data['item_prices'],
+                                 'common_prices'=>$session_data['common_prices'],
+                                 'numprices'=> $this->MAX_PROMOPRICES-1,
+                             );
+                             $mdata['profitdat'] = $this->load->view('itemdetails/promo_profit_view', $price_options, TRUE);
+                         }
                      }
                      if (isset($res['research'])) {
                          $mdata['research']=$res['research'];
