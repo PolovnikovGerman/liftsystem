@@ -156,26 +156,36 @@
     font-weight: normal;
 }
 .accreceiv-owndetails-headnum {
+    width: 6.73%;
 }
 .accreceiv-owndetails-headdue {
+    width: 13.92%;
 }
 .accreceiv-owndetails-headbalance {
+    width: 17.63%;
 }
 .accreceiv-owndetails-headorder {
+    width: 13.46%;
 }
 .accreceiv-owndetails-headcustomer {
+    width: 28.07%;
 }
 .accreceiv-owndetails-headtype {
+    width: 20.19%;
 }
 /* OWN Body */
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
+    display: flex;
+    flex-direction: column;
+    width: auto;
 }
 .accreceiv-owndetails-bodyrow {
     /* width: 100%; */
     display: inline-flex;
+    flex-direction: row;
 }
 .accreceiv-owndetails-bodyrow.current_row > div {
     background: #0000ff;
@@ -190,10 +200,12 @@
     text-align: center;
     border-right: 1px solid #000000;
     font-weight: bold;
+    width: 6.73%;
 }
 .accreceiv-owndetails-bodydue {
     text-align: center;
     border-right: 1px solid #000000;
+    width: 13.92%;
 }
 .accreceiv-owndetails-bodydue.pastdue {
     color: #ff0000;
@@ -203,6 +215,7 @@
     text-align: right;
     font-weight: bold;
     border-right: 1px solid #000000;
+    width: 17.63%;
 }
 .accreceiv-owndetails-bodybalance span {
     position: relative;
@@ -213,15 +226,18 @@
     color: #0000ff;
     cursor: pointer;
     text-align: center;
+    width: 13.46%;
 }
 .accreceiv-owndetails-bodycustomer {
     border-right: 1px solid #000000;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 28.07%;
 }
 .accreceiv-owndetails-bodytype {
     text-align: center;
+    width: 20.19%;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
@@ -243,14 +259,32 @@
 .refundsort span {
     font-weight: normal;
 }
+.accreceiv-refunddetails-headnum {
+    width: 7.43%
+}
+.accreceiv-refunddetails-headorderdate {
+    width: 16.09%;
+}
+.accreceiv-refunddetails-headbalance {
+    width: 18.56%;
+}
+.accreceiv-refunddetails-headorder {
+    width: 15.84%;
+}
+.accreceiv-refunddetails-headcustomer {
+    width: 42.08%;
+}
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
+    display: flex;
+    flex-direction: column;
+    width: auto;
 }
 .accreceiv-refunddetails-bodyrow {
-    width: 100%;
     display: inline-flex;
+    flex-direction: row;
 }
 .accreceiv-refunddetails-bodyrow.current_row > div {
     background: #0000ff;
@@ -265,16 +299,19 @@
     text-align: center;
     border-right: 1px solid #000000;
     font-weight: bold;
+    width: 7.43%;
 }
 .accreceiv-refunddetails-bodyorderdate {
     text-align: center;
     border-right: 1px solid #000000;
+    width: 16.09%;
 }
 .accreceiv-refunddetails-bodybalance {
     text-align: right;
     font-weight: bold;
     color: #ff0000;
     border-right: 1px solid #000000;
+    width: 18.56%;
 }
 .accreceiv-refunddetails-bodybalance span {
     position: relative;
@@ -285,11 +322,13 @@
     color: #0000ff;
     cursor: pointer;
     text-align: center;
+    width: 18.54%;
 }
 .accreceiv-refunddetails-bodycustomer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 42.08%;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -443,61 +482,26 @@
     .ownsort span {
         font-size: 0.4rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 7.3%;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 13.97%;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 18.25%;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 14.85%;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 25.98%;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 19.65%;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
-    }
-    .accreceiv-owndetails-bodyrow {
-        width: 100%;
     }
     .accreceiv-owndetails-bodyrow > div {
         height: 1.725rem;
         line-height: 1.725rem;
         font-size: 0.825rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: calc(7.3% - 1px);
-    }
-    .accreceiv-owndetails-bodydue {
-        width: calc(13.97% - 1px);
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: calc(18.25% - 1px);
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.5rem;
         top: -0.3rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: calc(14.85% - 1px);
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.25rem;
         padding-right: 0.25rem;
-        width: calc(25.98% - 1px);
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 19.65%;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.75rem;
@@ -506,21 +510,6 @@
     }
     .refundsort span {
         font-size: 0.5rem;
-    }
-    .accreceiv-refunddetails-headnum {
-        width: 8.15%
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 19.31%;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 21.9%;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 14.59%;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 36.05%;
     }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
@@ -537,28 +526,17 @@
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: calc(8.15% - 1px);
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: calc(19.31% - 1px);
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: calc(21.9% - 1px);
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.5rem;
         top: -0.3rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: calc(14.59% - 1px);
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.25rem;
         padding-right: 0.25rem;
-        width: 36.05%
     }
 }
 /* Portrait tablets and medium desktops */
@@ -641,7 +619,7 @@
     }
     .accreceiv-totalown-cell {
         height: 1.75rem;
-        width: 7.21rem;
+        /* width: 7.21rem; */
     }
     .accreceiv-totalown-cell-year {
         font-size: 0.8rem;
@@ -683,7 +661,7 @@
     }
     .accreceiv-totalrefund-cell {
         height: 1.75rem;
-        width: 7.2rem;
+        /* width: 7.2rem; */
     }
     .accreceiv-totalrefund-cell-year {
         font-size: 0.8rem;
@@ -712,24 +690,6 @@
     .ownsort span {
         font-size: 0.4rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 1.67rem;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 3.2rem;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 4.18rem;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 3.4rem;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 5.95rem;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 4.5rem;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
@@ -739,31 +699,17 @@
         line-height: 1.725rem;
         font-size: 0.65rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: 1.45rem;
-    }
-    .accreceiv-owndetails-bodydue {
-        width: 3rem;
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: 3.8rem;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.5rem;
         top: -0.3rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: 2.9rem;
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 6.05rem;
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 4.35rem;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.75rem;
@@ -772,21 +718,6 @@
     }
     .refundsort span {
         font-size: 0.5rem;
-    }
-    .accreceiv-refunddetails-headnum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 3.85rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 5.1rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 3.4rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 8.4rem;
     }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
@@ -803,28 +734,17 @@
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 4.2rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: 5.2rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.5rem;
         top: -0.3rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 3.6rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.25rem;
         padding-right: 0.25rem;
-        width: 8.7rem;
     }
 }
 /* Portrait tablets and small desktops */
@@ -948,7 +868,7 @@
     }
     .accreceiv-totalrefund-cell {
         height: 1.75rem;
-        width: 13.44rem;
+        /*width: 13.44rem; */
     }
     .accreceiv-totalrefund-cell-year {
         font-size: 1rem;
@@ -977,59 +897,26 @@
     .ownsort span {
         font-size: 0.7rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 2.39rem;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 4.8rem;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 6rem;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 5.3rem;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 14.84rem;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 7rem;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
-        width: 40.42rem;
     }
     .accreceiv-owndetails-bodyrow > div {
         height: 1.725rem;
         line-height: 1.725rem;
         font-size: 0.9rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: 2.39rem;
-    }
-    .accreceiv-owndetails-bodydue {
-        width: 4.8rem;
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: 6rem;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: 5.3rem;
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 14.84rem;
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 7rem;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.95rem;
@@ -1039,24 +926,9 @@
     .refundsort span {
         font-size: 0.5rem;
     }
-    .accreceiv-refunddetails-headnum {
-        width: 2.4rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 6.6rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 7.5rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 7rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 16.7rem;
-    }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
-        width: 40.32rem;
+        /* width: 40.32rem; */
     }
     .accreceiv-refunddetails-bodyrow {
         width: 100%;
@@ -1070,28 +942,17 @@
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 2.4rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 6.6rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: 7rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 6.6rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.25rem;
         padding-right: 0.25rem;
-        width: 15.84rem;
     }
 }
 /* Surface Duo */
@@ -1239,24 +1100,6 @@
     .ownsort span {
         font-size: 0.5rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 1.9rem;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 3.8rem;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 4.8rem;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 4.2rem;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 10.98rem;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 4.82rem;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
@@ -1266,31 +1109,17 @@
         line-height: 1.625rem;
         font-size: 0.7rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: 1.9rem;
-    }
-    .accreceiv-owndetails-bodydue {
-        width: 3.8rem;
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: 4.8rem;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: 4.2rem;
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 10.98rem;
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 4.8rem;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.75rem;
@@ -1299,21 +1128,6 @@
     }
     .refundsort span {
         font-size: 0.5rem;
-    }
-    .accreceiv-refunddetails-headnum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 5.2rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 5.6rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 5.2rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 12.6rem;
     }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
@@ -1330,28 +1144,17 @@
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 5.2rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: 5.6rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 5.2rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 12.6rem;
     }
 }
 /* Landscape phones and portrait tablets */
@@ -1505,24 +1308,6 @@
     .ownsort span {
         font-size: 0.5rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 2.39rem;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 4.8rem;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 6rem;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 5.3rem;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 13.84rem;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 6.08rem;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
@@ -1532,31 +1317,17 @@
         line-height: 1.625rem;
         font-size: 0.8rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: 2.39rem;
-    }
-    .accreceiv-owndetails-bodydue {
-        width: 4.8rem;
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: 6rem;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: 5.3rem;
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 13.84rem;
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 6.08rem;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.85rem;
@@ -1565,21 +1336,6 @@
     }
     .refundsort span {
         font-size: 0.5rem;
-    }
-    .accreceiv-refunddetails-headnum {
-        width: 2.4rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 6.6rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 7rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 6.6rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 15.84rem;
     }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
@@ -1596,28 +1352,17 @@
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 2.4rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 6.6rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: 7rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 6.6rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 15.84rem;
     }
 }
 /* Surface Duo */
@@ -1765,24 +1510,6 @@
     .ownsort span {
         font-size: 0.5rem;
     }
-    .accreceiv-owndetails-headnum {
-        width: 1.9rem;
-    }
-    .accreceiv-owndetails-headdue {
-        width: 3.8rem;
-    }
-    .accreceiv-owndetails-headbalance {
-        width: 4.8rem;
-    }
-    .accreceiv-owndetails-headorder {
-        width: 4.2rem;
-    }
-    .accreceiv-owndetails-headcustomer {
-        width: 10.98rem;
-    }
-    .accreceiv-owndetails-headtype {
-        width: 4.82rem;
-    }
     /* OWN BODY */
     .accreceiv-owndetails-body {
         margin-bottom: 1.25rem;
@@ -1792,31 +1519,17 @@
         line-height: 1.625rem;
         font-size: 0.7rem;
     }
-    .accreceiv-owndetails-bodynum {
-        width: 1.9rem;
-    }
-    .accreceiv-owndetails-bodydue {
-        width: 3.8rem;
-    }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.25rem;
-        width: 4.8rem;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-owndetails-bodyorder {
-        width: 4.2rem;
-    }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 10.98rem;
-    }
-    .accreceiv-owndetails-bodytype {
-        width: 4.8rem;
     }
     .accreceiv-refunddetails-head > div {
         font-size: 0.75rem;
@@ -1825,21 +1538,6 @@
     }
     .refundsort span {
         font-size: 0.5rem;
-    }
-    .accreceiv-refunddetails-headnum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 5.2rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 5.6rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 5.2rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 12.6rem;
     }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
@@ -1850,34 +1548,23 @@
     .accreceiv-refunddetails-bodyrow > div {
         height: 1.5625rem;
         line-height: 1.625rem;
-        font-size: 0.7rem
+        font-size: 0.8rem;
     }
     .accreceiv-refunddetails-bodyrow.empty {
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 1.9rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 5.2rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.25rem;
-        width: 5.6rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 5.2rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 12.6rem;
     }
 }
 /* Landscape phones and smaller */
@@ -2026,19 +1713,19 @@
         font-size: 0.5rem;
     }
     .accreceiv-owndetails-headnum {
-        width: 1.5rem;
+        width: 8.43%;
     }
     .accreceiv-owndetails-headdue {
-        width: 3.25rem;
+        width: 17.44%;
     }
     .accreceiv-owndetails-headbalance {
-        width: 3.75rem;
+        width: 22.09%;
     }
     .accreceiv-owndetails-headorder {
-        width: 3.2rem;
+        width: 16.86%;
     }
     .accreceiv-owndetails-headcustomer {
-        width: 8.5rem;
+        width: 35.17%;
     }
     .accreceiv-owndetails-headtype {
         display: none!important;
@@ -2050,17 +1737,17 @@
     .accreceiv-owndetails-bodyrow > div {
         height: 1.5625rem;
         line-height: 1.625rem;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
     .accreceiv-owndetails-bodynum {
-        width: 1.5rem;
+        width: 8.43%;
     }
     .accreceiv-owndetails-bodydue {
-        width: 3.25rem;
+        width: 17.44%;
     }
     .accreceiv-owndetails-bodybalance {
         padding-right: 0.125rem;
-        width: 3.75rem;
+        width: 22.09%;
     }
     .accreceiv-owndetails-bodybalance span {
         font-size: 0.6rem;
@@ -2068,12 +1755,12 @@
         margin-left: 0.125rem;
     }
     .accreceiv-owndetails-bodyorder {
-        width: 3.2rem;
+        width: 16.86%;
     }
     .accreceiv-owndetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 8.5rem;
+        width: 35.17%;
         border-right: none!important;
     }
     .accreceiv-owndetails-bodytype {
@@ -2087,21 +1774,6 @@
     .refundsort span {
         font-size: 0.5rem;
     }
-    .accreceiv-refunddetails-headnum {
-        width: 1.5rem;
-    }
-    .accreceiv-refunddetails-headorderdate {
-        width: 3.25rem;
-    }
-    .accreceiv-refunddetails-headbalance {
-        width: 3.75rem;
-    }
-    .accreceiv-refunddetails-headorder {
-        width: 3.2rem;
-    }
-    .accreceiv-refunddetails-headcustomer {
-        width: 8.5rem;
-    }
     .accreceiv-refunddetails-body {
         margin-bottom: 1.25rem;
     }
@@ -2111,33 +1783,22 @@
     .accreceiv-refunddetails-bodyrow > div {
         height: 1.5625rem;
         line-height: 1.625rem;
-        font-size: 0.7rem
+        font-size: 0.8rem
     }
     .accreceiv-refunddetails-bodyrow.empty {
         height: 1.5625rem;
         line-height: 1.625rem;
     }
-    .accreceiv-refunddetails-bodynum {
-        width: 1.5rem;
-    }
-    .accreceiv-refunddetails-bodyorderdate {
-        width: 3.25rem;
-    }
     .accreceiv-refunddetails-bodybalance {
         padding-right: 0.125rem;
-        width: 3.75rem;
     }
     .accreceiv-refunddetails-bodybalance span {
         font-size: 0.6rem;
         top: -0.18rem;
         margin-left: 0.125rem;
     }
-    .accreceiv-refunddetails-bodyorder {
-        width: 3.2rem;
-    }
     .accreceiv-refunddetails-bodycustomer {
         padding-left: 0.15rem;
         padding-right: 0.15rem;
-        width: 8.5rem;
     }
 }

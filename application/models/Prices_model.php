@@ -377,8 +377,8 @@ Class Prices_model extends My_Model
             $base_cost = 0;
             if (floatval($row['sale_price']) != 0) {
                 $base_cost = floatval($row['sale_price']);
-            } elseif (floatval($prices['price']) != 0) {
-                $base_cost = floatval($prices['price']);
+            } elseif (floatval($row['price']) != 0) {
+                $base_cost = floatval($row['price']);
             }
             $profits[] = array(
                 'price_id' => $row['promo_price_id'],
