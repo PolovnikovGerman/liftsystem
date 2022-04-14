@@ -197,6 +197,9 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        // Balloons
+        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
+        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
 
         $options = [
             'title' => $head['title'],
@@ -3005,6 +3008,41 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function accountreceiv_totals() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $res = $this->orders_model->accountreceiv_totals($period, $brand);
+            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
+//            $mdata['totalown'] = $this->load->view('accreceiv/totalsown_view', $res, TRUE);
+//            $mdata['totalrefund'] = $this->load->view('accreceiv/totalsrefund_view', $res, TRUE);
+//            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function accountreceiv_details() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $ownsort = ifset($postdata,'ownsort', 'batch_due');
+            $owndirec = ifset($postdata,'owndirec', 'desc');
+            $refundsort = ifset($postdata,'refundsort','order_date');
+            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
+            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';

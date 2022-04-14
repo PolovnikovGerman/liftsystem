@@ -2,8 +2,8 @@ function init_accounts_receivable() {
     init_accreceive_totals();
     init_accreceive_details();
     $(".accreceiv-period-select").unbind('change').change(function(){
-         init_accreceive_totals();
-         init_accreceive_details();
+        init_accreceive_totals();
+        init_accreceive_details();
     });
     // Change Brand
     $("#accreceivebrandmenu").find("div.brandchoseval").unbind('click').click(function(){
@@ -28,10 +28,12 @@ function init_accreceive_totals() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    var url = '/finances/accountreceiv_totals';
+    var url = '/accounting/accountreceiv_totals';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-totals").empty().html(response.data.content);
+            $(".accreceiv-content-left").find(".accreceiv-details-totals").empty().html(response.data.totalown);
+            $(".accreceiv-content-center").find(".accreceiv-details-totals").empty().html(response.data.totalrefund);
+            $(".accrecive-totalsarea").empty().html(response.data.totals);
             $(".accreceiv-content-right").empty().html(response.data.totals);
         } else {
             show_error(response);
@@ -49,12 +51,11 @@ function init_accreceive_details() {
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     params.push({name: 'maxwidth', value: maxwidth});
-    var url = '/finances/accountreceiv_details';
+    var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
-            // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
-            $(".accreceiv-details").empty().html(response.data.content);
+            $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
+            $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
             init_accreceive_content();
         } else {
             show_error(response);
@@ -165,5 +166,5 @@ function init_accreceive_content() {
         $("#accreceiverefunddir").val(newdir);
         init_accreceive_details();
     })
-    
+
 }

@@ -57,7 +57,7 @@ class Finances extends MY_Controller
                 $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
             } elseif ($row['item_link']=='#accreceiv') {
                 $head['styles'][]=array('style'=>'/css/accounting/accreceiv_adapt.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
+                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv_adapt.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -156,6 +156,7 @@ class Finances extends MY_Controller
         }
         show_404();
     }
+
 
     private function _prepare_purchaseorders_view($brand, $top_menu) {
         $inner = 0;

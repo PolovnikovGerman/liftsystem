@@ -1,8 +1,10 @@
 /* CSS for page Accounts Receivable */
 .accreceiv-content {
-    width: 1292px;
+    /* width: 1292px; */
+    /* max-width: 1080px; */
     margin-left: 20px;
     margin-top: 20px;
+    margin-right: 20px;
 }
 .accreceive-title {
     /* width: 770px; */
@@ -35,7 +37,6 @@
     margin-top: -3px;
 }
 .accreceiv-content-data {
-    /* width: 1054px; */
     width: 1067px;
 }
 .accreceiv-totals, .accreceiv-details {
@@ -51,6 +52,7 @@
 }
 .accreceiv-content-right {
     width: 225px;
+    float: right!important;
 }
 .accreceiv-totalown {
     width: 230px;
