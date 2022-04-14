@@ -45,19 +45,25 @@
 /* Total OWN */
 .accreceiv-totalown {
     width: 70%;
+    display: flex;
+    flex-direction: row;
 }
 .accreceiv-totalown-title {
     font-weight: bold;
     color: #0000ff;
+    display: inline-flex;
 }
 .accreceiv-totalown-value {
     border: 2px solid #000000;
     font-weight: bold;
-    padding-right: 0.2rem;
+    /* padding-right: 0.2rem;
     text-align: right;
+     */
+    flex-direction: row-reverse;
 }
 .accreceiv-totalpast {
-    margin-top: -0.5rem;
+    /* margin-top: -0.5rem; */
+    text-align: right;
 }
 .accreceiv-totalpast-title {
     font-weight: bold;
@@ -335,8 +341,10 @@
         /* max-width: 1080px; */
     }
     .accreceivedataview .pagetitle {
-        height: 2.5rem;
-        font-size: 1.7rem;
+        font-size: 1.5rem;
+        line-height: 1.7rem;
+        margin-bottom: 1.25rem;
+        margin-top: 0.5rem;
     }
     .accreceiv-period span {
         font-size: 1.1rem;
@@ -383,9 +391,11 @@
         line-height: 1.7rem!important;
     }
     .accreceiv-totalown-value {
-        font-size: 1.1rem;
-        height: 1.7rem;
-        line-height: 1.4rem!important;
+        font-size: 1.188rem;
+        height: 1.8rem;
+        line-height: 1.6rem;
+        display: inline-flex;
+        min-width: 8.5rem;
     }
     .accreceiv-totalown-value span {
         font-size: 0.6rem;
@@ -394,13 +404,17 @@
         margin-left: 0.125rem;
     }
     .accreceiv-totalpast {
-        margin-top: -0.8rem;
+        margin-top: -0.4rem;
     }
     .accreceiv-totalpast-title {
-        font-size: 1rem;
+        font-size: .875rem;
+        line-height: 1rem;
+        padding-right: 0.7rem;
     }
     .accreceiv-totalpast-value {
-        font-size: 0.95rem;
+        font-size: 1.063rem;
+        line-height: 1rem;
+        margin-top: 0.2rem;
     }
     .accreceiv-totalpast-value span {
         font-size: 0.6rem;
