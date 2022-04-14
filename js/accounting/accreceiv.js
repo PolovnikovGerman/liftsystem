@@ -29,6 +29,7 @@ function init_accreceive_totals() {
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
     var url = '/accounting/accountreceiv_totals';
+
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".accreceiv-totals").empty().html(response.data.content);
