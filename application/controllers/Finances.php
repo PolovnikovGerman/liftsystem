@@ -57,7 +57,7 @@ class Finances extends MY_Controller
                 $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
             } elseif ($row['item_link']=='#accreceiv') {
                 $head['styles'][]=array('style'=>'/css/accounting/accreceiv_adapt.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
+                $head['scripts'][]=array('src'=>'/js/accounting/accreceiv_adapt.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -115,6 +115,48 @@ class Finances extends MY_Controller
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
+
+    public function accountreceiv_totals() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $res = $this->orders_model->accountreceiv_totals($period, $brand);
+            $mdata['totalown'] = $this->load->view('accreceiv/totalsown_device_view', $res, TRUE);
+            $mdata['totalrefund'] = $this->load->view('accreceiv/totalsrefund_device_view', $res, TRUE);
+            $mdata['totals'] = $this->load->view('accreceiv/balances_device_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function accountreceiv_details() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            $ownsort = ifset($postdata,'ownsort', 'batch_due');
+            $owndirec = ifset($postdata,'owndirec', 'desc');
+            $refundsort = ifset($postdata,'refundsort','order_date');
+            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
+            $maxwidth = ifset($postdata,'maxwidth',0);
+            // $res['datelabel']='Order Date';
+            $res['datelabel']='Date';
+            if ($maxwidth < 540) {
+                $res['datelabel']='Date';
+            }
+            $mdata['owndetails'] = $this->load->view('accreceiv/owndetails_device_view', $res, TRUE);
+            $mdata['refunddetails'] = $this->load->view('accreceiv/refunddetails_device_view', $res, TRUE);
+            $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_purchaseorders_view($brand, $top_menu) {
         $inner = 0;

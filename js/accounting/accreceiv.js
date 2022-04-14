@@ -31,9 +31,7 @@ function init_accreceive_totals() {
     var url = '/accounting/accountreceiv_totals';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-content-left").find(".accreceiv-details-totals").empty().html(response.data.totalown);
-            $(".accreceiv-content-center").find(".accreceiv-details-totals").empty().html(response.data.totalrefund);
-            $(".accrecive-totalsarea").empty().html(response.data.totals);
+            $(".accreceiv-totals").empty().html(response.data.content);
             $(".accreceiv-content-right").empty().html(response.data.totals);
         } else {
             show_error(response);
@@ -54,8 +52,9 @@ function init_accreceive_details() {
     var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
-            $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
+            // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
+            // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
+            $(".accreceiv-details").empty().html(response.data.content);
             init_accreceive_content();
         } else {
             show_error(response);
