@@ -28,7 +28,8 @@ function init_accreceive_totals() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    var url = '/finances/accountreceiv_totals';
+    var url = '/accounting/accountreceiv_totals';
+
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".accreceiv-totals").empty().html(response.data.content);
@@ -49,7 +50,7 @@ function init_accreceive_details() {
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     params.push({name: 'maxwidth', value: maxwidth});
-    var url = '/finances/accountreceiv_details';
+    var url = '/accounting/accountreceiv_details';
     $.post(url, params, function (response) {
         if (response.errors=='') {
             // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
