@@ -3017,9 +3017,6 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
             $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
-//            $mdata['totalown'] = $this->load->view('accreceiv/totalsown_view', $res, TRUE);
-//            $mdata['totalrefund'] = $this->load->view('accreceiv/totalsrefund_view', $res, TRUE);
-//            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
