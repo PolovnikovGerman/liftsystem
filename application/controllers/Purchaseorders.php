@@ -459,13 +459,16 @@ class Purchaseorders extends MY_Controller
             $options = [];
             $options['active']='';
             if (count($active)>0) {
+                // $options['active']=$this->load->view('pototals/purchase_methods_adapt_view',['methods' => $active,'active' => 1],TRUE);
                 $options['active']=$this->load->view('pototals/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
             }
             $inactive = $this->payments_model->get_purchase_methods(0);
             $options['inactive']='';
             if (count($inactive)>0) {
+                // $options['inactive']=$this->load->view('pototals/purchase_methods_adapt_view',['methods' => $inactive, 'active' => 0],TRUE);
                 $options['inactive']=$this->load->view('pototals/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
             }
+            // $mdata['content'] = $this->load->view('pototals/manage_purchase_adapt_view', $options, true);
             $mdata['content'] = $this->load->view('pototals/manage_purchase_view', $options, true);
             $this->ajaxResponse($mdata, $error);
         }
