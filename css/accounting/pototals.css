@@ -1,0 +1,324 @@
+.pototalsdataview {
+    clear: both;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.pototalsdataview .pageheader {
+    width: 100%;
+    margin-bottom: 16px;
+}
+.pototalsdataview .pagetitle {
+    font-size: 24px;
+    font-weight: 600;
+}
+.pototalsdataview .manage-purchase-methods {
+    float: right!important;
+    width: 66px;
+    height: 37px;
+    cursor: pointer;
+    background: url('/img/fulfillment/manage_purchase_methods.png') no-repeat;
+    color: #fff;
+    text-align: center;
+    padding-top: 2px;
+    font-size: 12px;
+    line-height: 17px!important;
+}
+.pototals-toplacehead {
+    margin-right: 20px;
+    width: 500px;
+}
+.pototals-placetitle {
+    font-size: 16px;
+    font-weight: 600;
+    height: 22px;
+    line-height: 22px!important;
+    margin-bottom: 10px;
+}
+.pototals-placefiltr {
+    margin-left: 14px;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #010101;
+    padding-top: 6px;
+}
+.pototals-placefiltr i {
+    font-size: 14px;
+}
+.pototals-placeresult {
+    float: right!important;
+    margin-top: -8px;
+}
+.pototals-placeresult-data {
+    width: 100%;
+    text-align: right;
+    font-size: 13px;
+    height: 18px;
+    line-height: 18px;
+}
+.pototals-placeresult-data span {
+    font-weight: 600;
+}
+.poplace-tablehead {
+    border: 1px solid #000000;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.poplace-tablehead > div {
+    background: #545454;
+    color: #ffffff;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 28px;
+    height: 28px;
+}
+.poplace-tablehead .poplace-timehead {
+    width: 13.5%;
+    text-align: right;
+    padding-right: 0.3rem;
+}
+.poplace-tablehead .poplace-orderhead {
+    width: 11.7%;
+}
+.poplace-tablehead .poplace-itemhead {
+    width: 30.7%;
+}
+.poplace-tablehead .poplace-vendorhead {
+    width: 20.9%;
+}
+.poplace-tablehead .poplace-esttotalhead {
+    width: 13%;
+}
+.poplace-tablehead .poplace-actionhead {
+    width: 10.2%;
+}
+.addnonlistedpo {
+    background: #5e5eff;
+    color: #ffffff;
+    padding: 0 8px;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    height: 21px;
+    line-height: 21px!important;
+    width: 102px;
+    float: unset!important;
+}
+.addnonlistedpo:hover {
+    opacity: 0.8;
+}
+.pototalsrow {
+    margin-bottom: 8px;
+}
+.pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    color: #078f00;
+    width: 75.9%;
+}
+.pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+    font-size: 13px;
+    font-weight: bold;
+    padding-top: 2px;
+    text-align: center;
+    width: 13.2%;
+}
+.poplace-approvtablebody, .poplace-unsigntablebody, .poplace-prooftablebody {
+    border: 1px solid #000000;
+    margin-bottom: 8px;
+}
+.poplace-tablerow {
+    width: 100%;
+}
+.poplace-tablerow.current_row {
+    background: #0000FF;
+    color: #ffffff!important;
+}
+.poplace-tablerow > div {
+    font-size: 12px;
+    height: 25px;
+    line-height: 25px;
+}
+.poplace-rush {
+    color: #FF0000;
+    padding-left: 4px;
+    font-size: 14px;
+    width: 18px;
+}
+.poplace-late {
+    border-right: 1px solid #000000;
+    padding-right: 6px;
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+    width: 40px;
+}
+.poplace-order {
+    border-right: 1px #000000 solid;
+    text-align: center;
+    color: #0000ff;
+    font-weight: 600;
+    width: 11.7%;
+    cursor: pointer;
+}
+.current_row .poplace-order {
+    color: #ffffff;
+}
+.poplace-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    border-right: 1px #000000 solid;
+    width: 30.7%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.poplace-vendor {
+    border-right: 1px #000000 solid;
+    width: 20.9%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.poplace-esttotal {
+    border-right: 1px #000000 solid;
+    width: 14%;
+    text-align: center;
+}
+.poplace-poaction {
+    width: 10.2%;
+}
+.poplace-poactionbtn {
+    color: #ffffff;
+    background: #5757ff;
+    margin: 0 auto;
+    text-align: center;
+    height: 17px;
+    line-height: 17px!important;
+    margin-top: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    float: unset!important;
+    width: 30px;
+}
+.poplace-poactionbtn:hover {
+    opacity: 0.8;
+}
+.poplace-tablerow .poplace-item.customitem, .poplace-tablerow .poplace-vendor.customitem {
+    font-weight: 600;
+}
+.poreport_detailmessage {
+    background-color: #ffffff!important;
+    float: left;
+    padding: 0;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+    font-size: 13px;
+}
+/* Edit Purchase Methods */
+#modalManage .modal-dialog {
+}
+#modalManage .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#modalManage .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#modalManage .modal-title {
+    font-weight: 600;
+}
+input.addnewpurchase {
+    width: 98%;
+}
+.addmethodbtn {
+    background: #5151ff;
+    cursor: pointer;
+    color: #ffffff;
+    font-style: italic;
+    text-align: center;
+}
+.methodslabel {
+    width: 100%;
+    font-weight: bold;
+}
+.purchmethodname {
+}
+.purchmethodaction {
+    color: #ffffff;
+    text-align: center;
+    font-style: italic;
+}
+.purchmethodaction.deactivate {
+    background: #ff2b2b;
+    cursor: pointer;
+}
+.purchmethodaction.activate {
+    background: #178900;
+    cursor: pointer;
+}
+/* Edit Purchase Popup */
+#modalEditpurchase .modal-dialog {
+}
+#modalEditpurchase .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#modalEditpurchase .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#modalEditpurchase .modal-title {
+    font-weight: 600;
+}
+.purchaseorder_popuparea {
+}
+.ordercustomerplace {
+    color: #0000ff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.orderitemnameplace {
+    color: #0000ff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.poeditlabel {
+    text-align: right;
+    font-weight: 600;
+}
+.amountprofitval {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    display: inline-flex;
+    font-weight: 600;
+}
+.amountprofitprc {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    display: inline-flex;
+    font-weight: 600;
+}
+.poreasondata {
+    width: 100%;
+    resize: none;
+}
+.poamount-save {
+    display: none;
+}
+.poamount-save .btn {
+    float: right;
+}

@@ -542,12 +542,15 @@ class Purchaseorders extends MY_Controller
             }
             $unsignview = $approvview = $needproofview = '';
             if (count($unsign) > 0) {
+                // $unsignview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $unsign,'event' => $event], TRUE);
                 $unsignview = $this->load->view('pototals/pototals_details_view',['datas' => $unsign,'event' => $event], TRUE);
             }
             if (count($approv) > 0) {
+                // $approvview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $approv,'event' => $event], TRUE);
                 $approvview = $this->load->view('pototals/pototals_details_view',['datas' => $approv,'event' => $event], TRUE);
             }
             if (count($proof) > 0) {
+                // $needproofview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $proof,'event' => $event], TRUE);
                 $needproofview = $this->load->view('pototals/pototals_details_view',['datas' => $proof,'event' => $event], TRUE);
             }
             $mdata['unsignview'] = $unsignview;
