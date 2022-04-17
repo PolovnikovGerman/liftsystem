@@ -184,6 +184,7 @@ class Purchaseorders extends MY_Controller
                     'order_qty' => '',
                     'order_items' => '',
                 );
+                // $order_view=$this->load->view('pototals/purchase_orderinput_adapt_view', array(), TRUE);
                 $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {
                 $res=$this->payments_model->get_purchase_order($amount_id);

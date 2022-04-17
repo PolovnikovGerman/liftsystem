@@ -292,6 +292,7 @@ input.addnewpurchase {
 }
 /* Edit Purchase Popup */
 #modalEditpurchase .modal-dialog {
+    width: 500px;
 }
 #modalEditpurchase .modal-header {
     background: #000066;
@@ -303,46 +304,77 @@ input.addnewpurchase {
 }
 #modalEditpurchase .modal-title {
     font-weight: 600;
+    width: 90%;
+    float: left;
 }
 .purchaseorder_popuparea {
 }
-.ordercustomerplace {
-    color: #0000ff;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.purchaseorder_popuparea div {
+    float: left;
 }
-.orderitemnameplace {
-    color: #0000ff;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.purchaseorder_popuparea input, .purchaseorder_popuparea select {
+    height: 23px;
+}
+.purchaseorder_popuparea .datarow {
+    margin-top: 8px;
 }
 .poeditlabel {
     text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    width: 65px;
+    padding-right: 4px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput {
+    width: 173px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput span {
+    float: left;
+    margin-right: 6px;
+}
+.poamntdateinpt, .amountvalueinpt, .ordernuminpt {
+    width: 78px;
+}
+.amountvendorselect, .amountmethodselect {
+    width: 195.2px;
+}
+.orderitemnameplace, .ordercustomerplace {
+    width: 218px;
+    line-height: 28.8px;
+    height: 28.8px;
+    color: #0000ff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.amountprofitval, .amountprofitprc {
+    height: 24px;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    /* width: 46px; */
+    text-align: center;
     font-weight: 600;
 }
-.amountprofitval {
-    padding-left: 0.2rem;
-    padding-right: 0.2rem;
-    display: inline-flex;
+.pocommentlabel {
+    width: 320px;
     font-weight: 600;
-}
-.amountprofitprc {
-    padding-left: 0.2rem;
-    padding-right: 0.2rem;
-    display: inline-flex;
-    font-weight: 600;
+    padding-left: 11px;
+    margin-bottom: -5px;
 }
 .poreasondata {
     width: 100%;
     resize: none;
+    overflow-y: auto;
 }
 .poamount-save {
+    float: right!important;
     display: none;
 }
-.poamount-save .btn {
-    float: right;
+.poamount-save img {
+    cursor: pointer;
 }
