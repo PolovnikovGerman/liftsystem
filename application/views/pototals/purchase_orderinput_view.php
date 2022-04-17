@@ -1,13 +1,9 @@
-<div class="row">
-    <div class="col-6">
-        <div class="row">
-            <div class="col-5 poeditlabel pl-0 pr-0">Order #</div>
-            <div class="col-7">
-                <input type="text" class="ordernuminpt" id="newpoorder" placeholder="Order #">
-            </div>
-        </div>
+<div class="datarow">
+   <div class="poeditlabel">Order #</div>
+    <div class="poeditinput">
+        <input type="text" class="ordernuminpt" id="newpoorder" placeholder="Order #">
     </div>
-    <div class="col-6 leftpart">
+    <div class="poeditleftpart">
         <div class="ordercustomerplace">&nbsp;</div>
     </div>
 </div>

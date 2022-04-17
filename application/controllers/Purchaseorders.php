@@ -184,6 +184,7 @@ class Purchaseorders extends MY_Controller
                     'order_qty' => '',
                     'order_items' => '',
                 );
+                // $order_view=$this->load->view('pototals/purchase_orderinput_adapt_view', array(), TRUE);
                 $order_view=$this->load->view('pototals/purchase_orderinput_view', array(), TRUE);
             } else {
                 $res=$this->payments_model->get_purchase_order($amount_id);
@@ -459,13 +460,16 @@ class Purchaseorders extends MY_Controller
             $options = [];
             $options['active']='';
             if (count($active)>0) {
+                // $options['active']=$this->load->view('pototals/purchase_methods_adapt_view',['methods' => $active,'active' => 1],TRUE);
                 $options['active']=$this->load->view('pototals/purchase_methods_view',['methods' => $active,'active' => 1],TRUE);
             }
             $inactive = $this->payments_model->get_purchase_methods(0);
             $options['inactive']='';
             if (count($inactive)>0) {
+                // $options['inactive']=$this->load->view('pototals/purchase_methods_adapt_view',['methods' => $inactive, 'active' => 0],TRUE);
                 $options['inactive']=$this->load->view('pototals/purchase_methods_view',['methods' => $inactive, 'active' => 0],TRUE);
             }
+            // $mdata['content'] = $this->load->view('pototals/manage_purchase_adapt_view', $options, true);
             $mdata['content'] = $this->load->view('pototals/manage_purchase_view', $options, true);
             $this->ajaxResponse($mdata, $error);
         }
@@ -542,12 +546,15 @@ class Purchaseorders extends MY_Controller
             }
             $unsignview = $approvview = $needproofview = '';
             if (count($unsign) > 0) {
+                // $unsignview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $unsign,'event' => $event], TRUE);
                 $unsignview = $this->load->view('pototals/pototals_details_view',['datas' => $unsign,'event' => $event], TRUE);
             }
             if (count($approv) > 0) {
+                // $approvview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $approv,'event' => $event], TRUE);
                 $approvview = $this->load->view('pototals/pototals_details_view',['datas' => $approv,'event' => $event], TRUE);
             }
             if (count($proof) > 0) {
+                // $needproofview = $this->load->view('pototals/pototals_details_adaptive_view',['datas' => $proof,'event' => $event], TRUE);
                 $needproofview = $this->load->view('pototals/pototals_details_view',['datas' => $proof,'event' => $event], TRUE);
             }
             $mdata['unsignview'] = $unsignview;
@@ -610,6 +617,7 @@ class Purchaseorders extends MY_Controller
                     $event = 'click';
                 }
             }
+            // $mdata['content'] = $this->load->view('pototals/poreport_details_adapt_view',['datas' => $data, 'event' => $event, 'brand' => $brand], TRUE);
             $mdata['content'] = $this->load->view('pototals/poreport_details_view',['datas' => $data, 'event' => $event, 'brand' => $brand], TRUE);
             $this->ajaxResponse($mdata, $error);
         }

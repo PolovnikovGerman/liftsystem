@@ -63,8 +63,21 @@ class Fulfillment extends MY_Controller
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand, $top_menu);
             } elseif ($row['item_link']=='#pototalsview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+//                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+//                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+//                $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
+                $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -75,7 +88,7 @@ class Fulfillment extends MY_Controller
                     'active' => $brand,
                 ];
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
+                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
             } elseif ($row['item_link']=='#printshopinventview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
@@ -147,6 +160,9 @@ class Fulfillment extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        // Balloons
+        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
+        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
 
         $options = [
             'title' => $head['title'],
@@ -1885,57 +1901,93 @@ class Fulfillment extends MY_Controller
         return $content;
     }
 
-    private function _prepare_pototals_view($brand, $top_menu) {
+//    private function _prepare_pototals_view($brand, $top_menu) {
+//        $this->load->model('orders_model');
+//        $this->load->model('payments_model');
+//        $this->load->model('vendors_model');
+//        // $search_form
+//        $optionstotal=array(
+//            'status'=>'showclosed',
+//            'brand' => $brand,
+//        );
+//        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
+//        $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
+//
+//        $sort_array=array(
+//            'oa.amount_date-desc'=>'Date &#9660;',
+//            'oa.amount_date-asc'=>'Date &#9650;',
+//            'o.order_num-desc'=>'PO# &#9660;',
+//            'o.order_num-asc'=>'PO# &#9650;',
+//            'v.vendor_name-desc'=>'Vendor &#9660;',
+//            'v.vendor_name-asc'=>'Vendor &#9650;',
+//            'oa.amount_sum-desc'=>'Amount &#9660;',
+//            'oa.amount_sum-asc'=>'Amount &#9650;',
+//        );
+//
+//        $vsort=['order_by' => 'v.vendor_name'];
+//        $vendors=$this->vendors_model->get_vendors_list($vsort);
+//
+//        $nonplaceview='';
+//        if ($total_notplaced!=0) {
+//            // Non placed
+//            $nonplaceview=$this->load->view('fulfillment/pototals_nonplacehead_view', array(), TRUE);
+//        }
+//        $perpages = $this->config->item('orders_perpage');
+//        $options=array(
+//            'total'=>$total_rec,
+//            'total_nonplaced'=>$total_notplaced,
+//            'nonplacedview'=>$nonplaceview,
+//            'order'=>'oa.amount_date desc',
+//            'direc'=>'',
+//            'curpage'=>0,
+//            'curstatus'=>'showclosed',
+//            'showplace'=>'show',
+//            'sort'=>$sort_array,
+//            'current_sort'=>'oa.amount_date-desc',
+//            'brand' => $brand,
+//            'top_menu' => $top_menu,
+//            'perpages' => $perpages,
+//            'perpage' => $perpages[0],
+//            'vendors' => $vendors,
+//        );
+//        return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+//    }
+
+    private function _prepare_purchaseorders_view($brand, $top_menu) {
+        $inner = 0;
         $this->load->model('orders_model');
         $this->load->model('payments_model');
-        $this->load->model('vendors_model');
-        // $search_form
-        $optionstotal=array(
-            'status'=>'showclosed',
-            'brand' => $brand,
-        );
-        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
-        $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
 
-        $sort_array=array(
-            'oa.amount_date-desc'=>'Date &#9660;',
-            'oa.amount_date-asc'=>'Date &#9650;',
-            'o.order_num-desc'=>'PO# &#9660;',
-            'o.order_num-asc'=>'PO# &#9650;',
-            'v.vendor_name-desc'=>'Vendor &#9660;',
-            'v.vendor_name-asc'=>'Vendor &#9650;',
-            'oa.amount_sum-desc'=>'Amount &#9660;',
-            'oa.amount_sum-asc'=>'Amount &#9650;',
-        );
-
-        $vsort=['order_by' => 'v.vendor_name'];
-        $vendors=$this->vendors_model->get_vendors_list($vsort);
-
-        $nonplaceview='';
-        if ($total_notplaced!=0) {
-            // Non placed
-            $nonplaceview=$this->load->view('fulfillment/pototals_nonplacehead_view', array(), TRUE);
+        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+        $totals = $this->orders_model->purchase_fulltotals($brand);
+        // Years
+        $years = $this->payments_model->get_pototals_years($brand);
+        $year1 = $year2 = $year3 = $years[0];
+        if (count($years) > 1) {
+            $year2 = $years[1];
         }
-        $perpages = $this->config->item('orders_perpage');
-        $options=array(
-            'total'=>$total_rec,
-            'total_nonplaced'=>$total_notplaced,
-            'nonplacedview'=>$nonplaceview,
-            'order'=>'oa.amount_date desc',
-            'direc'=>'',
-            'curpage'=>0,
-            'curstatus'=>'showclosed',
-            'showplace'=>'show',
-            'sort'=>$sort_array,
-            'current_sort'=>'oa.amount_date-desc',
+        if (count($years) > 2) {
+            $year3 = $years[2];
+        }
+        // Temporary
+        $year1=2018; $year2=2017; $year3=2016;
+        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
+        $options=[
+            'totaltab' => $totaltab,
+            'totals' => $totals,
+            'inner' => $inner,
             'brand' => $brand,
             'top_menu' => $top_menu,
-            'perpages' => $perpages,
-            'perpage' => $perpages[0],
-            'vendors' => $vendors,
-        );
-        return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+            'years' => $years,
+            'year1' => $year1,
+            'year2' => $year2,
+            'year3' => $year3,
+            'poreporttotals' => $poreptotals,
+            'poreportperpage' => 8,
+        ];
+        return $this->load->view('pototals/page_view',$options,TRUE);
     }
+
 
     private function _prepare_printshop_inventory($brand, $top_menu) {
         $this->load->model('printshop_model');
