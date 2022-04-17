@@ -338,6 +338,7 @@ input.addnewpurchase {
 }
 .poamntdateinpt, .amountvalueinpt, .ordernuminpt {
     width: 78px;
+    text-align: left;
 }
 .amountvendorselect, .amountmethodselect {
     width: 195.2px;
