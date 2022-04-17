@@ -70,7 +70,7 @@
         </div>
         <div class="datarow">
             <div class="poreport-sorting">
-                <span>Sort by:</span>
+                Sort by:
             </div>
             <div class="poreport-sortingdata">
                 <select class="poreportsortselect">
@@ -108,14 +108,16 @@
         <div class="datarow">
             <div class="poreporttablebody" id="poreporttable"></div>
         </div>
-        <div class="datarow">
-            <div class="poreportPaginator"></div>
+        <div class="datarow poreportPaginator">
+
         </div>
     </div>
     <!-- Vendor Statements: -->
-    <div class="pototals-toplacehead">
-        <div class="datarow">
-            <div class="pototals-placetitle">Vendor Statements:</div>
+    <div class="datarow">
+        <div class="pototals-toplacehead">
+            <div class="datarow">
+                <div class="pototals-placetitle">Vendor Statements:</div>
+            </div>
         </div>
     </div>
 </div>

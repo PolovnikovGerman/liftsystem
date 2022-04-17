@@ -1,5 +1,7 @@
 function init_purchase_orders() {
     init_potables_content();
+    init_poreport_Pagination();
+    init_poorders_content();
 }
 
 function init_potables_content() {
@@ -362,4 +364,51 @@ function save_amount() {
             show_error(response);
         }
     }, 'json');
+}
+
+/* PO Report Pagination */
+function init_poreport_Pagination() {
+    // count entries inside the hidden content
+    var num_entries = $('#poreporttotals').val();
+    // var perpage = itemsperpage;
+    var perpage = $("#poreportperpage").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $(".poreportPaginator").empty();
+        pagePOReportCallback(0);
+    } else {
+        var curpage = $("#poreportcurpage").val();
+        // Create content inside pagination element
+        $(".poreportPaginator").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pagePOReportCallback,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
+    }
+}
+
+function pagePOReportCallback(page_index) {
+    var params = new Array();
+    params.push({name: 'year1', value: $(".yearfirst").val()});
+    params.push({name: 'year2', value: $(".yearsecond").val()});
+    params.push({name: 'year3', value: $(".yearthird").val()});
+    params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    params.push({name: 'sort', value: $(".poreportsortselect").val()});
+    params.push({name: 'offset', value: page_index});
+    params.push({name: 'limit', value: $("#poreportperpage").val()});
+    var url="/purchaseorders/poreport_content";
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#poreporttable").empty().html(response.data.content);
+            $("#poreportcurpage").val(page_index);
+            jQuery.balloon.init();
+            init_poorders_content();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

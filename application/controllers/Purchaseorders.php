@@ -617,6 +617,7 @@ class Purchaseorders extends MY_Controller
                     $event = 'click';
                 }
             }
+            // $mdata['content'] = $this->load->view('pototals/poreport_details_adapt_view',['datas' => $data, 'event' => $event, 'brand' => $brand], TRUE);
             $mdata['content'] = $this->load->view('pototals/poreport_details_view',['datas' => $data, 'event' => $event, 'brand' => $brand], TRUE);
             $this->ajaxResponse($mdata, $error);
         }

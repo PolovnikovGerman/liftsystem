@@ -25,7 +25,7 @@
     line-height: 17px!important;
 }
 .pototals-toplacehead {
-    margin-right: 20px;
+    margin-right: 54px;
     width: 500px;
 }
 .pototals-placetitle {
@@ -377,4 +377,86 @@ input.addnewpurchase {
 }
 .poamount-save img {
     cursor: pointer;
+}
+/* PO Reports */
+.pototals-poreports {
+    width: 687px;
+}
+.poreport-sorting {
+    width: 177px;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+.poreportsortselect {
+    height: 20px;
+    padding-left: 6px;
+    width: 96px;
+}
+.poreporttablehead {
+    width: 169px;
+    text-align: right;
+    padding-right: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.poreportyeardata {
+    padding-left: 9px;
+    width: 172px;
+}
+.poyearcompare {
+    height: 20px;
+    padding-left: 5px;
+    width: 75px;
+}
+.poreporttablebody {
+    border-left: 3px solid #000000;
+    border-top: 3px solid #000000;
+}
+.poreportdatacell {
+    border-right: 1px solid #000000;
+    border-bottom: 3px solid #000000;
+    width: 171px;
+}
+.poreportdatacell:last-child {
+    border-right: 3px solid #000000;
+}
+.poreportdatacell.vendornamedat {
+    padding-left: 0.5rem;
+    padding-right: 0.2rem;
+    padding-top: 0.5rem;
+    font-weight: 600;
+    font-size: 15px;
+    height: 89.4px;
+}
+.poreportdata {
+    color: #717171;
+    width: 61%;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    height: 21.6px;
+    line-height: 21.6px!important;
+}
+.poreportdata span {
+    font-weight: 600;
+}
+.poreportdatagrow {
+    width: 39%;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    text-align: right;
+    height: 21.6px;
+    line-height: 21.6px!important;
+}
+.grownegative {
+    color: #ff0000;
+}
+.growpositive {
+    color: #0000ff;
+}
+.poreportPaginator .pagination {
+    float: right!important;
 }
