@@ -7891,9 +7891,9 @@ Class Leadorder_model extends My_Model {
                 if ($prow['batch_type']=='ACH') {
                     $label.=' (ACH)';
                 } elseif ($prow['batch_type']=='American Express') {
-                    $label .= ' (AmEx ' . $prow['batch_num'] . ')';
+                    $label .= ' (AmEx ' . substr($prow['batch_num'],-4,4) . ')';
                 } elseif ($prow['batch_type']=='Amex') {
-                    $label .= ' (AmEx ' . $prow['batch_num'] . ')';
+                    $label .= ' (AmEx ' . substr($prow['batch_num'], -4, 4) . ')';
                 } elseif ($prow['batch_type']=='Cash') {
                     $label .= ' (Cash)';
                 } elseif ($prow['batch_type']=='Check') {
@@ -7903,7 +7903,7 @@ Class Leadorder_model extends My_Model {
                 } elseif ($prow['batch_type']=='Manual CC') {
                     $label .= ' (Manual CC)';
                 } elseif ($prow['batch_type']=='Mastercard') {
-                    $label .= ' (MC ' . $prow['batch_num'] . ')';
+                    $label .= ' (MC ' . substr($prow['batch_num'], -4,4) . ')';
                 } elseif ($prow['batch_type']=='Paypal') {
                     $label .= ' (Paypal)';
                 } elseif ($prow['batch_type']=='Visa') {
