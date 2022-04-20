@@ -1,0 +1,352 @@
+.inventorydataview {
+    margin-top: 17px;
+    margin-left: 10px;
+    float: left;
+}
+.inventorydataview div {
+    float: left;
+}
+.inventorydataview .pagetitle {
+    margin-left: 4px;
+    font-size: 24px;
+    font-weight: bold;
+    width: 426px;
+}
+.invtypebutton {
+    background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    height: 35px;
+    line-height: 32px!important;
+    margin-right: 14px;
+    text-align: center;
+    width: 142px;
+}
+.invtypebutton .oldvesionlabel {
+    opacity: 0.6;
+    position: relative;
+    left: 47%;
+    background-color: #b53535;
+    width: 12px;
+    margin-top: 1px;
+    height: 31px;
+    z-index: 100;
+}
+.invtypebutton.active {
+    background: url('/img/masterinvent/typebutton_active_bg.png') no-repeat;
+}
+.inventfilterarea {
+    width: 271px;
+}
+.inventfilterlabel {
+    font-size: 14px;
+    text-align: right;
+    height: 28px;
+    line-height: 20px;
+    padding-right: 5px;
+    width: 140px;
+}
+.inventfilterdata {
+}
+.inventfilterselect {
+    font-size: 14px;
+    font-weight: normal;
+    height: 20px;
+    width: 128px;
+}
+.totalinvent {
+    border: 2px solid #000000;
+    width: 240px;
+    height: 31px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-left: 29px;
+}
+.totalinvent > div {
+    line-height: 29px!important;
+}
+.totalinventlabel {
+    padding-left: 7px;
+    color: #727272;
+}
+.totalinventvalue {
+    color: #000000;
+    float: right!important;
+    padding-right: 7px;
+}
+.mastinvent_left_menu {
+    width: 267px;
+}
+.mastinvent_left_section {
+    width: 100%;
+}
+.mastinvent_left_section.active {
+    background: #252525;
+    margin-bottom: 15px;
+}
+.mastinvent_left_sectiondata {
+    background: #ebebeb;
+    border: 1px solid #000000;
+    width: 256px;
+    padding: 6px 10px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.mastinvent_left_sectiondata.rawsbtype {
+    background: #252525;
+}
+.inventsectionhead {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 4px;
+}
+.inventsectionvalue {
+    border: 1px solid #000000;
+    background: #6e6e6e;
+    width: 233px;
+}
+.inventsectionvalue > div {
+    height: 22px;
+    line-height: 22px;
+}
+.inventsectionvalue_label {
+    color: #ffffff;
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 5px;
+}
+.inventsectionvalue_data {
+    color: #32faff;
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 8px;
+}
+.mastinvent_left_sectiondata.active {
+    background: #252525;
+    border: none;
+    margin-bottom: 0!important;
+}
+.mastinvent_left_sectiondata.active > .inventsectionhead,
+.mastinvent_left_sectiondata.rawsbtype > .inventsectionhead {
+    color: #ffffff;
+}
+.mastinvent_left_sectiondata.active > .inventsectionvalue,
+.mastinvent_left_sectiondata.rawsbtype > .inventsectionvalue {
+    border: 1px solid #ffffff;
+    background: #252525;
+}
+.mastinvent_databody {
+    background: #252525;
+    width: 1034px;
+}
+.masterinventlegend {
+    padding-top: 5px;
+}
+.masterinventlegend > div {
+    height: 16px;
+    line-height: 16px;
+}
+.legendmapicon.severeval {
+    color: #FF0000;
+    font-size: 14px;
+    margin-right: 5px;
+}
+.legendmapicon.lowval {
+    color: #ff9900;
+    font-size: 14px;
+    margin-right: 5px;
+}
+.legendmaplabel {
+    color: #ffffff;
+    font-size: 12px;
+    margin-right: 10px;
+}
+.masterinventexport {
+    padding-top: 5px;
+    float: right!important;
+    color: #ffffff;
+    font-size: 14px;
+    padding-right: 6px;
+}
+.masterinventtotals {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 14px;
+}
+.masterinventtotals .inventtotalmaxshow {
+    margin-left: 435px;
+    margin-top: -8px;
+    color: #8989ff;
+    width: 28px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+
+}
+.masterinventtotals .inventtotalinstock {
+    width: 69px;
+    text-align: center;
+}
+.masterinventtotals .inventtotalavailable {
+    margin-left: 71px;
+    width: 69px;
+    text-align: center;
+}
+.masterinventtablehead {
+    background: #000000;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13px;
+    width: 100%;
+}
+.masterinventtablehead > div {
+    height: 28px;
+    line-height: 28px;
+}
+.masterinventtablehead .addnewmasterinvent {
+    width: 55px;
+    padding-left: 2px;
+}
+.masterinventtablehead .addnewmasterinvent img {
+    cursor: pointer;
+}
+.masterinventtablehead .masterinventseq {
+    width: 26px;
+}
+.masterinventtablehead .masterinventnumber {
+    width: 80px;
+}
+.masterinventtablehead .masterinventdescrip {
+    width: 265px;
+}
+.masterinventtablehead .masterinventpercent {
+    width: 35px;
+}
+.masterinventtablehead .masterinventinstock {
+    width: 69px;
+}
+.masterinventtablehead .masterinventreserv {
+    width: 71px;
+}
+.masterinventtablehead .masterinventavailab {
+    width: 69px;
+}
+.masterinventtablehead .masterinventunit {
+    width: 30px;
+}
+.masterinventtablehead .masterinventonorder {
+    width: 85px;
+}
+.masterinventtablehead .masterinventavgprice {
+    width: 66px;
+}
+.masterinventtablehead .masterinventtotalval {
+    width: 100px;
+}
+.masterinventtablehead .masterinventdetails {
+    width: 50px;
+}
+.masterinventtablebody {
+    background: #ffffff;
+    color: #000000;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.inventorydatarow {
+    width: 100%;
+}
+.inventorydatarow > div {
+    text-align: center;
+}
+.inventorydatarow.masteritem {
+    background: #6e6e6e;
+    color: #ffffff;
+}
+.inventorydatarow.masteritem > div {
+    border-bottom: 1px solid #000000;
+}
+.inventorydatarow.masteritem .masterinventonorder {
+    border-bottom: none;
+}
+.inventorydatarow .masterinventstatus {
+    width: 4.87%;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventstatus.donotreorder {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventseq {
+    width: 3.4%;
+    /* font-weight: 600; */
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventnumber {
+    width: 8%;
+    /* font-weight: 600; */
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventdescrip {
+    width: 25.85%;
+    text-align: left;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow.itemcolor .masterinventdescrip {
+    text-align: right;
+}
+.inventorydatarow .masterinventpercent {
+    width: 3.9%;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventinstock {
+    width: 6.8%;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventreserv {
+    width: 6.8%;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventavailab {
+    width: 6.8%;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventunit {
+    width: 2.9%;
+}
+.inventorydatarow .masterinventonorder {
+    width: 8.26%;
+    color: #5d51ff;
+    background: #252525;
+    text-align: left;
+}
+.inventorydatarow .masterinventavgprice {
+    width: 6.4%;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventtotalval {
+    width: 11.2%;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventdetails {
+    width: 4.82%;
+    font-weight: 600;
+}
+.lowinstock {
+    background: #ff9900;
+    color: #000000;
+}
+.severevalstock {
+    background: #FF0000;
+    color: #ffffff;
+}

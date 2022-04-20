@@ -46,6 +46,7 @@
  * @property Printshop_model printshop_model
  * @property Exportexcell_model exportexcell_model
  * @property Rates_model rates_model
+ * @property Inventory_model inventory_model
  */
 
 class MY_Model extends CI_Model

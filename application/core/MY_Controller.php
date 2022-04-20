@@ -49,6 +49,7 @@ if (!defined('BASEPATH'))
  * @property Exportexcell_model exportexcell_model
  * @property Rates_model rates_model
  * @property Seo_model seo_model
+ * @property Inventory_model inventory_model
 */
 
 
