@@ -1856,8 +1856,8 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 398px;
-    max-width: 398px!important;
+    width: 426px;/* 398px; */
+    max-width: 426px!important; /* 398px!important; */
 }
 .button_save {
     float: left;
@@ -3657,12 +3657,7 @@ a.historydetailsview {
 }
 /* COG Details Popup */
 .ordercogdetailsviewarea {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -khtml-border-radius: 10px; /* for old Konqueror browsers */    
-    border-radius: 10px; /* future proofing */
-    border: 1px solid;
-    float: left;    
+    float: left;
     padding: 10px;
     width: 406px;
     margin-left: -8px;

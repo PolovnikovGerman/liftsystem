@@ -4701,7 +4701,26 @@ class Leadorder extends MY_Controller
             'profit_view'=>'',
             'profit_class'=>orderProfitClass($order['profit_perc']),
             'order_id'=>$order['order_id'],
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
         );
+        if (!empty($order['profit_perc'])) {
+            $classprof = orderProfitClass($order['profit_perc']);
+            if ($classprof=='green') {
+                $options['bgcolor']='#00e947';
+            } elseif ($classprof=='red') {
+                $options['bgcolor']='#ff0000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='black') {
+                $options['bgcolor']='#000000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='orange') {
+                $options['bgcolor']='#ea8a0e';
+            } elseif ($classprof['moroon']) {
+                $options['bgcolor']='#6d0303';
+                $options['hitcolor']='#ffffff';
+            }
+        }
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';
             $options['profit_view']='points';
@@ -4709,7 +4728,11 @@ class Leadorder extends MY_Controller
         if (empty($order['profit_perc'])) {
             $content=$this->load->view('leadorderdetails/profitproject_view', $options, TRUE);;
         } else {
-            $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            if ($options['profit_view']=='points') {
+                $content=$this->load->view('leadorderdetails/profit_points_view', $options, TRUE);
+            } else {
+                $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            }
         }
         return $content;
     }

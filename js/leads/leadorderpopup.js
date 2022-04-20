@@ -3448,6 +3448,7 @@ function init_orderbottom_content(edit_mode) {
                 }).then(function(content) {
                     // Set the tooltip content upon successful retrieval
                     api.set('content.text', content);
+                    init_profitedit_call();
                 }, function(xhr, status, error) {
                     // Upon failure... set the tooltip content to error
                     api.set('content.text', status + ': ' + error);
@@ -3462,16 +3463,22 @@ function init_orderbottom_content(edit_mode) {
         style: {
             classes: 'qtip-dark profitdetails_tooltip'
         },
-        show: {
-            effect: function() { $(this).fadeIn(250); }
-        },
-        hide: {
-           delay: 200,
-            fixed: true, // <--- add this
-           effect: function() { $(this).fadeOut(250); }
-        },
+        // show: {
+            // effect: function() { $(this).fadeIn(250); }
+        // },
+        show: 'click',
+        // hide: {
+        //    delay: 200,
+        //     fixed: true, // <--- add this
+        //    effect: function() { $(this).fadeOut(250); }
+        // },
+        hide: 'unfocus'
     });
 
+}
+
+function init_profitedit_call() {
+    console.log('Content Loaded');
 }
 
 function save_orderticket() {

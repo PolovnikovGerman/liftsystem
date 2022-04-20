@@ -8458,7 +8458,7 @@ Class Leadorder_model extends My_Model {
     }
 
     public function get_leadorder_amounts($order_id) {
-        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
+        $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->where('oa.order_id', $order_id);
