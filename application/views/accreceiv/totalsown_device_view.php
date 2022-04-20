@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-7 accreceiv-totalown">
-        <div class="row">
-            <div class="col-6 accreceiv-totalown-title">Owed to Us:</div>
-            <div class="col-6 accreceiv-totalown-value"><?= TotalOutput($totalown) ?></div>
-        </div>
+<!--        <div class="row">-->
+            <div class="accreceiv-totalown-title">Owed to Us:</div>
+            <div class="accreceiv-totalown-value"><?= TotalOutput($totalown) ?></div>
+<!--        </div>-->
     </div>
     <div class="col-5 accreceiv-totalpast">
         <div class="accreceiv-totalpast-title">Past Due:</div>

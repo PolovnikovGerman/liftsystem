@@ -70,8 +70,21 @@ class Accounting extends MY_Controller
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
             } elseif ($row['item_link']=='#purchaseordersview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+//                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
+//                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+//                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
+                $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
                 if (count($brands)==0) {
                     redirect('/');
@@ -197,6 +210,9 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        // Balloons
+        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
+        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
 
         $options = [
             'title' => $head['title'],
@@ -3012,34 +3028,14 @@ class Accounting extends MY_Controller
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
-//            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
-//            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
-            $mdata['totalown'] = $this->load->view('accreceiv/totalsown_device_view', $res, TRUE);
-            $mdata['totalrefund'] = $this->load->view('accreceiv/totalsrefund_device_view', $res, TRUE);
-            $mdata['totals'] = $this->load->view('accreceiv/balances_device_view', $res, TRUE);
+            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
-//    public function accountreceiv_details() {
-//        if ($this->isAjax()) {
-//            $mdata = [];
-//            $postdata = $this->input->post();
-//            $period = ifset($postdata,'period', -1);
-//            $brand = ifset($postdata,'brand', 'ALL');
-//            $ownsort = ifset($postdata,'ownsort', 'batch_due');
-//            $owndirec = ifset($postdata,'owndirec', 'desc');
-//            $refundsort = ifset($postdata,'refundsort','order_date');
-//            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
-//            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-//            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
-//            $error = '';
-//            $this->ajaxResponse($mdata, $error);
-//        }
-//        show_404();
-//    }
     public function accountreceiv_details() {
         if ($this->isAjax()) {
             $mdata = [];
@@ -3051,14 +3047,7 @@ class Accounting extends MY_Controller
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-            $maxwidth = ifset($postdata,'maxwidth',0);
-            // $res['datelabel']='Order Date';
-            $res['datelabel']='Date';
-            if ($maxwidth < 540) {
-                $res['datelabel']='Date';
-            }
-            $mdata['owndetails'] = $this->load->view('accreceiv/owndetails_device_view', $res, TRUE);
-            $mdata['refunddetails'] = $this->load->view('accreceiv/refunddetails_device_view', $res, TRUE);
+            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -3918,7 +3907,7 @@ class Accounting extends MY_Controller
         return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
     }
 
-    private function _prepare_purchaseorders_view($brand, $top_menu) {
+    private function _prepare_purchaseorders_view_old($brand, $top_menu) {
         $this->load->model('orders_model');
         $this->load->model('payments_model');
         $this->load->model('vendors_model');
@@ -3968,6 +3957,41 @@ class Accounting extends MY_Controller
             'vendors' => $vendors,
         );
         return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
+    }
+
+    private function _prepare_purchaseorders_view($brand, $top_menu) {
+        $inner = 0;
+        $this->load->model('orders_model');
+        $this->load->model('payments_model');
+
+        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+        $totals = $this->orders_model->purchase_fulltotals($brand);
+        // Years
+        $years = $this->payments_model->get_pototals_years($brand);
+        $year1 = $year2 = $year3 = $years[0];
+        if (count($years) > 1) {
+            $year2 = $years[1];
+        }
+        if (count($years) > 2) {
+            $year3 = $years[2];
+        }
+        // Temporary
+        $year1=2018; $year2=2017; $year3=2016;
+        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
+        $options=[
+            'totaltab' => $totaltab,
+            'totals' => $totals,
+            'inner' => $inner,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+            'years' => $years,
+            'year1' => $year1,
+            'year2' => $year2,
+            'year3' => $year3,
+            'poreporttotals' => $poreptotals,
+            'poreportperpage' => 8,
+        ];
+        return $this->load->view('pototals/page_view',$options,TRUE);
     }
 
     private function _prepare_accreceiv_view($brand, $top_menu) {
