@@ -516,6 +516,7 @@ class Template
             'order_id'=>$ord_data['order_id'],
             'bgcolor' => '#FFFFFF',
             'hitcolor' => '#000000',
+            'edit_mode' => $edit,
         );
         if (!empty($orddata['profit_perc'])) {
             $classprof = orderProfitClass($orddata['profit_perc']);
