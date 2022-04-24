@@ -4695,13 +4695,14 @@ class Leadorder extends MY_Controller
             $options=array(
                 'data'=>$res,
                 'profit_class'=>$postdata['clas'],
+                'edit_mode' => (ifset($postdata,'edit',1)),
             );
             $cogcontent=$this->load->view('leadorderdetails/ordercog_details_view', $options, TRUE);
         }
         echo $cogcontent;
     }
 
-    private function _profit_data_view($order) {
+    private function _profit_data_view($order, $edit_mode=1) {
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
         $hlpcolor = orderProfitBg($order['profit_perc']);
         $options=array(
@@ -4710,9 +4711,27 @@ class Leadorder extends MY_Controller
             'profit_view'=>'',
             'profit_class'=>orderProfitClass($order['profit_perc']),
             'order_id'=>$order['order_id'],
-            'helpborder' => $hlpcolor['border'],
-            'helpbg' => $hlpcolor['bgcolor'],
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
+            'edit_mode' => $edit_mode,
         );
+        if (!empty($order['profit_perc'])) {
+            $classprof = orderProfitClass($order['profit_perc']);
+            if ($classprof=='green') {
+                $options['bgcolor']='#00e947';
+            } elseif ($classprof=='red') {
+                $options['bgcolor']='#ff0000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='black') {
+                $options['bgcolor']='#000000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='orange') {
+                $options['bgcolor']='#ea8a0e';
+            } elseif ($classprof=='moroon') {
+                $options['bgcolor']='#6d0303';
+                $options['hitcolor']='#ffffff';
+            }
+        }
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';
             $options['profit_view']='points';
@@ -4720,7 +4739,11 @@ class Leadorder extends MY_Controller
         if (empty($order['profit_perc'])) {
             $content=$this->load->view('leadorderdetails/profitproject_view', $options, TRUE);;
         } else {
-            $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            if ($options['profit_view']=='points') {
+                $content=$this->load->view('leadorderdetails/profit_points_view', $options, TRUE);
+            } else {
+                $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            }
         }
         return $content;
     }
@@ -4900,4 +4923,111 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
+    public function pototal_remove() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amount = ifset($postdata,'amount',0);
+                $editmode = ifset($postdata,'editmode',0);
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->remove_amount($amount, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $leadorder = usersession($ordersession);
+                    $order = $leadorder['order'];
+                    $mdata['content']=$this->_profit_data_view($order,0);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pototal_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amount = ifset($postdata,'amount',0);
+                $editmode = ifset($postdata,'editmode',0);
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->edit_amount($amount, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $this->load->model('vendors_model');
+                    $this->load->model('orders_model');
+                    $v_options = [
+                        'order_by' => 'v.vendor_name',
+                    ];
+                    $vendors=$this->vendors_model->get_vendors_list($v_options);
+                    $methods=$this->orders_model->get_methods_edit();
+                    $order_view=$this->load->view('pototals/purchase_orderdata_view', $res['order'],TRUE);
+                    $poeditview = $this->load->view('pototals/purchase_reason_view', $res['amount'],TRUE);
+                    $lowprofit_view = '';
+                    if (!empty($res['order']['reason'])) {
+                        $lowprofit_view = $this->load->view('pototals/lowprofit_reason_view', $res['order'],TRUE);
+                    }
+                    $options=array(
+                        'order'=>$res['order'],
+                        'amount'=>$res['amount'],
+                        'attach'=>'',
+                        'vendors'=>$vendors,
+                        'methods'=>$methods,
+                        'order_view'=>$order_view,
+                        'lowprofit_view'=>$lowprofit_view,
+                        'editpo_view'=>$poeditview,
+                    );
+                    $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
+                    $mdata['content']=$content;
+                    $data=array(
+                        'amount'=>$res['amount'],
+                        'order'=>$res['order'],
+                        'attach'=>array(),
+                    );
+                    // Save Data to Session
+                    usersession('editpurchase', $data);
+                    // $mdata['content']=$this->_profit_data_view($order);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function amount_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amntdata=usersession('editpurchase');
+                if (!empty($amntdata)) {
+                    $editmode = ifset($postdata,'editmode',0);
+                    $this->load->model('leadorder_model');
+                    $res=$this->leadorder_model->amount_save($amntdata, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $leadorder = usersession($ordersession);
+                        $order = $leadorder['order'];
+                        $mdata['content']=$this->_profit_data_view($order, 0);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

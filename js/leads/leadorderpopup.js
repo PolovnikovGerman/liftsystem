@@ -312,6 +312,8 @@ function init_onlineleadorder_edit() {
             search_paymonitor();
         } else if (callpage=='accrecive') {
             init_accounts_receivable();
+        } else if (callpage=='pototals') {
+            init_purchase_orders();
         }
         if (callpage=='finance') {
             disablePopup('leadorderdetailspopup');
@@ -3428,7 +3430,196 @@ function init_orderbottom_content(edit_mode) {
             }
         },'json');
     });
+    // Profit
+    $("div.profitdetailsviewarea").qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    // url: href // Use href attribute as URL
+                    // url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                    url: $(this).data('viewsrc')
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    init_profitedit_call(edit_mode);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'bottom right',
+            at: 'middle left',
+        },
+        style: {
+            classes: 'qtip-dark profitdetails_tooltip'
+        },
+        // show: {
+            // effect: function() { $(this).fadeIn(250); }
+        // },
+        show: 'click',
+        // hide: {
+        //    delay: 200,
+        //     fixed: true, // <--- add this
+        //    effect: function() { $(this).fadeOut(250); }
+        // },
+        hide: 'unfocus'
+    });
+
 }
+
+function init_profitedit_call(edit_mode) {
+    $(".editamount").unbind('click').click(function(){
+        var amount = $(this).data('amount');
+        // Edit amount
+        $(".profitdetails_tooltip").hide();
+        var params = new Array();
+        params.push({name: 'amount', value: amount});
+        params.push({name: 'editmode', value: edit_mode});
+        params.push({name:'ordersession', value: $("input#ordersession").val()});
+        var url='/leadorder/pototal_edit';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#artNextModal").find('div.modal-dialog').css('width','500px');
+                $("#artNextModal").find('.modal-title').empty().html('Enter PO Value');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
+                // Date picker
+                $("input#podateinpt").datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                }).on("change", function() {
+                    show_amountchangesave();
+                    save_amntchangedetails('amount_date', $(this).val());
+                });
+                init_pochange(edit_mode);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".delamount").unbind('click').click(function(){
+        $(".profitdetails_tooltip").hide();
+        if (confirm('Delete PO Total?')==true) {
+            var amount = $(this).data('amount');
+            // Delete amount
+            var params = new Array();
+            params.push({name: 'amount', value: amount});
+            params.push({name:'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'editmode', value: edit_mode});
+            var url="/leadorder/pototal_remove";
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    // Change content
+                    $("#leadorderprofitarea").empty().html(response.data.content);
+                    init_orderbottom_content(edit_mode);
+                }
+            },'json')
+        }
+    })
+}
+
+/* Common Edit INIT */
+function init_pochange(edit_mode) {
+    // Change Ship Check
+    // Add Order Data
+    $("input.amountvalueinpt").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('amount_sum', newval);
+    });
+    $("input.po_shipping").unbind('click').click(function(){
+        var value=0;
+        if ($(this).prop('checked')==true) {
+            value=1;
+        }
+        show_amountchangesave();
+        save_amntchangedetails('is_shipping', value);
+    });
+    $("select.amountvendorselect").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('vendor_id', newval);
+    })
+    $("select.amountmethodselect").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('method_id', newval);
+    });
+    $("textarea#change_comment").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('comment', newval);
+    });
+    $("textarea#po_comment").unbind('change').change(function(){
+        var newval=$(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('low_profit', newval);
+    });
+    $("div.poamount-save").find('img').unbind('click').click(function(){
+        save_amountchange(edit_mode);
+    });
+}
+
+/* Save in session AMOUNT DETAILS */
+function save_amntchangedetails(fldname, newval) {
+    var url="/purchaseorders/purchaseorder_amountchange";
+    $.post(url, {'fld': fldname, 'value':newval}, function(response){
+        if (response.errors=='') {
+            if (response.data.profit_class) {
+                $("div.amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+                $("div.amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+            }
+            if (response.data.profit_perc) {
+                $("div.amountprofitprc").empty().html(response.data.profit_perc);
+            }
+            if (response.data.profit) {
+                $("div.amountprofitval").empty().html(response.data.profit);
+            }
+            $("div#lowprofitpercreasonarea").empty().html(response.data.reason);
+            $("textarea#po_comment").unbind('change').change(function(){
+                var newval=$(this).val();
+                show_amountchangesave();
+                save_amntchangedetails('reason', newval);
+            });
+            $("textarea#change_comment").unbind('change').change(function(){
+                 var newval=$(this).val();
+                 show_amountsave();
+                 save_amntdetails('comment', newval);
+            });
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function show_amountchangesave() {
+    $("div.poamount-save").show();
+}
+
+/* Save Amount DATA to DB */
+function save_amountchange(edit_mode) {
+    var url="/leadorder/amount_save";
+    var params = new Array();
+    params.push({name: 'editmode', value: edit_mode});
+    params.push({name:'ordersession', value: $("input#ordersession").val()});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").modal('hide');
+            $(document.body).addClass('modal-open');
+            $("#leadorderprofitarea").empty().html(response.data.content);
+            init_orderbottom_content(edit_mode);
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
 
 function save_orderticket() {
     $("form#tickededitform").find("select#type").prop('disabled',false);
