@@ -57,7 +57,10 @@
         </div>
         <div class="col-6 leftpart">&nbsp;</div>
     </div>
-    <div class="datarow showreason" id="lowprofitpercreasonarea"></div>
+    <div class="datarow showreason" id="lowprofitpercreasonarea"><?=$lowprofit_view?></div>
+    <?php if (!empty($editpo_view)) { ?>
+        <div class="datarow showreason"><?=$editpo_view?></div>
+    <?php } ?>
     <div class="datarow">
         <div class="poamount-save">
             <img src="/img/fulfillment/saveticket.png">

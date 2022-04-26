@@ -219,6 +219,7 @@ Class Payments_model extends MY_Model {
             $res['import_cog']=($import_cog==0 ? '' : '$'.number_format($import_cog,2,'.',','));
             $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
             $res['closed_view']='/img/fulfillment/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png';
+            $res['oldamount_sum'] = $res['amount_sum'];
             if (floatval($res['profit'])==0) {
                 $res['profit']='-';
             } else {
@@ -1126,7 +1127,7 @@ Class Payments_model extends MY_Model {
         } else {
             if (is_numeric($profperc) && $profperc<$this->config->item('minimal_profitperc')) {
                 $options=array(
-                    'reason'=>$amount_data['lowprofit'],
+                    'reason'=>ifset($amount_data,'lowprofit',''),
                 );
                 // $reason_view=$this->load->view('pototals/lowprofit_reason_adapt_view', $options,TRUE);
                 $reason_view=$this->load->view('pototals/lowprofit_reason_view', $options,TRUE);

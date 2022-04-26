@@ -7887,6 +7887,31 @@ Class Leadorder_model extends My_Model {
                 $label.='Payment ';
             }
             $label.='- '.date('m/d/y', $prow['batch_date']);
+            if ($type=='payment') {
+                if ($prow['batch_type']=='ACH') {
+                    $label.=' (ACH)';
+                } elseif ($prow['batch_type']=='American Express') {
+                    $label .= ' (AmEx ' . substr($prow['batch_num'],-4,4) . ')';
+                } elseif ($prow['batch_type']=='Amex') {
+                    $label .= ' (AmEx ' . substr($prow['batch_num'], -4, 4) . ')';
+                } elseif ($prow['batch_type']=='Cash') {
+                    $label .= ' (Cash)';
+                } elseif ($prow['batch_type']=='Check') {
+                    $label .= ' (Check)';
+                } elseif ($prow['batch_type']=='Discover') {
+                    $label .= ' (Discover ' . substr($prow['batch_num'],-4,4) . ')';
+                } elseif ($prow['batch_type']=='Manual CC') {
+                    $label .= ' (Manual CC)';
+                } elseif ($prow['batch_type']=='Mastercard') {
+                    $label .= ' (MC ' . substr($prow['batch_num'], -4,4) . ')';
+                } elseif ($prow['batch_type']=='Paypal') {
+                    $label .= ' (Paypal)';
+                } elseif ($prow['batch_type']=='Visa') {
+                    $label .= ' (Visa ' . substr($prow['batch_num'],-4,4) . ')';
+                } elseif ($prow['batch_type']=='Wire') {
+                    $label.=' (Wire)';
+                }
+            }
             $payments_details[]=[
                 'label' => $label,
                 'value' => MoneyOutput(abs($prow['batch_amount'])),
@@ -8458,7 +8483,7 @@ Class Leadorder_model extends My_Model {
     }
 
     public function get_leadorder_amounts($order_id) {
-        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
+        $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->where('oa.order_id', $order_id);
@@ -8926,30 +8951,30 @@ Class Leadorder_model extends My_Model {
         }
         // Totals
         $totalbgn = $pdf->GetY();
-        $invtotalXPos = 115;
+        $invtotalXPos = 90;
         $invtotalYPos = $totalbgn+5;
-        $invtotalWidth = 90;
+        $invtotalWidth = 115;
         $invtotalHeght = 26 + 8*$options['payments_count'];
         $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(116,$totalbgn+5.5);
+        $pdf->SetXY(91,$totalbgn+5.5);
         $pdf->SetFont('','',13);
         // $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax '.$options['tax'],0,1);
-        $pdf->Cell(52, 8, 'NJ '.$options['tax_term'].'% Sales Tax ',0, 0);
+        $pdf->Cell(77, 8, 'NJ '.$options['tax_term'].'% Sales Tax ',0, 0);
         $pdf->Cell(35.9, 8, $options['tax'],0,1);
 
-        $pdf->SetX(116);
+        $pdf->SetX(91);
         $pdf->SetFont('','B');
-        $pdf->Cell(52, 8, 'Total',0, 0);
+        $pdf->Cell(77, 8, 'Total',0, 0);
         $pdf->SetTextColor(8,0,255);
         $pdf->Cell(35.9, 8, $options['total'],0,1);
 
         if ($options['payments_count'] > 0) {
             foreach ($options['payments_detail'] as $payments_detail) {
-                $pdf->SetX(115.5);
+                $pdf->SetX(90.5);
                 $pdf->SetTextColor(0,0,0);
-                $pdf->SetFont('','');
-                $pdf->Cell(52.4, 8, $payments_detail['label'],0,0,'L',true);
+                $pdf->SetFont('','B');
+                $pdf->Cell(77.4, 8, $payments_detail['label'],0,0,'L',true);
                 if ($payments_detail['type']=='refund') {
                     $pdf->Cell(35.9, 8,'+'.$payments_detail['value'],0,1,'L',true);
                 } else {
@@ -8959,9 +8984,9 @@ Class Leadorder_model extends My_Model {
                 }
             }
         }
-        $pdf->SetX(115.5);
+        $pdf->SetX(90.5);
         $pdf->SetFont('','B');
-        $pdf->Cell(52,8,'Balance Due',0,0);
+        $pdf->Cell(77,8,'Balance Due',0,0);
         $pdf->SetTextColor(0,0,255);
         $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Save file
@@ -8970,6 +8995,85 @@ Class Leadorder_model extends My_Model {
 
     }
 
+    public function remove_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $res=$this->payments_model->delete_amount($amount, $user_id, $brand);
+            if ($res==0) {
+                $out['msg']='Amount was not deleted';
+            } else {
+                $out['result']=$this->success_result;
+                // Get new total,
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function edit_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $order=$leadorder['order'];
+            $this->load->model('payments_model');
+            $res = $this->payments_model->get_purchase_order($amount);
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $out['amount'] = $res['data'];
+                $this->load->model('orders_model');
+                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+            }
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function amount_save($amntdata, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $amntdata['user_id']=$user_id;
+            $amntdata['brand'] = $brand;
+            $res=$this->payments_model->save_poamount($amntdata);
+            $out['msg']=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
