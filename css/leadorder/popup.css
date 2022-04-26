@@ -1856,8 +1856,8 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 398px;
-    max-width: 398px!important;
+    width: 465px;/* 398px; */
+    max-width: 465px!important; /* 398px!important; */
 }
 .button_save {
     float: left;
@@ -3657,14 +3657,9 @@ a.historydetailsview {
 }
 /* COG Details Popup */
 .ordercogdetailsviewarea {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -khtml-border-radius: 10px; /* for old Konqueror browsers */    
-    border-radius: 10px; /* future proofing */
-    border: 1px solid;
-    float: left;    
+    float: left;
     padding: 10px;
-    width: 406px;
+    width: 460px;
     margin-left: -8px;
     margin-top: -4px;
     margin-bottom: -4px;
@@ -3707,7 +3702,8 @@ a.historydetailsview {
     line-height: 16px;
 }
 .ordercogdetailsviewarea > .title > .date {
-    width: 49px;
+    margin-left: 42px;
+    width: 59px;
 }
 .ordercogdetailsviewarea > .title > .amnttype {
     width: 61px;
@@ -3730,18 +3726,28 @@ a.historydetailsview {
     clear: both;
     float: left;    
 }
-.ordercogdetailsviewarea > .dataarea > .datarow.grey {
-    background-color: #c1c1c1;
-}
 .ordercogdetailsviewarea > .dataarea > .datarow > div {
     float: left;    
-    height: 16px;
-    line-height: 16px;
+    height: 20px;
+    line-height: 20px;
     text-align: center;
     font-size: 12px;
 }
+.ordercogdetailsviewarea > .dataarea > .datarow > .editamount,
+.ordercogdetailsviewarea > .dataarea > .datarow > .delamount {
+    font-size: 14px;
+    cursor: pointer;
+    width: 20px;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .delamount {
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea > .dataarea > .datarow > .editamount.actionhide,
+.ordercogdetailsviewarea > .dataarea > .datarow > .delamount.actionhide {
+    visibility: hidden;
+}
 .ordercogdetailsviewarea > .dataarea > .datarow > .date {
-    width: 48px;
+    width: 58px;
     border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea > .dataarea > .datarow > .amnttype {
@@ -4726,4 +4732,107 @@ input.ticketsearch_input_active {
 input.ticket_date {
     height: 17px;
     width: 87px;
+}
+/* PO Edit */
+.purchaseorder_popuparea div {
+    float: left;
+}
+.purchaseorder_popuparea input, .purchaseorder_popuparea select {
+    height: 23px;
+}
+.purchaseorder_popuparea .datarow {
+    margin-top: 8px;
+}
+.poeditlabel {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    width: 65px;
+    padding-right: 4px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput {
+    width: 173px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput span {
+    float: left;
+    margin-right: 6px;
+}
+.poamntdateinpt, .amountvalueinpt, .ordernuminpt {
+    width: 78px;
+    text-align: left;
+}
+.amountvendorselect, .amountmethodselect {
+    width: 195.2px;
+}
+.orderitemnameplace, .ordercustomerplace {
+    width: 218px;
+    line-height: 28.8px;
+    height: 28.8px;
+    color: #0000ff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.amountprofitval, .amountprofitprc {
+    height: 24px;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    text-align: center;
+    font-weight: 600;
+}
+.pocommentlabel {
+    width: 320px;
+    font-weight: 600;
+    padding-left: 11px;
+    margin-bottom: -5px;
+}
+.poreasondata {
+    width: 100%;
+    resize: none;
+    overflow-y: auto;
+}
+.poamount-save {
+    float: right!important;
+    display: none;
+}
+.poamount-save img {
+    cursor: pointer;
+}
+/* Order Profit */
+.projprof {
+    background-color: #001072;
+    color: #ffffff;
+}
+.green, .greenprofit {
+    background-color: #00e947!important;
+    color: #000000 !important;
+}
+.red, .redprofit {
+    background-color: #ff0000!important;
+    color: #ffffff;
+}
+.black, .blackprofit {
+    background-color: #000000!important;
+    color: #ffffff;
+}
+.orange, .orangeprofit {
+    background-color: #ea8a0e!important;
+    color: #000000 !important;
+}
+.cancelprof {
+    background: #919191!important;
+    color: #000000;
+}
+.moroon, .moroonprofit {
+    background-color: #6d0303!important;
+    color: #ffffff;
+}
+.white, .whiteprofit {
+    background-color: #ffffff!important;
+    color: #000000;
 }

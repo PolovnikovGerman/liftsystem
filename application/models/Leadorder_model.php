@@ -8483,7 +8483,7 @@ Class Leadorder_model extends My_Model {
     }
 
     public function get_leadorder_amounts($order_id) {
-        $this->db->select('oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
+        $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->where('oa.order_id', $order_id);
@@ -8995,6 +8995,85 @@ Class Leadorder_model extends My_Model {
 
     }
 
+    public function remove_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $res=$this->payments_model->delete_amount($amount, $user_id, $brand);
+            if ($res==0) {
+                $out['msg']='Amount was not deleted';
+            } else {
+                $out['result']=$this->success_result;
+                // Get new total,
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function edit_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $order=$leadorder['order'];
+            $this->load->model('payments_model');
+            $res = $this->payments_model->get_purchase_order($amount);
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $out['amount'] = $res['data'];
+                $this->load->model('orders_model');
+                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+            }
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function amount_save($amntdata, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $amntdata['user_id']=$user_id;
+            $amntdata['brand'] = $brand;
+            $res=$this->payments_model->save_poamount($amntdata);
+            $out['msg']=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
