@@ -286,7 +286,8 @@ select.filterdata {
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .maincontent_view {
-        min-height: 41.75rem;
+        /* min-height: 41.75rem; */
+        min-height: 690px;
     }
     .vendordataview {
         max-width: 1080px;

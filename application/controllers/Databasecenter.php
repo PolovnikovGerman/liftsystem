@@ -142,7 +142,11 @@ class Databasecenter extends MY_Controller
                 $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link']=='#masterinventory') {
-
+                // $head['styles'][]=array('style'=>'/css/database_center/inventory_adaptive.css');
+                $head['styles'][]=array('style'=>'/css/database_center/master_inventory.css');
+                // $head['scripts'][]=array('src'=>'/js/database_center/inventory_adaptive.js');
+                $head['scripts'][]=array('src'=>'/js/database_center/master_inventory.js');
+                $content_options['inventoryview'] = $this->_prepare_inventory_view();
             } elseif ($row['item_link']=='#mastersettings') {
                 $head['styles'][] = array('style' => '/css/settings/countriesview.css');
                 $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
@@ -360,6 +364,27 @@ class Databasecenter extends MY_Controller
             'vendors' => $this->vendors_model->get_vendors(),
         ];
         $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_inventory_view() {
+        $this->load->model('inventory_model');
+        $invtypes = $this->inventory_model->get_inventory_types();
+        $idx=0;
+        $totalval = 0;
+        foreach ($invtypes as $invtype) {
+            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+            $totalval+=$stock;
+            $invtypes[$idx]['value'] = $stock;
+            $idx++;
+        }
+        $options = [
+            'invtypes' => $invtypes,
+            'active_type' => $invtypes[0]['inventory_type_id'],
+            'export_type' => $invtypes[0]['type_short'],
+            'total' => $totalval,
+        ];
+        $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
     }
 

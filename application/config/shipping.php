@@ -12,10 +12,10 @@ $config['default_pack_width']=24;
 $config['default_pack_heigth']=14;
 $config['default_pack_depth']=13;
 /* Library UPS configs */
-$config['ups_access_key']='5CA3326F77EB8502';
-$config['ups_account_username']='sean_bluetrack';
-$config['ups_account_password']='VtWmsUwUc1';
-$config['ups_account_number']='685020';
+$config['ups_access_key']='0DB6A3DB0A2D50C1';
+$config['ups_account_username']='Bluetrackship';
+$config['ups_account_password']='100443!retroblue';
+$config['ups_account_number']='084YR7';
 // $config['ups_transit_url']='https://onlinetools.ups.com/ups.app/xml/TimeInTransit';
 /* Current Version */
 //$config['ups_transit_url']='https://wwwcie.ups.com/webservices/TimeInTransit';
