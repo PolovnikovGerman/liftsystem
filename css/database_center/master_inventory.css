@@ -16,13 +16,24 @@
 .invtypebutton {
     background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
     color: #ffffff;
+    /*font-size: 15px;
+    font-weight: 600;
+    height: 35px;
+    line-height: 32px!important;
+     */
+    margin-right: 14px;
+    text-align: center;
+    width: 142px;
+}
+.invtypebutton span {
+    color: #ffffff;
     font-size: 15px;
     font-weight: 600;
     height: 35px;
     line-height: 32px!important;
-    margin-right: 14px;
-    text-align: center;
-    width: 142px;
+}
+.invtypebutton.oldver span {
+    margin-left: -6px;
 }
 .invtypebutton .oldvesionlabel {
     opacity: 0.6;
@@ -343,6 +354,7 @@
     /* width: 6.8%; */
     width: 69px;
     border-right: 1px solid #000000;
+    font-weight: 600;
 }
 .inventorydatarow .masterinventinstock.severevalstock,
 .inventorydatarow .masterinventavailab.severevalstock {
