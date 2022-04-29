@@ -17,7 +17,11 @@ class Masterinventory extends MY_Controller
             $mdata=[];
             $this->load->model('inventory_model');
             $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
-            $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list']],TRUE);
+            if (count($data['list'])==0) {
+                $mdata['content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);
+            } else {
+                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list']],TRUE);
+            }
             $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
             $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);
             $this->ajaxResponse($mdata,'');

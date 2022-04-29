@@ -16,18 +16,29 @@
 .invtypebutton {
     background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
     color: #ffffff;
-    font-size: 15px;
+    /*font-size: 15px;
     font-weight: 600;
     height: 35px;
     line-height: 32px!important;
+     */
     margin-right: 14px;
     text-align: center;
     width: 142px;
 }
+.invtypebutton span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    height: 35px;
+    line-height: 32px!important;
+}
+.invtypebutton.oldver span {
+    margin-left: -6px;
+}
 .invtypebutton .oldvesionlabel {
     opacity: 0.6;
     position: relative;
-    left: 47%;
+    left: 65px;
     background-color: #b53535;
     width: 12px;
     margin-top: 1px;
@@ -53,7 +64,7 @@
 .inventfilterselect {
     font-size: 14px;
     font-weight: normal;
-    height: 20px;
+    height: 24px;
     width: 128px;
 }
 .totalinvent {
@@ -147,6 +158,7 @@
 }
 .masterinventlegend {
     padding-top: 5px;
+    padding-left: 10px;
 }
 .masterinventlegend > div {
     height: 16px;
@@ -342,6 +354,24 @@
     /* width: 6.8%; */
     width: 69px;
     border-right: 1px solid #000000;
+    font-weight: 600;
+}
+.inventorydatarow .masterinventinstock.severevalstock,
+.inventorydatarow .masterinventavailab.severevalstock {
+    font-size: 11px!important;
+    font-weight: 600;
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventpercent.severevalstock {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventinstock.lowinstock,
+.inventorydatarow .masterinventavailab.lowinstock,
+.inventorydatarow .masterinventpercent.lowinstock {
+    background: #ff9900;
+    color: #000000;
 }
 .inventorydatarow .masterinventunit {
     /* width: 2.9%; */
@@ -369,16 +399,27 @@
     border-right: 2px solid #000000;
     padding-right: 6px;
 }
+.inventorydatarow .masterinventavgprice.emptytotal,
+.inventorydatarow .masterinventtotalval.emptytotal {
+    color: #c5c4c4;
+}
 .inventorydatarow .masterinventdetails {
     /* width: 4.82%; */
-    width: 54px;
+    width: 48px;
     font-weight: 600;
 }
-.lowinstock {
+/* .lowinstock {
     background: #ff9900;
     color: #000000;
-}
-.severevalstock {
+}*/
+/*.severevalstock {
     background: #FF0000;
     color: #ffffff;
+}*/
+.inventoryemptydata {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #FF0000;
+    font-weight: 600;
 }

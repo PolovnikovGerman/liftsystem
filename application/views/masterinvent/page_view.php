@@ -3,21 +3,21 @@
 <div class="inventorydataview">
     <div class="datarow">
         <div class="pagetitle">Master Inventory</div>
-        <div class="invtypebutton active">
+        <div class="invtypebutton active oldver">
+            <span>Purchasing</span>
             <div class="oldvesionlabel">&nbsp;</div>
-            Purchasing
         </div>
-        <div class="invtypebutton">
+        <div class="invtypebutton oldver">
+            <span>Manufacturing</span>
             <div class="oldvesionlabel">&nbsp;</div>
-            Manufacturing
         </div>
-        <div class="invtypebutton">
+        <div class="invtypebutton oldver">
+            <span>Printing</span>
             <div class="oldvesionlabel">&nbsp;</div>
-            Printing
         </div>
-        <div class="invtypebutton">
+        <div class="invtypebutton oldver">
+            <span>Assembly</span>
             <div class="oldvesionlabel">&nbsp;</div>
-            Assembly
         </div>
         <div class="inventfilterarea">
             <div class="datarow">
