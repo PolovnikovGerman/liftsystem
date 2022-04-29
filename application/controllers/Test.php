@@ -940,4 +940,75 @@ class Test extends CI_Controller
             echo 'Order # '.$result['order_num'].PHP_EOL;
         }
     }
+
+    public function addinventory() {
+        $lbsitem=[5,10];
+        $yrditem=[4,11];
+        $this->db->select('printshop_item_id, item_name');
+        $this->db->from('ts_printshop_items');
+        $this->db->limit(20);
+        $items = $this->db->get()->result_array();
+        $itemnum=1;
+        foreach ($items as $item) {
+            $unit='pc';
+            if (in_array($item['printshop_item_id'], $lbsitem)) {
+                $unit='lbs';
+            } elseif (in_array($item['printshop_item_id'],$yrditem)) {
+                $unit='yd';
+            }
+            $this->db->set('inventory_type_id', 1);
+            $this->db->set('item_num','SB-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
+            $this->db->set('item_name',$item['item_name']);
+            $this->db->set('item_order', $itemnum);
+            $this->db->set('item_unit', $unit);
+            $this->db->insert('ts_inventory_items');
+            $newitemid = $this->db->insert_id();
+            // Add colors
+            $this->db->select('*');
+            $this->db->from('ts_printshop_colors');
+            $this->db->where('printshop_item_id', $item['printshop_item_id']);
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                $this->db->set('inventory_item_id', $newitemid);
+                $this->db->set('color', $color['color']);
+                $this->db->set('color_order', $color['color_order']);
+                $this->db->set('price', $color['price']);
+                $this->db->set('color_unit', $unit);
+                $this->db->set('suggeststock', $color['suggeststock']);
+                $this->db->set('reserved', $color['reserved']);
+                $this->db->set('onroutestock', $color['onroutestock']);
+                $this->db->set('notreorder', $color['notreorder']);
+                $this->db->insert('ts_inventory_colors');
+                $newcolorid = $this->db->insert_id();
+                //  Get Income
+                $this->db->select('*');
+                $this->db->from('ts_printshop_instock');
+                $this->db->where('printshop_color_id', $color['printshop_color_id']);
+                $incomes = $this->db->get()->result_array();
+                foreach ($incomes as $income) {
+                    $this->db->set('inventory_color_id', $newcolorid);
+                    $this->db->set('income_date', $income['instock_date']);
+                    $this->db->set('income_qty', $income['instock_amnt']);
+                    $this->db->set('income_price', $color['price']);
+                    $this->db->set('income_description', $income['instock_descrip']);
+                    $this->db->insert('ts_inventory_incomes');
+                }
+                // Get outcome
+                $this->db->select('oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date');
+                $this->db->from('ts_order_amounts oa');
+                $this->db->join('ts_orders o','o.order_id=oa.order_id');
+                $this->db->where('printshop',1);
+                $this->db->where('printshop_color_id', $color['printshop_color_id']);
+                $outcomes = $this->db->get()->result_array();
+                foreach ($outcomes as $outcome) {
+                    $outqty = intval($outcome['shipped'])+intval($outcome['misprint'])+intval($outcome['kepted']);
+                    $this->db->set('inventory_color_id', $newcolorid);
+                    $this->db->set('outcome_date', $outcome['amount_date']);
+                    $this->db->set('outcome_qty', $outqty);
+                    $this->db->set('outcome_description','Order # '.$outcome['order_num']);
+                    $this->db->insert('ts_inventory_outcomes');
+                }
+            }
+        }
+    }
 }

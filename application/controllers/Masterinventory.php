@@ -14,7 +14,9 @@ class Masterinventory extends MY_Controller
             $postdata = $this->input->post();
             $mdata=[];
             $this->load->model('inventory_model');
-            $this->ajaxResponse($mdata);
+            $data = $this->inventory_model->get_masterinvent_list();
+            $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data],TRUE);
+            $this->ajaxResponse($mdata,'');
         }
         show_404();
     }

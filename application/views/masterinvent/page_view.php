@@ -98,7 +98,9 @@
                     <div class="masterinventdetails">Details</div>
                 </div>
             </div>
+            <div class="datarow">
+                <div class="masterinventtablebody"></div>
+            </div>
         </div>
-        <div class="masterinventtablebody"></div>
     </div>
 </div>
