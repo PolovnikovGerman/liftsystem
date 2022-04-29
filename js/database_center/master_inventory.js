@@ -30,5 +30,15 @@ function init_master_inventorycontent() {
         $(".mastinvent_left_section[data-invrtype='"+invent_type+"']").find('div.mastinvent_left_sectiondata').addClass('active');
         $(".masterinventexport").empty().html('<i class="fa fa-share-square-o" aria-hidden="true"></i> Export '+invlabel+' Inventory');
         init_master_inventorydata();
+    });
+    $(".mastinvent_left_section").hover(
+        function() {
+            $( this ).find('div.mastinvent_left_sectiondata').addClass('rawsbtype');
+        }, function() {
+            $( this ).find('div.mastinvent_left_sectiondata').removeClass('rawsbtype');
+        }
+    );
+    $(".inventfilterselect").unbind('change').change(function () {
+        init_master_inventorydata();
     })
 }

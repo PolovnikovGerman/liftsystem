@@ -23,13 +23,13 @@
             <div class="masterinventdescrip"><?=$list['description']?></div>
         <?php } ?>
         <div class="masterinventpercent <?=$list['stockclass']?>"><?=$list['percent'].'%'?></div>
-        <div class="masterinventinstock <?=$list['stockclass']?>"><?=empty($list['instock']) ? '&nbsp;' : QTYOutput($list['instock'])?></div>
-        <div class="masterinventreserv"><?=empty($list['reserved']) ? '&nbsp;' : QTYOutput($list['reserved'])?>&nbsp;</div>
-        <div class="masterinventavailab <?=$list['stockclass']?>"><?=empty($list['available']) ? '&nbsp;' : QTYOutput($list['available'])?></div>
+        <div class="masterinventinstock <?=$list['stockclass']?>"><?=$list['instock']?></div>
+        <div class="masterinventreserv"><?=empty($list['reserved']) ? '&nbsp;' : QTYOutput($list['reserved'])?></div>
+        <div class="masterinventavailab <?=$list['stockclass']?>"><?=$list['available']?></div>
         <div class="masterinventunit"><?=$list['unit']?></div>
         <div class="masterinventonorder"><?=empty($list['onorder']) ? '&nbsp;' : QTYOutput($list['onorder'])?></div>
-        <div class="masterinventavgprice"><?=empty($list['price']) ? '&nbsp;' : MoneyOutput($list['price'],3)?></div>
-        <div class="masterinventtotalval"><?=empty($list['total']) ? '&nbsp;' : MoneyOutput($list['total'])?></div>
+        <div class="masterinventavgprice <?=$list['totalclass']?>"><?=MoneyOutput($list['price'],3)?></div>
+        <div class="masterinventtotalval <?=$list['totalclass']?>"><?=MoneyOutput($list['total'])?></div>
         <?php if ($list['item_flag']==1) { ?>
             <div class="masterinventdetails itemdata" data-item="<?=$list['id']?>"><i class="fa fa-search"></i></div>
         <?php } else { ?>
