@@ -946,7 +946,7 @@ class Test extends CI_Controller
         $yrditem=[4,11];
         $this->db->select('printshop_item_id, item_name');
         $this->db->from('ts_printshop_items');
-        $this->db->limit(20);
+        $this->db->limit(10, 28);
         $items = $this->db->get()->result_array();
         $itemnum=1;
         foreach ($items as $item) {
@@ -956,8 +956,8 @@ class Test extends CI_Controller
             } elseif (in_array($item['printshop_item_id'],$yrditem)) {
                 $unit='yd';
             }
-            $this->db->set('inventory_type_id', 1);
-            $this->db->set('item_num','SB-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
+            $this->db->set('inventory_type_id', 4);
+            $this->db->set('item_num','SOT-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
             $this->db->set('item_name',$item['item_name']);
             $this->db->set('item_order', $itemnum);
             $this->db->set('item_unit', $unit);
@@ -969,10 +969,12 @@ class Test extends CI_Controller
             $this->db->where('printshop_item_id', $item['printshop_item_id']);
             $colors = $this->db->get()->result_array();
             foreach ($colors as $color) {
+                $diff = random_int(-15,15);
+                $newprice = round($color['price']*(100+$diff)/100,3);
                 $this->db->set('inventory_item_id', $newitemid);
                 $this->db->set('color', $color['color']);
                 $this->db->set('color_order', $color['color_order']);
-                $this->db->set('price', $color['price']);
+                $this->db->set('price', $newprice); // $color['price']
                 $this->db->set('color_unit', $unit);
                 $this->db->set('suggeststock', $color['suggeststock']);
                 $this->db->set('reserved', $color['reserved']);
@@ -989,7 +991,7 @@ class Test extends CI_Controller
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('income_date', $income['instock_date']);
                     $this->db->set('income_qty', $income['instock_amnt']);
-                    $this->db->set('income_price', $color['price']);
+                    $this->db->set('income_price', $newprice); // $color['price']
                     $this->db->set('income_description', $income['instock_descrip']);
                     $this->db->insert('ts_inventory_incomes');
                 }
@@ -1009,6 +1011,19 @@ class Test extends CI_Controller
                     $this->db->insert('ts_inventory_outcomes');
                 }
             }
+        }
+    }
+
+    public function updcolor_price() {
+        $this->db->select('*');
+        $this->db->from('ts_inventory_colors');
+        $colors = $this->db->get()->result_array();
+        foreach ($colors as $color) {
+            $diff = random_int(-15,15);
+            $newprice = round($color['price']*(100+$diff)/100,3);
+            $this->db->where('inventory_color_id', $color['inventory_color_id']);
+            $this->db->set('price', $newprice);
+            $this->db->update('ts_inventory_colors');
         }
     }
 }

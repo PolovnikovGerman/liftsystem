@@ -35,7 +35,7 @@
             <div class="datarow">
                 <div class="totalinvent">
                     <div class="totalinventlabel">Total Value:</div>
-                    <div class="totalinventvalue">$1,300,392.00</div>
+                    <div class="totalinventvalue"><?=!empty($total) ? MoneyOutput($total) : '&nbsp;'?></div>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
     <div class="datarow">
         <div class="mastinvent_left_menu">
             <?php foreach ($invtypes as $invtype) { ?>
-                <div class="mastinvent_left_section <?=$invtype['inventory_type_id']==$active_type ? 'active' : ''?>" data-invrtype="<?=$invtype['inventory_type_id']?>">
+                <div class="mastinvent_left_section <?=$invtype['inventory_type_id']==$active_type ? 'active' : ''?>" data-invrtype="<?=$invtype['inventory_type_id']?>" data-invlabel="<?=$invtype['type_short']?>">
                     <div class="mastinvent_left_sectiondata <?=$invtype['inventory_type_id']==$active_type ? 'active' : ''?> <?=$invtype['type_special']==1 ? 'rawsbtype' : ''?>">
                         <div class="inventsectionhead"><?=$invtype['type_short']?> - <?=$invtype['type_name']?></div>
                         <div class="inventsectionvalue">
@@ -75,8 +75,8 @@
             <div class="datarow">
                 <div class="masterinventtotals">
                     <div class="inventtotalmaxshow">Show Max</div>
-                    <div class="inventtotalinstock">910,545</div>
-                    <div class="inventtotalavailable">910,545</div>
+                    <div class="inventtotalinstock"></div>
+                    <div class="inventtotalavailable"></div>
                 </div>
             </div>
             <div class="datarow">

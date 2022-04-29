@@ -3,9 +3,10 @@
 class Inventory_model extends MY_Model
 {
 
-    private $outstockclass='outstock';
+    private $outstockclass='severevalstock';
     private $outstoklabel='Out of Stock';
-    private $lowstockclass='lowstock';
+    private $lowstockclass='lowinstock';
+    private $donotreorder = 'Do Not Reorder';
 
     function __construct()
     {
@@ -19,9 +20,11 @@ class Inventory_model extends MY_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_masterinvent_list() {
+    public function get_masterinvent_list($inventory_type, $inventory_filter) {
+        $type_instock = $type_available = 0;
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
+        $this->db->where('inventory_type_id', $inventory_type);
         $this->db->order_by('item_order');
         $items=$this->db->get()->result_array();
         $out = [];
@@ -44,6 +47,7 @@ class Inventory_model extends MY_Model
                 'onorder' => 0,
                 'price' => 0,
                 'total' => 0,
+                'noreorder' => 0,
             ];
             $itemidx = count($out) - 1;
             $sum_available = 0;
@@ -55,6 +59,11 @@ class Inventory_model extends MY_Model
             $this->db->select('*');
             $this->db->from('ts_inventory_colors');
             $this->db->where('inventory_item_id', $item['inventory_item_id']);
+            if ($inventory_filter==1) {
+                $this->db->where('color_status', 1);
+            } elseif ($inventory_filter==2) {
+                $this->db->where('color_status',0);
+            }
             $this->db->order_by('color_order');
             $colors = $this->db->get()->result_array();
             $color_seq = 1;
@@ -85,20 +94,21 @@ class Inventory_model extends MY_Model
                     'id' => $color['inventory_color_id'],
                     'item_id' => $item['inventory_item_id'],
                     'item_flag' =>0,
-                    'status' => ($color['color_status']==1 ? 'Active' : 'Inactive'),
+                    'status' => ($color['notreorder']==1 ? $this->donotreorder : ($color['color_status']==1 ? 'Active' : 'Inactive')),
                     'item_seq' => $color['color_order'], // $color_seq,
                     'item_code' => '',
                     'description' => $color['color'],
                     'max' => $max,
                     'percent' => $stockperc,
                     'stockclass' => $stockclass,
-                    'instock' => $instock,
+                    'instock' => ($stockclass==$this->outstockclass ? $this->outstoklabel : $instock),
                     'reserved' => $reserved,
-                    'available' => $available,
+                    'available' => ($stockclass==$this->outstockclass ? $this->outstoklabel : $available),
                     'unit' => $color['color_unit'],
                     'onorder' => 0, // ????
                     'price' => $color['price'],
                     'total' => $available*$color['price'],
+                    'noreorder' => $color['notreorder'],
                 ];
                 $color_seq++;
                 // Calc totals
@@ -120,12 +130,19 @@ class Inventory_model extends MY_Model
             $out[$itemidx]['instock'] = $sum_instock;
             $out[$itemidx]['reserved'] = $sum_reserved;
             $out[$itemidx]['available'] = $sum_available;
+            $type_instock += $sum_instock;
+            $type_available += $sum_available;
             if ($sum_available!=0) {
                 $out[$itemidx]['price'] = round($total_invent / $sum_available,3);
             }
             $out[$itemidx]['total'] = $total_invent;
         }
-        return $out;
+        return
+            [
+                'type_instock' => $type_instock,
+                'type_available' => $type_available,
+                'list' => $out,
+            ];
     }
 
     public function inventory_color_income($inventory_color_id) {
@@ -174,6 +191,25 @@ class Inventory_model extends MY_Model
             $reserved = intval($reserv['reserved']);
         }
         return $reserved;
+    }
+
+    public function get_inventtype_stock($inventory_type_id) {
+        $this->db->select('inventory_color_id, sum(income_qty) as qty_in');
+        $this->db->from('ts_inventory_incomes');
+        $this->db->group_by('inventory_color_id');
+        $incomesql = $this->db->get_compiled_select();
+        $this->db->select('inventory_color_id, sum(outcome_qty) as qty_out');
+        $this->db->from('ts_inventory_outcomes');
+        $this->db->group_by('inventory_color_id');
+        $outcomesql = $this->db->get_compiled_select();
+        $this->db->select('sum((coalesce(invincom.qty_in,0)-coalesce(invoutcom.qty_out,0))*colors.price) as total');
+        $this->db->from('ts_inventory_colors colors');
+        $this->db->join('ts_inventory_items items','items.inventory_item_id=colors.inventory_item_id');
+        $this->db->join('('.$incomesql.') invincom','invincom.inventory_color_id=colors.inventory_color_id','left');
+        $this->db->join('('.$outcomesql.') invoutcom','invoutcom.inventory_color_id=colors.inventory_color_id','left');
+        $this->db->where('items.inventory_type_id', $inventory_type_id);
+        $res = $this->db->get()->row_array();
+        return floatval($res['total']);
     }
 
 }

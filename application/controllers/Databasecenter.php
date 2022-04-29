@@ -371,14 +371,18 @@ class Databasecenter extends MY_Controller
         $this->load->model('inventory_model');
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;
+        $totalval = 0;
         foreach ($invtypes as $invtype) {
-            $invtypes[$idx]['value'] = 692500;
+            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+            $totalval+=$stock;
+            $invtypes[$idx]['value'] = $stock;
             $idx++;
         }
         $options = [
             'invtypes' => $invtypes,
             'active_type' => $invtypes[0]['inventory_type_id'],
             'export_type' => $invtypes[0]['type_short'],
+            'total' => $totalval,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
