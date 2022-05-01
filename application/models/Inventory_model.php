@@ -21,7 +21,7 @@ class Inventory_model extends MY_Model
     }
 
     public function get_masterinvent_list($inventory_type, $inventory_filter) {
-        $type_instock = $type_available = 0;
+        $type_instock = $type_available = $type_maximum = 0;
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
         $this->db->where('inventory_type_id', $inventory_type);
@@ -160,6 +160,7 @@ class Inventory_model extends MY_Model
                 $out[$itemidx]['available'] = QTYOutput($sum_available);
                 $type_instock += $sum_instock;
                 $type_available += $sum_available;
+                $type_maximum += $sum_max;
                 if ($sum_available!=0) {
                     $out[$itemidx]['price'] = round($total_invent / $sum_available,3);
                 }
@@ -170,6 +171,7 @@ class Inventory_model extends MY_Model
             [
                 'type_instock' => $type_instock,
                 'type_available' => $type_available,
+                'type_maximum' => $type_maximum,
                 'list' => $out,
             ];
     }

@@ -11,7 +11,8 @@
     margin-left: 4px;
     font-size: 24px;
     font-weight: bold;
-    width: 426px;
+    /* width: 426px; */
+    width: 402px;
 }
 .invtypebutton {
     background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
@@ -58,6 +59,7 @@
     line-height: 20px;
     padding-right: 5px;
     width: 140px;
+    margin-bottom: 6px;
 }
 .inventfilterdata {
 }
@@ -73,7 +75,7 @@
     height: 31px;
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 7px;
     margin-left: 29px;
 }
 .totalinvent > div {
@@ -195,11 +197,17 @@
     margin-left: 435px;
     margin-top: -8px;
     color: #8989ff;
-    width: 28px;
+    width: 35px;
     text-align: center;
     cursor: pointer;
     font-size: 11px;
 
+}
+.masterinventtotals .inventtotalmaximum {
+    width: 75px;
+    text-align: center;
+    display: none;
+    color: #8989ff;
 }
 .masterinventtotals .inventtotalinstock {
     width: 69px;
@@ -241,6 +249,11 @@
 .masterinventtablehead .masterinventpercent {
     width: 42px;
 }
+.masterinventtablehead .masterinventorymaximum {
+    display: none;
+    width: 72px;
+    color: #8989ff;
+}
 .masterinventtablehead .masterinventinstock {
     width: 69px;
 }
@@ -256,6 +269,10 @@
 .masterinventtablehead .masterinventonorder {
     width: 85px;
 }
+.masterinventtablehead .masterinventonmax {
+    width: 14px;
+    display: none;
+}
 .masterinventtablehead .masterinventavgprice {
     width: 66px;
 }
@@ -269,7 +286,7 @@
     background: #ffffff;
     color: #000000;
     width: 100%;
-    max-height: 510px;
+    max-height: 525px;
     overflow-y: auto;
     overflow-x: hidden;
     border-left: 1px solid #000000;
@@ -340,6 +357,16 @@
     width: 42px;
     border-right: 1px solid #000000;
 }
+.inventorydatarow .masterinventmaximum {
+    color: #0000FF;
+    width: 70px;
+    border-left: 2px solid #0000FF;
+    border-right: 2px solid #0000FF;
+    display: none;
+}
+.inventorydatarow.masteritem .masterinventmaximum {
+    font-weight: 600;
+}
 .inventorydatarow .masterinventinstock {
     /* width: 6.8%; */
     width: 69px;
@@ -384,6 +411,11 @@
     background: #252525;
     text-align: left;
     padding-left: 5px;
+}
+.inventorydatarow .masterinventonmax {
+    width: 14px;
+    background: #252525;
+    display: none;
 }
 .inventorydatarow .masterinventavgprice {
     /* width: 6.4%; */

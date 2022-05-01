@@ -14,16 +14,18 @@ class Masterinventory extends MY_Controller
             $postdata = $this->input->post();
             $inventory_type = ifset($postdata,'inventory_type',0);
             $inventory_filter = ifset($postdata,'inventory_filter',0);
+            $showmax = ifset($postdata,'showmax', 0);
             $mdata=[];
             $this->load->model('inventory_model');
             $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
             if (count($data['list'])==0) {
                 $mdata['content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);
             } else {
-                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list']],TRUE);
+                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list'],'showmax' => $showmax],TRUE);
             }
             $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
             $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);
+            $mdata['maximum'] = empty($data['type_maximum']) ? '' : QTYOutput($data['type_maximum']);
             $this->ajaxResponse($mdata,'');
         }
         show_404();
