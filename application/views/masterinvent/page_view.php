@@ -75,6 +75,7 @@
             <div class="datarow">
                 <div class="masterinventtotals">
                     <div class="inventtotalmaxshow">Show Max</div>
+                    <div class="inventtotalmaximum"></div>
                     <div class="inventtotalinstock"></div>
                     <div class="inventtotalavailable"></div>
                 </div>
@@ -88,11 +89,13 @@
                     <div class="masterinventnumber">Master #</div>
                     <div class="masterinventdescrip">Description</div>
                     <div class="masterinventpercent">%</div>
+                    <div class="masterinventorymaximum">Maximum</div>
                     <div class="masterinventinstock">In Stock</div>
                     <div class="masterinventreserv">Reserved</div>
                     <div class="masterinventavailab">Available</div>
                     <div class="masterinventunit">Unit</div>
                     <div class="masterinventonorder">On Order</div>
+                    <div class="masterinventonmax">&nbsp;</div>
                     <div class="masterinventavgprice">Avg Price</div>
                     <div class="masterinventtotalval">Total Value</div>
                     <div class="masterinventdetails">Details</div>

@@ -22,12 +22,18 @@
             <div class="masterinventnumber colordata" data-color="<?=$list['id']?>"><i class="fa fa-pencil"></i></div>
             <div class="masterinventdescrip"><?=$list['description']?></div>
         <?php } ?>
-        <div class="masterinventpercent <?=$list['stockclass']?>"><?=$list['percent'].'%'?></div>
+        <div class="masterinventpercent <?=$list['stockclass']?>" style="border-right: <?=$showmax==1 ? 'none' : '1px solid #000000'?>">
+            <?=$list['percent'].'%'?>
+        </div>
+        <div class="masterinventmaximum" style="display: <?=$showmax==1 ? 'block' : 'none'?>"><?=empty($list['max']) ? '&nbsp;' : QTYOutput($list['max'])?></div>
         <div class="masterinventinstock <?=$list['stockclass']?>"><?=$list['instock']?></div>
         <div class="masterinventreserv"><?=empty($list['reserved']) ? '&nbsp;' : QTYOutput($list['reserved'])?></div>
         <div class="masterinventavailab <?=$list['stockclass']?>"><?=$list['available']?></div>
         <div class="masterinventunit"><?=$list['unit']?></div>
-        <div class="masterinventonorder"><?=empty($list['onorder']) ? '&nbsp;' : QTYOutput($list['onorder'])?></div>
+        <div class="masterinventonorder" style="display: <?=$showmax==1 ? 'none' : 'block'?>">
+            <?=empty($list['onorder']) ? '&nbsp;' : QTYOutput($list['onorder'])?>
+        </div>
+        <div class="masterinventonmax" style="display: <?=$showmax==1 ? 'block' : 'none'?>">&nbsp;</div>
         <div class="masterinventavgprice <?=$list['totalclass']?>"><?=MoneyOutput($list['price'],3)?></div>
         <div class="masterinventtotalval <?=$list['totalclass']?>"><?=MoneyOutput($list['total'])?></div>
         <?php if ($list['item_flag']==1) { ?>
