@@ -54,12 +54,14 @@
 }
 .inventfilterarea {
     width: 271px;
+    margin-top: -12px;
+    margin-left: 17px;
 }
 .inventfilterlabel {
     font-size: 14px;
     text-align: right;
     height: 28px;
-    line-height: 20px;
+    line-height: 22px;
     padding-right: 5px;
     width: 140px;
     margin-bottom: 6px;
@@ -159,7 +161,7 @@
 }
 .mastinvent_databody {
     background: #252525;
-    width: 1045px;
+    width: 1050px;
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
