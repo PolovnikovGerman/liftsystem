@@ -1,3 +1,6 @@
+.dbcontentarea#inventoryview {
+    height: 1200px;
+}
 .inventorydataview {
     margin-top: 17px;
     margin-left: 10px;
@@ -156,7 +159,10 @@
 }
 .mastinvent_databody {
     background: #252525;
-    width: 1034px;
+    width: 1045px;
+    padding-left: 12px;
+    padding-bottom: 12px;
+    padding-right: 6px;
 }
 .masterinventlegend {
     padding-top: 5px;
@@ -286,7 +292,7 @@
     background: #ffffff;
     color: #000000;
     width: 100%;
-    max-height: 525px;
+    max-height: 990px;
     overflow-y: auto;
     overflow-x: hidden;
     border-left: 1px solid #000000;
