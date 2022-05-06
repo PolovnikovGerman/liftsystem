@@ -34,7 +34,7 @@
             <?=empty($list['onorder']) ? '&nbsp;' : QTYOutput($list['onorder'])?>
         </div>
         <div class="masterinventonmax" style="display: <?=$showmax==1 ? 'block' : 'none'?>">&nbsp;</div>
-        <div class="masterinventavgprice <?=$list['totalclass']?>"><?=MoneyOutput($list['price'],3)?></div>
+        <div class="masterinventavgprice <?=$list['totalclass']?>" data-item="<?=$list['id']?>"><?=MoneyOutput($list['price'],3)?></div>
         <div class="masterinventtotalval <?=$list['totalclass']?>"><?=MoneyOutput($list['total'])?></div>
         <?php if ($list['item_flag']==1) { ?>
             <div class="masterinventdetails itemdata" data-item="<?=$list['id']?>"><i class="fa fa-search"></i></div>
