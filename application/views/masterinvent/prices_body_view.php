@@ -1,3 +1,4 @@
+<input type="hidden" id="priceslistshowused" value="0"/>
 <div class="inventoryprice_body_content">
     <div class="inventoryprice_table_head">
         <div class="inventoryincome_date">
@@ -12,24 +13,9 @@
         <div class="inventoryincome_leftqty">Qty Left</div>
         <div class="inventoryincome_lefttotal">Value Left</div>
     </div>
-    <div class="inventoryprice_table_body">
-        <?php $numrow = 0; ?>
-        <?php foreach ($lists as $list) { ?>
-            <div class="inventoryprice_table_row <?= $numrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ?>">
-                <div class="inventoryincome_date"><?= date('m/d/y', $list['income_date']) ?></div>
-                <div class="inventoryincome_recnum"><?=$list['income_record']?></div>
-                <div class="inventoryincome_descript"><?= $list['income_description'] ?></div>
-                <div class="inventoryincome_price"><?= $list['income_price'] ?></div>
-                <div class="inventoryincome_incomeqty"><?= QTYOutput($list['income_qty']) ?></div>
-                <div class="inventoryincome_divide">&nbsp;</div>
-                <div class="inventoryincome_leftqty"><?= QTYOutput($list['income_left']) ?></div>
-                <div class="inventoryincome_lefttotal"><?=MoneyOutput($list['income_left_total'])?></M></div>
-            </div>
-            <?php $numrow++; ?>
-        <?php } ?>
-    </div>
+    <div class="inventoryprice_table_body"><?=$tablebody?></div>
     <div class="inventoryprice_total_left">
-        <div class="viewbalancesused">+ view balances used</div>
+        <div class="viewbalancesused" data-item="<?=$item['inventory_color_id']?>">+ view balances used</div>
     </div>
     <div class="inventoryprice_total_right">
         <div class="datarow">

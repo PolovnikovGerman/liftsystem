@@ -1068,6 +1068,7 @@ class Test extends CI_Controller
                     $this->db->set('outcome_qty', $qtyout);
                     $this->db->set('outcome_description','Order # '.$outcome['order_num']);
                     $this->db->set('outcome_record', $recnum);
+                    $this->db->set('order_id', $outcome['order_id']);
                     $this->db->insert('ts_inventory_outcomes');
                     // Update balance
                     $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');

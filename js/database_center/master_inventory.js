@@ -124,6 +124,30 @@ function init_itemcolor_popup() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".viewbalancesused").unbind('click').click(function () {
+        var showused=0;
+        if ($("#priceslistshowused").val()==0) {
+            showused=1;
+        }
+        $("#priceslistshowused").val(showused);
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        params.push({name: 'showused', value: showused});
+        var url = '/masterinventory/get_color_showused';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (showused==1) {
+                    $(".inventoryprice_table_body").addClass('showused').empty().html(response.data.content);
+                    $(".viewbalancesused").empty().html('- hide balances used');
+                } else {
+                    $(".inventoryprice_table_body").removeClass('showused').empty().html(response.data.content);
+                    $(".viewbalancesused").empty().html('+ view balances used');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 

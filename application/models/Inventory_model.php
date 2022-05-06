@@ -246,7 +246,7 @@ class Inventory_model extends MY_Model
         return floatval($res['total']);
     }
 
-    public function get_masterinventory_color($inventory_color_id) {
+    public function get_masterinventory_color($inventory_color_id, $showhiden=0) {
         $out=['result' => $this->error_result, 'msg' => 'Item / color not exist'];
         $this->db->select('c.color, i.item_num, item_name, c.inventory_color_id');
         $this->db->from('ts_inventory_colors c');
@@ -261,13 +261,24 @@ class Inventory_model extends MY_Model
             $this->db->from('ts_inventory_incomes');
             $this->db->where('inventory_color_id', $inventory_color_id);
             $this->db->order_by('income_date desc');
+            if ($showhiden==0) {
+                $this->db->having('income_left > 0');
+            }
             $lists = $this->db->get()->result_array();
-            $out['lists'] = $lists;
             $balance_qty = $balance_total = 0;
+            $idx=0;
             foreach ($lists as $list) {
                 $balance_qty += ($list['income_qty']-$list['income_expense']); // Add outcome
                 $balance_total+= ($list['income_qty']-$list['income_expense'])*$list['income_price'];
+                $lists[$idx]['rowclass']='';
+                if ($list['income_left'] > 0 &&  $list['income_qty']!==$list['income_left']) {
+                    $lists[$idx]['rowclass']='lastrow';
+                } elseif ($list['income_left']==0) {
+                    $lists[$idx]['rowclass']='used';
+                }
+                $idx++;
             }
+            $out['lists'] = $lists;
             $totals = [
                 'balance_qty' => $balance_qty,
                 'balance_total' => $balance_total,

@@ -44,9 +44,11 @@ class Masterinventory extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['wintitle'] = $this->load->view('masterinvent/prices_head_view', $res['itemdata'],TRUE);
+                    $tablebody = $this->load->view('masterinvent/prices_table_body',['lists' => $res['lists']], TRUE);
                     $options = [
-                        'lists' => $res['lists'],
+                        'tablebody' => $tablebody,
                         'totals' => $res['totals'],
+                        'item' => $res['itemdata'],
                     ];
                     $mdata['winbody'] = $this->load->view('masterinvent/prices_body_view', $options, TRUE);
                 }
@@ -78,6 +80,27 @@ class Masterinventory extends MY_Controller
             $this->ajaxResponse($mdata,$error);
         }
         show_404();
+    }
+
+    public function get_color_showused() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $showused = ifset($postdata,'showused', 0);
+            $mdata = [];
+            $error = 'Non exist Item / Color';
+            if (!empty($coloritem)) {
+                $res = $this->inventory_model->get_masterinventory_color($coloritem, $showused);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('masterinvent/prices_table_body',['lists' => $res['lists']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+
     }
 
 }
