@@ -1113,7 +1113,9 @@ class Test extends CI_Controller
                 }
                 echo 'Color '.$color['color'].' added successfully '.PHP_EOL;
             }
+            $itemnum++;
         }
+        $this->updcolor_price();
     }
 
     public function updcolor_price() {
