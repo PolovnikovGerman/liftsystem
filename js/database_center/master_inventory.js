@@ -15,6 +15,7 @@ function init_master_inventorydata() {
             $(".inventtotalinstock").empty().html(response.data.instock);
             $(".inventtotalavailable").empty().html(response.data.available);
             $(".inventtotalmaximum").empty().html(response.data.maximum);
+            init_master_inventorytabledat();
         } else {
             show_error(response)
         }
@@ -72,5 +73,103 @@ function init_master_inventorycontent() {
             $(".inventorydatarow").find('div.masterinventonmax').hide();
         }
 
+    })
+}
+
+function init_master_inventorytabledat() {
+    $(".inventorydatarow.itemcolor").hover(
+        function () {
+            $(this).addClass('activeinvent');
+        },
+        function () {
+            $(this).removeClass('activeinvent');
+        }
+    );
+    $(".inventorydatarow.itemcolor").find("div.masterinventavgprice").unbind('click').click(function () {
+        var item=$(this).data('item');
+        var params = new Array();
+        params.push({name: 'itemcolor', value: item});
+        var url='/masterinventory/get_color_inventory';
+        $.post(url,params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventPriceLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventPrice").modal({keyboard: false, show: true});
+                init_itemcolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_itemcolor_popup() {
+    $("#modalEditInventPrice").find('button.close').unbind('click').click(function () {
+        init_master_inventorydata();
+    });
+    $(".priceheadhistorylnk").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        var url='/masterinventory/get_color_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // Close Color data
+                $("#modalEditInventPrice").modal('hide');
+                // Show History window
+                $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventHistory").modal({keyboard: false, show: true});
+                init_colorhistory_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".viewbalancesused").unbind('click').click(function () {
+        var showused=0;
+        if ($("#priceslistshowused").val()==0) {
+            showused=1;
+        }
+        $("#priceslistshowused").val(showused);
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        params.push({name: 'showused', value: showused});
+        var url = '/masterinventory/get_color_showused';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (showused==1) {
+                    $(".inventoryprice_table_body").addClass('showused').empty().html(response.data.content);
+                    $(".viewbalancesused").empty().html('- hide balances used');
+                } else {
+                    $(".inventoryprice_table_body").removeClass('showused').empty().html(response.data.content);
+                    $(".viewbalancesused").empty().html('+ view balances used');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_colorhistory_popup() {
+    $("#modalEditInventHistory").find('button.close').unbind('click').click(function () {
+        init_master_inventorydata();
+    });
+    $(".inventoryhistory_view_prices").unbind('click').click(function () {
+        var item=$(this).data('item');
+        var params = new Array();
+        params.push({name: 'itemcolor', value: item});
+        var url='/masterinventory/get_color_inventory';
+        $.post(url,params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventHistory").modal('hide');
+                $("#modalEditInventPriceLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventPrice").modal({keyboard: false, show: true});
+                init_itemcolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }

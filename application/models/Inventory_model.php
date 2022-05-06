@@ -7,6 +7,9 @@ class Inventory_model extends MY_Model
     private $outstoklabel='Out of Stock';
     private $lowstockclass='lowinstock';
     private $donotreorder = 'Do Not Reorder';
+    private $bt_label = 'Bluetrack Legacy';
+    private $sb_label = 'StressBalls.com';
+    private $sr_label = 'StressRelievers';
 
     function __construct()
     {
@@ -241,6 +244,103 @@ class Inventory_model extends MY_Model
         $this->db->where('items.inventory_type_id', $inventory_type_id);
         $res = $this->db->get()->row_array();
         return floatval($res['total']);
+    }
+
+    public function get_masterinventory_color($inventory_color_id, $showhiden=0) {
+        $out=['result' => $this->error_result, 'msg' => 'Item / color not exist'];
+        $this->db->select('c.color, i.item_num, item_name, c.inventory_color_id');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('c.inventory_color_id', $inventory_color_id);
+        $itemdat = $this->db->get()->row_array();
+        if (isset($itemdat['inventory_color_id'])) {
+            $out['result'] = $this->success_result;
+            $out['itemdata'] = $itemdat;
+            // Get List
+            $this->db->select('*, (income_qty-income_expense) as income_left, (income_qty-income_expense)*income_price as income_left_total');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $inventory_color_id);
+            $this->db->order_by('income_date desc');
+            if ($showhiden==0) {
+                $this->db->having('income_left > 0');
+            }
+            $lists = $this->db->get()->result_array();
+            $balance_qty = $balance_total = 0;
+            $idx=0;
+            foreach ($lists as $list) {
+                $balance_qty += ($list['income_qty']-$list['income_expense']); // Add outcome
+                $balance_total+= ($list['income_qty']-$list['income_expense'])*$list['income_price'];
+                $lists[$idx]['rowclass']='';
+                if ($list['income_left'] > 0 &&  $list['income_qty']!==$list['income_left']) {
+                    $lists[$idx]['rowclass']='lastrow';
+                } elseif ($list['income_left']==0) {
+                    $lists[$idx]['rowclass']='used';
+                }
+                $idx++;
+            }
+            $out['lists'] = $lists;
+            $totals = [
+                'balance_qty' => $balance_qty,
+                'balance_total' => $balance_total,
+                'avg_price' => ($balance_qty==0 ? 0 : round($balance_total/$balance_qty,3)),
+            ];
+            $out['totals'] = $totals;
+        }
+        return $out;
+    }
+
+    public function get_masterinventory_colorhistory($inventory_color_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Item / color not exist'];
+        $this->db->select('c.color, i.item_num, item_name, c.inventory_color_id');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('c.inventory_color_id', $inventory_color_id);
+        $itemdat = $this->db->get()->row_array();
+        if (isset($itemdat['inventory_color_id'])) {
+            $out['result'] = $this->success_result;
+            $out['itemdata'] = $itemdat;
+            $this->db->select('*');
+            $this->db->from('v_inventory_instock');
+            $this->db->where('color_id', $inventory_color_id);
+            $this->db->order_by('instock_date','desc');
+            $stocks = $this->db->get()->result_array();
+            $lists = [];
+            foreach ($stocks as $stock) {
+                $descrip = $stock['instock_description'];
+                if ($stock['instock_type']=='O' && $stock['brand']!='M') {
+                    $descrip='<span>Order - </span>';
+                    if ($stock['brand']=='BT') {
+                        $descrip.=$this->bt_label;
+                    } elseif ($stock['brand']=='SB') {
+                        $descrip.=$this->sb_label;
+                    } else {
+                        $descrip.=$this->sr_label;
+                    }
+                }
+                $lists[]=[
+                    'id' => $stock['instock_id'],
+                    'type' => $stock['instock_type'],
+                    'date' => $stock['instock_date'],
+                    'record' => $stock['instock_record'],
+                    'description' => $descrip,
+                    'amount' => $stock['instock_qty'],
+                    'balance' => 0,
+                ];
+            }
+            // Calc balance
+            $listcnt = count($lists) - 1;
+            $balance = 0;
+            for ($i=$listcnt; $i>=0; $i--) {
+                if ($lists[$i]['type']=='O') {
+                    $balance-=$lists[$i]['amount'];
+                } else {
+                    $balance+=$lists[$i]['amount'];
+                }
+                $lists[$i]['balance']=$balance;
+            }
+            $out['lists'] = $lists;
+        }
+        return $out;
     }
 
 }

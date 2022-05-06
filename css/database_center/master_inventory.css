@@ -354,6 +354,14 @@
     float: right!important;
     padding-right: 4px;
 }
+.inventorydatarow.itemcolor.activeinvent {
+    background: #FFFF00;
+}
+.inventorydatarow.itemcolor.activeinvent .masterinventavgprice {
+    color: #0000FF;
+    font-weight: 600;
+    cursor: pointer;
+}
 .inventorydatarow.itemcolor .masterinventdescrip {
     text-align: right;
     padding-left: 0;
@@ -448,18 +456,334 @@
     width: 48px;
     font-weight: 600;
 }
-/* .lowinstock {
-    background: #ff9900;
-    color: #000000;
-}*/
-/*.severevalstock {
-    background: #FF0000;
-    color: #ffffff;
-}*/
 .inventoryemptydata {
     width: 100%;
     text-align: center;
     font-size: 14px;
     color: #FF0000;
     font-weight: 600;
+}
+/* POPUP Price View */
+#modalEditInventPrice .modal-dialog {
+    width: 680px;
+    max-width: 680px;
+}
+#modalEditInventPrice .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    float: left;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventPrice .modal-header h4 {
+    line-height: 32px;
+    color: #879213;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+}
+#modalEditInventPrice .modal-header h4 span.priceheadhistorylnk {
+    color: #ffffff;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 32px;
+    float: right!important;
+    cursor: pointer;
+}
+#modalEditInventPrice .modal-header h4 span.priceitemdata {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventPrice .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    /* padding-top: 1.1rem; */
+    padding: 0!important;
+    margin: 4px 8px 8px 8px;
+}
+#modalEditInventPrice .modal-body {
+    background: #2635ff;
+    padding: 0 12px 12px 12px;
+}
+#modalEditInventPrice .modal-body div {
+    float: left;
+}
+.inventoryprice_body_content {
+    background: #ffffff;
+    width: 100%;
+    height: 316px;
+}
+.inventoryprice_table_head {
+    width: 100%;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventoryprice_table_head > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryprice_table_head .inventoryincome_date {
+    width: 71px;
+    text-align: left;
+}
+.inventoryprice_table_head .inventoryincome_date span {
+    color: #797979;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.inventoryprice_table_head .inventoryincome_recnum {
+    width: 55px;
+}
+.inventoryprice_table_head .inventoryincome_descript {
+    width: 212px;
+}
+.inventoryprice_table_head .inventoryincome_price {
+    width: 53px;
+}
+.inventoryprice_table_head .inventoryincome_incomeqty {
+    width: 59px;
+}
+.inventoryprice_table_head .inventoryincome_divide {
+    width: 11px;
+}
+.inventoryprice_table_head .inventoryincome_leftqty {
+    width: 60px;
+}
+.inventoryprice_table_head .inventoryincome_lefttotal {
+    width: 82px;
+}
+.inventoryprice_table_body {
+    width: 100%;
+    /* max-height: 229px; */
+    max-height: 95px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    /* border-bottom: 1px solid #000000; */
+}
+.inventoryprice_table_body.showused {
+    max-height: 185px;
+    border-bottom: 1px solid #000000;
+}
+.inventoryprice_table_row {
+    width: 100%;
+}
+.inventoryprice_table_row.lastrow {
+    border-bottom: 2px solid #000000;
+}
+.inventoryprice_table_row.used {
+    color: #939394;
+}
+.inventoryprice_table_row > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryprice_table_row .inventoryincome_date {
+    width: 71px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_recnum {
+    width: 55px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_descript {
+    width: 212px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_price {
+    width: 53px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_incomeqty {
+    width: 59px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_divide {
+    width: 11px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_leftqty {
+    width: 60px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row.lastrow .inventoryincome_leftqty {
+    color: #0000FF;
+}
+.inventoryprice_table_row .inventoryincome_lefttotal {
+    width: 82px;
+}
+.inventoryprice_total_left {
+    width: 330px;
+    padding-left: 7px;
+    padding-top: 6px;
+}
+.viewbalancesused {
+    color: #0000ff;
+    font-size: 13px;
+    font-style: italic;
+    cursor: pointer;
+}
+.inventoryprice_total_right {
+    padding-top: 3px;
+}
+.inventoryprice_total_right .datarow > div {
+    height: 22px;
+    line-height: 22px;
+}
+.inventoryprice_total_right .inventoryprice_total_label {
+    width: 135px;
+    margin-right: 13px;
+    text-align: right;
+    font-size: 13px;
+}
+.inventoryprice_total_right .inventoryprice_total_value {
+    font-size: 13px;
+    font-weight: 600;
+}
+/* History view */
+#modalEditInventHistory .modal-dialog {
+    width: 520px;
+    max-width: 520px;
+}
+#modalEditInventHistory .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    float: left;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventHistory .modal-header h4 {
+    line-height: 32px;
+    color: #879213;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+}
+#modalEditInventHistory .modal-header h4 span.priceitemdata {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventHistory .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    /* padding-top: 1.1rem; */
+    padding: 0!important;
+    margin: 4px 8px 8px 8px;
+}
+#modalEditInventHistory .modal-body {
+    background: #2635ff;
+    padding: 0 12px 12px 12px;
+}
+#modalEditInventHistory .modal-body div {
+    float: left;
+}
+.inventoryhistory_body_content {
+    background: #ffffff;
+    width: 100%;
+    height: 426px;
+}
+.inventoryhistory_table_head {
+    width: 100%;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventoryhistory_table_head > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryhistory_table_head .instock_date {
+    width: 71px;
+    text-align: left;
+}
+.inventoryhistory_table_head .instock_date span {
+    color: #797979;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.inventoryhistory_table_head .instock_recnum {
+    width: 62px;
+}
+.inventoryhistory_table_head .instock_descript {
+    width: 183px;
+}
+.inventoryhistory_table_head .instock_amount {
+    width: 72px;
+}
+.inventoryhistory_table_head .instock_balance {
+    width: 77px;
+}
+.inventoryhistory_table_body {
+    width: 100%;
+    /* max-height: 229px; */
+    max-height: 370px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.inventoryhistory_table_row {
+    width: 100%;
+}
+.inventoryhistory_table_row > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryhistory_table_row .instock_date {
+    width: 71px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_recnum {
+    width: 62px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_descript {
+    width: 183px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_descript span {
+    color: #8e8e8e;
+}
+.inventoryhistory_table_row .instock_amount {
+    width: 72px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_amount.negative {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventoryhistory_table_row .instock_balance {
+    width: 77px;
+}
+.inventoryhistory_view_prices {
+    float: right!important;
+    margin-top: 5px;
+    margin-right: 8px;
+    font-size: 12px;
+    font-style: italic;
+    color: #FF0000;
+    cursor: pointer;
 }
