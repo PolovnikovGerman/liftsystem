@@ -946,11 +946,11 @@ class Test extends CI_Controller
         $yrditem=[4,11, 15, 21];
         $this->db->select('printshop_item_id, item_name');
         $this->db->from('ts_printshop_items');
-        $this->db->limit(10,28);
+        $this->db->limit(20);
         $items = $this->db->get()->result_array();
         $itemnum=1;
-        $type_sh = 'SOT';
-        $type_id = 4;
+        $type_sh = 'SSB';
+        $type_id = 1;
         foreach ($items as $item) {
             echo 'Item '.$item['item_name'].' insert '.PHP_EOL;
             $unit='pc';
@@ -960,7 +960,7 @@ class Test extends CI_Controller
                 $unit='yd';
             }
             $this->db->set('inventory_type_id', $type_id);
-            $this->db->set('item_num',$type_sh.str_pad($itemnum,3,'0',STR_PAD_LEFT));
+            $this->db->set('item_num',$type_sh.'-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
             $this->db->set('item_name',$item['item_name']);
             $this->db->set('item_order', $itemnum);
             $this->db->set('item_unit', $unit);
