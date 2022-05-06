@@ -946,11 +946,11 @@ class Test extends CI_Controller
         $yrditem=[4,11, 15, 21];
         $this->db->select('printshop_item_id, item_name');
         $this->db->from('ts_printshop_items');
-        $this->db->limit(20);
+        $this->db->limit(5, 20);
         $items = $this->db->get()->result_array();
         $itemnum=1;
-        $type_sh = 'SSB';
-        $type_id = 1;
+        $type_sh = 'SMA';
+        $type_id = 2;
         foreach ($items as $item) {
             echo 'Item '.$item['item_name'].' insert '.PHP_EOL;
             $unit='pc';
