@@ -401,7 +401,28 @@ class Inventory_model extends MY_Model
         $out['msg'] = $chkres['msg'];
         if ($chkres['result']==$this->success_result) {
             if ($itemdata['inventory_item_id']<0) {
-
+                $this->db->select('*');
+                $this->db->from('ts_inventory_types');
+                $this->db->where('inventory_type_id', $itemdata['inventory_type_id']);
+                $invdata = $this->db->get()->row_array();
+                if (!isset($invdata['inventory_type_id'])) {
+                    return $out;
+                }
+                // Get new Item # and order
+                $this->db->select('max(item_num) as maxnum, max(item_order) as maxord');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('inventory_type_id', $itemdata['inventory_type_id']);
+                $dat = $this->db->get()->row_array();
+                if (isset($dat['maxnum'])) {
+                    $newnum = intval(substr($dat['maxnum'],4))+1;
+                    $neword = intval($dat['maxord'])+1;
+                } else {
+                    $newnum = 1;
+                    $neword = 1;
+                }
+                $this->db->set('inventory_type_id', $itemdata['inventory_type_id']);
+                $this->db->set('item_num', $invdata['type_short'].'-'.str_pad($newnum,3,'0',STR_PAD_LEFT));
+                $this->db->set('item_order', $neword);
             }
             $this->db->set('item_name', $itemdata['item_name']);
             $this->db->set('item_unit', $itemdata['item_unit']);
@@ -432,7 +453,7 @@ class Inventory_model extends MY_Model
                     $rescp = @copy($srcfile, $distfile);
                     if ($rescp) {
                         $this->db->where('inventory_item_id', $itemdata['inventory_item_id']);
-                        $this->db->set('proof_templte', $proof_sh.$filetempl);
+                        $this->db->set('proof_template', $proof_sh.$filetempl);
                         $this->db->set('proof_template_source', $itemdata['proofname']);
                         $this->db->update('ts_inventory_items');
                     }
@@ -478,6 +499,26 @@ class Inventory_model extends MY_Model
 
     private function _check_masteritem($itemdata) {
         $out = ['result' => $this->success_result, 'msg' => 'Test Result'];
+        if (empty($itemdata['item_name'])) {
+            $out['msg']='Empty Item Name';
+            $out['result'] = $this->error_result;
+        }
+        if (empty($itemdata['item_unit'])) {
+            $out['msg']='Empty Item Unit';
+            $out['result'] = $this->error_result;
+        }
+        if ($itemdata['proofflag']==1 && empty($itemdata['proofsrc'])) {
+            $out['msg']='Empty Proof Template';
+            $out['result'] = $this->error_result;
+        }
+        if ($itemdata['plateflag']==1 && empty($itemdata['platesrc'])) {
+            $out['msg']='Empty Plate Template';
+            $out['result'] = $this->error_result;
+        }
+        if ($itemdata['boxflag']==1 && empty($itemdata['boxsrc'])) {
+            $out['msg']='Empty Box Template';
+            $out['result'] = $this->error_result;
+        }
         return $out;
     }
 }

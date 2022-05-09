@@ -72,8 +72,25 @@ function init_master_inventorycontent() {
             $(".inventorydatarow").find('div.masterinventonorder').show();
             $(".inventorydatarow").find('div.masterinventonmax').hide();
         }
-
     })
+    $(".addnewmasterinvent").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'item', value: 0});
+        params.push({name: 'editmode', value: 1});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        var url='/masterinventory/get_item_inventory';
+        $.post(url,params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventItemLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventItem").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventItem").find('div.modal-footer').empty().html(response.data.winfooter);
+                $("#modalEditInventItem").modal({keyboard: false, show: true});
+                init_masteritem_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_master_inventorytabledat() {
