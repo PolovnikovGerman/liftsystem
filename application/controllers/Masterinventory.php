@@ -100,7 +100,84 @@ class Masterinventory extends MY_Controller
             $this->ajaxResponse($mdata,$error);
         }
         show_404();
+    }
 
+    public function get_item_inventory() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $item = ifset($postdata,'item', 0);
+            $editmode = ifset($postdata,'editmode', 0);
+            $invtype = ifset($postdata,'inventory_type', 0);
+            $mdata = [];
+            $res = $this->inventory_model->get_masterinventory_item($item, $invtype);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['wintitle'] = $this->load->view('masterinvent/masteritem_head_view', $res['itemdata'], TRUE);
+                if ($editmode==0) {
+                    $mdata['winbody'] = $this->load->view('masterinvent/masteritem_body_view',$res['itemdata'], TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/masteritem_footer_view',$res['itemdata'], TRUE);
+                } else {
+                    $mdata['winbody'] = $this->load->view('masterinvent/masteritem_body_edit',$res['itemdata'], TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/masteritem_footer_edit',$res['itemdata'], TRUE);
+                }
+
+            }
+
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function masteritem_newdoc() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $doc_url = ifset($postdata,'doc_url','');
+            $doc_type = ifset($postdata, 'doc_type', '');
+            $mdata = [];
+            $error = 'Unknown document type';
+            if (!empty($doc_type)) {
+                $error = '';
+                if ($doc_type=='proof') {
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_prooftempl_view',['doc_url' => $doc_url], TRUE);
+                } elseif ($doc_type=='plate') {
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_platetempl_view',['doc_url' => $doc_url], TRUE);
+                } elseif ($doc_type=='box') {
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_boxtempl_view',['doc_url' => $doc_url], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function masteritem_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $options=[];
+            $options['inventory_item_id'] = ifset($postdata,'item',0);
+            $options['inventory_type_id'] = ifset($postdata, 'inventory_type',0);
+            $options['item_name'] = ifset($postdata, 'item_name', '');
+            $options['item_unit'] = ifset($postdata, 'item_unit', '');
+            // Upload section
+            $options['proofflag'] = ifset($postdata, 'proofflag', 0);
+            $options['proofsrc'] = ifset($postdata, 'proofsrc', '');
+            $options['proofname'] = ifset($postdata, 'proofname','');
+            $options['plateflag'] = ifset($postdata, 'plateflag', 0);
+            $options['platesrc'] = ifset($postdata, 'platesrc', '');
+            $options['platename'] = ifset($postdata, 'platename', '');
+            $options['boxflag'] = ifset($postdata, 'boxflag', 0);
+            $options['boxsrc'] = ifset($postdata, 'boxsrc', '');
+            $options['boxname'] = ifset($postdata, 'boxname', '');
+            $mdata = [];
+            $res = $this->inventory_model->masterinventory_item_save($options);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
 }

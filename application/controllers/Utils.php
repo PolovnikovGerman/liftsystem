@@ -46,7 +46,7 @@ Class Utils extends CI_Controller
                 exit();
             } else {
                 $file->save($path . $filename . '.' . $ext);
-                echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize)));
+                echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize, 'source'=>$file->getName())));
                 exit();
             }
         } else {

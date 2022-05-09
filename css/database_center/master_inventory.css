@@ -321,7 +321,6 @@
     border-bottom: none;
 }
 .inventorydatarow .masterinventstatus {
-    /* width: 4.87%; */
     width: 50px;
     border-right: 1px solid #000000;
 }
@@ -332,19 +331,17 @@
     line-height: 12px;
 }
 .inventorydatarow .masterinventseq {
-    /* width: 3.4%; */
-    /* font-weight: 600; */
     width: 31px;
     border-right: 1px solid #000000;
 }
+.inventorydatarow .masterinventseq.itemedit {
+    cursor: pointer;
+}
 .inventorydatarow .masterinventnumber {
-    /* width: 8%; */
-    /* font-weight: 600; */
     width: 80px;
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventdescrip {
-    /* width: 25.85%; */
     width: 268px;
     text-align: left;
     border-right: 1px solid #000000;
@@ -786,4 +783,173 @@
     font-style: italic;
     color: #FF0000;
     cursor: pointer;
+}
+#modalEditInventItem .modal-dialog {
+}
+#modalEditInventItem .modal-content {
+    width: 466px;
+    max-width: 465px;
+    height: 280px;
+    border: 1px solid #000000;
+}
+#modalEditInventItem .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    float: left;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventItem .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+}
+#modalEditInventItem .modal-header h4 span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventItem .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    padding: 0!important;
+    margin: 4px 8px 8px 8px;
+}
+#modalEditInventItem .modal-body {
+    background: #2635ff;
+    padding: 0 9px 11px 9px;
+    border-bottom: none!important;
+}
+#modalEditInventItem .modal-body div {
+    float: left;
+}
+#modalEditInventItem .modal-footer {
+    background: #2635ff;
+    padding: 0 9px 12px 9px;
+    border-top: none!important;
+}
+.inventoryitem_body_content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 10px;
+    width: 100%;
+}
+.itemdatalabel {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    width: 83px;
+}
+.itemdatavalue {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+}
+.itemdatavalue.itemname {
+    width: 340px;
+}
+.itemdatavalue.itemunit {
+    width: 40px;
+}
+.masteritemdevide {
+    height: 12px;
+}
+.itemtemplatelabel {
+    width: 104px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.itemteplatevalue {
+    width: 78px;
+    margin-bottom: 10px;
+    height: 24px;
+    line-height: 24px;
+}
+.itemteplatevalue.empty {
+    color: #d7d7d7;
+    width: 83px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+.itemteplatevalue.edittemplate {
+    width: 168px;
+}
+.masteritemfooter {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 10px;
+    width: 100%;
+    text-align: right!important;
+}
+.edititembutton {
+    font-size: 14.55px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    background: #9b00d4;
+    border-color: #9b00d4;
+    color: #ffffff;
+    padding: 0 14px;
+}
+.edititembutton:hover, .edititembutton:not(:disabled):not(.disabled):active {
+    color: #ffffff;
+    background-color: #d91dd9;
+    border-color: #d91dd9;
+}
+input.itemdataname {
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+    width: 340px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+select.itemdataunit {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+    width: 51px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.closeitemdata, .saveitemdata {
+    font-size: 14.55px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 14px;
+}
+.closeitemdata {
+    padding: 0 10px;
+}
+/* Upload button */
+.qq-upload-button {
+    background-image: none!important;
+    background-color: #e6e6e6!important;
+    color: #959595;
+    width: 73px!important;
+    height: 23px!important;
+    text-align: center;
+    font-size: 14px;
+}
+.qq-upload-button.replacebutton {
+    background-color: unset!important;
+    background-image: none!important;
+    color: #0000ff!important;
+    font-size: 12px!important;
 }
