@@ -343,4 +343,141 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
+    public function get_masterinventory_item($item, $invtype) {
+        if ($item==0) {
+            return $this->new_masterinventory_item($invtype);
+        } else {
+            $out=['result' => $this->error_result, 'msg' => 'Item not exist'];
+            $this->db->select('*');
+            $this->db->from('ts_inventory_items');
+            $this->db->where('inventory_item_id', $item);
+            $itemdata = $this->db->get()->row_array();
+            if (isset($itemdata['inventory_item_id'])) {
+                $out['result'] = $this->success_result;
+                $out['itemdata'] = $itemdata;
+            }
+            return $out;
+        }
+    }
+
+    public function new_masterinventory_item($invtype) {
+        $out=['result' => $this->error_result, 'msg' => 'Inventory type not exist'];
+        // Get data about Inventory type
+        $this->db->select('*');
+        $this->db->from('ts_inventory_types');
+        $this->db->where('inventory_type_id', $invtype);
+        $invdata = $this->db->get()->row_array();
+        if (isset($invdata['inventory_type_id'])) {
+            $out['result']=$this->success_result;
+            // Get max Item Number
+            $this->db->select('max(item_num) as maxnum');
+            $this->db->from('ts_inventory_items');
+            $this->db->where('inventory_type_id', $invtype);
+            $dat = $this->db->get()->row_array();
+            if (isset($dat['maxnum'])) {
+                $newnum = intval(substr($dat['maxnum'],4))+1;
+            } else {
+                $newnum = 1;
+            }
+            $item_data = [
+                'inventory_item_id' => -1,
+                'inventory_type_id' => $invtype,
+                'item_num' => $invdata['type_short'].'-'.str_pad($newnum,3,'0',STR_PAD_LEFT),
+                'item_name' => '',
+                'item_unit' => 'pc',
+                'proof_templte' => '',
+                'plate_template' => '',
+                'box_template' => '',
+            ];
+            $out['itemdata'] = $item_data;
+        }
+        return $out;
+    }
+
+    public function masterinventory_item_save($itemdata) {
+        $out=['result' => $this->error_result, 'msg' => 'Inventory type not exist'];
+        // Check data
+        $chkres = $this->_check_masteritem($itemdata);
+        $out['msg'] = $chkres['msg'];
+        if ($chkres['result']==$this->success_result) {
+            if ($itemdata['inventory_item_id']<0) {
+
+            }
+            $this->db->set('item_name', $itemdata['item_name']);
+            $this->db->set('item_unit', $itemdata['item_unit']);
+            if ($itemdata['inventory_item_id']<0) {
+                $out['msg'] = 'Error during add new item';
+                $this->db->insert('ts_inventory_items');
+                $newid = $this->db->insert_id();
+                if ($newid) {
+                    $out['result'] = $this->success_result;
+                    $itemdata['inventory_item_id'] = $newid;
+                }
+            } else {
+                $this->db->where('inventory_item_id', $itemdata['inventory_item_id']);
+                $this->db->update('ts_inventory_items');
+                $out['result'] = $this->success_result;
+            }
+            if ($out['result']==$this->success_result) {
+                // Analyse Templates
+                if ($itemdata['proofflag']==1) {
+                    $preload_sh = $this->config->item('pathpreload');
+                    $preload_fl = $this->config->item('upload_path_preload');
+                    $proof_sh = $this->config->item('invprooftemp_relative');
+                    $proof_fl = $this->config->item('invprooftemp');
+                    createPath($proof_sh);
+                    $filetempl = str_replace($preload_sh,'', $itemdata['proofsrc']);
+                    $srcfile = $preload_fl.$filetempl;
+                    $distfile = $proof_fl.$filetempl;
+                    $rescp = @copy($srcfile, $distfile);
+                    if ($rescp) {
+                        $this->db->where('inventory_item_id', $itemdata['inventory_item_id']);
+                        $this->db->set('proof_templte', $proof_sh.$filetempl);
+                        $this->db->set('proof_template_source', $itemdata['proofname']);
+                        $this->db->update('ts_inventory_items');
+                    }
+                }
+                if ($itemdata['plateflag']==1) {
+                    $preload_sh = $this->config->item('pathpreload');
+                    $preload_fl = $this->config->item('upload_path_preload');
+                    $plate_fl = $this->config->item('invplatetemp');
+                    $plate_sh = $this->config->item('invplatetemp_relative');
+                    createPath($plate_sh);
+                    $filetempl = str_replace($preload_sh,'', $itemdata['platesrc']);
+                    $srcfile = $preload_fl.$filetempl;
+                    $distfile = $plate_fl.$filetempl;
+                    $rescp = @copy($srcfile, $distfile);
+                    if ($rescp) {
+                        $this->db->where('inventory_item_id', $itemdata['inventory_item_id']);
+                        $this->db->set('plate_template', $plate_sh.$filetempl);
+                        $this->db->set('plate_template_source', $itemdata['platename']);
+                        $this->db->update('ts_inventory_items');
+                    }
+                }
+                if ($itemdata['boxflag']==1) {
+                    $preload_sh = $this->config->item('pathpreload');
+                    $preload_fl = $this->config->item('upload_path_preload');
+                    $box_fl = $this->config->item('invboxtemp');
+                    $box_sh = $this->config->item('invboxtemp_relative');
+                    createPath($box_sh);
+                    $filetempl = str_replace($preload_sh,'', $itemdata['boxsrc']);
+                    $srcfile = $preload_fl.$filetempl;
+                    $distfile = $box_fl.$filetempl;
+                    $rescp = @copy($srcfile, $distfile);
+                    if ($rescp) {
+                        $this->db->where('inventory_item_id', $itemdata['inventory_item_id']);
+                        $this->db->set('box_template', $box_sh.$filetempl);
+                        $this->db->set('box_template_source', $itemdata['boxname']);
+                        $this->db->update('ts_inventory_items');
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+    private function _check_masteritem($itemdata) {
+        $out = ['result' => $this->success_result, 'msg' => 'Test Result'];
+        return $out;
+    }
 }

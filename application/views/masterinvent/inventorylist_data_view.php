@@ -9,7 +9,7 @@
             <div class="masterinventstatus <?=$list['noreorder'] ? 'donotreorder' : ''?>"><?=$list['status']?></div>
     <?php } ?>
         <?php if ($list['item_flag']==1) { ?>
-            <div class="masterinventseq" data-item="<?=$list['id']?>">
+            <div class="masterinventseq itemedit" data-item="<?=$list['id']?>">
                 <i class="fa fa-pencil"></i>
             </div>
             <div class="masterinventnumber"><?=$list['item_code']?></div>

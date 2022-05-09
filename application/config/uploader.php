@@ -53,6 +53,9 @@ $config['invplatetemp_relative']='/uploads/platetemp/';
 /*Path To Inventory Proof Temp*/
 $config['invprooftemp']=BASEPATH.'../uploads/prooftemp/';
 $config['invprooftemp_relative']='/uploads/prooftemp/';
+/*Path To Inventory Box Temp*/
+$config['invboxtemp']=BASEPATH.'../uploads/prooftemp/';
+$config['invboxtemp_relative']='/uploads/prooftemp/';
 /*Path To Pics*/
 $config['invpics']=BASEPATH.'../uploads/pics/';
 $config['invpics_relative']='/uploads/pics/';
@@ -76,7 +79,6 @@ $config['imprint_images']='/uploads/items_imprint/';
 $config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
 $config['item_images']='/uploads/items_images/';
 $config['item_images_relative']=BASEPATH.'../uploads/items_images/';
-
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */
