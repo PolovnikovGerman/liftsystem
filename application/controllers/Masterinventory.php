@@ -180,4 +180,34 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function get_inventory_color() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $item = ifset($postdata,'item',0);
+            $color = ifset($postdata,'color',0);
+            $editmode = ifset($postdata,'editmode',0);
+            $mdata=[];
+            $res = $this->inventory_model->get_inventory_mastercolor($color, $item);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['wintitle'] = $this->load->view('masterinvent/mastercolor_head_view', $res['colordata'], TRUE);
+                if ($editmode==0) {
+                    // View mode
+                    $options = [
+                        'color' => $res['colordata'],
+                        'vendors' => $res['vendordat'],
+                    ];
+                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_view',$options, TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_view',$res['colordata'], TRUE);
+                } else {
+                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_edit',$res['colordata'], TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_edit',$res['colordata'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

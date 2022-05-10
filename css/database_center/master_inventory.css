@@ -937,6 +937,151 @@ select.itemdataunit {
 .closeitemdata {
     padding: 0 10px;
 }
+#modalEditInventColor .modal-content {
+    width: 651px;
+    max-width: 650px;
+    height: 487px;
+    border: 1px solid #000000;
+}
+#modalEditInventColor .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    float: left;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventColor .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+}
+#modalEditInventColor .modal-header h4 span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventColor .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    padding: 0!important;
+    margin: 4px 8px 8px 8px;
+}
+#modalEditInventColor .modal-body {
+    background: #2635ff;
+    padding: 0 9px 11px 9px;
+    border-bottom: none!important;
+}
+#modalEditInventColor .modal-body div {
+    float: left;
+}
+#modalEditInventColor .modal-footer {
+    background: #2635ff;
+    padding: 0 9px 12px 9px;
+    border-top: none!important;
+}
+.inventorycolor_body_content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 0 10px 10px 10px;
+    height: 383px;
+    width: 100%;
+}
+.statusradiobtn {
+    width: 16px;
+    font-size: 16px;
+    height: 26px;
+    line-height: 26px;
+}
+.statuslabel {
+    max-width: 258px;
+    margin-left: 5px;
+    font-size: 14px;
+    height: 26px;
+    line-height: 26px;
+}
+.inventorycolor_body_left {
+    width: 435px;
+}
+.colorparamlabel {
+    font-size: 14px;
+    width: 85px;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 10px;
+}
+.colorparamvalue {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 10px;
+    padding-left: 6px;
+}
+.colorparamvalue.colorname {
+    width: 224px;
+}
+.colorparamvalue.pantones {
+    width: 319px;
+    height: 45px;
+    line-height: 22.5px;
+}
+.colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
+    width: 90px;
+}
+.colordatadevide {
+    width: 100%;
+    height: 15px;
+}
+.inventorycolor_body_right {
+    width: 172px;
+}
+.colorvendorslabel {
+    width: 120px;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+}
+.colorvendorsdata {
+    margin-left: 82px;
+    width: 238px;
+}
+.colorvendorsdata > .datarow {
+    margin-bottom: 8px;
+}
+.colorvendorname {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 6px;
+    width: 153px;
+}
+.colorvendorprice {
+    margin-left: 10px;
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 6px;
+    width: 64px;
+}
+.colorimagelabel {
+    margin-left: -52px;
+    font-size: 14px;
+}
+.coloriamgevalue {
+    border: 1px solid #dddddd;
+    width: 168px;
+    min-height: 156px;
+}
 /* Upload button */
 .qq-upload-button {
     background-image: none!important;

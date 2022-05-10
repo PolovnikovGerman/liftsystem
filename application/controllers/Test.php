@@ -944,7 +944,7 @@ class Test extends CI_Controller
     public function addinventory() {
         $lbsitem=[5,10, 16, 23];
         $yrditem=[4,11, 15, 21];
-        $this->db->select('printshop_item_id, item_name');
+        $this->db->select('*');
         $this->db->from('ts_printshop_items');
         $this->db->limit(15, 28);
         $items = $this->db->get()->result_array();
@@ -964,6 +964,12 @@ class Test extends CI_Controller
             $this->db->set('item_name',$item['item_name']);
             $this->db->set('item_order', $itemnum);
             $this->db->set('item_unit', $unit);
+            $this->db->set('proof_template', $item['proof_temp']);
+            $this->db->set('proof_template_source',$item['proof_temp_source']);
+            $this->db->set('plate_template', $item['plate_temp']);
+            $this->db->set('plate_template_source', $item['plate_temp_source']);
+            $this->db->set('box_template', $item['item_label']);
+            $this->db->set('box_template_source', $item['item_label_source']);
             $this->db->insert('ts_inventory_items');
             $newitemid = $this->db->insert_id();
             // Add colors
@@ -983,8 +989,16 @@ class Test extends CI_Controller
                 $this->db->set('reserved', $color['reserved']);
                 $this->db->set('onroutestock', $color['onroutestock']);
                 $this->db->set('notreorder', $color['notreorder']);
+                $this->db->set('pantones', empty($color['specfile']) ? $color['color_descript'] : $color['specfile']);
+                $this->db->set('color_image','');
+                $this->db->set('color_image_source','');
                 $this->db->insert('ts_inventory_colors');
                 $newcolorid = $this->db->insert_id();
+                // Insert 5 empty rows
+                for ($i=0; $i<5; $i++) {
+                    $this->db->set('inventory_color_id', $newcolorid);
+                    $this->db->insert('ts_invcolor_vendors');
+                }
                 //  Get Income
                 $this->db->select('*');
                 $this->db->from('ts_printshop_instock');

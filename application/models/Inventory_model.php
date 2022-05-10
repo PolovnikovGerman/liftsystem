@@ -521,4 +521,28 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_inventory_mastercolor($color, $item) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Master Item'];
+        if (empty($color)) {
+            return false;
+        }
+        $out['msg'] = 'Master Color Not Found';
+        $this->db->select('i.item_num, i.item_name, i.inventory_item_id, c.*');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('c.inventory_color_id', $color);
+        $res = $this->db->get()->row_array();
+        if (isset($res['inventory_color_id'])) {
+            $out['result'] = $this->success_result;
+            $out['colordata'] = $res;
+            $this->db->select('vc.*, v.vendor_name');
+            $this->db->from('ts_invcolor_vendors vc');
+            $this->db->join('vendors v','v.vendor_id=vc.vendor_id','left');
+            $this->db->where('vc.inventory_color_id', $color);
+            $venddat = $this->db->get()->result_array();
+            $out['vendordat'] = $venddat;
+        }
+        return $out;
+    }
 }

@@ -15,7 +15,7 @@
             <div class="masterinventnumber"><?=$list['item_code']?></div>
             <div class="masterinventdescrip">
                 <?=$list['description']?>
-                <span class="addmasterinventory"><i class="fa fa-plus"></i></span>
+                <span class="addmasterinventory" data-item="<?=$list['id']?>"><i class="fa fa-plus"></i></span>
             </div>
         <?php } else { ?>
             <div class="masterinventseq"><?=$list['item_seq']?></div>
