@@ -39,7 +39,7 @@
     </div>
     <div class="inventorycolor_body_right">
         <div class="colorimagelabel">Image</div>
-        <div class="coloriamgevalue">
+        <div class="colorimagevalue">
             <?php if (empty($color['color_image'])) { ?>
                 &nbsp;
             <?php } else { ?>

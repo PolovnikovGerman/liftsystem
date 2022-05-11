@@ -545,4 +545,102 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function mastercolor_change($sessiondat, $fld, $newval, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Color Parameter'];
+        $colordat = $sessiondat['color'];
+        if (array_key_exists($fld, $colordat)) {
+            $colordat[$fld] = $newval;
+            $out['result'] = $this->success_result;
+            $sessiondat['color'] = $colordat;
+            usersession($session_id, $sessiondat);
+        }
+        return $out;
+    }
+
+    public function mastercolor_vendorchange($sessiondat, $vendlist, $fld, $newval, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor Not Found'];
+        $vendorlists = $sessiondat['vendors'];
+        $find = 0;
+        $idx = 0;
+        foreach ($vendorlists as $vendorlist) {
+            if ($vendorlist['invcolor_vendor_id']==$vendlist) {
+                $find = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($find==1) {
+            if ($fld=='price') {
+                $newval = floatval($newval);
+            }
+            $vendorlists[$idx][$fld] = $newval;
+            $sessiondat['vendors'] = $vendorlists;
+            usersession($session_id, $sessiondat);
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function mastercolor_updateimg($sessiondat, $doc_url, $doc_src, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Empty Image'];
+        if (!empty($doc_url)) {
+            $colordat = $sessiondat['color'];
+            $colordat['newitemimage'] = 1;
+            $colordat['color_image'] = $doc_url;
+            $colordat['color_image_source'] = $doc_src;
+            $sessiondat['color'] = $colordat;
+            usersession($session_id, $sessiondat);
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function masterinventory_color_save($sessiondat, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Master Item'];
+        $colordat = $sessiondat['color'];
+        $vendordat = $sessiondat['vendors'];
+        if ($colordat['inventory_color_id']<0) {
+            // New Color
+            return $out;
+        }
+        // Save
+        $this->db->where('inventory_color_id', $colordat['inventory_color_id']);
+        $this->db->set('color', $colordat['color']);
+        $this->db->set('color_status', $colordat['color_status']);
+        $this->db->set('suggeststock', $colordat['suggeststock']);
+        $this->db->set('pantones', $colordat['pantones']);
+        $this->db->update('ts_inventory_colors');
+        // Save Vendors
+        foreach ($vendordat as $vendorrow) {
+            $this->db->where('invcolor_vendor_id', $vendorrow['invcolor_vendor_id']);
+            if (empty($vendorrow['vendor_id']) || (floatval($vendorrow['price'])==0)) {
+                $this->db->set('vendor_id', null);
+                $this->db->set('price', 0);
+            } else {
+                $this->db->set('vendor_id', $vendorrow['vendor_id']);
+                $this->db->set('price', $vendorrow['price']);
+            }
+            $this->db->update('ts_invcolor_vendors');
+        }
+        if (ifset($colordat,'newitemimage',0)==1) {
+            // New image
+            $path_sh = $this->config->item('pathpreload');
+            $path_fl = $this->config->item('upload_path_preload');
+            $imgpath_sh = $this->config->item('invpics_relative');
+            $imgpah_fl = $this->config->item('invpics');
+            $filename = str_replace($path_sh,'', $colordat['color_image']);
+            createPath($imgpath_sh);
+            $cpres = @copy($path_fl.$filename, $imgpah_fl.$filename);
+            if ($cpres) {
+                $this->db->where('inventory_color_id', $colordat['inventory_color_id']);
+                $this->db->set('color_image', $imgpath_sh.$filename);
+                $this->db->set('color_image_source', $colordat['color_image_source']);
+                $this->db->update('ts_inventory_colors');
+            }
+        }
+        $out['result'] = $this->success_result;
+        usersession($session_id, null);
+        return $out;
+    }
 }

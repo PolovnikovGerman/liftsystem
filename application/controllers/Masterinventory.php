@@ -201,8 +201,102 @@ class Masterinventory extends MY_Controller
                     $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_view',$options, TRUE);
                     $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_view',$res['colordata'], TRUE);
                 } else {
-                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_edit',$res['colordata'], TRUE);
+                    $session_id = 'invcolor'.uniq_link(10);
+                    usersession($session_id, ['color' => $res['colordata'],'vendors' => $res['vendordat']]);
+                    $this->load->model('vendors_model');
+                    $vendlist = $this->vendors_model->get_vendors();
+                    $options = [
+                        'color' => $res['colordata'],
+                        'vendors' => $res['vendordat'],
+                        'vendorlists' => $vendlist,
+                        'session' => $session_id,
+                    ];
+                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_edit',$options, TRUE);
                     $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_edit',$res['colordata'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventory_color_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $fld = ifset($postdata,'fld','unkn');
+            $newval = ifset($postdata, 'newval','');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_change($sessiondat, $fld, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventory_colorvendor_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $fld = ifset($postdata,'fld','unkn');
+            $newval = ifset($postdata, 'newval','');
+            $vendlist = ifset($postdata,'vendlist',0);
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_vendorchange($sessiondat, $vendlist, $fld, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function mastercolor_image_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $doc_url = ifset($postdata,'doc_url','');
+            $doc_src = ifset($postdata, 'doc_src','');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_updateimg($sessiondat, $doc_url, $doc_src, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('masterinvent/mastercolor_imageedit_view', ['doc_url' => $doc_url,'doc_src' => $doc_src], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function mastercolor_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                // Save data
+                $res = $this->inventory_model->masterinventory_color_save($sessiondat, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                 }
             }
             $this->ajaxResponse($mdata, $error);

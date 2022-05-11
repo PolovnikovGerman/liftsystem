@@ -1003,6 +1003,10 @@ select.itemdataunit {
     font-size: 14px;
     height: 26px;
     line-height: 26px;
+    margin-right: 7px;
+}
+.statuslabel span {
+    font-style: italic;
 }
 .inventorycolor_body_left {
     width: 435px;
@@ -1026,12 +1030,37 @@ select.itemdataunit {
 .colorparamvalue.colorname {
     width: 224px;
 }
+.colordatainput input {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    height: 24px;
+    line-height: 24px;
+}
+input.colornameinpt {
+    width: 224px;
+}
 .colorparamvalue.pantones {
     width: 319px;
     height: 45px;
     line-height: 22.5px;
 }
+textarea.colorpantonesinpt {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    width: 319px;
+    height: 45px;
+    line-height: 22.5px;
+    resize: none;
+    margin-bottom: 10px;
+}
 .colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
+    width: 90px;
+}
+input.colormaxvalueinpt {
     width: 90px;
 }
 .colordatadevide {
@@ -1063,6 +1092,19 @@ select.itemdataunit {
     padding-left: 6px;
     width: 153px;
 }
+.colorvendorinpt {
+    margin-right: 10px;
+}
+select.colorvendornameinpt {
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 6px;
+    width: 153px;
+}
 .colorvendorprice {
     margin-left: 10px;
     border: 1px solid #dddddd;
@@ -1073,14 +1115,33 @@ select.itemdataunit {
     padding-left: 6px;
     width: 64px;
 }
+input.colorvendorpriceinpt {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    height: 23px;
+    line-height: 23px;
+    width: 64px;
+}
 .colorimagelabel {
     margin-left: -52px;
     font-size: 14px;
 }
-.coloriamgevalue {
+.colorimagevalue {
     border: 1px solid #dddddd;
     width: 168px;
     min-height: 156px;
+}
+.colorimagevalue img {
+    width: 100%;
+}
+.colorimagevalue #pic-uploader {
+    margin-left: 49px;
+    margin-top: 66px;
+}
+.colorimagedata #picnew-uploader {
+    margin-left: 106px;
 }
 /* Upload button */
 .qq-upload-button {
