@@ -521,4 +521,216 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_inventory_mastercolor($color, $item) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Master Item'];
+        if (empty($color)) {
+            return $this->new_masterinventory_color($item);
+        }
+        $out['msg'] = 'Master Color Not Found';
+        $this->db->select('i.item_num, i.item_name, i.inventory_item_id, c.*');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('c.inventory_color_id', $color);
+        $res = $this->db->get()->row_array();
+        if (isset($res['inventory_color_id'])) {
+            $out['result'] = $this->success_result;
+            $out['colordata'] = $res;
+            $this->db->select('vc.*, v.vendor_name');
+            $this->db->from('ts_invcolor_vendors vc');
+            $this->db->join('vendors v','v.vendor_id=vc.vendor_id','left');
+            $this->db->where('vc.inventory_color_id', $color);
+            $venddat = $this->db->get()->result_array();
+            $out['vendordat'] = $venddat;
+        }
+        return $out;
+    }
+
+    public function new_masterinventory_color($item) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Master Item'];
+        if (!empty($item)) {
+            $this->db->select('inventory_item_id, item_num, item_name, item_unit');
+            $this->db->from('ts_inventory_items');
+            $this->db->where('inventory_item_id', $item);
+            $itemdat = $this->db->get()->row_array();
+            if (isset($itemdat['inventory_item_id'])) {
+                $colordat = [
+                    'inventory_color_id' => -1,
+                    'inventory_item_id' => $item,
+                    'item_num' => $itemdat['item_num'],
+                    'item_name' => $itemdat['item_name'],
+                    'color' => '',
+                    'price' => 0,
+                    'color_status' => 1,
+                    'color_unit' => $itemdat['item_unit'],
+                    'suggeststock' => 0,
+                    'notreorder' => 0,
+                    'pantones' => '',
+                    'color_image' => '',
+                    'color_image_source' => '',
+                ];
+                $vidx = 1;
+                $vendors = [];
+                for ($i=0; $i<5; $i++) {
+                    $vendors[] = [
+                        'invcolor_vendor_id' => -1*$vidx,
+                        'vendor_id' => '',
+                        'price' => 0,
+                    ];
+                    $vidx++;
+                }
+                $out['result'] = $this->success_result;
+                $out['colordata'] = $colordat;
+                $out['vendordat'] = $vendors;
+            }
+        }
+        return $out;
+    }
+
+    public function mastercolor_change($sessiondat, $fld, $newval, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Color Parameter'];
+        $colordat = $sessiondat['color'];
+        if (array_key_exists($fld, $colordat)) {
+            $colordat[$fld] = $newval;
+            $out['result'] = $this->success_result;
+            $sessiondat['color'] = $colordat;
+            usersession($session_id, $sessiondat);
+        }
+        return $out;
+    }
+
+    public function mastercolor_vendorchange($sessiondat, $vendlist, $fld, $newval, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Vendor Not Found'];
+        $vendorlists = $sessiondat['vendors'];
+        $find = 0;
+        $idx = 0;
+        foreach ($vendorlists as $vendorlist) {
+            if ($vendorlist['invcolor_vendor_id']==$vendlist) {
+                $find = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($find==1) {
+            if ($fld=='price') {
+                $newval = floatval($newval);
+            }
+            $vendorlists[$idx][$fld] = $newval;
+            $sessiondat['vendors'] = $vendorlists;
+            usersession($session_id, $sessiondat);
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function mastercolor_updateimg($sessiondat, $doc_url, $doc_src, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Empty Image'];
+        if (!empty($doc_url)) {
+            $colordat = $sessiondat['color'];
+            $colordat['newitemimage'] = 1;
+            $colordat['color_image'] = $doc_url;
+            $colordat['color_image_source'] = $doc_src;
+            $sessiondat['color'] = $colordat;
+            usersession($session_id, $sessiondat);
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function masterinventory_color_save($sessiondat, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Master Item'];
+        $colordat = $sessiondat['color'];
+        $vendordat = $sessiondat['vendors'];
+        // Check data
+        $chkres = $this->_check_mastercolor($colordat, $vendordat);
+        $out['msg'] = $chkres['msg'];
+        if ($chkres['result']==$this->success_result) {
+            // Save
+            if ($colordat['inventory_color_id']<0) {
+                $this->db->select('max(color_order) maxord');
+                $this->db->from('ts_inventory_colors');
+                $this->db->where('inventory_item_id', $colordat['inventory_item_id']);
+                $dat = $this->db->get()->row_array();
+                if (isset($dat['maxord'])) {
+                    $neword = $dat['maxord'] + 1;
+                } else {
+                    $neword = 1;
+                }
+                // New Color
+                $this->db->set('inventory_item_id', $colordat['inventory_item_id']);
+                $this->db->set('color_order', $neword);
+            } else {
+                $this->db->where('inventory_color_id', $colordat['inventory_color_id']);
+            }
+            $this->db->set('color', $colordat['color']);
+            if ($colordat['color_status']==0) {
+                $this->db->set('notreorder', 1);
+            } else {
+                $this->db->set('color_status', 1);
+                $this->db->set('notreorder', 0);
+            }
+            $this->db->set('color_status', $colordat['color_status']);
+            $this->db->set('suggeststock', $colordat['suggeststock']);
+            $this->db->set('pantones', $colordat['pantones']);
+            if ($colordat['inventory_color_id'] < 0 ) {
+                $this->db->insert('ts_inventory_colors');
+                $newid = $this->db->insert_id();
+                if ($newid) {
+                    $out['result'] = $this->success_result;
+                    $colordat['inventory_color_id'] = $newid;
+                }
+            } else {
+                $this->db->update('ts_inventory_colors');
+                $out['result'] = $this->success_result;
+            }
+
+            // Save Vendors
+            foreach ($vendordat as $vendorrow) {
+                if ($vendorrow['invcolor_vendor_id'] < 0 ) {
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                } else {
+                    $this->db->where('invcolor_vendor_id', $vendorrow['invcolor_vendor_id']);
+                }
+                if (empty($vendorrow['vendor_id']) || (floatval($vendorrow['price'])==0)) {
+                    $this->db->set('vendor_id', null);
+                    $this->db->set('price', 0);
+                } else {
+                    $this->db->set('vendor_id', $vendorrow['vendor_id']);
+                    $this->db->set('price', $vendorrow['price']);
+                }
+                if ($vendorrow['invcolor_vendor_id'] < 0) {
+                    $this->db->insert('ts_invcolor_vendors');
+                } else {
+                    $this->db->update('ts_invcolor_vendors');
+                }
+            }
+            if (ifset($colordat,'newitemimage',0)==1) {
+                // New image
+                $path_sh = $this->config->item('pathpreload');
+                $path_fl = $this->config->item('upload_path_preload');
+                $imgpath_sh = $this->config->item('invpics_relative');
+                $imgpah_fl = $this->config->item('invpics');
+                $filename = str_replace($path_sh,'', $colordat['color_image']);
+                createPath($imgpath_sh);
+                $cpres = @copy($path_fl.$filename, $imgpah_fl.$filename);
+                if ($cpres) {
+                    $this->db->where('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->set('color_image', $imgpath_sh.$filename);
+                    $this->db->set('color_image_source', $colordat['color_image_source']);
+                    $this->db->update('ts_inventory_colors');
+                }
+            }
+            usersession($session_id, null);
+        }
+        return $out;
+    }
+
+    private function _check_mastercolor($colordat, $vendordat) {
+        $out = ['result' => $this->success_result, 'msg' => 'Unknown Master Item'];
+        if (empty($colordat['color'])) {
+            $out['result'] = $this->error_result;
+            $out['msg'] = 'Empty Color Name';
+        }
+        return $out;
+    }
 }

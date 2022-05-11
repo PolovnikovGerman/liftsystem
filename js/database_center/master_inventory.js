@@ -135,6 +135,42 @@ function init_master_inventorytabledat() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".masterinventnumber.colordata").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'item', value: 0});
+        params.push({name: 'color', value: $(this).data('color')});
+        params.push({name: 'editmode', value: 0});
+        var url='/masterinventory/get_inventory_color';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventColorLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
+                $("#modalEditInventColor").modal({keyboard: false, show: true});
+                init_mastercolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json')
+    });
+    $(".addmasterinventory").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'item', value: $(this).data('item')});
+        params.push({name: 'color', value: 0});
+        params.push({name: 'editmode', value: 1});
+        var url='/masterinventory/get_inventory_color';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventColorLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
+                $("#modalEditInventColor").modal({keyboard: false, show: true});
+                init_mastercolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 
@@ -478,4 +514,176 @@ function init_uploadfiles_masteritem() {
             }
         });
     }
+}
+
+function init_mastercolor_popup() {
+    $(".edititembutton").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'item', value: 0});
+        params.push({name: 'color', value: $(this).data('color')});
+        params.push({name: 'editmode', value: 1});
+        var url='/masterinventory/get_inventory_color';
+        $.post(url,params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventColorLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
+                $("#modalEditInventColor").modal({keyboard: false, show: true});
+                init_mastercolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $(".invcolor").unbind('change').change(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/masterinventory/inventory_color_change';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".colorvendornameinpt").unbind('change').change(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        params.push({name: 'vendlist', value: $(this).data('list')});
+        params.push({name: 'fld', value: 'vendor_id'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/masterinventory/inventory_colorvendor_change';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".colorvendorpriceinpt").unbind('change').change(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        params.push({name: 'vendlist', value: $(this).data('list')});
+        params.push({name: 'fld', value: 'price'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/masterinventory/inventory_colorvendor_change';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".statusradiobtn").unbind('click').click(function () {
+        var newstatus = $(this).data('status');
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        params.push({name: 'fld', value: 'color_status'});
+        params.push({name: 'newval', value: newstatus});
+        var url = '/masterinventory/inventory_color_change';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".statusradiobtn[data-status='1']").empty().html(response.data.activebnt);
+                $(".statusradiobtn[data-status='0']").empty().html(response.data.inactivebnt);
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
+
+    $(".closeitemdata").unbind('click').click(function () {
+        $("#modalEditInventColor").modal('hide');
+    });
+
+    $(".saveitemdata").unbind('click').click(function () {
+        // Collect data for save
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        var url = "/masterinventory/mastercolor_save";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventColor").modal('hide');
+                init_master_inventorydata();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    init_uploadfiles_mastercolor();
+}
+
+function init_uploadfiles_mastercolor() {
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button replacebutton">[Replace]</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+    if ($("#pic-uploader").length > 0) {
+        var uploadproof = new qq.FileUploader({
+            element: document.getElementById('pic-uploader'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: 'Upload',
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $(".qq-upload-list").hide();
+                    var url='/masterinventory/mastercolor_image_change';
+                    var params=new Array()
+                    params.push({name: 'session', value: $("#invsessioin").val()});
+                    params.push({name: 'doc_url', value: responseJSON.filename});
+                    params.push({name: 'doc_src', value: responseJSON.source});
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $(".colorimagedata").empty().html(response.data.content);
+                            init_uploadfiles_mastercolor();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                } else {
+                    alert(responseJSON.error);
+                    $("div#loader").hide();
+                    $("div.qq-upload-button").css('visibility','visible');
+                }
+            }
+        });
+    }
+
+    if ($("#picnew-uploader").length > 0) {
+        var uploadnewproof = new qq.FileUploader({
+            element: document.getElementById('picnew-uploader'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            template: upload_templ,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $(".qq-upload-list").hide();
+                    var url='/masterinventory/mastercolor_image_change';
+                    var params=new Array()
+                    params.push({name: 'session', value: $("#invsessioin").val()});
+                    params.push({name: 'doc_url', value: responseJSON.filename});
+                    params.push({name: 'doc_src', value: responseJSON.source});
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $(".colorimagedata").empty().html(response.data.content);
+                            init_uploadfiles_mastercolor();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                } else {
+                    alert(responseJSON.error);
+                    $("div#loader").hide();
+                    $("div.qq-upload-button").css('visibility','visible');
+                }
+            }
+        });
+    }
+
 }

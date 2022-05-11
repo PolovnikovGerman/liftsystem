@@ -180,4 +180,137 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function get_inventory_color() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $item = ifset($postdata,'item',0);
+            $color = ifset($postdata,'color',0);
+            $editmode = ifset($postdata,'editmode',0);
+            $mdata=[];
+            $res = $this->inventory_model->get_inventory_mastercolor($color, $item);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['wintitle'] = $this->load->view('masterinvent/mastercolor_head_view', $res['colordata'], TRUE);
+                if ($editmode==0) {
+                    // View mode
+                    $options = [
+                        'color' => $res['colordata'],
+                        'vendors' => $res['vendordat'],
+                    ];
+                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_view',$options, TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_view',$res['colordata'], TRUE);
+                } else {
+                    $session_id = 'invcolor'.uniq_link(10);
+                    usersession($session_id, ['color' => $res['colordata'],'vendors' => $res['vendordat']]);
+                    $this->load->model('vendors_model');
+                    $vendlist = $this->vendors_model->get_vendors();
+                    $options = [
+                        'color' => $res['colordata'],
+                        'vendors' => $res['vendordat'],
+                        'vendorlists' => $vendlist,
+                        'session' => $session_id,
+                    ];
+                    $mdata['winbody'] = $this->load->view('masterinvent/mastercolor_body_edit',$options, TRUE);
+                    $mdata['winfooter'] = $this->load->view('masterinvent/mastercolor_footer_edit',$res['colordata'], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventory_color_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $fld = ifset($postdata,'fld','unkn');
+            $newval = ifset($postdata, 'newval','');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_change($sessiondat, $fld, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($fld=='color_status') {
+                        if ($newval==1) {
+                            $mdata['activebnt'] = '<i class="fa fa-check-circle-o" aria-hidden="true"></i>';
+                            $mdata['inactivebnt'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                        } else {
+                            $mdata['activebnt'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                            $mdata['inactivebnt'] = '<i class="fa fa-check-circle-o" aria-hidden="true"></i>';
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventory_colorvendor_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $fld = ifset($postdata,'fld','unkn');
+            $newval = ifset($postdata, 'newval','');
+            $vendlist = ifset($postdata,'vendlist',0);
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_vendorchange($sessiondat, $vendlist, $fld, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function mastercolor_image_change() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $doc_url = ifset($postdata,'doc_url','');
+            $doc_src = ifset($postdata, 'doc_src','');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                $res = $this->inventory_model->mastercolor_updateimg($sessiondat, $doc_url, $doc_src, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('masterinvent/mastercolor_imageedit_view', ['doc_url' => $doc_url,'doc_src' => $doc_src], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function mastercolor_save() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $error = 'Edit Session lifetime expired';
+            $mdata = [];
+            $sessiondat = usersession($session_id);
+            if (!empty($sessiondat)) {
+                // Save data
+                $res = $this->inventory_model->masterinventory_color_save($sessiondat, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
