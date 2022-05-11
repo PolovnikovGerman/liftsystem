@@ -153,7 +153,24 @@ function init_master_inventorytabledat() {
                 show_error(response);
             }
         },'json')
-
+    });
+    $(".addmasterinventory").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'item', value: $(this).data('item')});
+        params.push({name: 'color', value: 0});
+        params.push({name: 'editmode', value: 1});
+        var url='/masterinventory/get_inventory_color';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventColorLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
+                $("#modalEditInventColor").modal({keyboard: false, show: true});
+                init_mastercolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 
@@ -560,6 +577,24 @@ function init_mastercolor_popup() {
             }
         },'json');
     });
+    $(".statusradiobtn").unbind('click').click(function () {
+        var newstatus = $(this).data('status');
+        var params = new Array();
+        params.push({name: 'session', value: $("#invsessioin").val()});
+        params.push({name: 'fld', value: 'color_status'});
+        params.push({name: 'newval', value: newstatus});
+        var url = '/masterinventory/inventory_color_change';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".statusradiobtn[data-status='1']").empty().html(response.data.activebnt);
+                $(".statusradiobtn[data-status='0']").empty().html(response.data.inactivebnt);
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
+
     $(".closeitemdata").unbind('click').click(function () {
         $("#modalEditInventColor").modal('hide');
     });

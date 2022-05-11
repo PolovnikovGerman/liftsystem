@@ -350,6 +350,7 @@
 .addmasterinventory {
     float: right!important;
     padding-right: 4px;
+    cursor: pointer;
 }
 .inventorydatarow.itemcolor.activeinvent {
     background: #FFFF00;
@@ -996,6 +997,9 @@ select.itemdataunit {
     font-size: 16px;
     height: 26px;
     line-height: 26px;
+}
+.statusradiobtn.edit {
+    cursor: pointer;
 }
 .statuslabel {
     max-width: 258px;

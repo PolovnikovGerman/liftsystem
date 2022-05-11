@@ -234,6 +234,15 @@ class Masterinventory extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    if ($fld=='color_status') {
+                        if ($newval==1) {
+                            $mdata['activebnt'] = '<i class="fa fa-check-circle-o" aria-hidden="true"></i>';
+                            $mdata['inactivebnt'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                        } else {
+                            $mdata['activebnt'] = '<i class="fa fa-circle-o" aria-hidden="true"></i>';
+                            $mdata['inactivebnt'] = '<i class="fa fa-check-circle-o" aria-hidden="true"></i>';
+                        }
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

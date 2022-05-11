@@ -1,7 +1,7 @@
 <input type="hidden" id="invsessioin" value="<?=$session?>"/>
 <div class="inventorycolor_body_content">
     <div class="datarow">
-        <div class="statusradiobtn edit">
+        <div class="statusradiobtn edit" data-status="1">
             <?php if ($color['color_status']==1 && $color['notreorder']==0) { ?>
                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
             <?php } else { ?>
@@ -11,7 +11,7 @@
         <div class="statuslabel">
             Active
         </div>
-        <div class="statusradiobtn edit">
+        <div class="statusradiobtn edit" data-status="0">
             <?php if ($color['color_status']==1 && $color['notreorder']==0) { ?>
                 <i class="fa fa-circle-o" aria-hidden="true"></i>
             <?php } else { ?>
