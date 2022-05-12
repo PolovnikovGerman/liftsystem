@@ -102,6 +102,49 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function add_color_income() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $mdata = [];
+            $error = 'Non exist Item / Color';
+            if (!empty($coloritem)) {
+                $error = '';
+                $mdata['content'] = $this->load->view('masterinvent/prices_addmanual_view',['color' => $coloritem], TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function save_color_income() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $options = [];
+            $options['income_date'] = ifset($postdata, 'income_date', '');
+            $options['income_recnum'] = ifset($postdata, 'income_recnum', '');
+            $options['income_desript'] = ifset($postdata, 'income_desript', '');
+            $options['income_price'] = ifset($postdata, 'income_price', 0);
+            $options['income_qty'] = ifset($postdata, 'income_qty', 0);
+            $res = $this->inventory_model->save_color_manualincome($coloritem, $options);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $tablebody = $this->load->view('masterinvent/prices_table_body',['lists' => $res['lists']], TRUE);
+                $options = [
+                    'tablebody' => $tablebody,
+                    'totals' => $res['totals'],
+                    'item' => $res['itemdata'],
+                ];
+                $mdata['content'] = $this->load->view('masterinvent/prices_body_view', $options, TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
     public function get_item_inventory() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();

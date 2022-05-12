@@ -2,7 +2,7 @@
 <div class="inventoryprice_body_content">
     <div class="inventoryprice_table_head">
         <div class="inventoryincome_date">
-            <span class="incomelistadd"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+            <span class="incomelistadd" data-item="<?=$item['inventory_color_id']?>"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
             Date
         </div>
         <div class="inventoryincome_recnum">Record #</div>

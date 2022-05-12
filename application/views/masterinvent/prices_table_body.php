@@ -8,7 +8,7 @@
         <div class="inventoryincome_incomeqty"><?= QTYOutput($list['income_qty']) ?></div>
         <div class="inventoryincome_divide">&nbsp;</div>
         <div class="inventoryincome_leftqty"><?= QTYOutput($list['income_left']) ?></div>
-        <div class="inventoryincome_lefttotal"><?=MoneyOutput($list['income_left_total'])?></M></div>
+        <div class="inventoryincome_lefttotal"><?=MoneyOutput($list['income_left_total'])?></div>
     </div>
     <?php $numrow++; ?>
 <?php } ?>

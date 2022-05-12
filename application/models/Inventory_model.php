@@ -733,4 +733,51 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function save_color_manualincome($inventory_color_id, $options) {
+        $out = ['result' => $this->success_result, 'msg' => 'Unknown Master Item'];
+        $chkflag=1;
+        if (empty($options['income_date'])) {
+            $chkflag=0;
+            $out['msg']='Empty Income Date';
+        } elseif (empty($options['income_recnum'])) {
+            $chkflag=0;
+            $out['msg']='Empty Record #';
+        } elseif (empty($options['income_desript'])) {
+            $chkflag=0;
+            $out['msg']='Empty Income Description';
+        } elseif (empty($options['income_price']) || floatval($options['income_price'])==0) {
+            $chkflag=0;
+            $out['msg']='Empty Income Price';
+        } elseif (empty($options['income_qty']) || intval($options['income_qty'])==0) {
+            $chkflag=0;
+            $out['msg']='Empty Income QTY';
+        }
+        if ($chkflag==1) {
+            $this->db->set('inventory_color_id', $inventory_color_id);
+            $this->db->set('income_date', strtotime($options['income_date']));
+            $this->db->set('income_record', $options['income_recnum']);
+            $this->db->set('income_description', $options['income_desript']);
+            $this->db->set('income_qty', intval($options['income_qty']));
+            $this->db->set('income_price', floatval($options['income_price']));
+            $this->db->insert('ts_inventory_incomes');
+            $newrec = $this->db->insert_id();
+            $out['msg'] = 'Error during add Manual Income';
+            if ($newrec > 0) {
+                // Get new data for content
+                $data = $this->get_masterinventory_color($inventory_color_id);
+                $out['msg'] = $data['msg'];
+                if ($data['result']==$this->success_result) {
+                    $out['result'] = $this->success_result;
+                    $out['itemdata'] = $data['itemdata'];
+                    $out['lists'] = $data['lists'];
+                    $out['totals'] = $data['totals'];
+                    $this->db->where('inventory_color_id', $inventory_color_id);
+                    $this->db->set('price', $data['totals']['avg_price']);
+                    $this->db->update('ts_inventory_colors');
+                }
+            }
+        }
+        return $out;
+    }
 }
