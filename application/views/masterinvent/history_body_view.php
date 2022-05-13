@@ -1,7 +1,7 @@
 <div class="inventoryhistory_body_content">
     <div class="inventoryhistory_table_head">
         <div class="instock_date">
-            <span class="incomelistadd"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+            <span class="outcomelistadd" data-item="<?=$item['inventory_color_id']?>"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
             Date
         </div>
         <div class="instock_recnum">Record #</div>
@@ -19,7 +19,7 @@
                 <div class="instock_amount <?=$list['type']=='O' ? 'negative' : ''?>">
                     <?=$list['type']=='O' ? '(' : ''?><?=QTYOutput($list['amount'])?><?=$list['type']=='O' ? ')' : '' ?>
                 </div>
-                <div class="instock_balance"><?=QTYOutput($list['balance'])?></M></div>
+                <div class="instock_balance"><?=QTYOutput($list['balance'])?></div>
             </div>
             <?php $numrow++; ?>
         <?php } ?>

@@ -1041,7 +1041,7 @@ class Test extends CI_Controller
                     foreach ($candidats as $candidat) {
                         // $qtyout-$candidat['leftqty'];
                         if ($qtyout > $candidat['leftqty']) {
-                            $newexp = $candidat['income_expense'] + ($qtyout - $candidat['leftqty']);
+                            $newexp = $candidat['income_expense'] + $candidat['leftqty'];
                         } else {
                             $newexp = $candidat['income_expense'] + $qtyout;
                         }
@@ -1072,12 +1072,6 @@ class Test extends CI_Controller
                     $qtyout = intval($outcome['shipped'])+intval($outcome['misprint'])+intval($outcome['kepted']);
                     $recnum = 'A0-'.$outcome['order_num'];
                     $showlog=0;
-                    if ($outcome['order_id']==25103) {
-                        // $showlog=1;
-                    }
-                    if ($showlog) {
-                        echo 'Order '.$recnum.' QTY '.$qtyout.PHP_EOL;
-                    }
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $outcome['amount_date']);
                     $this->db->set('outcome_qty', $qtyout);
@@ -1093,22 +1087,12 @@ class Test extends CI_Controller
                     $this->db->order_by('income_date');
                     $candidats = $this->db->get()->result_array();
                     foreach ($candidats as $candidat) {
-                        if ($showlog==1) {
-                            echo 'ID '.$candidat['inventory_income_id'].' Left '.$candidat['leftqty'].' Income '.$candidat['income_qty'].' Expens '.$candidat['income_expense'].PHP_EOL;
-                            echo 'Order QTY '.$qtyout.PHP_EOL;
-                        }
                         if ($qtyout > $candidat['leftqty']) {
                             $newexp = $candidat['income_expense'] + $candidat['leftqty'];
                             $ordinv = $candidat['leftqty'];
-                            if ($showlog==1) {
-                                echo 'QTY > LEFT - New expens '.$newexp.' order INV '.$ordinv.PHP_EOL;
-                            }
                         } else {
                             $newexp = $candidat['income_expense'] + $qtyout;
                             $ordinv = $qtyout;
-                            if ($showlog==1) {
-                                echo 'QTY < LEFT - New expens '.$newexp.' order INV '.$ordinv.PHP_EOL;
-                            }
                         }
                         // echo 'QTY '.$qtyout.' New Expens '.$newexp.' Get INV '.$ordinv.PHP_EOL;
                         $this->db->where('inventory_income_id', $candidat['inventory_income_id']);

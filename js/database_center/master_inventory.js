@@ -219,7 +219,52 @@ function init_itemcolor_popup() {
                 show_error(response);
             }
         },'json');
+    });
+    // Add manual income
+    $("span.incomelistadd").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        var url = '/masterinventory/add_color_income';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".inventoryprice_table_body").prepend(response.data.content);
+                init_manualincome_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
+}
+
+function init_manualincome_manage() {
+    $("span.incomelistadd").unbind('click');
+    $("span.cancelsaveinventincome").unbind('click').click(function () {
+        $(".inventoryprice_table_row.manualaddrecord").remove();
+        init_itemcolor_popup();
+    });
+    $(".inventoryincomedateinpt").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    $("span.saveinventincome").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $("#colorinventory").val()});
+        params.push({name: 'income_date', value: $("input.inventoryincomedateinpt").val()});
+        params.push({name: 'income_recnum', value: $("input.inventincomerecnum").val()});
+        params.push({name: 'income_desript', value: $("input.inventincomedescripinpt").val()});
+        params.push({name: 'income_price', value: $("input.inventincomepriceinpt").val()});
+        params.push({name: 'income_qty', value: $("input.inventincomeqtyinpt").val()});
+        var url = '/masterinventory/save_color_income';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.content);
+                init_itemcolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
 }
 
 function init_colorhistory_popup() {
@@ -238,6 +283,48 @@ function init_colorhistory_popup() {
                 $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.winbody);
                 $("#modalEditInventPrice").modal({keyboard: false, show: true});
                 init_itemcolor_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("span.outcomelistadd").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        var url = '/masterinventory/add_color_outcome';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".inventoryhistory_table_body").prepend(response.data.content);
+                init_manualoutcome_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_manualoutcome_manage() {
+    $("span.outcomelistadd").unbind('click');
+    $("span.cancelinventoutcome").unbind('click').click(function () {
+        $(".manualoutcomerow").remove();
+        init_colorhistory_popup();
+    });
+    $(".inventoryoutcomedateinpt").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    $("span.saveinventoutcome").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $("#colorinventory").val()});
+        params.push({name: 'outcome_date', value: $("input.inventoryoutcomedateinpt").val()});
+        params.push({name: 'outcome_recnum', value: $("input.inventoutcomerecnum").val()});
+        params.push({name: 'outcome_descript', value: $("input.inventoutcomedescripinpt").val()});
+        params.push({name: 'outcome_qty', value: $("input.inventoutcomeqtyinpt").val()});
+        var url = '/masterinventory/save_color_outcome';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.content);
+                init_colorhistory_popup();
             } else {
                 show_error(response);
             }
