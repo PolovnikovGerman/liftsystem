@@ -287,6 +287,48 @@ function init_colorhistory_popup() {
                 show_error(response);
             }
         },'json');
+    });
+    $("span.outcomelistadd").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        var url = '/masterinventory/add_color_outcome';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".inventoryhistory_table_body").prepend(response.data.content);
+                init_manualoutcome_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_manualoutcome_manage() {
+    $("span.outcomelistadd").unbind('click');
+    $("span.cancelinventoutcome").unbind('click').click(function () {
+        $(".manualoutcomerow").remove();
+        init_colorhistory_popup();
+    });
+    $(".inventoryoutcomedateinpt").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    $("span.saveinventoutcome").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $("#colorinventory").val()});
+        params.push({name: 'outcome_date', value: $("input.inventoryoutcomedateinpt").val()});
+        params.push({name: 'outcome_recnum', value: $("input.inventoutcomerecnum").val()});
+        params.push({name: 'outcome_descript', value: $("input.inventoutcomedescripinpt").val()});
+        params.push({name: 'outcome_qty', value: $("input.inventoutcomeqtyinpt").val()});
+        var url = '/masterinventory/save_color_outcome';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.content);
+                init_colorhistory_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 

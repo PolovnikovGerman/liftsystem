@@ -780,4 +780,69 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function save_color_manualoutcome($coloritem, $options) {
+        $out = ['result' => $this->success_result, 'msg' => 'Unknown Master Item'];
+        $chkflag=1;
+        if (empty($options['outcome_date'])) {
+            $chkflag=0;
+            $out['msg']='Empty Outcome Date';
+        } elseif (empty($options['outcome_recnum'])) {
+            $chkflag=0;
+            $out['msg']='Empty Record #';
+        } elseif (empty($options['outcome_descript'])) {
+            $chkflag=0;
+            $out['msg']='Empty Outcome Description';
+        } elseif (empty($options['outcome_qty']) || intval($options['outcome_qty'])<=0) {
+            $chkflag=0;
+            $out['msg']='Empty Income QTY';
+        }
+        if ($chkflag==1) {
+            // Add expense
+            $qtyout = intval($options['outcome_qty']);
+            $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $coloritem);
+            $this->db->having('leftqty > 0');
+            $this->db->order_by('income_date');
+            $candidats = $this->db->get()->result_array();
+            foreach ($candidats as $candidat) {
+                if ($qtyout > $candidat['leftqty']) {
+                    $newexp = $candidat['income_expense'] + $candidat['leftqty'];
+                } else {
+                    $newexp = $candidat['income_expense'] + $qtyout;
+                }
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_expense', $newexp);
+                $this->db->update('ts_inventory_incomes');
+                $qtyout= $qtyout - $candidat['leftqty'];
+                if ($qtyout <= 0 ) {
+                    break;
+                }
+            }
+            $this->db->set('inventory_color_id', $coloritem);
+            $this->db->set('outcome_date', strtotime($options['outcome_date']));
+            $this->db->set('outcome_qty', intval($options['outcome_qty']));
+            $this->db->set('outcome_description', $options['outcome_descript']);
+            $this->db->set('outcome_record', $options['outcome_recnum']);
+            $this->db->insert('ts_inventory_outcomes');
+            // get new itemprice
+            $invdata = $this->get_masterinventory_color($coloritem);
+            if ($invdata['result']==$this->success_result) {
+                $totals = $invdata['totals'];
+                $this->db->where('inventory_color_id', $coloritem);
+                $this->db->set('price', $totals['avg_price']);
+                $this->db->update('ts_inventory_colors');
+                // Get new history
+                $res = $this->get_masterinventory_colorhistory($coloritem);
+                $out['msg'] = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $out['result'] = $this->success_result;
+                    $out['lists'] = $res['lists'];
+                    $out['itemdata'] = $res['itemdata'];
+                }
+            }
+        }
+        return $out;
+    }
 }

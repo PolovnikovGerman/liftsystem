@@ -145,6 +145,46 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function add_color_outcome() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $mdata = [];
+            $error = 'Non exist Item / Color';
+            if (!empty($coloritem)) {
+                $error = '';
+                $mdata['content'] = $this->load->view('masterinvent/history_addmanual_view',['color' => $coloritem], TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function save_color_outcome() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $options = [];
+            $options['outcome_date'] = ifset($postdata, 'outcome_date', '');
+            $options['outcome_recnum'] = ifset($postdata, 'outcome_recnum', '');
+            $options['outcome_descript'] = ifset($postdata, 'outcome_descript', '');
+            $options['outcome_qty'] = ifset($postdata, 'outcome_qty', 0);
+            $res = $this->inventory_model->save_color_manualoutcome($coloritem, $options);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $options = [
+                    'lists' => $res['lists'],
+                    'item' => $res['itemdata'],
+                ];
+                $mdata['content'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
     public function get_item_inventory() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();
