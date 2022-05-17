@@ -3,19 +3,19 @@
 <div class="inventorydataview">
     <div class="datarow">
         <div class="pagetitle">Master Inventory</div>
-        <div class="invtypebutton active oldver">
+        <div class="invtypebutton <?=$eventtype=='purchasing' ? 'active' : ''?> oldver" data-itemtype="purchasing">
             <span>Purchasing</span>
             <div class="oldvesionlabel">&nbsp;</div>
         </div>
-        <div class="invtypebutton oldver">
+        <div class="invtypebutton <?=$eventtype=='manufacturing' ? 'active' : ''?> oldver" data-itemtype="manufacturing">
             <span>Manufacturing</span>
             <div class="oldvesionlabel">&nbsp;</div>
         </div>
-        <div class="invtypebutton oldver">
+        <div class="invtypebutton <?=$eventtype=='printing' ? 'active' : ''?> oldver" data-itemtype="printing">
             <span>Printing</span>
             <div class="oldvesionlabel">&nbsp;</div>
         </div>
-        <div class="invtypebutton oldver">
+        <div class="invtypebutton <?=$eventtype=='assembly' ? 'active' : ''?> oldver" data-itemtype="assembly">
             <span>Assembly</span>
             <div class="oldvesionlabel">&nbsp;</div>
         </div>
