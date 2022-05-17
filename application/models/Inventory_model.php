@@ -787,9 +787,9 @@ class Inventory_model extends MY_Model
         if (empty($options['outcome_date'])) {
             $chkflag=0;
             $out['msg']='Empty Outcome Date';
-        } elseif (empty($options['outcome_recnum'])) {
-            $chkflag=0;
-            $out['msg']='Empty Record #';
+//        } elseif (empty($options['outcome_recnum'])) {
+//            $chkflag=0;
+//            $out['msg']='Empty Record #';
         } elseif (empty($options['outcome_descript'])) {
             $chkflag=0;
             $out['msg']='Empty Outcome Description';
@@ -820,11 +820,30 @@ class Inventory_model extends MY_Model
                     break;
                 }
             }
+            // Calc new Rec NUM
+            $outcome_type = 'X';
+            $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+            $this->db->from('ts_inventory_outcomes');
+            $this->db->where('outcome_type', $outcome_type);
+            $outdat = $this->db->get()->row_array();
+            if ($outdat['cnt']==1) {
+                $recnum = -1;
+            } else {
+                $recnum = $outdat['outnumb'];
+            }
+            $newrecnum = $recnum + 1;
+            $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+            $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+
             $this->db->set('inventory_color_id', $coloritem);
             $this->db->set('outcome_date', strtotime($options['outcome_date']));
             $this->db->set('outcome_qty', intval($options['outcome_qty']));
             $this->db->set('outcome_description', $options['outcome_descript']);
-            $this->db->set('outcome_record', $options['outcome_recnum']);
+            $this->db->set('outcome_record', $recnum);
+            $this->db->set('outcome_type', $outcome_type);
+            $this->db->set('outcome_number', $newrecnum);
+            $this->db->set('inserted_by', $options['user_id']);
+            $this->db->set('inserted_at', date('Y-m-d H:i:s'));
             $this->db->insert('ts_inventory_outcomes');
             // get new itemprice
             $invdata = $this->get_masterinventory_color($coloritem);

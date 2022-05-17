@@ -3,9 +3,7 @@
     <div class="instock_date">
         <input class="inventoryoutcomedateinpt" value="<?=date('m/d/Y')?>"/>
     </div>
-    <div class="instock_recnum">
-        <input class="inventoutcomerecnum" value="" placeholder="Rec #"/>
-    </div>
+    <div class="instock_recnum">&nbsp;</div>
     <div class="instock_descript">
         <input class="inventoutcomedescripinpt" value="" placeholder="Description"/>
     </div>
