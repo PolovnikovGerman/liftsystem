@@ -167,9 +167,10 @@ class Masterinventory extends MY_Controller
             $coloritem = ifset($postdata,'itemcolor', 0);
             $options = [];
             $options['outcome_date'] = ifset($postdata, 'outcome_date', '');
-            $options['outcome_recnum'] = ifset($postdata, 'outcome_recnum', '');
+            // $options['outcome_recnum'] = ifset($postdata, 'outcome_recnum', '');
             $options['outcome_descript'] = ifset($postdata, 'outcome_descript', '');
             $options['outcome_qty'] = ifset($postdata, 'outcome_qty', 0);
+            $options['user_id'] = $this->USR_ID;
             $res = $this->inventory_model->save_color_manualoutcome($coloritem, $options);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {

@@ -946,11 +946,20 @@ class Test extends CI_Controller
         $yrditem=[4,11, 15, 21];
         $this->db->select('*');
         $this->db->from('ts_printshop_items');
-        $this->db->limit(15, 28);
+        $this->db->limit(15, 28); // id - 4
+        // $this->db->limit(3, 25); // id - 3
+        // $this->db->limit(5, 20); // id - 2
+        // $this->db->limit(20); // id - 1
         $items = $this->db->get()->result_array();
         $itemnum=1;
-        $type_sh = 'SOT';
+        $type_sh = 'SOT'; // id=4
+        // $type_sh = 'SHS'; // id=3
+        // $type_sh = 'SMA'; // id=2
+        // $type_sh = 'SSB'; // id=1
         $type_id = 4;
+        // $type_id = 3;
+        // $type_id = 2;
+        // $type_id = 1;
         foreach ($items as $item) {
             echo 'Item '.$item['item_name'].' insert '.PHP_EOL;
             $unit='pc';
@@ -970,6 +979,7 @@ class Test extends CI_Controller
             $this->db->set('plate_template_source', $item['plate_temp_source']);
             $this->db->set('box_template', $item['item_label']);
             $this->db->set('box_template_source', $item['item_label_source']);
+            $this->db->set('inserted_at', date('Y-m-d H:i:s'));
             $this->db->insert('ts_inventory_items');
             $newitemid = $this->db->insert_id();
             // Add colors
@@ -992,6 +1002,7 @@ class Test extends CI_Controller
                 $this->db->set('pantones', empty($color['specfile']) ? $color['color_descript'] : $color['specfile']);
                 $this->db->set('color_image','');
                 $this->db->set('color_image_source','');
+                $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                 $this->db->insert('ts_inventory_colors');
                 $newcolorid = $this->db->insert_id();
                 // Insert 5 empty rows
@@ -1021,6 +1032,7 @@ class Test extends CI_Controller
                     $this->db->set('income_price', $calcprice); // $color['price']
                     $this->db->set('income_description', $descr);
                     $this->db->set('income_record', $recnum);
+                    $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                     $this->db->insert('ts_inventory_incomes');
                 }
                 // Negative Income
@@ -1052,12 +1064,28 @@ class Test extends CI_Controller
                             break;
                         }
                     }
-                    $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
+                    $outcome_type = 'X';
+                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+                    $this->db->from('ts_inventory_outcomes');
+                    $this->db->where('outcome_type', $outcome_type);
+                    $outdat = $this->db->get()->row_array();
+                    if ($outdat['cnt']==1) {
+                        $recnum = -1;
+                    } else {
+                        $recnum = $outdat['outnumb'];
+                    }
+                    $newrecnum = $recnum + 1;
+                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+                    // $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $corect['instock_date']);
                     $this->db->set('outcome_qty', abs($corect['instock_amnt']));
                     $this->db->set('outcome_description', $corect['instock_descrip']);
                     $this->db->set('outcome_record', $recnum);
+                    $this->db->set('outcome_type', $outcome_type);
+                    $this->db->set('outcome_number', $newrecnum);
+                    $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                     $this->db->insert('ts_inventory_outcomes');
                 }
                 // Get outcome
@@ -1069,14 +1097,29 @@ class Test extends CI_Controller
                 $outcomes = $this->db->get()->result_array();
                 foreach ($outcomes as $outcome) {
                     $qtyout = intval($outcome['shipped'])+intval($outcome['misprint'])+intval($outcome['kepted']);
-                    $recnum = 'A0-'.$outcome['order_num'];
-                    $showlog=0;
+                    $outcome_type = 'P';
+                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+                    $this->db->from('ts_inventory_outcomes');
+                    $this->db->where('outcome_type', $outcome_type);
+                    $outdat = $this->db->get()->row_array();
+                    if ($outdat['cnt']==1) {
+                        $recnum = -1;
+                    } else {
+                        $recnum = $outdat['outnumb'];
+                    }
+                    $newrecnum = $recnum + 1;
+                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+                    // $recnum = 'A0-'.$outcome['order_num'];
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $outcome['amount_date']);
                     $this->db->set('outcome_qty', $qtyout);
                     $this->db->set('outcome_description','Order # '.$outcome['order_num']);
                     $this->db->set('outcome_record', $recnum);
                     $this->db->set('order_id', $outcome['order_id']);
+                    $this->db->set('outcome_number', $newrecnum);
+                    $this->db->set('outcome_type', $outcome_type);
+                    $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                     $this->db->insert('ts_inventory_outcomes');
                     // Update balance
                     $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
