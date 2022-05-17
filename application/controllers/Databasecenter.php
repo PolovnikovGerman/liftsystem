@@ -383,6 +383,7 @@ class Databasecenter extends MY_Controller
             'active_type' => $invtypes[0]['inventory_type_id'],
             'export_type' => $invtypes[0]['type_short'],
             'total' => $totalval,
+            'eventtype' => 'purchasing',
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
