@@ -33,6 +33,7 @@
                 <div class="datarow">
                     <div class="colorvendorname"><?=$vendor['vendor_name']?></div>
                     <div class="colorvendorprice"><?=(empty($vendor['price']) || $vendor['price']==0) ? '&nbsp;' : MoneyOutput($vendor['price'],3) ?></div>
+                    <div class="colorvendorunit"><?=$color['color_unit']?></div>
                 </div>
             <?php } ?>
         </div>

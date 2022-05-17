@@ -1147,7 +1147,7 @@ input.colormaxvalueinpt {
 }
 .colorvendorsdata {
     margin-left: 82px;
-    width: 238px;
+    width: 352px;
 }
 .colorvendorsdata > .datarow {
     margin-bottom: 8px;
@@ -1192,6 +1192,15 @@ input.colorvendorpriceinpt {
     height: 23px;
     line-height: 23px;
     width: 64px;
+}
+.colorvendorunit {
+    margin-left: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    width: 45px;
+
 }
 .colorimagelabel {
     margin-left: -52px;

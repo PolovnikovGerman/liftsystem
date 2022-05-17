@@ -63,6 +63,7 @@
                     <div class="colorvendorinpt">
                         <input type="text" class="colorvendorpriceinpt" value="<?=$vendor['price']?>" data-list="<?=$vendor['invcolor_vendor_id']?>" placeholder="Price"/>
                     </div>
+                    <div class="colorvendorunit"><?=$color['color_unit']?></div>
                 </div>
             <?php } ?>
         </div>
