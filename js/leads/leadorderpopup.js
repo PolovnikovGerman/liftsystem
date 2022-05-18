@@ -3598,7 +3598,7 @@ function save_amntchangedetails(fldname, newval) {
             });
             $("textarea#change_comment").unbind('change').change(function(){
                  var newval=$(this).val();
-                 show_amountsave();
+                 show_amountchangesave();
                  save_amntdetails('comment', newval);
             });
         } else {
