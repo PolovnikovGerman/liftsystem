@@ -821,7 +821,7 @@ function shipping_manage() {
         params.push({name: 'cartoon_depth', value: $("#cartoon_depth").val()});
         params.push({name: 'charge_pereach', value: $("#charge_pereach").val()});
         params.push({name: 'charge_perorder', value: $("#charge_perorder").val()});
-        params.name({name: 'boxqty', value: $("#boxqty").val()});
+        params.push({name: 'boxqty', value: $("#boxqty").val()});
         var url="/itemdetails/save_shipping";
         $.post(url, params, function (response) {
             if (response.errors=='') {

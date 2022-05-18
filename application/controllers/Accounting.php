@@ -210,9 +210,6 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
-        // Balloons
-        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
-        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
 
         $options = [
             'title' => $head['title'],

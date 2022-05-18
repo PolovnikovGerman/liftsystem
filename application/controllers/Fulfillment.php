@@ -160,9 +160,6 @@ class Fulfillment extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
-        // Balloons
-        $head['styles'][]=['style' => '/css/mb_ballons/mb.balloon.css'];
-        $head['scripts'][] = ['src' => '/js/mb_balloons/jquery.mb.balloon.js'];
 
         $options = [
             'title' => $head['title'],
