@@ -609,6 +609,12 @@ if (!function_exists('PriceOutput')) {
 if (!function_exists('formatPhoneNumber')) {
     function formatPhoneNumber($phoneNumber,$ext=0) {
         if (!empty($phoneNumber)) {
+            $numadd = '';
+            if (stripos($phoneNumber, 'ext')) {
+                $pos = stripos($phoneNumber, 'ext');
+                $numadd = substr($phoneNumber, $pos);
+                $phoneNumber = substr($phoneNumber, 0, $pos-1);
+            }
             $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
 
             if(strlen($phoneNumber) > 10) {
@@ -635,6 +641,7 @@ if (!function_exists('formatPhoneNumber')) {
 
                 $phoneNumber = $nextThree.'-'.$lastFour;
             }
+            $phoneNumber=$phoneNumber.' '.$numadd;
         }
         return $phoneNumber;
     }
