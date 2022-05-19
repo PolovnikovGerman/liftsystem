@@ -454,6 +454,9 @@
     width: 48px;
     font-weight: 600;
 }
+.inventorydatarow .masterinventdetails.emptyimage {
+    color: #c5c4c4;
+}
 .inventoryemptydata {
     width: 100%;
     text-align: center;
@@ -1236,4 +1239,20 @@ input.colorvendorpriceinpt {
     background-image: none!important;
     color: #0000ff!important;
     font-size: 12px!important;
+}
+.mastercolor_show_detailsmessage {
+    background-color: #ffffff!important;
+    float: left;
+    padding: 0;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+}
+.mastercolor_show_details {
+    width: 280px;
+    height: 280px;
+    border: 1px solid #000;
+}
+.mastercolor_show_details img {
+    width: 100%;
 }

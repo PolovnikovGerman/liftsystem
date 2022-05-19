@@ -37,9 +37,16 @@
         <div class="masterinventavgprice <?=$list['totalclass']?>" data-item="<?=$list['id']?>"><?=MoneyOutput($list['price'],3)?></div>
         <div class="masterinventtotalval <?=$list['totalclass']?>"><?=MoneyOutput($list['total'])?></div>
         <?php if ($list['item_flag']==1) { ?>
-            <div class="masterinventdetails itemdata" data-item="<?=$list['id']?>"><i class="fa fa-search"></i></div>
+            &nbsp;
         <?php } else { ?>
-            <div class="masterinventdetails colordata" data-color="<?=$list['id']?>"><i class="fa fa-search"></i></div>
+            <?php if (empty($list['color_image'])) { ?>
+                <div class="masterinventdetails colordata emptyimage"><i class="fa fa-search"></i></div>
+            <?php } else { ?>
+                <div class="masterinventdetails colordata" data-event="hover" data-css="mastercolor_show_detailsmessage" data-position="auto"
+                     data-bgcolor="#FFFFFF" data-bordercolor="#000" data-textcolor="#000" data-balloon="{ajax} /masterinventory/get_colorimage?c=<?=$list['id']?> ">
+                    <i class="fa fa-search"></i>
+                </div>
+            <?php } ?>
         <?php } ?>
     </div>
 <?php } ?>

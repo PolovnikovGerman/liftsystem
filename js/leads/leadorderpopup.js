@@ -3588,9 +3588,9 @@ function save_amntchangedetails(fldname, newval) {
                 save_amntchangedetails('reason', newval);
             });
             $("textarea#change_comment").unbind('change').change(function(){
-                 var newval=$(this).val();
-                 show_amountsave();
-                 save_amntdetails('comment', newval);
+                var newval=$(this).val();
+                show_amountchangesave();
+                save_amntchangedetails('comment', newval);
             });
         } else {
             show_error(response);
