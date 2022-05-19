@@ -15,6 +15,7 @@ function init_master_inventorydata() {
             $(".inventtotalinstock").empty().html(response.data.instock);
             $(".inventtotalavailable").empty().html(response.data.available);
             $(".inventtotalmaximum").empty().html(response.data.maximum);
+            jQuery.balloon.init();
             init_master_inventorytabledat();
         } else {
             show_error(response)

@@ -397,4 +397,19 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function get_colorimage() {
+        $getdata = $this->input->get();
+        $color_id = ifset($getdata,'c', 0);
+        $res = $this->inventory_model->get_inventory_mastercolor($color_id,0);
+        $error = $res['msg'];
+        if ($res['result']==$this->success_result) {
+            $itemdat = $res['colordata'];
+            $msg = $this->load->view('masterinvent/mastercolor_details_view', $itemdat, TRUE);
+        } else {
+            $msg = $error;
+        }
+        echo $msg;
+
+    }
+
 }

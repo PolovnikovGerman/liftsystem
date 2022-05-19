@@ -140,6 +140,7 @@ class Inventory_model extends MY_Model
                         'total' => $available*$color['price'],
                         'noreorder' => $color['notreorder'],
                         'totalclass' => $totalclass,
+                        'color_image' => $color['color_image'],
                     ];
                     $color_seq++;
                     // Calc totals
