@@ -488,6 +488,120 @@ class Exportexcell_model extends CI_Model
         $filename = $this->config->item('upload_path_preload') . $report_name;
         $writer->save($filename);    // download file
         return ['result' => 1, 'msg' => 'All OK', 'url'=> $this->config->item('pathpreload').$report_name];
+    }
+
+    public function export_master_inventory($lists, $file_label) {
+        ini_set("memory_limit","-1");
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $styleHeadArray = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => '00000000', // argb => FFA0A0A0
+                ],
+                'endColor' => [
+                    'argb' => 'FFFFFFFF',
+                ],
+            ]
+        ];
+        $styleItemArray = [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'argb' => 'FFA0A0A0',
+                ],
+                'endColor' => [
+                    'argb' => 'FFFFFFFF',
+                ],
+            ],
+        ];
+
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getStyle('A1:L1')->applyFromArray($styleHeadArray);
+        $spreadsheet->getActiveSheet()->getStyle('A1:L1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_WHITE);
+        $sheet->setCellValue('A1','Status');
+        $sheet->setCellValue('B1','Master #/Seq');
+        $sheet->setCellValue('C1','Description');
+        $sheet->setCellValue('D1','%');
+        $sheet->setCellValue('E1','Maximum');
+        $sheet->setCellValue('F1','In Stock');
+        $sheet->setCellValue('G1','Reserved');
+        $sheet->setCellValue('H1','Available');
+        $sheet->setCellValue('I1','Unit');
+        $sheet->setCellValue('J1','On Order');
+        $sheet->setCellValue('K1','Avg Price');
+        $sheet->setCellValue('L1','Total Value');
+        $i=2;
+        foreach ($lists as $list) {
+            if ($list['item_flag']==1) {
+                $currow = 'A'.$i.':L'.$i;
+                $spreadsheet->getActiveSheet()->getStyle($currow)->applyFromArray($styleItemArray);
+            }
+            $spreadsheet->getActiveSheet()->getStyle('D'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $spreadsheet->getActiveSheet()->getStyle('J'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('K'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('L'.$i)
+                ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+            $sheet->setCellValue('A'.$i,$list['status']);
+            if ($list['item_flag']==1) {
+                $sheet->setCellValue('B'.$i, $list['item_code']);
+            } else {
+                $sheet->setCellValue('B'.$i, $list['item_seq']);
+            }
+            $sheet->setCellValue('C'.$i, $list['description']);
+            $sheet->setCellValue('D'.$i, $list['percent'].'%');
+            $sheet->setCellValue('E'.$i, empty($list['max']) ? '' : QTYOutput($list['max']));
+            $sheet->setCellValue('F'.$i, $list['instock']);
+            $sheet->setCellValue('G'.$i, empty($list['reserved']) ? '' : QTYOutput($list['reserved']));
+            $sheet->setCellValue('H'.$i, $list['available']);
+            $sheet->setCellValue('I'.$i, $list['unit']);
+            $sheet->setCellValue('J'.$i, empty($list['onorder']) ? '' : QTYOutput($list['onorder']));
+            $sheet->setCellValue('K'.$i, MoneyOutput($list['price'],3));
+            $sheet->setCellValue('L'.$i, MoneyOutput($list['total']));
+            $i++;
+        }
+
+
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+
+        $report_name = $file_label.'_export_' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        return ['result' => 1, 'msg' => 'All OK', 'url'=> $this->config->item('pathpreload').$report_name];
 
     }
 }

@@ -413,4 +413,27 @@ class Masterinventory extends MY_Controller
 
     }
 
+    public function export_inventory() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $inventory_type = ifset($postdata,'inventory_type',0);
+            $inventory_label = ifset($postdata, 'inventory_label','UNK');
+            $inventory_filter = 0;
+            $mdata = [];
+            $error = 'Unknown Inventory Type';
+            if (!empty($inventory_type)) {
+                $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
+                $this->load->model('exportexcell_model');
+                $res = $this->exportexcell_model->export_master_inventory($data['list'], $inventory_label);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['url'] = $res['url'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
