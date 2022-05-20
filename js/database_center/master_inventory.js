@@ -172,6 +172,19 @@ function init_master_inventorytabledat() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".masterinventexport").find('i').unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_label', value: $(".mastinvent_left_section.active").data('invlabel')});
+        var url = '/masterinventory/export_inventory';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                window.open(response.data.url);
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 
