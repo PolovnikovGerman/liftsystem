@@ -28,7 +28,7 @@
                     <select class="inventfilterselect" name="inventfilerdata">
                         <option value="0" selected="selected">Active & Inactive</option>
                         <option value="1">Active</option>
-                        <option value="2">Non-Active</option>
+                        <option value="2">Inactive</option>
                     </select>
                 </div>
             </div>

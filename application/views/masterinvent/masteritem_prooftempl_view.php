@@ -5,3 +5,4 @@
     </div>
     <div id="proofnew-uploader"></div>
 </div>
+<div class="itemtemplatedescript"><?=$doc_source?></div>

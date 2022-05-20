@@ -400,10 +400,11 @@ function init_uploadfiles_masteritem() {
     if ($("#proof-uploader").length > 0) {
         var uploadproof = new qq.FileUploader({
             element: document.getElementById('proof-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemprooftemplate',
             uploadButtonText: 'Upload',
             multiple: false,
             debug: false,
+            allowedExtensions: ['ai','AI','pdf','PDF'],
             // template: upload_templ,
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
@@ -415,6 +416,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'proof'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#prooftemplatearea").empty().html(response.data.content);
@@ -435,11 +437,12 @@ function init_uploadfiles_masteritem() {
     if ($("#proofnew-uploader").length > 0) {
         var uploadnewproof = new qq.FileUploader({
             element: document.getElementById('proofnew-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemprooftemplate',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
+            allowedExtensions: ['ai','AI','pdf','PDF'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -450,6 +453,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'proof'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#prooftemplatearea").empty().html(response.data.content);
@@ -469,10 +473,11 @@ function init_uploadfiles_masteritem() {
     if ($("#plate-uploader").length > 0) {
         var uploadplate = new qq.FileUploader({
             element: document.getElementById('plate-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemplatetemplate',
             uploadButtonText: 'Upload',
             multiple: false,
             debug: false,
+            allowedExtensions: ['ai','AI'],
             // template: upload_templ,
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
@@ -484,6 +489,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'plate'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#platetemplatearea").empty().html(response.data.content);
@@ -503,11 +509,12 @@ function init_uploadfiles_masteritem() {
     if ($("#platenew-uploader").length > 0) {
         var uploadnewplate = new qq.FileUploader({
             element: document.getElementById('platenew-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemplatetemplate',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
+            allowedExtensions: ['ai','AI'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -518,6 +525,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'plate'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#platetemplatearea").empty().html(response.data.content);
@@ -537,10 +545,11 @@ function init_uploadfiles_masteritem() {
     if ($("#box-uploader").length > 0 ) {
         var uploadbox = new qq.FileUploader({
             element: document.getElementById('box-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemboxtemplate',
             uploadButtonText: 'Upload',
             multiple: false,
             debug: false,
+            allowedExtensions: ['jpg','JPG','jpeg','JPEG','png','PNG','pdf','PDF'],
             // template: upload_templ,
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
@@ -552,6 +561,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'box'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#boxtemplatearea").empty().html(response.data.content);
@@ -571,11 +581,12 @@ function init_uploadfiles_masteritem() {
     if ($("#boxnew-uploader").length > 0) {
         var uploadnewbox = new qq.FileUploader({
             element: document.getElementById('boxnew-uploader'),
-            action: '/utils/save_itemimg',
+            action: '/utils/save_itemboxtemplate',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
+            allowedExtensions: ['jpg','JPG','jpeg','JPEG','png','PNG','pdf','PDF'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -586,6 +597,7 @@ function init_uploadfiles_masteritem() {
                     var params=new Array()
                     params.push({name: 'doc_url', value: responseJSON.filename});
                     params.push({name: 'doc_type', value: 'box'});
+                    params.push({name: 'doc_source', value: responseJSON.source});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
                             $("#boxtemplatearea").empty().html(response.data.content);
