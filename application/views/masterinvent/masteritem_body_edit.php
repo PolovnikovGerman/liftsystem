@@ -27,41 +27,53 @@
     <div class="datarow masteritemdevide">&nbsp;</div>
     <div class="datarow" id="prooftemplatearea">
         <div class="itemtemplatelabel">Proof Template:</div>
-        <div class="itemteplatevalue edittemplate">
-            <?php if (empty($proof_template)) { ?>
+        <?php if (empty($proof_template)) { ?>
+            <div class="itemteplatevalue emptytemplate">
                 <div id="proof-uploader"></div>
-            <?php } else { ?>
+            </div>
+            <div class="itemtemplatedescript">.ai or .pdf only</div>
+        <?php } else { ?>
+            <div class="itemteplatevalue edittemplate">
                 <div>
                     <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$proof_template?>"/>
                 </div>
                 <div id="proofnew-uploader"></div>
-            <?php } ?>
-        </div>
+            </div>
+            <div class="itemtemplatedescript"><?=$proof_template_source?></div>
+        <?php } ?>
     </div>
     <div class="datarow" id="platetemplatearea">
         <div class="itemtemplatelabel">Plate Template:</div>
-        <div class="itemteplatevalue edittemplate">
             <?php if (empty($plate_template)) { ?>
-                <div id="plate-uploader"></div>
-            <?php } else { ?>
-                <div>
-                    <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$plate_template?>"/>
+                <div class="itemteplatevalue emptytemplate">
+                    <div id="plate-uploader"></div>
                 </div>
-                <div id="platenew-uploader"></div>
+                <div class="itemtemplatedescript">.ai only</div>
+            <?php } else { ?>
+                <div class="itemteplatevalue edittemplate">
+                    <div>
+                        <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$plate_template?>"/>
+                    </div>
+                    <div id="platenew-uploader"></div>
+                </div>
+                <div class="itemtemplatedescript"><?=$plate_template_source?></div>
             <?php } ?>
-        </div>
     </div>
     <div class="datarow" id="boxtemplatearea">
         <div class="itemtemplatelabel">Box Template:</div>
-        <div class="itemteplatevalue edittemplate">
-            <?php if (empty($box_template)) { ?>
+        <?php if (empty($box_template)) { ?>
+            <div class="itemteplatevalue emptytemplate">
                 <div id="box-uploader"></div>
-            <?php } else { ?>
+            </div>
+            <div class="itemtemplatedescript">.jpg, .jpeg, .png, or .pdf only</div>
+        <?php } else { ?>
+            <div class="itemteplatevalue edittemplate">
                 <div>
                     <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$box_template?>"/>
                 </div>
                 <div id="boxnew-uploader"></div>
-            <?php } ?>
-        </div>
+            </div>
+            <div class="itemtemplatedescript"><?=$box_template_source?></div>
+        <?php } ?>
     </div>
 </div>

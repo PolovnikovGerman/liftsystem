@@ -17,6 +17,9 @@
                 <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$proof_template?>"/>
             <?php } ?>
         </div>
+        <?php if (!empty($proof_template)) { ?>
+            <div class="itemtemplatedescript view"><?=$proof_template_source?></div>
+        <?php } ?>
     </div>
     <div class="datarow">
         <div class="itemtemplatelabel">Plate Template:</div>
@@ -27,6 +30,9 @@
                 <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$plate_template?>"/>
             <?php } ?>
         </div>
+        <?php if (!empty($plate_template)) { ?>
+            <div class="itemtemplatedescript view"><?=$plate_template_source?></div>
+        <?php } ?>
     </div>
     <div class="datarow">
         <div class="itemtemplatelabel">Box Template:</div>
@@ -37,6 +43,8 @@
                 <img src="/img/masterinvent/opentemplate_btn.png" alt="Open template" data-src="<?=$box_template?>"/>
             <?php } ?>
         </div>
+        <?php if (!empty($box_template)) { ?>
+            <div class="itemtemplatedescript view"><?=$box_template_source?></div>
+        <?php } ?>
     </div>
-
 </div>

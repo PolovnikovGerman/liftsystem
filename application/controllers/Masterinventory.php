@@ -218,16 +218,17 @@ class Masterinventory extends MY_Controller
             $postdata = $this->input->post();
             $doc_url = ifset($postdata,'doc_url','');
             $doc_type = ifset($postdata, 'doc_type', '');
+            $doc_source = ifset($postdata, 'doc_source', '');
             $mdata = [];
             $error = 'Unknown document type';
             if (!empty($doc_type)) {
                 $error = '';
                 if ($doc_type=='proof') {
-                    $mdata['content'] = $this->load->view('masterinvent/masteritem_prooftempl_view',['doc_url' => $doc_url], TRUE);
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_prooftempl_view',['doc_url' => $doc_url, 'doc_source' => $doc_source], TRUE);
                 } elseif ($doc_type=='plate') {
-                    $mdata['content'] = $this->load->view('masterinvent/masteritem_platetempl_view',['doc_url' => $doc_url], TRUE);
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_platetempl_view',['doc_url' => $doc_url, 'doc_source' => $doc_source], TRUE);
                 } elseif ($doc_type=='box') {
-                    $mdata['content'] = $this->load->view('masterinvent/masteritem_boxtempl_view',['doc_url' => $doc_url], TRUE);
+                    $mdata['content'] = $this->load->view('masterinvent/masteritem_boxtempl_view',['doc_url' => $doc_url, 'doc_source' => $doc_source], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

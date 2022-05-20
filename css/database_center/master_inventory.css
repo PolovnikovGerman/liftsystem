@@ -203,7 +203,7 @@
 }
 .masterinventtotals .inventtotalmaxshow {
     margin-left: 435px;
-    margin-top: -8px;
+    margin-top: -17px;
     color: #8989ff;
     width: 35px;
     text-align: center;
@@ -216,15 +216,18 @@
     text-align: center;
     display: none;
     color: #8989ff;
+    margin-top: -8px;
 }
 .masterinventtotals .inventtotalinstock {
     width: 69px;
     text-align: center;
+    margin-top: -8px;
 }
 .masterinventtotals .inventtotalavailable {
     margin-left: 71px;
     width: 69px;
     text-align: center;
+    margin-top: -8px;
 }
 .masterinventtablehead {
     background: #000000;
@@ -323,6 +326,7 @@
 .inventorydatarow .masterinventstatus {
     width: 50px;
     border-right: 1px solid #000000;
+    font-size: 12px;
 }
 .inventorydatarow .masterinventstatus.donotreorder {
     background: #FF0000;
@@ -337,9 +341,19 @@
 .inventorydatarow .masterinventseq.itemedit {
     cursor: pointer;
 }
+.inventorydatarow .masterinventseq.itemedit:hover {
+    color: #0000FF;
+}
 .inventorydatarow .masterinventnumber {
     width: 80px;
     border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventnumber i {
+    font-size: 15px;
+    cursor: pointer;
+}
+.inventorydatarow.itemcolor .masterinventnumber:hover {
+    color: #0000FF;
 }
 .inventorydatarow .masterinventdescrip {
     width: 268px;
@@ -355,7 +369,7 @@
 .inventorydatarow.itemcolor.activeinvent {
     background: #FFFF00;
 }
-.inventorydatarow.itemcolor.activeinvent .masterinventavgprice {
+.inventorydatarow.itemcolor .masterinventavgprice:hover {
     color: #0000FF;
     font-weight: 600;
     cursor: pointer;
@@ -940,7 +954,7 @@ span.saveinventoutcome {
     margin-bottom: 10px;
 }
 .itemteplatevalue {
-    width: 78px;
+    width: 90px;
     margin-bottom: 10px;
     height: 24px;
     line-height: 24px;
@@ -954,6 +968,24 @@ span.saveinventoutcome {
 }
 .itemteplatevalue.edittemplate {
     width: 168px;
+}
+.itemteplatevalue.emptytemplate {
+    width: 95px;
+}
+.itemteplatevalue.edittemplate img {
+    cursor: pointer;
+}
+.itemtemplatedescript {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px!important;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.itemtemplatedescript.view {
+    width: 226px;
 }
 .masteritemfooter {
     background: #ffffff;
@@ -1233,6 +1265,7 @@ input.colorvendorpriceinpt {
     height: 23px!important;
     text-align: center;
     font-size: 14px;
+    margin-left: 4px;
 }
 .qq-upload-button.replacebutton {
     background-color: unset!important;
