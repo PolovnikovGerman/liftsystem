@@ -1201,4 +1201,59 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function update_lotnumbers() {
+        $this->db->select('*');
+        $this->db->from('v_inventory_instock');
+        $this->db->order_by('instock_date');
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if ($list['instock_type']=='S') {
+                if (substr($list['instock_record'],0,3)!='CON') {
+                    $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+                    $this->db->from('ts_inventory_adjusts');
+                    $numdat=$this->db->get()->row_array();
+                    if ($numdat['cnt']==0) {
+                        $newrec = $numdat['cnt'];
+                    } else {
+                        $newrec = $numdat['ordnum'];
+                    }
+                    $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
+                    $this->db->where('inventory_income_id', $list['instock_id']);
+                    $this->db->set('income_record', $recnum);
+                    $this->db->update('ts_inventory_incomes');
+                    $this->db->set('adjust_type', 'S');
+                    $this->db->insert('ts_inventory_adjusts');
+                }
+            } elseif ($list['instock_type']=='O') {
+                if (!empty($list['order_id'])) {
+                    $this->db->select('order_num');
+                    $this->db->from('ts_orders');
+                    $this->db->where('order_id', $list['order_id']);
+                    $orddat = $this->db->get()->row_array();
+                    $newrec = $orddat['order_num'];
+                    $recnum = 'Z0-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
+                    $this->db->where('inventory_outcome_id', $list['instock_id']);
+                    $this->db->set('outcome_record', $recnum);
+                    $this->db->update('ts_inventory_outcomes');
+                } else {
+                    $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+                    $this->db->from('ts_inventory_adjusts');
+                    $numdat=$this->db->get()->row_array();
+                    if ($numdat['cnt']==0) {
+                        $newrec = $numdat['cnt'];
+                    } else {
+                        $newrec = $numdat['ordnum'];
+                    }
+                    $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
+                    $this->db->where('inventory_outcome_id', $list['instock_id']);
+                    $this->db->set('outcome_record', $recnum);
+                    $this->db->update('ts_inventory_outcomes');
+                    $this->db->set('adjust_type', 'O');
+                    $this->db->insert('ts_inventory_adjusts');
+                }
+            }
+        }
+        echo 'Ready'.PHP_EOL;
+    }
 }
