@@ -124,10 +124,11 @@ class Masterinventory extends MY_Controller
             $coloritem = ifset($postdata,'itemcolor', 0);
             $options = [];
             $options['income_date'] = ifset($postdata, 'income_date', '');
-            $options['income_recnum'] = ifset($postdata, 'income_recnum', '');
+            // $options['income_recnum'] = ifset($postdata, 'income_recnum', '');
             $options['income_desript'] = ifset($postdata, 'income_desript', '');
             $options['income_price'] = ifset($postdata, 'income_price', 0);
             $options['income_qty'] = ifset($postdata, 'income_qty', 0);
+            $options['user_id'] = $this->USR_ID;
             $res = $this->inventory_model->save_color_manualincome($coloritem, $options);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {

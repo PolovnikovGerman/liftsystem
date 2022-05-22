@@ -264,7 +264,7 @@ function init_manualincome_manage() {
         var params = new Array();
         params.push({name: 'itemcolor', value: $("#colorinventory").val()});
         params.push({name: 'income_date', value: $("input.inventoryincomedateinpt").val()});
-        params.push({name: 'income_recnum', value: $("input.inventincomerecnum").val()});
+        // params.push({name: 'income_recnum', value: $("input.inventincomerecnum").val()});
         params.push({name: 'income_desript', value: $("input.inventincomedescripinpt").val()});
         params.push({name: 'income_price', value: $("input.inventincomepriceinpt").val()});
         params.push({name: 'income_qty', value: $("input.inventincomeqtyinpt").val()});
