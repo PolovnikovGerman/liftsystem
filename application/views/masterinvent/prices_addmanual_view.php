@@ -4,7 +4,8 @@
         <input class="inventoryincomedateinpt" value="<?=date('m/d/Y')?>"/>
     </div>
     <div class="inventoryincome_recnum">
-        <input class="inventincomerecnum" value="" placeholder="Rec #"/>
+        <!-- <input class="inventincomerecnum" value="" placeholder="Rec #"/> -->
+        &nbsp;
     </div>
     <div class="inventoryincome_descript">
         <input class="inventincomedescripinpt" value="" placeholder="Description"/>

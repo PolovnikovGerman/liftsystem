@@ -741,9 +741,9 @@ class Inventory_model extends MY_Model
         if (empty($options['income_date'])) {
             $chkflag=0;
             $out['msg']='Empty Income Date';
-        } elseif (empty($options['income_recnum'])) {
-            $chkflag=0;
-            $out['msg']='Empty Record #';
+//        } elseif (empty($options['income_recnum'])) {
+//            $chkflag=0;
+//            $out['msg']='Empty Record #';
         } elseif (empty($options['income_desript'])) {
             $chkflag=0;
             $out['msg']='Empty Income Description';
@@ -755,16 +755,30 @@ class Inventory_model extends MY_Model
             $out['msg']='Empty Income QTY';
         }
         if ($chkflag==1) {
+            // Get new recnum
+            $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+            $this->db->from('ts_inventory_adjusts');
+            $numdat=$this->db->get()->row_array();
+            if ($numdat['cnt']==0) {
+                $newrec = $numdat['cnt'];
+            } else {
+                $newrec = $numdat['ordnum'];
+            }
+            $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
             $this->db->set('inventory_color_id', $inventory_color_id);
             $this->db->set('income_date', strtotime($options['income_date']));
-            $this->db->set('income_record', $options['income_recnum']);
+            $this->db->set('income_record', $recnum); //$options['income_recnum']
             $this->db->set('income_description', $options['income_desript']);
             $this->db->set('income_qty', intval($options['income_qty']));
             $this->db->set('income_price', floatval($options['income_price']));
+            $this->db->set('inserted_by', $options['user_id']);
+            $this->db->set('inserted_at', date('Y-m-d H:i:s'));
             $this->db->insert('ts_inventory_incomes');
             $newrec = $this->db->insert_id();
             $out['msg'] = 'Error during add Manual Income';
             if ($newrec > 0) {
+                $this->db->set('adjust_type', 'S');
+                $this->db->insert('ts_inventory_adjusts');
                 // Get new data for content
                 $data = $this->get_masterinventory_color($inventory_color_id);
                 $out['msg'] = $data['msg'];
@@ -823,18 +837,28 @@ class Inventory_model extends MY_Model
             }
             // Calc new Rec NUM
             $outcome_type = 'X';
-            $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
-            $this->db->from('ts_inventory_outcomes');
-            $this->db->where('outcome_type', $outcome_type);
-            $outdat = $this->db->get()->row_array();
-            if ($outdat['cnt']==1) {
-                $recnum = -1;
+//            $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+//            $this->db->from('ts_inventory_outcomes');
+//            $this->db->where('outcome_type', $outcome_type);
+//            $outdat = $this->db->get()->row_array();
+//            if ($outdat['cnt']==1) {
+//                $recnum = -1;
+//            } else {
+//                $recnum = $outdat['outnumb'];
+//            }
+//            $newrecnum = $recnum + 1;
+//            $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+//            $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+
+            $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+            $this->db->from('ts_inventory_adjusts');
+            $numdat=$this->db->get()->row_array();
+            if ($numdat['cnt']==0) {
+                $newrec = $numdat['cnt'];
             } else {
-                $recnum = $outdat['outnumb'];
+                $newrec = $numdat['ordnum'];
             }
-            $newrecnum = $recnum + 1;
-            $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-            $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+            $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
 
             $this->db->set('inventory_color_id', $coloritem);
             $this->db->set('outcome_date', strtotime($options['outcome_date']));
@@ -842,10 +866,13 @@ class Inventory_model extends MY_Model
             $this->db->set('outcome_description', $options['outcome_descript']);
             $this->db->set('outcome_record', $recnum);
             $this->db->set('outcome_type', $outcome_type);
-            $this->db->set('outcome_number', $newrecnum);
+            // $this->db->set('outcome_number', $newrecnum);
             $this->db->set('inserted_by', $options['user_id']);
             $this->db->set('inserted_at', date('Y-m-d H:i:s'));
             $this->db->insert('ts_inventory_outcomes');
+            // Add Adjusted
+            $this->db->set('adjust_type', 'O');
+            $this->db->insert('ts_inventory_adjusts');
             // get new itemprice
             $invdata = $this->get_masterinventory_color($coloritem);
             if ($invdata['result']==$this->success_result) {
