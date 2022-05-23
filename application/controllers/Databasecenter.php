@@ -175,7 +175,9 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.fileDownload.js');
-
+        // Order popup
+        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
         // Item details
         $options = [
             'title' => $head['title'],

@@ -616,6 +616,8 @@
 .inventoryprice_table_row .inventoryincome_recnum {
     width: 55px;
     border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
 }
 .inventoryprice_table_row .inventoryincome_descript {
     width: 212px;
@@ -813,6 +815,8 @@ span.saveinventincome {
 .inventoryhistory_table_row .instock_recnum {
     width: 62px;
     border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
 }
 .inventoryhistory_table_row .instock_descript {
     width: 183px;
@@ -1291,4 +1295,9 @@ input.colorvendorpriceinpt {
 }
 .mastercolor_show_details img {
     width: 100%;
+}
+/* Order Edit*/
+#artModal .modal-dialog {
+    width: 1004px;
+    max-width: 1004px;
 }

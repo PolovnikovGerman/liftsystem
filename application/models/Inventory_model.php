@@ -318,6 +318,15 @@ class Inventory_model extends MY_Model
                         $descrip.=$this->sr_label;
                     }
                 }
+                if ($stock['instock_type']=='S') {
+                    $rectype = 'income';
+                } elseif ($stock['instock_type']=='O') {
+                    if (empty($stock['order_id'])) {
+                        $rectype='outadjust';
+                    } else {
+                        $rectype='order';
+                    }
+                }
                 $lists[]=[
                     'id' => $stock['instock_id'],
                     'type' => $stock['instock_type'],
@@ -326,6 +335,8 @@ class Inventory_model extends MY_Model
                     'description' => $descrip,
                     'amount' => $stock['instock_qty'],
                     'balance' => 0,
+                    'rectype' => $rectype,
+                    'order' => $stock['order_id'],
                 ];
             }
             // Calc balance
