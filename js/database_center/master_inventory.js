@@ -113,6 +113,7 @@ function init_master_inventorytabledat() {
                 $("#modalEditInventPriceLabel").empty().html(response.data.wintitle);
                 $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.winbody);
                 $("#modalEditInventPrice").modal({keyboard: false, show: true});
+                // $('body').addClass('modal-open');
                 init_itemcolor_popup();
             } else {
                 show_error(response);
@@ -149,6 +150,7 @@ function init_master_inventorytabledat() {
                 $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
                 $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
                 $("#modalEditInventColor").modal({keyboard: false, show: true});
+                // $('body').addClass('modal-open');
                 init_mastercolor_popup();
             } else {
                 show_error(response);
@@ -167,6 +169,7 @@ function init_master_inventorytabledat() {
                 $("#modalEditInventColor").find('div.modal-body').empty().html(response.data.winbody);
                 $("#modalEditInventColor").find('div.modal-footer').empty().html(response.data.winfooter);
                 $("#modalEditInventColor").modal({keyboard: false, show: true});
+                // $('body').addClass('modal-open');
                 init_mastercolor_popup();
             } else {
                 show_error(response);
@@ -204,6 +207,7 @@ function init_itemcolor_popup() {
                 $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
+                // $('body').addClass('modal-open');
                 init_colorhistory_popup();
             } else {
                 show_error(response);
@@ -314,7 +318,40 @@ function init_colorhistory_popup() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".instock_recnum[data-rectype='order']").unbind('click').click(function () {
+        var order = $(this).data('order');
+        inventory_order_edit(order);
     })
+}
+
+function inventory_order_edit(order) {
+    var callpage = 'masterinvent';
+    var brand = $("input#ordersviewbrand").val();
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#modalEditInventHistory").modal('hide');
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({keyboard: false, show: true})
+            if (parseInt(order)==0) {
+                init_onlineleadorder_edit();
+            } else {
+                navigation_init();
+            }
+            // $('body').addClass('modal-open');
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_manualoutcome_manage() {

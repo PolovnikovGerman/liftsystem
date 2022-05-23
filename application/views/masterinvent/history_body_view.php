@@ -14,7 +14,9 @@
         <?php foreach ($lists as $list) { ?>
             <div class="inventoryhistory_table_row <?= $numrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ?>">
                 <div class="instock_date"><?= date('m/d/y', $list['date']) ?></div>
-                <div class="instock_recnum"><?=$list['record']?></div>
+                <div class="instock_recnum" data-rectype="<?=$list['rectype']?>" data-order="<?=$list['order']?>">
+                    <?=$list['record']?>
+                </div>
                 <div class="instock_descript"><?=$list['description'] ?></div>
                 <div class="instock_amount <?=$list['type']=='O' ? 'negative' : ''?>">
                     <?=$list['type']=='O' ? '(' : ''?><?=QTYOutput($list['amount'])?><?=$list['type']=='O' ? ')' : '' ?>
