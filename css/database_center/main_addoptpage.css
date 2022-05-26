@@ -66,8 +66,12 @@
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
+    .masteritemsarea {
+        width: 800px;
+        margin: 0 auto;
+    }
     .dbcenter_master_item {
-        width: 72%;
+        width: 85%;
     }
     .dbcenter_master_item > .mastrelabel {
         font-size: 1rem;
@@ -79,6 +83,26 @@
         font-size: 1.3125rem;
         width: 100%;
         line-height: 3.5rem!important;
+        text-shadow: 0.1875rem 0 0.375rem #333333;
+    }
+    .dbcenter_channel_item.wcontent {
+        background-size: 100%;
+        width: 100%;
+        line-height: unset;
+    }
+    .channellabel {
+        font-size: 21px;
+        font-weight: bold;
+        height: 24px;
+        line-height: 24px;
+        margin-top: 10px;
+    }
+    .channelsublabel {
+        font-size: 14px;
+        font-style: italic;
+        height: 18px;
+        line-height: 18px;
+        margin-bottom: 4px;
     }
 }
 /* Portrait tablets and medium desktops */
