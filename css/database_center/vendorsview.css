@@ -127,7 +127,8 @@
     width: 64px;
 }
 .vendordataview .datatitle .status {
-    width: 94px;
+    /* width: 94px; */
+    width: 51px;
 }
 .vendordataview .datatitle .status .addnewvendor {
     background: url(/img/vendors/addnewbtn.png) no-repeat;

@@ -490,7 +490,6 @@
     color: #ffffff;
     background: #2635ff;
     height: 32px;
-    float: left;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
 }
@@ -501,6 +500,7 @@
     font-weight: 600;
     float: left;
     padding-left: 6px;
+    max-width: 92%;
 }
 #modalEditInventPrice .modal-header h4 span.priceheadhistorylnk {
     color: #ffffff;
@@ -519,9 +519,8 @@
 #modalEditInventPrice .modal-header .close {
     color: #ffffff!important;
     opacity: 1!important;
-    /* padding-top: 1.1rem; */
     padding: 0!important;
-    margin: 4px 8px 8px 8px;
+    margin: 3px 8px 8px 8px;
 }
 #modalEditInventPrice .modal-body {
     background: #2635ff;
@@ -716,7 +715,6 @@ span.saveinventincome {
     color: #ffffff;
     background: #2635ff;
     height: 32px;
-    float: left;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
 }
@@ -727,6 +725,7 @@ span.saveinventincome {
     font-weight: 600;
     float: left;
     padding-left: 6px;
+    max-width: 93%;
 }
 #modalEditInventHistory .modal-header h4 span.priceitemdata {
     color: #ffffff;
@@ -739,7 +738,7 @@ span.saveinventincome {
     opacity: 1!important;
     /* padding-top: 1.1rem; */
     padding: 0!important;
-    margin: 4px 8px 8px 8px;
+    margin: 3px 8px 8px 8px;
 }
 #modalEditInventHistory .modal-body {
     background: #2635ff;
@@ -886,7 +885,6 @@ span.saveinventoutcome {
     color: #ffffff;
     background: #2635ff;
     height: 32px;
-    float: left;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
 }
@@ -897,6 +895,7 @@ span.saveinventoutcome {
     font-weight: 600;
     float: left;
     padding-left: 6px;
+    max-width: 92%;
 }
 #modalEditInventItem .modal-header h4 span {
     color: #ffffff;
@@ -908,7 +907,7 @@ span.saveinventoutcome {
     color: #ffffff!important;
     opacity: 1!important;
     padding: 0!important;
-    margin: 4px 8px 8px 8px;
+    margin: 3px 8px 8px 8px;
 }
 #modalEditInventItem .modal-body {
     background: #2635ff;
@@ -1000,6 +999,7 @@ span.saveinventoutcome {
     padding: 10px;
     width: 100%;
     text-align: right!important;
+    float: left;
 }
 .edititembutton {
     font-size: 14.55px;
@@ -1048,14 +1048,13 @@ select.itemdataunit {
 #modalEditInventColor .modal-content {
     width: 651px;
     max-width: 650px;
-    height: 487px;
+    height: 485px;
     border: 1px solid #000000;
 }
 #modalEditInventColor .modal-header {
     color: #ffffff;
     background: #2635ff;
     height: 32px;
-    float: left;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
 }
@@ -1077,7 +1076,7 @@ select.itemdataunit {
     color: #ffffff!important;
     opacity: 1!important;
     padding: 0!important;
-    margin: 4px 8px 8px 8px;
+    margin: -28px 8px 8px 8px;
 }
 #modalEditInventColor .modal-body {
     background: #2635ff;
