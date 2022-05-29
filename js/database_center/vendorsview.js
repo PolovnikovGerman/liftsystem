@@ -100,10 +100,26 @@ function sort_vendorlist(fld) {
 }
 
 function initVendorPagination() {
-    if ($("#devicetype").val()=='mobile') {
-        initVendorPaginationMobile();
+    // count entries inside the hidden content
+    var num_entries = $('#totalvend').val();
+    // var perpage = itemsperpage;
+    var perpage = $("#perpagevend").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $("#vendorPagination").empty();
+        pageVendorCallbackMobile(0);
     } else {
-        initVendorPaginationDesktop()
+        var curpage = $("#curpageart").val();
+        // Create content inside pagination element
+        $("#vendorPagination").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pageVendorCallbackMobile,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
     }
 }
 
