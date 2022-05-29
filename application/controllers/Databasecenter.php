@@ -31,112 +31,48 @@ class Databasecenter extends MY_Controller
     }
 
     public function index() {
-        $head = [];
-        $head['title'] = 'Database Center';
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
-        $master=[];
-        $channelsb=[];
-        $channelnsb=[];
-        $channelbt=[];
-        $channellbt=[];
-        $channelamz=[];
-        $channelcnt = 0;
-        foreach ($menu as $mitems) {
-            if ($mitems['item_link']=='#dbcentermaster') {
-                foreach ($mitems['submenu'] as $mitem) {
-                    $master[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            } elseif ($mitems['item_link']=='#dbcentersbchannel') {
-                $channelcnt = 1;
-                foreach ($mitems['submenu'] as $mitem) {
-                    $channelsb[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            } elseif ($mitems['item_link']=='#dbcenternsbchannel') {
-                $channelcnt = 1;
-                foreach ($mitems['submenu'] as $mitem) {
-                    $channelnsb[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            } elseif ($mitems['item_link']=='#dbcenterbtchannel') {
-                $channelcnt = 1;
-                foreach ($mitems['submenu'] as $mitem) {
-                    $channelbt[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            } elseif ($mitems['item_link']=='#dbcenterlbtchannel') {
-                $channelcnt = 1;
-                foreach ($mitems['submenu'] as $mitem) {
-                    $channellbt[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            } elseif ($mitems['item_link']=='#dbcenteramazonchannel') {
-                $channelcnt = 1;
-                foreach ($mitems['submenu'] as $mitem) {
-                    $channelamz[] = [
-                        'item_link' => $mitem['item_link'],
-                    ];
-                }
-            }
-        }
+        $getdata = $this->input->get();
+        $start = ifset($getdata,'start','');
+        if ($start=='') {
+            $menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+            if ($menu[0]['item_link']=='#dbcentermaster') {
+                $this->masteritems();
+            } elseif ($menu[0]['item_link']=='#dbcenterbtchannel') {
 
-        $content_options = [
-            'master' => $master,
-            'channelcnt' => $channelcnt,
-            'channelsb' => $channelsb,
-            'channelnsb' => $channelnsb,
-            'channelbt' => $channelbt,
-            'channellbt' => $channellbt,
-            'channelamz' => $channelamz,
-        ];
-        $search = usersession('liftsearch');
-        usersession('liftsearch', NULL);
-        // Add main page management
-        $head['styles'][] = array('style' => '/css/database_center/main_addoptpage.css');
-        $head['scripts'][] = array('src' => '/js/database_center/main_page.js');
-        // Item details
-        $options = [
-            'title' => $head['title'],
-            'user_id' => $this->USR_ID,
-            'user_name' => $this->USER_NAME,
-            'activelnk' => $this->pagelink,
-            'styles' => $head['styles'],
-            'scripts' => $head['scripts'],
-            'adaptive' => 1,
-        ];
-        $dat = $this->template->prepare_pagecontent($options);
-        $content_view = $this->load->view('database_center/page_device_view', $content_options, TRUE);
-        $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+            } elseif ($menu[0]['item_link']=='#dbcenterrelievers') {
+
+            }
+        } else {
+            //
+        }
     }
 
     public function masteritems() {
         $head = [];
-        $start = $this->input->get('start');
+//        $start = $this->input->get('start');
+//        if (empty($start)) {
+//            $start='#dbcentermaster';
+//        }
         $head['title'] = 'Database Center Master';
         $pagelnk = '#dbcentermaster';
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
         $menu_options = [
-            'menu' => $menu,
-            'start' => $start,
+            'menus' => $main_menu,
+            'start' => $pagelnk,
         ];
-        $page_menu = $this->load->view('database_center/master_adptive_headmenu', $menu_options, TRUE);
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+
         $content_options=[
             'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
         ];
         foreach ($menu as $row) {
-            if ($row['item_link']=='#mastercustomer') {
-
-            } elseif ($row['item_link']=='#mastervendors') {
-                $head['styles'][]=array('style'=>'/css/database_center/vendorsadapview.css');
-                $head['styles'][]=array('style'=>'/css/database_center/vendordetails_adaptive.css');
+            if ($row['item_link']=='#mastervendors') {
+                $head['styles'][]=array('style'=>'/css/database_center/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
                 $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
                 $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
                 $head['gmaps']=1;
@@ -160,7 +96,8 @@ class Databasecenter extends MY_Controller
             }
 
         }
-        $head['styles'][] = array('style' => '/css/database_center/master_adaptivepage.css');
+        $head['styles'][] = array('style' => '/css/database_center/main_page.css');
+        $head['styles'][] = array('style' => '/css/database_center/master_page.css');
         $head['scripts'][] = array('src' => '/js/database_center/master_page.js');
 
         // Utils
@@ -187,7 +124,7 @@ class Databasecenter extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'gmaps' => ifset($head, 'gmaps', 0),
-            'adaptive' => 1,
+            'adaptive' => 0,
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
@@ -323,7 +260,7 @@ class Databasecenter extends MY_Controller
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content = $this->load->view('vendorcenter/page_adaptive_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
 

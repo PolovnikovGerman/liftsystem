@@ -1,16 +1,17 @@
 $(document).ready(function(){
     var act = '';
-    if ($(".headmenuitem.active").length==1) {
-        act = $(".headmenuitem.active").data('lnk');
+    if ($(".maincontentmenu_item.active").length==1) {
+        act = $(".maincontentmenu_item.active").data('link');
     } else {
-        act = $(".headmenuitem").first().data('lnk');
-        $(".headmenuitem").first().addClass('active');
+        act = $(".maincontentmenu_item").first().data('link');
+        $(".maincontentmenu_item").first().addClass('active');
     }
     show_dbcenter_mastercontent(act);
     init_dbcenter_mastermenu();
 })
 
 function show_dbcenter_mastercontent(act) {
+    console.log('ACT '+act)
     if (act=='mastercustomer') {
 
     } else if (act=='mastervendors') {
@@ -26,16 +27,13 @@ function show_dbcenter_mastercontent(act) {
 }
 
 function init_dbcenter_mastermenu() {
-    $(".headmenuitem").unbind('click').click(function () {
-        $(".headmenuitem").removeClass('active');
-        var act = $(this).data('lnk');
+    $(".maincontentmenu_item").unbind('click').click(function () {
+        $(".maincontentmenu_item").removeClass('active');
+        var act = $(this).data('link');
         $(this).addClass('active');
         $(".dbcontentarea").hide();
         show_dbcenter_mastercontent(act);
     });
-    $(".returndbcenter").unbind('click').click(function () {
-        window.location.href = '/databasecenter';
-    })
 }
 
 function init_master_settings() {
