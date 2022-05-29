@@ -56,26 +56,11 @@
 <div class="modal fade" id="vendorDetailsModal" tabindex="-1" role="dialog" aria-labelledby="vendorDetailsModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="mobileviewonly">
-                <div class="container-fluid pr-0 pl-0">
-                    <div class="modal-container">
-                        <div class="modalvendor-title">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true"><img src="/img/vendors/close_popup.png"></span>
-                            </button>
-                            <div id="mobileheadercontent">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="desktopviewonly">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><img src="/img/vendors/close_popup.png"></span>
-                    </button>
-                    <h4 class="modal-title" id="vendorDetailsModalLabel">New message</h4>
-                </div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><img src="/img/vendors/close_popup.png"></span>
+                </button>
+                <h4 class="modal-title" id="vendorDetailsModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>

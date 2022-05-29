@@ -1,4 +1,8 @@
 /* POPUP details */
+#vendorDetailsModal .modal-dialog {
+    width: 1323px;
+    max-width: 1323px;
+}
 #vendorDetailsModal .modal-content {
     padding: 10px;
     background: #4c4c4c;
