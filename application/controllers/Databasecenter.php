@@ -49,7 +49,7 @@ class Databasecenter extends MY_Controller
             } elseif ($start=='dbcentermaster') {
                 $this->masteritems();
             } elseif ($start=='dbcenterrelievers') {
-
+                $this->srchannelitems();
             }
         }
     }
@@ -254,7 +254,54 @@ class Databasecenter extends MY_Controller
         $dat = $this->template->prepare_pagecontent($options);
         $dat['content_view'] = $this->load->view('database_center/btchannel_page_view', $content_options, TRUE);
         $this->load->view('page/page_template_view', $dat);
+    }
 
+    public function srchannelitems() {
+        $head = [];
+        $head['title'] = 'Database Center Bluetrack/Stressalls';
+        $pagelnk = '#dbcenterrelievers';
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+        $menu_options = [
+            'menus' => $main_menu,
+            'start' => $pagelnk,
+        ];
+
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        if (empty($menu))  {
+            redirect('/');
+        }
+
+        $content_options=[
+            'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        $pagescontent = 1;
+        foreach ($menu as $item) {
+            if ($item['item_link']=='#sritems') {
+                $content_options['itemsview'] = $this->load->view('relieveritems/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srcustomers') {
+                $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srpages') {
+                $content_options['pagesview'] = $this->load->view('relievercontent/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srsettings') {
+                $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
+            }
+        }
+        $head['styles'][] = array('style' => '/css/database_center/main_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/srchannel_page.js');
+        $options = ['title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0)
+        ];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $this->load->view('database_center/srchannel_page_view', $content_options, TRUE);
+        $this->load->view('page/page_template_view', $dat);
 
     }
 
