@@ -29,7 +29,10 @@
     /* margin-bottom: 9px; */
     width: 100%;
 }
-
+.dbcenter-content {
+    padding: 0 10px 10px 10px;
+    width: 100%;
+}
 /*
 .dbcenter_pagetitle {
     margin: 10px 0 15px 25px;
