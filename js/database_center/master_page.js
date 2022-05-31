@@ -11,7 +11,6 @@ $(document).ready(function(){
 })
 
 function show_dbcenter_mastercontent(act) {
-    console.log('ACT '+act)
     if (act=='mastercustomer') {
 
     } else if (act=='mastervendors') {
@@ -34,6 +33,10 @@ function init_dbcenter_mastermenu() {
         $(".dbcontentarea").hide();
         show_dbcenter_mastercontent(act);
     });
+    $(".dbcenter-main-button").unbind('click').click(function () {
+        var url = '/databasecenter?start='+$(this).data('link');
+        window.location.href=url;
+    })
 }
 
 function init_master_settings() {

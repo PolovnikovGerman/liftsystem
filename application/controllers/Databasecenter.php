@@ -38,12 +38,19 @@ class Databasecenter extends MY_Controller
             if ($menu[0]['item_link']=='#dbcentermaster') {
                 $this->masteritems();
             } elseif ($menu[0]['item_link']=='#dbcenterbtchannel') {
-
+                $this->btchannelitems();
             } elseif ($menu[0]['item_link']=='#dbcenterrelievers') {
 
             }
         } else {
             //
+            if ($start=='dbcenterbtchannel') {
+                $this->btchannelitems();
+            } elseif ($start=='dbcentermaster') {
+                $this->masteritems();
+            } elseif ($start=='dbcenterrelievers') {
+                $this->srchannelitems();
+            }
         }
     }
 
@@ -97,7 +104,7 @@ class Databasecenter extends MY_Controller
 
         }
         $head['styles'][] = array('style' => '/css/database_center/main_page.css');
-        $head['styles'][] = array('style' => '/css/database_center/master_page.css');
+        // $head['styles'][] = array('style' => '/css/database_center/master_page.css');
         $head['scripts'][] = array('src' => '/js/database_center/master_page.js');
 
         // Utils
@@ -132,10 +139,178 @@ class Databasecenter extends MY_Controller
         $this->load->view('page/page_template_view', $dat);
     }
 
+    public function btchannelitems() {
+        $head = [];
+        $head['title'] = 'Database Center Bluetrack/Stressalls';
+        $pagelnk = '#dbcenterbtchannel';
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+        $menu_options = [
+            'menus' => $main_menu,
+            'start' => $pagelnk,
+        ];
+
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        if (empty($menu))  {
+            redirect('/');
+        }
+
+        $content_options=[
+            'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        $pagescontent = 1;
+        foreach ($menu as $item) {
+            if ($item['item_link']=='#btitems') {
+                $head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
+                $head['styles'][] = array('style' => '/css/database_center/itemlistdetails.css');
+                $head['scripts'][]=array('src' => '/js/database_center/itemlistdetails.js');
+                $head['styles'][] = array('style' => '/css/page_view/popover.css');
+                $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $content_options['itemsview'] = $this->_prepare_itemdata_view('BT');
+            } elseif ($item['item_link']=='#btcustomers') {
+                $content_options['customersview'] = $this->load->view('customers/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#sbpages') {
+                $pagescontent = 1;
+                $bt_options = [];
+                $bt_options['sbhomeview'] = $this->load->view('content/template_view',['link'=>'sbhomeview'], TRUE);
+                $bt_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
+                $bt_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
+                $bt_options['sbaboutusview'] = $this->load->view('content/template_view',['link'=>'sbaboutusview'], TRUE);
+                $bt_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
+                $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
+                $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
+                $submenu = [];
+                $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
+                $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped'];
+                $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
+                $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us'];
+                $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ'];
+                $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us'];
+                $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms'];
+                $submenu_options = [
+                    'menus' => $submenu,
+                    'brand' => 'SB',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['sbpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
+                $head['styles'][] = array('style' => '/css/content/contentpage.css');
+                $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
+                // Content
+                $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
+                $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
+                $head['styles'][]=array('style'=>'/css/content/extraservices.css');
+                $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
+                $head['styles'][]=array('style'=>'/css/content/aboutus.css');
+                $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
+                $head['styles'][]=array('style'=>'/css/content/faqpage.css');
+                $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
+                $head['styles'][]=array('style'=>'/css/content/contactus.css');
+                $head['scripts'][]=array('src'=>'/js/content/contactus.js');
+                $head['styles'][]=array('style'=>'/css/content/terms.css');
+                $head['scripts'][]=array('src'=>'/js/content/terms.js');
+                $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+            } elseif ($item['item_link']=='#btpages') {
+                if ($pagescontent==0) {
+                    $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                    $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+                }
+                $submenu_options = [
+                    'menus' => [],
+                    'brand' => 'BT',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['btpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
+            } elseif ($item['item_link']=='#btsettings') {
+                $content_options['settingsview'] = $this->load->view('site_settings/page_view',[],TRUE);
+            }
+
+        }
+
+        // Item details
+        $head['styles'][] = array('style' => '/css/database_center/main_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/btchannel_page.js');
+        //  Utils
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+
+        $options = ['title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0)
+        ];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $this->load->view('database_center/btchannel_page_view', $content_options, TRUE);
+        $this->load->view('page/page_template_view', $dat);
+    }
+
+    public function srchannelitems() {
+        $head = [];
+        $head['title'] = 'Database Center Bluetrack/Stressalls';
+        $pagelnk = '#dbcenterrelievers';
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+        $menu_options = [
+            'menus' => $main_menu,
+            'start' => $pagelnk,
+        ];
+
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        if (empty($menu))  {
+            redirect('/');
+        }
+
+        $content_options=[
+            'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        $pagescontent = 1;
+        foreach ($menu as $item) {
+            if ($item['item_link']=='#sritems') {
+                $content_options['itemsview'] = $this->load->view('relieveritems/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srcustomers') {
+                $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srpages') {
+                $content_options['pagesview'] = $this->load->view('relievercontent/page_view',[],TRUE);
+            } elseif ($item['item_link']=='#srsettings') {
+                $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
+            }
+        }
+        $head['styles'][] = array('style' => '/css/database_center/main_page.css');
+        $head['scripts'][] = array('src' => '/js/database_center/srchannel_page.js');
+        $options = ['title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0)
+        ];
+        $dat = $this->template->prepare_pagecontent($options);
+        $dat['content_view'] = $this->load->view('database_center/srchannel_page_view', $content_options, TRUE);
+        $this->load->view('page/page_template_view', $dat);
+
+    }
+
     public function channelitems() {
         $head = [];
-        $start = $this->input->get('start');
-        $brand = $this->input->get('brand');
+        // $start = $this->input->get('start');
+        // $brand = $this->input->get('brand');
+        $brand = 'bluetrack';
+        $start = '';
         if (empty($brand)) {
             redirect('/');
         }
