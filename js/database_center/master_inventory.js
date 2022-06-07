@@ -176,7 +176,7 @@ function init_master_inventorytabledat() {
             }
         },'json');
     });
-    $(".masterinventexport").find('i').unbind('click').click(function () {
+    $(".masterinventexport").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_label', value: $(".mastinvent_left_section.active").data('invlabel')});
