@@ -195,9 +195,9 @@
     color: #ffffff;
     font-size: 14px;
     padding-right: 6px;
+    cursor: pointer;
 }
 .masterinventexport i {
-    cursor: pointer;
 }
 .masterinventtotals {
     font-weight: 600;

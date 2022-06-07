@@ -20,7 +20,7 @@
     <div class="inventoryprice_total_right">
         <div class="datarow">
             <div class="inventoryprice_total_label">Inventory Balance:</div>
-            <div class="inventoryprice_total_value"><?= empty($totals['balance_qty']) ? '' : QTYOutput($totals['balance_qty']) . 'pc' ?></div>
+            <div class="inventoryprice_total_value"><?= empty($totals['balance_qty']) ? '' : QTYOutput($totals['balance_qty']) . ' pc' ?></div>
         </div>
         <div class="datarow">
             <div class="inventoryprice_total_label">Total Value of Balance:</div>
