@@ -1026,7 +1026,8 @@ class Leads extends My_Controller {
         $ldat['right_content']=$this->load->view('leads/leads_closetotal_view', $rdat, TRUE);
 
         /* Get user with reps */
-        $ldat['replicas']=$this->user_model->get_user_leadreplicas();
+        $active = 0;
+        $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
         $ldat['user_id']=$this->USR_ID;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USR_NAME : $user_dat['user_leadname']);
