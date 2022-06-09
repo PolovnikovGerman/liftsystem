@@ -16,6 +16,7 @@ class Content extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('staticpages_model');
     }
 
 
@@ -29,7 +30,6 @@ class Content extends MY_Controller
             $error = 'Empty Page Name';
             if (!empty($page_name) && !empty($brand)) {
                 $error = '';
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_view', $meta, TRUE);
                 $special_content = '';
@@ -89,7 +89,6 @@ class Content extends MY_Controller
                 $page_name = 'home';
                 $page_name_full = 'Homepage';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -122,7 +121,6 @@ class Content extends MY_Controller
                 $page_name = 'custom';
                 $page_name_full = 'Custom Shaped Stress Balls';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -153,7 +151,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_customshaped_param($session_data, $postdata, $session_id, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -163,6 +160,18 @@ class Content extends MY_Controller
                     }
                     if ($postdata['type']=='data' && $postdata['field']=='custom_homepageimage'&& !empty($postdata['newval'])) {
                         $mdata['content']=$this->load->view('content/custom_homepageimage_view',['src'=>$postdata['newval']], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_1' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 1], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_2' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 2], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_3' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 3], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_4' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 4], TRUE);
                     }
                 }
             }
@@ -179,7 +188,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_customshape_imageupload($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -226,7 +234,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_customgalleryimage($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
@@ -250,7 +257,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->add_customgallery($session_data, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
@@ -274,7 +280,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_customgallery($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
@@ -297,7 +302,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_customgalleryitems($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -318,7 +322,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_customcasestudy($session_data, $postdata, $session_id);
                 if ($res['result']==$this->success_result) {
                     $error='';
@@ -342,7 +345,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata,'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_customshaped($session_data, $postdata, $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -387,7 +389,6 @@ class Content extends MY_Controller
                 $page_name = 'extraservice';
                 $page_name_full = 'Services';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -417,7 +418,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->change_serviceparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -454,7 +454,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata,'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_extraservice($session_data,  $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -495,7 +494,6 @@ class Content extends MY_Controller
                 $page_name = 'about';
                 $page_name_full = 'About Us';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name,$brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -526,7 +524,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'aboutpage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_aboutparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -545,7 +542,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'aboutpage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_aboutparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -578,7 +574,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata, 'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_aboutus($session_data,  $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -618,7 +613,6 @@ class Content extends MY_Controller
                 $page_name = 'faq';
                 $page_name_full = 'Frequently Asked Questions';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -649,7 +643,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_faqparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -668,7 +661,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->add_faqquestion($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -692,7 +684,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'faqpage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_faqquestion($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -717,7 +708,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata, 'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_faqpagecontent($session_data, $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -801,7 +791,6 @@ class Content extends MY_Controller
                 $page_name = 'contactus';
                 $page_name_full = 'Contact Us';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -832,7 +821,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'contactus');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_contactusparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -853,7 +841,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata,'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_contactus($session_data,  $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -895,7 +882,6 @@ class Content extends MY_Controller
                 $page_name = 'terms';
                 $page_name_full = 'Terms & Polices';
                 $session_id = uniq_link(15);
-                $this->load->model('staticpages_model');
                 $meta = $this->staticpages_model->get_metadata($page_name, $brand);
                 $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
                 $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
@@ -926,7 +912,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->update_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -945,7 +930,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->remove_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -965,7 +949,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->add_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -985,7 +968,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->edit_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -1006,7 +988,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->edit_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -1027,7 +1008,6 @@ class Content extends MY_Controller
             $session_id = (isset($postdata['session']) ? $postdata['session'] : 'termspage');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->saveedit_termsparam($session_data, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -1049,7 +1029,6 @@ class Content extends MY_Controller
             $session_data = usersession($session_id);
             $brand = ifset($postdata,'brand');
             if (!empty($session_data) && !empty($brand)) {
-                $this->load->model('staticpages_model');
                 $res = $this->staticpages_model->save_termspagecontent($session_data, $session_id, $brand, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -1083,8 +1062,97 @@ class Content extends MY_Controller
         die();
     }
 
+    public function change_homepageparam() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->staticpages_model->update_homepage_param($session_data, $postdata, $session_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_1' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 1], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_2' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 2], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_3' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 3], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_4' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 4], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function remove_homeimages() {
+        if ($this->isAjax()) {
+            // update_customshaped_param($session_data, $postdata, $session_id)
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'custom');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $options = [
+                    'type' => $postdata['type'],
+                    'field' => $postdata['field'],
+                    'newval' => '',
+                ];
+                $res = $this->staticpages_model->update_customshaped_param($session_data, $options, $session_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_1') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_slideremptyimage_view',['slider' => 1], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_2') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_slideremptyimage_view',['slider' => 2], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_3') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_slideremptyimage_view',['slider' => 3], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='slider_image_4') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_slideremptyimage_view',['slider' => 4], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function save_homecontent() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
+            $session_data = usersession($session_id);
+            $brand = ifset($postdata,'brand');
+            if (!empty($session_data) && !empty($brand)) {
+                $res = $this->staticpages_model->save_homepage($session_data,  $session_id, $brand, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+
+    }
+
     private function _prepare_custom_content($page_name, $brand, $edit_mode=0, $session ='') {
-        $this->load->model('staticpages_model');
         $data = $this->staticpages_model->get_page_inner_content($page_name, $brand);
         $content = '';
         if ($page_name == 'custom') {

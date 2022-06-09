@@ -1329,4 +1329,107 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
+    public function update_homepage_param($session_data, $postdata, $session_id, $user)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Not all params send'];
+        if (isset($postdata['type'])) {
+            if ($postdata['type'] == 'meta') {
+                $data = $session_data['meta'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['meta'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            } elseif ($postdata['type'] == 'data') {
+                $data = $session_data['data'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['data'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function save_homepage($session_data,  $session_id, $brand, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
+        $meta=$session_data['meta'];
+        $data = $session_data['data'];
+        $this->_save_page_metadata($meta, $brand);
+        $path_preload_short = $this->config->item('pathpreload');
+        $path_preload_full = $this->config->item('upload_path_preload');
+        // check an images - custom_mainimage custom_homepageimage
+        if (!empty(ifset($data,'slider_image_1'))) {
+            if ($data['slider_image_1'] && stripos($data['slider_image_1'],$this->config->item('pathpreload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['slider_image_1']);
+                $imagedetails = extract_filename($data['slider_image_1']);
+                $filename = 'slider_image1_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['slider_image_1']='';
+                if ($res) {
+                    $data['slider_image_1']=$this->config->item('contents_images').$filename;
+                }
+            }
+        }
+        if (!empty(ifset($data,'slider_image_2'))) {
+            if ($data['slider_image_2'] && stripos($data['slider_image_2'],$this->config->item('pathpreload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['slider_image_2']);
+                $imagedetails = extract_filename($data['slider_image_2']);
+                $filename = 'slider_image2_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['slider_image_2']='';
+                if ($res) {
+                    $data['slider_image_2']=$this->config->item('contents_images').$filename;
+                }
+            }
+        }
+        if (!empty(ifset($data,'slider_image_3'))) {
+            if ($data['slider_image_3'] && stripos($data['slider_image_3'],$this->config->item('pathpreload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['slider_image_3']);
+                $imagedetails = extract_filename($data['slider_image_3']);
+                $filename = 'slider_image3_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['slider_image_3']='';
+                if ($res) {
+                    $data['slider_image_3']=$this->config->item('contents_images').$filename;
+                }
+            }
+        }
+        if (!empty(ifset($data,'slider_image_4'))) {
+            if ($data['slider_image_4'] && stripos($data['slider_image_4'],$this->config->item('pathpreload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['slider_image_4']);
+                $imagedetails = extract_filename($data['slider_image_4']);
+                $filename = 'slider_image4_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['slider_image_4']='';
+                if ($res) {
+                    $data['slider_image_4']=$this->config->item('contents_images').$filename;
+                }
+            }
+        }
+        // Static content
+        $this->_save_page_params($data, 'home', $brand, $user_id);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
 }
