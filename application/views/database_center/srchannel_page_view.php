@@ -23,7 +23,7 @@
                     <div class="dbcontentarea" id="customersview" style="display: none;"><?=$customersview?></div>
                 <?php } ?>
                 <?php if (isset($pagesview)) { ?>
-                    <div class="dbcontentarea" id="pagesview" style="display: none;"><?=$pagesview?></div>
+                    <div class="dbcontentarea" id="srpagesview" style="display: none;"><?=$pagesview?></div>
                 <?php } ?>
                 <?php if (isset($settingsview)) { ?>
                     <div class="dbcontentarea" id="settingsview" style="display: none;"><?=$settingsview?></div>

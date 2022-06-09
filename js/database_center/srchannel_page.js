@@ -16,7 +16,8 @@ function show_dbcenter_channelcontent(act) {
     } else if (act=='srcustomers') {
         $("#customersview").show();
     } else if (act=='srpages') {
-        $("#pagesview").show();
+        $("#srpagesview").show();
+        init_sitecontent('SR');
     } else if (act=='srsettings') {
         $("#settingsview").show();
     }

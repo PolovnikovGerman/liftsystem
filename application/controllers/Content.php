@@ -36,6 +36,7 @@ class Content extends MY_Controller
                 if ($page_name == 'home') {
                     $page_name_full = 'Homepage';
                     $pagelink = 'homeview';
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 } elseif ($page_name == 'custom') {
                     $page_name_full = 'Custom Shaped Stress Balls';
                     $pagelink = 'customshappedview';
@@ -70,6 +71,39 @@ class Content extends MY_Controller
                     'meta_view' => $meta_view, // 'buttons_view' => $buttons_view,
                     'special_content' => $special_content,];
                 $mdata['content'] = $this->load->view('content/staticpage_view', $options, TRUE);
+                $mdata['buttons'] = $buttons_view;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function edit_homecontent() {
+        if ($this->isAjax()){
+            $postdata=$this->input->post();
+            $brand=ifset($postdata,'brand');
+            $mdata = [];
+            $error = 'Empty Brand';
+            if (!empty($brand)) {
+                $error = '';
+                $page_name = 'home';
+                $page_name_full = 'Homepage';
+                $session_id = uniq_link(15);
+                $this->load->model('staticpages_model');
+                $meta = $this->staticpages_model->get_metadata($page_name, $brand);
+                $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+                $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
+                $session_data = usersession($session_id);
+                $session_data['meta'] = $meta;
+                $session_data['deleted'] = []; // type , id
+                usersession($session_id, $session_data);
+                $button_options = ['page'=>'home', 'content_name' => $page_name_full, 'session'=> $session_id];
+                $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+                $options = [
+                    'meta_view' => $meta_view,
+                    'special_content' => $special_content,
+                ];
+                $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
                 $mdata['buttons'] = $buttons_view;
             }
             $this->ajaxResponse($mdata, $error);
@@ -1212,6 +1246,27 @@ class Content extends MY_Controller
                 usersession($session, $session_data);
             }
 
+        } elseif ($page_name=='home') {
+            if (!empty($data)) {
+                $page_options = [
+                    'data' => $data,
+                ];
+                if ($edit_mode==1) {
+                    $page_options['session'] = $session;
+                }
+                if ($edit_mode==0) {
+                    if ($brand=='SR') {
+                        $content = $this->load->view('relievercontent/homepage_view', $page_options, TRUE);
+                    }
+                } else {
+                    if ($brand=='SR') {
+                        $content = $this->load->view('relievercontent/homepage_edit', $page_options, TRUE);
+                    }
+                    $session_data = ['data' => $data,];
+                    usersession($session, $session_data);
+                }
+
+            }
         }
         return $content;
     }
