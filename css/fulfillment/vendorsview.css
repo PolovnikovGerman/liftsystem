@@ -141,6 +141,9 @@
     text-align: left;
     width: 365px;
 }
+.vendordata input {
+    text-align: left;
+}
 .inputval input.large {
     width: 350px;
 }

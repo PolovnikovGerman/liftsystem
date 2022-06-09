@@ -772,7 +772,7 @@ class Database extends MY_Controller
                 'direct' => $direction,
             ];
             $this->load->model('vendors_model');
-            $vendors=$this->vendors_model->get_vendors_list($options);
+            $vendors=$this->vendors_model->get_vendors_oldlist($options);
             if (count($vendors)==0) {
                 $content=$this->load->view('fulfillment/vendors_emptydata_view', array(), TRUE);
             } else {
