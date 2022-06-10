@@ -15,9 +15,9 @@ function init_legacy_view(){
 
 function init_legacy_page(objid) {
     $(".dbitemspage").hide();
-    $(".summenu_item").removeClass('active');
-    $(".summenu_item[data-link='" + objid + "']").addClass('active');
-
+    // $(".summenu_item").removeClass('active');
+    // $(".summenu_item[data-link='" + objid + "']").addClass('active');
+    console.log('Obj '+objid);
     switch (objid) {
         case 'itempriceview':
             $("#itempriceview").show();

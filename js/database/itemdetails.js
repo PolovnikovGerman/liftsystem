@@ -77,7 +77,7 @@ function close_view() {
                 $("#legacyview").show();
                 init_legacy_page('itemcategoryview');
             } else {
-                var start = $(".summenu_item:first").data('link');
+                var start = $(".maincontentmenu_item:first").data('link');
                 $("#itemdetailsview").hide();
                 $("#legacyview").show();
                 init_legacy_page(start);
