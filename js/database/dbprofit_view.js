@@ -101,6 +101,11 @@ function init_profitcontent_view() {
         trigger: 'hover',
         html: true,
     });
+    $('.profittablerow').find(".editcoll").unbind('click').click(function(){
+        var item_id=$(this).data('item');
+        var brand = $("#itempricebrand").val();
+        view_itemdetails(item_id, brand);
+    })
 }
 
 function sort_profitdata(fld) {

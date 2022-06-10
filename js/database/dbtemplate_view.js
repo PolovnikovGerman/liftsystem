@@ -68,6 +68,11 @@ function make_hover() {
             }
         },'json');
     });
+    $('.templatedatarow').find(".editcoll").unbind('click').click(function(){
+        var item_id=$(this).data('item');
+        var brand = $("#itempricebrand").val();
+        view_itemdetails(item_id, brand);
+    })
 }
 
 /**
