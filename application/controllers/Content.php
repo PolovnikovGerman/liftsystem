@@ -1086,6 +1086,18 @@ class Content extends MY_Controller
                     if ($postdata['type']=='data' && $postdata['field']=='slider_image_4' && !empty($postdata['newval'])) {
                         $mdata['content']=$this->load->view('relievercontent/homepage_sliderimage_view',['src' => $postdata['newval'], 'slider' => 4], TRUE);
                     }
+                    if ($postdata['type']=='data' && $postdata['field']=='customize_shape_image' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_image_view',['src' => $postdata['newval'], 'remove' => 'custom'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='makeyourown_shape_image' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_image_view',['src' => $postdata['newval'], 'remove' => 'makeyourown'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='explore_healthitems_image' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_image_view',['src' => $postdata['newval'], 'remove' => 'explorehealth'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='custom_packaging_image' && !empty($postdata['newval'])) {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_image_view',['src' => $postdata['newval'], 'remove' => 'packing'], TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1122,6 +1134,18 @@ class Content extends MY_Controller
                     }
                     if ($postdata['type']=='data' && $postdata['field']=='slider_image_4') {
                         $mdata['content']=$this->load->view('relievercontent/homepage_slideremptyimage_view',['slider' => 4], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='customize_shape_image') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_emptyimage_view',['upload' => 'customshapeimgupload'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='makeyourown_shape_image') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_emptyimage_view',['upload' => 'makeownimgupload'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='explore_healthitems_image') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_emptyimage_view',['upload' => 'explorehealthimgupload'], TRUE);
+                    }
+                    if ($postdata['type']=='data' && $postdata['field']=='custom_packaging_image') {
+                        $mdata['content']=$this->load->view('relievercontent/homepage_emptyimage_view',['upload' => 'custompackingupload'], TRUE);
                     }
                 }
             }
