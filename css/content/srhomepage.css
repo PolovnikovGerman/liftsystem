@@ -67,7 +67,8 @@ div.feature_prodtitle {
 input.feature_prodtitle {
     width: 215px;
 }
-.slider_imageremove {
+.slider_imageremove,
+.homepage_imageremove {
     height: 24px;
     width: 33px;
     background: #000000;
@@ -78,7 +79,11 @@ input.feature_prodtitle {
     cursor: pointer;
     float: right!important;
 }
-.slider_imageremove i {
+.homepage_imageremove {
+    top: -73px;
+}
+.slider_imageremove i,
+.homepage_imageremove i {
     color: #ffffff;
     font-size: 16px;
     text-align: center;
@@ -90,4 +95,10 @@ input.feature_prodtitle {
     height: 90px;
     padding: 30px 0 0 89px;
     border: 1px solid #ededed;
+}
+.homepage_emptyimagesrc {
+    width: 255px;
+    height: 75px;
+    border: 1px solid #ededed;
+    padding: 27px 0px 0 90px;
 }

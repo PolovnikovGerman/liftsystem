@@ -1426,6 +1426,24 @@ Class Staticpages_model extends MY_Model
                 }
             }
         }
+        if (!empty(ifset($data,'custom_packaging_image'))) {
+            if ($data['custom_packaging_image'] && stripos($data['custom_packaging_image'],$this->config->item('pathpreload'))!==FALSE) {
+                // Save image
+                $full_path = $this->config->item('contents_images_relative');
+                if (!file_exists($full_path)) {
+                    mkdir($full_path, 0777, true);
+                }
+                $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_packaging_image']);
+                $imagedetails = extract_filename($data['custom_packaging_image']);
+                $filename = 'packaging_image_'.time().'.'.$imagedetails['ext'];
+                $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
+                $data['custom_packaging_image']='';
+                if ($res) {
+                    $data['custom_packaging_image']=$this->config->item('contents_images').$filename;
+                }
+            }
+        }
+
         // Static content
         $this->_save_page_params($data, 'home', $brand, $user_id);
         $out['result']=$this->success_result;

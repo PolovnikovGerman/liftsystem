@@ -96,6 +96,11 @@ function init_missinfo_content() {
         trigger: 'hover',
         html: true,
     });
+    $('.missinfodatarow').find(".editcoll").unbind('click').click(function(){
+        var item_id=$(this).data('item');
+        var brand = $("#itempricebrand").val();
+        view_itemdetails(item_id, brand);
+    })
 }
 
 function sort_missinfo(fld) {

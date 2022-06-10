@@ -92,38 +92,75 @@
         <div class="homepage_imagesrc_area">
             <div class="homepage_liknimage">Customize a STOCK SHAPE</div>
             <div class="homepage_imagesubtitlesize">click to enlarge</div>
-            <div class="homepage_imagesrc">
-                <?php if (!empty(ifset($data,'customize_shape_image'))) { ?>
-                    <img src="<?=$data['customize_shape_image']?>" alt="Customize a Stock Shape"/>
+            <div id="homepage_customshape">
+                <?php if (empty(ifset($data,'customize_shape_image'))) { ?>
+                    <div class="homepage_emptyimagesrc">
+                        <div class="homepage_imageupload" id="customshapeimgupload"></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="homepage_imagesrc">
+                        <img src="<?=$data['customize_shape_image']?>" alt="Customize a Stock Shape"/>
+                    </div>
+                    <div class="homepage_imageremove" data-image="custom">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
                 <?php } ?>
             </div>
         </div>
         <div class="homepage_imagesrc_area">
             <div class="homepage_liknimage">Make Your Own CUSTOM SHAPE</div>
             <div class="homepage_imagesubtitlesize">click to enlarge</div>
-            <div class="homepage_imagesrc">
-                <?php if (!empty(ifset($data,'makeyourown_shape_image'))) { ?>
-                    <img src="<?=$data['makeyourown_shape_image']?>" alt="Make your own Shape"/>
+            <div id="homepage_makeyourown">
+                <?php if (empty(ifset($data,'makeyourown_shape_image'))) { ?>
+                    <div class="homepage_emptyimagesrc">
+                        <div class="homepage_imageupload" id="makeownimgupload"></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="homepage_imagesrc">
+                        <img src="<?=$data['makeyourown_shape_image']?>" alt="Make your own Shape"/>
+                    </div>
+                    <div class="homepage_imageremove" data-image="makeyourown">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
                 <?php } ?>
             </div>
         </div>
         <div class="homepage_imagesrc_area">
             <div class="homepage_liknimage">Explore Other HEALTH ITEMS</div>
             <div class="homepage_imagesubtitlesize">click to enlarge</div>
-            <div class="homepage_imagesrc">
-                <?php if (!empty(ifset($data,'explore_healthitems_image'))) { ?>
-                    <img src="<?=$data['explore_healthitems_image']?>" alt="Explore Health Items"/>
+            <div id="homepage_explorehealth">
+                <?php if (empty(ifset($data,'explore_healthitems_image'))) { ?>
+                    <div class="homepage_emptyimagesrc">
+                        <div class="homepage_imageupload" id="explorehealthimgupload"></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="homepage_imagesrc">
+                        <img src="<?=$data['explore_healthitems_image']?>" alt="Explore Health Items"/>
+                    </div>
+                    <div class="homepage_imageremove" data-image="explorehealth">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
                 <?php } ?>
             </div>
         </div>
         <div class="homepage_imagesrc_area">
             <div class="homepage_liknimage">Explore Other HEALTH ITEMS</div>
             <div class="homepage_imagesubtitlesize">click to enlarge</div>
-            <div class="homepage_imagesrc">
-                <?php if (!empty(ifset($data,'custom_packaging_image'))) { ?>
-                    <img src="<?=$data['custom_packaging_image']?>" alt="Custom Packaging"/>
+            <div id="homepage_packing">
+                <?php if (empty(ifset($data,'custom_packaging_image'))) { ?>
+                    <div class="homepage_emptyimagesrc">
+                        <div class="homepage_imageupload" id="custompackingupload"></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="homepage_imagesrc">
+                        <img src="<?=$data['custom_packaging_image']?>" alt="Custom Packaging"/>
+                    </div>
+                    <div class="homepage_imageremove" data-image="packing">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
                 <?php } ?>
             </div>
+
         </div>
     </div>
     <div class="content-row">

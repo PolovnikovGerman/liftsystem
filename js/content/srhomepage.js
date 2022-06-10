@@ -210,5 +210,157 @@ function init_srhome_upload() {
             }
         });
     }
+    $(".homepage_imageremove").unbind('click').click(function () {
+        var url='/content/remove_homeimages';
+        var image = $(this).data('image');
+        var params = new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name: 'type', value: 'data'});
+        if (image=='packing') {
+            params.push({name: 'field', value: 'custom_packaging_image'});
+        } else if (image=='custom') {
+            params.push({name: 'field', value: 'customize_shape_image'});
+        } else if (image=='makeyourown') {
+            params.push({name: 'field', value: 'makeyourown_shape_image'});
+        } else if (image=='explorehealth') {
+            params.push({name: 'field', value: 'explore_healthitems_image'});
+        }
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (image=='packing') {
+                    $("#homepage_packing").empty().html(response.data.content);
+                } else if (image=='custom') {
+                    $("#homepage_customshape").empty().html(response.data.content);
+                } else if (image=='makeyourown') {
+                    $("#homepage_makeyourown").empty().html(response.data.content);
+                } else if (image=='explorehealth') {
+                    $("#homepage_explorehealth").empty().html(response.data.content);
+                }
+                init_srhome_upload();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("#customshapeimgupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('customshapeimgupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#homepage_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'customize_shape_image'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_homepageparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#homepage_customshape").empty().html(response.data.content);
+                            init_srhome_upload();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    if ($("#makeownimgupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('makeownimgupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#homepage_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'makeyourown_shape_image'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_homepageparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#homepage_makeyourown").empty().html(response.data.content);
+                            init_srhome_upload();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    if ($("#explorehealthimgupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('explorehealthimgupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#homepage_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'explore_healthitems_image'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_homepageparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#homepage_explorehealth").empty().html(response.data.content);
+                            init_srhome_upload();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
+    if ($("#custompackingupload").length>0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('custompackingupload'),
+            action: '/utils/save_itemimg',
+            /* template: temp,            */
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    var params=new Array();
+                    params.push({name: 'session', value: $("#homepage_session").val()});
+                    params.push({name: 'type', value: 'data'});
+                    params.push({name: 'field', value: 'custom_packaging_image'});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/content/change_homepageparam";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("#homepage_packing").empty().html(response.data.content);
+                            init_srhome_upload();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
 
 }
