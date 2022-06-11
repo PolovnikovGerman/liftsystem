@@ -14,10 +14,10 @@
             </div>
             <?php if ($reportchk) { ?>
                 <div class="inforeports" id="reports">
-                    <div class="icon">
+                    <div class="icon" title="Reports">
                         <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
                     </div>
-                    <div class="infotext">Reports</div>
+<!--                    <div class="infotext">Reports</div>-->
                 </div>
             <?php } ?>
             <div class="period_analitic_info"><?=$total_view?></div>
@@ -49,18 +49,18 @@
             </div>
             <?php if ($adminchk) { ?>
                 <div class="infoalerts" id="admin">
-                    <div class="alerticon admin">
+                    <div class="alerticon admin" title="Admin">
                         <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                     </div>
-                    <div class="alerttext">Admin</div>
+<!--                    <div class="alerttext">Admin</div>-->
                 </div>
             <?php } ?>
             <?php if ($resourcechk) { ?>
                 <div class="infoalerts resources" id="resources">
-                    <div class="alerticon">
+                    <div class="alerticon" title="Resources">
                         <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
                     </div>
-                    <div class="alerttext">Resources</div>
+<!--                    <div class="alerttext">Resources</div>-->
                 </div>
             <?php } ?>
         </div>

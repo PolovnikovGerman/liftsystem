@@ -196,9 +196,10 @@ body div {
     border: 1px solid #9b9b9b;
     height: 26px;
     color: #ffffff;
-    width: 105px;
+    /* width: 105px; */
     margin: 0.25rem 4px 0 4px;
     cursor: pointer;
+    padding: 0 6px;
 }
 .inforeports:hover {
     background: #000080;
@@ -209,7 +210,7 @@ body div {
 .inforeports .icon {
     width: 15px;
     padding-top: 4px;
-    margin-left: 12px;
+    /* margin-left: 12px; */
 }
 .inforeports.oldver .icon {
     margin-left: -3px!important;
@@ -229,22 +230,23 @@ body div {
     border: 1px solid #9b9b9b;
     height: 26px;
     color: #ffffff;
-    width: 90px;
+    /* width: 90px; */
     margin-right: 4px;
     float: right!important;
     cursor: pointer;
+    padding: 0 6px;
 }
 .infoalerts:hover {
     background: #000080;
 }
 .infoalerts.resources {
-    width: 111px!important;
+    /* width: 111px!important; */
 }
 .infoalerts .alerticon {
     /* padding-left: 12px;*/
     width: 15px;
     padding-top: 6px;
-    margin-left: 12px;
+    /* margin-left: 12px; */
 }
 .resources.oldver .alerticon {
     margin-left: -3px;
