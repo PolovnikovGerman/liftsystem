@@ -62,7 +62,7 @@ Class Otherprices_model extends My_Model
         foreach ($research_price as $row) {
             foreach ($price_types as $type) {
                 $row['price_'.$type['type'].'_class']='empty_price';
-                if ($row['other_vendorprice_price_'.$type['type']]!='' && $row['other_vendorprice_price_'.$type['type']]!=0) {
+                if (isset($row['other_vendorprice_price_'.$type['type']]) && $row['other_vendorprice_price_'.$type['type']]!='' && $row['other_vendorprice_price_'.$type['type']]!=0) {
                     $row['price_'.$type['type'].'_class']='white';
                     $compare_price='';
                     if (isset($prices['item_sale_'.$type['type']]) && ($prices['item_sale_'.$type['type']]!='' && $prices['item_sale_'.$type['type']]!=0)) {
