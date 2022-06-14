@@ -91,6 +91,10 @@ $db['default'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
+$db['default']['username']=getenv('DB_USER');
+$db['default']['password']=getenv('DB_PASSWORD');
+$db['default']['database']=getenv('DB_DATABASE');
+/*
 switch($_SERVER['SERVER_NAME']) {
     case 'lifttest.stressballs.com':
     case 'lift.stressballs.com':
@@ -104,8 +108,9 @@ switch($_SERVER['SERVER_NAME']) {
         $db['default']['database']='bluetrack_liftnew';
         break;
     default:
-        $db['default']['username']='stressballs';
-        $db['default']['password']='fDQa0ral9KJm';
-        $db['default']['database']='stressballs';
+        $db['default']['username']=getenv('DB_USER');
+        $db['default']['password']=getenv('DB_PASSWORD');
+        $db['default']['database']=getenv('DB_DATABASE');
         break;
 }
+*/
