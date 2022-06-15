@@ -3001,7 +3001,11 @@ class Balances_model extends My_Model
         }
         $diffexpens=round($placeexpens-$prv_expenses,0);
         if ($diffexpens!=0) {
-            $diffexpens_prc=round($diffexpens/$prv_expenses*100,0);
+            if ($prv_expenses==0) {
+                $diffexpens_prc = 100;
+            } else {
+                $diffexpens_prc=round($diffexpens/$prv_expenses*100,0);
+            }
             $diffexpens_class=($diffexpens<0 ? 'negative' : '');
 
             $compare['expenses']=array(
