@@ -12,7 +12,7 @@ $config['default_pack_width']=24;
 $config['default_pack_heigth']=14;
 $config['default_pack_depth']=13;
 /* Library UPS configs */
-$config['ups_access_key']=getenv('0DB6A3DB0A2D50C1');
+$config['ups_access_key']=getenv('UPS_ACCESS_KEY');
 $config['ups_account_username']=getenv('UPS_ACCOUNT_USERNAME');
 $config['ups_account_password']= getenv('UPS_ACCOUNT_PASSWORD');
 $config['ups_account_number']=getenv('UPS_ACCOUNT_NUMBER');
