@@ -3051,7 +3051,11 @@ class Balances_model extends My_Model
         }
         $diffadvertising=round($placeadvertising-$prvyear_netdata['advertising'],0);
         if ($diffadvertising!=0) {
-            $diffadvertising_prc=round($diffadvertising/$prvyear_netdata['advertising']*100,0);
+            if ($prvyear_netdata['advertising']==0) {
+                $diffadvertising_prc=100;
+            } else {
+                $diffadvertising_prc=round($diffadvertising/$prvyear_netdata['advertising']*100,0);
+            }
             $diffadvertising_class=($diffadvertising<0 ? 'negative' : '');
 
             $compare['advertising']=array(
@@ -3097,7 +3101,11 @@ class Balances_model extends My_Model
         }
         $diffodesk=round($placeodesk-$prvyear_netdata['odesk'],0);
         if ($diffodesk!=0) {
-            $diffodesk_prc=round($diffodesk/$prvyear_netdata['odesk']*100,0);
+            if ($prvyear_netdata['odesk']==0) {
+                $diffodesk_prc=100;
+            } else {
+                $diffodesk_prc=round($diffodesk/$prvyear_netdata['odesk']*100,0);
+            }
             $diffodesk_class=($diffodesk<0 ? 'negative' : '');
             $compare['odesk']=array(
                 'grown'=>($diffodesk<0 ? '(' : '').  MoneyOutput(abs($diffodesk),0).($diffodesk<0 ? ')' : ''),
