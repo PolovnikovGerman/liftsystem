@@ -147,6 +147,10 @@ class United_parcel_service
                 } else {
                     if (isset($resp->TimeInTransitResponse->Response->Error->ErrorDescription)) {
                         // $errmsg=$resp->TimeInTransitResponse->Response->Error->ErrorDescription;
+                        $fw = fopen($outputFileName ,'w');
+                        fwrite($fw , "Exception: \n" . $resp->TimeInTransitResponse->Response->Error->ErrorDescription. "\n");
+                        fwrite($fw , "Request: \n" . $client->__getLastRequest() . "\n");
+                        fclose($fw);
                         $errmsg=$this->_error_message;
                     } else {
                         $errmsg='Error during execute Time in Transit calculation';
