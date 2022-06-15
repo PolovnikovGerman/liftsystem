@@ -119,11 +119,11 @@ class United_parcel_service
                 $request['InvoiceLineTotal'] = $invoiceLineTotal;
 
                 $request['MaximumListSize'] = '1';
-                $fw = fopen($outputFileName ,'w');
-                foreach ($request as $key=>$val) {
-                    fwrite($fw , "Request: ".$key.' Val '.$val. "\n");
-                }
-                fclose($fw);
+                // $fw = fopen($outputFileName ,'w');
+                // foreach ($request as $key=>$val) {
+                    // fwrite($fw , "Request: ".$key.' Val '.$val. "\n");
+                // }
+                // fclose($fw);
 
                 //get response
                 $resp = $client->__soapCall($operation ,array($request));
