@@ -218,10 +218,12 @@
     float: left;
     padding: 0;
     color: #000!important;
-    text-align: justify!important;
+    text-align: center!important;
     border-color: #000000!important;
     font-family: arial, verdana, sans-serif;
     font-size: 13px;
+    line-height: 24px;
+    height: 24px;
 }
 /* Edit Purchase Methods */
 #modalManage .modal-dialog {
