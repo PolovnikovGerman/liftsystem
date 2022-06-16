@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='2.01954';
-$config['css_version']='2.01954';
+$config['js_version']='2.01955';
+$config['css_version']='2.01955s';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -156,7 +156,7 @@ $config['bonus_1000']=2;
 $config['bonus_1200']=5;
 $config['bonus_price']=5;
 $config['bonus_week_base']=150;
-$config['netprofit_debt_start']=-160000;
+$config['netprofit_debt_start']=0; //-160000;
 $config['bonus_time']=strtotime('2019-03-04');
 /* Diff for pricing - in Cents */
 $config['price_diff']=3;

@@ -1027,3 +1027,6 @@ div.oldvesionlabel {
     margin-left: 28px;
     border-left: none;
 }
+.color_red, .color_red2 {
+    color: #FF0000;
+}
