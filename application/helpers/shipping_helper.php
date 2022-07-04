@@ -239,7 +239,7 @@ if (!function_exists('calculate_shipcost')) {
                             $ship['UPSSaver'] = array(
                                 'ServiceCode' => '65',
                                 'ServiceName' => 'Saver',
-                                'Rate' => round($row['Rate'] * $incrkf, 2),
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
                                 'DeliveryDate' => $delivdate,
                                 'current' => 0,
                                 );
