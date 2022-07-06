@@ -8032,6 +8032,9 @@ Class Leadorder_model extends My_Model {
         } elseif ($balance!=0) {
             $payment_due = date('m/d/y', $order['order_date']);
         }
+        foreach ($biladr as $bilrow) {
+            log_message('Error', 'Billing - '.$bilrow);
+        }
         $options=array(
             'order_num'=>$invnum,
             'invoice_message'=>$order['invoice_message'],
