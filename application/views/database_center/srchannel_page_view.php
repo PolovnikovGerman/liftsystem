@@ -1,5 +1,5 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea databasemenu">
+    <div class="maincontentmenuarea databasemenu srchannel">
         <div class="menupage_head">
             <?=$page_menu?>
         </div>
@@ -7,7 +7,7 @@
             <div class="maincontentmenu">
                 <div class="title">Database:</div>
                 <?php foreach ($menu as $item) { ?>
-                    <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
+                    <div class="maincontentmenu_item srelivers <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
                         <?php  if (ifset($item,'newver', 1)==0) { ?>
                             <div class="oldvesionlabel">&nbsp;</div>
                         <?php } ?>

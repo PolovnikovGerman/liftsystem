@@ -280,7 +280,9 @@ class Databasecenter extends MY_Controller
 
         foreach ($menu as $item) {
             if ($item['item_link']=='#sritems') {
-                $content_options['itemsview'] = $this->load->view('relieveritems/page_view',[],TRUE);
+                $head['styles'][]=array('style'=>'/css/database_center/relivitemlist.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/relivitemlist.js');
+                $content_options['itemsview'] = $this->_prepare_sritems_content();
             } elseif ($item['item_link']=='#srcustomers') {
                 $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);
             } elseif ($item['item_link']=='#srpages') {
@@ -543,6 +545,16 @@ class Databasecenter extends MY_Controller
             'eventtype' => 'purchasing',
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_sritems_content() {
+        $this->load->model('categories_model');
+        $categories = $this->categories_model->get_reliver_categories();
+        $options = [
+            'categories' => $categories,
+        ];
+        $content = $this->load->view('relieveritems/page_view', $options,TRUE);
         return $content;
     }
 

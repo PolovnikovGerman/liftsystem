@@ -175,4 +175,12 @@ Class Categories_model extends MY_Model
         return $out;
     }
 
+    public function get_reliver_categories($options=[]) {
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        $this->db->order_by('category_order');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 }

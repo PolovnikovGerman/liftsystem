@@ -139,3 +139,19 @@
     background: url('/img/database_center/channel_itemhover_btn.png');
 }
 */
+.databasemenu.srchannel {
+    background: #000048;
+}
+.databasemenu.srchannel .dbcenter-main-button {
+    background: url('/img/database_center/mainmenu_relievers_button.png') no-repeat;
+}
+.databasemenu.srchannel .dbcenter-main-button.active {
+    background: url('/img/database_center/mainmenu_button_active.png') no-repeat;
+}
+.maincontentmenu_item.srelivers {
+    background: #000084;
+}
+.maincontentmenu_item.srelivers.active {
+    background: #ffffff;
+}
+/* .maincontentmenu_item.srelivers.active */
