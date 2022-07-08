@@ -21,33 +21,20 @@ if (!function_exists('calculate_shipcost')) {
             $ci->load->config('shipping');
             $numinpack = $ci->config->item('default_inpack');
         }
-
-        $numpack = floor($qty / $numinpack);
-
-        $rest = $qty - ($numpack * $numinpack);
-        /* Total Parameters for Transit */
-        $transitpack = $numpack + 1;
-
-        /* if ($numpack<1) {
-            $numpack=1;
-            $rest=0;
-        }*/
-        $transitweigth = $itemweight * $qty;
-
+        $numpack = ceil($qty / $numinpack);
+        $shipratekf = ($numpack > 1 ? $numpack : 1);
+        $transitpack = 1;
+        $transitweigth = $itemweight * $numinpack;
         $ci->load->library('United_parcel_service');
-
         $out = array();
-
         $daydiff = round((time() - $startdeliv) / (24 * 60 * 60), 0);
-        // $daydiff=BankDays($startdeliv, strtotime(date('Y-m-d')));
+
         if (abs($daydiff) > 10) {
             $startdeliv = strtotime(date('Y-m-d') . ' + 1 day');
         }
-
         $code = '';
         $upsserv = new United_parcel_service();
         $transit_arr = $upsserv->ship_time($zip, $cnt_code, $transitpack, $transitweigth, date('Ymd', $startdeliv), $vendorzip);
-
         if ($transit_arr['result'] == FALSE) {
             $out['result'] = FALSE;
             $out['error'] = $transit_arr['msg'];
@@ -55,35 +42,13 @@ if (!function_exists('calculate_shipcost')) {
         } else {
             $transit_arr = $transit_arr['times'];
             $out['times'] = $transit_arr;
-            $ratescalc = 1;
-            $errmsg = '';
-            $incrkf = 0;
-            if ($numpack != 0) {
-                if ($numpack > 20) {
-                    $incrkf = $numpack / 20;
-                    $numpack = 20;
-                }
-                // $fullResult = $upsserv->ship_rates($zip,'',$numpack,$itemweight*$numinpack*$numpack, $startdeliv ,true, $vendorzip,$cnt_code, $item_length, $item_width, $item_height);
-                $fullResult = $upsserv->ship_rates($zip, '', $numpack, $itemweight * $numinpack * $numpack, $startdeliv, true, $vendorzip, $cnt_code, $item_length, $item_width, $item_height);
-                if ($fullResult['result'] == FALSE) {
-                    $ratescalc = 0;
-                    $errmsg = $fullResult['msg'];
-                }
-            } else {
-                $fullResult = array();
+            $restResult = $upsserv->ship_rates($zip, '', $transitpack, $transitweigth, $startdeliv, true, $vendorzip, $cnt_code, $item_length, $item_width, $item_height);
+            //  $item_length, $item_width, $item_height
+            $ratescalc =1;
+            if ($restResult['result'] == FALSE) {
+                $ratescalc = 0;
+                $errmsg = $restResult['msg'];
             }
-
-            if ($rest != 0 && $ratescalc == 1) {
-                $restweight = $itemweight * $rest;
-                $restResult = $upsserv->ship_rates($zip, '', 1, $restweight, $startdeliv, true, $vendorzip, $cnt_code, 0, 0, 0);
-                if ($restResult['result'] == FALSE) {
-                    $ratescalc = 0;
-                    $errmsg = $restResult['msg'];
-                }
-            } else {
-                $restResult = array();
-            }
-
             if ($ratescalc == 0) {
                 $out['result'] = FALSE;
                 $out['error'] = $errmsg;
@@ -92,340 +57,204 @@ if (!function_exists('calculate_shipcost')) {
                 $out['result'] = TRUE;
                 $code = "";
                 $codes = array();
-                if (!empty($fullResult)) {
-                    $fullrates = $fullResult['rates'];
-                    foreach ($fullrates as $row) {
-                        $delivdate = '';
-                        if ($row['ServiceCode'] == '03') {
-                            if (isset($transit_arr['GND'])) {
-                                array_push($codes, 'GND');
-                                $delivdate = $transit_arr['GND']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                $ship['GND'] = array('ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
-                                    'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                // $ship['deliv']=$delivdate;
-                                $code .= "GND|";
-                            } elseif (isset ($transit_arr['G'])) {
-                                array_push($codes, 'GND');
-                                $delivdate = $transit_arr['G']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                $ship['GND'] = array('ServiceCode' => 'GND', 'ServiceName' => 'Ground',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "GND|";
+                $rates = $restResult['rates'];
+                foreach ($rates as $row) {
+                    $delivdate = '';
+                    if ($row['ServiceCode'] == '03') {
+                        if (isset($transit_arr['GND'])) {
+                            array_push($codes, 'GND');
+                            $delivdate = $transit_arr['GND']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
                             }
-                            /* Canadian */
-                            /* UPS Standard */
-                        } elseif ($row['ServiceCode'] == '11') {
-                            if (isset($transit_arr['03'])) {
-                                $delivdate = $transit_arr['03']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'UPSStandard');
-                                $ship['UPSStandard'] = array('ServiceCode' => '11', 'ServiceName' => 'Ground',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "11|";
+                            $ship['GND'] = array(
+                                'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate, 'current' => 0,
+                                );
+                            // $ship['deliv']=$delivdate;
+                            $code .= "GND|";
+                        } elseif (isset ($transit_arr['G'])) {
+                            array_push($codes, 'GND');
+                            $delivdate = $transit_arr['G']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
                             }
-                        } elseif ($row['ServiceCode'] == '02') {
-                            if (isset($transit_arr['2DA'])) {
-                                $delivdate = $transit_arr['2DA']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'DA2');
-                                $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => $row['ServiceName'],
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "2DA|";
-                            } elseif (isset($transit_arr['02'])) {
-                                $delivdate = $transit_arr['02']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'DA2');
-                                $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => '2nd Day Air',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "2DA|";
-                            }
-                        } elseif ($row['ServiceCode'] == '13') {
-                            if (isset($transit_arr['1DP'])) {
-                                $delivdate = $transit_arr['1DP']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'DP1');
-                                $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => $row['ServiceName'],
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "1DP|";
-                            }
-                        } elseif ($row['ServiceCode'] == '01') {
-                            // 1 Day Air
-                            if (isset($transit_arr['01'])) {
-                                $delivdate = $transit_arr['01']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'DP1');
-                                $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => 'Next Day PM',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "1DP|";
-                            }
-                        } elseif ($row['ServiceCode'] == '14') {
-                            if (isset($transit_arr['1DM'])) {
-                                $delivdate = $transit_arr['1DM']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'DA1');
-                                $ship['DA1'] = array('ServiceCode' => '1DM', 'ServiceName' => $row['ServiceName'],
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "1DA|";
-                            }
-                        } elseif ($row['ServiceCode'] == '08') {
-                            if (isset($transit_arr['05'])) {
-                                $delivdate = $transit_arr['05']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'UPSExpedited');
-                                $ship['UPSExpedited'] = array('ServiceCode' => '08', 'ServiceName' => 'Expedited',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "08|";
-                            }
-                            /* UPS Worldwide Express */
-                        } elseif ($row['ServiceCode'] == '07') {
-                            if (isset($transit_arr['01'])) {
-                                $delivdate = $transit_arr['01']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'UPSExpress');
-                                $ship['UPSExpress'] = array('ServiceCode' => '07', 'ServiceName' => 'Express',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "07|";
-                            }
-                            /* UPS Saver */
-                        } elseif ($row['ServiceCode'] == '65') {
-                            if (isset($transit_arr['28'])) {
-                                $delivdate = $transit_arr['28']['transit_timestamp'];
-                                if (abs($daydiff) > 10) {
-                                    // Make changes in deliv date
-                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                }
-                                array_push($codes, 'UPSSaver');
-                                $ship['UPSSaver'] = array('ServiceCode' => '65', 'ServiceName' => 'Saver',
-                                    'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                $code .= "65|";
-                            }
-                            /* UPS Worldwide Expedited */
+                            $ship['GND'] = array(
+                                'ServiceCode' => 'GND',
+                                'ServiceName' => 'Ground',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "GND|";
                         }
-                    }
-                }
-                /* Check Rest Rates */
-                if (!empty($restResult)) {
-                    $restrates = $restResult['rates'];
-                    foreach ($restrates as $row) {
-                        $delivdate = '';
-                        if ($row['ServiceCode'] == '03') {
-                            if (isset($transit_arr['GND'])) {
-                                if (!in_array('GND', $codes)) {
-                                    array_push($codes, 'GND');
-                                    $delivdate = $transit_arr['GND']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    $ship['GND'] = array('ServiceCode' => 'GND',
-                                        'ServiceName' => 'Ground', 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "GND|";
-                                } else {
-                                    $ship['GND']['Rate'] = $ship['GND']['Rate'] + $row['Rate'];
-                                }
-                            } elseif (isset ($transit_arr['G'])) {
-                                if (!in_array('GND', $codes)) {
-                                    array_push($codes, 'GND');
-                                    $delivdate = $transit_arr['G']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    $ship['GND'] = array('ServiceCode' => 'GND', 'ServiceName' => 'Ground',
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "GND|";
-                                } else {
-                                    $ship['GND']['Rate'] = $ship['GND']['Rate'] + $row['Rate'];
-                                }
+                        /* Canadian */
+                        /* UPS Standard */
+                    } elseif ($row['ServiceCode'] == '11') {
+                        if (isset($transit_arr['03'])) {
+                            $delivdate = $transit_arr['03']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
                             }
-                            /* Canadian */
-                            /* UPS Standard */
-                        } elseif ($row['ServiceCode'] == '11') {
-                            if (isset($transit_arr['03'])) {
-                                if (!in_array('UPSStandard', $codes)) {
-                                    $delivdate = $transit_arr['03']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'UPSStandard');
-                                    $ship['UPSStandard'] = array('ServiceCode' => '11', 'ServiceName' => 'Ground',
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $ship['deliv'] = $delivdate;
-                                    $code .= "11|";
-                                } else {
-                                    $ship['UPSStandard']['Rate'] = $ship['UPSStandard']['Rate'] + $row['Rate'];
-                                }
-                            }
-                        } elseif ($row['ServiceCode'] == '02') {
-                            if (isset($transit_arr['2DA'])) {
-                                if (!in_array('DA2', $codes)) {
-                                    $delivdate = $transit_arr['2DA']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'DA2');
-                                    $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "2DA|";
-                                } else {
-                                    $ship['DA2']['Rate'] = $ship['DA2']['Rate'] + $row['Rate'];
-                                }
-                            } elseif (isset($transit_arr['02'])) {
-                                if (!in_array('DA2', $codes)) {
-                                    $delivdate = $transit_arr['02']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'DA2');
-                                    $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => '2nd Day Air',
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "2DA|";
-                                } else {
-                                    $ship['DA2']['Rate'] = $ship['DA2']['Rate'] + $row['Rate'];
-                                }
-                            }
-                        } elseif ($row['ServiceCode'] == '13') {
-                            if (isset($transit_arr['1DP'])) {
-                                if (!in_array('DP1', $codes)) {
-                                    $delivdate = $transit_arr['1DP']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'DP1');
-                                    $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "1DP|";
-                                } else {
-                                    $ship['DP1']['Rate'] = $ship['DP1']['Rate'] + $row['Rate'];
-                                }
-                            }
-                        } elseif ($row['ServiceCode'] == '01') {
-                            // 1 Day Air
-                            if (isset($transit_arr['01'])) {
-                                if (!in_array('DP1', $codes)) {
-                                    $delivdate = $transit_arr['01']['transit_timestamp'];
-                                    if ($daydiff > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'DP1');
-                                    $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => 'Next Day PM', /* $row['ServiceName'], */
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "1DP|";
-                                } else {
-                                    $ship['DP1']['Rate'] = $ship['DP1']['Rate'] + $row['Rate'];
-                                }
-                            }
-                        } elseif ($row['ServiceCode'] == '14') {
-                            if (isset($transit_arr['1DM'])) {
-                                if (!in_array('DA1', $codes)) {
-                                    $delivdate = $transit_arr['1DM']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'DA1');
-                                    $ship['DA1'] = array('ServiceCode' => '1DM', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "1DA|";
-                                } else {
-                                    $ship['DA1']['Rate'] = $ship['DA1']['Rate'] + $row['Rate'];
-                                }
-                            }
-                        } elseif ($row['ServiceCode'] == '08') {
-                            if (isset($transit_arr['05'])) {
-                                if (!in_array('UPSExpedited', $codes)) {
-                                    $delivdate = $transit_arr['05']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'UPSExpedited');
-                                    $ship['UPSExpedited'] = array('ServiceCode' => '08', 'ServiceName' => 'Expedited', /* $row['ServiceName'], */
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "08|";
-                                } else {
-                                    $ship['UPSExpedited']['Rate'] = $ship['UPSExpedited']['Rate'] + $row['Rate'];
-                                }
-                            }
-                            /* UPS Worldwide Express */
-                        } elseif ($row['ServiceCode'] == '07') {
-                            if (isset($transit_arr['01'])) {
-                                if (!in_array('UPSExpress', $codes)) {
-                                    $delivdate = $transit_arr['01']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'UPSExpress');
-                                    $ship['UPSExpress'] = array('ServiceCode' => '07', 'ServiceName' => 'Express',           /* $row['ServiceName'],*/
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "07|";
-                                } else {
-                                    $ship['UPSExpress']['Rate'] = $ship['UPSExpress']['Rate'] + $row['Rate'];
-                                }
-                            }
-                            /* UPS Saver */
-                        } elseif ($row['ServiceCode'] == '65') {
-                            if (isset($transit_arr['28'])) {
-                                if (!in_array('UPSSaver', $codes)) {
-                                    $delivdate = $transit_arr['28']['transit_timestamp'];
-                                    if (abs($daydiff) > 10) {
-                                        // Make changes in deliv date
-                                        $delivdate = fixdeliv_different($delivdate, $daydiff);
-                                    }
-                                    array_push($codes, 'UPSSaver');
-                                    $ship['UPSSaver'] = array('ServiceCode' => '65', 'ServiceName' => 'Saver', /* $row['ServiceName'], */
-                                        'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
-                                    $code .= "65|";
-                                } else {
-                                    $ship['UPSSaver']['Rate'] = $ship['UPSSaver']['Rate'] + $row['Rate'];
-                                }
-                            }
-                            /* UPS Worldwide Expedited */
+                            array_push($codes, 'UPSStandard');
+                            $ship['UPSStandard'] = array(
+                                'ServiceCode' => '11',
+                                'ServiceName' => 'Ground',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate, 'current' => 0,
+                                );
+                            $code .= "11|";
                         }
+                    } elseif ($row['ServiceCode'] == '02') {
+                        if (isset($transit_arr['2DA'])) {
+                            $delivdate = $transit_arr['2DA']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA2');
+                            $ship['DA2'] = array(
+                                'ServiceCode' => '2DA',
+                                'ServiceName' => $row['ServiceName'],
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate, 'current' => 0,
+                                );
+                            $code .= "2DA|";
+                        } elseif (isset($transit_arr['02'])) {
+                            $delivdate = $transit_arr['02']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA2');
+                            $ship['DA2'] = array(
+                                'ServiceCode' => '2DA',
+                                'ServiceName' => '2nd Day Air',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate, 'current' => 0,
+                                );
+                            $code .= "2DA|";
+                        }
+                    } elseif ($row['ServiceCode'] == '13') {
+                        if (isset($transit_arr['1DP'])) {
+                            $delivdate = $transit_arr['1DP']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DP1');
+                            $ship['DP1'] = array(
+                                'ServiceCode' => '1DP',
+                                'ServiceName' => $row['ServiceName'],
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "1DP|";
+                        }
+                    } elseif ($row['ServiceCode'] == '01') {
+                        // 1 Day Air
+                        if (isset($transit_arr['01'])) {
+                            $delivdate = $transit_arr['01']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DP1');
+                            $ship['DP1'] = array(
+                                'ServiceCode' => '1DP',
+                                'ServiceName' => 'Next Day PM',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "1DP|";
+                        }
+                    } elseif ($row['ServiceCode'] == '14') {
+                        if (isset($transit_arr['1DM'])) {
+                            $delivdate = $transit_arr['1DM']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA1');
+                            $ship['DA1'] = array(
+                                'ServiceCode' => '1DM',
+                                'ServiceName' => $row['ServiceName'],
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "1DA|";
+                        }
+                    } elseif ($row['ServiceCode'] == '08') {
+                        if (isset($transit_arr['05'])) {
+                            $delivdate = $transit_arr['05']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSExpedited');
+                            $ship['UPSExpedited'] = array(
+                                'ServiceCode' => '08',
+                                'ServiceName' => 'Expedited',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "08|";
+                        }
+                        /* UPS Worldwide Express */
+                    } elseif ($row['ServiceCode'] == '07') {
+                        if (isset($transit_arr['01'])) {
+                            $delivdate = $transit_arr['01']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSExpress');
+                            $ship['UPSExpress'] = array(
+                                'ServiceCode' => '07',
+                                'ServiceName' => 'Express',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "07|";
+                        }
+                        /* UPS Saver */
+                    } elseif ($row['ServiceCode'] == '65') {
+                        if (isset($transit_arr['28'])) {
+                            $delivdate = $transit_arr['28']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSSaver');
+                            $ship['UPSSaver'] = array(
+                                'ServiceCode' => '65',
+                                'ServiceName' => 'Saver',
+                                'Rate' => round($row['Rate'] * $shipratekf, 2),
+                                'DeliveryDate' => $delivdate,
+                                'current' => 0,
+                                );
+                            $code .= "65|";
+                        }
+                        /* UPS Worldwide Expedited */
                     }
                 }
             }
         }
         $out['ship'] = $ship;
         $out['code'] = $code;
-        // $out['codes'] = $codes;
         return $out;
     }
+
 }
 
 if (!function_exists('recalc_rates')) {
@@ -570,6 +399,432 @@ if (!function_exists('fixdeliv_different')) {
         $newdeliv=$dat;
         return $newdeliv;
     }
+}
+function _oldcalculate_shipcost($options)
+{
+    /* Calc Ship Rates */
+    $ci=&get_instance();
+    $zip = $options['zip'];
+    $numinpack = (isset($options['numinpack']) ? $options['numinpack'] : 1);
+    $itemweight = (isset($options['weight']) ? $options['weight'] : '0.010');
+    $qty = (isset($options['itemqty']) ? $options['itemqty'] : 250);
+    $startdeliv = (isset($options['startdeliv']) ? $options['startdeliv'] : time());
+    $vendorzip = (isset($options['vendor_zip']) ? $options['vendor_zip'] : $ci->config->item('zip'));
+    $item_length = (isset($options['item_length']) ? $options['item_length'] : 0);
+    $item_width = (isset($options['item_width']) ? $options['item_width'] : 0);
+    $item_height = (isset($options['item_height']) ? $options['item_height'] : 0);
+    $ship = $options['ship'];
+    $cnt_code = (isset($options['cnt_code']) ? $options['cnt_code'] : 'US');
+    $brand = ifset($options,'ALL');
+    /* Calculate REST of full cartoon */
+    if (intval($numinpack) == 0) {
+        $ci->load->config('shipping');
+        $numinpack = $ci->config->item('default_inpack');
+    }
+
+    $numpack = floor($qty / $numinpack);
+
+    $rest = $qty - ($numpack * $numinpack);
+    /* Total Parameters for Transit */
+    $transitpack = $numpack + 1;
+
+    /* if ($numpack<1) {
+        $numpack=1;
+        $rest=0;
+    }*/
+    $transitweigth = $itemweight * $qty;
+
+    $ci->load->library('United_parcel_service');
+
+    $out = array();
+
+    $daydiff = round((time() - $startdeliv) / (24 * 60 * 60), 0);
+    // $daydiff=BankDays($startdeliv, strtotime(date('Y-m-d')));
+    if (abs($daydiff) > 10) {
+        $startdeliv = strtotime(date('Y-m-d') . ' + 1 day');
+    }
+
+    $code = '';
+    $upsserv = new United_parcel_service();
+    $transit_arr = $upsserv->ship_time($zip, $cnt_code, $transitpack, $transitweigth, date('Ymd', $startdeliv), $vendorzip);
+
+    if ($transit_arr['result'] == FALSE) {
+        $out['result'] = FALSE;
+        $out['error'] = $transit_arr['msg'];
+        $out['error_code'] = 'TNT';
+    } else {
+        $transit_arr = $transit_arr['times'];
+        $out['times'] = $transit_arr;
+        $ratescalc = 1;
+        $errmsg = '';
+        $incrkf = 0;
+        if ($numpack != 0) {
+            if ($numpack > 20) {
+                $incrkf = $numpack / 20;
+                $numpack = 20;
+            }
+            // $fullResult = $upsserv->ship_rates($zip,'',$numpack,$itemweight*$numinpack*$numpack, $startdeliv ,true, $vendorzip,$cnt_code, $item_length, $item_width, $item_height);
+            $fullResult = $upsserv->ship_rates($zip, '', $numpack, $itemweight * $numinpack * $numpack, $startdeliv, true, $vendorzip, $cnt_code, $item_length, $item_width, $item_height);
+            if ($fullResult['result'] == FALSE) {
+                $ratescalc = 0;
+                $errmsg = $fullResult['msg'];
+            }
+        } else {
+            $fullResult = array();
+        }
+
+        if ($rest != 0 && $ratescalc == 1) {
+            $restweight = $itemweight * $rest;
+            $restResult = $upsserv->ship_rates($zip, '', 1, $restweight, $startdeliv, true, $vendorzip, $cnt_code, 0, 0, 0);
+            if ($restResult['result'] == FALSE) {
+                $ratescalc = 0;
+                $errmsg = $restResult['msg'];
+            }
+        } else {
+            $restResult = array();
+        }
+
+        if ($ratescalc == 0) {
+            $out['result'] = FALSE;
+            $out['error'] = $errmsg;
+            $out['error_code'] = 'RATES';
+        } else {
+            $out['result'] = TRUE;
+            $code = "";
+            $codes = array();
+            if (!empty($fullResult)) {
+                $fullrates = $fullResult['rates'];
+                foreach ($fullrates as $row) {
+                    $delivdate = '';
+                    if ($row['ServiceCode'] == '03') {
+                        if (isset($transit_arr['GND'])) {
+                            array_push($codes, 'GND');
+                            $delivdate = $transit_arr['GND']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            $ship['GND'] = array('ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            // $ship['deliv']=$delivdate;
+                            $code .= "GND|";
+                        } elseif (isset ($transit_arr['G'])) {
+                            array_push($codes, 'GND');
+                            $delivdate = $transit_arr['G']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            $ship['GND'] = array('ServiceCode' => 'GND', 'ServiceName' => 'Ground',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "GND|";
+                        }
+                        /* Canadian */
+                        /* UPS Standard */
+                    } elseif ($row['ServiceCode'] == '11') {
+                        if (isset($transit_arr['03'])) {
+                            $delivdate = $transit_arr['03']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSStandard');
+                            $ship['UPSStandard'] = array('ServiceCode' => '11', 'ServiceName' => 'Ground',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "11|";
+                        }
+                    } elseif ($row['ServiceCode'] == '02') {
+                        if (isset($transit_arr['2DA'])) {
+                            $delivdate = $transit_arr['2DA']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA2');
+                            $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => $row['ServiceName'],
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "2DA|";
+                        } elseif (isset($transit_arr['02'])) {
+                            $delivdate = $transit_arr['02']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA2');
+                            $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => '2nd Day Air',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "2DA|";
+                        }
+                    } elseif ($row['ServiceCode'] == '13') {
+                        if (isset($transit_arr['1DP'])) {
+                            $delivdate = $transit_arr['1DP']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DP1');
+                            $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => $row['ServiceName'],
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "1DP|";
+                        }
+                    } elseif ($row['ServiceCode'] == '01') {
+                        // 1 Day Air
+                        if (isset($transit_arr['01'])) {
+                            $delivdate = $transit_arr['01']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DP1');
+                            $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => 'Next Day PM',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "1DP|";
+                        }
+                    } elseif ($row['ServiceCode'] == '14') {
+                        if (isset($transit_arr['1DM'])) {
+                            $delivdate = $transit_arr['1DM']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'DA1');
+                            $ship['DA1'] = array('ServiceCode' => '1DM', 'ServiceName' => $row['ServiceName'],
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "1DA|";
+                        }
+                    } elseif ($row['ServiceCode'] == '08') {
+                        if (isset($transit_arr['05'])) {
+                            $delivdate = $transit_arr['05']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSExpedited');
+                            $ship['UPSExpedited'] = array('ServiceCode' => '08', 'ServiceName' => 'Expedited',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "08|";
+                        }
+                        /* UPS Worldwide Express */
+                    } elseif ($row['ServiceCode'] == '07') {
+                        if (isset($transit_arr['01'])) {
+                            $delivdate = $transit_arr['01']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSExpress');
+                            $ship['UPSExpress'] = array('ServiceCode' => '07', 'ServiceName' => 'Express',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "07|";
+                        }
+                        /* UPS Saver */
+                    } elseif ($row['ServiceCode'] == '65') {
+                        if (isset($transit_arr['28'])) {
+                            $delivdate = $transit_arr['28']['transit_timestamp'];
+                            if (abs($daydiff) > 10) {
+                                // Make changes in deliv date
+                                $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            }
+                            array_push($codes, 'UPSSaver');
+                            $ship['UPSSaver'] = array('ServiceCode' => '65', 'ServiceName' => 'Saver',
+                                'Rate' => ($incrkf == 0 ? $row['Rate'] : round($row['Rate'] * $incrkf, 2)), 'DeliveryDate' => $delivdate, 'current' => 0,);
+                            $code .= "65|";
+                        }
+                        /* UPS Worldwide Expedited */
+                    }
+                }
+            }
+            /* Check Rest Rates */
+            if (!empty($restResult)) {
+                $restrates = $restResult['rates'];
+                foreach ($restrates as $row) {
+                    $delivdate = '';
+                    if ($row['ServiceCode'] == '03') {
+                        if (isset($transit_arr['GND'])) {
+                            if (!in_array('GND', $codes)) {
+                                array_push($codes, 'GND');
+                                $delivdate = $transit_arr['GND']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                $ship['GND'] = array('ServiceCode' => 'GND',
+                                    'ServiceName' => 'Ground', 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "GND|";
+                            } else {
+                                $ship['GND']['Rate'] = $ship['GND']['Rate'] + $row['Rate'];
+                            }
+                        } elseif (isset ($transit_arr['G'])) {
+                            if (!in_array('GND', $codes)) {
+                                array_push($codes, 'GND');
+                                $delivdate = $transit_arr['G']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                $ship['GND'] = array('ServiceCode' => 'GND', 'ServiceName' => 'Ground',
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "GND|";
+                            } else {
+                                $ship['GND']['Rate'] = $ship['GND']['Rate'] + $row['Rate'];
+                            }
+                        }
+                        /* Canadian */
+                        /* UPS Standard */
+                    } elseif ($row['ServiceCode'] == '11') {
+                        if (isset($transit_arr['03'])) {
+                            if (!in_array('UPSStandard', $codes)) {
+                                $delivdate = $transit_arr['03']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'UPSStandard');
+                                $ship['UPSStandard'] = array('ServiceCode' => '11', 'ServiceName' => 'Ground',
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $ship['deliv'] = $delivdate;
+                                $code .= "11|";
+                            } else {
+                                $ship['UPSStandard']['Rate'] = $ship['UPSStandard']['Rate'] + $row['Rate'];
+                            }
+                        }
+                    } elseif ($row['ServiceCode'] == '02') {
+                        if (isset($transit_arr['2DA'])) {
+                            if (!in_array('DA2', $codes)) {
+                                $delivdate = $transit_arr['2DA']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'DA2');
+                                $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "2DA|";
+                            } else {
+                                $ship['DA2']['Rate'] = $ship['DA2']['Rate'] + $row['Rate'];
+                            }
+                        } elseif (isset($transit_arr['02'])) {
+                            if (!in_array('DA2', $codes)) {
+                                $delivdate = $transit_arr['02']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'DA2');
+                                $ship['DA2'] = array('ServiceCode' => '2DA', 'ServiceName' => '2nd Day Air',
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "2DA|";
+                            } else {
+                                $ship['DA2']['Rate'] = $ship['DA2']['Rate'] + $row['Rate'];
+                            }
+                        }
+                    } elseif ($row['ServiceCode'] == '13') {
+                        if (isset($transit_arr['1DP'])) {
+                            if (!in_array('DP1', $codes)) {
+                                $delivdate = $transit_arr['1DP']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'DP1');
+                                $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "1DP|";
+                            } else {
+                                $ship['DP1']['Rate'] = $ship['DP1']['Rate'] + $row['Rate'];
+                            }
+                        }
+                    } elseif ($row['ServiceCode'] == '01') {
+                        // 1 Day Air
+                        if (isset($transit_arr['01'])) {
+                            if (!in_array('DP1', $codes)) {
+                                $delivdate = $transit_arr['01']['transit_timestamp'];
+                                if ($daydiff > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'DP1');
+                                $ship['DP1'] = array('ServiceCode' => '1DP', 'ServiceName' => 'Next Day PM', /* $row['ServiceName'], */
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "1DP|";
+                            } else {
+                                $ship['DP1']['Rate'] = $ship['DP1']['Rate'] + $row['Rate'];
+                            }
+                        }
+                    } elseif ($row['ServiceCode'] == '14') {
+                        if (isset($transit_arr['1DM'])) {
+                            if (!in_array('DA1', $codes)) {
+                                $delivdate = $transit_arr['1DM']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'DA1');
+                                $ship['DA1'] = array('ServiceCode' => '1DM', 'ServiceName' => $row['ServiceName'], 'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "1DA|";
+                            } else {
+                                $ship['DA1']['Rate'] = $ship['DA1']['Rate'] + $row['Rate'];
+                            }
+                        }
+                    } elseif ($row['ServiceCode'] == '08') {
+                        if (isset($transit_arr['05'])) {
+                            if (!in_array('UPSExpedited', $codes)) {
+                                $delivdate = $transit_arr['05']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'UPSExpedited');
+                                $ship['UPSExpedited'] = array('ServiceCode' => '08', 'ServiceName' => 'Expedited', /* $row['ServiceName'], */
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "08|";
+                            } else {
+                                $ship['UPSExpedited']['Rate'] = $ship['UPSExpedited']['Rate'] + $row['Rate'];
+                            }
+                        }
+                        /* UPS Worldwide Express */
+                    } elseif ($row['ServiceCode'] == '07') {
+                        if (isset($transit_arr['01'])) {
+                            if (!in_array('UPSExpress', $codes)) {
+                                $delivdate = $transit_arr['01']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'UPSExpress');
+                                $ship['UPSExpress'] = array('ServiceCode' => '07', 'ServiceName' => 'Express',           /* $row['ServiceName'],*/
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "07|";
+                            } else {
+                                $ship['UPSExpress']['Rate'] = $ship['UPSExpress']['Rate'] + $row['Rate'];
+                            }
+                        }
+                        /* UPS Saver */
+                    } elseif ($row['ServiceCode'] == '65') {
+                        if (isset($transit_arr['28'])) {
+                            if (!in_array('UPSSaver', $codes)) {
+                                $delivdate = $transit_arr['28']['transit_timestamp'];
+                                if (abs($daydiff) > 10) {
+                                    // Make changes in deliv date
+                                    $delivdate = fixdeliv_different($delivdate, $daydiff);
+                                }
+                                array_push($codes, 'UPSSaver');
+                                $ship['UPSSaver'] = array('ServiceCode' => '65', 'ServiceName' => 'Saver', /* $row['ServiceName'], */
+                                    'Rate' => $row['Rate'], 'DeliveryDate' => $delivdate, 'current' => 0,);
+                                $code .= "65|";
+                            } else {
+                                $ship['UPSSaver']['Rate'] = $ship['UPSSaver']['Rate'] + $row['Rate'];
+                            }
+                        }
+                        /* UPS Worldwide Expedited */
+                    }
+                }
+            }
+        }
+    }
+    $out['ship'] = $ship;
+    $out['code'] = $code;
+    // $out['codes'] = $codes;
+    return $out;
 }
 
 ?>

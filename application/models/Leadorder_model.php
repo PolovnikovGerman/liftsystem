@@ -7923,6 +7923,9 @@ Class Leadorder_model extends My_Model {
         $biladr=array();
         if (isset($leadorder['billing'])) {
             $billing=$leadorder['billing'];
+            foreach ($billing as $key=>$val) {
+                log_message('error',$key.' - '.$val);
+            }
             if (!empty($billing['customer_name'])) {
                 if (!empty($billing['company'])) {
                     array_push($biladr, $billing['company']);

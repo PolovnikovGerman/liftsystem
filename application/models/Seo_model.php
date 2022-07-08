@@ -17,7 +17,8 @@ Class Seo_model extends My_Model {
     public function get_geolocation($user_ip) {
         $out = ['result'=> $this->error_result];
         $api_key = $this->config->item('geo_apikey');
-        $d = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
+        // $d = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
+        $d = $this->get_geolocation2api($api_key, $user_ip);
         //Use backup server if cannot make a connection
         if (!$d) {
             return $out; // Failed to open connection
@@ -25,27 +26,42 @@ Class Seo_model extends My_Model {
             $result = json_decode($d);
             $country_id='';
             $this->load->model('shipping_model');
-            if ($result->countryCode) {
-                $cntr=$this->shipping_model->get_country_bycode2($result->countryCode);
+            if ($result->country_code2) {
+                $cntr=$this->shipping_model->get_country_bycode2($result->country_code2);
                 if (isset($cntr['country_id']) && $cntr['country_id']) {
                     $country_id=$cntr['country_id'];
                 }
             }
             $out_array = array(
                 'ip' => $user_ip,
-                'country_code' => $result->countryCode,
-                'country_name' => $result->countryName,
-                'city_name' => $result->cityName,
-                'region_name' => $result->regionName,
+                'country_code' => $result->country_code2,
+                'country_name' => $result->country_name,
+                'city_name' => $result->city,
+                'region_name' => $result->state_prov,
                 'latitude' => $result->latitude,
                 'longitude' => $result->longitude,
                 'country_id' => $country_id,
-                'zipcode' => $result->zipCode,
+                'zipcode' => $result->zipcode,
             );
             $out['geodata'] = $out_array;
             $out['result'] = $this->success_result;
         }
         return $out;
+    }
+
+    public function get_geolocation2api($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+        $cURL = curl_init();
+
+        curl_setopt($cURL, CURLOPT_URL, $url);
+        curl_setopt($cURL, CURLOPT_HTTPGET, true);
+        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ));
+
+        return curl_exec($cURL);
     }
 
     public function update_geoip($ipdata, $user_ip) {
