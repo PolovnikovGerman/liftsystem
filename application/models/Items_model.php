@@ -1014,4 +1014,112 @@ Class Items_model extends My_Model
 
     }
 
+    public function get_relievers_itemscount($options=[]) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->from('sb_items i');
+        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->where('i.brand', 'SR');
+        if (ifset($options, 'category',0)!=0) {
+            $this->db->where('i.category_id', $options['category']);
+        }
+        if (ifset($options, 'search', '')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options, 'status', 0) > 0) {
+            if ($options['status']==1) {
+                $this->db->where('i.item_active', 1);
+            } else {
+                $this->db->where('i.item_active', 0);
+            }
+        }
+        if (ifset($options,'vendor', '')!=='') {
+            $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
+            $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+            $this->db->where('v.vendor_id', $options['vendor']);
+        }
+        if (ifset($options,'misinfo',0) > 0) {
+            if ($options['misinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings>0');
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return count($res);
+    }
+
+    public function get_relievers_itemslist($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+        // $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
+        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->from('sb_items i');
+        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->where('i.brand', 'SR');
+        if (ifset($options, 'category',0)!=0) {
+            $this->db->where('i.category_id', $options['category']);
+        }
+        if (ifset($options, 'search', '')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options, 'status', 0) > 0) {
+            if ($options['status']==1) {
+                $this->db->where('i.item_active', 1);
+            } else {
+                $this->db->where('i.item_active', 0);
+            }
+        }
+        if (ifset($options,'vendor', '')!=='') {
+            $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
+            $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+            $this->db->where('v.vendor_id', $options['vendor']);
+        }
+        if (ifset($options,'misinfo',0) > 0) {
+            if ($options['misinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings>0');
+            }
+        }
+        $order_by = ifset($options, 'order_by','i.item_id');
+        $direc = ifset($options, 'direct','asc');
+        $this->db->order_by($order_by, $direc);
+        $limit = ifset($options, 'limit', 0);
+        $offset = ifset($options, 'offset', 0);
+        if ($limit > 0) {
+            if ($offset>0) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        $out=[];
+        $numpp = $offset + 1;
+        foreach ($res as $row) {
+            $rowclass='';
+            if ($row['item_active']==0) {
+                $rowclass='inactive';
+            }
+            $row['rowclass']=$rowclass;
+            $row['status'] = $row['item_active']==1 ? 'Active' : 'Inactive';
+            if ($row['missings']==0) {
+                $row['misclas'] = '';
+                $row['misinfo'] = '-';
+            } else {
+                $row['misclas'] = 'missing';
+                if ($row['missings']==1) {
+                    $row['misinfo'] = '1 field';
+                } else {
+                    $row['misinfo'] = $row['missings'].' fields';
+                }
+            }
+            $row['numpp'] = $numpp;
+            $out[] = $row;
+            $numpp++;
+        }
+        return $out;
+    }
 }

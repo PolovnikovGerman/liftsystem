@@ -218,4 +218,61 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function relieve_itemsearch() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = '';
+            $options = [];
+            $mdata['category'] = '';
+            if (ifset($postdata, 'category', 0)>0) {
+                // Get data about category
+                $this->load->model('categories_model');
+                $catdata = $this->categories_model->get_srcategory_data($postdata['category']);
+                $error = $catdata['msg'];
+                if ($catdata['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['category'] = $catdata['data']['category_code'].' - '.$catdata['data']['category_name'];
+                }
+            }
+            if ($error=='') {
+                $options['category'] = ifset($postdata,'category',0);
+                $options['search'] = ifset($postdata,'search', '');
+                $options['status'] = ifset($postdata, 'status', 0);
+                $options['vendor'] = ifset($postdata, 'vendor', 0);
+                $options['misinfo'] = ifset($postdata, 'misinfo', 0);
+                $res = $this->items_model->get_relievers_itemscount($options);
+                $mdata['totals'] = $res;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function relieve_itemslist() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = '';
+            $options = [];
+            $options['category'] = ifset($postdata,'category',0);
+            $options['search'] = ifset($postdata,'search', '');
+            $options['status'] = ifset($postdata, 'status', 0);
+            $options['vendor'] = ifset($postdata, 'vendor', 0);
+            $options['misinfo'] = ifset($postdata, 'misinfo', 0);
+            $pagenum = ifset($postdata, 'offset', 0);
+            $limit = ifset($postdata, 'limit', 50);
+            $options['offset'] = $pagenum * $limit;
+            $options['limit'] = $limit;
+            $res = $this->items_model->get_relievers_itemslist($options);
+            if (count($res)==0) {
+                $mdata['content'] = $this->load->view('relieveritems/emptydata_table_view', [], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('relieveritems/data_table_view', ['items' => $res], TRUE);
+            }
+
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

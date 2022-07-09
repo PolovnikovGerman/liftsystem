@@ -1256,4 +1256,37 @@ class Test extends CI_Controller
         }
         echo 'Ready'.PHP_EOL;
     }
+
+    public function add_reliever_items() {
+        $this->db->where('brand','SR');
+        $this->db->delete('sb_items');
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        $categories = $this->db->get()->result_array();
+
+        $this->db->select('*');
+        $this->db->from('ts_inventory_items');
+        $this->db->order_by('inventory_type_id, item_num');
+        $items = $this->db->get()->result_array();
+        $categ = 0;
+        $numpp = 1;
+        foreach ($items as $item) {
+            if ($item['inventory_type_id']!==$categ) {
+                // New category
+                $numpp=1;
+                $categ = $item['inventory_type_id'];
+                $srcat = $categories[$categ-1];
+            }
+            $newcode = $srcat['category_code'].str_pad($numpp,3,'0', STR_PAD_LEFT);
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
+            $this->db->set('create_user', 1);
+            $this->db->set('update_user', 1);
+            $this->db->set('item_number', $newcode);
+            $this->db->set('item_name', $item['item_name']);
+            $this->db->set('category_id', $srcat['category_id']);
+            $this->db->set('brand','SR');
+            $this->db->insert('sb_items');
+            $numpp++;
+        }
+    }
 }
