@@ -125,6 +125,7 @@
 /* Sections */
 .leftpartitembody {
     margin-left: 8px;
+    width: 257px;
 }
 .sectionlabel {
     color: #000000;
@@ -134,10 +135,11 @@
     font-size: 15px;
     font-weight: 600;
     text-align: center;
+    text-transform: uppercase;
     width: 100%;
 }
 .sectionbody {
-    padding: 8px;
+    padding: 8px 8px 0 8px;
     background: #eaeaea;
     border-radius: 5px;
     width: 100%;
@@ -222,4 +224,35 @@ itemparamlabel.tags {
     height: 8px;
     margin-left: -4px;
     width: calc(100% - 9px);
+}
+.itemparamlabel.bullets {
+    width: 222px;
+    text-align: left;
+}
+.bullet_point {
+    width: 14px;
+    text-align: center;
+    font-size: 8px;
+    margin-top: 5px;
+}
+.itemparamvalue.itembullet {
+    width: 216px;
+    margin-bottom: 7px;
+}
+/* Similar */
+.relievers_similar {
+    margin-right: 8px;
+    width: 248px;
+}
+.relievers_similar .content-row {
+    margin-bottom: 8px;
+}
+.similar_numpp {
+    font-size: 14px;
+    height: 23px;
+    line-height: 23px;
+    width: 17px;
+}
+.itemparamvalue.similarname {
+    width: 215px;
 }

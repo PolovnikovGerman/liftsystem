@@ -313,10 +313,11 @@ class Dbitems extends MY_Controller
                 // Key info
                 if ($editmode==0) {
                     $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
-
+                    $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,
+                    'similar' => $similar,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
 

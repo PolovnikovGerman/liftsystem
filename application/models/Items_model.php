@@ -996,7 +996,7 @@ Class Items_model extends My_Model
             $item['profit_setup_class']=$specprice['profit_setup_class'];
             $item['profit_setup_perc']=$specprice['profit_setup_perc'];
             // Simular
-            $similar = $this->similars_model->get_similar_items($item_id);
+            $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
             $data=[
                 'item' => $item,
                 'colors' => $colors,

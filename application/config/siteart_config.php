@@ -71,5 +71,6 @@ $config['item_specialchars'] = [
 $config['specialcheckout_prices']=10;
 $config['item_colors']=55;
 $config['similar_items']=3;
+$config['relievers_similar_items']=4;
 $config['slider_images']=32;
 $config['prices_val'] = 8;

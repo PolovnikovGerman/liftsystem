@@ -1,5 +1,5 @@
 <div class="relievers_keyinfo">
-    <div class="sectionlabel">Key Info</div>
+    <div class="sectionlabel">Key Info:</div>
     <div class="sectionbody">
         <div class="content-row">
             <div class="itemparamlabel itemactive">Active:</div>
@@ -55,6 +55,17 @@
         <div class="content-row">
             <div class="itemparamlabel itemdescrip">Description:</div>
             <div class="itemparamvalue itemdescrip"><?=$item['item_description1']?></div>
+        </div>
+        <div class="content-row">
+            <div class="itemparamlabel bullets">Bullet Points:</div>
+            <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
+            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
+            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
+            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
+            <div class="itemparamvalue itembullet">Polyurethane</div>
         </div>
     </div>
 </div>
