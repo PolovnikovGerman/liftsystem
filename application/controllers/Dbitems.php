@@ -275,4 +275,55 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function relieve_item_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Item Not Send';
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata, 'item_id', -1);
+            $editmode = ifset($postdata,'editmode', 0);
+            $brand = 'SR';
+            if ($item_id>=0) {
+                if ($item_id==0) {
+                    $error = '';
+                    $editmode = 1;
+                    $data = $this->items_model->new_itemlist($brand);
+                } else {
+                    $res = $this->items_model->get_itemlist_details($item_id, $editmode);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = $res['data'];
+                    }
+                }
+            }
+            if ($error=='') {
+                // Build HTML
+                $session_id = uniq_link('15');
+                usersession($session_id, $data);
+                $header_options = [
+                    'item' => $data['item'],
+                    'session_id' => $session_id,
+                ];
+                if ($editmode==0) {
+                    $mdata['header'] = $this->load->view('relieveritems/header_view', $header_options, TRUE);
+                } else {
+                    $mdata['header'] = $this->load->view('relieveritems/header_edit', $header_options, TRUE);
+                }
+                // Key info
+                if ($editmode==0) {
+                    $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
+
+                }
+                $body_options = [
+                    'keyinfo' => $keyinfo,
+                ];
+                $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

@@ -97,6 +97,10 @@ function init_relieveritems_content() {
     $(".itemmisinfofilter").unbind('change').change(function () {
         relieveritem_search();
     });
+    $(".relivitemedit").unbind('click').click(function () {
+        var item = $(this).data('item');
+        edit_reliever_item(item);
+    })
 }
 
 function relieveritem_search() {
@@ -112,6 +116,34 @@ function relieveritem_search() {
             }
             $(".tabledatatitle").empty().html(response.data.category);
             init_relievers_items();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function edit_reliever_item(item) {
+    var params = new Array();
+    params.push({name: 'item_id', value: item});
+    params.push({name: 'brand', value: 'SR'});
+    var url = '/dbitems/relieve_item_edit';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("#itemDetailsModalLabel").empty().html(response.data.header);
+            $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#pageModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(response.data.editmode)==1) {
+                // image_slider_init();
+                $(".displayprice").css('cursor','pointer');
+                $(".template-checkbox").css('cursor','pointer');
+                $(".implintdatavalue.sellopt").css('cursor','pointer');
+                // init_vectorfile_upload();
+                // init_item_similar();
+                // init_itemlist_details_edit();
+            } else {
+                // init_itemlist_details_view();
+            }
         } else {
             show_error(response);
         }
