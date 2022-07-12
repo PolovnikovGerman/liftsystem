@@ -131,6 +131,9 @@
     margin-left: 8px;
     width: 240px;
 }
+.rightpartbody {
+    width: 770px;
+}
 .sectionlabel {
     color: #000000;
     height: 29px;
@@ -264,6 +267,9 @@ itemparamlabel.tags {
 .relievers_vendormain {
     width: 240px;
 }
+.relievers_vendormain .sectionlabel {
+    margin-top: -3px;
+}
 .vendormainbody {
     background: #b8b8cd;
     border-top-left-radius: 5px;
@@ -315,4 +321,138 @@ itemparamlabel.tags {
     height: 40px;
     margin-top: 4px;
     width: 224px;
+}
+.pricesarea {
+    width: 100%;
+}
+.relievers_vendorprices {
+    background: #b8b8cd;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 8px 0;
+    margin-top: 26px;
+}
+.vendorqtypricesarea {
+    border-right: 1px solid #9f9f9f;
+    width: 460px;
+}
+.relievers_vendorprices .content-row {
+    margin-bottom: 4px;
+}
+.vendorpricetitle {
+    text-align: right;
+    padding-right: 4px;
+    width: 53px;
+}
+.vendorqtypricetitlearea {
+    border-bottom: 1px solid #000000;
+}
+.vendorqtypricetitle {
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 5px;
+    text-align: center;
+    width: 36px;
+}
+.vendorqtypricetitle.minprice {
+    font-weight: normal;
+}
+.vendorqtypriceqty, .vendorqtypriceval {
+    border: 1px solid #6c6c7d;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 5px;
+    width: 36px;
+}
+.vendorextrapricearea {
+    border-right: 1px solid #9f9f9f;
+    padding-top: 12px;
+    padding-left: 4px;
+}
+.vendorextraprice {
+    font-size: 12px;
+    margin-right: 5px;
+    width: 34px;
+}
+.vendorextrapricetitle {
+    margin-bottom: 6px;
+    text-align: center;
+    width: 100%;
+}
+.vendorextrapricevalue {
+    border: 1px solid #6c6c7d;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+}
+.vendorextraprice.repeatsetup {
+    width: 40px;
+}
+.vendorrusharea {
+    border-right: 1px solid #9f9f9f;
+    padding-top: 5px;
+    padding-left: 4px;
+}
+.vendorstandrush {
+    width: 41px;
+}
+.vendorrush1rush, .vendorrush2rush {
+    width: 42px;
+}
+.vendorrushtitle {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+.vendorrushterm {
+    border: 1px solid #6c6c7d;
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    width: 17px;
+}
+.vendorrushtermtitle {
+    font-size: 9px;
+    padding-right: 3px;
+    padding-left: 3px;
+    line-height: 9px;
+    width: 24px;
+}
+.vendorrushprice {
+    border: 1px solid #6c6c7d;
+    height: 21px;
+    line-height: 21px;
+    width: 37px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+.vendorpantonearea {
+    margin-left: 3px;
+    width: 46px;
+    margin-right: 3px;
+}
+.vendorpantonetitle {
+    font-size: 12px;
+    margin-top: 23px;
+    margin-bottom: 4px;
+    line-height: 14px;
+    text-align: center;
+    width: 100%;
+}
+.vendorpantoneprice {
+    border: 1px solid #6c6c7d;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-left: 6px;
+    text-align: center;
+    width: 35px;
 }

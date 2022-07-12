@@ -7,6 +7,6 @@
 </div>
 <div class="rightpartbody">
     <div class="pricesarea">
-
+        <?=$vendor_prices?>
     </div>
 </div>
