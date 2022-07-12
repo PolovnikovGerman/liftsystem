@@ -125,7 +125,11 @@
 /* Sections */
 .leftpartitembody {
     margin-left: 8px;
-    width: 257px;
+    width: 249px;
+}
+.centralpartbody {
+    margin-left: 8px;
+    width: 240px;
 }
 .sectionlabel {
     color: #000000;
@@ -255,4 +259,60 @@ itemparamlabel.tags {
 }
 .itemparamvalue.similarname {
     width: 215px;
+}
+/* Vendor main */
+.relievers_vendormain {
+    width: 240px;
+}
+.vendormainbody {
+    background: #b8b8cd;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 8px 0 0 8px;
+    width: 100%;
+}
+.vendormainbody .content-row {
+    margin-bottom: 8px;
+}
+.itemparamlabel.vendorname {
+    padding-right: 4px;
+    width: 68px;
+}
+.itemparamvalue.vendorname {
+    width: 162px;
+}
+.itemparamlabel.vendosrship {
+    padding-right: 4px;
+    width: 70px;
+}
+.itemparamvalue.vendorcountry {
+    width: 59px;
+}
+.itemparamvalue.vendorzip {
+    margin-left: 7px;
+    width: 47px;
+}
+.vendorshipstate {
+    margin-left: 7px;
+    height: 23px;
+    line-height: 23px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.itemparamlabel.vedorponote {
+    padding-right: 28px;
+    width: 100px;
+}
+.itemparamlabel.vendorinterval {
+    padding-right: 4px;
+    width: 95px;
+}
+.itemparamvalue.vendorinterval {
+    width: 28px;
+}
+.itemparamvalue.vendorponote {
+    height: 40px;
+    margin-top: 4px;
+    width: 224px;
 }
