@@ -8945,15 +8945,16 @@ Class Leadorder_model extends My_Model {
             $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
+        $totalbgn = $pdf->GetY();
         if (!empty($options['invoice_message'])) {
-            $pdf->SetXY(5,228);
+            $pdf->SetXY(5,$totalbgn+5.5);
             $pdf->SetFont('','',13);
             // $pdf->Cell(105, 0, $options['invoice_message'],1);
-            $pdf->MultiCell(100, 6, $options['invoice_message'], 1, 'L', FALSE);
+            $pdf->MultiCell(75, 6, $options['invoice_message'], 1, 'L', FALSE);
 
         }
         // Totals
-        $totalbgn = $pdf->GetY();
+        // $totalbgn = $pdf->GetY();
         $invtotalXPos = 90;
         $invtotalYPos = $totalbgn+5;
         $invtotalWidth = 115;
