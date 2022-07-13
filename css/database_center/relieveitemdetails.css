@@ -655,3 +655,11 @@ itemparamlabel.tags {
     padding-left: 10px;
     width: 46px;
 }
+/* Item Images */
+.itemmainimagearea {
+    margin-right: 6px;
+    width: 67px;
+}
+.itemmainimagetitle {
+    font-size: 12px;
+}
