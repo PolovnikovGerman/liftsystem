@@ -342,7 +342,7 @@ itemparamlabel.tags {
 .vendorpricetitle {
     text-align: right;
     padding-right: 4px;
-    width: 53px;
+    width: 49px;
 }
 .vendorqtypricetitlearea {
     border-bottom: 1px solid #000000;
@@ -455,4 +455,201 @@ itemparamlabel.tags {
     margin-left: 6px;
     text-align: center;
     width: 35px;
+}
+/*Pricing */
+.relievers_itemprices {
+    margin-left: 8px;
+}
+.relievers_itemprices .sectionlabel {
+    width: 424px;
+}
+.itemprice_legend {
+    margin-right: 5px;
+}
+.itemprice_legend span {
+    color: #ffffff;
+    font-size: 11px;
+    height: 29px;
+    line-height: 29px;
+}
+.relievers_itemprices .sectionbody {
+    padding: 8px 0 8px 2px;
+}
+.itempricearea {
+    border-right: 1px solid #626262;
+    padding-top: 14px;
+    width: 457px;
+}
+.itempricearea .content-row {
+    margin-bottom: 5px;
+}
+.itemprice_title {
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    padding-right: 5px;
+    text-align: right;
+    width: 47px;
+}
+.itemprice_qtyarea {
+    border-bottom: 1px solid #363636;
+}
+.itemprice_qty {
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_pub {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_discount {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_discount_separat {
+    border-top: 1px solid #555555;
+    height: 3px;
+    margin-top: 10px;
+    width: 79%;
+}
+.itemprice_new {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_extraarea {
+    border-right: 1px solid #626262;
+    padding-left: 5px;
+    width: 134px;
+}
+.itemprice_extra {
+    width: 35px;
+    margin-right: 5px;
+}
+.itemprice_extra.repeatsetup {
+    width: 39px;
+    margin-left: 3px;
+}
+.itemprice_extratitle {
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.itemprice_extraprice, .itemprice_extradisc, .itemprice_extrasale {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_rusharea {
+    border-right: 1px solid #626262;
+    padding: 17px 0 0 22px;
+    width: 112px;
+}
+.itemprice_rush {
+    margin-right: 5px;
+    width: 39px;
+}
+.itemprice_rushtitle {
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.itemprice_rushprice, .itemprice_rushtdisc, .itemprice_rushsale {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 39px;
+}
+.itemprice_pantonearea {
+    padding-left: 3px;
+    width: 46px;
+}
+.itemprice_pantonetitle {
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.itemprice_pantoneprice, .itemprice_pantonedisc, .itemprice_pantonesale {
+    border: 1px solid #9f9f9f;
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-left: 7px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_profit_separator {
+    border-top: 3px solid #686868;
+    height: 5px;
+    margin-left: 47px;
+    margin-top: 5px;
+    width: 702px;
+}
+.itemprice_profitqtyarea {
+    width: 457px;
+}
+.itemprice_profittitle {
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    padding-right: 5px;
+    text-align: right;
+    width: 47px;
+}
+.itemprice_profitval, .itemprice_profitperc  {
+    font-size: 12px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    width: 35px;
+}
+.itemprice_profitextraarea {
+    padding-left: 6px;
+    width: 134px;
+}
+.itemprice_profitrusharea {
+    padding-left: 24px;
+    width: 112px;
+}
+.itemprice_profitrusharea .itemprice_profitval, .itemprice_profitrusharea .itemprice_profitperc {
+    width: 39px;
+}
+.itemprice_profitpantonearea {
+    padding-left: 10px;
+    width: 46px;
 }

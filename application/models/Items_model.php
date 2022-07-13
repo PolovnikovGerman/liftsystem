@@ -721,7 +721,12 @@ Class Items_model extends My_Model
             'vendor_zipcode' => '',
         ];
         $vprices = [];
-        for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+        if ($brand=='SR') {
+            $pricesmax = $this->config->item('relievers_prices_val');
+        } else {
+            $pricesmax = $this->config->item('prices_val');
+        }
+        for ($i=1; $i<=$pricesmax-1; $i++) {
             $vprices[] = [
                 'vendorprice_id' => $i*-1,
                 'vendor_item_id' => -1,
@@ -753,7 +758,7 @@ Class Items_model extends My_Model
         }
         $imprints = [];
         $prices = [];
-        for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+        for ($i=1; $i<=$pricesmax; $i++) {
             $prices[] = [
                 'promo_price_id' => $i * (-1),
                 'item_id' => -1,
@@ -837,6 +842,11 @@ Class Items_model extends My_Model
                 }
             }
             // Vendor Info
+            if ($item['brand']=='SR') {
+                $pricesmax = $this->config->item('relievers_prices_val');
+            } else {
+                $pricesmax = $this->config->item('prices_val');
+            }
             $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
             $vprices = [];
             if (ifset($vitem,'vendor_item_id', 0 )==0) {
@@ -853,7 +863,7 @@ Class Items_model extends My_Model
                     'vendor_item_zipcode' => '',
                     'printshop_item_id' => '',
                 ];
-                for ($i=1; $i<=$this->config->item('prices_val'); $i++) {
+                for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
                         'vendorprice_id' => $i*-1,
                         'vendor_item_id' => -1,
@@ -863,7 +873,6 @@ Class Items_model extends My_Model
                     ];
                 }
                 $vendor = [
-
                 ];
             } else {
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
@@ -878,7 +887,7 @@ Class Items_model extends My_Model
                     ];
                     $numpp++;
                 }
-                for ($i=$numpp; $i<=$this->config->item('prices_val'); $i++) {
+                for ($i=$numpp; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
                         'vendorprice_id' => $i*-1,
                         'vendor_item_id' => $vitem['vendor_item_id'],
@@ -963,9 +972,9 @@ Class Items_model extends My_Model
                     break;
                 }
             }
-            if ($numpp<$this->config->item('prices_val')) {
+            if ($numpp < $pricesmax) {
                 $idx = 1;
-                for ($i=$numpp; $i<=$this->config->item('prices_val'); $i++) {
+                for ($i=$numpp; $i<=$pricesmax; $i++) {
                     $prices[] = [
                         'promo_price_id' => $idx * (-1),
                         'item_id' => $item_id,

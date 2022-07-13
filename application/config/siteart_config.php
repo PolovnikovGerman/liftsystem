@@ -74,3 +74,4 @@ $config['similar_items']=3;
 $config['relievers_similar_items']=4;
 $config['slider_images']=32;
 $config['prices_val'] = 8;
+$config['relievers_prices_val'] = 10;

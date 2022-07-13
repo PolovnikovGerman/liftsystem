@@ -8,5 +8,6 @@
 <div class="rightpartbody">
     <div class="pricesarea">
         <?=$vendor_prices?>
+        <?=$itemprices?>
     </div>
 </div>
