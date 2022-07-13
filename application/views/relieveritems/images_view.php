@@ -16,11 +16,13 @@
         </div>
         <div class="content-row">
             <div class="itemotherimages">Add’l General Images:</div>
-            <div class="itemotherimagessrc">&nbsp;</div>
+            <div class="itemotherimagesarea">
+                <?=$otherimages?>
+            </div>
         </div>
         <div class="content-row">
             <div class="specbannertitle">Special Top Banner:</div>
-            <div class="specbannersrc">&nbsp;</div>
+            <div class="specbannersrc">no image</div>
         </div>
         <div class="content-row">
             <div class="itemimages_separator">&nbsp;</div>
@@ -28,8 +30,14 @@
         <div class="content-row">
             <div class="itemoptionstitle">OPTIONS:</div>
             <div class="itemoptionsvalue">Colors</div>
-            <div class=""
+            <div class="itemoptioncheck">
+                <i class="fa fa-check-square"></i>
+            </div>
+            <div class="itemoptionchecklabel">Require Images</div>
         </div>
-
+        <div class="content-row">
+            <div class="itemimages_separator">&nbsp;</div>
+        </div>
+        <div class="itemoptionsarea"><?=$optionsimg?></div>
     </div>
 </div>

@@ -4,6 +4,7 @@
 </div>
 <div class="centralpartbody">
     <?=$vendor_main?>
+    <?=$itemimages?>
 </div>
 <div class="rightpartbody">
     <div class="pricesarea">
