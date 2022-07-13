@@ -317,6 +317,7 @@ class Dbitems extends MY_Controller
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',[],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item']],TRUE);
                     $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,

@@ -473,12 +473,12 @@ itemparamlabel.tags {
     line-height: 29px;
 }
 .relievers_itemprices .sectionbody {
-    padding: 8px 0 8px 2px;
+    padding: 5px 0 8px 2px;
 }
 .itempricearea {
     border-right: 1px solid #626262;
-    padding-top: 14px;
-    width: 457px;
+    padding-top: 3px;
+    width: 452px;
 }
 .itempricearea .content-row {
     margin-bottom: 5px;
@@ -541,12 +541,12 @@ itemparamlabel.tags {
 }
 .itemprice_extraarea {
     border-right: 1px solid #626262;
-    padding-left: 5px;
-    width: 134px;
+    padding-left: 3px;
+    width: 130px;
 }
 .itemprice_extra {
     width: 35px;
-    margin-right: 5px;
+    margin-right: 4px;
 }
 .itemprice_extra.repeatsetup {
     width: 39px;
@@ -554,6 +554,7 @@ itemparamlabel.tags {
 }
 .itemprice_extratitle {
     font-size: 12px;
+    line-height: 12px;
     margin-bottom: 5px;
     text-align: center;
 }
@@ -569,8 +570,8 @@ itemparamlabel.tags {
 }
 .itemprice_rusharea {
     border-right: 1px solid #626262;
-    padding: 17px 0 0 22px;
-    width: 112px;
+    padding: 6px 0 0 38px;
+    width: 127px;
 }
 .itemprice_rush {
     margin-right: 5px;
@@ -597,6 +598,7 @@ itemparamlabel.tags {
 }
 .itemprice_pantonetitle {
     font-size: 12px;
+    line-height: 12px;
     margin-bottom: 5px;
     text-align: center;
 }
@@ -606,7 +608,7 @@ itemparamlabel.tags {
     font-weight: 600;
     height: 20px;
     line-height: 20px;
-    margin-left: 7px;
+    margin-left: 5px;
     margin-bottom: 5px;
     text-align: center;
     width: 35px;
