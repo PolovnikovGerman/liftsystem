@@ -252,6 +252,10 @@ itemparamlabel.tags {
     margin-right: 8px;
     width: 248px;
 }
+.relievers_similar .sectionbody {
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
 .relievers_similar .content-row {
     margin-bottom: 8px;
 }
@@ -276,7 +280,7 @@ itemparamlabel.tags {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding: 8px 0 0 8px;
+    padding: 8px 0 8px 8px;
     width: 100%;
 }
 .vendormainbody .content-row {
@@ -789,7 +793,6 @@ itemparamlabel.tags {
     width: 26px;
 }
 .itemoptionimagelabel {
-    border: 1px solid #777777;
     font-size: 11px;
     font-weight: 600;
     height: 20px;
@@ -807,11 +810,93 @@ itemparamlabel.tags {
 }
 /* Imprint */
 .relievers_customisation {
-    width: 338px;
+    width: 324px;
     margin-right: 8px;
+    margin-left: 8px;
 }
 .relievers_customisation .sectionbody {
     padding: 10px 0 0 0;
+}
+.itemvendorfilebtn {
+    background: url(/img/itemdetails/vector_file_btn.png) no-repeat;
+    font-size: 11px;
+    font-weight: 600;
+    height: 38px;
+    margin-left: 10px;
+    padding: 4px 17px;
+    text-align: center;
+    cursor: pointer;
+    width: 71px;
+}
+.custommethodarea {
+    margin-left: 42px;
+    width: 87px;
+}
+.itemparamvalue.custommethod {
+    width: 87px;
+}
+.itemparamlabel.custommethod, .itemparamlabel.printcolors {
+    height: 16px;
+    line-height: 16px;
+    text-align: left;
+}
+.customprinrcolorsarea {
+    margin-left: 20px;
+    width: 87px;
+}
+.itemparamvalue.printcolors {
+    width: 87px;
+}
+.printlocationstable {
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    margin-top: 8px;
+    width: 100%;
+}
+.printlocationstable div {
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    font-size: 12px;
+}
+.locationnametitle {
+    width: 160px;
+}
+.locationplacetitle {
+    width: 120px;
+}
+.locationviewtitle {
+    width: 42px;
+}
+.printlocationsdata {
+    padding-top: 3px;
+    margin-bottom: 8px;
+    height: 244px;
+}
+.locationsdatarow {
+    width: 100%;
+}
+.locationsdatarow div {
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.locationname {
+    padding-left: 8px;
+    width: 160px;
+}
+.locationplace {
+    padding-left: 8px;
+    width: 140px;
+}
+.locationview {
+    text-align: center;
+    font-size: 16px;
+    font-weight: normal;
 }
 /* Meta */
 .relievers_metasearch {
@@ -853,7 +938,7 @@ itemparamlabel.tags {
     background: #282828;
     position: relative;
     top: -215px;
-    left: 562px;
+    left: 215px;
     padding-left: 8px;
 }
 .relievers_shipping {
