@@ -324,6 +324,9 @@ class Dbitems extends MY_Controller
                         'optionsimg' => $optionsimg,
                     ];
                     $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
+                    $customview = $this->load->view('relieveritems/itemcustom_view',[], TRUE);
+                    $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item']], TRUE);
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,
@@ -332,6 +335,9 @@ class Dbitems extends MY_Controller
                     'vendor_prices' => $vendor_prices,
                     'itemprices' => $itemprices,
                     'itemimages' => $itemimages,
+                    'customview' => $customview,
+                    'metaview' => $metaview,
+                    'shipping' => $shippingview,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
 

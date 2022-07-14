@@ -11,4 +11,7 @@
         <?=$vendor_prices?>
         <?=$itemprices?>
     </div>
+    <?=$customview?>
+    <?=$metaview?>
+    <div class="itemshippingarea"><?=$shipping?></div>
 </div>

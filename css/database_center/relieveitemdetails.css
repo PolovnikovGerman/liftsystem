@@ -132,6 +132,7 @@
     width: 240px;
 }
 .rightpartbody {
+    max-height: 680px;
     width: 770px;
 }
 .sectionlabel {
@@ -792,6 +793,7 @@ itemparamlabel.tags {
     font-size: 11px;
     font-weight: 600;
     height: 20px;
+    line-height: 20px;
     width: 61px;
     padding-left: 4px;
     white-space: nowrap;
@@ -802,4 +804,135 @@ itemparamlabel.tags {
 }
 .itemoptionimagelabel:last-child {
     margin-right: 0px;
+}
+/* Imprint */
+.relievers_customisation {
+    width: 338px;
+    margin-right: 8px;
+}
+.relievers_customisation .sectionbody {
+    padding: 10px 0 0 0;
+}
+/* Meta */
+.relievers_metasearch {
+    width: 424px
+}
+.itemparamvalue.metatitle {
+    margin-bottom: 8px;
+    width: 404px;
+}
+.itemparamvalue.metadescription {
+    height: 57px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    width: 203px;
+}
+.itemparamlabel.itemurl {
+    margin-left: 136px;
+}
+.itemparamvalue.itemurl {
+    margin-left: 12px;
+    width: 192px;
+}
+.itemparamvalue.metakeywords {
+    clear: both;
+    height: 63px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    width: 203px;
+}
+.itemparamvalue.itemkeywords {
+    clear: both;
+    height: 63px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    width: 203px;
+}
+/* Shipping */
+.itemshippingarea {
+    background: #282828;
+    position: relative;
+    top: -215px;
+    left: 562px;
+    padding-left: 8px;
+}
+.relievers_shipping {
+    width: 203px;
+}
+.relievers_shipping .sectionbody {
+    padding: 8px 6px 6px 6px;
+}
+.itemparamlabel.itemweigth {
+    margin-left: 36px;
+    margin-right: 3px;
+}
+.itemparamvalue.itemweigth {
+    width: 40px;
+    margin-right: 3px;
+}
+.itemboxarea {
+    width: 64px;
+    margin-bottom: 9px;
+}
+.itemparamlabel.boxnametitle {
+    width: 28px;
+    text-align: left;
+}
+.itemboxdataarea {
+    margin-top: 4px;
+    width: 100%;
+    border-right: 2px solid #464646;
+}
+.itemboxdataarea .content-row {
+    margin-bottom: 7px;
+}
+.itemparamlabel.boxname {
+    width: 18px;
+    text-align: center;
+}
+.itemparamvalue.boxqty {
+    padding-left: 0;
+    text-align: center;
+    width: 37px;
+}
+.itemdimesionsarea {
+    width: 123px;
+}
+.itemparamlabel.dimensiontitle {
+    text-align: center;
+    width: 100%;
+}
+.itemdimensionsdataarea {
+    margin-top: 4px;
+    padding-left: 8px;
+    width: 100%;
+}
+.itemdimensionsdataarea .content-row {
+    margin-bottom: 7px;
+}
+.itemparamvalue.boxwidth, .itemparamvalue.boxdepth, .itemparamvalue.boxheight {
+    padding-left: 0;
+    text-align: center;
+    width: 20px;
+}
+.itemparamlabel.boxwidth, .itemparamlabel.boxdepth, .itemparamlabel.boxheight {
+    text-align: center;
+    width: 18px;
+}
+.itemparamlabel.specialeach {
+    line-height: 12px;
+    margin-right: 3px;
+    width: 42px;
+}
+.itemparamvalue.specialeach {
+    margin-right: 10px;
+    width: 36px;
+}
+.itemparamlabel.specialorder {
+    line-height: 12px;
+    margin-right: 3px;
+    width: 56px;
+}
+.itemparamvalue.specialorder {
+    width: 39px;
 }
