@@ -1400,11 +1400,13 @@ span.taxemptyview {
     margin-left: 5px;
 }
 .block_6_historytext {
-    /* height: 417px; */
     height: 357px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
+}
+.block_6_historytext.previewmode {
+    height: 527px;
 }
 .history_day {
     height: 18px;
