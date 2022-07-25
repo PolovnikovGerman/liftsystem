@@ -7873,7 +7873,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
 
         $this->load->model('shipping_model');
-        $this->load->helper(array('dompdf', 'file'));
+        // $this->load->helper(array('dompdf', 'file'));
         $order=$leadorder['order'];
         $payments_details = [];
         foreach ($leadorder['payments'] as $prow) {
@@ -8938,8 +8938,12 @@ Class Leadorder_model extends My_Model {
                 $pdf->SetTextColor(0,0,0);
             }
             $pdf->SetX(5);
+//            $rowY = $pdf->GetY();
+//            $pdf->MultiCell($tableWidths[0],9,$detail['item_num'],0,'C', $fillcell);
+//            $pdf->SetXY(5+$tableWidths[0], $rowY);
+//            $pdf->MultiCell($tableWidths[1],9, $detail['item_description'],0, 'L', $fillcell);
             $pdf->Cell($tableWidths[0], 9, $detail['item_num'], 0, 0,'C', $fillcell);
-            $pdf->Cell($tableWidths[1], 9, $detail['item_description'],0,0,'L',$fillcell);
+            $pdf->Cell($tableWidths[1], 9, substr($detail['item_description'],0,45),0,0,'L',$fillcell);
             $pdf->Cell($tableWidths[2], 9, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
             $pdf->Cell($tableWidths[3], 9, $detail['item_price'],0,0,'C', $fillcell);
             $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
