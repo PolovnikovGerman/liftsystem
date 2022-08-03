@@ -2798,8 +2798,12 @@ Class Leadorder_model extends My_Model {
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
             // Make Current row Amount=0, Add Charge
-            $this->db->set('amount',0);
             $this->db->where('order_payment_id', $row['order_payment_id']);
+            $this->db->set('amount',0);
+            $this->db->set('cardnum', $charge['cardnum']);
+            $this->db->set('exp_month', $pay_options['exp_month']);
+            $this->db->set('exp_year', $pay_options['exp_year']);
+            $this->db->set('cardcode', $pay_options['cardcode']);
             $this->db->update('ts_order_payments');
             // Batch data
             $paymethod='';
@@ -2833,6 +2837,8 @@ Class Leadorder_model extends My_Model {
             $order['cc_fee']=$fee;
             $leadorder['order']=$order;
             $leadorder['payments']=$payments;
+            $newcharges = $this->get_order_charges($order_id);
+            $leadorder['charges'] = $newcharges;
             usersession($ordersession, $leadorder);
             $out['result']=$this->success_result;
         }
