@@ -2463,6 +2463,12 @@ Class Orders_model extends MY_Model
         $this->db->group_by('order_id');
         $balancesql = $this->db->get_compiled_select();
 
+        $this->db->select('i.order_id, group_concat(toi.item_description) as itemdescr');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
+        $this->db->group_by('i.order_id');
+        $itemdatesql = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand, o.order_num, o.customer_name, o.customer_email, o.revenue,
             o.shipping,o.is_shipping, o.tax, o.cc_fee, o.order_cog, o.profit, o.profit_perc, o.is_canceled,
             o.reason, itm.item_name, o.item_id, o.order_items, finance_order_amountsum(o.order_id) as cnt_amnt',FALSE);
@@ -2481,8 +2487,8 @@ Class Orders_model extends MY_Model
         }
         if (count($filtr)>0) {
             if (isset($filtr['search']) && $filtr['search']) {
-                // $this->db->like("concat(ucase(customer_name),' ',order_num,' ',revenue,' ',ucase(o.order_items)) ",strtoupper($filtr['search']));
-                $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
+                $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+                $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('order_cog is null');
