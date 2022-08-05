@@ -2694,6 +2694,7 @@ Class Leadorder_model extends My_Model {
             return $out;
         }
         $charge=$charges[$chridx];
+        $charge['amount'] = floatval(str_replace(',','',$charge['amount']));
         $billing=$leadorder['billing'];
         $order_data = $leadorder['order'];
         $cardnum=  str_replace('-', '', $charge['cardnum']);
@@ -2805,7 +2806,7 @@ Class Leadorder_model extends My_Model {
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
             // Make Current row Amount=0, Add Charge
-            $this->db->where('order_payment_id', $row['order_payment_id']);
+            $this->db->where('order_payment_id', $charge['order_payment_id']);
             $this->db->set('amount',0);
             $this->db->set('cardnum', $charge['cardnum']);
             $this->db->set('exp_month', $pay_options['exp_month']);
@@ -2823,7 +2824,7 @@ Class Leadorder_model extends My_Model {
                 'batch_id'=>0,
                 'batch_date'=>time(),
                 'paymethod'=>$paymethod,
-                'amount'=>$row['amount'],
+                'amount'=>$charge['amount'],
                 'batch_note'=>NULL,
                 'order_id'=>$order_id,
                 'batch_received'=>1,
@@ -5067,7 +5068,7 @@ Class Leadorder_model extends My_Model {
     private function _save_order_chargedata($charges, $order_id, $user_id) {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         foreach ($charges as $row) {
-            $this->db->set('amount', floatval($row['amount']));
+            $this->db->set('amount', floatval(str_replace(',','',$row['amount'])));
             $this->db->set('cardnum', $row['cardnum']);
             $this->db->set('exp_month', intval($row['exp_month']));
             $this->db->set('exp_year', intval($row['exp_year']));
@@ -8569,7 +8570,7 @@ Class Leadorder_model extends My_Model {
         $chargenum=0;
         foreach ($charges as $chrow) {
             if ($chrow['delflag']==0 && $chrow['autopay']==1) {
-                $chargesum+=$chrow['amount'];
+                $chargesum+=floatval(str_replace(',','',$chrow['amount']));
                 $chargenum+=1;
             }
         }
