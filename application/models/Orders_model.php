@@ -49,6 +49,12 @@ Class Orders_model extends MY_Model
     }
 
     public function get_count_orders($filtr=array()) {
+        $this->db->select('i.order_id, group_concat(toi.item_description) as itemdescr');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
+        $this->db->group_by('i.order_id');
+        $itemdatesql = $this->db->get_compiled_select();
+
         $this->db->select('count(o.order_id) as cnt',FALSE);
         $this->db->from('ts_orders o');
         if (isset($filtr['filter']) && $filtr['filter']==9) {
@@ -92,8 +98,8 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.profit_perc is NULL');
             }
             if (isset($filtr['search']) && $filtr['search']) {
-                // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ',o.revenue) ",strtoupper($filtr['search']));
-                $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
+                $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+                $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('o.order_cog is null');

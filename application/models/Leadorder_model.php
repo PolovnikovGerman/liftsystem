@@ -96,6 +96,12 @@ Class Leadorder_model extends My_Model {
 
     public function get_leadorders($options) {
         $item_dbtable='sb_items';
+        $this->db->select('i.order_id, group_concat(toi.item_description) as itemdescr');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
+        $this->db->group_by('i.order_id');
+        $itemdatesql = $this->db->get_compiled_select();
+
         $amountcnt="select order_id, sum(amount_sum) as cnt_amnt from ts_order_amounts where amount_sum>0 group by order_id";
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
@@ -124,8 +130,9 @@ Class Leadorder_model extends My_Model {
             $this->db->where('o.order_usr_repic',$options['order_usr_repic']);
         }
         if (isset($options['search'])) {
-            // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ',coalesce(o.order_confirmation,'')) ",strtoupper($options['search']));
-            $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), o.revenue ) ",strtoupper($options['search']));
+            $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+            // $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), o.revenue ) ",strtoupper($options['search']));
+            $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($options['search']));
         }
         if (isset($options['begin'])) {
             $this->db->where('o.order_date >= ',$options['begin']);
