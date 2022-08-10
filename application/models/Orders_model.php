@@ -7078,7 +7078,6 @@ Class Orders_model extends MY_Model
                         $artdata.=$artadd;
                     }
                 }
-                echo 'ID '.$basket_item['basket_item_id'].' ART '.$artdata;
                 $rushprice = 0;
                 $rushdays = 0;
                 $rushdate = '';
@@ -7145,6 +7144,7 @@ Class Orders_model extends MY_Model
                 $last_upd = date('m/d/Y H:i:s', strtotime($logdat['change_time']));
                 $last_fld = $logdat['basket_parameter'];
             }
+            echo 'Basket '.$row['basket_id'].' ART '.$artdata.PHP_EOL;
             $out_dat[] = [
                 'checkout_start' => date('m/d/Y H:i:s', strtotime($row['created_time'])),
                 'last_action' => $last_upd,
