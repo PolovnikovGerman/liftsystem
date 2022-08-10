@@ -32,6 +32,7 @@ Class Orders_model extends MY_Model
 
     private $art_sendlater = "I'll send it later";
     private $art_sendbefore = "I already sent it";
+    private $art_repeat = 'Repeat Past Order';
 
     private $accrec_terms = 'Terms';
     private $accrec_willupd = 'Will Update';
@@ -6997,7 +6998,6 @@ Class Orders_model extends MY_Model
         $out_attach = [];
         $this->load->model('shipping_model');
         foreach ($rows as $row) {
-            $artdata = 'No ART'; // Temporary
             $user = $row['contact_person'];
             $user_contact = '';
             if (!empty($row['contact_email'])) {
@@ -7043,6 +7043,40 @@ Class Orders_model extends MY_Model
                     $imprint = 'Email Later';
                 } elseif ($basket_item['imprint_type']==3) {
                     $imprint = 'Repeat Past Order';
+                }
+                $artdata = '';
+                if ($basket_item['imprint_type']==0) {
+                    $artdata = 'No Art';
+                } else {
+                    $this->db->select('l.*, sii.item_inprint_location');
+                    $this->db->from('sb_basket_locations l');
+                    $this->db->join('sb_item_inprints sii','l.item_inprint_id = sii.item_inprint_id');
+                    $this->db->where('l.basket_item_id', $basket_item['basket_item_id']);
+                    $arts = $this->db->get()->result_array();
+                    $art_order = 1;
+                    foreach ($arts as $artrow) {
+                        $artadd = 'Imprint Location ' . $art_order . ' ';
+                        if ($basket_item['imprint_type'] == 2) {
+                            $artadd.=$this->art_sendlater;
+                        } elseif ($basket_item['imprint_type'] == 3) {
+                            $artadd.=$this->art_repeat;
+                        } else {
+                            $artadd.=$artrow['item_inprint_location'] . PHP_EOL;
+                            if (ifset($artrow, 'logo_url','')) {
+                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url'] . PHP_EOL;
+                                array_push($out_attach, $artrow['logo_url']);
+                            }
+                            if (!empty($artrow['logo_txt'])) {
+                                $artadd.=' User Text ' . $artrow['logo_txt'] . PHP_EOL;
+                            }
+                            $colors = $artrow['color1'].(!empty($artrow['color2']) ? ', '.$artrow['color2'] : '');
+                            if (!empty($colors)) {
+                                $artadd.=' Colors - ' . $colors . PHP_EOL;
+                            }
+                        }
+                        $art_order++;
+                        $artdata.=$artadd;
+                    }
                 }
                 $rushprice = 0;
                 $rushdays = 0;
