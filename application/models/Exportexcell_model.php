@@ -2,6 +2,7 @@
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell;
 
 class Exportexcell_model extends CI_Model
 {
@@ -45,6 +46,7 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('E2', 'Quantity');
         $sheet->setCellValue('F2', 'Cost Ea');
         $sheet->setCellValue('G2', 'Total Cost');
+
         $j=3;
         foreach ($options['res'] as $row) {
             $price=round($row['price'],3);
@@ -257,11 +259,14 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('Q' . $i, ($row['shipping']=='' ? '' : number_format($row['shipping'],2,',','')));
                 $sheet->setCellValue('R' . $i, ($row['total']=='' ? '' : number_format($row['total'],2,',','')));
                 $sheet->setCellValue('S' . $i, $row['rushdate']);
-                $sheet->setCellValue('T' . $i, $row['art']);
+                // $sheet->setCellValue('T' . $i, $row['art']);
+
+                $sheet->setCellValueExplicit('T'.$i, $row['art'],Cell\DataType::TYPE_STRING);
                 $sheet->setCellValue('U' . $i, $row['user_ip']);
                 $sheet->setCellValue('V'  .$i, $row['user_location']);
                 $sheet->setCellValue('W'  .$i, $row['cc_details']);
                 $sheet->setCellValue('X'  .$i, $row['last_field']);
+
                 $i++;
             }
             $writer = new Xlsx($spreadsheet); // instantiate Xlsx
