@@ -4,6 +4,7 @@
     $tax = 1; ?>
     <?php foreach ($data as $row) { ?>
         <div class="line_table_netprofit <?= ($nrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ) ?>" id="nerpr<?= $row['datord'] ?>">
+            <div class="cell_week_runincl" data-weekincl="<?=$row['profit_id']?>"><?= $row['run_include'] ?></div>
             <div class="tax_quarter <?= $row['tax_quarter_class'] ?>"><?= $row['tax_quarter']?></div>
             <div class="cell_week2 <?=$brand=='ALL' ? '' : 'editdata'?> <?=$row['datarowclass']?>" data-profit="<?=$row['profit_id'] ?>"><?= $row['week'] ?></div>
             <div class="cell_sales2 <?=$row['datarowclass']?>" <?= ($row['pcssold'] == 0 ? '' : 'data-content="# Pcs Sold ' . QTYOutput($row['pcssold']) . '"') ?>><?= $row['sales'] ?></div>
@@ -29,6 +30,7 @@
             <div class="cell_for_saved2 <?= $row['saved_class'] ?> <?=$row['datarowclass']?>"><?= $row['out_saved'] ?></div>
             <div class="cell_for_owners2 <?= $row['out_od_class'] ?> <?=$row['datarowclass']?>"><?= $row['out_od'] ?></div>
             <div class="cell_for_debt2 <?= $row['debt_class'] ?> <?=$row['datarowclass']?>"><?= $row['out_debt'] ?></div>
+            <div class="cell_week_check <?=$row['weekcheck_class']?>" data-weekcheck="<?=$row['profit_id']?>"><?= $row['week_check'] ?></div>
         </div>
         <?php $nrow++; ?>
     <?php } ?>

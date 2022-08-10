@@ -168,6 +168,7 @@ class Balances_model extends My_Model
         $this->db->select('sum(np.profit_owners*np.debtinclude) as profit_owners, sum(np.profit_saved*np.debtinclude) as profit_saved, sum(np.od2*np.debtinclude) as od2');
         $this->db->from('netprofit_dat np');
         $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
+        $this->db->where('np.runinclude', 1);
         if ($type=='week') {
             $this->db->where('nd.profit_month is NULL');
         } else {
@@ -292,7 +293,7 @@ class Balances_model extends My_Model
         $this->db->select('netprofit_totalcost(nd.datebgn, nd.dateend,1,\''.$brand.'\') as totalcost');
         $this->db->select('netprofit_netprofit(nd.datebgn, nd.dateend,1,\''.$brand.'\') as netprofit');
         $this->db->select('netprofit_qtysold(nd.datebgn, nd.dateend,\''.$brand.'\') as pcssold');
-        $this->db->select('min(np.debtinclude) as debtinclude');
+        $this->db->select('min(np.debtinclude) as debtinclude, min(runinclude) as runinclude, min(weekcheck) as weekcheck');
         $this->db->from('netprofit_dat np');
         $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
         $this->db->where('nd.datebgn >= ',$datebgn);
@@ -392,6 +393,18 @@ class Balances_model extends My_Model
             $saved=  floatval($row['profit_saved']);
             $od2=floatval($row['od2']);
             $debtinclude=intval($row['debtinclude']);
+            $runinclude = intval($row['runinclude']);
+            $row['run_include']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+            if ($runinclude==1) {
+                $row['run_include']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+            }
+            // weekcheck
+            $row['week_check'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+            $row['weekcheck_class'] = '';
+            if ($row['weekcheck']==1) {
+                $row['week_check']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                $row['weekcheck_class']='included';
+            }
             if($radio == "amount") {
                 if ($operating<0) {
                     $row['out_operating']=MoneyOutput(abs($operating),0);
@@ -1117,7 +1130,9 @@ class Balances_model extends My_Model
         $this->db->select('profit_id,debtinclude');
         $this->db->from('netprofit_dat');
         $this->db->where('profit_id', $profit_id);
-        $this->db->where('brand', $brand);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if (isset($res['profit_id'])) {
             // Success - Profit data found
@@ -1129,7 +1144,9 @@ class Balances_model extends My_Model
                 $outinclude='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
             }
             $this->db->where('profit_id', $profit_id);
-            $this->db->where('brand', $brand);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
             $this->db->set('debtinclude', $newdata);
             $this->db->update('netprofit_dat');
             $out['debincl']=$outinclude;
@@ -1144,6 +1161,74 @@ class Balances_model extends My_Model
         return $out;
     }
 
+    public function include_netprofit_week($profit_id, $brand, $type) {
+        $out=array('result'=>$this->error_result,'msg'=>'Period Not Found');
+        $this->db->select('profit_id, runinclude');
+        $this->db->from('netprofit_dat');
+        $this->db->where('profit_id', $profit_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+        if (isset($res['profit_id'])) {
+            // Success - Profit data found
+            $out['result']=$this->success_result;
+            $newdata=0;
+            $outinclude='<i class="fa fa-square-o" aria-hidden="true"></i>';
+            if ($res['runinclude']==0) {
+                $newdata=1;
+                $outinclude='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+            }
+            $this->db->where('profit_id', $profit_id);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $this->db->set('runinclude', $newdata);
+            $this->db->update('netprofit_dat');
+            $out['runincl']=$outinclude;
+            /* Get data about Netprofit  */
+            $total_options=array(
+                'type'=>$type,
+                'start'=>$this->config->item('netprofit_start'),
+                'brand' => $brand,
+            );
+            $out['totals']=$this->get_netprofit_runs($total_options);
+        }
+        return $out;
+    }
+
+    public function netprofit_check_week($profit_id, $brand, $type) {
+        $out=array('result'=>$this->error_result,'msg'=>'Period Not Found');
+        $this->db->select('profit_id, weekcheck');
+        $this->db->from('netprofit_dat');
+        $this->db->where('profit_id', $profit_id);
+        if ($brand!=='ALL') {
+            $this->db->where('brand', $brand);
+        }
+        $res=$this->db->get()->row_array();
+        if (isset($res['profit_id'])) {
+            // Success - Profit data found
+            $out['result']=$this->success_result;
+            $newdata=0;
+            $outinclude='<i class="fa fa-square-o" aria-hidden="true"></i>';
+            $outclass='';
+            if ($res['weekcheck']==0) {
+                $newdata=1;
+                $outinclude='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                $outclass='included';
+            }
+            $this->db->where('profit_id', $profit_id);
+            if ($brand!=='ALL') {
+                $this->db->where('brand', $brand);
+            }
+            $this->db->set('weekcheck', $newdata);
+            $this->db->update('netprofit_dat');
+            $out['weekcheck'] = $outinclude;
+            $out['weekclass'] = $outclass;
+            /* Get data about Netprofit  */
+        }
+        return $out;
+    }
 
 //    function _include_netprofit_debt($weekid, $type, $newdat) {
 //        $datbgn=$this->config->item('netprofit_start');
@@ -3001,7 +3086,11 @@ class Balances_model extends My_Model
         }
         $diffexpens=round($placeexpens-$prv_expenses,0);
         if ($diffexpens!=0) {
-            $diffexpens_prc=round($diffexpens/$prv_expenses*100,0);
+            if ($prv_expenses==0) {
+                $diffexpens_prc = 100;
+            } else {
+                $diffexpens_prc=round($diffexpens/$prv_expenses*100,0);
+            }
             $diffexpens_class=($diffexpens<0 ? 'negative' : '');
 
             $compare['expenses']=array(
@@ -3047,7 +3136,11 @@ class Balances_model extends My_Model
         }
         $diffadvertising=round($placeadvertising-$prvyear_netdata['advertising'],0);
         if ($diffadvertising!=0) {
-            $diffadvertising_prc=round($diffadvertising/$prvyear_netdata['advertising']*100,0);
+            if ($prvyear_netdata['advertising']==0) {
+                $diffadvertising_prc=100;
+            } else {
+                $diffadvertising_prc=round($diffadvertising/$prvyear_netdata['advertising']*100,0);
+            }
             $diffadvertising_class=($diffadvertising<0 ? 'negative' : '');
 
             $compare['advertising']=array(
@@ -3093,7 +3186,11 @@ class Balances_model extends My_Model
         }
         $diffodesk=round($placeodesk-$prvyear_netdata['odesk'],0);
         if ($diffodesk!=0) {
-            $diffodesk_prc=round($diffodesk/$prvyear_netdata['odesk']*100,0);
+            if ($prvyear_netdata['odesk']==0) {
+                $diffodesk_prc=100;
+            } else {
+                $diffodesk_prc=round($diffodesk/$prvyear_netdata['odesk']*100,0);
+            }
             $diffodesk_class=($diffodesk<0 ? 'negative' : '');
             $compare['odesk']=array(
                 'grown'=>($diffodesk<0 ? '(' : '').  MoneyOutput(abs($diffodesk),0).($diffodesk<0 ? ')' : ''),

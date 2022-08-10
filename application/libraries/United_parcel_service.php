@@ -119,7 +119,12 @@ class United_parcel_service
                 $request['InvoiceLineTotal'] = $invoiceLineTotal;
 
                 $request['MaximumListSize'] = '1';
-                
+                // $fw = fopen($outputFileName ,'w');
+                // foreach ($request as $key=>$val) {
+                    // fwrite($fw , "Request: ".$key.' Val '.$val. "\n");
+                // }
+                // fclose($fw);
+
                 //get response
                 $resp = $client->__soapCall($operation ,array($request));
                 //get status
@@ -147,6 +152,10 @@ class United_parcel_service
                 } else {
                     if (isset($resp->TimeInTransitResponse->Response->Error->ErrorDescription)) {
                         // $errmsg=$resp->TimeInTransitResponse->Response->Error->ErrorDescription;
+                        $fw = fopen($outputFileName ,'w');
+                        fwrite($fw , "Exception: \n" . $resp->TimeInTransitResponse->Response->Error->ErrorDescription. "\n");
+                        fwrite($fw , "Request: \n" . $client->__getLastRequest() . "\n");
+                        fclose($fw);
                         $errmsg=$this->_error_message;
                     } else {
                         $errmsg='Error during execute Time in Transit calculation';
