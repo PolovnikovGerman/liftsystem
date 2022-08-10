@@ -7078,6 +7078,7 @@ Class Orders_model extends MY_Model
                         $artdata.=$artadd;
                     }
                 }
+                echo 'ID '.$basket_item['basket_item_id'].' ART '.$artdata;
                 $rushprice = 0;
                 $rushdays = 0;
                 $rushdate = '';
