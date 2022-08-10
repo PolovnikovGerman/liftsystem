@@ -6983,6 +6983,168 @@ Class Orders_model extends MY_Model
     }
 
     public function attemptreportdata($filtr) {
+        $this->db->select('*');
+        $this->db->from('sb_baskets');
+        if (ifset($filtr, 'starttime',0) > 0) {
+            $this->db->where('unix_timestamp(created_time) >= ', $filtr['starttime']);
+        }
+        if (ifset($filtr , 'endtime', 0) > 0 ) {
+            $this->db->where('unix_timestamp(created_time) <= ', $filtr['endtime']);
+        }
+        $this->db->order_by('updated_time');
+        $rows = $this->db->get()->result_array();
+        $out_dat = [];
+        $out_attach = [];
+        $this->load->model('shipping_model');
+        foreach ($rows as $row) {
+            $artdata = 'No ART'; // Temporary
+            $user = $row['contact_person'];
+            $user_contact = '';
+            if (!empty($row['contact_email'])) {
+                $user_contact.='Emai '.$row['contact_email'].PHP_EOL;
+            }
+            if (!empty($row['contact_phone'])) {
+                $user_contact.='Phone '.$row['contact_phone'].' '.$row['cell_phone']==0 ? '' : '(mob)'.PHP_EOL;
+            }
+
+            $user_address = '';
+            if (!empty($row['ship_country'])) {
+                $user_address.='Country ' . $row['ship_country'] . ' ' . PHP_EOL;
+            }
+            if (!empty($row['ship_city'])) {
+                $user_address.='City ' . $row['ship_city'] . ' ';
+            }
+            if (!empty($cart['ship_street1'])) {
+                $user_address.=$cart['ship_street1'] . ' ';
+            }
+            if (!empty($cart['ship_street2']) && $cart['ship_street2']) {
+                $user_address.=$cart['ship_street2'] . ' ';
+            }
+            // Items
+            $this->db->select('bi.*, i.item_number, i.item_name');
+            $this->db->from('sb_basket_items bi');
+            $this->db->join('sb_items i', 'bi.item_id=i.item_id');
+            $this->db->where('bi.basket_id', $row['basket_id']);
+            $basket_items = $this->db->get()->result_array();
+            foreach ($basket_items as $basket_item) {
+                $item_number = $basket_item['item_number'];
+                $item_name = $basket_item['item_name'];
+                $item_qty = $basket_item['qty1']+$basket_item['qty2']+$basket_item['qty3']+$basket_item['qty4'];
+                $item_color = $basket_item['color1'];
+                if (!empty($basket_item['color2']) || !empty($basket_item['color3']) || !empty($basket_item['color4'])) {
+                    $item_color = 'assorted';
+                }
+                $imprint = '';
+                if ($basket_item['imprint_type']==0) {
+                    $imprint = 'Blank';
+                } elseif ($basket_item['imprint_type']==1) {
+                    $imprint = 'Attach Below';
+                } elseif ($basket_item['imprint_type']==2) {
+                    $imprint = 'Email Later';
+                } elseif ($basket_item['imprint_type']==3) {
+                    $imprint = 'Repeat Past Order';
+                }
+                $rushprice = 0;
+                $rushdays = 0;
+                $rushdate = '';
+                $ship_method = '';
+                $ship_cost = 0;
+                if (!empty($basket_item['shipping_calendar'])) {
+                    $calend = json_decode($basket_item['shipping_calendar'], true);
+                    if (isset($calend['shipping'])) {
+                        foreach ($calend['shipping'] as $shipping) {
+                            if ($shipping['current']==1) {
+                                $rushdate = date('m/d/Y', $shipping['date']);
+                                $rushdays = $shipping['term'];
+                                $rushprice = $shipping['price'];
+                                break;
+                            }
+                        }
+                    }
+                    if (isset($calend['arrive'])) {
+                        foreach ($calend['arrive'] as $arrive) {
+                            if ($arrive['current']==1) {
+                                $ship_method = $arrive['label'];
+                                $ship_cost = $arrive['price'];
+                            }
+                        }
+                    }
+                }
+                $item_cost = $basket_item['sale_price']* $item_qty;
+                $imprint_cost = ($basket_item['imprint_type']==0 ? 0 : $basket_item['inprint_price'] * $item_qty * ($basket_item['imprint'] - 1));
+                $setup_cost = $basket_item['imprint_type']==0 ? 0 : $basket_item['setup_price'] * $basket_item['imprint'];
+                $tax_cost = $basket_item['sale_tax'];
+                $total_cost = $basket_item['sale_cost'];
+            }
+            $user_location = '';
+            if (!empty($row['user_ip'])) {
+                $ipdat = $this->shipping_model->ipdata_exist($row['user_ip']);
+                if ($ipdat['result']) {
+                    $user_location.=($ipdat['city_name'] == '-' ? '' : $ipdat['city_name'] . ', ');
+                    $user_location.=($ipdat['region_name'] == '-' ? '' : $ipdat['region_name'] . ', ');
+                    $user_location.=($ipdat['country_code'] == '-' ? '' : $ipdat['country_name']);
+                }
+            }
+            $cc_card = '';
+            if (!empty($row['credit_card_system'])) {
+                $cc_card.= $row['credit_card_system'].' ';
+            }
+            if (!empty($row['credit_card_number'])) {
+                $cc_card.= $row['credit_card_number'].' ';
+            }
+            if (!empty($row['credit_card_month'])) {
+                $cc_card.=' exp '.$row['credit_card_month'];
+                if (!empty($row['credit_card_year'])) {
+                    $cc_card.='/'.$row['credit_card_year'];
+                }
+            }
+            // Last upd fld
+            $last_upd = '';
+            $last_fld ='';
+            $this->db->select('*');
+            $this->db->from('sb_basketchange_log');
+            $this->db->where('basket_code', $row['basket_code']);
+            $this->db->order_by('basketchange_log_id','desc');
+            $logdat = $this->db->get()->row_array();
+            if (ifset($logdat,'basketchange_log_id', 0) > 0) {
+                $last_upd = date('m/d/Y H:i:s', strtotime($logdat['change_time']));
+                $last_fld = $logdat['basket_parameter'];
+            }
+            $out_dat[] = [
+                'checkout_start' => date('m/d/Y H:i:s', strtotime($row['created_time'])),
+                'last_action' => $last_upd,
+                'art' => $artdata,
+                'item_number' => $item_number,
+                'item_name' => $item_name,
+                'item_qty' => $item_qty,
+                'item_colors' => $item_color,
+                'imprint' => $imprint,
+                'rushdate' => $rushdate,
+                'rushprice' => $rushprice,
+                'rushdays' => $rushdays,
+                'itemcost' => $item_cost,
+                'imprintval' => $imprint_cost,
+                'setup' => $setup_cost,
+                'tax' => $tax_cost,
+                'total' => $total_cost,
+                'ship_method' => $ship_method,
+                'shipping' => $ship_cost,
+                'user' => $user,
+                'user_contact' => $user_contact,
+                'user_address' => $user_address,
+                'user_ip' => $row['user_ip'],
+                'user_location' => $user_location,
+                'cc_details' => $cc_card,
+                'last_field' => $last_fld,
+            ];
+        }
+        return [
+            'out_dat' => $out_dat,
+            'out_attach' => $out_attach,
+        ];
+    }
+
+    public function _attemptreportdata($filtr) {
         $this->load->model('shipping_model');
         $this->db->select('*');
         $this->db->from('sb_cartdatas');

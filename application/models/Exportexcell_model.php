@@ -270,9 +270,9 @@ class Exportexcell_model extends CI_Model
             $filename = $this->config->item('upload_path_preload') . $report_name;
             $writer->save($filename);    // download file
             /* Send Mail with attach */
-            $mail_to=$this->config->item('mail_research');
-            $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
-
+            // $mail_to=$this->config->item('mail_research');
+            // $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
+            $mail_to=$this->config->item('developer_email');
 
             $email_conf = array(
                 'protocol'=>'sendmail',
@@ -283,7 +283,7 @@ class Exportexcell_model extends CI_Model
 
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
-            $this->email->cc($mail_cc);
+            // $this->email->cc($mail_cc);
             $this->email->from('no-replay@bluetrack.com');
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='Report in attachment';
