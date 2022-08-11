@@ -2,7 +2,6 @@
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Cell;
 
 class Exportexcell_model extends CI_Model
 {
@@ -245,6 +244,9 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('C' . $i, $row['user']);
                 $sheet->setCellValue('D' . $i, $row['user_contact']);
                 $sheet->setCellValue('E' . $i, $row['user_address']);
+                $spreadsheet->getActiveSheet()->getStyle('E'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('F' . $i, $row['item_name']);
                 $sheet->setCellValue('G' . $i, $row['item_number']);
                 $sheet->setCellValue('H' . $i, ($row['item_qty']=='' ? '' : intval($row['item_qty'])));
@@ -259,9 +261,10 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('Q' . $i, ($row['shipping']=='' ? '' : number_format($row['shipping'],2,',','')));
                 $sheet->setCellValue('R' . $i, ($row['total']=='' ? '' : number_format($row['total'],2,',','')));
                 $sheet->setCellValue('S' . $i, $row['rushdate']);
-                // $sheet->setCellValue('T' . $i, $row['art']);
-
-                $sheet->setCellValueExplicit('T'.$i, $row['art'],Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('T' . $i, $row['art']);
+                $spreadsheet->getActiveSheet()->getStyle('T'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('U' . $i, $row['user_ip']);
                 $sheet->setCellValue('V'  .$i, $row['user_location']);
                 $sheet->setCellValue('W'  .$i, $row['cc_details']);
@@ -305,7 +308,7 @@ class Exportexcell_model extends CI_Model
             $this->email->send();
             // echo $ci->email->print_debugger();
             $this->email->clear(TRUE);
-            unlink($filename);
+            // unlink($filename);
         } else {
             $mail_to=$this->config->item('mail_research');
 

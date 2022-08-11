@@ -7009,7 +7009,7 @@ Class Orders_model extends MY_Model
 
             $user_address = '';
             if (!empty($row['ship_country'])) {
-                $user_address.='Country ' . $row['ship_country'] . ' ' . PHP_EOL;
+                $user_address.='Country ' . $row['ship_country'] . ' '. PHP_EOL;
             }
             if (!empty($row['ship_city'])) {
                 $user_address.='City ' . $row['ship_city'] . ' ';
@@ -7061,13 +7061,13 @@ Class Orders_model extends MY_Model
                         } elseif ($basket_item['imprint_type'] == 3) {
                             $artadd.=$this->art_repeat;
                         } else {
-                            $artadd.=$artrow['item_inprint_location'] . PHP_EOL;
+                            $artadd.=$artrow['item_inprint_location']. PHP_EOL;
                             if (ifset($artrow, 'logo_url','')) {
-                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url'] . PHP_EOL;
+                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url']. PHP_EOL;
                                 array_push($out_attach, $artrow['logo_url']);
                             }
                             if (!empty($artrow['logo_txt'])) {
-                                $artadd.=' User Text ' . $artrow['logo_txt'] . PHP_EOL;
+                                $artadd.=' User Text ' . $artrow['logo_txt']. PHP_EOL;
                             }
                             $colors = $artrow['color1'].(!empty($artrow['color2']) ? ', '.$artrow['color2'] : '');
                             if (!empty($colors)) {
