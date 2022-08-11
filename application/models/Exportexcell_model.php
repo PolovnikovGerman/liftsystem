@@ -243,6 +243,9 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('B' . $i, $row['last_action']);
                 $sheet->setCellValue('C' . $i, $row['user']);
                 $sheet->setCellValue('D' . $i, $row['user_contact']);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('E' . $i, $row['user_address']);
                 $spreadsheet->getActiveSheet()->getStyle('E'.$i)
                     ->getAlignment()

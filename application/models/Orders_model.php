@@ -7001,7 +7001,7 @@ Class Orders_model extends MY_Model
             $user = $row['contact_person'];
             $user_contact = '';
             if (!empty($row['contact_email'])) {
-                $user_contact.='Emai '.$row['contact_email'].PHP_EOL;
+                $user_contact.='Email '.$row['contact_email'].PHP_EOL;
             }
             if (!empty($row['contact_phone'])) {
                 $user_contact.='Phone '.$row['contact_phone'].' '.$row['cell_phone']==0 ? '' : '(mob)'.PHP_EOL;
