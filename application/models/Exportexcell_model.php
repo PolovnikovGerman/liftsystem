@@ -45,6 +45,7 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('E2', 'Quantity');
         $sheet->setCellValue('F2', 'Cost Ea');
         $sheet->setCellValue('G2', 'Total Cost');
+
         $j=3;
         foreach ($options['res'] as $row) {
             $price=round($row['price'],3);
@@ -242,7 +243,13 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('B' . $i, $row['last_action']);
                 $sheet->setCellValue('C' . $i, $row['user']);
                 $sheet->setCellValue('D' . $i, $row['user_contact']);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('E' . $i, $row['user_address']);
+                $spreadsheet->getActiveSheet()->getStyle('E'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('F' . $i, $row['item_name']);
                 $sheet->setCellValue('G' . $i, $row['item_number']);
                 $sheet->setCellValue('H' . $i, ($row['item_qty']=='' ? '' : intval($row['item_qty'])));
@@ -258,10 +265,14 @@ class Exportexcell_model extends CI_Model
                 $sheet->setCellValue('R' . $i, ($row['total']=='' ? '' : number_format($row['total'],2,',','')));
                 $sheet->setCellValue('S' . $i, $row['rushdate']);
                 $sheet->setCellValue('T' . $i, $row['art']);
+                $spreadsheet->getActiveSheet()->getStyle('T'.$i)
+                    ->getAlignment()
+                    ->setWrapText(true);
                 $sheet->setCellValue('U' . $i, $row['user_ip']);
                 $sheet->setCellValue('V'  .$i, $row['user_location']);
                 $sheet->setCellValue('W'  .$i, $row['cc_details']);
                 $sheet->setCellValue('X'  .$i, $row['last_field']);
+
                 $i++;
             }
             $writer = new Xlsx($spreadsheet); // instantiate Xlsx
@@ -270,9 +281,9 @@ class Exportexcell_model extends CI_Model
             $filename = $this->config->item('upload_path_preload') . $report_name;
             $writer->save($filename);    // download file
             /* Send Mail with attach */
-            // $mail_to=$this->config->item('mail_research');
-            // $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
-            $mail_to=$this->config->item('developer_email');
+            $mail_to=$this->config->item('mail_research');
+            $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
+
 
             $email_conf = array(
                 'protocol'=>'sendmail',
@@ -283,7 +294,7 @@ class Exportexcell_model extends CI_Model
 
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
-            // $this->email->cc($mail_cc);
+            $this->email->cc($mail_cc);
             $this->email->from('no-replay@bluetrack.com');
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='Report in attachment';
@@ -300,7 +311,7 @@ class Exportexcell_model extends CI_Model
             $this->email->send();
             // echo $ci->email->print_debugger();
             $this->email->clear(TRUE);
-            unlink($filename);
+            // unlink($filename);
         } else {
             $mail_to=$this->config->item('mail_research');
 

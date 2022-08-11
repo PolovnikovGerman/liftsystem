@@ -7001,7 +7001,7 @@ Class Orders_model extends MY_Model
             $user = $row['contact_person'];
             $user_contact = '';
             if (!empty($row['contact_email'])) {
-                $user_contact.='Emai '.$row['contact_email'].PHP_EOL;
+                $user_contact.='Email '.$row['contact_email'].PHP_EOL;
             }
             if (!empty($row['contact_phone'])) {
                 $user_contact.='Phone '.$row['contact_phone'].' '.$row['cell_phone']==0 ? '' : '(mob)'.PHP_EOL;
@@ -7009,7 +7009,7 @@ Class Orders_model extends MY_Model
 
             $user_address = '';
             if (!empty($row['ship_country'])) {
-                $user_address.='Country ' . $row['ship_country'] . ' ' . PHP_EOL;
+                $user_address.='Country ' . $row['ship_country'] . ' '. PHP_EOL;
             }
             if (!empty($row['ship_city'])) {
                 $user_address.='City ' . $row['ship_city'] . ' ';
@@ -7061,13 +7061,13 @@ Class Orders_model extends MY_Model
                         } elseif ($basket_item['imprint_type'] == 3) {
                             $artadd.=$this->art_repeat;
                         } else {
-                            $artadd.=$artrow['item_inprint_location'] . PHP_EOL;
+                            $artadd.=$artrow['item_inprint_location']. PHP_EOL;
                             if (ifset($artrow, 'logo_url','')) {
-                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url'] . PHP_EOL;
+                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url']. PHP_EOL;
                                 array_push($out_attach, $artrow['logo_url']);
                             }
                             if (!empty($artrow['logo_txt'])) {
-                                $artadd.=' User Text ' . $artrow['logo_txt'] . PHP_EOL;
+                                $artadd.=' User Text ' . $artrow['logo_txt']. PHP_EOL;
                             }
                             $colors = $artrow['color1'].(!empty($artrow['color2']) ? ', '.$artrow['color2'] : '');
                             if (!empty($colors)) {
@@ -7078,7 +7078,6 @@ Class Orders_model extends MY_Model
                         $artdata.=$artadd;
                     }
                 }
-                echo 'ID '.$basket_item['basket_item_id'].' ART '.$artdata;
                 $rushprice = 0;
                 $rushdays = 0;
                 $rushdate = '';
