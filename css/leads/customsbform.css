@@ -190,6 +190,17 @@ a.find_customformbnt {
     text-align: right;
     width: 55px;
 }
+.customform_popmessage {
+    background-color: #ffffff!important;
+    float: left;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+    font-size: 14px;
+    padding: 12px;
+    line-height: 20px;
+}
 /*Popup */
 .customformdtails_area {
     float: left;

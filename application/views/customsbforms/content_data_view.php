@@ -8,7 +8,9 @@
         <div class="customname"><?=$dat['customer_name']?></div>
         <div class="custommail"><?=$dat['customer_email']?></div>
         <div class="customphone"><?=$dat['customer_phone']?></div>
-        <div class="itemdescription"><?=$dat['shape_desription']?></div>
+        <div class="itemdescription" data-event="<?=$event?>" data-css="customform_popmessage" data-position="left" data-balloon="<?=$dat['shape_desription']?>">
+            <?=$dat['shape_desription']?>
+        </div>
         <div class="itemqty"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
     </div>
     <?php $numpp++?>
