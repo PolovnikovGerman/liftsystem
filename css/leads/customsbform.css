@@ -334,17 +334,17 @@ csf-group-1 p, .csf-group-2 p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 260px;
+    width: 240px;
     line-height: 30px;
     cursor: pointer;
 }
 .btn-closefile {
-    position: absolute;
-    right: 7px;
-    top: 3px;
     cursor: pointer;
+    width: 22px;
+    text-align: center;
 }
 .btn-closefile img {
     height: 12px;
     width: auto;
+    margin-top: 5px
 }
