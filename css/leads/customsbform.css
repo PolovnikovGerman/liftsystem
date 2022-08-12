@@ -200,6 +200,8 @@ a.find_customformbnt {
     font-size: 14px;
     padding: 12px;
     line-height: 20px;
+    text-wrap: normal;
+    max-width: 360px;
 }
 /*Popup */
 .customformdtails_area {
