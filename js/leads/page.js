@@ -42,6 +42,10 @@ function init_page(objid) {
             $("#checkoutattemptsview").show();
             init_attempts();
             break;
+        case 'customsbform':
+            $("#customsbformview").show();
+            init_customforms();
+            break;
     }
 }
 
