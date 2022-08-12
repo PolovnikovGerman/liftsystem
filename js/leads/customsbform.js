@@ -101,6 +101,7 @@ function pageCustomFormsCallback(pageidx) {
             $(".customform_tabledat").empty().html(response.data.content);
             $("#curpagecustomform").val(pageidx);
             /* change size */
+            jQuery.balloon.init();
             init_customform_content();
             $("#loader").hide();
         } else {
