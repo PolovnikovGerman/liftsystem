@@ -118,10 +118,10 @@ class Leads extends My_Controller {
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand, $top_menu);
             } elseif ($row['item_link']=='#questionsview') {
-                $head['styles'][]=array('style'=>'/css/leads/questionsview.css');
-                $head['scripts'][]=array('src'=>'/js/leads/questionsview.js');
+                $head['styles'][] = array('style' => '/css/leads/questionsview.css');
+                $head['scripts'][] = array('src' => '/js/leads/questionsview.js');
                 $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
+                if (count($brands) == 0) {
                     redirect('/');
                 }
                 $brand = $brands[0]['brand'];
@@ -131,6 +131,21 @@ class Leads extends My_Controller {
                 ];
                 $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['questionsview'] = $this->_prepare_questionslist_view($brand, $top_menu);
+                // Custom shaped
+            } elseif ($row['item_link']=='#customsbform') {
+                $head['styles'][] = array('style' => '/css/leads/customsbform.css');
+                $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
+                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                if (count($brands) == 0) {
+                    redirect('/');
+                }
+                $brand = $brands[0]['brand'];
+                $top_options = [
+                    'brands' => $brands,
+                    'active' => $brand,
+                ];
+                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand, $top_menu);
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
                 $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
@@ -1005,6 +1020,66 @@ class Leads extends My_Controller {
         }
     }
 
+    public function customformsearch() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata=[];
+            $error = '';
+            $options = [];
+            if (ifset($postdata, 'brand', '')!=='') {
+                $options['brand'] = $postdata['brand'];
+            }
+            $this->load->model('customform_model');
+            $mdata['totals'] = $this->customform_model->get_count_forms($options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customformsdat() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata = $this->input->post();
+            $this->load->model('customform_model');
+            $data = $this->customform_model->get_customform_data($postdata);
+            if (count($data)==0) {
+                $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customformdetail() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty Custom Form';
+            $postdata = $this->input->post();
+            $this->load->model('customform_model');
+            if (ifset($postdata,'form_id',0) > 0) {
+                $res = $this->customform_model->get_customform_details($postdata['form_id']);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $attachm_view = '';
+                    if ($res['attach'] > 0) {
+                        $attachm_view = $this->load->view('customsbforms/details_attached_view',['attachs' => $res['attach']], TRUE);
+                    }
+                    $options = [
+                        'data' => $res['data'],
+                        'attach' => $attachm_view,
+                    ];
+                    $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_leadsview($brand, $top_menu) {
         $ldat=array();
@@ -1136,6 +1211,25 @@ class Leads extends My_Controller {
         ];
         $content=$this->load->view('leads/order_attempts_view', $options,TRUE);
         return $content;
+    }
+
+    private function _prepare_customsbform_view($brand, $top_menu) {
+        $datqs=[
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'date_add',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'brand' => $brand,
+            'top_menu' => $top_menu,
+        ];
+
+        $search=array('assign'=>1,'brand'=>$brand);
+        $this->load->model('customform_model');
+        $datqs['total_rec']=$this->customform_model->get_count_forms($search);
+
+        $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
+        return $content;
+
     }
 
 }
