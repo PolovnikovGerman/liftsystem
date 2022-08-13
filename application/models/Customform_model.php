@@ -14,6 +14,12 @@ class Customform_model extends MY_Model
         if (ifset($params,'assign')) {
 
         }
+        if (ifset($params,'search','')!=='') {
+            $this->db->like('concat(customer_name, customer_company,customer_email)', $params['search']);
+        }
+        if (ifset($params,'hideincl',0)==1) {
+            $this->db->where('active', $params['hideincl']);
+        }
         if (ifset($params,'brand','')!=='') {
             $this->db->where('brand', $params['brand']);
         }
@@ -29,6 +35,7 @@ class Customform_model extends MY_Model
         $this->db->from('ts_custom_quotes');
         if (ifset($options,'search','')!=='') {
             // Search by customer, company, email
+            $this->db->like('concat(customer_name, customer_company,customer_email)', $options['search']);
         }
         if (ifset($options,'assign','')!=='') {
             // Assign
@@ -83,6 +90,13 @@ class Customform_model extends MY_Model
             $out['attach'] = $attach;
         }
         return $out;
+    }
+
+    public function update_customforn($options) {
+        $this->db->where('custom_quote_id', $options['form_id']);
+        $this->db->set('active', ifset($options,'activity', 0));
+        $this->db->update('ts_custom_quotes');
+        return true;
     }
 
 }

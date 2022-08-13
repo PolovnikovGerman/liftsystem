@@ -1054,6 +1054,21 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function customformdmanage() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty Custom Form';
+            $postdata = $this->input->post();
+            $this->load->model('customform_model');
+            if (ifset($postdata,'form_id',0) > 0) {
+                $this->customform_model->update_customforn($postdata);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function customformdetail() {
         if ($this->isAjax()) {
             $mdata=[];

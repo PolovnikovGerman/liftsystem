@@ -3,7 +3,7 @@ function init_customforms() {
     $("select#customform_status").unbind('change').change(function(){
         search_customforms();
     })
-    $("select#questhideincl").unbind('change').change(function(){
+    $("select#customformhideincl").unbind('change').change(function(){
         search_customforms();
     });
     /* Enter as start search */
@@ -121,10 +121,28 @@ function init_customform_content() {
             $(this).removeClass("current_row");
         }
     );
-    $("div.content-row").click(function(){
-        var formid = $(this).data('form');
+    $("div.showformdetails").click(function(){
+        var formid = $(this).parent('div.content-row').data('form');
         showcustomformdetails(formid);
     });
+    $("div.websys").find('i').unbind('click').click(function () {
+        var action = 1;
+        if ($(this).parent('div.websys').hasClass('active')==true) {
+            action = 0;
+        }
+        var formid = $(this).parent('div.websys').data('form');
+        var params = new Array();
+        params.push({name: 'activity', value: action});
+        params.push({name: 'form_id', value: formid});
+        var url = '/leads/customformdmanage';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                search_customforms();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function showcustomformdetails(formid) {
