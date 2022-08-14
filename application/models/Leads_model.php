@@ -728,7 +728,7 @@ Class Leads_model extends MY_Model
         return $res;
     }
 
-    /* Relation between message & Lead*/
+    // Relation between message & Lead
     public function save_leadrelation($quest) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
         if (!isset($quest['mail_id'])) {
@@ -759,6 +759,38 @@ Class Leads_model extends MY_Model
                 $this->db->update('ts_lead_emails');
                 $this->db->set('lead_assign_time',  time());
                 $this->db->where('lead_id',$quest['lead_id']);
+                $this->db->update('ts_leads');
+                $out['result']=$this->success_result;
+                $out['msg']='';
+            }
+        }
+        return $out;
+    }
+
+    // Relation between custom quote and lead
+    public function save_quotelead_relation($options) {
+        $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
+        if ($this->check_leadquoterelation($options['customform'])) {
+            $out['msg'] = 'This Request Related with Lead. Please, select other Request';
+        } else {
+            $this->db->set('lead_id',$options['lead_id']);
+            if (intval($options['leademail_id'])==0) {
+                $this->db->set('custom_quote_id',$options['customform']);
+                $this->db->insert('ts_lead_emails');
+                if ($this->db->insert_id()==0) {
+                    $out['msg']='Error during building of Lead-Message relation';
+                } else {
+                    $this->db->set('lead_assign_time',  time());
+                    $this->db->where('lead_id',$options['lead_id']);
+                    $this->db->update('ts_leads');
+                    $out['msg']='';
+                    $out['result']=$this->success_result;
+                }
+            } else {
+                $this->db->where('leademail_id',$options['leademail_id']);
+                $this->db->update('ts_lead_emails');
+                $this->db->set('lead_assign_time',  time());
+                $this->db->where('lead_id',$options['lead_id']);
                 $this->db->update('ts_leads');
                 $out['result']=$this->success_result;
                 $out['msg']='';
@@ -1157,11 +1189,20 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
-    /* Check relation with lead */
+    // Check relation with lead
     public function check_leadrelation($quest_id) {
         $this->db->select('count(*) as cnt');
         $this->db->from('ts_lead_emails');
         $this->db->where('email_id',$quest_id);
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    // Check relation with lead
+    public function check_leadquoterelation($customquote) {
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_lead_emails');
+        $this->db->where('custom_quote_id',$customquote);
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -2069,6 +2110,52 @@ Class Leads_model extends MY_Model
         $this->email->send();
         $this->email->clear(TRUE);
         return TRUE;
+    }
+
+    public function create_leadcustomform($formdata, $leademail_id, $user_id) {
+        $out=array('result'=>  $this->error_result,'msg'=>  $this->INIT_ERRMSG);
+        /* Create array with Lead data */
+        $lead_usr=[$user_id];
+        $leadpost=[
+            'lead_id'=>0,
+            'lead_company'=> $formdata['customer_company'],
+            'lead_phone'=> $formdata['customer_phone'],
+            'lead_customer'=> $formdata['customer_name'],
+            'lead_mail'=> $formdata['customer_email'],
+            'lead_itemqty'=> $formdata['quota_qty'],
+            'lead_item'=> 'Custom Item',
+            'other_item_name'=> $formdata['shape_desription'],
+            'lead_item_id' => $this->config->item('custom_id'),
+            'lead_needby'=> (empty($formdata['ship_date']) ? NULL : date('Y-m-d', $formdata['ship_date'])),
+            'lead_status'=>'',
+            'lead_value' => '',
+            'lead_note' => '',
+            'lead_type'=>$this->init_lead_type,
+            'brand' => $formdata['brand'],
+        ];
+        $lead_tasks = [
+            'send_quote'=>0,
+            'send_artproof'=>0,
+            'send_sample'=>0,
+            'answer_question'=>0,
+            'other'=>NULL,
+            'leadtask_id'=>0,
+        ];
+        $res=$this->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
+        if ($res['result']==$this->error_result) {
+            $out['msg'] = $res['msg'];
+        } else {
+            $out['result'] = $this->success_result;
+            $out['lead_id'] = $res['result'];
+            // Create relations between Mail and Leads
+            if (intval($leademail_id)==0) {
+                $this->db->set('lead_id',$res['result']);
+                $this->db->set('custom_quote_id', $formdata['custom_quote_id']);
+                $this->db->insert('ts_lead_emails');
+                $out['relation_id'] = $this->db->insert_id();
+            }
+        }
+        return $out;
     }
 
 

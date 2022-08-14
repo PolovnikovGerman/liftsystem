@@ -26,6 +26,8 @@ function show_new_lead(lead_id,type, brand) {
                     initQuotesPagination();
                 } else if (type=='question') {
                     initQuestionPagination();
+                } else if (type=='customquote') {
+                    initCustomFormPagination();
                 } else {
                     initProofPagination();
                 }
