@@ -10,7 +10,7 @@
         <div class="label">Display:</div>
         <select id="customform_status" class="status_select">
             <option value="1" selected>Not assigned</option>
-            <option value="">All Quotes</option>
+            <option value="">All Custom Forms</option>
         </select>
         <input type="text" id="customformsearch" class="search_input" placeholder="Customer,company, email.."/>
 

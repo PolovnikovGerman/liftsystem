@@ -141,6 +141,10 @@ a.find_customformbnt {
 .customform_tabledat .content-row > .websys {
     width: 76px;
     border-right: 1px solid #000000;
+    font-size: 15px;
+}
+.customform_tabledat .content-row > .websys i {
+    cursor: pointer;
 }
 .customform_tabledat .content-row > .status {
     width: 65px;

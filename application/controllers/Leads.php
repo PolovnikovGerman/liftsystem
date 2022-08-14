@@ -696,42 +696,67 @@ class Leads extends My_Controller {
         if ($this->isAjax()) {
             $mdata=array();
             $error='This Request Related with Lead. Please, reload page';
-            $this->load->model('questions_model');
-            $this->load->model('leads_model');
-            $quest_id=$this->input->post('quest_id');
-            $type=$this->input->post('type');
-            $chkrel=$this->leads_model->check_leadrelation($quest_id);
-            if ($chkrel==0) {
-                /* Get data about question */
-                $res = $this->questions_model->get_quest_data($quest_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $quest= $res['data'];
-                        /* Get open leads  */
-                    $options=array(
-                        'orderby'=>'lead_number',
-                        'direction'=>'desc',
-                    );
-                    $leaddat=$this->leads_model->get_lead_list($options);
-                    $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
-                    switch ($type) {
-                        case 'quote':
-                            $options['title']='Quote Details';
-                            break;
-                        case 'question':
-                            $options['title']='Question Details';
-                            break;
-                        case 'proof':
-                            $options['title']='Proof Details';
-                            break;
-                        default:
-                            $options['title']='Message Details';
-                            break;
+            $postdata = $this->input->post();
+            $type = ifset($postdata, 'type','');
+            if (!empty($type)) {
+                $this->load->model('leads_model');
+                if ($type=='CustomQuote') {
+                    $customform = ifset($postdata, 'customform', 0);
+                    if ($customform > 0) {
+                        $this->load->model('customform_model');
+                        $data = $this->customform_model->get_customform_details($customform);
+                        $error = $data['msg'];
+                        if ($data['result']==$this->success_result) {
+                            $error = '';
+                            $quotadata = $data['data'];
+                            $leadoptions=array(
+                                'orderby'=>'lead_number',
+                                'direction'=>'desc',
+                            );
+                            $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                            $options=array('leads'=>$leaddat,'current'=>$quotadata['lead_id'],'title' => 'Custom SB Form');
+                            $quotadata['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
+                            $mdata['content']=$this->load->view('customsbforms/update_status_view',$quotadata,TRUE);
+                        }
                     }
-                    $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
-                    $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
+                } else {
+                    $this->load->model('questions_model');
+                    $quest_id=$this->input->post('quest_id');
 
+                    $chkrel=$this->leads_model->check_leadrelation($quest_id);
+                    if ($chkrel==0) {
+                        /* Get data about question */
+                        $res = $this->questions_model->get_quest_data($quest_id);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            $quest= $res['data'];
+                            /* Get open leads  */
+                            $options=array(
+                                'orderby'=>'lead_number',
+                                'direction'=>'desc',
+                            );
+                            $leaddat=$this->leads_model->get_lead_list($options);
+                            $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
+                            switch ($type) {
+                                case 'quote':
+                                    $options['title']='Quote Details';
+                                    break;
+                                case 'question':
+                                    $options['title']='Question Details';
+                                    break;
+                                case 'proof':
+                                    $options['title']='Proof Details';
+                                    break;
+                                default:
+                                    $options['title']='Message Details';
+                                    break;
+                            }
+                            $quest['leadselect']=$this->load->view('artrequest/lead_openlist_view',$options,TRUE);
+                            $mdata['content']=$this->load->view('artrequest/update_status_view',$quest,TRUE);
+
+                        }
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -741,45 +766,65 @@ class Leads extends My_Controller {
     public function create_leadmessage() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='This Request Related with Lead. Please, reload page';
+            $postdata = $this->input->post();
             $this->load->model('leads_model');
-            $email_id=$this->input->post('mail_id');
-            $leademail_id=$this->input->post('leademail_id');
-            $type=$this->input->post('type');
-            $chkrel=$this->leads_model->check_leadrelation($email_id);
-            if ($chkrel==0) {
-                switch ($type) {
-                    case 'Question':
-                        $this->load->model('questions_model');
-                        $maildat = $this->questions_model->get_quest_data($email_id);
-                        $res = $this->leads_model->create_leadquest($maildat['data'], $leademail_id, $this->USR_ID);
-                        break;
-                    case 'Quote':
-                        $this->load->model('quotes_model');
-                        $maildat = $this->quotes_model->get_quote_dat($email_id);
-                        $res['msg'] = $maildat['msg'];
-                        if ($maildat['result']==$this->success_result) {
-                            $res = $this->leads_model->create_leadquote($maildat['data'], $leademail_id, $this->USR_ID);
+            if (ifset($postdata,'type', '')!=='') {
+                if ($postdata['type']=='CustomQuote') {
+                    $customquote = ifset($postdata,'customquote', 0);
+                    $leademail_id = ifset($postdata,'leademail_id',0);
+                    $error = 'Empty Custom SB Form';
+                    if ($customquote > 0) {
+                        $error='This Request Related with Lead. Please, reload page';
+                        $chkrel=$this->leads_model->check_leadquoterelation($customquote);
+                        if ($chkrel==0) {
+                            $this->load->model('customform_model');
+                            $res = $this->customform_model->get_customform_details($customquote);
+                            $error = $res['msg'];
+                            if ($res['result']==$this->success_result) {
+                                $dat = $this->leads_model->create_leadcustomform($res['data'], $leademail_id, $this->USR_ID);
+                                $error = $dat['msg'];
+                                if ($dat['result']==$this->success_result) {
+                                    $error = '';
+                                    $mdata['leadid'] = $dat['lead_id'];
+                                }
+                            }
                         }
-                        break;
-                    case 'Proof';
-                        $this->load->model('artproof_model');
-                        $maildat = $this->artproof_model->get_proof_data($email_id);
-                        $res = $this->leads_model->create_leadproof($maildat, $leademail_id, $this->USR_ID);
-                        break;
-                    default:
-                        break;
-                }
-                $error = $res['msg'];
-                if ($res['result'] != $this->error_result) {
-                    $error = '';
-                    // $mdata['total_proof'] = $this->proofs->get_count_proofs(array('assign' => 1));
-                    // $mdata['total_quote'] = $this->mquotes->get_count_quotes(array('assign' => 1));
-                    // $mdata['total_quest'] = $this->mquests->get_count_questions(array('assign' => 1));
-                    // $mdata['sumquote'] = $this->mquotes->get_todays();
-                    // $mdata['sumproofs'] = $this->mproofs->get_todays();
-                    // $mdata['sumquest'] = $this->mquests->get_todays();
-                    $mdata['leadid'] = $res['result'];
+                    }
+                } else {
+                    $error='This Request Related with Lead. Please, reload page';
+                    $email_id=$this->input->post('mail_id');
+                    $leademail_id=$this->input->post('leademail_id');
+                    $type=$this->input->post('type');
+                    $chkrel=$this->leads_model->check_leadrelation($email_id);
+                    if ($chkrel==0) {
+                        switch ($type) {
+                            case 'Question':
+                                $this->load->model('questions_model');
+                                $maildat = $this->questions_model->get_quest_data($email_id);
+                                $res = $this->leads_model->create_leadquest($maildat['data'], $leademail_id, $this->USR_ID);
+                                break;
+                            case 'Quote':
+                                $this->load->model('quotes_model');
+                                $maildat = $this->quotes_model->get_quote_dat($email_id);
+                                $res['msg'] = $maildat['msg'];
+                                if ($maildat['result']==$this->success_result) {
+                                    $res = $this->leads_model->create_leadquote($maildat['data'], $leademail_id, $this->USR_ID);
+                                }
+                                break;
+                            case 'Proof';
+                                $this->load->model('artproof_model');
+                                $maildat = $this->artproof_model->get_proof_data($email_id);
+                                $res = $this->leads_model->create_leadproof($maildat, $leademail_id, $this->USR_ID);
+                                break;
+                            default:
+                                break;
+                        }
+                        $error = $res['msg'];
+                        if ($res['result'] != $this->error_result) {
+                            $error = '';
+                            $mdata['leadid'] = $res['result'];
+                        }
+                    }
                 }
             }
             $this->ajaxResponse($mdata,$error);
@@ -1020,6 +1065,29 @@ class Leads extends My_Controller {
         }
     }
 
+    public function savecustomformstatus() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Custom SB Form ID';
+            $postdata = $this->input->post();
+            if (ifset($postdata,'customform',0) > 0 && ifset($postdata,'lead_id',0) > 0) {
+                $this->load->model('customform_model');
+                $dat = $this->customform_model->get_customform_details($postdata['customform']);
+                $error = $dat['msg'];
+                if ($dat['result']==$this->success_result) {
+                    $this->load->model('leads_model');
+                    $res=$this->leads_model->save_quotelead_relation($postdata);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function customformsearch() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();
@@ -1048,6 +1116,21 @@ class Leads extends My_Controller {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
                 $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data, 'event' => $event], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customformdmanage() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Empty Custom Form';
+            $postdata = $this->input->post();
+            $this->load->model('customform_model');
+            if (ifset($postdata,'form_id',0) > 0) {
+                $this->customform_model->update_customforn($postdata);
+                $error = '';
             }
             $this->ajaxResponse($mdata, $error);
         }
