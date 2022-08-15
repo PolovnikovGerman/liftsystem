@@ -16,7 +16,7 @@
             </div>
             <div class="pay_method_button">
                 <input type="checkbox" class="autopaycharge" <?=$row['autopay']==1 ? 'checked="checked"' : ''?> data-charge="<?=$row['order_payment_id']?>"/>
-                <div class="label">auto-charge</div>
+                <div class="label">auto</div>
             </div>
         </div>        
     <?php } ?>        

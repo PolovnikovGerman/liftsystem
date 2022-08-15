@@ -783,7 +783,8 @@ Class Leadorder_model extends My_Model {
         $this->db->where('order_id', $order_id);
         // $this->db->where('batch_received', 1);
         $this->db->where('batch_term',  0);
-        $this->db->order_by('batch_date');
+        // $this->db->order_by('batch_date');
+        $this->db->order_by('create_date');
         $res = $this->db->get()->result_array();
         $out = array();
         foreach ($res as $row) {

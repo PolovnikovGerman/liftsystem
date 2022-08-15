@@ -1170,7 +1170,7 @@ span.taxemptyview {
 .bl_pay_method_content{
     float: left;
     height: 113px;
-    width: 360px;
+    width: 341px;
 }
 .pay_method_content1{
     line-height: 18px;
@@ -1182,7 +1182,7 @@ span.taxemptyview {
 }
 .pay_method_content2{
     float: left;
-    width: 341px;
+    width: 322px;
     height: 63px;
     border: 2px solid #000;    
     margin: 2px 0;
@@ -1193,13 +1193,12 @@ span.taxemptyview {
     height: 44px;
     overflow-y: auto;
     width: 100%;
-    
 }
 .pay_method_content1_line{
     float: left;
     line-height: 14px;
     padding-top: 2px;
-    width: 334px;
+    width: 314px;
 }
 .pay_method_inputs {
     float: left;
@@ -1262,6 +1261,7 @@ span.taxemptyview {
     text-align: center;
 }
 .pay_method_button > .label {
+    color: #000;
     float: right;
     font-size: 10px;
     height: 17px;
@@ -1311,7 +1311,7 @@ span.taxemptyview {
     /* height: 97px; */
     margin: 2px 0;
     /* width: 163px; */
-    width: 177px;
+    width: 199px;
 }
 .payments_title {
     text-align: center;
@@ -1325,43 +1325,45 @@ span.taxemptyview {
 }
 .payments_table_line {
     float: left;
-    height: 16px;
+}
+.payments_table_line div {
+    min-height: 16px;
     line-height: 16px;
 }
 .payments_table{
     float: left;
-    height: 65px;
+    max-height: 65px;
+    min-height: 16px;
     overflow-y: auto;
-    /* width: 163px; */
-    width: 174px;
+    width: 195px;
 }
 .payments_date {
     float: left;
-    /* width: 35px; */
     width: 45px;
 }
 .payments_payment{
     float: left;
-    width: 68px;
+    width: 76px;
 }
 .payments_amnt {
     float: left;
-    width: 60px;
+    width: 74px;
 }
 .payments_date2 {
     float: left;
-    /* width: 30px;*/
     width: 45px;
     text-align: center;
 }
 .payments_payment2{
     float: left;
-    width: 68px;
+    width: 75px;
     padding-left: 2px;
+    border-left: 1px solid #b5b5b5;
+    border-right: 1px solid #b5b5b5;
 }
 .payments_amnt2 {
     float: left;
-    width: 60px;
+    width: 63px;
     text-align: right;
     padding-right: 2px;
 }
