@@ -6,9 +6,8 @@
 }
 #itemDetailsModal .modal-header {
     padding: 0;
-    background: #282828;
-    /* height: 35px; */
-    border: 1px solid #282828;
+    background: #353535;
+    border: 1px solid #353535;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding-top: 5px;
@@ -17,13 +16,113 @@
     margin-top: -12px;
     margin-right: -7px;
     opacity: 1;
+    position: relative;
+    z-index: 5;
+}
+#itemDetailsModal .modal-header div {
+    float: left;
+}
+#itemDetailsModal .modal-header .content-row {
+    margin-top: -21px;
+}
+.itemdetails_logo {
+    width: 173px;
+    text-align: center;
+}
+.itemdetails_logo img {
+    margin-top: 7px;
+}
+.itemdetailsstatus {
+    width: 74px;
+    color: #ffffff;
+}
+.itemdetailsstatus > div {
+    text-align: center;
+    width: 100%;
+}
+.itemdetailsstatus-value {
+    margin-top: 7px;
+    font-size: 10px;
+    line-height: 16px;
+}
+.itemdetailsstatus-label {
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 27px;
+}
+.itemdetails-keydataarea {
+    color: #ffffff;
+    border-bottom: 55px solid #000048;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    height: 0;
+}
+.itemdetails-keydatvalue {
+    background: #ffffff;
+    border-radius: 5px;
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+}
+.itemdetails-namearea {
+    margin-left: 8px;
+    width: 415px;
+}
+.itemdetails-namearea .itemdetails-keydatvalue {
+    width: 384px;
+}
+.itemdetails-itemnumarea {
+    width: 115px;
+}
+.itemdetails-itemnumarea .itemdetails-keydatvalue {
+    padding-left: 0;
+    text-align: center;
+    width: 82px;
+}
+.itemdetails-itemcategory {
+    width: 279px;
+}
+.itemdetails-itemcategory .itemdetails-keydatvalue {
+    width: 248px;
+}
+.itemdetails-keydataarea .namearea-label {
+    margin-left: 6px;
+    font-size: 11px;
+    color: #ffffff;
+    line-height: 17px;
+}
+.itemdetails-mode {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    width: 59px;
+}
+.itemdetails-modevalue {
+    margin-top: 8px;
+    line-height: 17px;
+}
+.itemdetails-modelabel {
+    margin-left: 9px;
+    line-height: 17px;
+}
+.itemdetails-action {
+    float: right!important;
+    width: 110px;
+    text-align: center;
+}
+.itemdetails-action .edit_itemdetails {
+    margin-top: 10px;
+    cursor: pointer;
 }
 #itemDetailsModal .modal-content {
     background: #282828;
 }
 #itemDetailsModal .modal-body {
-    padding: 0 8px 10px 8px;
-    background: #282828;
+    padding: 0;
+    background: #ffffff;
     border-left: 1px solid #000;
     border-right: 1px solid #000;
     border-bottom: 1px solid #000;
@@ -37,6 +136,28 @@
 #itemDetailsModal .modal-footer {
     padding: 0px;
 }
+.itemdetails-tab {
+    margin-top: 5px;
+    height: 25px;
+    padding: 5px 13px 0 13px;
+    font-size: 15px;
+    color: #000000;
+    background: #ffffff;
+    border-radius : 9px 9px 0 0;
+    margin-left: 10px;
+}
+.itemdetails-tab.active {
+     font-weight: 600;
+     color: #ffffff;
+     background: #000048;
+}
+.itemdetails-infoarea {
+    width: 100%;
+    background: #000048;
+    padding: 7px 0;
+    border-radius: 0 0 5px 5px;
+}
+/*
 .relieverdetails-left-header {
     float: left;
     margin-left: 8px;
@@ -122,6 +243,7 @@
     border-radius: 9px;
     cursor: pointer;
 }
+*/
 /* Sections */
 .leftpartitembody {
     margin-left: 8px;
