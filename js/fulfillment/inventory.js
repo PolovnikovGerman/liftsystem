@@ -416,14 +416,15 @@ function init_inventory_view() {
             $("#loader").show();
             $.post(url, params, function(response){
                 if (response.errors=='') {
-                    $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").empty().html(response.data.containerhead);
+                    // $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").empty().html(response.data.containerhead);
                     $("#printshopinventor").find("div.inventorytablehead").find("div.onboacontainer[data-container='"+container+"']").addClass('arrived');
                     $("#printshopinventor").find("div.onboacontainerdata[data-container='"+container+"']").addClass('arrived');
-                    $("#printshopinventor").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
-                    $("div#inventtotal").empty().html(response.data.totalinvview);
-                    $("div#curinvtotal").empty().html(response.data.total_inventory);
-                    $("#loader").hide();
-                    init_inventory_view();
+                    // $("#printshopinventor").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
+                    // $("div#inventtotal").empty().html(response.data.totalinvview);
+                    // $("div#curinvtotal").empty().html(response.data.total_inventory);
+                    // $("#loader").hide();
+                    // init_inventory_view();
+                    init_inventory_data();
                 } else {
                     $("#loader").hide();
                     show_error(response);
