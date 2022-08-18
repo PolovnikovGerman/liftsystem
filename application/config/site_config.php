@@ -87,7 +87,7 @@ switch($_SERVER['SERVER_NAME']){
             'sage@bluetrack.com',
             'art@bluetrack.com',
             'robert@bluetrack.com',
-            'darrell.martin@bluetrack.com',
+            /* 'darrell.martin@bluetrack.com', */
         );
         $config['netexportsecure']=1;
         $config['netexportdata']='http://bluetrack.net/system/controller/exportbrowndata.php';
