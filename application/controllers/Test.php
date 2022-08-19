@@ -941,6 +941,21 @@ class Test extends CI_Controller
         }
     }
 
+    public function test_attempts() {
+        $this->load->model('orders_model');
+        /* Calculate time begin - end of previous day */
+        // $start=strtotime(date("Y-m-d", time()) . " - 1 days");
+        // $end=strtotime(date('m/d/Y',$start).'23:59:59');
+        $start = strtotime('2022-08-08');
+        $end = strtotime('2022-08-08 23:59:59');
+        $filtr=array(
+            'starttime'=>$start,
+            'endtime'=>$end,
+        );
+        $this->orders_model->attempts_report($filtr);
+
+    }
+
     public function addinventory() {
         $lbsitem=[5,10, 16, 23];
         $yrditem=[4,11, 15, 21];

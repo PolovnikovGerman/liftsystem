@@ -523,6 +523,7 @@ input.artdetail_color_val {
     text-align: center;
     font-size: 14px;
     font-weight: bold;
+    color: #000;
 }
 .question_qdate {
     float: left;

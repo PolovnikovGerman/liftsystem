@@ -783,7 +783,8 @@ Class Leadorder_model extends My_Model {
         $this->db->where('order_id', $order_id);
         // $this->db->where('batch_received', 1);
         $this->db->where('batch_term',  0);
-        $this->db->order_by('batch_date');
+        // $this->db->order_by('batch_date');
+        $this->db->order_by('create_date');
         $res = $this->db->get()->result_array();
         $out = array();
         foreach ($res as $row) {
@@ -2805,14 +2806,6 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
-            // Make Current row Amount=0, Add Charge
-            $this->db->where('order_payment_id', $charge['order_payment_id']);
-            $this->db->set('amount',0);
-            $this->db->set('cardnum', $charge['cardnum']);
-            $this->db->set('exp_month', $pay_options['exp_month']);
-            $this->db->set('exp_year', $pay_options['exp_year']);
-            $this->db->set('cardcode', $pay_options['cardcode']);
-            $this->db->update('ts_order_payments');
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -2845,8 +2838,16 @@ Class Leadorder_model extends My_Model {
             $order['cc_fee']=$fee;
             $leadorder['order']=$order;
             $leadorder['payments']=$payments;
-            $newcharges = $this->get_order_charges($order_id);
-            $leadorder['charges'] = $newcharges;
+            // Make Current row Amount=0, Add Charge
+            $charge['amount'] = 0;
+            $idx = 0;
+            foreach ($charges as $row) {
+                if ($row['order_payment_id']==$charge['order_payment_id']) {
+                    $charges[$idx]=$charge;
+                }
+                $idx++;
+            }
+            $leadorder['charges'] = $charges;
             usersession($ordersession, $leadorder);
             $out['result']=$this->success_result;
         }

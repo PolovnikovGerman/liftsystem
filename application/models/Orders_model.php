@@ -32,6 +32,7 @@ Class Orders_model extends MY_Model
 
     private $art_sendlater = "I'll send it later";
     private $art_sendbefore = "I already sent it";
+    private $art_repeat = 'Repeat Past Order';
 
     private $accrec_terms = 'Terms';
     private $accrec_willupd = 'Will Update';
@@ -5725,9 +5726,13 @@ Class Orders_model extends MY_Model
                         } else {
                             $brown_customer = $orderdata['customer_name'];
                         }
+                        $instruct = $orderdata['order_customer_comment'];
+                        if ($order_item['imprint_type']==2) {
+                            $instruct.= 'Artwork Email Later';
+                        }
                         $artdat = array(
                             'order_id' => $brownord,
-                            'customer_instruct' => $orderdata['order_customer_comment'],
+                            'customer_instruct' => $instruct, //$orderdata['order_customer_comment'],
                             /* 'customer'=>$ord_details['customer_name'], */
                             'customer' => $brown_customer,
                             'customer_phone' => $orderdata['contact_phone'],
@@ -5918,9 +5923,7 @@ Class Orders_model extends MY_Model
                     $this->db->from('sb_order_userlogos');
                     $this->db->where('order_userlogo_artworkid', $artrow['order_artwork_id']);
                     $logores = $this->db->get()->row_array();
-                    log_message('ERROR', $this->db->last_query());
                     if (ifset($logores,'order_userlogo_id',0)>0) {
-                        log_message('ERROR', 'Logo File '.$logores['order_userlogo_id']);
                         $artrow['logo_file'] = $logores['order_userlogo_filename'];
                         $artrow['logo_source'] = $logores['order_userlogo_file'];
                     } else {
@@ -5948,7 +5951,10 @@ Class Orders_model extends MY_Model
         $quickord=0;
         $art = $item['artworks'];
         $blank = 0;
-        if ($orddata['imprinting'] == 0) {
+        // if ($orddata['imprinting'] == 0) {
+        //     $blank = 1;
+        // }
+        if ($item['imprint_type']==0) {
             $blank = 1;
         }
         $ordnum = $this->finorder_num();
@@ -5977,8 +5983,8 @@ Class Orders_model extends MY_Model
             $cc_fee = round(($item['total'] * $this->default_ccfee) / 100, 2);
             $profit = round(($item['total'] * $this->default_profit_perc) / 100, 2);
             $rushval = (($item['production_term'] == 'Standard' || $item['production_term'] == '') ? 0 : 1 );
-            if ($orddata['customer_company'] != '') {
-                $brown_customer = $orddata['customer_company'];
+            if (!empty(trim($orddata['customer_company']))) {
+                $brown_customer = trim($orddata['customer_company']);
             } else {
                 $brown_customer = $orddata['contact_first_name'] . ' ' . $orddata['contact_last_name'];
             }
@@ -6171,30 +6177,36 @@ Class Orders_model extends MY_Model
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }
-                        $this->db->set('order_item_id', $item_id);
-                        $this->db->set('imprint_item', 1);
-                        $this->db->set('imprint_qty', $item['item_qty']);
-                        if ($item['imprint_type']==1) {
-                            $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 1st Color Imprinting');
-                            if ($numpp == 0) {
-                                $this->db->set('imprint_price', 0.00);
-                            } else {
-                                $this->db->set('imprint_price', $item['imprint_price']);
-                            }
+                        if ($item['imprint_type']==2) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_description', '&nbsp;');
+                            $this->db->insert('ts_order_imprints');
                         } else {
-                            $this->db->set('imprint_description', 'Loc ' . $locnum . ' -  1st Color Imprinting');
-                            if ($numpp == 0) {
-                                $this->db->set('imprint_price', 0.00);
-                            } else {
-                                if ($item['imprint_type']==3) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_item', 1);
+                            $this->db->set('imprint_qty', $item['item_qty']);
+                            if ($item['imprint_type']==1) {
+                                $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 1st Color Imprinting');
+                                if ($numpp == 0) {
                                     $this->db->set('imprint_price', 0.00);
                                 } else {
                                     $this->db->set('imprint_price', $item['imprint_price']);
                                 }
+                            } else {
+                                $this->db->set('imprint_description', 'Loc ' . $locnum . ' -  1st Color Imprinting');
+                                if ($numpp == 0) {
+                                    $this->db->set('imprint_price', 0.00);
+                                } else {
+                                    if ($item['imprint_type']==3) {
+                                        $this->db->set('imprint_price', 0.00);
+                                    } else {
+                                        $this->db->set('imprint_price', $item['imprint_price']);
+                                    }
+                                }
                             }
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->insert('ts_order_imprints');
                         }
-                        $this->db->set('order_item_id', $item_id);
-                        $this->db->insert('ts_order_imprints');
                         $numpp++;
                         if ($numcolors == 2) {
                             $this->db->set('order_item_id', $item_id);
@@ -6245,17 +6257,20 @@ Class Orders_model extends MY_Model
                         }
                         $this->db->insert('ts_order_imprindetails');
                     }
-                    $this->db->set('order_item_id', $item_id);
-                    if ($item['imprint_type']==3) {
-                        $this->db->set('imprint_description', 'Repeat Setup Charge');
-                        $this->db->set('imprint_price', 0);
-                    } else {
-                        $this->db->set('imprint_description', 'One Time Art Setup Charge');
-                        $this->db->set('imprint_price', $item['setup_price']);
+
+                    if ($item['imprint_type']!=2) {
+                        $this->db->set('order_item_id', $item_id);
+                        if ($item['imprint_type']==3) {
+                            $this->db->set('imprint_description', 'Repeat Setup Charge');
+                            $this->db->set('imprint_price', 0);
+                        } else {
+                            $this->db->set('imprint_description', 'One Time Art Setup Charge');
+                            $this->db->set('imprint_price', $item['setup_price']);
+                        }
+                        $this->db->set('imprint_item', 0);
+                        $this->db->set('imprint_qty', $numpp);
+                        $this->db->insert('ts_order_imprints');
                     }
-                    $this->db->set('imprint_item', 0);
-                    $this->db->set('imprint_qty', $numpp);
-                    $this->db->insert('ts_order_imprints');
                 }
             }
             // Add New Billing Info
@@ -6983,6 +6998,201 @@ Class Orders_model extends MY_Model
     }
 
     public function attemptreportdata($filtr) {
+        $this->db->select('*');
+        $this->db->from('sb_baskets');
+        if (ifset($filtr, 'starttime',0) > 0) {
+            $this->db->where('unix_timestamp(created_time) >= ', $filtr['starttime']);
+        }
+        if (ifset($filtr , 'endtime', 0) > 0 ) {
+            $this->db->where('unix_timestamp(created_time) <= ', $filtr['endtime']);
+        }
+        $this->db->order_by('updated_time');
+        $rows = $this->db->get()->result_array();
+        $out_dat = [];
+        $out_attach = [];
+        $this->load->model('shipping_model');
+        foreach ($rows as $row) {
+            $user = $row['contact_person'];
+            $user_contact = '';
+            if (!empty($row['contact_email'])) {
+                $user_contact.='Email '.$row['contact_email'].PHP_EOL;
+            }
+            if (!empty($row['contact_phone'])) {
+                $user_contact.='Phone '.$row['contact_phone'].' '.$row['cell_phone']==0 ? '' : '(mob)'.PHP_EOL;
+            }
+
+            $user_address = '';
+            if (!empty($row['ship_country'])) {
+                $user_address.='Country ' . $row['ship_country'] . ' '. PHP_EOL;
+            }
+            if (!empty($row['ship_city'])) {
+                $user_address.='City ' . $row['ship_city'] . ' ';
+            }
+            if (!empty($cart['ship_street1'])) {
+                $user_address.=$cart['ship_street1'] . ' ';
+            }
+            if (!empty($cart['ship_street2']) && $cart['ship_street2']) {
+                $user_address.=$cart['ship_street2'] . ' ';
+            }
+            // Items
+            $this->db->select('bi.*, i.item_number, i.item_name');
+            $this->db->from('sb_basket_items bi');
+            $this->db->join('sb_items i', 'bi.item_id=i.item_id');
+            $this->db->where('bi.basket_id', $row['basket_id']);
+            $basket_items = $this->db->get()->result_array();
+            foreach ($basket_items as $basket_item) {
+                $item_number = $basket_item['item_number'];
+                $item_name = $basket_item['item_name'];
+                $item_qty = $basket_item['qty1']+$basket_item['qty2']+$basket_item['qty3']+$basket_item['qty4'];
+                $item_color = $basket_item['color1'];
+                if (!empty($basket_item['color2']) || !empty($basket_item['color3']) || !empty($basket_item['color4'])) {
+                    $item_color = 'assorted';
+                }
+                $imprint = '';
+                if ($basket_item['imprint_type']==0) {
+                    $imprint = 'Blank';
+                } elseif ($basket_item['imprint_type']==1) {
+                    $imprint = 'Attach Below';
+                } elseif ($basket_item['imprint_type']==2) {
+                    $imprint = 'Email Later';
+                } elseif ($basket_item['imprint_type']==3) {
+                    $imprint = 'Repeat Past Order';
+                }
+                $artdata = '';
+                if ($basket_item['imprint_type']==0) {
+                    $artdata = 'No Art';
+                } else {
+                    $this->db->select('l.*, sii.item_inprint_location');
+                    $this->db->from('sb_basket_locations l');
+                    $this->db->join('sb_item_inprints sii','l.item_inprint_id = sii.item_inprint_id');
+                    $this->db->where('l.basket_item_id', $basket_item['basket_item_id']);
+                    $arts = $this->db->get()->result_array();
+                    $art_order = 1;
+                    foreach ($arts as $artrow) {
+                        $artadd = 'Imprint Location ' . $art_order . ' ';
+                        if ($basket_item['imprint_type'] == 2) {
+                            $artadd.=$this->art_sendlater;
+                        } elseif ($basket_item['imprint_type'] == 3) {
+                            $artadd.=$this->art_repeat;
+                        } else {
+                            $artadd.=$artrow['item_inprint_location']. PHP_EOL;
+                            if (ifset($artrow, 'logo_url','')) {
+                                $artadd.=' File URL http://' . $this->input->server('SERVER_NAME') . $artrow['logo_url']. PHP_EOL;
+                                array_push($out_attach, $artrow['logo_url']);
+                            }
+                            if (!empty($artrow['logo_txt'])) {
+                                $artadd.=' User Text ' . $artrow['logo_txt']. PHP_EOL;
+                            }
+                            $colors = $artrow['color1'].(!empty($artrow['color2']) ? ', '.$artrow['color2'] : '');
+                            if (!empty($colors)) {
+                                $artadd.=' Colors - ' . $colors . PHP_EOL;
+                            }
+                        }
+                        $art_order++;
+                        $artdata.=$artadd;
+                    }
+                }
+                $rushprice = 0;
+                $rushdays = 0;
+                $rushdate = '';
+                $ship_method = '';
+                $ship_cost = 0;
+                if (!empty($basket_item['shipping_calendar'])) {
+                    $calend = json_decode($basket_item['shipping_calendar'], true);
+                    if (isset($calend['shipping'])) {
+                        foreach ($calend['shipping'] as $shipping) {
+                            if ($shipping['current']==1) {
+                                $rushdate = date('m/d/Y', $shipping['date']);
+                                $rushdays = $shipping['term'];
+                                $rushprice = $shipping['price'];
+                                break;
+                            }
+                        }
+                    }
+                    if (isset($calend['arrive'])) {
+                        foreach ($calend['arrive'] as $arrive) {
+                            if ($arrive['current']==1) {
+                                $ship_method = $arrive['label'];
+                                $ship_cost = $arrive['price'];
+                            }
+                        }
+                    }
+                }
+                $item_cost = $basket_item['sale_price']* $item_qty;
+                $imprint_cost = ($basket_item['imprint_type']==0 ? 0 : $basket_item['inprint_price'] * $item_qty * ($basket_item['imprint'] - 1));
+                $setup_cost = $basket_item['imprint_type']==0 ? 0 : $basket_item['setup_price'] * $basket_item['imprint'];
+                $tax_cost = $basket_item['sale_tax'];
+                $total_cost = $basket_item['sale_cost'];
+            }
+            $user_location = '';
+            if (!empty($row['user_ip'])) {
+                $ipdat = $this->shipping_model->ipdata_exist($row['user_ip']);
+                if ($ipdat['result']) {
+                    $user_location.=($ipdat['city_name'] == '-' ? '' : $ipdat['city_name'] . ', ');
+                    $user_location.=($ipdat['region_name'] == '-' ? '' : $ipdat['region_name'] . ', ');
+                    $user_location.=($ipdat['country_code'] == '-' ? '' : $ipdat['country_name']);
+                }
+            }
+            $cc_card = '';
+            if (!empty($row['credit_card_system'])) {
+                $cc_card.= $row['credit_card_system'].' ';
+            }
+            if (!empty($row['credit_card_number'])) {
+                $cc_card.= $row['credit_card_number'].' ';
+            }
+            if (!empty($row['credit_card_month'])) {
+                $cc_card.=' exp '.$row['credit_card_month'];
+                if (!empty($row['credit_card_year'])) {
+                    $cc_card.='/'.$row['credit_card_year'];
+                }
+            }
+            // Last upd fld
+            $last_upd = '';
+            $last_fld ='';
+            $this->db->select('*');
+            $this->db->from('sb_basketchange_log');
+            $this->db->where('basket_code', $row['basket_code']);
+            $this->db->order_by('basketchange_log_id','desc');
+            $logdat = $this->db->get()->row_array();
+            if (ifset($logdat,'basketchange_log_id', 0) > 0) {
+                $last_upd = date('m/d/Y H:i:s', strtotime($logdat['change_time']));
+                $last_fld = $logdat['basket_parameter'];
+            }
+            $out_dat[] = [
+                'checkout_start' => date('m/d/Y H:i:s', strtotime($row['created_time'])),
+                'last_action' => $last_upd,
+                'art' => $artdata,
+                'item_number' => $item_number,
+                'item_name' => $item_name,
+                'item_qty' => $item_qty,
+                'item_colors' => $item_color,
+                'imprint' => $imprint,
+                'rushdate' => $rushdate,
+                'rushprice' => $rushprice,
+                'rushdays' => $rushdays,
+                'itemcost' => $item_cost,
+                'imprintval' => $imprint_cost,
+                'setup' => $setup_cost,
+                'tax' => $tax_cost,
+                'total' => $total_cost,
+                'ship_method' => $ship_method,
+                'shipping' => $ship_cost,
+                'user' => $user,
+                'user_contact' => $user_contact,
+                'user_address' => $user_address,
+                'user_ip' => $row['user_ip'],
+                'user_location' => $user_location,
+                'cc_details' => $cc_card,
+                'last_field' => $last_fld,
+            ];
+        }
+        return [
+            'out_dat' => $out_dat,
+            'out_attach' => $out_attach,
+        ];
+    }
+
+    public function _attemptreportdata($filtr) {
         $this->load->model('shipping_model');
         $this->db->select('*');
         $this->db->from('sb_cartdatas');

@@ -13,7 +13,12 @@ Class Categories_model extends MY_Model
         $this->db->from('sb_categories');
         $this->db->where('parent_id',NULL);
         foreach ($filtr as $key=>$val) {
-            $this->db->where($key,$val);
+            if (is_array($val)) {
+                $this->db->where_in($key,$val);
+            } else {
+                $this->db->where($key,$val);
+            }
+
         }
         if ($order_by!='') {
             $this->db->order_by($order_by,$sort);
