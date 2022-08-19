@@ -5726,9 +5726,13 @@ Class Orders_model extends MY_Model
                         } else {
                             $brown_customer = $orderdata['customer_name'];
                         }
+                        $instruct = $orderdata['order_customer_comment'];
+                        if ($order_item['imprint_type']==2) {
+                            $instruct.= 'Artwork Email Later';
+                        }
                         $artdat = array(
                             'order_id' => $brownord,
-                            'customer_instruct' => $orderdata['order_customer_comment'],
+                            'customer_instruct' => $instruct, //$orderdata['order_customer_comment'],
                             /* 'customer'=>$ord_details['customer_name'], */
                             'customer' => $brown_customer,
                             'customer_phone' => $orderdata['contact_phone'],
@@ -5979,8 +5983,8 @@ Class Orders_model extends MY_Model
             $cc_fee = round(($item['total'] * $this->default_ccfee) / 100, 2);
             $profit = round(($item['total'] * $this->default_profit_perc) / 100, 2);
             $rushval = (($item['production_term'] == 'Standard' || $item['production_term'] == '') ? 0 : 1 );
-            if ($orddata['customer_company'] != '') {
-                $brown_customer = $orddata['customer_company'];
+            if (!empty(trim($orddata['customer_company']))) {
+                $brown_customer = trim($orddata['customer_company']);
             } else {
                 $brown_customer = $orddata['contact_first_name'] . ' ' . $orddata['contact_last_name'];
             }
@@ -6173,30 +6177,36 @@ Class Orders_model extends MY_Model
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }
-                        $this->db->set('order_item_id', $item_id);
-                        $this->db->set('imprint_item', 1);
-                        $this->db->set('imprint_qty', $item['item_qty']);
-                        if ($item['imprint_type']==1) {
-                            $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 1st Color Imprinting');
-                            if ($numpp == 0) {
-                                $this->db->set('imprint_price', 0.00);
-                            } else {
-                                $this->db->set('imprint_price', $item['imprint_price']);
-                            }
+                        if ($item['imprint_type']==2) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_description', '&nbsp;');
+                            $this->db->insert('ts_order_imprints');
                         } else {
-                            $this->db->set('imprint_description', 'Loc ' . $locnum . ' -  1st Color Imprinting');
-                            if ($numpp == 0) {
-                                $this->db->set('imprint_price', 0.00);
-                            } else {
-                                if ($item['imprint_type']==3) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_item', 1);
+                            $this->db->set('imprint_qty', $item['item_qty']);
+                            if ($item['imprint_type']==1) {
+                                $this->db->set('imprint_description', 'Loc ' . $locnum . ' - ' . $arow['order_artwork_printloc'] . ' 1st Color Imprinting');
+                                if ($numpp == 0) {
                                     $this->db->set('imprint_price', 0.00);
                                 } else {
                                     $this->db->set('imprint_price', $item['imprint_price']);
                                 }
+                            } else {
+                                $this->db->set('imprint_description', 'Loc ' . $locnum . ' -  1st Color Imprinting');
+                                if ($numpp == 0) {
+                                    $this->db->set('imprint_price', 0.00);
+                                } else {
+                                    if ($item['imprint_type']==3) {
+                                        $this->db->set('imprint_price', 0.00);
+                                    } else {
+                                        $this->db->set('imprint_price', $item['imprint_price']);
+                                    }
+                                }
                             }
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->insert('ts_order_imprints');
                         }
-                        $this->db->set('order_item_id', $item_id);
-                        $this->db->insert('ts_order_imprints');
                         $numpp++;
                         if ($numcolors == 2) {
                             $this->db->set('order_item_id', $item_id);
@@ -6247,17 +6257,21 @@ Class Orders_model extends MY_Model
                         }
                         $this->db->insert('ts_order_imprindetails');
                     }
-                    $this->db->set('order_item_id', $item_id);
-                    if ($item['imprint_type']==3) {
-                        $this->db->set('imprint_description', 'Repeat Setup Charge');
-                        $this->db->set('imprint_price', 0);
-                    } else {
-                        $this->db->set('imprint_description', 'One Time Art Setup Charge');
-                        $this->db->set('imprint_price', $item['setup_price']);
+                    echo $orddata['order_confirmation'].' - '.$item['imprint_type'].PHP_EOL;
+                    if ($item['imprint_type']!=2) {
+                        echo $orddata['order_confirmation'].' - Setup '.PHP_EOL;
+                        $this->db->set('order_item_id', $item_id);
+                        if ($item['imprint_type']==3) {
+                            $this->db->set('imprint_description', 'Repeat Setup Charge');
+                            $this->db->set('imprint_price', 0);
+                        } else {
+                            $this->db->set('imprint_description', 'One Time Art Setup Charge');
+                            $this->db->set('imprint_price', $item['setup_price']);
+                        }
+                        $this->db->set('imprint_item', 0);
+                        $this->db->set('imprint_qty', $numpp);
+                        $this->db->insert('ts_order_imprints');
                     }
-                    $this->db->set('imprint_item', 0);
-                    $this->db->set('imprint_qty', $numpp);
-                    $this->db->insert('ts_order_imprints');
                 }
             }
             // Add New Billing Info
