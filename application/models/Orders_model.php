@@ -6257,9 +6257,8 @@ Class Orders_model extends MY_Model
                         }
                         $this->db->insert('ts_order_imprindetails');
                     }
-                    echo $orddata['order_confirmation'].' - '.$item['imprint_type'].PHP_EOL;
+
                     if ($item['imprint_type']!=2) {
-                        echo $orddata['order_confirmation'].' - Setup '.PHP_EOL;
                         $this->db->set('order_item_id', $item_id);
                         if ($item['imprint_type']==3) {
                             $this->db->set('imprint_description', 'Repeat Setup Charge');
