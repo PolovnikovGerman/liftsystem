@@ -71,6 +71,11 @@ function init_page(objid) {
             $("#categoryview").show();
             init_categories_page();
             break;
+        case 'btsettings' :
+            $("#shippingview").show();
+            init_shipping('BT');
+            // Change Brand
+            break;
     }
 }
 
