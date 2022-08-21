@@ -41,18 +41,18 @@
     <div class="vendorrusharea">
         <div class="vendorstandrush">
             <div class="vendorrushtitle">Stand:</div>
-            <div class="vendorrushterm">10</div>
+            <div class="vendorrushterm"><?=$item['item_lead_a']?></div>
             <div class="vendorrushtermtitle">biz days</div>
         </div>
         <div class="vendorrush1rush">
             <div class="vendorrushtitle">Rush 1:</div>
-            <div class="vendorrushterm">5</div>
+            <div class="vendorrushterm"><?=$item['item_lead_b']?></div>
             <div class="vendorrushtermtitle">biz days</div>
-            <div class="vendorrushprice">25.00</div>
+            <div class="vendorrushprice">50</div>
         </div>
         <div class="vendorrush2rush">
             <div class="vendorrushtitle">Rush 2:</div>
-            <div class="vendorrushterm">1</div>
+            <div class="vendorrushterm"><?=$item['item_lead_c']?></div>
             <div class="vendorrushtermtitle">biz days</div>
             <div class="vendorrushprice">100.00</div>
         </div>

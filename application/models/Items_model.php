@@ -873,6 +873,12 @@ Class Items_model extends My_Model
                     ];
                 }
                 $vendor = [
+                    'vendor_id' => '',
+                    'vendor_name' => '',
+                    'vendor_zipcode' => '',
+                    'shipaddr_state' => '',
+                    'shipaddr_country' => '',
+                    'po_note' => '',
                 ];
             } else {
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
@@ -1006,9 +1012,11 @@ Class Items_model extends My_Model
             $item['profit_setup_perc']=$specprice['profit_setup_perc'];
             // Simular
             $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
+            // config
             $data=[
                 'item' => $item,
                 'colors' => $colors,
+                'vendor' => $vendor,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,

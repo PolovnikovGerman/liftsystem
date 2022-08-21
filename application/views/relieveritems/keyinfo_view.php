@@ -9,7 +9,7 @@
         </div>
         <div class="content-row">
             <div class="itemparamlabel itemactive">Template:</div>
-            <div class="itemparamvalue itemtemplate"><?=$item['item_template']?></div>
+            <div class="itemparamvalue itemtemplate <?=empty($item['item_template']) ? 'missing_info' : ''?>"><?=$item['item_template']?></div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel tags">Tags:</div>
@@ -40,32 +40,32 @@
         </div>
         <div class="content-row">
             <div class="itemparamlabel subcategory">Sub-Cat 1:</div>
-            <div class="itemparamvalue subcategory">Popular</div>
+            <div class="itemparamvalue subcategory <?=empty($item['category']) ? 'missing_info' : ''?>"><?=$item['category']?></div>
         </div>
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemsize">Size:</div>
-            <div class="itemparamvalue itemsize"><?=$item['item_size']?></div>
+            <div class="itemparamvalue itemsize <?=empty($item['ite_size']) ? 'missing_info' : ''?>"><?=$item['item_size']?></div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel itemsize">Material:</div>
-            <div class="itemparamvalue itemsize"><?=$item['item_material']?></div>
+            <div class="itemparamvalue itemsize <?=empty($item['item_material']) ? 'missing_info' : ''?>"><?=$item['item_material']?></div>
         </div>
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemdescrip">Description:</div>
-            <div class="itemparamvalue itemdescrip"><?=$item['item_description1']?></div>
+            <div class="itemparamvalue itemdescrip <?=empty($item['item_description1']) ? 'missing_info' : ''?>"><?=$item['item_description1']?></div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel bullets">Bullet Points:</div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="itemparamvalue itembullet"></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="itemparamvalue itembullet"></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="itemparamvalue itembullet"></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet">Polyurethane</div>
+            <div class="itemparamvalue itembullet"></div>
         </div>
     </div>
 </div>

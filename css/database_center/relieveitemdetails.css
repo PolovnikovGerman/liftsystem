@@ -299,6 +299,10 @@
     line-height: 21px;
     padding-left: 5px;
 }
+.itemparamvalue.missing_info {
+    background: #ffc0cb;
+    border: 1px solid #FF0000;
+}
 .itemparamlabel.itemactive {
     padding-right: 15px;
     width: 75px;
