@@ -23,7 +23,11 @@
                     <?=$legacyview?>
                 </div>
             <?php } ?>
-
+            <?php if (isset($shippingview)) { ?>
+                <div class="dbcontentarea" id="shippingview" style="display: none;">
+                    <?=$shippingview?>
+                </div>
+            <?php } ?>
             <?php if (isset($itempriceview)) { ?>
                 <div class="page_container dbitemspage" id="itempriceview" style="display: none;"><?=$itempriceview?></div>
             <?php } ?>

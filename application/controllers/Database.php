@@ -142,6 +142,11 @@ class Database extends MY_Controller
             if ($row['item_link']=='#vendorsview') {
             } elseif ($row['item_link']=='#masterinventory') {
             } elseif ($row['item_link']=='#mastersettings') {
+            } elseif ($row['item_link']=='#btsettings') {
+                // Shipping Settings
+                $head['styles'][] = array('style' => '/css/settings/shippings.css');
+                $head['scripts'][] = array('src' => '/js/settings/shippings.js');
+                $content_options['shippingview'] = $this->_prepare_shipping_view('BT');
             }
         }
         // Add main page management
@@ -161,7 +166,7 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
-        $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        // $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
 
@@ -1755,6 +1760,32 @@ class Database extends MY_Controller
             'curpage'=>0,
         );
         $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_shipping_view($brand) {
+        $months=array();
+        for ($i=1; $i<13; $i++) {
+            $key=str_pad($i,2,'0',STR_PAD_LEFT);
+            $name=date('F',strtotime('1980-'.$key.'-01'));
+            $months[]=array('id'=>$key, 'name'=>$name);
+        }
+        $this->load->model('shipping_model');
+        $mindate=$this->shipping_model->shipcalk_stardate($brand);
+        $startyear=date('Y',$mindate);
+        $curyear=date('Y');
+        $years=array();
+        for ($i=$startyear; $i<=$curyear; $i++) {
+            $years[]=array('id'=>$i, 'name'=>$i);
+        }
+        $options=[
+            'months'=>$months,
+            'years'=>$years,
+            'curmonth'=>date('m'),
+            'curyear'=>date('Y'),
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('settings/shippings_view',$options,TRUE);
         return $content;
     }
 
