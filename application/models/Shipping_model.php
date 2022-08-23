@@ -510,6 +510,7 @@ Class Shipping_model extends MY_Model
                 'ship'=> array(),
                 'weight' =>$itemweight,
                 'cnt_code'=>$cntdat['country_iso_code_2'],
+                'brand' => $brand,
             );
 
             $out=calculate_shipcost($options);
@@ -1014,6 +1015,16 @@ Class Shipping_model extends MY_Model
         return $result;
     }
 
-
+    public function get_country_shipmethods($country_code, $brand) {
+        $this->db->select('z.zone_id, ssm.shipping_method_name, ssm.ups_rate_code, zm.method_percent, zm.method_dimens, c.country_id');
+        $this->db->from('sb_shipping_zones z');
+        $this->db->join('sb_shipzone_methods zm','zm.shipzone_id=z.zone_id');
+        $this->db->join('sb_shipping_methods ssm','zm.method_id = ssm.shipping_method_id');
+        $this->db->join('sb_countries c','c.zone_id=z.zone_id');
+        $this->db->where('c.country_iso_code_2',$country_code);
+        $this->db->where('brand', $brand);
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
 
 }
