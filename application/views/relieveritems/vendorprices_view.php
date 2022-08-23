@@ -41,24 +41,24 @@
     <div class="vendorrusharea">
         <div class="vendorstandrush">
             <div class="vendorrushtitle">Stand:</div>
-            <div class="vendorrushterm"><?=$item['item_lead_a']?></div>
+            <div class="vendorrushterm"><?=$vendor_price['stand_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
         </div>
         <div class="vendorrush1rush">
             <div class="vendorrushtitle">Rush 1:</div>
-            <div class="vendorrushterm"><?=$item['item_lead_b']?></div>
+            <div class="vendorrushterm"><?=$vendor_price['rush1_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
-            <div class="vendorrushprice">50</div>
+            <div class="vendorrushprice"><?=$vendor_price['rush1_price']?></div>
         </div>
         <div class="vendorrush2rush">
             <div class="vendorrushtitle">Rush 2:</div>
-            <div class="vendorrushterm"><?=$item['item_lead_c']?></div>
+            <div class="vendorrushterm"><?=$vendor_price['rush2_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
-            <div class="vendorrushprice">100.00</div>
+            <div class="vendorrushprice"><?=$vendor_price['rush2_price']?></div>
         </div>
     </div>
     <div class="vendorpantonearea">
         <div class="vendorpantonetitle">Pantone Match</div>
-        <div class="vendorpantoneprice">25.00</div>
+        <div class="vendorpantoneprice"><?=$vendor_price['pantone_match']?></div>
     </div>
 </div>
