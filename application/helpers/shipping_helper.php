@@ -21,7 +21,7 @@ if (!function_exists('calculate_shipcost')) {
             $ci->load->config('shipping');
             $numinpack = $ci->config->item('default_inpack');
         }
-        $numpack = floor($qty / $numinpack);
+        $numpack = intval(floor($qty / $numinpack));
         $fullpack = 0;
         if ($numpack > 0) {
             $fullpack = 1;
@@ -57,6 +57,11 @@ if (!function_exists('calculate_shipcost')) {
                 $ratekf = $numpack;
                 $ratepack = 1;
                 $rateweight = ($numinpack * $itemweight);
+                if ($numpack < 5) {
+                    $ratekf = 1;
+                    $ratepack = $numpack;
+                    $rateweight = ($numinpack * $itemweight) * $numpack;
+                }
                 $restResult = $upsserv->ship_rates($zip, '', $ratepack, $rateweight, $startdeliv, true, $vendorzip, $cnt_code, $item_length, $item_width, $item_height);
                 if ($restResult['result'] == FALSE) {
                     $ratescalc = 0;
@@ -116,7 +121,7 @@ if (!function_exists('calculate_shipcost')) {
                         }
                         $shipRate = 0;
                         if (isset($fullRates['03'])) {
-                            $shipRate+=round($fullRates['03']['Rate'] * $numpack,2);
+                            $shipRate+=round($fullRates['03']['Rate'] * $ratekf,2);
                         }
                         if (isset($restRates['03'])) {
                             $shipRate+=$restRates['03']['Rate'];
@@ -144,7 +149,7 @@ if (!function_exists('calculate_shipcost')) {
                         }
                         $shipRate = 0;
                         if (isset($fullRates['11'])) {
-                            $shipRate+=round($fullRates['11']['Rate'] *  $numpack, 2);
+                            $shipRate+=round($fullRates['11']['Rate'] *  $ratekf, 2);
                         }
                         if (isset($restRates['11'])) {
                             $shipRate+=$restRates['11']['Rate'];
@@ -175,7 +180,7 @@ if (!function_exists('calculate_shipcost')) {
                         }
                         $shipRate = 0;
                         if (isset($fullRates['02'])) {
-                            $shipRate+=round($fullRates['02']['Rate'] * $numpack, 2);
+                            $shipRate+=round($fullRates['02']['Rate'] * $ratekf, 2);
                         }
                         if (isset($restRates['02'])) {
                             $shipRate+=$restRates['02']['Rate'];
@@ -198,7 +203,7 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'DP1');
                         $shipRate = 0;
                         if (isset($fullRates['13'])) {
-                            $shipRate+=round($fullRates['13']['Rate'] * $numpack,2);
+                            $shipRate+=round($fullRates['13']['Rate'] * $ratekf,2);
                         }
                         if (isset($restRates['13'])) {
                             $shipRate+=$restRates[13]['Rate'];
@@ -223,7 +228,7 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'DA1');
                         $shipRate = 0;
                         if (isset($fullRates['14'])) {
-                            $shipRate+=round($fullRates['14']['Rate']*$numpack, 2);
+                            $shipRate+=round($fullRates['14']['Rate']*$ratekf, 2);
                         }
                         if (isset($restRates['14'])) {
                             $shipRate+=$restRates['14']['Rate'];
@@ -248,7 +253,7 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'UPSExpedited');
                         $shipRate = 0;
                         if (isset($fullRates['08'])) {
-                            $shipRate+=round($fullRates['08']['Rate'] * $numpack,2);
+                            $shipRate+=round($fullRates['08']['Rate'] * $ratekf,2);
                         }
                         if (isset($restRates['08'])) {
                             $shipRate+=$restRates['08']['Rate'];
@@ -272,7 +277,7 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'UPSExpress');
                         $shipRate=0;
                         if (isset($fullRates['07'])) {
-                            $shipRate+=round($fullRates['07']['Rate']*$numpack,2);
+                            $shipRate+=round($fullRates['07']['Rate'] * $ratekf,2);
                         }
                         if (isset($restRates['07'])) {
                             $shipRate+=$restRates['07']['Rate'];
@@ -296,7 +301,7 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'UPSSaver');
                         $shipRate=0;
                         if (isset($fullRates['65'])) {
-                            $shipRate+=round($fullRates['65']['Rate'] * $numpack, 2);
+                            $shipRate+=round($fullRates['65']['Rate'] * $ratekf, 2);
                         }
                         if (isset($restRates['65'])) {
                             $shipRate+=$restRates['65']['Rate'];

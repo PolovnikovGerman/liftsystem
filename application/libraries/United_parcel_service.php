@@ -222,10 +222,10 @@ class United_parcel_service
                 $resp = $client->__soapCall($operation, array($this->processRate($destination_zip, $service_type, $number_of_packages, $weight, $ship_date, $residential,$from_zip,$shipto_cnt,$item_length, $item_width, $item_height)));
 
                 //save soap request and response to file
-                /* $fw = fopen($outputFileName, 'w');
-                fwrite($fw, "Request: \n" . $client->__getLastRequest() . "\n");
-                fwrite($fw, "Response: \n" . $client->__getLastResponse() . "\n");
-                fclose($fw);*/
+//                $fw = fopen($outputFileName, 'w');
+//                fwrite($fw, "Request: \n" . $client->__getLastRequest() . "\n");
+//                fwrite($fw, "Response: \n" . $client->__getLastResponse() . "\n");
+//                fclose($fw);
 
                 //get status
                 // echo "Response Status: " . $resp->Response->ResponseStatus->Description . "\n";
