@@ -321,11 +321,13 @@ class Dbitems extends MY_Controller
                             $data['item']['category'] = $catdat['data']['category_name'];
                         }
                     }
+                    $this->load->model('prices_model');
+                    $discounts = $this->prices_model->get_price_discounts();
                     $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
                     $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
-                    $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',[],TRUE);
                     $optionsimg = $this->load->view('relieveritems/optionimages_view',[],TRUE);
                     $imagesoptions = [

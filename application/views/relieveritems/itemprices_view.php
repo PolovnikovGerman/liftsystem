@@ -48,7 +48,14 @@
             </div>
             <div class="content-row">
                 <div class="itemprice_title">Disc:</div>
-                <div class="itemprice_discount">R40</div>
+                <div class="itemprice_discount">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['price_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
                 <div class="itemprice_discount_separat">&nbsp;</div>
             </div>
             <div class="content-row">
@@ -62,41 +69,83 @@
             <div class="itemprice_extra">
                 <div class="itemprice_extratitle">Add'l Prints:</div>
                 <div class="itemprice_extraprice"><?=empty($item['item_price_print']) ? '' : $item['item_price_print']?></div>
-                <div class="itemprice_extradisc">V20</div>
+                <div class="itemprice_extradisc">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['print_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
                 <div class="itemprice_extrasale"><?=empty($item['item_sale_print']) ? '' : $item['item_sale_print']?></div>
             </div>
             <div class="itemprice_extra">
                 <div class="itemprice_extratitle">New Setup:</div>
                 <div class="itemprice_extraprice"><?=empty($item['item_price_setup']) ? '' : $item['item_price_setup']?></div>
-                <div class="itemprice_extradisc">V20</div>
+                <div class="itemprice_extradisc">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['setup_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
                 <div class="itemprice_extrasale"><?=empty($item['item_sale_setup']) ? '' : $item['item_sale_setup']?></div>
             </div>
             <div class="itemprice_extra repeatsetup">
                 <div class="itemprice_extratitle">Repeat Setup:</div>
-                <div class="itemprice_extraprice"><?=empty($item['item_price_setup']) ? '' : $item['item_price_setup']?></div>
-                <div class="itemprice_extradisc">V20</div>
-                <div class="itemprice_extrasale"><?=empty($item['item_sale_setup']) ? '' : $item['item_sale_setup']?></div>
+                <div class="itemprice_extraprice"><?=empty($item['item_price_repeat']) ? '' : $item['item_price_repeat']?></div>
+                <div class="itemprice_extradisc">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['repeat_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="itemprice_extrasale"><?=empty($item['item_sale_repeat']) ? '' : $item['item_sale_repeat']?></div>
             </div>
         </div>
         <div class="itemprice_rusharea">
             <div class="itemprice_rush">
                 <div class="itemprice_rushtitle">Rush 1</div>
-                <div class="itemprice_rushprice">60.00</div>
-                <div class="itemprice_rushtdisc">V20</div>
-                <div class="itemprice_rushsale">48.00</div>
+                <div class="itemprice_rushprice"><?=$item['item_price_rush1']?></div>
+                <div class="itemprice_rushtdisc">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['rush1_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="itemprice_rushsale"><?=$item['item_sale_rush1']?></div>
             </div>
             <div class="itemprice_rush">
                 <div class="itemprice_rushtitle">Rush 2</div>
-                <div class="itemprice_rushprice">100.00</div>
-                <div class="itemprice_rushtdisc">V20</div>
-                <div class="itemprice_rushsale">96.00</div>
+                <div class="itemprice_rushprice"><?=$item['item_price_rush2']?></div>
+                <div class="itemprice_rushtdisc">
+                    <select class="discountselect" disabled>
+                        <option value=""></option>
+                        <?php foreach ($discounts as $discount) { ?>
+                            <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['rush2_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="itemprice_rushsale"><?=$item['item_sale_rush2']?></div>
             </div>
         </div>
         <div class="itemprice_pantonearea">
             <div class="itemprice_pantonetitle">Pantone Match</div>
-            <div class="itemprice_pantoneprice">35.00</div>
-            <div class="itemprice_pantonedisc">V20</div>
-            <div class="itemprice_pantonesale">28.00</div>
+            <div class="itemprice_pantoneprice"><?=$item['item_price_pantone']?></div>
+            <div class="itemprice_pantonedisc">
+                <select class="discountselect" disabled>
+                    <option value=""></option>
+                    <?php foreach ($discounts as $discount) { ?>
+                        <option value="<?=$discount['price_discount_id']?>" <?=$discount['price_discount_id']==$item['pantone_discount'] ? 'selected="selected"' : ''?>><?=$discount['discount_label']?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="itemprice_pantonesale"><?=$item['item_sale_pantone']?></div>
         </div>
         <div class="itemprice_profit_separator">&nbsp;</div>
         <div class="itemprice_profitqtyarea">
@@ -117,30 +166,30 @@
             <div class="content-row">
                 <div class="itemprice_profitval"><?=empty($item['profit_print']) ? '' : MoneyOutput($item['profit_print'])?></div>
                 <div class="itemprice_profitval"><?=empty($item['profit_setup']) ? '' : MoneyOutput($item['profit_setup'])?></div>
-                <div class="itemprice_profitval">$3</div>
+                <div class="itemprice_profitval"><?=empty($item['profit_repeat']) ? '' : MoneyOutput($item['profit_repeat'])?></div>
             </div>
             <div class="content-row">
                 <div class="itemprice_profitperc <?=$item['profit_print_class']?>"><?=empty($item['profit_print_perc']) ? '' : $item['profit_print_perc'].'%'?></div>
                 <div class="itemprice_profitperc <?=$item['profit_setup_class']?>"><?=empty($item['profit_setup_perc']) ? '' : $item['profit_setup_perc'].'%'?></div>
-                <div class="itemprice_profitperc orangeprofit">25%</div>
+                <div class="itemprice_profitperc <?=$item['profit_repeat_class']?>"><?=empty($item['profit_repeat_perc']) ? '' : $item['profit_repeat_perc'].'%'?></div>
             </div>
         </div>
         <div class="itemprice_profitrusharea">
             <div class="content-row">
-                <div class="itemprice_profitval">$23</div>
-                <div class="itemprice_profitval">($4)</div>
+                <div class="itemprice_profitval"><?=empty($item['profit_rush1']) ? '' : MoneyOutput($item['profit_rush1'])?></div>
+                <div class="itemprice_profitval"><?=empty($item['profit_rush2']) ? '' : MoneyOutput($item['profit_rush2'])?></div>
             </div>
             <div class="content-row">
-                <div class="itemprice_profitperc greenprofit">48%</div>
-                <div class="itemprice_profitperc blackprofit">-4%</div>
+                <div class="itemprice_profitperc <?=$item['profit_rush1_class']?>"><?=empty($item['profit_rush1_perc']) ? '' : $item['profit_rush1_perc'].'%'?></div>
+                <div class="itemprice_profitperc <?=$item['profit_rush2_class']?>"><?=empty($item['profit_rush2_perc']) ? '' : $item['profit_rush2_perc'].'%'?></div>
             </div>
         </div>
         <div class="itemprice_profitpantonearea">
             <div class="content-row">
-                <div class="itemprice_profitval">$3</div>
+                <div class="itemprice_profitval"><?=empty($item['profit_pantone']) ? '' : MoneyOutput($item['profit_pantone'])?></div>
             </div>
             <div class="content-row">
-                <div class="itemprice_profitperc redprofit">11%</div>
+                <div class="itemprice_profitperc <?=$item['profit_pantone_class']?>"><?=empty($item['profit_pantone_perc']) ? '' : $item['profit_pantone_perc'].'%'?></div>
             </div>
         </div>
     </div>

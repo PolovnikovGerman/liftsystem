@@ -859,9 +859,17 @@ Class Items_model extends My_Model
                     'vendor_item_cost' => 0,
                     'vendor_item_exprint' => 0,
                     'vendor_item_setup' => 0,
+                    'vendor_item_repeat' => 0,
                     'vendor_item_notes' => '',
                     'vendor_item_zipcode' => '',
                     'printshop_item_id' => '',
+                    'stand_days' => '',
+                    'rush1_days' => '',
+                    'rush2_days' => '',
+                    'rush1_price' => '',
+                    'rush2_price' => '',
+                    'pantone_match' => '',
+
                 ];
                 for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
@@ -999,17 +1007,10 @@ Class Items_model extends My_Model
             }
             // Special price - setup, print
             $specprice = $this->prices_model->get_itemlist_specprice($item_id);
-            $item['item_price_id'] = $specprice['item_price_id'];
-            $item['item_price_print'] = $specprice['item_price_print'];
-            $item['item_sale_print'] = $specprice['item_sale_print'];
-            $item['profit_print'] = $specprice['profit_print'];
-            $item['item_price_setup'] = $specprice['item_price_setup'];
-            $item['item_sale_setup'] = $specprice['item_sale_setup'];
-            $item['profit_setup'] = $specprice['profit_setup'];
-            $item['profit_print_class']=$specprice['profit_print_class'];
-            $item['profit_print_perc']=$specprice['profit_print_perc'];
-            $item['profit_setup_class']=$specprice['profit_setup_class'];
-            $item['profit_setup_perc']=$specprice['profit_setup_perc'];
+            foreach ($specprice as $key => $val) {
+                $item[$key] = $val;
+            }
+
             // Simular
             $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
             // config

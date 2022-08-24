@@ -546,6 +546,8 @@ Class Prices_model extends My_Model
 
     public function get_itemlist_specprice($item_id) {
         $this->db->select('item_price_id, item_price_print, item_sale_print, profit_print, item_price_setup, item_sale_setup, profit_setup');
+        $this->db->select('item_price_repeat, item_sale_repeat, profit_repeat, item_price_pantone, item_sale_pantone, pantone_profit');
+        $this->db->select('item_price_rush1, item_sale_rush1, rush1_profit, item_price_rush2, item_sale_rush2, rush2_profit');
         $this->db->from('sb_item_prices');
         $this->db->where('item_price_itemid', $item_id);
         $res = $this->db->get()->row_array();
@@ -563,9 +565,27 @@ Class Prices_model extends My_Model
                 'profit_print_perc' => '',
                 'profit_setup_class' => '',
                 'profit_setup_perc' => '',
+                'profit_repeat_class' => '',
+                'profit_repeat_perc' => '',
+                'item_price_rush1' => '',
+                'item_sale_rush1' => '',
+                'profit_rush1' => 0,
+                'profit_rush1_class' => '',
+                'profit_rush1_perc' => '',
+                'item_price_rush2' => '',
+                'item_sale_rush2' => '',
+                'profit_rush2' => 0,
+                'profit_rush2_class' => '',
+                'profit_rush2_perc' => '',
+                'item_price_pantone' => '',
+                'item_sale_pantone' => '',
+                'profit_pantone' => 0,
+                'profit_pantone_class' => '',
+                'profit_pantone_perc' => '',
             ];
         } else {
-            $res['profit_print_class']=$res['profit_print_perc']=$res['profit_setup_class']=$res['profit_setup_perc']='';
+            $res['profit_print_class']=$res['profit_print_perc']=$res['profit_setup_class']=$res['profit_setup_perc']=$res['profit_repeat_class']=$res['profit_repeat_perc']='';
+            $res['profit_rush1_class']=$res['profit_rush1_perc']=$res['profit_rush2_class']=$res['profit_rush2_perc']=$res['profit_pantone_class']=$res['profit_pantone_perc']='';
             if (floatval($res['item_sale_print'])!=0 && $res['profit_print']!==NULL) {
                 $profit_perc = round(($res['profit_print']/$res['item_sale_print'])*100,1);
                 $res['profit_print_perc'] =$profit_perc.'%';
@@ -576,6 +596,27 @@ Class Prices_model extends My_Model
                 $res['profit_setup_perc'] = $profit_perc.'%';
                 $res['profit_setup_class'] = profit_bgclass($profit_perc);
             }
+            if (floatval($res['item_sale_repeat'])!=0 && $res['profit_repeat']!==NULL) {
+                $profit_perc = round($res['profit_repeat']/$res['item_sale_repeat']*100,1);
+                $res['profit_repeat_perc'] = $profit_perc.'%';
+                $res['profit_repeat_class'] = profit_bgclass($profit_perc);
+            }
+            if (floatval($res['item_sale_rush1'])!=0 && $res['profit_rush1']!==NULL) {
+                $profit_perc = round($res['profit_rush1']/$res['item_sale_rush1']*100,1);
+                $res['profit_rush1_perc'] = $profit_perc.'%';
+                $res['profit_rush1_class'] = profit_bgclass($profit_perc);
+            }
+            if (floatval($res['item_sale_rush2'])!=0 && $res['profit_rush2']!==NULL) {
+                $profit_perc = round($res['profit_rush2']/$res['item_sale_rush2']*100,1);
+                $res['profit_rush2_perc'] = $profit_perc.'%';
+                $res['profit_rush2_class'] = profit_bgclass($profit_perc);
+            }
+            if (floatval($res['item_sale_pantone'])!=0 && $res['profit_pantone']!==NULL) {
+                $profit_perc = round($res['profit_pantone']/$res['item_sale_pantone']*100,1);
+                $res['profit_pantone_perc'] = $profit_perc.'%';
+                $res['profit_pantone_class'] = profit_bgclass($profit_perc);
+            }
+
         }
         return $res;
     }
@@ -635,5 +676,13 @@ Class Prices_model extends My_Model
         }
         return $item;
     }
+
+    public function get_price_discounts() {
+        $this->db->select('*');
+        $this->db->from('sb_price_discounts');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 
 }

@@ -645,20 +645,29 @@ itemparamlabel.tags {
     width: 35px;
 }
 .itemprice_discount {
-    border: 1px solid #9f9f9f;
+    /* border: 1px solid #9f9f9f; */
     font-size: 12px;
     font-weight: 600;
-    height: 20px;
-    line-height: 20px;
     margin-right: 5px;
     text-align: center;
-    width: 35px;
+    width: 43px;
+}
+select.discountselect {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    border: 1px solid #9f9f9f;
+    -webkit-appearance: none;
+    appearance: none;
+}
+select.discountselect::-ms-expand {
+    display: none;
 }
 .itemprice_discount_separat {
     border-top: 1px solid #555555;
     height: 3px;
     margin-top: 10px;
-    width: 79%;
+    width: 340px;
 }
 .itemprice_new {
     border: 1px solid #9f9f9f;
@@ -690,7 +699,6 @@ itemparamlabel.tags {
     text-align: center;
 }
 .itemprice_extraprice, .itemprice_extradisc, .itemprice_extrasale {
-    border: 1px solid #9f9f9f;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -698,6 +706,9 @@ itemparamlabel.tags {
     margin-bottom: 5px;
     text-align: center;
     width: 35px;
+}
+.itemprice_extraprice, .itemprice_extrasale {
+    border: 1px solid #9f9f9f;
 }
 .itemprice_rusharea {
     border-right: 1px solid #626262;
@@ -714,7 +725,6 @@ itemparamlabel.tags {
     text-align: center;
 }
 .itemprice_rushprice, .itemprice_rushtdisc, .itemprice_rushsale {
-    border: 1px solid #9f9f9f;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -722,6 +732,9 @@ itemparamlabel.tags {
     margin-bottom: 5px;
     text-align: center;
     width: 39px;
+}
+.itemprice_rushprice, .itemprice_rushsale {
+    border: 1px solid #9f9f9f;
 }
 .itemprice_pantonearea {
     padding-left: 3px;
@@ -734,7 +747,6 @@ itemparamlabel.tags {
     text-align: center;
 }
 .itemprice_pantoneprice, .itemprice_pantonedisc, .itemprice_pantonesale {
-    border: 1px solid #9f9f9f;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -743,6 +755,9 @@ itemparamlabel.tags {
     margin-bottom: 5px;
     text-align: center;
     width: 35px;
+}
+.itemprice_pantoneprice, .itemprice_pantonesale {
+    border: 1px solid #9f9f9f;
 }
 .itemprice_profit_separator {
     border-top: 3px solid #686868;
@@ -1061,7 +1076,7 @@ itemparamlabel.tags {
 }
 /* Shipping */
 .itemshippingarea {
-    background: #282828;
+    background: #000048;
     position: relative;
     top: -215px;
     left: 215px;

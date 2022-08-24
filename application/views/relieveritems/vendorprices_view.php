@@ -35,30 +35,30 @@
         </div>
         <div class="vendorextraprice repeatsetup">
             <div class="vendorextrapricetitle">Repeat Setup:</div>
-            <div class="vendorextrapricevalue"><?=empty($venditem['vendor_item_setup']) ? '' : $venditem['vendor_item_setup']?></div>
+            <div class="vendorextrapricevalue"><?=empty($venditem['vendor_item_repeat']) ? '' : $venditem['vendor_item_repeat']?></div>
         </div>
     </div>
     <div class="vendorrusharea">
         <div class="vendorstandrush">
             <div class="vendorrushtitle">Stand:</div>
-            <div class="vendorrushterm"><?=$vendor_price['stand_days']?></div>
+            <div class="vendorrushterm"><?=$venditem['stand_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
         </div>
         <div class="vendorrush1rush">
             <div class="vendorrushtitle">Rush 1:</div>
-            <div class="vendorrushterm"><?=$vendor_price['rush1_days']?></div>
+            <div class="vendorrushterm"><?=$venditem['rush1_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
-            <div class="vendorrushprice"><?=$vendor_price['rush1_price']?></div>
+            <div class="vendorrushprice"><?=$venditem['rush1_price']?></div>
         </div>
         <div class="vendorrush2rush">
             <div class="vendorrushtitle">Rush 2:</div>
-            <div class="vendorrushterm"><?=$vendor_price['rush2_days']?></div>
+            <div class="vendorrushterm"><?=$venditem['rush2_days']?></div>
             <div class="vendorrushtermtitle">biz days</div>
-            <div class="vendorrushprice"><?=$vendor_price['rush2_price']?></div>
+            <div class="vendorrushprice"><?=$venditem['rush2_price']?></div>
         </div>
     </div>
     <div class="vendorpantonearea">
         <div class="vendorpantonetitle">Pantone Match</div>
-        <div class="vendorpantoneprice"><?=$vendor_price['pantone_match']?></div>
+        <div class="vendorpantoneprice"><?=$venditem['pantone_match']?></div>
     </div>
 </div>
