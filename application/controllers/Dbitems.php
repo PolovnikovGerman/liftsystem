@@ -328,17 +328,18 @@ class Dbitems extends MY_Controller
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
-                    $otherimages = $this->load->view('relieveritems/otherimages_view',[],TRUE);
-                    $optionsimg = $this->load->view('relieveritems/optionimages_view',[],TRUE);
+                    $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
+                        'item' => $data['item'],
                     ];
                     $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
-                    $locations = $this->load->view('relieveritems/printlocations_view',[], TRUE);
-                    $customview = $this->load->view('relieveritems/itemcustom_view',['locations' => $locations], TRUE);
+                    $locations = $this->load->view('relieveritems/printlocations_view',['locations' => $data['inprints']], TRUE);
+                    $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
-                    $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,
@@ -358,5 +359,4 @@ class Dbitems extends MY_Controller
         }
         show_404();
     }
-
 }

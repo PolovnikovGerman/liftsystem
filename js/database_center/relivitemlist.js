@@ -142,7 +142,7 @@ function edit_reliever_item(item) {
                 // init_item_similar();
                 // init_itemlist_details_edit();
             } else {
-                // init_itemlist_details_view();
+                init_relievitemdetails_view(item);
             }
         } else {
             show_error(response);

@@ -284,7 +284,7 @@ class Databasecenter extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/database_center/relivitemlist.js');
                 $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
-                // $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
+                $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
                 $content_options['itemsview'] = $this->_prepare_sritems_content();
             } elseif ($item['item_link']=='#srcustomers') {
                 $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);

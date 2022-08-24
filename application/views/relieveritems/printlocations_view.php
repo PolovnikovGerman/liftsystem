@@ -1,10 +1,18 @@
-<div class="locationsdatarow">
-    <div class="locationname">1. Left Side</div>
-    <div class="locationplace">2” diameter</div>
-    <div class="locationview"><i class="fa fa-search"></i></div>
-</div>
-<div class="locationsdatarow">
-    <div class="locationname">2. On Bottom of the Ocean</div>
-    <div class="locationplace">4 1/2” x 3 1/4” triangle</div>
-    <div class="locationview"><i class="fa fa-search"></i></div>
-</div>
+<?php if (count($locations)==0) { ?>
+    <div class="locationsdatarow">&nbsp;</div>
+<?php } else { ?>
+    <?php $numpp=1;?>
+    <?php foreach ($locations as $location) { ?>
+        <div class="locationsdatarow">
+            <div class="locationname"><?=$numpp?>. <?=$location['item_inprint_location']?></div>
+            <div class="locationplace"><?=$location['item_inprint_size']?></div>
+            <div class="locationview">
+                <?php if (!empty($location['item_inprint_view'])) { ?>
+                    <div data-link="<?=$location['item_inprint_view']?>">
+                        <i class="fa fa-search"></i>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    <?php } ?>
+<?php } ?>

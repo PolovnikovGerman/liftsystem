@@ -1,34 +1,15 @@
-<div class="content-row">
+<?php $numpp=0;?>
+<?php foreach ($imgoptions as $imgoption) { ?>
+    <?php if ($numpp%2==0) { ?>
+        <div class="content-row">
+    <?php } ?>
     <div class="itemoptionimagesrc">&nbsp;</div>
     <div class="itemoptionimagelabel">Blue</div>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Grass Green</div>
-</div>
-<div class="content-row">
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Grass Green</div>
-</div>
-<div class="content-row">
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Grass Green</div>
-</div>
-<div class="content-row">
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Grass Green</div>
-</div>
-<div class="content-row">
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Grass Green</div>
-</div>
-<div class="content-row">
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
-</div>
+    <?php $numpp++;?>
+    <?php if ($numpp%2==0) { ?>
+        </div>
+    <?php } ?>
+<?php } ?>
+<?php if ($numpp%2!=0) { ?>
+    </div>
+<?php } ?>

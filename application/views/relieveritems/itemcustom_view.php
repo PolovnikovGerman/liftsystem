@@ -2,7 +2,7 @@
     <div class="sectionlabel">CUSTOMIZATION:</div>
     <div class="sectionbody">
         <div class="content-row">
-            <div class="itemvendorfilebtn">
+            <div class="itemvendorfilebtn <?=empty($item['item_vector_img']) ? '' : 'vectorfile'?>" data-file="<?=$item['item_vector_img']?>">
                 Vector AI File
             </div>
             <div class="custommethodarea">
@@ -10,7 +10,7 @@
                     <div class="itemparamlabel custommethod">Method:</div>
                 </div>
                 <div class="content-row">
-                    <div class="itemparamvalue custommethod">Imprinting</div>
+                    <div class="itemparamvalue custommethod"><?=$item['imprint_method']?></div>
                 </div>
             </div>
             <div class="customprinrcolorsarea">
@@ -18,7 +18,7 @@
                     <div class="itemparamlabel printcolors">Print Colors:</div>
                 </div>
                 <div class="content-row">
-                    <div class="itemparamvalue printcolors">bluetrack</div>
+                    <div class="itemparamvalue printcolors"><?=$item['imprint_color']?></div>
                 </div>
             </div>
         </div>

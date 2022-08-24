@@ -958,6 +958,12 @@ Class Items_model extends My_Model
                     }
                 }
             }
+            // Options images
+            if ($item['option_images']==0) {
+                $option_images = [];
+            } else {
+                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
+            }
             $imprints = $this->imprints_model->get_imprint_item($item_id);
             $priceres = $this->prices_model->get_itemlist_price($item_id);
             $prices = [];
@@ -1010,7 +1016,7 @@ Class Items_model extends My_Model
             foreach ($specprice as $key => $val) {
                 $item[$key] = $val;
             }
-
+            $shipboxes = $this->get_itemshipbox($item_id);
             // Simular
             $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
             // config
@@ -1021,9 +1027,11 @@ Class Items_model extends My_Model
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,
+                'option_images' => $option_images,
                 'inprints' => $imprints,
                 'prices' => $prices,
                 'similar' => $similar,
+                'shipboxes' => $shipboxes,
                 'deleted' => [],
             ];
             $out['data'] = $data;
@@ -1139,5 +1147,14 @@ Class Items_model extends My_Model
             $numpp++;
         }
         return $out;
+    }
+
+    public function get_itemshipbox($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_item_shipping');
+        $this->db->where('item_id', $item_id);
+        $this->db->order_by('box_qty');
+        $res = $this->db->get()->result_array();
+        return $res;
     }
 }

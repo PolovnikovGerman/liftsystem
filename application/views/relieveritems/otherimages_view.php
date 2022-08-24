@@ -1,15 +1,25 @@
 <div class="otherimagessrcarea">
-    <div class="content-row">
-        <div class="otherimagesrc">&nbsp;</div>
-        <div class="otherimagesrc">&nbsp;</div>
-        <div class="otherimagesrc">&nbsp;</div>
-        <div class="otherimagesrc">&nbsp;</div>
-        <div class="otherimagesrc">&nbsp;</div>
-    </div>
-    <div class="content-row">
-        <div class="otherimagesrc">&nbsp;</div>
-    </div>
+    <?php $numpp=1;?>
+    <?php foreach ($images as $image) { ?>
+    <?php if ($numpp==1) { ?>
+        <div class="content-row">
+    <?php } ?>
+        <div class="otherimagesrc">
+            <img src="<?=$image['item_img_name']?>" alt="Img"/>
+        </div>
+        <?php $numpp++;?>
+        <?php if ($numpp==6) { ?>
+            </div>
+            <div class="content-row">
+        <?php } ?>
+        <?php if ($numpp==7) { ?>
+            </div>
+            <?php break;?>
+        <?php } ?>
+    <?php } ?>
 </div>
-<div class="otherimagesmore">
-    + 3 more
-</div>
+<?php if ($imgcnt > 6) { ?>
+    <div class="otherimagesmore">
+        + <?=($imgcnt - 6)?> more
+    </div>
+<?php } ?>

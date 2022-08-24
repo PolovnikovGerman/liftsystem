@@ -1108,6 +1108,7 @@ select.discountselect::-ms-expand {
     margin-top: 4px;
     width: 100%;
     border-right: 2px solid #464646;
+    min-height: 90px;
 }
 .itemboxdataarea .content-row {
     margin-bottom: 7px;
