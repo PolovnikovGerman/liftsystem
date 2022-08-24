@@ -116,11 +116,14 @@ function save_user() {
     var url="/admin/userdata_save";
     var params = new Array();
     params.push({name: 'session', value: $("#session").val()});
+    $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#pageModal").modal('hide');
             initUserPagination();
+            $("#loader").hide();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     }, 'json');
