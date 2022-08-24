@@ -588,7 +588,7 @@ Class User_model extends MY_Model
         $numrec=$res['cnt'];
         if ($numrec==0) {
             $out['msg'] = 'For new user password required parameter';
-            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt'])) {
+            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
                 return $out;
             }
             $out['msg'] = 'Enter Leads repl name';

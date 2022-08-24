@@ -280,8 +280,8 @@ function user_edit_manage() {
         params.push({name: 'newval', value: $(this).val()});
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                if (itemname=='user_passwd_txt') {
-                    if ($("#user_passwd_txt").val()=='') {
+                if (itemname=='user_passwd_txt1') {
+                    if ($("#user_passwd_txt1").val()=='') {
                         $("div.retypepasswd").css('display','hide');
                         $("#user_passwd_txt2").val('');
                     } else {
