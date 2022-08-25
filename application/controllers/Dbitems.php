@@ -342,7 +342,8 @@ class Dbitems extends MY_Controller
                     $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 } else {
                     $keyinfo = $this->load->view('relieveritems/keyinfo_edit',['item' => $data['item'],'subcategories' => $subcategories], TRUE);
-                    $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
+                    $simitems = $this->items_model->get_relievers_itemslist(['status' => 1,'order_by' => 'item_number']);
+                    $similar = $this->load->view('relieveritems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
@@ -411,6 +412,25 @@ class Dbitems extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['newval'] = $res['newval'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    function change_relive_similar() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_similar($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                 }
             }
             $this->ajaxResponse($mdata, $error);

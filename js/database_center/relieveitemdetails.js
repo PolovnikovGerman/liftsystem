@@ -138,4 +138,19 @@ function init_relievitemdetails_edit(item) {
             }
         },'json');
     });
+    $(".similaritems").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_similar';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }

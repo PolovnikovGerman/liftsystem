@@ -9,7 +9,8 @@ Class Similars_model extends My_Model
     }
 
     public function get_similar_items($item_id, $brand='BT') {
-        $this->db->select('si.item_similar_id as item_similar_id,si.item_similar_similar as item_similar_similar, i.item_number as item_number, i.item_name as item_name, i.item_template as item_template');
+        $this->db->select('si.item_similar_id as item_similar_id,si.item_similar_similar as item_similar_similar');
+        $this->db->select('i.item_number as item_number, i.item_name as item_name, i.item_template as item_template');
         $this->db->from('sb_item_similars si');
         $this->db->join('sb_items i','i.item_id=si.item_similar_similar');
         $this->db->where('si.item_similar_item',$item_id);

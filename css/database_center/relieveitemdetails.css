@@ -454,6 +454,11 @@ textarea.itemdescription {
 .itemparamvalue.similarname {
     width: 215px;
 }
+select.similaritems {
+    height: 22px;
+    line-height: 22px;
+    width: 210px;
+}
 /* Vendor main */
 .relievers_vendormain {
     width: 240px;

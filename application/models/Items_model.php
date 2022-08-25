@@ -789,7 +789,13 @@ Class Items_model extends My_Model
             ];
         }
         $similar = [];
-        for ($i=1; $i<4; $i++) {
+        if ($brand=='SR') {
+            $maxnum = $this->config->item('relievers_similar_items');
+        } else {
+            $maxnum = $this->config->item('similar_items');
+        }
+
+        for ($i=1; $i<=$maxnum; $i++) {
             $similar[] = [
                 'item_similar_id' => $i*(-1),
                 'item_similar_similar' => '',
@@ -1218,6 +1224,26 @@ Class Items_model extends My_Model
             usersession($sessionsid, $sessiondata);
         }
         return $out;
+    }
 
+    public function itemdetails_change_similar($sessiondata, $options, $sessionsid) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
+        $similars = $sessiondata['similar'];
+        $fld = ifset($options,'fld','0');
+        $newval = ifset($options, 'newval', '');
+        $idx=0;
+        $found = 0;
+        foreach ($similars as $similar) {
+            if ($similar['item_similar_id']==$fld) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found == 1) {
+            $similars[$idx]['item_similar_similar'] = (empty($newval) ? NULL : $newval);
+            $out['result'] = $this->success_result;
+        }
+        return $out;
     }
 }
