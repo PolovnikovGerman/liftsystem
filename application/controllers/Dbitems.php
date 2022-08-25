@@ -312,7 +312,9 @@ class Dbitems extends MY_Controller
                 }
                 // Key info
                 $this->load->model('categories_model');
-                // $categories = $this->categories_model->get_reliver_categories();
+                $subcategories = $this->categories_model->get_reliver_subcategories();
+                $this->load->model('prices_model');
+                $discounts = $this->prices_model->get_price_discounts();
                 if ($editmode==0) {
                     $category = '';
                     if (!empty($data['item']['category_id'])) {
@@ -321,8 +323,6 @@ class Dbitems extends MY_Controller
                             $data['item']['category'] = $catdat['data']['category_name'];
                         }
                     }
-                    $this->load->model('prices_model');
-                    $discounts = $this->prices_model->get_price_discounts();
                     $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
                     $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
@@ -340,6 +340,25 @@ class Dbitems extends MY_Controller
                     $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                } else {
+                    $keyinfo = $this->load->view('relieveritems/keyinfo_edit',['item' => $data['item'],'subcategories' => $subcategories], TRUE);
+                    $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
+                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
+                    $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
+                    $imagesoptions = [
+                        'otherimages' => $otherimages,
+                        'optionsimg' => $optionsimg,
+                        'item' => $data['item'],
+                    ];
+                    $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
+                    $locations = $this->load->view('relieveritems/printlocations_view',['locations' => $data['inprints']], TRUE);
+                    $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
+                    $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,
@@ -353,7 +372,46 @@ class Dbitems extends MY_Controller
                     'shipping' => $shippingview,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
+                $mdata['editmode'] = $editmode;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
+    public function change_relive_item() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_iteminfo($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_checkbox() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_itemcheck($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['newval'] = $res['newval'];
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

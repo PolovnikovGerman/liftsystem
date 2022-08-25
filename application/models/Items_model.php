@@ -668,11 +668,14 @@ Class Items_model extends My_Model
             'item_active' => 1,
             'item_new' => 0,
             'item_sale' => 0,
+            'item_topsale' => 0,
+            'item_template' => '',
             // 'item_template' => 'Stressballs',
             'item_lead_a' => 0,
             'item_lead_b' => 0,
             'item_lead_c' => 0,
             'item_material' => '',
+            'subcategory_id' => '',
             'item_weigth' => 0,
             'item_size' => '',
             'item_keywords' => '',
@@ -683,7 +686,7 @@ Class Items_model extends My_Model
             'item_description1' => '',
             'item_description2' => '',
             'item_vector_img' => '',
-            'options' => 'colors',
+            'options' => '',
             'note_material' => '',
             'brand' => $brand,
             'printlocat_example_img' => '',
@@ -701,6 +704,18 @@ Class Items_model extends My_Model
             'profit_print_perc' => '',
             'profit_setup_class' => '',
             'profit_setup_perc' => '',
+            'bullet1' => '',
+            'bullet2' => '',
+            'bullet3' => '',
+            'bullet4' => '',
+        ];
+        $vendor = [
+            'vendor_id' => '',
+            'vendor_name' => '',
+            'vendor_zipcode' => '',
+            'shipaddr_state' => '',
+            'shipaddr_country' => '',
+            'po_note' => '',
         ];
         $vitem=[
             'vendor_item_id' => -1,
@@ -791,15 +806,28 @@ Class Items_model extends My_Model
                 'item_color' => '',
             ];
         }
+        $shipboxes = [];
+        for ($i=0; $i<3; $i++) {
+            $shipbox[] = [
+                'item_shipping_id' => (-1)*($i+1),
+                'box_qty' => '',
+                'box_width' => '',
+                'box_length' => '',
+                'box_height' => '',
+            ];
+        }
         $data=[
             'item' => $item,
+            'colors' => $colors,
+            'vendor' => $vendor,
             'vendor_item' => $vitem,
             'vendor_price' => $vprices,
             'images' => $images,
+            'option_images' => [],
             'inprints' => $imprints,
             'prices' => $prices,
             'similar' => $similar,
-            'colors' => $colors,
+            'shipboxes' => $shipboxes,
             'deleted' => [],
         ];
         // $out['data'] = $data;
@@ -1156,5 +1184,40 @@ Class Items_model extends My_Model
         $this->db->order_by('box_qty');
         $res = $this->db->get()->result_array();
         return $res;
+    }
+
+    public function itemdetails_change_iteminfo($sessiondata, $options, $sessionsid) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
+        $item = $sessiondata['item'];
+        $fldname = ifset($options, 'fld','unknownfd');
+        $newval=ifset($options, 'newval','');
+        if (array_key_exists($fldname, $item)) {
+            $out['result'] = $this->success_result;
+            $item[$fldname] = $newval;
+            $sessiondata['item'] = $item;
+            usersession($sessionsid, $sessiondata);
+        }
+        return $out;
+    }
+
+    public function itemdetails_change_itemcheck($sessiondata, $options, $sessionsid) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
+        $item = $sessiondata['item'];
+        $fldname = ifset($options, 'fld','unknownfd');
+        if (array_key_exists($fldname, $item)) {
+            $out['result'] = $this->success_result;
+            $val = $item[$fldname];
+            if ($val==0) {
+                $newval = 1;
+            } else {
+                $newval = 0;
+            }
+            $item[$fldname] = $newval;
+            $out['newval'] = $newval;
+            $sessiondata['item'] = $item;
+            usersession($sessionsid, $sessiondata);
+        }
+        return $out;
+
     }
 }

@@ -29,8 +29,8 @@
                 <?php } ?>
             </div>
             <div class="tags-checkbox-label <?=$item['item_sale']==1 ? 'active' : ''?>">Sale</div>
-            <div class="tags-checkbox" data-item="item_sale">
-                <?php if ($item['item_sale']==0) { ?>
+            <div class="tags-checkbox" data-item="item_topsale">
+                <?php if ($item['item_topsale']==0) { ?>
                     <i class="fa fa-square-o" aria-hidden="true"></i>
                 <?php } else { ?>
                     <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -48,8 +48,8 @@
             <div class="itemparamvalue itemsize <?=empty($item['ite_size']) ? 'missing_info' : ''?>"><?=$item['item_size']?></div>
         </div>
         <div class="content-row">
-            <div class="itemparamlabel itemsize">Material:</div>
-            <div class="itemparamvalue itemsize <?=empty($item['item_material']) ? 'missing_info' : ''?>"><?=$item['item_material']?></div>
+            <div class="itemparamlabel itemmaterial">Material:</div>
+            <div class="itemparamvalue itemmaterial <?=empty($item['item_material']) ? 'missing_info' : ''?>"><?=$item['item_material']?></div>
         </div>
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
@@ -59,13 +59,13 @@
         <div class="content-row">
             <div class="itemparamlabel bullets">Bullet Points:</div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet"></div>
+            <div class="itemparamvalue itembullet"><?=$item['bullet1']?></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet"></div>
+            <div class="itemparamvalue itembullet"><?=$item['bullet2']?></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet"></div>
+            <div class="itemparamvalue itembullet"><?=$item['bullet3']?></div>
             <div class="bullet_point"><i class="fa fa-circle" aria-hidden="true"></i></div>
-            <div class="itemparamvalue itembullet"></div>
+            <div class="itemparamvalue itembullet"><?=$item['bullet4']?></div>
         </div>
     </div>
 </div>

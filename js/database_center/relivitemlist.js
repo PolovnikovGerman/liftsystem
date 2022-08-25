@@ -100,6 +100,10 @@ function init_relieveritems_content() {
     $(".relivitemedit").unbind('click').click(function () {
         var item = $(this).data('item');
         edit_reliever_item(item);
+    });
+    $("#addnewrelievers").unbind('click').click(function () {
+        var item = 0;
+        edit_reliever_item(item);
     })
 }
 
@@ -135,12 +139,12 @@ function edit_reliever_item(item) {
             $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(response.data.editmode)==1) {
                 // image_slider_init();
-                $(".displayprice").css('cursor','pointer');
-                $(".template-checkbox").css('cursor','pointer');
-                $(".implintdatavalue.sellopt").css('cursor','pointer');
+                // $(".displayprice").css('cursor','pointer');
+                // $(".template-checkbox").css('cursor','pointer');
+                // $(".implintdatavalue.sellopt").css('cursor','pointer');
                 // init_vectorfile_upload();
                 // init_item_similar();
-                // init_itemlist_details_edit();
+                init_relievitemdetails_edit(item);
             } else {
                 init_relievitemdetails_view(item);
             }

@@ -201,4 +201,11 @@ Class Categories_model extends MY_Model
         return $out;
     }
 
+    public function get_reliver_subcategories() {
+        $this->db->select('*');
+        $this->db->from('sr_subcategories');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 }
