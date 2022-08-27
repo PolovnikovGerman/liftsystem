@@ -9,7 +9,7 @@ function init_relievitemdetails_view(item) {
             if (response.errors=='') {
                 $("#itemDetailsModalLabel").empty().html(response.data.header);
                 $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
-                init_relievitemdetails_edit(item);
+                init_relievitemdetails_edit();
             } else {
                 show_error(response);
             }
@@ -17,7 +17,7 @@ function init_relievitemdetails_view(item) {
     })
 }
 
-function init_relievitemdetails_edit(item) {
+function init_relievitemdetails_edit() {
     $(".itemdetailsstatus").unbind('change').change(function () {
         var newval = $(this).val();
         var params = new Array();
@@ -152,5 +152,309 @@ function init_relievitemdetails_edit(item) {
                 show_error(response);
             }
         },'json');
+    });
+    $("select.vendorname").unbind('change').change(function () {
+        var newval=$(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: 'vendor_id'});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_vendor';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newval=='') {
+                    $("select.vendorname").addClass('missing_info');
+                    $(".itemparamvalue.vendorcountry").empty().addClass('missing_info');
+                    $(".itemparamvalue.vendorzip").empty().addClass('missing_info');
+                    $(".vendorshipstate").empty().addClass('missing_info');
+                    $(".itemparamvalue.vendorponote").empty().addClass('missing_info');
+                } else {
+                    $("select.vendorname").removeClass('missing_info');
+                    $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country).removeClass('missing_info');
+                    $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode).removeClass('missing_info');
+                    $(".vendorshipstate").empty().html(response.data.shipaddr_state).removeClass('missing_info');
+                    $(".itemparamvalue.vendorponote").html(response.data.po_note).empty().removeClass('missing_info');
+                }
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $("input.vendoritemnum").autocompleter({
+        source: '/itemdetails/search_vendor_item',
+        minLength: 3,
+        combine: function(params) {
+            var vendor_id = $('#vendor_item_vendor').val();
+            return {
+                q: params.query,
+                vendor_id: vendor_id
+            };
+        },
+        callback: function(value, index, object) {
+            if (object.id) {
+                $("#vendor_item_id").val(object.id);
+            }
+        }
+    });
+
+    $("input.vendoritemnum").blur(function(){
+        var newval=$(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        var url = '/dbitems/relive_vendoritem_check';
+        $.post(url,params,function(response) {
+
+        },'json');
+    });
+
+    $(".itemimagepreview").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url = '/dbitems/relive_images_edit';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#itemImagesModalLabel").empty().html(response.data.header);
+                $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
+                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_relievitemimages_edit() {
+    $("#itemImagesModal").find("button.close").unbind('click').click(function () {
+        // $("body").addClass('modal-open');
     })
+    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+        '<em>upload image</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+    var replacetemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: right; width: 100%;">'+
+        '<em>[Replace]</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    if ($("#uploadmainimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('uploadmainimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: temp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'main_image'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    if ($("#replaceimagemain").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('replaceimagemain'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'main_image'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".removeimage.mainimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'fld', value: 'main_image'})
+        var url="/dbitems/save_relive_image";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // Category page
+    if ($("#uploadcategoryimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('uploadcategoryimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: temp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    if ($("#replaceimagecategory").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('replaceimagecategory'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".removeimage.categoryimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'fld', value: 'category_image'})
+        var url="/dbitems/save_relive_image";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    if ($("#uploadtopbannerimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('uploadtopbannerimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: temp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'top_banner'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    if ($("#replaceimagetopbanner").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('replaceimagetopbanner'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'top_banner'})
+                    var url="/dbitems/save_relive_image";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".removeimage.topbannerimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'fld', value: 'top_banner'})
+        var url="/dbitems/save_relive_image";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+
 }

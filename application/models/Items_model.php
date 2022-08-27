@@ -708,6 +708,12 @@ Class Items_model extends My_Model
             'bullet2' => '',
             'bullet3' => '',
             'bullet4' => '',
+            'item_minqty' => '',
+            'main_image' => '',
+            'main_imgage_id' => '',
+            'category_image' => '',
+            'category_image_id' => '',
+            'option_images' => 0,
         ];
         $vendor = [
             'vendor_id' => '',
@@ -1243,6 +1249,89 @@ Class Items_model extends My_Model
         if ($found == 1) {
             $similars[$idx]['item_similar_similar'] = (empty($newval) ? NULL : $newval);
             $out['result'] = $this->success_result;
+            $sessiondata['similar'] = $similar;
+            usersession($sessionsid, $sessiondata);
+        }
+        return $out;
+    }
+
+    public function itemdetails_change_vendor($sessiondata, $postdata, $sessionsid) {
+        $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
+        $vendor = $sessiondata['vendor'];
+        $vendor_id = ifset($postdata, 'newval', '-1');
+        if (empty($vendor_id)) {
+            $out['result'] = $this->success_result;
+            $vendor=[
+                'vendor_id' => '',
+                'vendor_name' => '',
+                'vendor_zipcode' => '',
+                'shipaddr_state' => '',
+                'shipaddr_country' => '',
+                'po_note' => '',
+            ];
+        } else {
+            $this->load->model('vendors_model');
+            $venddat = $this->vendors_model->get_vendor($vendor_id);
+            $out['msg'] = $venddat['msg'];
+            if ($venddat['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $data = $venddat['data'];
+                $vendor = [
+                    'vendor_id' => $data['vendor_id'],
+                    'vendor_name' => $data['vendor_name'],
+                    'vendor_zipcode' => $data['vendor_zipcode'],
+                    'shipaddr_state' => $data['shipaddr_state'],
+                    'shipaddr_country' => $data['shipaddr_country'],
+                    'po_note' => $data['po_note'],
+                ];
+            }
+        }
+        if ($out['result']==$this->success_result) {
+            $vendor_item = [
+                'vendor_item_id' => -1,
+                'vendor_item_vendor' => '',
+                'vendor_item_number' => '',
+                'vendor_item_name' => '',
+                'vendor_item_blankcost' => 0,
+                'vendor_item_cost' => 0,
+                'vendor_item_exprint' => 0,
+                'vendor_item_setup' => 0,
+                'vendor_item_repeat' => 0,
+                'vendor_item_notes' => '',
+                'vendor_item_zipcode' => '',
+                'printshop_item_id' => '',
+                'stand_days' => '',
+                'rush1_days' => '',
+                'rush2_days' => '',
+                'rush1_price' => '',
+                'rush2_price' => '',
+                'pantone_match' => '',
+            ];
+            $vprices = [];
+            // if ($brand=='SR') {
+            $pricesmax = $this->config->item('relievers_prices_val');
+            // } else {
+            //    $pricesmax = $this->config->item('prices_val');
+            // }
+            for ($i=1; $i<=$pricesmax-1; $i++) {
+                $vprices[] = [
+                    'vendorprice_id' => $i*-1,
+                    'vendor_item_id' => -1,
+                    'vendorprice_qty' => '',
+                    'vendorprice_val' => '',
+                    'vendorprice_color' => '',
+                ];
+            }
+            $sessiondata['vendor'] = $vendor;
+            $sessiondata['vendor_item'] = $vendor_item;
+            $sessiondata['vendor_price'] = $vprices;
+            usersession($sessionsid, $sessiondata);
+            $data=[
+                'vendor' => $vendor,
+                'vendor_item' => $vendor_item,
+                'vendor_price' => $vprices,
+            ];
+            $out['data'] = $data;
         }
         return $out;
     }

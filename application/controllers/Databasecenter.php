@@ -340,7 +340,9 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src' => '/js/database_center/srchannel_page.js');
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
         $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
-
+        // Autocompleter
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,

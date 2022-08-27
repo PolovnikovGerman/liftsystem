@@ -144,7 +144,7 @@ function edit_reliever_item(item) {
                 // $(".implintdatavalue.sellopt").css('cursor','pointer');
                 // init_vectorfile_upload();
                 // init_item_similar();
-                init_relievitemdetails_edit(item);
+                init_relievitemdetails_edit();
             } else {
                 init_relievitemdetails_view(item);
             }

@@ -315,6 +315,8 @@ class Dbitems extends MY_Controller
                 $subcategories = $this->categories_model->get_reliver_subcategories();
                 $this->load->model('prices_model');
                 $discounts = $this->prices_model->get_price_discounts();
+                $this->load->model('vendors_model');
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
                 if ($editmode==0) {
                     $category = '';
                     if (!empty($data['item']['category_id'])) {
@@ -335,7 +337,7 @@ class Dbitems extends MY_Controller
                         'optionsimg' => $optionsimg,
                         'item' => $data['item'],
                     ];
-                    $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
+                    $itemimages = $this->load->view('relieveritems/images_edit',$imagesoptions, TRUE);
                     $locations = $this->load->view('relieveritems/printlocations_view',['locations' => $data['inprints']], TRUE);
                     $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
@@ -344,7 +346,13 @@ class Dbitems extends MY_Controller
                     $keyinfo = $this->load->view('relieveritems/keyinfo_edit',['item' => $data['item'],'subcategories' => $subcategories], TRUE);
                     $simitems = $this->items_model->get_relievers_itemslist(['status' => 1,'order_by' => 'item_number']);
                     $similar = $this->load->view('relieveritems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
-                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendoptions = [
+                        'vendor_item' => $data['vendor_item'],
+                        'vendor' => $data['vendor'],
+                        'item' => $data['item'],
+                        'vendors' => $vendors,
+                    ];
+                    $vendor_main = $this->load->view('relieveritems/vendormain_edit', $vendoptions,TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
@@ -436,5 +444,98 @@ class Dbitems extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function change_relive_vendor() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_vendor($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data = $res['data'];
+                    $vendor = $data['vendor'];
+                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
+                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
+                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
+                    $mdata['po_note'] = $vendor['po_note'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function relive_vendoritem_check() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+//                $res = $this->items_model->itemdetails_check_vendoritem($sessiondata, $postdata, $session);
+//                $error = $res['msg'];
+//                if ($res['result']==$this->success_result) {
+//                    $error = '';
+//                    $data = $res['data'];
+//                    $vendor = $data['vendor'];
+//                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
+//                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
+//                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
+//                    $mdata['po_note'] = $vendor['po_note'];
+//                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function relive_images_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $error = '';
+                $item = $sessiondata['item'];
+                $main_view = $this->load->view('relieveritems/popup_mainimage_edit',['item' => $item], TRUE);
+                $mdata['header'] = 'IMAGES & OPTIONS:';
+                $options = [
+                    'main_view' => $main_view,
+                ];
+                $mdata['content'] = $this->load->view('relieveritems/popup_image_edit',$options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_relive_image() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_iteminfo($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $item = $sessiondata['item'];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_mainimage_edit',['item' => $item], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 }
