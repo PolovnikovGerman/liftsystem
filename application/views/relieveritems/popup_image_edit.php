@@ -2,7 +2,7 @@
     <?=$main_view?>
 </div>
 <div class="popupimages_section addlimagesection">
-    &nbsp;
+    <?=$add_view?>
 </div>
 <div class="popupimages_section optionimagesection">
     &nbsp;

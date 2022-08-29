@@ -343,6 +343,9 @@ class Databasecenter extends MY_Controller
         // Autocompleter
         $head['scripts'][] = array('src' => '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Cycle
+        $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
+
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,

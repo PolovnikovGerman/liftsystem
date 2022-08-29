@@ -757,26 +757,26 @@ Class Items_model extends My_Model
             ];
         }
         $images = [];
-        for ($i=1; $i<=$this->config->item('slider_images'); $i++) {
-            if ($i==1) {
-                $title = 'Main Pic';
-            } else {
-                $title = 'Pic '.$i;
-            }
-
-            $images[] = [
-                'item_img_id' => $i * (-1),
-                'item_img_item_id' => -1,
-                'item_img_name' => '',
-                'item_img_thumb' => '',
-                'item_img_order' => '',
-                'item_img_big' => '',
-                'item_img_medium' => '',
-                'item_img_small' => '',
-                'item_img_label' => '',
-                'title' => $title,
-            ];
-        }
+//        for ($i=1; $i<=$this->config->item('slider_images'); $i++) {
+//            if ($i==1) {
+//                $title = 'Main Pic';
+//            } else {
+//                $title = 'Pic '.$i;
+//            }
+//
+//            $images[] = [
+//                'item_img_id' => $i * (-1),
+//                'item_img_item_id' => -1,
+//                'item_img_name' => '',
+//                'item_img_thumb' => '',
+//                'item_img_order' => '',
+//                'item_img_big' => '',
+//                'item_img_medium' => '',
+//                'item_img_small' => '',
+//                'item_img_label' => '',
+//                'title' => $title,
+//            ];
+//        }
         $imprints = [];
         $prices = [];
         for ($i=1; $i<=$pricesmax; $i++) {
@@ -1332,6 +1332,161 @@ Class Items_model extends My_Model
                 'vendor_price' => $vprices,
             ];
             $out['data'] = $data;
+        }
+        return $out;
+    }
+
+    public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['images'];
+        $neword = 0;
+        foreach ($images as $image) {
+            if ($neword < $image['item_img_order']) {
+                $neword = $image['item_img_order'];
+            }
+        }
+        $neword+=1;
+        $newid = (count($images)+1) * (-1);
+        $images[] = [
+            'item_img_id' => $newid,
+            'item_img_name' => $postdata['newval'],
+            'item_img_label' => '',
+            'item_img_order' => $neword,
+        ];
+        $sessiondata['images'] = $images;
+        usersession($session, $sessiondata);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    public function itemdetails_save_updimages($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $imgidx = str_replace('replimg', '',$imgidx);
+            $find = 0;
+            $idx = 0;
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    $images[$idx]['item_img_name'] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['images'] = $images;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_save_imagessort($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $imgidx = intval($imgidx);
+            $numpp = ifset($postdata, 'newval', '');
+            if (!empty($numpp)) {
+                $numpp = intval($numpp);
+                $numord = 1;
+                $newimg = [];
+                $arrimg = [];
+                for ($i=0; $i<count($images); $i++) {
+                    foreach ($images as $image) {
+                        if (!in_array($image['item_img_id'], $arrimg)) {
+                            if ($numord==$numpp) {
+                                array_push($arrimg, $imgidx);
+                                $numord++;
+                                break;
+                            } else {
+                                if ($image['item_img_id']!=$imgidx) {
+                                    array_push($arrimg, $image['item_img_id']);
+                                    $numord++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                $numord=1;
+                foreach ($arrimg as $keyval) {
+                    foreach ($images as $image) {
+                        if ($image['item_img_id']==$keyval) {
+                            $image['item_img_order'] = $numord;
+                            $newimg[] = $image;
+                            $numord++;
+                        }
+                    }
+                }
+                $sessiondata['images'] = $newimg;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_addimages_delete($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+        $images = $sessiondata['images'];
+        $deleted = $sessiondata['deleted'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $find = 0;
+            $idx = 0;
+            $numrow = 1;
+            $newimg = [];
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    if ($imgidx > 0) {
+                        $deleted[] = [
+                            'entity' => 'images',
+                            'id' => $imgidx,
+                        ];
+                    }
+                } else {
+                    $image['item_img_order'] = $numrow;
+                    $newimg[] = $image;
+                    $numrow++;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['images'] = $newimg;
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_addimages_title($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+        $images = $sessiondata['images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $find = 0;
+            $idx = 0;
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    $images[$idx]['item_img_label'] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['images'] = $images;
+                usersession($session, $sessiondata);
+            }
         }
         return $out;
     }

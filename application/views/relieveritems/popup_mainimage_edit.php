@@ -20,7 +20,7 @@
         <?php } ?>
     </div>
     <div class="content-row">
-        <input class="itemimagecaption" placeholder="Enter Caption..."/>
+        <input class="itemimagecaption mainimage" placeholder="Enter Caption..."/>
     </div>
 </div>
 <div class="categoryimage_area">
