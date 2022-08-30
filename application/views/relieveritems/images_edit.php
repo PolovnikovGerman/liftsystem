@@ -6,7 +6,7 @@
                 <div class="itemmainimagetitle">Main Image:</div>
                 <div class="itemmainimagesrc">
                     <?php if (!empty($item['main_image'])) {?>
-                        <img src="<?=$item['main_image']?>" alt="Main Image">
+                        <img class="img-responsive" src="<?=$item['main_image']?>" alt="Main Image">
                     <?php } ?>
                 </div>
             </div>
@@ -14,6 +14,7 @@
                 <div class="itemcategoryimagetitle">Category Page:</div>
                 <div class="itemcategoryimagesrc">
                     <?php if (!empty($item['category_image'])) {?>
+                        <img class="img-responsive" src="<?=$item['category_image']?>" alt="Category Image">
                     <?php } ?>
                 </div>
             </div>
@@ -29,7 +30,7 @@
                 <?php if (empty($item['top_banner'])) { ?>
                     no image
                 <?php } else { ?>
-                    <img src="<?=$item['top_banner']?>" alt="top banner"/>
+                    <img class="img-responsive" src="<?=$item['top_banner']?>" alt="top banner"/>
                 <?php } ?>
             </div>
         </div>
@@ -39,7 +40,7 @@
         <div class="content-row">
             <div class="itemoptionstitle">OPTIONS:</div>
             <div class="itemoptionsvalue">
-                <select class="itemdetailsoptions <?=empty($item['options']) ? 'missing_info' : ''?>">
+                <select class="itemdetailsoptions <?=empty($item['options']) ? 'missing_info' : ''?>" disabled>
                     <option value=""></option>
                     <option value="Colors" <?=$item['options']=='Colors' ? 'selected="selected"' : ''?>>Colors</option>
                     <option value="Flavors" <?=$item['options']=='Flavors' ? 'selected="selected"' : ''?>>Flavors</option>

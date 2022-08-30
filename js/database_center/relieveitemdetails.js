@@ -233,7 +233,19 @@ function init_relievitemdetails_edit() {
 
 function init_relievitemimages_edit() {
     $("#itemImagesModal").find("button.close").unbind('click').click(function () {
-        // $("body").addClass('modal-open');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url="/dbitems/item_images_rebuild";
+        $.post(url, params, function(response) {
+            if (response.errors=='') {
+                $(".relievers_itemimages").empty().html(response.data.content);
+                init_relievitemdetails_edit();
+                $(document.body).addClass('modal-open');
+            } else {
+                show_error(response);
+            }
+        },'json');
+
     })
     var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
         '<em>upload image</em></span></div>' +
@@ -564,7 +576,6 @@ function init_relievitemimages_edit() {
             }
         }, 'json');
     })
-    // Slider
     // Init Add Images slider
     $(".addimages-slide-list").cycle({
         fx: 'carousel',
@@ -575,5 +586,120 @@ function init_relievitemimages_edit() {
         next : '#nextaddimageslider',
         prev : '#prevaddimageslider',
     });
+    // Options section
+    $(".itemdetailsoptions").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'options';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newval=='') {
+                    $(".itemdetailsoptions").addClass('missing_info');
+                } else {
+                    $(".itemdetailsoptions").removeClass('missing_info');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".itemoptioncheck").unbind('click').click(function () {
+        var fldname = 'option_images';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        var url='/dbitems/change_relive_checkbox';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (parseInt(response.data.newval)==1) {
+                    $(".itemoptioncheck").empty().html('<i class="fa fa-check-square" aria-hidden="true"></i>');
+                    // Show add item and slider
+                    $("#addoptionimage").show();
+                    $(".colorimages-slider").css('visibility','visible');
+                } else {
+                    $(".itemoptioncheck").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+                    $("#addoptionimage").hide();
+                    $(".colorimages-slider").css('visibility','hidden');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("#addoptionimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('addoptionimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: addtemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    var url="/dbitems/save_relive_addoptionimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".colorimages-slider").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".replaseoptionitems").each(function () {
+        var replid = $(this).prop('id');
+        var uploader = new qq.FileUploader({
+            element: document.getElementById(replid),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fldidx', value: replid});
+                    var url="/dbitems/save_relive_updoptimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".colorimages-slider").empty().html(response.data.content);
+                            init_relievitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    });
+    $(".optimageorderinpt").unbind('change').change(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'fldidx', value: $(this).data('image')});
+        var url="/dbitems/save_relive_addimagesort";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".colorimages-slider").empty().html(response.data.content);
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    })
 
 }

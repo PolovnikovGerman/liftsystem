@@ -5,5 +5,5 @@
     <?=$add_view?>
 </div>
 <div class="popupimages_section optionimagesection">
-    &nbsp;
+    <?=$options_view?>
 </div>

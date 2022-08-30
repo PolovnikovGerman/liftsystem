@@ -14,6 +14,7 @@
                 <div class="itemcategoryimagetitle">Category Page:</div>
                 <div class="itemcategoryimagesrc">
                     <?php if (!empty($item['category_image'])) {?>
+                        <img src="<?=$item['category_image']?>" alt="Category Image">
                     <?php } ?>
                 </div>
             </div>

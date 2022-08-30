@@ -18,6 +18,7 @@
                         <div class="itemparamlabel boxname"><?=chr(64 + $numpp)?></div>
                         <div class="itemparamvalue boxqty"><?=$box['box_qty']?></div>
                     </div>
+                    <?php $numpp++;?>
                 <?php } ?>
             </div>
         </div>

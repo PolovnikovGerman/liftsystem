@@ -5,21 +5,21 @@
         <div class="content-row">
     <?php } ?>
         <div class="otherimagesrc">
-            <img src="<?=$image['item_img_name']?>" alt="Img"/>
+            <img class="img-responsive" src="<?=$image['item_img_name']?>" alt="Img"/>
         </div>
         <?php $numpp++;?>
         <?php if ($numpp==6) { ?>
             </div>
             <div class="content-row">
         <?php } ?>
-        <?php if ($numpp==7) { ?>
+        <?php if ($numpp==11) { ?>
             </div>
             <?php break;?>
         <?php } ?>
     <?php } ?>
 </div>
-<?php if ($imgcnt > 6) { ?>
+<?php if ($imgcnt > 10) { ?>
     <div class="otherimagesmore">
-        + <?=($imgcnt - 6)?> more
+        + <?=($imgcnt - 10)?> more
     </div>
 <?php } ?>

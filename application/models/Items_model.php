@@ -714,6 +714,39 @@ Class Items_model extends My_Model
             'category_image' => '',
             'category_image_id' => '',
             'option_images' => 0,
+            'imprint_method' => '',
+            'imprint_color' => '',
+            'charge_pereach' => '',
+            'charge_perorder' => '',
+            // Price
+            'item_price_id' => -1,
+            'item_price_print' => 0,
+            'item_sale_print' => 0,
+            'profit_print' => 0,
+            'item_price_setup' => 0,
+            'item_sale_setup' => 0,
+            'profit_setup' => 0,
+            'profit_print_class' => '',
+            'profit_print_perc' => '',
+            'profit_setup_class' => '',
+            'profit_setup_perc' => '',
+            'profit_repeat_class' => '',
+            'profit_repeat_perc' => '',
+            'item_price_rush1' => '',
+            'item_sale_rush1' => '',
+            'profit_rush1' => 0,
+            'profit_rush1_class' => '',
+            'profit_rush1_perc' => '',
+            'item_price_rush2' => '',
+            'item_sale_rush2' => '',
+            'profit_rush2' => 0,
+            'profit_rush2_class' => '',
+            'profit_rush2_perc' => '',
+            'item_price_pantone' => '',
+            'item_sale_pantone' => '',
+            'profit_pantone' => 0,
+            'profit_pantone_class' => '',
+            'profit_pantone_perc' => '',
         ];
         $vendor = [
             'vendor_id' => '',
@@ -740,6 +773,12 @@ Class Items_model extends My_Model
             'printshop_item_id' => '',
             'vendor_name' => '',
             'vendor_zipcode' => '',
+            'stand_days' => '',
+            'rush1_days' => '',
+            'rush1_price' => '',
+            'rush2_days' => '',
+            'rush2_price' => '',
+            'pantone_match' => '',
         ];
         $vprices = [];
         if ($brand=='SR') {
@@ -978,25 +1017,25 @@ Class Items_model extends My_Model
                 }
             }
             if ($editmode==1) {
-                if ($numpp < $this->config->item('slider_images')) {
-                    $idx = 1;
-                    for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
-                        $title = 'Pic '.$i;
-                        $images[] = [
-                            'item_img_id' => $idx * (-1),
-                            'item_img_item_id' => $item_id,
-                            'item_img_name' => '',
-                            'item_img_thumb' => '',
-                            'item_img_order' => '',
-                            'item_img_big' => '',
-                            'item_img_medium' => '',
-                            'item_img_small' => '',
-                            'item_img_label' => '',
-                            'title' => $title,
-                        ];
-                        $idx++;
-                    }
-                }
+//                if ($numpp < $this->config->item('slider_images')) {
+//                    $idx = 1;
+//                    for ($i=$numpp; $i<=$this->config->item('slider_images'); $i++) {
+//                        $title = 'Pic '.$i;
+//                        $images[] = [
+//                            'item_img_id' => $idx * (-1),
+//                            'item_img_item_id' => $item_id,
+//                            'item_img_name' => '',
+//                            'item_img_thumb' => '',
+//                            'item_img_order' => '',
+//                            'item_img_big' => '',
+//                            'item_img_medium' => '',
+//                            'item_img_small' => '',
+//                            'item_img_label' => '',
+//                            'title' => $title,
+//                        ];
+//                        $idx++;
+//                    }
+//                }
             }
             // Options images
             if ($item['option_images']==0) {
@@ -1056,7 +1095,7 @@ Class Items_model extends My_Model
             foreach ($specprice as $key => $val) {
                 $item[$key] = $val;
             }
-            $shipboxes = $this->get_itemshipbox($item_id);
+            $shipboxes = $this->get_itemshipbox($item_id, $editmode);
             // Simular
             $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
             // config
@@ -1189,12 +1228,26 @@ Class Items_model extends My_Model
         return $out;
     }
 
-    public function get_itemshipbox($item_id) {
+    public function get_itemshipbox($item_id, $editmode) {
         $this->db->select('*');
         $this->db->from('sb_item_shipping');
         $this->db->where('item_id', $item_id);
         $this->db->order_by('box_qty');
         $res = $this->db->get()->result_array();
+        if ($editmode==1) {
+            if (count($res) < 3) {
+                $numbox = count($res)+1;
+                for ($i=$numbox; $i<4; $i++) {
+                    $res[] = [
+                        'item_shipping_id' => (-1)*$i,
+                        'box_qty' => '',
+                        'box_width' => '',
+                        'box_length' => '',
+                        'box_height' => '',
+                    ];
+                }
+            }
+        }
         return $res;
     }
 
@@ -1485,6 +1538,54 @@ Class Items_model extends My_Model
             if ($find==1) {
                 $out['result'] = $this->success_result;
                 $sessiondata['images'] = $images;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_optionimages_add($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['option_images'];
+        $neword = 0;
+        foreach ($images as $image) {
+            if ($neword < $image['item_img_order']) {
+                $neword = $image['item_img_order'];
+            }
+        }
+        $neword+=1;
+        $newid = (count($images)+1) * (-1);
+        $images[] = [
+            'item_img_id' => $newid,
+            'item_img_name' => $postdata['newval'],
+            'item_img_label' => '',
+            'item_img_order' => $neword,
+        ];
+        $sessiondata['option_images'] = $images;
+        usersession($session, $sessiondata);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    public function itemdetails_optionimages_update($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['option_images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $imgidx = str_replace('reploptimg', '',$imgidx);
+            $find = 0;
+            $idx = 0;
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    $images[$idx]['item_img_name'] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['option_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }

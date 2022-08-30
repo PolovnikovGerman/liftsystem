@@ -511,11 +511,14 @@ class Dbitems extends MY_Controller
                 $cntimages = count($images);
                 $addslider = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images,'cntimages' => $cntimages], TRUE);
                 $add_view = $this->load->view('relieveritems/popup_addimage_edit',['slider' => $addslider], TRUE);
-
+                $optimages = $sessiondata['option_images'];
+                $colorslider = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $optimages,'cntimages' => count($optimages)], TRUE);
+                $optionview = $this->load->view('relieveritems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
                 $mdata['header'] = 'IMAGES & OPTIONS:';
                 $options = [
                     'main_view' => $main_view,
                     'add_view' => $add_view,
+                    'options_view' => $optionview,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/popup_image_edit',$options, TRUE);
             }
@@ -656,4 +659,75 @@ class Dbitems extends MY_Controller
         }
         show_404();
     }
+
+    public function save_relive_addoptionimage() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_optionimages_add($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['option_images'];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_relive_updoptimage() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_optionimages_update($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['option_images'];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function item_images_rebuild() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $item = $sessiondata['item'];
+                $images = $sessiondata['images'];
+                $option_images = $sessiondata['option_images'];
+                $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
+                $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $option_images],TRUE);
+                $imagesoptions = [
+                    'otherimages' => $otherimages,
+                    'optionsimg' => $optionsimg,
+                    'item' => $item,
+                ];
+                $mdata['content'] = $this->load->view('relieveritems/images_edit',$imagesoptions, TRUE);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
