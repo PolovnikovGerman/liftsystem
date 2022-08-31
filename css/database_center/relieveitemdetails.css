@@ -1419,15 +1419,15 @@ input.itemimagecaption {
     float: left;
     height: 190px;
 }
-.addimages-slide-list {
+.addimages-slide-list, .optimages-slide-list {
     position: relative;
     margin: 0;
     padding: 0;
     width: 1148px;
 }
-.addimages-slide-wrap {
+.addimages-slide-wrap, .optimages-slide-wrap {
 }
-.addimages-slide-item {
+.addimages-slide-item, .optimages-slide-item {
     width: 125px;
     margin-right: 14px;
     display: inline-block;

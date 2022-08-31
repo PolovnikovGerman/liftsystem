@@ -2,12 +2,12 @@
     &nbsp;
 <?php } else { ?>
     <?php $numpp=0;?>
-    <div class="addimages-slide-list">
+    <div class="optimages-slide-list">
     <?php foreach ($images as $image) { ?>
         <?php if ($numpp%8==0) { ?>
-            <div class="addimages-slide-wrap">
+            <div class="optimages-slide-wrap">
         <?php } ?>
-        <div class="addimages-slide-item">
+        <div class="optimages-slide-item">
             <div class="replaseoptionitems" id="reploptimg<?=$image['item_img_id']?>"></div>
             <div class="img-addimagebox">
                 <img src="<?=$image['item_img_name']?>">

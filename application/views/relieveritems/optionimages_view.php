@@ -3,8 +3,10 @@
     <?php if ($numpp%2==0) { ?>
         <div class="content-row">
     <?php } ?>
-    <div class="itemoptionimagesrc">&nbsp;</div>
-    <div class="itemoptionimagelabel">Blue</div>
+    <div class="itemoptionimagesrc">
+        <img class="img-responsive" src="<?=$imgoption['item_img_name']?>"/>
+    </div>
+    <div class="itemoptionimagelabel"><?=$imgoption['item_img_label']?></div>
     <?php $numpp++;?>
     <?php if ($numpp%2==0) { ?>
         </div>

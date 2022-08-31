@@ -710,9 +710,10 @@ Class Items_model extends My_Model
             'bullet4' => '',
             'item_minqty' => '',
             'main_image' => '',
-            'main_imgage_id' => '',
+            // 'main_imgage_id' => '',
             'category_image' => '',
-            'category_image_id' => '',
+            // 'category_image_id' => '',
+            'top_banner' => '',
             'option_images' => 0,
             'imprint_method' => '',
             'imprint_color' => '',
@@ -1591,4 +1592,113 @@ Class Items_model extends My_Model
         }
         return $out;
     }
+
+    public function itemdetails_save_optimagessort($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Info not found'];
+        $images = $sessiondata['option_images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $imgidx = intval($imgidx);
+            $numpp = ifset($postdata, 'newval', '');
+            if (!empty($numpp)) {
+                $numpp = intval($numpp);
+                $numord = 1;
+                $newimg = [];
+                $arrimg = [];
+                for ($i=0; $i<count($images); $i++) {
+                    foreach ($images as $image) {
+                        if (!in_array($image['item_img_id'], $arrimg)) {
+                            if ($numord==$numpp) {
+                                array_push($arrimg, $imgidx);
+                                $numord++;
+                                break;
+                            } else {
+                                if ($image['item_img_id']!=$imgidx) {
+                                    array_push($arrimg, $image['item_img_id']);
+                                    $numord++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                $numord=1;
+                foreach ($arrimg as $keyval) {
+                    foreach ($images as $image) {
+                        if ($image['item_img_id']==$keyval) {
+                            $image['item_img_order'] = $numord;
+                            $newimg[] = $image;
+                            $numord++;
+                        }
+                    }
+                }
+                $sessiondata['option_images'] = $newimg;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+
+    }
+
+    public function itemdetails_optimages_delete($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+        $images = $sessiondata['option_images'];
+        $deleted = $sessiondata['deleted'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $find = 0;
+            $idx = 0;
+            $numrow = 1;
+            $newimg = [];
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    if ($imgidx > 0) {
+                        $deleted[] = [
+                            'entity' => 'images',
+                            'id' => $imgidx,
+                        ];
+                    }
+                } else {
+                    $image['item_img_order'] = $numrow;
+                    $newimg[] = $image;
+                    $numrow++;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['option_images'] = $newimg;
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_optimages_title($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+        $images = $sessiondata['option_images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $find = 0;
+            $idx = 0;
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    $images[$idx]['item_img_label'] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['option_images'] = $images;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
 }

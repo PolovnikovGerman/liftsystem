@@ -546,7 +546,6 @@ function init_relievitemimages_edit() {
                 show_error(response);
             }
         }, 'json');
-
     })
     $("select.imageorderinpt").unbind('change').change(function () {
         var params = new Array();
@@ -691,7 +690,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_addimagesort";
+        var url="/dbitems/save_relive_optimagesort";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".colorimages-slider").empty().html(response.data.content);
@@ -700,6 +699,43 @@ function init_relievitemimages_edit() {
                 show_error(response);
             }
         }, 'json');
+    });
+    $(".removeimage.optimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fldidx', value: $(this).data('image')});
+        var url="/dbitems/save_relive_optimagedel";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".colorimages-slider").empty().html(response.data.content);
+                init_relievitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".itemimagecaption.optimage").unbind('change').change(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'fldidx', value: $(this).data('image')});
+        var url="/dbitems/save_relive_optimagetitle";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        }, 'json');
     })
+    // Init Options Images slider
+    $(".optimages-slide-list").cycle({
+        fx: 'carousel',
+        allowWrap: false,
+        manualSpeed: 600,
+        timeout : 0,
+        slides: '> div',
+        next : '#nextcolorimageslider',
+        prev : '#prevcolorimageslider',
+    });
 
 }
