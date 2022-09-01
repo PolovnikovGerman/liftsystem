@@ -51,6 +51,7 @@ if (!defined('BASEPATH'))
  * @property Seo_model seo_model
  * @property Customform_model customform_model
  * @property Inventory_model inventory_model
+ * @property Dbitemdetails_model dbitemdetails_model
 */
 
 

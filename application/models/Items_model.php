@@ -1699,4 +1699,136 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+        $vendor_prices = $sessiondata['vendor_price'];
+        $priceidx = ifset($postdata,'priceidx','');
+        $fldname = ifset($postdata, 'fld', '');
+        if (!empty($priceidx) && !empty($fldname)) {
+            $find = 0;
+            $idx=0;
+            foreach ($vendor_prices as $vendor_price) {
+                if ($vendor_price['vendorprice_id']==$priceidx) {
+                    $vendor_prices[$idx][$fldname] = ifset($postdata,'newval','');
+                    $find=1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['vendor_price'] = $vendor_prices;
+
+                // Add base price
+                $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
+                if (!empty($vendor['vendor_item_cost'])) {
+                    $commonprice['base_cost'] = $vendor['vendor_item_cost'];
+                }
+                if (!empty($vendor['vendor_item_exprint'])) {
+                    $commonprice['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
+                }
+                if (!empty($vendor['vendor_item_setup'])) {
+                    $commonprice['vendor_item_setup'] = $vendor['vendor_item_setup'];
+                }
+                $prices = $sessiondata['prices'];
+            }
+        }
+        return $out;
+    }
+
+    // Recalc Promo Profit
+    private function _recalc_promo_profit($prices, $vendprices, $commonprices)
+    {
+        /* IDX of Vendor Prices */
+        /* Init Profits array */
+        $profits = array();
+        foreach ($prices as $row) {
+            $base_cost = 0;
+            if (floatval($row['sale_price']) != 0) {
+                $base_cost = floatval($row['sale_price']);
+            } elseif (floatval($row['price']) != 0) {
+                $base_cost = floatval($row['price']);
+            }
+            $profits[] = array(
+                'price_id' => $row['promo_price_id'],
+                'type' => 'qty',
+                'base' => $row['item_qty'],
+                'vendprice' => $commonprices['base_cost'],
+                'base_cost' => $base_cost,
+                'profit' => '',
+                'profit_perc' => '',
+                'profit_class' => 'empty',
+            );
+        }
+        /* Add 2 special prices */
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_print']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_print']);
+        } elseif (floatval($commonprices['item_price_print'])) {
+            $base_cost = floatval($commonprices['item_price_print']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'print',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_exprint']) == 0 ? 0 : floatval($commonprices['vendor_item_exprint'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_setup']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_setup']);
+        } elseif (floatval($commonprices['item_price_setup'])) {
+            $base_cost = floatval($commonprices['item_price_setup']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'setup',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_setup']) == 0 ? 0 : floatval($commonprices['vendor_item_setup'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        $new_profit = $this->recalc_profit($vendprices, $profits);
+        return $new_profit;
+    }
+
+    private function recalc_profit($vendprice, $profits) {
+        $out = array();
+        foreach ($profits as $row) {
+            if ($row['base_cost'] != 0) {
+                if ($row['type'] == 'qty') {
+                    /* Our Base less then 1-st entered value */
+                    if ($row['base'] == 5000) {
+                        $proof = 0;
+                    }
+                    foreach ($vendprice as $qrow) {
+                        if ($qrow['vendorprice_qty'] <= $row['base'] && !empty($qrow['vendorprice_color'])) {
+                            $row['vendprice'] = $qrow['vendorprice_color'];
+                        }
+                    }
+                    if (floatval($row['vendprice']) != 0) {
+                        $profit = ($row['base_cost'] - $row['vendprice']) * $row['base'];
+                        $row['profit'] = round($profit, 0);
+                        $row['profit_perc'] = round($profit / ($row['base_cost'] * $row['base']) * 100, 0);
+                        $row['profit_class'] = profit_bgclass($row['profit_perc']);
+                    }
+                } else {
+                    if (floatval($row['vendprice']) != 0) {
+                        $row['profit'] = round($row['base_cost'] - $row['vendprice'], 2);
+                        $row['profit_perc'] = round($row['profit'] / ($row['base_cost']) * 100, 0);
+                        $row['profit_class'] = profit_bgclass($row['profit_perc']);
+                    }
+                }
+            }
+            $out[] = $row;
+        }
+        return $out;
+    }
+
+
 }
