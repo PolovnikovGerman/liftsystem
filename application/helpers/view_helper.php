@@ -524,6 +524,40 @@ if (!function_exists('BankDays')) {
         return $bank_days;
     }
 }
+
+if (!function_exists('TNTDays')) {
+    function TNTDays($datbgn, $datend, $calendar_id=0) {
+        $bank_days = 0;
+        $ci=&get_instance();
+        if ($calendar_id==0) {
+            $def_calendar=$ci->config->item('bank_calendar');
+        } else {
+            $def_calendar=$calendar_id;
+        }
+
+        $ci->load->model('calendars_model');
+        $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
+        $holidays=array();
+        foreach ($holidays_src as $row) {
+            array_push($holidays, date('Y-m-d',$row));
+        }
+
+        $weekends=array(0,6);
+        $earlier = new DateTime(date('Y-m-d', $datend));
+        $later = new DateTime(date('Y-m-d', $datbgn));
+        $days = $later->diff($earlier)->format("%r%a");
+
+        // $days = ceil(($datend - $datbgn) / 3600 / 24);
+        for ($i = 1; $i <= $days; $i++) {
+            $curr = strtotime('+' . $i . ' days', $datbgn);
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {
+                $bank_days++;
+            }
+        }
+        return $bank_days;
+    }
+}
+
 if (!function_exists('short_number')) {
     function short_number($value, $precesion=1) {
         $base=1000;
