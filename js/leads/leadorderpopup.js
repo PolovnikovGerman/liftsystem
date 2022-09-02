@@ -2194,7 +2194,8 @@ function init_confirmshipcost(content) {
 function init_leadorder_shipping() {
     $("input.eventdatevalue").datepicker({
         autoclose: true,
-        todayHighlight: true
+        todayHighlight: true,
+        startDate: '-365d'
     });
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
