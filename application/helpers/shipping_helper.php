@@ -29,7 +29,10 @@ if (!function_exists('calculate_shipcost')) {
         $restqty = $qty - ($numpack * $numinpack);
         $ci->load->library('United_parcel_service');
         $out = array();
-        $daydiff = round((time() - $startdeliv) / (24 * 60 * 60), 0);
+        $earlier = new DateTime(date('Y-m-d'));
+        $later = new DateTime(date('Y-m-d', $startdeliv));
+        $daydiff = $later->diff($earlier)->format("%r%a");
+
         $code = '';
         $upsserv = new United_parcel_service();
         // Calc Time in Transit
@@ -37,8 +40,11 @@ if (!function_exists('calculate_shipcost')) {
         if ($restqty > 0) {
             $tntpack += 1;
         }
+        $oldstart = 0;
         if (abs($daydiff) > 10) {
-            $startdeliv = strtotime(date('Y-m-d') . ' + 1 day');
+            // $startdeliv = strtotime(date('Y-m-d') . ' + 1 day');
+            $oldstart = $startdeliv;
+            $startdeliv = strtotime(date('Y-m-d'));
         }
         $tntweigth = $itemweight * $qty;
         $transit_arr = $upsserv->ship_time($zip, $cnt_code, $tntpack, $tntweigth, date('Ymd', $startdeliv), $vendorzip);
@@ -102,6 +108,7 @@ if (!function_exists('calculate_shipcost')) {
             // Union all
             $code = "";
             $codes = array();
+            $calendar_id=$ci->config->item('bank_calendar');
             foreach ($ratescodes as $ratescode) {
                 if ($ratescode  == '03') {
                     $transfind = 0;
@@ -117,7 +124,8 @@ if (!function_exists('calculate_shipcost')) {
                         $code .= "GND|";
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         $shipRate = 0;
                         if (isset($fullRates['03'])) {
@@ -145,7 +153,8 @@ if (!function_exists('calculate_shipcost')) {
                         $code .= "11|";
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         $shipRate = 0;
                         if (isset($fullRates['11'])) {
@@ -176,7 +185,8 @@ if (!function_exists('calculate_shipcost')) {
                         $code .= "2DA|";
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         $shipRate = 0;
                         if (isset($fullRates['02'])) {
@@ -198,7 +208,8 @@ if (!function_exists('calculate_shipcost')) {
                         $delivdate = $transit_arr['1DP']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         array_push($codes, 'DP1');
                         $shipRate = 0;
@@ -223,7 +234,8 @@ if (!function_exists('calculate_shipcost')) {
                         $delivdate = $transit_arr['1DM']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         array_push($codes, 'DA1');
                         $shipRate = 0;
@@ -248,7 +260,8 @@ if (!function_exists('calculate_shipcost')) {
                         $delivdate = $transit_arr['05']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         array_push($codes, 'UPSExpedited');
                         $shipRate = 0;
@@ -272,7 +285,8 @@ if (!function_exists('calculate_shipcost')) {
                         $delivdate = $transit_arr['01']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         array_push($codes, 'UPSExpress');
                         $shipRate=0;
@@ -296,7 +310,8 @@ if (!function_exists('calculate_shipcost')) {
                         $delivdate = $transit_arr['28']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
                             // Make changes in deliv date
-                            $delivdate = fixdeliv_different($delivdate, $daydiff);
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
                         }
                         array_push($codes, 'UPSSaver');
                         $shipRate=0;
@@ -434,12 +449,12 @@ if (!function_exists('recalc_rates')) {
 }
 
 if (!function_exists('fixdeliv_different')) {
-    function fixdeliv_different($delivdate, $daydiff) {
+    function fixdeliv_different($delivdate, $daydiff, $numholid = 0) {
         $ci=&get_instance();
         if ($daydiff>0) {
-            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' - '.$daydiff.'days');
+            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' - '.($daydiff-1).'days');
         } else {
-            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' + '.abs($daydiff).'days');
+            $newdeliv=strtotime(date('Y-m-d H:i:s', $delivdate). ' + '.abs($daydiff+1).'days');
         }
         $calendar_id=$ci->config->item('bank_calendar');
         $start=date("Y-m-d",$newdeliv);
@@ -454,8 +469,43 @@ if (!function_exists('fixdeliv_different')) {
             array_push($calend, $row['date']);
         }
         $dat=strtotime(date("Y-m-d", strtotime($start)));
+        if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($dat, $calend)) {
+            $newdeliv = $dat;
+        } else {
+            $i=1;$cnt=1;
+            while ($i <= 1) {
+                $dat=strtotime(date("Y-m-d", strtotime($start)) . " +".$cnt." days");
+                $day=$dat;
+                if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($day, $calend)) {
+                    $i++;
+                }
+                $cnt++;
+            }
+            $newdeliv=$dat;
+        }
+        return $newdeliv;
+    }
+}
+
+if (!function_exists('recalc_arrive_date')) {
+    function recalc_arrive_date($delivdate, $tnt_days, $calendar_id = 0) {
+        $ci=&get_instance();
+        if ($calendar_id==0) {
+            $calendar_id=$ci->config->item('bank_calendar');
+        }
+        $start=date("Y-m-d",$delivdate);
+        $last_date=strtotime(date("Y-m-d", strtotime($start)) . " +365 days");
+        $ci->db->select('line_date as date',FALSE);
+        $ci->db->from("calendar_lines");
+        $ci->db->where('calendar_id',$calendar_id);
+        $ci->db->where("line_date between '".strtotime($start)."' and '".$last_date."'");
+        $cal=$ci->db->get()->result_array();
+        $calend=array();
+        foreach ($cal as $row) {
+            array_push($calend, $row['date']);
+        }
         $i=1;$cnt=1;
-        while ($i <= 1) {
+        while ($i <= $tnt_days) {
             $dat=strtotime(date("Y-m-d", strtotime($start)) . " +".$cnt." days");
             $day=$dat;
             if (date('w',$dat)!=0 && date('w',$dat)!=6 && !in_array($day, $calend)) {
@@ -464,6 +514,7 @@ if (!function_exists('fixdeliv_different')) {
             $cnt++;
         }
         $newdeliv=$dat;
+
         return $newdeliv;
     }
 }
