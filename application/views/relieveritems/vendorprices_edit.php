@@ -6,7 +6,7 @@
                 <div class="vendorqtypricetitle minprice">min</div>
                 <?php foreach ($vendor_prices as $vendor_price) { ?>
                     <div class="vendorqtypricetitle">
-                        <input type="text" class="vendorpriceinpt" data-fld="vendorprice_qty" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_qty']?>"/>
+                        <input type="text" class="vendorpriceinpt" data-item="vendorprice_qty" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_qty']?>"/>
                     </div>
                 <?php } ?>
             </div>
@@ -18,7 +18,7 @@
             </div>
             <?php foreach ($vendor_prices as $vendor_price) { ?>
                 <div class="vendorqtypriceqty editmode">
-                    <input type="text" class="vendorpriceinpt" data-fld="vendorprice_val" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_val']?>"/>
+                    <input type="text" class="vendorpriceinpt" data-item="vendorprice_val" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_val']?>"/>
                 </div>
             <?php } ?>
         </div>
@@ -29,7 +29,7 @@
             </div>
             <?php foreach ($vendor_prices as $vendor_price) { ?>
                 <div class="vendorqtypriceval editmode">
-                    <input type="text" class="vendorpriceinpt" data-fld="vendorprice_color" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_color']?>"/>
+                    <input type="text" class="vendorpriceinpt" data-item="vendorprice_color" data-price="<?=$vendor_price['vendorprice_id']?>" value="<?=$vendor_price['vendorprice_color']?>"/>
                 </div>
             <?php } ?>
         </div>

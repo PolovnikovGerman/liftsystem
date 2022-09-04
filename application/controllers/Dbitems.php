@@ -354,7 +354,16 @@ class Dbitems extends MY_Controller
                     ];
                     $vendor_main = $this->load->view('relieveritems/vendormain_edit', $vendoptions,TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
-                    $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
+                    $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
+                    $price_options = [
+                        'item' => $data['item'],
+                        'prices'=> $data['prices'],
+                        'profit_view' => $profit_view,
+                        'discounts' => $discounts,
+                        'netprices' => $netprices,
+                    ];
+                    $itemprices = $this->load->view('relieveritems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
                     $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
                     $imagesoptions = [
@@ -801,10 +810,78 @@ class Dbitems extends MY_Controller
             $session = ifset($postdata, 'session', 'unkn');
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_vendor_price($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_vendoritemprice() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
                 $res = $this->items_model->itemdetails_vendoritem_price($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_itempricediscount() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_price_discount($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_itemprice() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_item_price($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $prices = $sessiondata['prices'];
+                    $item = $sessiondata['item'];
+                    $mdata['netprices'] = $this->load->view('relieveritems/itemprice_net_view',['prices' => $prices], TRUE);
+                    $mdata['profit'] = $this->load->view('relieveritems/itemprice_profit_view',['item' => $item,'prices'=> $prices],TRUE);
+                    $mdata['saleprint'] = $item['item_sale_print'];
+                    $mdata['salesetup'] = $item['item_sale_setup'];
+                    $mdata['salerepeat'] = $item['item_sale_repeat'];
+                    $mdata['salerush1'] = $item['item_sale_rush1'];
+                    $mdata['salerush2'] = $item['item_sale_rush2'];
+                    $mdata['salepantone'] = $item['item_sale_pantone'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

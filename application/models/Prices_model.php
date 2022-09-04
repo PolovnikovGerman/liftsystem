@@ -684,5 +684,18 @@ Class Prices_model extends My_Model
         return $res;
     }
 
+    public function get_discount($discount_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Discount not found'];
+        $this->db->select('*');
+        $this->db->from('sb_price_discounts');
+        $this->db->where('price_discount_id', $discount_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res,'price_discount_id','')==$discount_id) {
+            $out['result'] = $this->success_result;
+            $out['discount'] = $res;
+        }
+        return $out;
+    }
+
 
 }

@@ -247,6 +247,81 @@ function init_relievitemdetails_edit() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".vendordatapriceinpt").unbind('change').change(function () {
+        var newval=$(this).val();
+        var fld = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_vendoritemprice';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".vendordatainpt").unbind('change').change(function () {
+        var newval=$(this).val();
+        var fld = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_vendoritemprice';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".discountselect").unbind('change').change(function(){
+        var newval = $(this).val();
+        var fldname = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_itempricediscount';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $(".priceinpt").unbind('change').change(function () {
+        var newval=$(this).val();
+        var fld = $(this).data('item');
+        var priceidx = $(this).data('price');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'priceidx', value: priceidx});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_itemprice';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#netpricesarea").empty().html(response.data.netprices);
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".itemprice_extrasale[data-item='item_sale_print']").empty().html(response.data.saleprint);
+                $(".itemprice_extrasale[data-item='item_sale_setup']").empty().html(response.data.salesetup);
+                $(".itemprice_extrasale[data-item='item_sale_repeat']").empty().html(response.data.salerepeat);
+                $(".itemprice_rushsale[data-item='item_sale_rush1']").empty().html(response.data.salerush1)
+                $(".itemprice_rushsale[data-item='item_sale_rush1']").empty().html(response.data.salerush2)
+                $(".itemprice_pantonesale[data-item='item_sale_pantone']").empty().html(response.data.salepantone);
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+
     })
 }
 

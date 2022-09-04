@@ -510,6 +510,10 @@ input.vendordatainpt {
     height: 22px;
     line-height: 22px;
 }
+input.vendordatainpt.terms {
+    padding-left: 2px;
+    width: 22px;
+}
 input.vendoritemnum, input.vendoritemname {
     width: 160px;
 }
@@ -763,6 +767,11 @@ input.vendorpriceinpt {
     text-align: center;
     width: 35px;
 }
+input.itempriceinpt {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+}
 .itemprice_pub {
     border: 1px solid #9f9f9f;
     font-size: 12px;
@@ -772,6 +781,14 @@ input.vendorpriceinpt {
     margin-right: 5px;
     text-align: center;
     width: 35px;
+}
+.itemprice_pub.editmode {
+    border: none;
+}
+input.priceinpt {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
 }
 .itemprice_discount {
     /* border: 1px solid #9f9f9f; */
@@ -836,6 +853,9 @@ select.discountselect::-ms-expand {
     text-align: center;
     width: 35px;
 }
+.itemprice_extraprice.editmode {
+    border: none;
+}
 .itemprice_extraprice, .itemprice_extrasale {
     border: 1px solid #9f9f9f;
 }
@@ -885,6 +905,12 @@ select.discountselect::-ms-expand {
     text-align: center;
     width: 35px;
 }
+.itemprice_pantoneprice.editmode {
+    border: none;
+}
+.itemprice_rushprice.editmode {
+    border: none;
+}
 .itemprice_pantoneprice, .itemprice_pantonesale {
     border: 1px solid #9f9f9f;
 }
@@ -925,6 +951,30 @@ select.discountselect::-ms-expand {
 }
 .itemprice_profitrusharea .itemprice_profitval, .itemprice_profitrusharea .itemprice_profitperc {
     width: 39px;
+}
+.itemprice_profitperc.black {
+    background: #000000;
+    color: #ffffff;
+}
+.itemprice_profitperc.maroon {
+    background-color: #800000;
+    color: #FFFFFF;
+}
+.itemprice_profitperc.red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.itemprice_profitperc.orange {
+    background-color: #ffa500;
+    color: #000000;
+}
+.itemprice_profitperc.white {
+    background-color: #ffffff;
+    color: #000000;
+}
+.itemprice_profitperc.green {
+    background-color: #86ff80;
+    color: #000000;
 }
 .itemprice_profitpantonearea {
     padding-left: 10px;

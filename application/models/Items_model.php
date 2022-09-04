@@ -721,12 +721,12 @@ Class Items_model extends My_Model
             'charge_perorder' => '',
             // Price
             'item_price_id' => -1,
-            'item_price_print' => 0,
-            'item_sale_print' => 0,
-            'profit_print' => 0,
-            'item_price_setup' => 0,
-            'item_sale_setup' => 0,
-            'profit_setup' => 0,
+            'item_price_print' => '',
+            'item_sale_print' => '',
+            'profit_print' => '',
+            'item_price_setup' => '',
+            'item_sale_setup' => '',
+            'profit_setup' => '',
             'profit_print_class' => '',
             'profit_print_perc' => '',
             'profit_setup_class' => '',
@@ -740,14 +740,32 @@ Class Items_model extends My_Model
             'profit_rush1_perc' => '',
             'item_price_rush2' => '',
             'item_sale_rush2' => '',
-            'profit_rush2' => 0,
+            'profit_rush2' => '',
             'profit_rush2_class' => '',
             'profit_rush2_perc' => '',
             'item_price_pantone' => '',
             'item_sale_pantone' => '',
-            'profit_pantone' => 0,
+            'profit_pantone' => '',
             'profit_pantone_class' => '',
             'profit_pantone_perc' => '',
+            'price_discount' => '',
+            'price_discount_val' => '',
+            'print_discount' => '',
+            'print_discount_val' => '',
+            'setup_discount' => '',
+            'setup_discount_val' => '',
+            'repeat_discount' => '',
+            'repeat_discount_val' => '',
+            'rush1_discount' => '',
+            'rush1_discount_val' => '',
+            'rush2_discount' => '',
+            'rush2_discount_val' => '',
+            'pantone_discount' => '',
+            'pantone_discount_val' => '',
+            'item_price_repeat' => '',
+            'item_sale_repeat' => '',
+            'profit_repeat' => '',
+            'pantone_profit' => '',
         ];
         $vendor = [
             'vendor_id' => '',
@@ -821,7 +839,7 @@ Class Items_model extends My_Model
             $prices[] = [
                 'promo_price_id' => $i * (-1),
                 'item_id' => -1,
-                'item_qty' => 0,
+                'item_qty' => '',
                 'price' => '',
                 'sale_price' => '',
                 'profit' => '',
@@ -1699,8 +1717,8 @@ Class Items_model extends My_Model
         return $out;
     }
 
-    public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
-        $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
+    public function itemdetails_vendor_price($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $vendor_prices = $sessiondata['vendor_price'];
         $priceidx = ifset($postdata,'priceidx','');
         $fldname = ifset($postdata, 'fld', '');
@@ -1718,22 +1736,163 @@ Class Items_model extends My_Model
             if ($find==1) {
                 $out['result'] = $this->success_result;
                 $sessiondata['vendor_price'] = $vendor_prices;
+                usersession($session, $sessiondata);
 
                 // Add base price
-                $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
-                if (!empty($vendor['vendor_item_cost'])) {
-                    $commonprice['base_cost'] = $vendor['vendor_item_cost'];
-                }
-                if (!empty($vendor['vendor_item_exprint'])) {
-                    $commonprice['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
-                }
-                if (!empty($vendor['vendor_item_setup'])) {
-                    $commonprice['vendor_item_setup'] = $vendor['vendor_item_setup'];
-                }
+                $commonprice = $this->_prepare_common_prices($sessiondata);
                 $prices = $sessiondata['prices'];
+                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
             }
         }
         return $out;
+    }
+
+    public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $vendoritem = $sessiondata['vendor_item'];
+        $fldname = ifset($postdata, 'fld', '');
+        if (!empty($fldname) && array_key_exists($fldname,$vendoritem)) {
+            $vendoritem[$fldname] = ifset($postdata,'newval','');
+            $out['result'] = $this->success_result;
+            $sessiondata['vendor_item'] = $vendoritem;
+            usersession($session, $sessiondata);
+            // Add base price
+            $commonprice = $this->_prepare_common_prices($sessiondata);
+            $prices = $sessiondata['prices'];
+            $vendor_prices = $sessiondata['vendor_price'];
+            $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+        }
+        return $out;
+    }
+
+    public function itemdetails_price_discount($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $item = $sessiondata['item'];
+        $fldname = ifset($postdata, 'fld', '');
+        if (!empty($fldname) && array_key_exists($fldname, $item)) {
+            $fldval = $fldname.'_val';
+            if (empty($postdata['newval'])) {
+                $item[$fldname] = '';
+                $item[$fldval] = '';
+                $out['result'] = $this->success_result;
+            } else {
+                $this->load->model('prices_model');
+                $res = $this->prices_model->get_discount($postdata['newval']);
+                $out['msg'] = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $out['result'] = $this->success_result;
+                    $discount = $res['discount'];
+                    $item[$fldval] = $discount['discount_val'];
+                    $item[$fldname] = $discount['price_discount_id'];
+                }
+            }
+            if ($out['result']==$this->success_result) {
+                // Recount prices
+                $prices = $sessiondata['prices'];
+                $recount = $this->_recalc_prices($item, $prices);
+                $item = $recount['item'];
+                $prices = $recount['prices'];
+                $sessiondata['item'] = $item;
+                $sessiondata['prices'] = $prices;
+                usersession($session, $sessiondata);
+                $vendor_prices = $sessiondata['vendor_price'];
+                $commonprice = $this->_prepare_common_prices($sessiondata);
+                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_item_price($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $prices = $sessiondata['prices'];
+        $fldname = ifset($postdata,'fld','');
+        $priceidx = ifset($postdata, 'priceidx', '');
+        if (!empty($fldname) && !empty($priceidx)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($prices as $price) {
+                if ($price['promo_price_id']==$priceidx) {
+                    $find = 1;
+                    $prices[$idx][$fldname] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $item = $sessiondata['item'];
+                $recount = $this->_recalc_prices($item, $prices);
+                $item = $recount['item'];
+                $prices = $recount['prices'];
+                $sessiondata['item'] = $item;
+                $sessiondata['prices'] = $prices;
+                usersession($session, $sessiondata);
+                $vendor_prices = $sessiondata['vendor_price'];
+                $commonprice = $this->_prepare_common_prices($sessiondata);
+                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+            }
+        }
+        return $out;
+    }
+
+    private function _recalc_prices($item, $prices) {
+        // Item Prices
+        if (empty($item['price_discount'])) {
+            $idx = 0;
+            foreach ($prices as $price) {
+                $prices[$idx]['sale_price'] = '';
+                $idx++;
+            }
+        } else {
+            $idx = 0;
+            foreach ($prices as $price) {
+                if ($price['price']!='') {
+                    $prices[$idx]['sale_price'] = round($price['price']*(100-$item['price_discount_val'])/100,3);
+                }
+                $idx++;
+            }
+        }
+        // Print
+        if (empty($item['print_discount'])) {
+            $item['item_sale_print'] = '';
+        } else {
+            $item['item_sale_print'] = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
+        }
+        // Setup
+        if (empty($item['setup_discount'])) {
+            $item['item_sale_setup'] = '';
+        } else {
+            $item['item_sale_setup'] = round($item['item_price_setup']*(100-$item['setup_discount_val'])/100, 3);
+        }
+        // Repeat
+        if (empty($item['repeat_discount'])) {
+            $item['item_sale_repeat'] = '';
+        } else {
+            $item['item_sale_repeat'] = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
+        }
+        // Rush
+        if (empty($item['rush1_discount'])) {
+            $item['item_sale_rush1'] = '';
+        } else {
+            $item['item_sale_rush1'] = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
+        }
+        if (empty($item['rush2_discount'])) {
+            $item['item_sale_rush2'] = '';
+        } else {
+            $item['item_sale_rush2'] = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
+        }
+        // Pantone
+        if (empty($item['pantone_discount'])) {
+            $item['item_sale_pantone'] = '';
+        } else {
+            $item['item_sale_pantone'] = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
+        }
+        return [
+            'item' => $item,
+            'prices' => $prices,
+        ];
     }
 
     // Recalc Promo Profit
@@ -1830,5 +1989,53 @@ Class Items_model extends My_Model
         return $out;
     }
 
+
+    private function _prepare_common_prices($sessiondata) {
+        $vendor = $sessiondata['vendor_item'];
+        $item = $sessiondata['item'];
+        $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
+        $commonprice['item_sale_print'] = $commonprice['item_price_print'] = 0;
+        $commonprice['item_sale_setup'] = $commonprice['item_price_setup'] = 0;
+        $commonprice['item_sale_repeat'] = $commonprice['item_price_repeat'] = 0;
+        $commonprice['item_price_id'] = $item['item_price_id'];
+        if (!empty($vendor['vendor_item_cost'])) {
+            $commonprice['base_cost'] = $vendor['vendor_item_cost'];
+        }
+        if (!empty($vendor['vendor_item_exprint'])) {
+            $commonprice['vendor_item_exprint'] = $vendor['vendor_item_exprint'];
+        }
+        if (!empty($vendor['vendor_item_setup'])) {
+            $commonprice['vendor_item_setup'] = $vendor['vendor_item_setup'];
+        }
+        return $commonprice;
+    }
+
+    private function _update_profit($profits, $item, $prices, $sessiondata, $session) {
+        foreach ($profits as $profit) {
+            if ($profit['type']=='qty') {
+                $idx = 0;
+                foreach ($prices as $price) {
+                    if ($price['item_qty']==$profit['base']) {
+                        $prices[$idx]['profit'] = $profit['profit'];
+                        $prices[$idx]['profit_class'] = $profit['profit_class'];
+                        $prices[$idx]['profit_perc'] = $profit['profit_perc'];
+                        break;
+                    }
+                    $idx++;
+                }
+            } elseif ($profit['type']=='setup') {
+                // $item[''];
+            } elseif ($profit['type']=='print') {
+            } elseif ($profit['type']=='rush1') {
+            } elseif ($profit['type']=='rush2') {
+            } elseif ($profit['type']=='pantone') {
+
+            }
+        }
+        $sessiondata['item'] = $item;
+        $sessiondata['prices'] = $prices;
+        usersession($session, $sessiondata);
+        return true;
+    }
 
 }
