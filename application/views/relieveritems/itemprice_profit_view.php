@@ -2,7 +2,7 @@
     <div class="content-row">
         <div class="itemprice_profittitle">Profit:</div>
         <?php foreach ($prices as $price) { ?>
-            <div class="itemprice_profitval"><?=empty($price['profit']) ? '' : MoneyOutput($price['profit'],0)?></div>
+            <div class="itemprice_profitval"><?=empty($price['profit']) ? '' : ProfitOutput($price['profit'],0)?></div>
         <?php } ?>
     </div>
     <div class="content-row">
@@ -14,9 +14,9 @@
 </div>
 <div class="itemprice_profitextraarea">
     <div class="content-row">
-        <div class="itemprice_profitval"><?=empty($item['profit_print']) ? '' : MoneyOutput($item['profit_print'])?></div>
-        <div class="itemprice_profitval"><?=empty($item['profit_setup']) ? '' : MoneyOutput($item['profit_setup'])?></div>
-        <div class="itemprice_profitval"><?=empty($item['profit_repeat']) ? '' : MoneyOutput($item['profit_repeat'])?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_print']) ? '' : ProfitOutput($item['profit_print'],2)?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_setup']) ? '' : ProfitOutput($item['profit_setup'],0)?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_repeat']) ? '' : ProfitOutput($item['profit_repeat'],0)?></div>
     </div>
     <div class="content-row">
         <div class="itemprice_profitperc <?=$item['profit_print_class']?>"><?=empty($item['profit_print_perc']) ? '' : $item['profit_print_perc'].'%'?></div>
@@ -26,8 +26,8 @@
 </div>
 <div class="itemprice_profitrusharea">
     <div class="content-row">
-        <div class="itemprice_profitval"><?=empty($item['profit_rush1']) ? '' : MoneyOutput($item['profit_rush1'])?></div>
-        <div class="itemprice_profitval"><?=empty($item['profit_rush2']) ? '' : MoneyOutput($item['profit_rush2'])?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_rush1']) ? '' : ProfitOutput($item['profit_rush1'],0)?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_rush2']) ? '' : ProfitOutput($item['profit_rush2'],0)?></div>
     </div>
     <div class="content-row">
         <div class="itemprice_profitperc <?=$item['profit_rush1_class']?>"><?=empty($item['profit_rush1_perc']) ? '' : $item['profit_rush1_perc'].'%'?></div>
@@ -36,7 +36,7 @@
 </div>
 <div class="itemprice_profitpantonearea">
     <div class="content-row">
-        <div class="itemprice_profitval"><?=empty($item['profit_pantone']) ? '' : MoneyOutput($item['profit_pantone'])?></div>
+        <div class="itemprice_profitval"><?=empty($item['profit_pantone']) ? '' : ProfitOutput($item['profit_pantone'],0)?></div>
     </div>
     <div class="content-row">
         <div class="itemprice_profitperc <?=$item['profit_pantone_class']?>"><?=empty($item['profit_pantone_perc']) ? '' : $item['profit_pantone_perc'].'%'?></div>

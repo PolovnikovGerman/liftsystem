@@ -1737,11 +1737,12 @@ Class Items_model extends My_Model
                 $out['result'] = $this->success_result;
                 $sessiondata['vendor_price'] = $vendor_prices;
                 usersession($session, $sessiondata);
-
                 // Add base price
                 $commonprice = $this->_prepare_common_prices($sessiondata);
                 $prices = $sessiondata['prices'];
+                $item = $sessiondata['item'];
                 $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
             }
         }
         return $out;
@@ -1759,8 +1760,10 @@ Class Items_model extends My_Model
             // Add base price
             $commonprice = $this->_prepare_common_prices($sessiondata);
             $prices = $sessiondata['prices'];
+            $item = $sessiondata['item'];
             $vendor_prices = $sessiondata['vendor_price'];
             $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+            $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
         }
         return $out;
     }
@@ -1798,6 +1801,7 @@ Class Items_model extends My_Model
                 $vendor_prices = $sessiondata['vendor_price'];
                 $commonprice = $this->_prepare_common_prices($sessiondata);
                 $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
             }
         }
         return $out;
@@ -1837,6 +1841,28 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function itemdetails_item_priceval($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $item = $sessiondata['item'];
+        $fldname = ifset($postdata,'fld','');
+        if (!empty($fldname) && in_array($fldname, $item)) {
+            $out['result'] = $this->success_result;
+            $item[$fldname] = $postdata['newval'];
+            $prices = $sessiondata['prices'];
+            $recount = $this->_recalc_prices($item, $prices);
+            $item = $recount['item'];
+            $prices = $recount['prices'];
+            $sessiondata['item'] = $item;
+            $sessiondata['prices'] = $prices;
+            usersession($session, $sessiondata);
+            $vendor_prices = $sessiondata['vendor_price'];
+            $commonprice = $this->_prepare_common_prices($sessiondata);
+            $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+            $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+        }
+        return $out;
+    }
+
     private function _recalc_prices($item, $prices) {
         // Item Prices
         if (empty($item['price_discount'])) {
@@ -1858,36 +1884,60 @@ Class Items_model extends My_Model
         if (empty($item['print_discount'])) {
             $item['item_sale_print'] = '';
         } else {
-            $item['item_sale_print'] = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
+            if ($item['item_price_print']=='') {
+                $item['item_sale_print'] = '';
+            } else {
+                $item['item_sale_print'] = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
+            }
         }
         // Setup
         if (empty($item['setup_discount'])) {
             $item['item_sale_setup'] = '';
         } else {
-            $item['item_sale_setup'] = round($item['item_price_setup']*(100-$item['setup_discount_val'])/100, 3);
+            if ($item['item_price_setup']=='') {
+                $item['item_sale_setup'] = '';
+            } else {
+                $item['item_sale_setup'] = round(floatval($item['item_price_setup'])*(100-floatval($item['setup_discount_val']))/100, 3);
+            }
         }
         // Repeat
         if (empty($item['repeat_discount'])) {
             $item['item_sale_repeat'] = '';
         } else {
-            $item['item_sale_repeat'] = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
+            if ($item['item_price_repeat']=='') {
+                $item['item_sale_repeat'] = '';
+            } else {
+                $item['item_sale_repeat'] = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
+            }
         }
         // Rush
         if (empty($item['rush1_discount'])) {
             $item['item_sale_rush1'] = '';
         } else {
-            $item['item_sale_rush1'] = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
+            if ($item['item_price_rush1']=='') {
+                $item['item_sale_rush1'] = '';
+            } else {
+                $item['item_sale_rush1'] = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
+            }
         }
         if (empty($item['rush2_discount'])) {
             $item['item_sale_rush2'] = '';
         } else {
-            $item['item_sale_rush2'] = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
+            if ($item['item_price_rush2']=='') {
+                $item['item_sale_rush2'] = '';
+            } else {
+                $item['item_sale_rush2'] = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
+            }
         }
         // Pantone
         if (empty($item['pantone_discount'])) {
             $item['item_sale_pantone'] = '';
         } else {
-            $item['item_sale_pantone'] = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
+            if ($item['item_price_pantone']=='') {
+                $item['item_sale_pantone'] = '';
+            } else {
+                $item['item_sale_pantone'] = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
+            }
         }
         return [
             'item' => $item,
@@ -1952,6 +2002,75 @@ Class Items_model extends My_Model
             'profit_perc' => '',
             'profit_class' => 'empty',
         );
+        // Repeat
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_repeat']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_repeat']);
+        } elseif (floatval($commonprices['item_price_repeat'])) {
+            $base_cost = floatval($commonprices['item_price_repeat']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'repeat',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_repeat']) == 0 ? 0 : floatval($commonprices['vendor_item_repeat'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        // Rush 1
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_rush1']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_rush1']);
+        } elseif (floatval($commonprices['item_price_rush1'])) {
+            $base_cost = floatval($commonprices['item_price_rush1']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'rush1',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_rush1']) == 0 ? 0 : floatval($commonprices['vendor_item_rush1'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        // Rush 2
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_rush2']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_rush2']);
+        } elseif (floatval($commonprices['item_price_rush2'])) {
+            $base_cost = floatval($commonprices['item_price_rush2']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'rush2',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_rush2']) == 0 ? 0 : floatval($commonprices['vendor_item_rush2'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+        // Pantone
+        $base_cost = 0;
+        if (floatval($commonprices['item_sale_pantone']) != 0) {
+            $base_cost = floatval($commonprices['item_sale_pantone']);
+        } elseif (floatval($commonprices['item_price_pantone'])) {
+            $base_cost = floatval($commonprices['item_price_pantone']);
+        }
+        $profits[] = array(
+            'price_id' => $commonprices['item_price_id'],
+            'type' => 'pantone',
+            'base' => 1,
+            'base_cost' => $base_cost,
+            'vendprice' => (floatval($commonprices['vendor_item_pantone']) == 0 ? 0 : floatval($commonprices['vendor_item_pantone'])),
+            'profit' => '',
+            'profit_perc' => '',
+            'profit_class' => 'empty',
+        );
+
         $new_profit = $this->recalc_profit($vendprices, $profits);
         return $new_profit;
     }
@@ -1994,9 +2113,21 @@ Class Items_model extends My_Model
         $vendor = $sessiondata['vendor_item'];
         $item = $sessiondata['item'];
         $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
-        $commonprice['item_sale_print'] = $commonprice['item_price_print'] = 0;
-        $commonprice['item_sale_setup'] = $commonprice['item_price_setup'] = 0;
-        $commonprice['item_sale_repeat'] = $commonprice['item_price_repeat'] = 0;
+        $commonprice['vendor_item_repeat'] = $commonprice['vendor_item_rush1'] = $commonprice['vendor_item_rush2'] = 0;
+
+        $commonprice['item_sale_print'] = $item['item_sale_print'];
+        $commonprice['item_price_print'] = $item['item_price_print'];
+        $commonprice['item_sale_setup'] = $item['item_sale_setup'];
+        $commonprice['item_price_setup'] = $item['item_price_setup'];
+        $commonprice['item_sale_repeat'] = $item['item_sale_repeat'];
+        $commonprice['item_price_repeat'] = $item['item_price_repeat'];
+        $commonprice['item_sale_rush1'] = $item['item_sale_rush1'];
+        $commonprice['item_price_rush1'] = $item['item_price_rush1'];
+        $commonprice['item_sale_rush2'] = $item['item_sale_rush2'];
+        $commonprice['item_price_rush2'] = $item['item_price_rush2'];
+        $commonprice['item_sale_pantone'] = $item['item_sale_pantone'];
+        $commonprice['item_price_pantone'] = $item['item_price_pantone'];
+
         $commonprice['item_price_id'] = $item['item_price_id'];
         if (!empty($vendor['vendor_item_cost'])) {
             $commonprice['base_cost'] = $vendor['vendor_item_cost'];
@@ -2007,6 +2138,19 @@ Class Items_model extends My_Model
         if (!empty($vendor['vendor_item_setup'])) {
             $commonprice['vendor_item_setup'] = $vendor['vendor_item_setup'];
         }
+        if (!empty($vendor['vendor_item_repeat'])) {
+            $commonprice['vendor_item_repeat'] = $vendor['vendor_item_repeat'];
+        }
+        if (!empty($vendor['rush1_price'])) {
+            $commonprice['vendor_item_rush1'] = $vendor['rush1_price'];
+        }
+        if (!empty($vendor['rush2_price'])) {
+            $commonprice['vendor_item_rush2'] = $vendor['rush2_price'];
+        }
+        if (!empty($vendor['pantone_match'])) {
+            $commonprice['vendor_item_pantone'] = $vendor['pantone_match'];
+        }
+
         return $commonprice;
     }
 
@@ -2024,12 +2168,29 @@ Class Items_model extends My_Model
                     $idx++;
                 }
             } elseif ($profit['type']=='setup') {
-                // $item[''];
+                $item['profit_setup'] = $profit['profit'];
+                $item['profit_setup_class'] = $profit['profit_class'];
+                $item['profit_setup_perc'] = $profit['profit_perc'];
             } elseif ($profit['type']=='print') {
+                $item['profit_print'] = $profit['profit'];
+                $item['profit_print_class'] = $profit['profit_class'];
+                $item['profit_print_perc'] = $profit['profit_perc'];
+            } elseif ($profit['type']=='repeat') {
+                $item['profit_repeat'] = $profit['profit'];
+                $item['profit_repeat_class'] = $profit['profit_class'];
+                $item['profit_repeat_perc'] = $profit['profit_perc'];
             } elseif ($profit['type']=='rush1') {
+                $item['profit_rush1'] = $profit['profit'];
+                $item['profit_rush1_class'] = $profit['profit_class'];
+                $item['profit_rush1_perc'] = $profit['profit_perc'];
             } elseif ($profit['type']=='rush2') {
+                $item['profit_rush2'] = $profit['profit'];
+                $item['profit_rush2_class'] = $profit['profit_class'];
+                $item['profit_rush2_perc'] = $profit['profit_perc'];
             } elseif ($profit['type']=='pantone') {
-
+                $item['profit_pantone'] = $profit['profit'];
+                $item['profit_pantone_class'] = $profit['profit_class'];
+                $item['profit_pantone_perc'] = $profit['profit_perc'];
             }
         }
         $sessiondata['item'] = $item;

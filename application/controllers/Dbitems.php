@@ -814,6 +814,7 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata = $this->_prepare_price_response($session);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -833,6 +834,7 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata = $this->_prepare_price_response($session);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -852,6 +854,7 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata = $this->_prepare_price_response($session);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -871,22 +874,48 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $sessiondata = usersession($session);
-                    $prices = $sessiondata['prices'];
-                    $item = $sessiondata['item'];
-                    $mdata['netprices'] = $this->load->view('relieveritems/itemprice_net_view',['prices' => $prices], TRUE);
-                    $mdata['profit'] = $this->load->view('relieveritems/itemprice_profit_view',['item' => $item,'prices'=> $prices],TRUE);
-                    $mdata['saleprint'] = $item['item_sale_print'];
-                    $mdata['salesetup'] = $item['item_sale_setup'];
-                    $mdata['salerepeat'] = $item['item_sale_repeat'];
-                    $mdata['salerush1'] = $item['item_sale_rush1'];
-                    $mdata['salerush2'] = $item['item_sale_rush2'];
-                    $mdata['salepantone'] = $item['item_sale_pantone'];
+                    $mdata = $this->_prepare_price_response($session);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function change_relive_itempriceval() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_item_priceval($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_price_response($session) {
+        $sessiondata = usersession($session);
+        $prices = $sessiondata['prices'];
+        $item = $sessiondata['item'];
+        $mdata = [];
+        $mdata['netprices'] = $this->load->view('relieveritems/itemprice_net_view',['prices' => $prices], TRUE);
+        $mdata['profit'] = $this->load->view('relieveritems/itemprice_profit_view',['item' => $item,'prices'=> $prices],TRUE);
+        $mdata['saleprint'] = $item['item_sale_print'];
+        $mdata['salesetup'] = $item['item_sale_setup'];
+        $mdata['salerepeat'] = $item['item_sale_repeat'];
+        $mdata['salerush1'] = $item['item_sale_rush1'];
+        $mdata['salerush2'] = $item['item_sale_rush2'];
+        $mdata['salepantone'] = $item['item_sale_pantone'];
+        return $mdata;
     }
 
 }
