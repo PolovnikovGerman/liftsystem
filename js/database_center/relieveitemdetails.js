@@ -365,6 +365,73 @@ function init_relievitemdetails_edit() {
             }
         },'json');
     });
+    $("textarea.metadescription").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'item_metadescription';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newval=='') {
+                    $("textarea.metadescription").addClass('missing_info');
+                } else {
+                    $("textarea.metadescription").removeClass('missing_info');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea.metakeywords").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'item_metakeywords';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea.itemkeywords").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'item_keywords';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.itemshipbox").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = $(this).data('item');
+        var shipidx = $(this).data('shipbox');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'shipidx', value: shipidx});
+        var url='/dbitems/change_relive_shipbox';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_relievitemimages_edit() {

@@ -372,10 +372,10 @@ class Dbitems extends MY_Controller
                         'item' => $data['item'],
                     ];
                     $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
-                    $locations = $this->load->view('relieveritems/printlocations_view',['locations' => $data['inprints']], TRUE);
-                    $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
-                    $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
-                    $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                    $locations = $this->load->view('relieveritems/printlocations_edit',['locations' => $data['inprints']], TRUE);
+                    $customview = $this->load->view('relieveritems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations], TRUE);
+                    $metaview = $this->load->view('relieveritems/itemmeta_edit',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('relieveritems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
 
                 }
                 $body_options = [
@@ -891,6 +891,26 @@ class Dbitems extends MY_Controller
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
                 $res = $this->items_model->itemdetails_item_priceval($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_shipbox() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_shipbox($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';

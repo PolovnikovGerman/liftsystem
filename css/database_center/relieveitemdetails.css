@@ -338,6 +338,13 @@ input.itemkeyinfoinput {
     margin-left: -5px;
     padding-left: 5px;
 }
+input.iteminfoinput {
+    border: 1px solid #9f9f9f;
+    line-height: 20px;
+    height: 20px;
+    margin-left: -5px;
+    padding-left: 5px;
+}
 .itemkeyinfoinput.missing_info {
     background: #ffc0cb;
     border: 1px solid #FF0000;
@@ -1266,6 +1273,17 @@ select.itemdetailsoptions.missing_info {
     overflow: hidden;
     width: 203px;
 }
+input.metatitle {
+    width: 404px;
+}
+textarea.metadescription, textarea.metakeywords, textarea.itemkeywords {
+    width: 203px;
+    margin-left: -5px;
+}
+input.metaurl {
+    width: 192px;
+}
+
 /* Shipping */
 .itemshippingarea {
     background: #000048;
@@ -1287,6 +1305,19 @@ select.itemdetailsoptions.missing_info {
 .itemparamvalue.itemweigth {
     width: 40px;
     margin-right: 3px;
+}
+input.itemweigthinpt {
+    width: 40px;
+}
+input.itemshipbox {
+    height: 21px;
+    line-height: 21px;
+}
+input.box_qty {
+    width: 37px;
+}
+input.box_width, input.box_length, input.box_height {
+    width: 22px;
 }
 .itemboxarea {
     width: 64px;
@@ -1347,12 +1378,18 @@ select.itemdetailsoptions.missing_info {
     margin-right: 10px;
     width: 36px;
 }
+input.chargepereach {
+    width: 36px;
+}
 .itemparamlabel.specialorder {
     line-height: 12px;
     margin-right: 3px;
     width: 56px;
 }
 .itemparamvalue.specialorder {
+    width: 39px;
+}
+input.chargeperorder {
     width: 39px;
 }
 /* Item Images Modal*/

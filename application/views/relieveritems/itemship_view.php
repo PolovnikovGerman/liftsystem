@@ -3,7 +3,7 @@
     <div class="sectionbody">
         <div class="content-row">
             <div class="itemparamlabel itemweigth">Weight Ea:</div>
-            <div class="itemparamvalue itemweigth"><?=$item['item_weigth']?></div>
+            <div class="itemparamvalue itemweigth <?=empty($item['item_weigth']) ? 'missing_info' : ''?>"><?=$item['item_weigth']?></div>
             <div class="itemparamlabel weight-measure">lbs</div>
         </div>
         <div class="itemboxarea">

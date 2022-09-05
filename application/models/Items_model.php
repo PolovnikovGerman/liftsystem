@@ -876,7 +876,7 @@ Class Items_model extends My_Model
         }
         $shipboxes = [];
         for ($i=0; $i<3; $i++) {
-            $shipbox[] = [
+            $shipboxes[] = [
                 'item_shipping_id' => (-1)*($i+1),
                 'box_qty' => '',
                 'box_width' => '',
@@ -1859,6 +1859,31 @@ Class Items_model extends My_Model
             $commonprice = $this->_prepare_common_prices($sessiondata);
             $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
             $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+        }
+        return $out;
+    }
+
+    public function itemdetails_shipbox($sessiondata, $postdata, $session) {
+        $out=['result'=>$this->error_result, 'msg'=>'Info Not Found'];
+        $shipboxes = $sessiondata['shipboxes'];
+        $fldname = ifset($postdata,'fld','');
+        $shipidx = ifset($postdata, 'shipidx', '');
+        if (!empty($fldname) && !empty($shipidx)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($shipboxes as $shipbox) {
+                if ($shipbox['item_shipping_id']==$shipidx) {
+                    $find = 1;
+                    $shipboxes[$idx][$fldname] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['shipboxes'] = $shipboxes;
+                usersession($session, $sessiondata);
+            }
         }
         return $out;
     }
