@@ -21,7 +21,7 @@
         </div>
         <div class="itemdetails-itemcategory">
             <div class="namearea-label">Category:</div>
-            <div class="itemdetails-keydatvalue">Stock Shapes</div>
+            <div class="itemdetails-keydatvalue"><?=$item['category_name']?></div>
         </div>
     </div>
     <div class="itemdetails-mode">

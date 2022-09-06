@@ -905,8 +905,9 @@ Class Items_model extends My_Model
 
     public function get_itemlist_details($item_id, $editmode = 0) {
         $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
-        $this->db->select('*');
-        $this->db->from('sb_items');
+        $this->db->select('i.*,sr.category_name');
+        $this->db->from('sb_items i');
+        $this->db->join('sr_categories sr', 'sr.category_id=i.category_id');
         $this->db->where('item_id', $item_id);
         $item = $this->db->get()->row_array();
         if (ifset($item, 'item_id',0)==$item_id) {
@@ -1266,6 +1267,45 @@ Class Items_model extends My_Model
             }
         }
         return $res;
+    }
+
+    public function itemdetails_change_category($sessiondata, $postdata, $session) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
+        $item = $sessiondata['item'];
+        if (ifset($postdata,'newval','')=='') {
+            $item['category_id'] = NULL;
+            $item['item_number'] = '';
+            $out['result'] = $this->success_result;
+            $out['item_number'] = '';
+        } else {
+            $this->load->model('categories_model');
+            $res = $this->categories_model->get_srcategory_data($postdata['newval']);
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $category = $res['data'];
+                $item['category_id'] = $category['category_id'];
+                $this->db->select('count(item_id) as cnt, max(item_number) as maxnum');
+                $this->db->from('sb_items');
+                $this->db->where('category_id', $category['category_id']);
+                $this->db->where('brand','SR');
+                $dat = $this->db->get()->row_array();
+                if ($dat['cnt']==0) {
+                    $newnumber=$category['category_code'].'001';
+                } else {
+                    $lastcode = intval(substr($dat['maxnum'],1));
+                    $lastcode += 1;
+                    $newnumber = $category['category_code'].str_pad($lastcode,3,'0',STR_PAD_LEFT);
+                }
+                $item['item_number'] = $newnumber;
+                $out['result'] = $this->success_result;
+                $out['item_number'] = $newnumber;
+            }
+        }
+        if ($out['result']==$this->success_result) {
+            $sessiondata['item'] = $item;
+            usersession($session, $sessiondata);
+        }
+        return $out;
     }
 
     public function itemdetails_change_iteminfo($sessiondata, $options, $sessionsid) {

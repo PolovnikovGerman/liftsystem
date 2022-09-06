@@ -18,6 +18,20 @@ function init_relievitemdetails_view(item) {
 }
 
 function init_relievitemdetails_edit() {
+    $("select.categoryitemselect").unbind('change').change(function () {
+        var newval = $(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_itemcategory';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".itemdetails-keydatvalue[data-item='item_number']").empty().html(response.data.item_number);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     $(".itemdetailsstatus").unbind('change').change(function () {
         var newval = $(this).val();
         var params = new Array();

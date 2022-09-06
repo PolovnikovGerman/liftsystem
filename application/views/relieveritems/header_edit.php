@@ -13,15 +13,29 @@
     <div class="itemdetails-keydataarea">
         <div class="itemdetails-namearea">
             <div class="namearea-label">Item Name</div>
-            <div class="itemdetails-keydatvalue"><?=$item['item_name']?></div>
+            <div class="itemdetails-keydatvalue">
+                <input type="text" class="itemkeyinfoinput itemname" value="<?=$item['item_name']?>"/>
+            </div>
         </div>
         <div class="itemdetails-itemnumarea">
             <div class="namearea-label">Item #</div>
-            <div class="itemdetails-keydatvalue"><?=$item['item_number']?></div>
+            <div class="itemdetails-keydatvalue" data-item="item_number"><?=$item['item_number']?></div>
         </div>
         <div class="itemdetails-itemcategory">
             <div class="namearea-label">Category:</div>
-            <div class="itemdetails-keydatvalue">Stock Shapes</div>
+            <div class="itemdetails-keydatvalue">
+                <?php if ($item['item_id'] > 0) { ?>
+                    <?=$item['category_name']?>
+                <?php } else { ?>
+                    <select class="categoryitemselect">
+                        <option value=""></option>
+                        <?php foreach ($categories as $category) { ?>
+                            <option value="<?=$category['category_id']?>"><?=$category['category_name']?></option>
+                        <?php } ?>
+                    </select>
+                <?php } ?>
+
+            </div>
         </div>
     </div>
     <div class="itemdetails-mode">

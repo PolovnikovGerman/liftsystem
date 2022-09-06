@@ -301,9 +301,12 @@ class Dbitems extends MY_Controller
                 // Build HTML
                 $session_id = uniq_link('15');
                 usersession($session_id, $data);
+                $this->load->model('categories_model');
+                $categories = $this->categories_model->get_reliver_categories();
                 $header_options = [
                     'item' => $data['item'],
                     'session_id' => $session_id,
+                    'categories' => $categories,
                 ];
                 if ($editmode==0) {
                     $mdata['header'] = $this->load->view('relieveritems/header_view', $header_options, TRUE);
@@ -311,7 +314,7 @@ class Dbitems extends MY_Controller
                     $mdata['header'] = $this->load->view('relieveritems/header_edit', $header_options, TRUE);
                 }
                 // Key info
-                $this->load->model('categories_model');
+
                 $subcategories = $this->categories_model->get_reliver_subcategories();
                 $this->load->model('prices_model');
                 $discounts = $this->prices_model->get_price_discounts();
@@ -391,6 +394,26 @@ class Dbitems extends MY_Controller
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_relive_itemcategory() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_change_category($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['item_number'] = $res['item_number'];
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

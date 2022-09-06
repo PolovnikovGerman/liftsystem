@@ -74,6 +74,22 @@
 .itemdetails-namearea .itemdetails-keydatvalue {
     width: 384px;
 }
+input.itemname {
+    border: none!important;
+    height: 30px!important;
+    line-height: 30px!important;
+    width: 374px;
+}
+select.categoryitemselect {
+    border: none!important;
+    background: #ffffff;
+    height: 27px;
+    line-height: 27px;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-left: 6px;
+    width: 230px;
+}
 .itemdetails-itemnumarea {
     width: 115px;
 }
