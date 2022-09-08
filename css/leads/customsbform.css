@@ -54,7 +54,7 @@ a.find_customformbnt {
 }
 .customform_tabtitle {
     clear: both;
-    width: 980px;
+    width: 1040px;
     margin-top: 10px;
     border: 1.5px solid #000000;
 }
@@ -107,9 +107,12 @@ a.find_customformbnt {
 .customform_tabtitle > .itemqty {
     width:72px;
 }
+.customform_tabtitle > .eventdate {
+    width:61px;
+}
 .customform_tabledat {
     clear: both;
-    width: 980px;
+    width: 1040px;
     border-left: 1.5px solid #000000;
     border-bottom: 1.5px solid #000000;
     border-right: 1.5px solid #000000;
@@ -192,7 +195,12 @@ a.find_customformbnt {
 }
 .customform_tabledat .content-row > .itemqty {
     text-align: right;
-    width: 55px;
+    width: 61px;
+    padding-right: 7px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .eventdate {
+    width: 57px;
 }
 .customform_popmessage {
     background-color: #ffffff!important;

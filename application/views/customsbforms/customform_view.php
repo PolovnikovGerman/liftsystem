@@ -33,6 +33,7 @@
         <div class="customphone">Phone</div>
         <div class="itemdescription">Description</div>
         <div class="itemqty">QTY</div>
+        <div class="eventdate">Event</div>
     </div>
     <div class="customform_tabledat"></div>
 </div>
