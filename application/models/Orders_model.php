@@ -5729,6 +5729,8 @@ Class Orders_model extends MY_Model
                         $instruct = $orderdata['order_customer_comment'];
                         if ($order_item['imprint_type']==2) {
                             $instruct.= 'Artwork Email Later';
+                        } elseif ($order_item['imprint_type']==3) {
+                            $instruct.= 'Repeat Setup';
                         }
                         $artdat = array(
                             'order_id' => $brownord,
@@ -6179,7 +6181,18 @@ Class Orders_model extends MY_Model
                         }
                         if ($item['imprint_type']==2) {
                             $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', '&nbsp;');
+                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+                            $this->db->set('imprint_price', 0.00);
+                            $this->db->set('imprint_item', 1);
+                            $this->db->set('imprint_qty', $item['item_qty']);
+                            $this->db->insert('ts_order_imprints');
+                            // Setup
+                        } elseif ($item['imprint_type']==3) {
+                            $this->db->set('order_item_id', $item_id);
+                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+                            $this->db->set('imprint_price', 0.00);
+                            $this->db->set('imprint_item', 1);
+                            $this->db->set('imprint_qty', $item['item_qty']);
                             $this->db->insert('ts_order_imprints');
                         } else {
                             $this->db->set('order_item_id', $item_id);
@@ -6258,7 +6271,7 @@ Class Orders_model extends MY_Model
                         $this->db->insert('ts_order_imprindetails');
                     }
 
-                    if ($item['imprint_type']!=2) {
+                    // if ($item['imprint_type']!=2) {
                         $this->db->set('order_item_id', $item_id);
                         if ($item['imprint_type']==3) {
                             $this->db->set('imprint_description', 'Repeat Setup Charge');
@@ -6270,7 +6283,7 @@ Class Orders_model extends MY_Model
                         $this->db->set('imprint_item', 0);
                         $this->db->set('imprint_qty', $numpp);
                         $this->db->insert('ts_order_imprints');
-                    }
+                    // }
                 }
             }
             // Add New Billing Info

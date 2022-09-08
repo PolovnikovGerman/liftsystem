@@ -24,6 +24,7 @@
             <?=$dat['shape_desription']?>
         </div>
         <div class="itemqty showformdetails"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
+        <div class="eventdate showformdetails"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
 <?php } ?>
