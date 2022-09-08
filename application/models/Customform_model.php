@@ -74,6 +74,11 @@ class Customform_model extends MY_Model
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);
                 $dat['lead_number']=ifset($ldat,'lead_number','');
             }
+            if (empty($dat['ship_date'])) {
+                $dat['event_date'] = '';
+            } else {
+                $dat['event_date'] = date('m/d/y', $dat['ship_date']);
+            }
             $out[] = $dat;
         }
         return $out;
