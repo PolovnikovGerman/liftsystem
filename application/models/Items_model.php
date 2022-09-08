@@ -1456,8 +1456,65 @@ Class Items_model extends My_Model
 
     public function itemdetails_check_vendoritem($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
+        $this->load->model('vendors_model');
         $vendor_item = $sessiondata['vendor_item'];
         $vendor = $sessiondata['vendor'];
+        $vendor_id = $vendor['vendor_id'];
+        $vendor_itemnum = ifset($postdata, 'newval','');
+        $newvendprice = 0;
+        if (empty($vendor_itemnum)) {
+            $vendor_item = [
+                'vendor_item_id' => -1,
+                'vendor_item_vendor' =>'',
+                'vendor_item_number' => '',
+                'vendor_item_name' => '',
+                'vendor_item_blankcost' => 0,
+                'vendor_item_cost' => '',
+                'vendor_item_exprint' => 0,
+                'vendor_item_setup' => 0,
+                'vendor_item_repeat' => 0,
+                'vendor_item_notes' => '',
+                'vendor_item_zipcode' => '',
+                'printshop_item_id' => '',
+                'stand_days' => '',
+                'rush1_days' => '',
+                'rush2_days' => '',
+                'rush1_price' => '',
+                'rush2_price' => '',
+                'pantone_match' => '',
+            ];
+            $newvendprice = 1;
+        } else {
+            // Get data about vendor item
+            $vitem = $this->vendors_model->search_vendor_items($vendor_itemnum, $vendor_id);
+            if (count($vitem)==0) {
+                // New item
+                $vendor_item = [
+                    'vendor_item_id' => -1,
+                    'vendor_item_vendor' =>'',
+                    'vendor_item_number' => '',
+                    'vendor_item_name' => '',
+                    'vendor_item_blankcost' => 0,
+                    'vendor_item_cost' => '',
+                    'vendor_item_exprint' => 0,
+                    'vendor_item_setup' => 0,
+                    'vendor_item_repeat' => 0,
+                    'vendor_item_notes' => '',
+                    'vendor_item_zipcode' => '',
+                    'printshop_item_id' => '',
+                    'stand_days' => '',
+                    'rush1_days' => '',
+                    'rush2_days' => '',
+                    'rush1_price' => '',
+                    'rush2_price' => '',
+                    'pantone_match' => '',
+                ];
+                $newvendprice = 1;
+            } else {
+                // First find
+            }
+        }
+        //$vendor_item_nu = ifset($postdata[''])
     }
 
     public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
