@@ -1972,8 +1972,7 @@ class Fulfillment extends MY_Controller
         if (count($years) > 2) {
             $year3 = $years[2];
         }
-        // Temporary
-        $year1=2018; $year2=2017; $year3=2016;
+
         $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
         $options=[
             'totaltab' => $totaltab,
