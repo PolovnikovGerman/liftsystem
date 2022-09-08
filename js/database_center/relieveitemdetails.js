@@ -12,12 +12,29 @@ function init_relievitemdetails_view(item) {
                 init_relievitemdetails_edit();
             } else {
                 show_error(response);
+
             }
         },'json');
     })
 }
 
 function init_relievitemdetails_edit() {
+    $(".save_itemdetails").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url='/dbitems/item_relive_savedata';
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#itemDetailsModal").modal('hide');
+                init_relievers_items();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+
+    })
     $("select.categoryitemselect").unbind('change').change(function () {
         var newval = $(this).val();
         var params = new Array();
@@ -167,7 +184,7 @@ function init_relievitemdetails_edit() {
             }
         },'json');
     });
-    $("select.vendorname").unbind('change').change(function () {
+    $("select.vendornameinp").unbind('change').change(function () {
         var newval=$(this).val();
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -177,19 +194,26 @@ function init_relievitemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
-                    $("select.vendorname").addClass('missing_info');
+                    $("select.vendornameinp").addClass('missing_info');
                     $(".itemparamvalue.vendorcountry").empty().addClass('missing_info');
                     $(".itemparamvalue.vendorzip").empty().addClass('missing_info');
                     $(".vendorshipstate").empty().addClass('missing_info');
                     $(".itemparamvalue.vendorponote").empty().addClass('missing_info');
                 } else {
-                    $("select.vendorname").removeClass('missing_info');
+                    $("select.vendornameinp").removeClass('missing_info');
                     $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country).removeClass('missing_info');
                     $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode).removeClass('missing_info');
                     $(".vendorshipstate").empty().html(response.data.shipaddr_state).removeClass('missing_info');
                     $(".itemparamvalue.vendorponote").html(response.data.po_note).empty().removeClass('missing_info');
                 }
-
+                $("#netpricesarea").empty().html(response.data.netprices);
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".itemprice_extrasale[data-item='item_sale_print']").empty().html(response.data.saleprint);
+                $(".itemprice_extrasale[data-item='item_sale_setup']").empty().html(response.data.salesetup);
+                $(".itemprice_extrasale[data-item='item_sale_repeat']").empty().html(response.data.salerepeat);
+                $(".itemprice_rushsale[data-item='item_sale_rush1']").empty().html(response.data.salerush1)
+                $(".itemprice_rushsale[data-item='item_sale_rush2']").empty().html(response.data.salerush2)
+                $(".itemprice_pantonesale[data-item='item_sale_pantone']").empty().html(response.data.salepantone);
             } else {
                 show_error(response);
             }

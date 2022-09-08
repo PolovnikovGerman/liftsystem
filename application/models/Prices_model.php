@@ -565,6 +565,8 @@ Class Prices_model extends My_Model
                 'profit_print_perc' => '',
                 'profit_setup_class' => '',
                 'profit_setup_perc' => '',
+                'item_price_repeat' => 0,
+                'item_sale_repeat' => 0,
                 'profit_repeat_class' => '',
                 'profit_repeat_perc' => '',
                 'item_price_rush1' => '',

@@ -1359,7 +1359,7 @@ Class Items_model extends My_Model
         if ($found == 1) {
             $similars[$idx]['item_similar_similar'] = (empty($newval) ? NULL : $newval);
             $out['result'] = $this->success_result;
-            $sessiondata['similar'] = $similar;
+            $sessiondata['similar'] = $similars;
             usersession($sessionsid, $sessiondata);
         }
         return $out;
@@ -1436,6 +1436,14 @@ Class Items_model extends My_Model
             $sessiondata['vendor_item'] = $vendor_item;
             $sessiondata['vendor_price'] = $vprices;
             usersession($sessionsid, $sessiondata);
+
+            $commonprice = $this->_prepare_common_prices($sessiondata);
+            $prices = $sessiondata['prices'];
+            $item = $sessiondata['item'];
+            $vendor_prices = $sessiondata['vendor_price'];
+            $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+            $this->_update_profit($profits, $item, $prices, $sessiondata, $sessionsid);
+            // Recalc prices and
             $data=[
                 'vendor' => $vendor,
                 'vendor_item' => $vendor_item,
@@ -1444,6 +1452,12 @@ Class Items_model extends My_Model
             $out['data'] = $data;
         }
         return $out;
+    }
+
+    public function itemdetails_check_vendoritem($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
+        $vendor_item = $sessiondata['vendor_item'];
+        $vendor = $sessiondata['vendor'];
     }
 
     public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
@@ -1928,6 +1942,180 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function itemdetails_save($sessiondata, $session, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Ifo not found'];
+        $reschk = $this->_check_itemdetails($sessiondata);
+        if ($reschk['result']==$this->error_result) {
+            $errmsg = $reschk['errmsg'];
+            $msg = '';
+            foreach ($errmsg as $row) {
+                $msg.=$row.PHP_EOL;
+                $out['msg'] = $msg;
+            }
+        } else {
+            // Lets go to save
+            $item = $sessiondata['item'];
+            $this->db->set('item_name', $item['item_name']);
+            $this->db->set('item_active', $item['item_active']);
+            $this->db->set('item_new', $item['item_new']);
+            $this->db->set('item_template', $item['item_template']);
+            $this->db->set('item_material', $item['item_material']);
+            $this->db->set('item_weigth', floatval($item['item_weigth']));
+            $this->db->set('item_size', $item['item_size']);
+            $this->db->set('item_keywords', $item['item_keywords']);
+            $this->db->set('item_url', $item['item_url']);
+            $this->db->set('item_meta_title', $item['item_meta_title']);
+            $this->db->set('item_metadescription', $item['item_metadescription']);
+            $this->db->set('item_metakeywords', $item['item_metakeywords']);
+            $this->db->set('item_description1', $item['item_description1']);
+            $this->db->set('item_description2', $item['item_description2']);
+            $this->db->set('note_material', $item['note_material']);
+            $this->db->set('imprint_method', $item['imprint_method']);
+            $this->db->set('imprint_color', $item['imprint_color']);
+            $this->db->set('options', $item['options']);
+            $this->db->set('option_images', $item['option_images']);
+            $this->db->set('charge_pereach', floatval($item['charge_pereach']));
+            $this->db->set('charge_perorder', floatval($item['charge_perorder']));
+            $this->db->set('subcategory_id', empty($item['subcategory_id']) ? NULL : $item['subcategory_id']);
+            $this->db->set('item_sale', $item['item_sale']);
+            $this->db->set('item_topsale', $item['item_topsale']);
+            $this->db->set('item_minqty', empty($item['item_minqty']) ? NULL : intval($item['item_minqty']));
+            $this->db->set('bullet1', empty($item['bullet1']) ? NULL : $item['bullet1']);
+            $this->db->set('bullet2', empty($item['bullet2']) ? NULL : $item['bullet2']);
+            $this->db->set('bullet3', empty($item['bullet3']) ? NULL : $item['bullet3']);
+            $this->db->set('bullet4', empty($item['bullet4']) ? NULL : $item['bullet4']);
+            if ($item['item_id']>0) {
+                $this->db->set('update_user', $user_id);
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->update('sb_items');
+                $item_id = $item['item_id'];
+                $out['result'] = $this->success_result;
+            } else {
+                $this->db->set('create_time', date('Y-m-d H:i:s'));
+                $this->db->set('create_user', $user_id);
+                $this->db->set('update_user', $user_id);
+                $this->db->set('brand','SR');
+                $this->db->insert('sb_items');
+                $item_id = $this->db->insert_id();
+                if ($item_id > 0) {
+                    $out['result'] = $this->success_result;
+                    // Check code
+                    $category_id = $item['category_id'];
+                    $this->load->model('categories_model');
+                    $catdat = $this->categories_model->get_srcategory_data($category_id);
+                    $category = $catdat['data'];
+                    // New Item #
+                    $this->db->select('count(item_id) as cnt, max(item_number) as maxnum');
+                    $this->db->from('sb_items');
+                    $this->db->where('category_id', $category['category_id']);
+                    $this->db->where('brand', 'SR');
+                    $this->db->where('item_id != ', $item_id);
+                    $dat = $this->db->get()->row_array();
+                    if ($dat['cnt'] == 0) {
+                        $newnumber = $category['category_code'] . '001';
+                    } else {
+                        $lastcode = intval(substr($dat['maxnum'], 1));
+                        $lastcode += 1;
+                        $newnumber = $category['category_code'] . str_pad($lastcode, 3, '0', STR_PAD_LEFT);
+                    }
+                    $this->db->set('category_id', $item['category_id']);
+                    $this->db->set('item_number', $newnumber);
+                    $this->db->where('item_id', $item_id);
+                } else {
+                    $out['msg'] = 'Error During insert Item Data';
+                    return $out;
+                }
+            }
+            // Pictures
+            $preload_sh = $this->config->item('pathpreload');
+            $preload_fl = $this->config->item('upload_path_preload');
+            $itemimg_sh = $this->config->item('itemimages_relative').$item_id.'/';
+            $itemimg_fl = $this->config->item('itemimages').$item_id.'/';
+            // Create Path to new Images
+            if (createPath($itemimg_sh)) {
+                if (stripos($item['main_image'], $preload_sh)!==FALSE) {
+                    $mainimg_src = str_replace($preload_sh,'', $item['main_image']);
+                    $cpres = @copy($preload_fl.$mainimg_src, $itemimg_fl.$mainimg_src);
+                    if ($cpres) {
+                        $this->db->set('main_image', $itemimg_sh.$mainimg_src);
+                        $this->db->where('item_id', $item_id);
+                        $this->db->update('sb_items');
+                    }
+                }
+                if (stripos($item['category_image'], $preload_sh)!==FALSE) {
+                    $categimg_src = str_replace($preload_sh, '', $item['category_image']);
+                    $cpres = @copy($preload_fl.$categimg_src, $itemimg_fl.$categimg_src);
+                    if ($cpres) {
+                        $this->db->set('category_image', $itemimg_sh.$categimg_src);
+                        $this->db->where('item_id', $item_id);
+                        $this->db->update('sb_items');
+                    }
+                }
+                if (stripos($item['top_banner'], $preload_sh)!==FALSE) {
+                    $topbanner_src = str_replace($preload_sh, '', $item['top_banner']);
+                    $cpres = @copy($preload_fl.$topbanner_src, $itemimg_fl.$topbanner_src);
+                    if ($cpres) {
+                        $this->db->set('top_banner', $itemimg_sh.$topbanner_src);
+                        $this->db->where('item_id', $item_id);
+                        $this->db->update('sb_items');
+                    }
+                }
+            }
+            // Option images
+            if ($item['option_images']==0) {
+                // Delete old images
+                $this->db->where('item_id', $item_id);
+                $this->db->delete('sb_itemoption_images');
+            } else {
+                $optionimages = $sessiondata['option_images'];
+                foreach ($optionimages as $optionimage) {
+                    if (stripos($optionimage['item_img_name'], $preload_sh)!==FALSE) {
+                        $optimg_src = str_replace($preload_sh, '', $optionimage['item_img_name']);
+                        $cpres = @copy($preload_fl.$optimg_src, $itemimg_fl.$optimg_src);
+                        if ($cpres) {
+                            $optionimage['item_img_name'] = $itemimg_sh.$optimg_src;
+                        } else {
+                            $optionimage['item_img_name'] = NULL;
+                        }
+                    }
+                    if (!empty($optionimage['item_img_name'])) {
+                        $this->db->set('image_url', $optionimage['item_img_name']);
+                        $this->db->set('image_label', $optionimage['item_img_label']);
+                        $this->db->set('image_order', $optionimage['item_img_order']);
+                        if ($optionimage['item_img_id'] > 0) {
+                            $this->db->where('itemoption_image_id', $optionimage['item_img_id']);
+                            $this->db->update('sb_itemoption_images');
+                        } else {
+                            $this->db->set('item_id', $item_id);
+                            $this->db->insert('sb_itemoption_images');
+                        }
+                    }
+                }
+            }
+
+            // Similar
+            $similars = $sessiondata['similar'];
+            foreach ($similars as $similar) {
+                if (!empty($similar['item_similar_similar'])) {
+                    $this->db->set('item_similar_similar', $similar['item_similar_similar']);
+                    if ($similar['item_similar_id'] > 0) {
+                        $this->db->where('item_similar_id', $similar['item_similar_id']);
+                        $this->db->update('sb_item_similars');
+                    } else {
+                        $this->db->set('item_similar_item', $item_id);
+                        $this->db->insert('sb_item_similars');
+                    }
+                } else {
+                    if ($similar['item_similar_id'] > 0) {
+                        $this->db->where('item_similar_id', $similar['item_similar_id']);
+                        $this->db->delete('sb_item_similars');
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
     private function _recalc_prices($item, $prices) {
         // Item Prices
         if (empty($item['price_discount'])) {
@@ -2179,7 +2367,7 @@ Class Items_model extends My_Model
         $item = $sessiondata['item'];
         $commonprice['base_cost'] = $commonprice['vendor_item_exprint'] = $commonprice['vendor_item_setup'] = 0;
         $commonprice['vendor_item_repeat'] = $commonprice['vendor_item_rush1'] = $commonprice['vendor_item_rush2'] = 0;
-
+        $commonprice['vendor_item_pantone'] = 0;
         $commonprice['item_sale_print'] = $item['item_sale_print'];
         $commonprice['item_price_print'] = $item['item_price_print'];
         $commonprice['item_sale_setup'] = $item['item_sale_setup'];
@@ -2262,6 +2450,23 @@ Class Items_model extends My_Model
         $sessiondata['prices'] = $prices;
         usersession($session, $sessiondata);
         return true;
+    }
+
+    private function _check_itemdetails($sessiondata) {
+        $out=['result' => $this->success_result ];
+        $errmsg = [];
+        $item = $sessiondata['item'];
+        if (empty($item['item_name'])) {
+            array_push($errmsg, 'Item Name empty');
+        }
+        if ($item['item_id']<=0 && (empty($item['category_id']) || empty($item['item_number']))) {
+            array_push($errmsg, 'Item Number empty');
+        }
+        if (count($errmsg) > 0) {
+            $out['result'] = $this->error_result;
+            $out['errmsg'] = $errmsg;
+        }
+        return $out;
     }
 
 }

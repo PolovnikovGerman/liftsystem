@@ -5,7 +5,7 @@
         <div class="content-row">
             <div class="itemparamlabel vendorname">Supplier</div>
             <div class="itemparamvalue vendorname">
-                <select class="vendordatainpt vendorname <?=empty($vendor['vendor_name']) ? 'missing_info' : ''?>" data-item="vendor_item_vendor">
+                <select class="vendornameinp <?=empty($vendor['vendor_name']) ? 'missing_info' : ''?>" data-item="vendor_item_vendor">
                     <option value=""></option>
                     <?php foreach ($vendors as $vrow) { ?>
                         <option value="<?=$vrow['vendor_id']?>" <?=$vrow['vendor_id']==$vendor['vendor_id'] ? 'selected="selected"' : ''?>><?=$vrow['vendor_name']?></option>

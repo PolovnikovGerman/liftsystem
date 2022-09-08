@@ -6,7 +6,7 @@
             <div class="content-row">
                 <div class="similar_numpp"><?=$numpp?>.</div>
                 <div class="itemparamvalue similarname">
-                    <?=empty($item['item_similar_id']) ? '' : $item['item_number'].' - '.$item['item_name'] ?>
+                    <?=empty($item['item_similar_similar']) ? '' : $item['item_number'].' - '.$item['item_name'] ?>
                 </div>
             </div>
             <?php $numpp++;?>

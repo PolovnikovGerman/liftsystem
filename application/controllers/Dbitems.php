@@ -340,7 +340,7 @@ class Dbitems extends MY_Controller
                         'optionsimg' => $optionsimg,
                         'item' => $data['item'],
                     ];
-                    $itemimages = $this->load->view('relieveritems/images_edit',$imagesoptions, TRUE);
+                    $itemimages = $this->load->view('relieveritems/images_view',$imagesoptions, TRUE);
                     $locations = $this->load->view('relieveritems/printlocations_view',['locations' => $data['inprints']], TRUE);
                     $customview = $this->load->view('relieveritems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
@@ -492,6 +492,7 @@ class Dbitems extends MY_Controller
                     $error = '';
                     $data = $res['data'];
                     $vendor = $data['vendor'];
+                    $mdata = $this->_prepare_price_response($session);
                     $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
                     $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
                     $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
@@ -511,17 +512,18 @@ class Dbitems extends MY_Controller
             $session = ifset($postdata,'session','unkn');
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
-//                $res = $this->items_model->itemdetails_check_vendoritem($sessiondata, $postdata, $session);
-//                $error = $res['msg'];
-//                if ($res['result']==$this->success_result) {
-//                    $error = '';
-//                    $data = $res['data'];
-//                    $vendor = $data['vendor'];
-//                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
-//                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
-//                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
-//                    $mdata['po_note'] = $vendor['po_note'];
-//                }
+                $res = $this->items_model->itemdetails_check_vendoritem($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data = $res['data'];
+                    $vendor = $data['vendor'];
+                    $mdata = $this->_prepare_price_response($session);
+                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
+                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
+                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
+                    $mdata['po_note'] = $vendor['po_note'];
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -934,6 +936,26 @@ class Dbitems extends MY_Controller
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
                 $res = $this->items_model->itemdetails_shipbox($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function item_relive_savedata() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_save($sessiondata, $session, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';

@@ -33,7 +33,7 @@ Class Similars_model extends My_Model
                 );
             } else {
                 $out_array[]=array(
-                    'item_similar_id'=>'',
+                    'item_similar_id'=>($i+1)*(-1),
                     'item_similar_similar'=>'',
                     'item_number'=>'',
                     'item_name'=>'',

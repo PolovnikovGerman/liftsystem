@@ -367,6 +367,9 @@ input.iteminfoinput {
 }
 .itemparamvalue.itemtemplate {
     width: 156px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 select.itemdetailstemplate {
     width: 153px;
@@ -452,6 +455,9 @@ textarea.itemdescription {
 .itemparamvalue.itembullet {
     width: 216px;
     margin-bottom: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itemkeyinfoinput.itembullet {
     width: 214px;
@@ -507,13 +513,17 @@ select.similaritems {
 .itemparamvalue.vendorname {
     width: 162px;
 }
-select.vendordatainpt {
+/*select.vendordatainpt {
     height: 22px;
     line-height: 22px;
     margin-left: -5px;
     padding-left: 5px;
-}
-select.vendorname {
+}*/
+select.vendornameinp {
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
     width: 162px;
 }
 .itemparamlabel.vendosrship {
@@ -1023,6 +1033,10 @@ select.discountselect::-ms-expand {
     margin: 6px 0 10px 10px;
     width: 26px;
 }
+.itemmainimagesrc img {
+    width: 100%;
+    height: auto;
+}
 .itemcategoryimagearea {
     margin-left: 11px;
     width: 85px;
@@ -1035,6 +1049,10 @@ select.discountselect::-ms-expand {
     height: 26px;
     margin: 6px 0 10px 10px;
     width: 49px;
+}
+.itemcategoryimagesrc img {
+    width: 100%;
+    height: auto;
 }
 .itemimagepreview {
     float: right!important;
@@ -1080,6 +1098,10 @@ select.discountselect::-ms-expand {
     margin-bottom: 9px;
     text-align: center;
     width: 97px;
+}
+.specbannersrc img {
+    width: 100%;
+    height: auto;
 }
 .itemimages_separator {
     border-top: 1.5px solid #4d4d4d;

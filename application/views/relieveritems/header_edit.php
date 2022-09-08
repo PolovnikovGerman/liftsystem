@@ -14,7 +14,7 @@
         <div class="itemdetails-namearea">
             <div class="namearea-label">Item Name</div>
             <div class="itemdetails-keydatvalue">
-                <input type="text" class="itemkeyinfoinput itemname" value="<?=$item['item_name']?>"/>
+                <input type="text" class="itemkeyinfoinput itemname"  data-item="item_name" value="<?=$item['item_name']?>"/>
             </div>
         </div>
         <div class="itemdetails-itemnumarea">

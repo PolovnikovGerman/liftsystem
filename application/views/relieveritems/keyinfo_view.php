@@ -36,7 +36,7 @@
                     <i class="fa fa-check-square" aria-hidden="true"></i>
                 <?php } ?>
             </div>
-            <div class="tags-checkbox-label">Top Seller</div>
+            <div class="tags-checkbox-label <?=$item['item_topsale']==1 ? 'active' : ''?>">Top Seller</div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel subcategory">Sub-Cat 1:</div>
@@ -45,7 +45,7 @@
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemsize">Size:</div>
-            <div class="itemparamvalue itemsize <?=empty($item['ite_size']) ? 'missing_info' : ''?>"><?=$item['item_size']?></div>
+            <div class="itemparamvalue itemsize <?=empty($item['item_size']) ? 'missing_info' : ''?>"><?=$item['item_size']?></div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel itemmaterial">Material:</div>
