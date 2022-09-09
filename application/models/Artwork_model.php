@@ -3314,7 +3314,7 @@ Class Artwork_model extends MY_Model
         }
         if ($shippingold['event_date']!=$shippingnew['event_date']) {
             if (!empty($shippingnew['event_date'])) {
-                array_push($changes, 'Event Date to '.date('m/d/Y', $shippingnew['shipdate']));
+                array_push($changes, 'Event Date to '.date('m/d/Y', $shippingnew['event_date']));
             } else {
                 array_push($changes,'Event Date removed');
             }
