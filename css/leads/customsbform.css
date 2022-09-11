@@ -118,6 +118,7 @@ a.find_customformbnt {
     border-right: 1.5px solid #000000;
     overflow-x: hidden;
     overflow-y: auto;
+    margin-bottom: 15px;
 }
 .customform_tabledat .content-row {
     width: 100%;
