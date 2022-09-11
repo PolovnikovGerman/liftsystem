@@ -918,6 +918,52 @@ Class Items_model extends My_Model
             $this->load->model('prices_model');
             $this->load->model('similars_model');
             $this->load->model('itemcolors_model');
+            // Discounts
+            $def_discount = 0;
+            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
+            $item['repeat_discount_val'] = $item['rush1_discount_val'] = $item['rush2_discount_val'] = $item['pantone_discount_val'] = $def_discount;
+            if (!empty($item['price_discount'])) {
+                $disc = $this->prices_model->get_discount($item['price_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['price_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['print_discount'])) {
+                $disc = $this->prices_model->get_discount($item['print_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['print_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['setup_discount'])) {
+                $disc = $this->prices_model->get_discount($item['setup_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['setup_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['repeat_discount'])) {
+                $disc = $this->prices_model->get_discount($item['repeat_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['repeat_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['rush1_discount'])) {
+                $disc = $this->prices_model->get_discount($item['rush1_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['rush1_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['rush2_discount'])) {
+                $disc = $this->prices_model->get_discount($item['rush2_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['rush2_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
+            if (!empty($item['pantone_discount'])) {
+                $disc = $this->prices_model->get_discount($item['pantone_discount']);
+                if ($disc['result']==$this->success_result) {
+                    $item['pantone_discount_val'] = $disc['discount']['discount_val'];
+                }
+            }
             // Colors
             $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
             $colors = [];
@@ -986,6 +1032,19 @@ Class Items_model extends My_Model
                     'po_note' => '',
                 ];
             } else {
+                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
+                if ($vdat['result']==$this->error_result) {
+                    $vendor = [
+                        'vendor_id' => '',
+                        'vendor_name' => '',
+                        'vendor_zipcode' => '',
+                        'shipaddr_state' => '',
+                        'shipaddr_country' => '',
+                        'po_note' => '',
+                    ];
+                } else {
+                    $vendor = $vdat['data'];
+                }
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
                 $numpp = 1;
                 foreach ($results as $result) {
@@ -1085,7 +1144,7 @@ Class Items_model extends My_Model
                     'profit_perc' => (empty($profitperc) ? $profitperc : $profitperc.'%'),
                 ];
                 $numpp++;
-                if ($numpp > $this->config->item('prices_val')) {
+                if ($numpp > $pricesmax) {
                     break;
                 }
             }
@@ -1492,7 +1551,7 @@ Class Items_model extends My_Model
                 $vendor_item = [
                     'vendor_item_id' => -1,
                     'vendor_item_vendor' =>'',
-                    'vendor_item_number' => '',
+                    'vendor_item_number' => $vendor_itemnum,
                     'vendor_item_name' => '',
                     'vendor_item_blankcost' => 0,
                     'vendor_item_cost' => '',
@@ -1512,9 +1571,68 @@ Class Items_model extends My_Model
                 $newvendprice = 1;
             } else {
                 // First find
+                $vendor_item_id = $vitem[0]['id'];
+                $vendor_item = $this->vendors_model->get_item_vendor($vendor_item_id);
+                unset($vendor_item['vendor_name']);
+                unset($vendor_item['vendor_zipcode']);
+                if ($vendor_id!==$vendor_item['vendor_item_vendor']) {
+                    $vdat = $this->vendors_model->get_vendor($vendor_item['vendor_item_vendor']);
+                    $out['msg'] = $vdat['msg'];
+                    if ($vdat['result']==$this->success_result) {
+                        $vendor = $vdat['dat'];
+                    }
+                }
             }
         }
-        //$vendor_item_nu = ifset($postdata[''])
+        $pricesmax = $this->config->item('relievers_prices_val');
+        $vendor_prices = [];
+        if ($newvendprice==1) {
+            for ($i=1; $i<=$pricesmax-1; $i++) {
+                $vendor_prices[] = [
+                    'vendorprice_id' => $i*-1,
+                    'vendor_item_id' => -1,
+                    'vendorprice_qty' => '',
+                    'vendorprice_val' => '',
+                    'vendorprice_color' => '',
+                ];
+            }
+        } else {
+            // $vendor_prices =
+            $results = $this->vendors_model->get_item_vendorprice($vendor_item['vendor_item_id']);
+            $numpp = 1;
+            foreach ($results as $result) {
+                $vendor_prices[] = [
+                    'vendorprice_id' => $result['vendorprice_id'],
+                    'vendor_item_id' => $result['vendor_item_id'],
+                    'vendorprice_qty' => $result['vendorprice_qty'],
+                    'vendorprice_val' => $result['vendorprice_val'],
+                    'vendorprice_color' => $result['vendorprice_color'],
+                ];
+                $numpp++;
+            }
+            for ($i=$numpp; $i<=$pricesmax-1; $i++) {
+                $vendor_prices[] = [
+                    'vendorprice_id' => $i*-1,
+                    'vendor_item_id' => $vendor_item['vendor_item_id'],
+                    'vendorprice_qty' => '',
+                    'vendorprice_val' => '',
+                    'vendorprice_color' => '',
+                ];
+            }
+        }
+        // Save data to session
+        $sessiondata['vendor'] = $vendor;
+        $sessiondata['vendor_item'] = $vendor_item;
+        $sessiondata['vendor_price'] = $vendor_prices;
+        usersession($session, $sessiondata);
+        $out['result'] = $this->success_result;
+        // Add base price
+        $commonprice = $this->_prepare_common_prices($sessiondata);
+        $prices = $sessiondata['prices'];
+        $item = $sessiondata['item'];
+        $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+        $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+        return $out;
     }
 
     public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
@@ -1956,7 +2074,7 @@ Class Items_model extends My_Model
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $item = $sessiondata['item'];
         $fldname = ifset($postdata,'fld','');
-        if (!empty($fldname) && in_array($fldname, $item)) {
+        if (!empty($fldname) && array_key_exists($fldname, $item)) {
             $out['result'] = $this->success_result;
             $item[$fldname] = $postdata['newval'];
             $prices = $sessiondata['prices'];
@@ -1999,8 +2117,82 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function itemdetails_printloc_add($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $newidx = count($inprints) + 1;
+        $inprints[] = [
+            'item_inprint_id' => (-1)*$newidx,
+            'item_inprint_location' => '',
+            'item_inprint_size' => '',
+            'item_inprint_view' => '',
+            'item_imprint_mostpopular' => 0,
+        ];
+        $out['result'] = $this->success_result;
+        $sessiondata['inprints'] = $inprints;
+        usersession($session, $sessiondata);
+        $out['inprints'] = $inprints;
+        return $out;
+    }
+
+    public function itemdetails_printloc_edit($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        $fld = ifset($postdata, 'fld','');
+        if (!empty($fldidx) && !empty($fld)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    $inprints[$idx][$fld] = $postdata['newval'];
+                    $find = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $sessiondata['inprints']=$inprints;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+                $out['inprints'] = $inprints;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_printloc_view($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        $operation = ifset($postdata,'operation','');
+        if (!empty($fldidx) && !empty($operation)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    if ($operation=='add') {
+                        $inprints[$idx]['item_inprint_view'] = $postdata['newval'];
+                    } else {
+                        $inprints[$idx]['item_inprint_view'] = '';
+                    }
+                    $find = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $sessiondata['inprints'] = $inprints;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+                $out['inprints'] = $inprints;
+            }
+        }
+        return $out;
+    }
+
     public function itemdetails_save($sessiondata, $session, $user_id) {
-        $out=['result' => $this->error_result, 'msg' => 'Ifo not found'];
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
         $reschk = $this->_check_itemdetails($sessiondata);
         if ($reschk['result']==$this->error_result) {
             $errmsg = $reschk['errmsg'];
@@ -2041,6 +2233,13 @@ Class Items_model extends My_Model
             $this->db->set('bullet2', empty($item['bullet2']) ? NULL : $item['bullet2']);
             $this->db->set('bullet3', empty($item['bullet3']) ? NULL : $item['bullet3']);
             $this->db->set('bullet4', empty($item['bullet4']) ? NULL : $item['bullet4']);
+            $this->db->set('price_discount', empty($item['price_discount'])? null: $item['price_discount']);
+            $this->db->set('print_discount', empty($item['print_discount'])? null: $item['print_discount']);
+            $this->db->set('setup_discount', empty($item['setup_discount'])? null: $item['setup_discount']);
+            $this->db->set('repeat_discount', empty($item['repeat_discount'])? nll: $item['repeat_discount']);
+            $this->db->set('rush1_discount', empty($item['rush1_discount'])? null : $item['rush1_discount']);
+            $this->db->set('rush2_discount', empty($item['rush2_discount'])? null : $item['rush2_discount']);
+            $this->db->set('pantone_discount', empty($item['pantone_discount'])? null : $item['pantone_discount']);
             if ($item['item_id']>0) {
                 $this->db->set('update_user', $user_id);
                 $this->db->where('item_id', $item['item_id']);
@@ -2083,6 +2282,33 @@ Class Items_model extends My_Model
                     return $out;
                 }
             }
+            // Set prices
+            $this->db->set('item_price_print', $item['item_price_print']);
+            $this->db->set('item_sale_print', $item['item_sale_print']);
+            $this->db->set('profit_print', $item['profit_print']);
+            $this->db->set('item_price_setup', $item['item_price_setup']);
+            $this->db->set('item_sale_setup', $item['item_sale_setup']);
+            $this->db->set('profit_setup', $item['profit_setup']);
+            $this->db->set('item_price_repeat', $item['item_price_repeat']);
+            $this->db->set('item_sale_repeat', $item['item_sale_repeat']);
+            $this->db->set('profit_repeat', $item['profit_repeat']);
+            $this->db->set('item_price_rush1', $item['item_price_rush1']);
+            $this->db->set('item_sale_rush1', $item['item_sale_rush1']);
+            $this->db->set('rush1_profit', $item['profit_rush1']);
+            $this->db->set('item_price_rush2', $item['item_price_rush2']);
+            $this->db->set('item_sale_rush2', $item['item_sale_rush2']);
+            $this->db->set('rush2_profit', $item['profit_rush2']);
+            $this->db->set('item_price_pantone', $item['item_price_pantone']);
+            $this->db->set('item_sale_pantone', $item['item_sale_pantone']);
+            $this->db->set('pantone_profit', $item['profit_pantone']);
+            // $this->db->set('')
+            if ($item['item_price_id'] > 0) {
+                $this->db->where('item_price_id', $item['item_price_id']);
+                $this->db->update('sb_item_prices');
+            } else {
+                $this->db->set('item_price_itemid', $item_id);
+                $this->db->insert('sb_item_prices');
+            }
             // Pictures
             $preload_sh = $this->config->item('pathpreload');
             $preload_fl = $this->config->item('upload_path_preload');
@@ -2116,6 +2342,36 @@ Class Items_model extends My_Model
                         $this->db->where('item_id', $item_id);
                         $this->db->update('sb_items');
                     }
+                }
+            }
+            // Add Images
+            $images = $sessiondata['images'];
+            foreach ($images as $image) {
+                $numpp=1;
+                if (stripos($image['item_img_name'], $preload_sh)!==FALSE) {
+                    $img_src = str_replace($preload_sh, '', $image['item_img_name']);
+                    $cpres = @copy($preload_fl.$img_src, $itemimg_fl.$img_src);
+                    if ($cpres) {
+                        $image['item_img_name'] = $itemimg_sh.$img_src;
+                    } else {
+                        $image['item_img_name'] = '';
+                    }
+                }
+                if (empty($image['item_img_name']) && $image['item_img_id'] > 0) {
+                    $this->db->where('item_img_id', $image['item_img_id']);
+                    $this->db->delete('sb_item_images');
+                } else {
+                    $this->db->set('item_img_name', $image['item_img_name']);
+                    $this->db->set('item_img_label', $image['item_img_label']);
+                    $this->db->set('item_img_order', $numpp);
+                    if ($image['item_img_id'] > 0) {
+                        $this->db->where('item_img_id', $image['item_img_id']);
+                        $this->db->update('sb_item_images');
+                    } else {
+                        $this->db->set('item_img_item_id', $item_id);
+                        $this->db->insert('sb_item_images');
+                    }
+                    $numpp++;
                 }
             }
             // Option images
@@ -2167,6 +2423,80 @@ Class Items_model extends My_Model
                         $this->db->where('item_similar_id', $similar['item_similar_id']);
                         $this->db->delete('sb_item_similars');
                     }
+                }
+            }
+            // Vendor Item
+            $vendor = $sessiondata['vendor'];
+            $vendor_item = $sessiondata['vendor_item'];
+            $vendor_prices = $sessiondata['vendor_price'];
+            $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
+            $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
+            $this->db->set('vendor_item_blankcost', $vendor_item['vendor_item_blankcost']);
+            $this->db->set('vendor_item_cost', $vendor_item['vendor_item_cost']);
+            $this->db->set('vendor_item_exprint', $vendor_item['vendor_item_exprint']);
+            $this->db->set('vendor_item_setup', $vendor_item['vendor_item_setup']);
+            $this->db->set('vendor_item_repeat', $vendor_item['vendor_item_repeat']);
+            // Other items
+            $this->db->set('stand_days',$vendor_item['stand_days']);
+            $this->db->set('rush1_days', $vendor_item['rush1_days']);
+            $this->db->set('rush2_days', $vendor_item['rush2_days']);
+            $this->db->set('rush1_price', $vendor_item['rush1_price']);
+            $this->db->set('rush2_price', $vendor_item['rush2_price']);
+            $this->db->set('pantone_match', $vendor_item['pantone_match']);
+            if ($vendor_item['vendor_item_id'] > 0) {
+                $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
+                $this->db->update('sb_vendor_items');
+                $vendor_item_id = $vendor_item['vendor_item_id'];
+            } else {
+                $this->db->set('vendor_item_vendor', $vendor['vendor_id']);
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+            }
+            $this->db->set('vendor_item_id', $vendor_item_id);
+            $this->db->where('item_id', $item_id);
+            $this->db->update('sb_items');
+            // Vendor Prices
+            foreach ($vendor_prices as $vendor_price) {
+                if (!empty($vendor_price['vendorprice_qty'])) {
+                    $this->db->set('vendorprice_qty', $vendor_price['vendorprice_qty']);
+                    $this->db->set('vendorprice_val', $vendor_price['vendorprice_val']);
+                    $this->db->set('vendorprice_color', $vendor_price['vendorprice_color']);
+                    if ($vendor_price['vendorprice_id'] > 0) {
+                        $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                        $this->db->update('sb_vendor_prices');
+                    } else {
+                        $this->db->set('vendor_item_id', $vendor_item_id);
+                        $this->db->insert('sb_vendor_prices');
+                    }
+                } else {
+                    if ($vendor_price['vendorprice_id'] > 0) {
+                        $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                        $this->db->delete('sb_vendor_prices');
+                    }
+                }
+            }
+            // Prices
+            $prices = $sessiondata['prices'];
+            foreach ($prices as $price) {
+                if (!empty($price['item_qty'])) {
+                    $this->db->set('item_qty', $price['item_qty']);
+                    $this->db->set('price', $price['price']);
+                    $this->db->set('sale_price', $price['sale_price']);
+                    $this->db->set('profit', $price['profit']);
+                    if ($price['promo_price_id'] > 0) {
+                        $this->db->where('promo_price_id', $price['promo_price_id']);
+                        $this->db->update('sb_promo_price');
+                    } else {
+                        $this->db->set('item_id', $item_id);
+                        $this->db->insert('sb_promo_price');
+                    }
+                }
+            }
+            $deletes = $sessiondata['deleted'];
+            foreach ($deletes as $deleterow) {
+                if ($deleterow['entity']=='images') {
+                    $this->db->where('item_img_id', $deleterow['id']);
+                    $this->db->delete('sb_item_images');
                 }
             }
         }

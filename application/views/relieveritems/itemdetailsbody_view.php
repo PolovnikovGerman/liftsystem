@@ -10,7 +10,9 @@
     </div>
     <div class="rightpartbody">
         <div class="pricesarea">
-            <?=$vendor_prices?>
+            <div class="relievers_vendorprices">
+                <?=$vendor_prices?>
+            </div>
             <?=$itemprices?>
         </div>
         <?=$customview?>

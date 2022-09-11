@@ -546,8 +546,8 @@ Class Prices_model extends My_Model
 
     public function get_itemlist_specprice($item_id) {
         $this->db->select('item_price_id, item_price_print, item_sale_print, profit_print, item_price_setup, item_sale_setup, profit_setup');
-        $this->db->select('item_price_repeat, item_sale_repeat, profit_repeat, item_price_pantone, item_sale_pantone, pantone_profit');
-        $this->db->select('item_price_rush1, item_sale_rush1, rush1_profit, item_price_rush2, item_sale_rush2, rush2_profit');
+        $this->db->select('item_price_repeat, item_sale_repeat, profit_repeat, item_price_pantone, item_sale_pantone, pantone_profit as profit_pantone');
+        $this->db->select('item_price_rush1, item_sale_rush1, rush1_profit as profit_rush1, item_price_rush2, item_sale_rush2, rush2_profit as profit_rush2');
         $this->db->from('sb_item_prices');
         $this->db->where('item_price_itemid', $item_id);
         $res = $this->db->get()->row_array();
@@ -618,7 +618,6 @@ Class Prices_model extends My_Model
                 $res['profit_pantone_perc'] = $profit_perc.'%';
                 $res['profit_pantone_class'] = profit_bgclass($profit_perc);
             }
-
         }
         return $res;
     }

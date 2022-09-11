@@ -1206,12 +1206,25 @@ select.itemdetailsoptions.missing_info {
     cursor: pointer;
     width: 71px;
 }
+.itemvendorfilebtn.editmode {
+    padding: 4px 10px;
+}
+.vendorfile_view, .vendorfile_delete {
+    width: 25px;
+    text-align: center;
+    cursor: pointer;
+}
 .custommethodarea {
     margin-left: 42px;
     width: 87px;
 }
 .itemparamvalue.custommethod {
     width: 87px;
+}
+select.custommethodselect {
+    width: 100%;
+    height: 21px;
+    line-height: 21px;
 }
 .itemparamlabel.custommethod, .itemparamlabel.printcolors {
     height: 16px;
@@ -1224,6 +1237,11 @@ select.itemdetailsoptions.missing_info {
 }
 .itemparamvalue.printcolors {
     width: 87px;
+}
+select.customprintcolors {
+    width: 100%;
+    height: 21px;
+    line-height: 21px;
 }
 .printlocationstable {
     border-top: 1px solid #000000;
@@ -1239,6 +1257,23 @@ select.itemdetailsoptions.missing_info {
 }
 .locationnametitle {
     width: 160px;
+}
+.addprintlocation {
+    width: 20px;
+    text-align: center;
+}
+input.printlocationinpt {
+    height: 18px;
+    line-height: 18px;
+}
+input.locationname {
+    width: 140px;
+}
+input.locationsize {
+    width: 140px;
+}
+.locationnametitle.editmode {
+    width: 140px;
 }
 .locationplacetitle {
     width: 120px;

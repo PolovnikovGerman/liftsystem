@@ -332,7 +332,16 @@ class Dbitems extends MY_Controller
                     $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
                     $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
-                    $itemprices = $this->load->view('relieveritems/itemprices_view',['item' => $data['item'],'prices'=> $data['prices'],'discounts' => $discounts],TRUE);
+                    $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
+                    $price_options = [
+                        'item' => $data['item'],
+                        'prices'=> $data['prices'],
+                        'profit_view' => $profit_view,
+                        'discounts' => $discounts,
+                        'netprices' => $netprices,
+                    ];
+                    $itemprices = $this->load->view('relieveritems/itemprices_view', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
                     $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
                     $imagesoptions = [
@@ -379,7 +388,6 @@ class Dbitems extends MY_Controller
                     $customview = $this->load->view('relieveritems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations], TRUE);
                     $metaview = $this->load->view('relieveritems/itemmeta_edit',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
-
                 }
                 $body_options = [
                     'keyinfo' => $keyinfo,
@@ -516,13 +524,25 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $data = $res['data'];
-                    $vendor = $data['vendor'];
                     $mdata = $this->_prepare_price_response($session);
+                    $sessiondata=usersession($session);
+                    $vendor = $sessiondata['vendor'];
+                    $vendor_item = $sessiondata['vendor_item'];
+                    $mdata['vendor_id'] = $vendor['vendor_id'];
                     $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
                     $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
                     $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
                     $mdata['po_note'] = $vendor['po_note'];
+                    $mdata['vendor_item_number'] = $vendor_item['vendor_item_number'];
+                    $mdata['vendor_item_name'] = $vendor_item['vendor_item_name'];
+                    $vendor_price = $sessiondata['vendor_price'];
+                    $item = $sessiondata['item'];
+                    $vprice_options = [
+                        'vendor_prices' => $vendor_price,
+                        'venditem' => $vendor_item,
+                        'item' => $item,
+                    ];
+                    $mdata['vendor_prices'] = $this->load->view('relieveritems/vendorprices_edit',$vprice_options,TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -947,6 +967,65 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function relive_itemprintloc_add() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_printloc_add($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('relieveritems/printlocations_edit',['locations' => $res['inprints']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function relive_itemprintloc_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_printloc_edit($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_relive_printlocatview() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_printloc_view($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('relieveritems/printlocations_edit',['locations' => $res['inprints']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function item_relive_savedata() {
         if ($this->isAjax()) {
             $mdata = [];
@@ -959,7 +1038,7 @@ class Dbitems extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata = $this->_prepare_price_response($session);
+                    // $mdata = $this->_prepare_price_response($session);
                 }
             }
             $this->ajaxResponse($mdata, $error);

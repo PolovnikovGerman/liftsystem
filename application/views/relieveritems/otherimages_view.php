@@ -17,6 +17,9 @@
             <?php break;?>
         <?php } ?>
     <?php } ?>
+    <?php if ($numpp%6!==0 && $numpp < 11) { ?>
+        </div>
+    <?php } ?>
 </div>
 <?php if ($imgcnt > 10) { ?>
     <div class="otherimagesmore">

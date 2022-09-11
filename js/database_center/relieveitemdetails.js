@@ -244,7 +244,26 @@ function init_relievitemdetails_edit() {
         params.push({name: 'newval', value: newval});
         var url = '/dbitems/relive_vendoritem_check';
         $.post(url,params,function(response) {
-
+            if (response.errors=='') {
+                $("#netpricesarea").empty().html(response.data.netprices);
+                $("#profitdataarea").empty().html(response.data.profit);
+                $("select.vendornameinp").val(response.data.vendor_id);
+                $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
+                $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
+                $(".vendorshipstate").empty().html(response.data.shipaddr_state);
+                $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
+                $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
+                if (newval=='') {
+                    $("input.vendoritemnum").val().addClass('missing_info');
+                    $("input.vendoritemname").val().addClass('missing_info');
+                } else {
+                    $("input.vendoritemnum").removeClass('missing_info');
+                    $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
+                }
+                init_relievitemdetails_edit();
+            } else {
+                show_error(response);
+            }
         },'json');
     });
 
@@ -463,6 +482,70 @@ function init_relievitemdetails_edit() {
         params.push({name: 'newval', value: newval});
         params.push({name: 'shipidx', value: shipidx});
         var url='/dbitems/change_relive_shipbox';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("select.custommethodselect").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'imprint_method';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $("select.customprintcolors").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldname = 'imprint_color';
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fldname});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/change_relive_item';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $(".addprintlocation").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url='/dbitems/relive_itemprintloc_add';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".printlocationsdata").empty().html(response.data.content);
+                // Init upload
+                init_relieve_printlocation();
+                init_relievitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+    $("input.printlocationinpt").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fldidx = $(this).data('idx');
+        var fld = $(this).data('item');
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fldidx', value: fldidx});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url='/dbitems/relive_itemprintloc_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -979,4 +1062,48 @@ function init_relievitemimages_edit() {
         prev : '#prevcolorimageslider',
     });
 
+}
+
+function init_relieve_printlocation() {
+    var replacetemp = '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+        '<em>upload image</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+    if ($(".printimageadd").length > 0) {
+        $(".printimageadd").each(function () {
+            var replid = $(this).prop('id');
+            var locatidx = $(this).data('idx');
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: locatidx});
+                        params.push({name: 'operation', value: 'add'});
+                        var url="/dbitems/save_relive_printlocatview";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".printlocationsdata").empty().html(response.data.content);
+                                // Init upload
+                                init_relieve_printlocation();
+                                init_relievitemdetails_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        });
+
+    }
 }
