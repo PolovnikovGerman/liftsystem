@@ -6,10 +6,10 @@
         <div class="locationsdatarow">
             <div class="locationdeleterow" data-idx="<?=$location['item_inprint_id']?>"><i class="fa fa-trash"></i></div>
             <div class="locationname editmode">
-                <input class="printlocationinpt locname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=$location['item_inprint_location']?>"/>
+                <input class="printlocationinpt locname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=addslashes($location['item_inprint_location'])?>"/>
             </div>
             <div class="locationplace editmode">
-                <input class="printlocationinpt locationsize" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_size" value="<?=$location['item_inprint_size']?>"/>
+                <input class="printlocationinpt locationsize" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_size" value="<?=addslashes($location['item_inprint_size'])?>"/>
             </div>
             <div class="locationview">
                 <?php if (!empty($location['item_inprint_view'])) { ?>
