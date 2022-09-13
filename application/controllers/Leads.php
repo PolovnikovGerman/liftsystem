@@ -781,7 +781,11 @@ class Leads extends My_Controller {
                             $res = $this->customform_model->get_customform_details($customquote);
                             $error = $res['msg'];
                             if ($res['result']==$this->success_result) {
-                                $dat = $this->leads_model->create_leadcustomform($res['data'], $leademail_id, $this->USR_ID);
+                                $formdata = $res['data'];
+                                if (isset($res['attach']) && count($res['attach']) > 0) {
+                                    $formdata['attach'] = $res['attach'];
+                                }
+                                $dat = $this->leads_model->create_leadcustomform($formdata, $leademail_id, $this->USR_ID);
                                 $error = $dat['msg'];
                                 if ($dat['result']==$this->success_result) {
                                     $error = '';
@@ -1076,6 +1080,9 @@ class Leads extends My_Controller {
                 $error = $dat['msg'];
                 if ($dat['result']==$this->success_result) {
                     $this->load->model('leads_model');
+                    if (isset($dat['attach']) && count($dat['attach']) > 0) {
+                        $postdata['leadattach'] = $dat['attach'];
+                    }
                     $res=$this->leads_model->save_quotelead_relation($postdata);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {

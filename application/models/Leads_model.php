@@ -378,6 +378,15 @@ Class Leads_model extends MY_Model
         }
         return $out;
     }
+    // Leads attachments
+    public function get_lead_attachs($lead_id) {
+        $this->db->select('*');
+        $this->db->from('ts_lead_attachs');
+        $this->db->where('lead_id',$lead_id);
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
     /* Get Lead Tasks, related with lead */
     public function get_lead_tasks($lead_id) {
         $this->db->select('*');
@@ -601,6 +610,14 @@ Class Leads_model extends MY_Model
             $this->db->set('message',$history_msg);
             $this->db->insert('ts_artwork_history');
         }
+        // Attachments
+        $attachs = $this->get_lead_attachs($leadpost['lead_id']);
+        foreach ($attachs as $attach) {
+            $this->db->set('email_attachment_emailid', $newrec);
+            $this->db->set('email_attachment_name', $attach['source_name']);
+            $this->db->set('email_attachment_filename', $attach['attachment']);
+            $this->db->insert('ts_email_attachments');
+        }
         return $out;
     }
     /* New Proof Number */
@@ -775,6 +792,7 @@ Class Leads_model extends MY_Model
         } else {
             $this->db->set('lead_id',$options['lead_id']);
             if (intval($options['leademail_id'])==0) {
+                // Add Lead / Custom quote relations
                 $this->db->set('custom_quote_id',$options['customform']);
                 $this->db->insert('ts_lead_emails');
                 if ($this->db->insert_id()==0) {
@@ -785,8 +803,20 @@ Class Leads_model extends MY_Model
                     $this->db->update('ts_leads');
                     $out['msg']='';
                     $out['result']=$this->success_result;
+                    // Add Attachments
+                    if (isset($options['leadattach'])) {
+                        $attachs = $options['leadattach'];
+                        foreach ($attachs as $attach) {
+                            $this->db->set('lead_id', $options['lead_id']);
+                            $this->db->set('source_name', $attach['source_name']);
+                            $this->db->set('attachment', $attach['attachment']);
+                            $this->db->set('quoteattach',1);
+                            $this->db->insert('ts_lead_attachs');
+                        }
+                    }
                 }
             } else {
+                // Add Lead / Email relations
                 $this->db->where('leademail_id',$options['leademail_id']);
                 $this->db->update('ts_lead_emails');
                 $this->db->set('lead_assign_time',  time());
@@ -1039,6 +1069,13 @@ Class Leads_model extends MY_Model
             if ($leaddat['result']==$this->error_result) {
                 $retval=array('lead_id'=>0);
             } else {
+                $attachs = $this->get_lead_attachs($lead_id);
+                foreach ($attachs as $attach) {
+                    $this->db->set('lead_id', $leaddat['result']);
+                    $this->db->set('source_name', $attach['source_name']);
+                    $this->db->set('attachment', $attach['attachment']);
+                    $this->db->insert('ts_lead_attachs');
+                }
                 $retval=$this->get_lead($leaddat['result']);
             }
         }
@@ -2147,6 +2184,16 @@ Class Leads_model extends MY_Model
         } else {
             $out['result'] = $this->success_result;
             $out['lead_id'] = $res['result'];
+            if (isset($formdata['attach'])) {
+                $attachments = $formdata['attach'];
+                foreach ($attachments as $attachment) {
+                    $this->db->set('lead_id', $out['lead_id']);
+                    $this->db->set('source_name', $attachment['source_name']);
+                    $this->db->set('attachment', $attachment['attachment']);
+                    $this->db->set('quoteattach', 1);
+                    $this->db->insert('ts_lead_attachs');
+                }
+            }
             // Create relations between Mail and Leads
             if (intval($leademail_id)==0) {
                 $this->db->set('lead_id',$res['result']);
@@ -2154,6 +2201,21 @@ Class Leads_model extends MY_Model
                 $this->db->insert('ts_lead_emails');
                 $out['relation_id'] = $this->db->insert_id();
             }
+        }
+        return $out;
+    }
+
+    public function attachment_remove($attach_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Attachment not found'];
+        $this->db->select('*');
+        $this->db->from('ts_lead_attachs');
+        $this->db->where('leadattch_id', $attach_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res,'leadattch_id',0)==$attach_id) {
+            $this->db->where('leadattch_id', $attach_id);
+            $this->db->delete('ts_lead_attachs');
+            $out['result'] = $this->success_result;
+            $out['lead_id'] = $res['lead_id'];
         }
         return $out;
     }

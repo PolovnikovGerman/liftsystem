@@ -1,7 +1,6 @@
 var mainurl = '/leadmanagement';
 function show_new_lead(lead_id,type, brand) {
     var url=mainurl+"/edit_lead";
-    console.log('View New Lead');
     params = new Array();
     params.push({name: 'lead_id', value :lead_id});
     params.push({name: 'brand', value: brand});
@@ -142,6 +141,19 @@ function init_leadpopupedit() {
             }
         }
     })
+    // Attachments
+    $("div.lead_attach_view").unbind('click').click(function () {
+        var link = $(this).data('link');
+        window.open(link, 'attachwin', 'width=600, height=800,toolbar=1')
+    });
+    // Delete attachment
+    $("div.lead_attach_remove").unbind('click').click(function () {
+        if (confirm('Remove attachment ?')==true) {
+            var attachid = $(this).data('attachid');
+            delete_lead_attachment(attachid);
+        }
+    });
+
     /* Question */
     $("div.lead_popup_questchck").unbind('click').click(function(){
         show_questdetails(this);
@@ -234,6 +246,18 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+}
+
+function delete_lead_attachment(attachid) {
+    var url=mainurl+"/lead_attachment_delete";
+    $.post(url,{'attach_id': attachid}, function (response) {
+        if (response.errors=='') {
+            $(".lead_popup_attachs").empty().html(response.data.content);
+            init_leadpopupedit();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function addnewleaderpl() {    
@@ -408,12 +432,12 @@ function duplicatelead() {
        var url=mainurl+"/dublicatelead";
        $.post(url, dat, function(response){
             if (response.errors=='') {
-                $("#pageModal").modal('hide');
+                // $("#pageModal").modal('hide');
                 initLeaddataPagination();
                 $("#pageModalLabel").empty().html(response.data.title);
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").find('div.modal-dialog').css('width','970px');
-                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                // $("#pageModal").find('div.modal-dialog').css('width','970px');
+                // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_leadpopupedit();
             } else {
                 show_error(response);
