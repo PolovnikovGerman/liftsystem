@@ -1375,11 +1375,7 @@ Class Items_model extends My_Model
         $newval=ifset($options, 'newval','');
         if (array_key_exists($fldname, $item)) {
             $out['result'] = $this->success_result;
-            if ($fldname=='item_size') {
-                $item[$fldname] = htmlspecialchars($newval);
-            } else {
-                $item[$fldname] = $newval;
-            }
+            $item[$fldname] = $newval;
             $sessiondata['item'] = $item;
             usersession($sessionsid, $sessiondata);
         }
@@ -2150,7 +2146,7 @@ Class Items_model extends My_Model
             $find = 0;
             foreach ($inprints as $inprint) {
                 if ($inprint['item_inprint_id']==$fldidx) {
-                    $inprints[$idx][$fld] = htmlspecialchars($postdata['newval']);
+                    $inprints[$idx][$fld] = $postdata['newval'];
                     $find = 1;
                     break;
                 }

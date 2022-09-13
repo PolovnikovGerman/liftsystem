@@ -4,8 +4,8 @@
     <?php $numpp=1;?>
     <?php foreach ($locations as $location) { ?>
         <div class="locationsdatarow">
-            <div class="locationname"><?=$numpp?>. <?=htmlspecialchars_decode($location['item_inprint_location'])?></div>
-            <div class="locationplace"><?=htmlspecialchars_decode($location['item_inprint_size'])?></div>
+            <div class="locationname"><?=$numpp?>. <?=$location['item_inprint_location']?></div>
+            <div class="locationplace"><?=$location['item_inprint_size']?></div>
             <div class="locationview">
                 <?php if (!empty($location['item_inprint_view'])) { ?>
                     <div data-link="<?=$location['item_inprint_view']?>">
