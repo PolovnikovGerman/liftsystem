@@ -2327,6 +2327,7 @@ Class Items_model extends My_Model
                     $this->db->set('category_id', $item['category_id']);
                     $this->db->set('item_number', $newnumber);
                     $this->db->where('item_id', $item_id);
+                    $this->db->update('sb_items');
                 } else {
                     $out['msg'] = 'Error During insert Item Data';
                     return $out;
