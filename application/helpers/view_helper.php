@@ -13,6 +13,29 @@ if (!function_exists('MoneyOutput')) {
         return $output;
     }
 }
+
+if (!function_exists('ProfitOutput')) {
+    function ProfitOutput($total, $decimal = 2, $thousdelim = ',')
+    {
+        if ($total < 0) {
+            $output = '<span style="color: #FF0000">($';
+        } else {
+            $output = '$';
+        }
+        if (abs($total) >= 1000 && abs($total) < 1000000) {
+            $output .= number_format(abs($total)/1000, $decimal).'K';
+        } elseif (abs($total) >= 1000000) {
+            $output .= number_format(abs($total)/1000000, $decimal).'M';
+        } else {
+            $output .= number_format(abs($total), $decimal, '.', $thousdelim);
+        }
+        if ($total < 0) {
+            $output.=')</span>';
+        }
+        return $output;
+    }
+}
+
 if (!function_exists('TotalOutput')) {
     function TotalOutput($total) {
         $fraction = str_pad(round(($total-intval($total))*100,0),2,'0',STR_PAD_LEFT);
@@ -550,6 +573,40 @@ if (!function_exists('BankDays')) {
         return $bank_days;
     }
 }
+
+if (!function_exists('TNTDays')) {
+    function TNTDays($datbgn, $datend, $calendar_id=0) {
+        $bank_days = 0;
+        $ci=&get_instance();
+        if ($calendar_id==0) {
+            $def_calendar=$ci->config->item('bank_calendar');
+        } else {
+            $def_calendar=$calendar_id;
+        }
+
+        $ci->load->model('calendars_model');
+        $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
+        $holidays=array();
+        foreach ($holidays_src as $row) {
+            array_push($holidays, date('Y-m-d',$row));
+        }
+
+        $weekends=array(0,6);
+        $earlier = new DateTime(date('Y-m-d', $datend));
+        $later = new DateTime(date('Y-m-d', $datbgn));
+        $days = $later->diff($earlier)->format("%r%a");
+
+        // $days = ceil(($datend - $datbgn) / 3600 / 24);
+        for ($i = 1; $i <= $days; $i++) {
+            $curr = strtotime('+' . $i . ' days', $datbgn);
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {
+                $bank_days++;
+            }
+        }
+        return $bank_days;
+    }
+}
+
 if (!function_exists('short_number')) {
     function short_number($value, $precesion=1) {
         $base=1000;

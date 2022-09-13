@@ -96,6 +96,12 @@ Class Leadorder_model extends My_Model {
 
     public function get_leadorders($options) {
         $item_dbtable='sb_items';
+        $this->db->select('i.order_id, group_concat(toi.item_description) as itemdescr');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
+        $this->db->group_by('i.order_id');
+        $itemdatesql = $this->db->get_compiled_select();
+
         $amountcnt="select order_id, sum(amount_sum) as cnt_amnt from ts_order_amounts where amount_sum>0 group by order_id";
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
@@ -124,8 +130,9 @@ Class Leadorder_model extends My_Model {
             $this->db->where('o.order_usr_repic',$options['order_usr_repic']);
         }
         if (isset($options['search'])) {
-            // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ',coalesce(o.order_confirmation,'')) ",strtoupper($options['search']));
-            $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), o.revenue ) ",strtoupper($options['search']));
+            $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+            // $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items), o.revenue ) ",strtoupper($options['search']));
+            $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($options['search']));
         }
         if (isset($options['begin'])) {
             $this->db->where('o.order_date >= ',$options['begin']);
@@ -781,7 +788,8 @@ Class Leadorder_model extends My_Model {
         $this->db->where('order_id', $order_id);
         // $this->db->where('batch_received', 1);
         $this->db->where('batch_term',  0);
-        $this->db->order_by('batch_date');
+        // $this->db->order_by('batch_date');
+        $this->db->order_by('create_date');
         $res = $this->db->get()->result_array();
         $out = array();
         foreach ($res as $row) {
@@ -2702,6 +2710,7 @@ Class Leadorder_model extends My_Model {
             return $out;
         }
         $charge=$charges[$chridx];
+        $charge['amount'] = floatval(str_replace(',','',$charge['amount']));
         $billing=$leadorder['billing'];
         $order_data = $leadorder['order'];
         $cardnum=  str_replace('-', '', $charge['cardnum']);
@@ -2812,10 +2821,6 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
-            // Make Current row Amount=0, Add Charge
-            $this->db->set('amount',0);
-            $this->db->where('order_payment_id', $row['order_payment_id']);
-            $this->db->update('ts_order_payments');
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -2827,7 +2832,7 @@ Class Leadorder_model extends My_Model {
                 'batch_id'=>0,
                 'batch_date'=>time(),
                 'paymethod'=>$paymethod,
-                'amount'=>$row['amount'],
+                'amount'=>$charge['amount'],
                 'batch_note'=>NULL,
                 'order_id'=>$order_id,
                 'batch_received'=>1,
@@ -2864,6 +2869,16 @@ Class Leadorder_model extends My_Model {
             $order['cc_fee']=$fee;
             $leadorder['order']=$order;
             $leadorder['payments']=$payments;
+            // Make Current row Amount=0, Add Charge
+            $charge['amount'] = 0;
+            $idx = 0;
+            foreach ($charges as $row) {
+                if ($row['order_payment_id']==$charge['order_payment_id']) {
+                    $charges[$idx]=$charge;
+                }
+                $idx++;
+            }
+            $leadorder['charges'] = $charges;
             usersession($ordersession, $leadorder);
             $out['result']=$this->success_result;
         }
@@ -5098,7 +5113,7 @@ Class Leadorder_model extends My_Model {
     private function _save_order_chargedata($charges, $order_id, $user_id) {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         foreach ($charges as $row) {
-            $this->db->set('amount', floatval($row['amount']));
+            $this->db->set('amount', floatval(str_replace(',','',$row['amount'])));
             $this->db->set('cardnum', $row['cardnum']);
             $this->db->set('exp_month', intval($row['exp_month']));
             $this->db->set('exp_year', intval($row['exp_year']));
@@ -7939,7 +7954,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
 
         $this->load->model('shipping_model');
-        $this->load->helper(array('dompdf', 'file'));
+        // $this->load->helper(array('dompdf', 'file'));
         $order=$leadorder['order'];
         $payments_details = [];
         foreach ($leadorder['payments'] as $prow) {
@@ -7989,6 +8004,9 @@ Class Leadorder_model extends My_Model {
         $biladr=array();
         if (isset($leadorder['billing'])) {
             $billing=$leadorder['billing'];
+            foreach ($billing as $key=>$val) {
+                log_message('error',$key.' - '.$val);
+            }
             if (!empty($billing['customer_name'])) {
                 if (!empty($billing['company'])) {
                     array_push($biladr, $billing['company']);
@@ -8619,7 +8637,7 @@ Class Leadorder_model extends My_Model {
         $chargenum=0;
         foreach ($charges as $chrow) {
             if ($chrow['delflag']==0 && $chrow['autopay']==1) {
-                $chargesum+=$chrow['amount'];
+                $chargesum+=floatval(str_replace(',','',$chrow['amount']));
                 $chargenum+=1;
             }
         }
@@ -9001,22 +9019,27 @@ Class Leadorder_model extends My_Model {
                 $pdf->SetTextColor(0,0,0);
             }
             $pdf->SetX(5);
+//            $rowY = $pdf->GetY();
+//            $pdf->MultiCell($tableWidths[0],9,$detail['item_num'],0,'C', $fillcell);
+//            $pdf->SetXY(5+$tableWidths[0], $rowY);
+//            $pdf->MultiCell($tableWidths[1],9, $detail['item_description'],0, 'L', $fillcell);
             $pdf->Cell($tableWidths[0], 9, $detail['item_num'], 0, 0,'C', $fillcell);
-            $pdf->Cell($tableWidths[1], 9, $detail['item_description'],0,0,'L',$fillcell);
+            $pdf->Cell($tableWidths[1], 9, substr($detail['item_description'],0,45),0,0,'L',$fillcell);
             $pdf->Cell($tableWidths[2], 9, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
             $pdf->Cell($tableWidths[3], 9, $detail['item_price'],0,0,'C', $fillcell);
             $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
         }
+        $totalbgn = $pdf->GetY();
         if (!empty($options['invoice_message'])) {
-            $pdf->SetXY(5,228);
+            $pdf->SetXY(5,$totalbgn+5.5);
             $pdf->SetFont('','',13);
             // $pdf->Cell(105, 0, $options['invoice_message'],1);
-            $pdf->MultiCell(100, 6, $options['invoice_message'], 1, 'L', FALSE);
+            $pdf->MultiCell(75, 6, $options['invoice_message'], 1, 'L', FALSE);
 
         }
         // Totals
-        $totalbgn = $pdf->GetY();
+        // $totalbgn = $pdf->GetY();
         $invtotalXPos = 90;
         $invtotalYPos = $totalbgn+5;
         $invtotalWidth = 115;

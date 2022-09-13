@@ -2179,7 +2179,8 @@ function init_leadorder_shipping() {
     $("input.eventdatevalue").datepicker({
         autoclose: true,
         todayHighlight: true,
-        clearBtn: true
+        clearBtn: true,
+        startDate: '-365d'
     });
     $("input.eventdatevalue").unbind('change').change(function(){
         var params=new Array();
@@ -3343,7 +3344,10 @@ function init_leadorder_charges() {
     $("div.pay_method_buttonsend").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'order_payment_id', value: $(this).data('charge')});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var callpage=$("input#callpage").val();
+        params.push({name: 'callpage', value: callpage});
+        params.push({name: 'brand', value: $("#root_brand").val()});
         var url="/leadorder/leadorder_paycharge";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -3355,8 +3359,11 @@ function init_leadorder_charges() {
                 }
                 $("div.block_6_historytext").empty().html(response.data.history);
                 $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();                
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                clearTimeout(timerId);
                 $("#loader").hide();
+                init_onlineleadorder_edit();
             } else {
                 $("#loader").hide();
                 show_error(response);

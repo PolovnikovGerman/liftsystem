@@ -73,6 +73,7 @@ select.leaditem_filterselect {
 /* options colored*/
 .blackpriority {
     background-color: #000000;
+
     color: #FFFFFF;
 }
 .maroonpriority {

@@ -1448,7 +1448,16 @@ class Email_model extends My_Model
                     $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
                     $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
                     $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
-                    $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
+                    $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                    $colorstr = '';
+                    foreach ($itemcolors as $itemcolor) {
+                        $colorstr.=$itemcolor.',';
+                    }
+                    if (count($itemcolors)>0) {
+                        $colorstr=substr($colorstr,0,-1);
+                    }
+                    $mail['colors'] = $colorstr;
+                        // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
                     $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
                     $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
                     $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
@@ -1460,9 +1469,12 @@ class Email_model extends My_Model
                         $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
                         $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     } else {
-                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
-                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
-                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
+//                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
+//                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+//                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     }
                     $mail['imgpath']=$this->config->item('img_path');
                     $mail['itemimgpath']=$this->config->item('item_quote_images');

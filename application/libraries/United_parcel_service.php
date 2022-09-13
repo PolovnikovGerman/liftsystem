@@ -119,7 +119,12 @@ class United_parcel_service
                 $request['InvoiceLineTotal'] = $invoiceLineTotal;
 
                 $request['MaximumListSize'] = '1';
-                
+                // $fw = fopen($outputFileName ,'w');
+                // foreach ($request as $key=>$val) {
+                    // fwrite($fw , "Request: ".$key.' Val '.$val. "\n");
+                // }
+                // fclose($fw);
+
                 //get response
                 $resp = $client->__soapCall($operation ,array($request));
                 //get status
@@ -147,6 +152,10 @@ class United_parcel_service
                 } else {
                     if (isset($resp->TimeInTransitResponse->Response->Error->ErrorDescription)) {
                         // $errmsg=$resp->TimeInTransitResponse->Response->Error->ErrorDescription;
+                        $fw = fopen($outputFileName ,'w');
+                        fwrite($fw , "Exception: \n" . $resp->TimeInTransitResponse->Response->Error->ErrorDescription. "\n");
+                        fwrite($fw , "Request: \n" . $client->__getLastRequest() . "\n");
+                        fclose($fw);
                         $errmsg=$this->_error_message;
                     } else {
                         $errmsg='Error during execute Time in Transit calculation';
@@ -213,10 +222,10 @@ class United_parcel_service
                 $resp = $client->__soapCall($operation, array($this->processRate($destination_zip, $service_type, $number_of_packages, $weight, $ship_date, $residential,$from_zip,$shipto_cnt,$item_length, $item_width, $item_height)));
 
                 //save soap request and response to file
-                /* $fw = fopen($outputFileName, 'w');
-                fwrite($fw, "Request: \n" . $client->__getLastRequest() . "\n");
-                fwrite($fw, "Response: \n" . $client->__getLastResponse() . "\n");
-                fclose($fw);*/
+//                $fw = fopen($outputFileName, 'w');
+//                fwrite($fw, "Request: \n" . $client->__getLastRequest() . "\n");
+//                fwrite($fw, "Response: \n" . $client->__getLastResponse() . "\n");
+//                fclose($fw);
 
                 //get status
                 // echo "Response Status: " . $resp->Response->ResponseStatus->Description . "\n";

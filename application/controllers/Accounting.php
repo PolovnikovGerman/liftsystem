@@ -2857,6 +2857,53 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function netprofit_weekincl() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Unknown period';
+            $postdata = $this->input->post();
+            $type=ifset($postdata, 'type','week');
+            $profit_id=ifset($postdata, 'profit_id',0);
+            $brand = ifset($postdata, 'brand','ALL');
+            //
+            if (!empty($profit_id)) {
+                $res = $this->balances_model->include_netprofit_week($profit_id, $brand, $type);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['runincl']=$res['runincl'];
+                    $data=$res['totals'];
+                    $mdata['content']=$this->load->view('netprofit/netprofit_totals_view',$data,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function netprofit_checkweek() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Unknown period';
+            $postdata = $this->input->post();
+            $type=ifset($postdata, 'type','week');
+            $profit_id=ifset($postdata, 'profit_id',0);
+            $brand = ifset($postdata, 'brand','ALL');
+            //
+            if (!empty($profit_id)) {
+                $res = $this->balances_model->netprofit_check_week($profit_id, $brand, $type);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['weekcheck']=$res['weekcheck'];
+                    $mdata['weekclass']=$res['weekclass'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function netprofit_w9purchasetable() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -3973,7 +4020,6 @@ class Accounting extends MY_Controller
             $year3 = $years[2];
         }
         // Temporary
-        $year1=2018; $year2=2017; $year3=2016;
         $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
         $options=[
             'totaltab' => $totaltab,

@@ -1363,33 +1363,38 @@ class Fulfillment extends MY_Controller
     public function inventory_arrivecontainer() {
         if($this->isAjax()) {
             $mdata = array();
-            $this->load->model('printshop_model');
-            $onboat_container=$this->input->post('onboat_container');
-            $brand = $this->input->post('brand');
-            $res = $this->printshop_model->onboat_arrived($onboat_container);
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error='';
-                $options=array(
-                    'orderby'=>'item_num',
-                    'direct'=>'asc',
-                    'brand' => 'brand',
-                );
-                $data=$this->printshop_model->get_printshopitems($options);
-                // New Inv totals
-                $mdata['total_inventory']=MoneyOutput($data['inventtotal']);
-                // Make Total Inv content
-                $totaloptions=array(
-                    'data'=>$data['inventory'],
-                );
-                $mdata['totalinvcontent']=$this->load->view('printshopinventory/totalinventory_data_view', $totaloptions, TRUE);
-
-                $details=$this->printshop_model->get_container_details($onboat_container);
-                $mdata['containerhead']=$this->load->view('printshopinventory/purecontainer_head_view', $details, TRUE);
-                $totalinv=$this->printshop_model->get_inventory_totals($brand);
-                $mdata['totalinvview']=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-
+//            $onboat_container=$this->input->post('onboat_container');
+//            $brand = $this->input->post('brand');
+            $postdata = $this->input->post();
+            $onboat_container = ifset($postdata,'onboat_container',0);
+            $error = 'Container Not Found';
+            if (!empty($onboat_container)) {
+                $this->load->model('printshop_model');
+                $res = $this->printshop_model->onboat_arrived($onboat_container);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
             }
+//                $options=array(
+//                    'orderby'=>'item_num',
+//                    'direct'=>'asc',
+//                    'brand' => 'brand',
+//                );
+//                $data=$this->printshop_model->get_printshopitems($options);
+//                // New Inv totals
+//                $mdata['total_inventory']=MoneyOutput($data['inventtotal']);
+//                // Make Total Inv content
+//                $totaloptions=array(
+//                    'data'=>$data['inventory'],
+//                );
+//                $mdata['totalinvcontent']=$this->load->view('printshopinventory/totalinventory_data_view', $totaloptions, TRUE);
+//
+//                $details=$this->printshop_model->get_container_details($onboat_container);
+//                $mdata['containerhead']=$this->load->view('printshopinventory/purecontainer_head_view', $details, TRUE);
+//                $totalinv=$this->printshop_model->get_inventory_totals($brand);
+//                $mdata['totalinvview']=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+
             // $edit = $this->printshop_model->add_to_instock($onboat_date);
 
             $this->ajaxResponse($mdata, $error);
@@ -1967,8 +1972,7 @@ class Fulfillment extends MY_Controller
         if (count($years) > 2) {
             $year3 = $years[2];
         }
-        // Temporary
-        $year1=2018; $year2=2017; $year3=2016;
+
         $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
         $options=[
             'totaltab' => $totaltab,

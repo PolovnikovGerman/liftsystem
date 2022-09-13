@@ -13,7 +13,12 @@ Class Categories_model extends MY_Model
         $this->db->from('sb_categories');
         $this->db->where('parent_id',NULL);
         foreach ($filtr as $key=>$val) {
-            $this->db->where($key,$val);
+            if (is_array($val)) {
+                $this->db->where_in($key,$val);
+            } else {
+                $this->db->where($key,$val);
+            }
+
         }
         if ($order_by!='') {
             $this->db->order_by($order_by,$sort);
@@ -173,6 +178,34 @@ Class Categories_model extends MY_Model
             $out[]='Empty Homepage Collage Name';
         }
         return $out;
+    }
+
+    public function get_reliver_categories($options=[]) {
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        $this->db->order_by('category_order');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_srcategory_data($category_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Category Not Found'];
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        $this->db->where('category_id', $category_id);
+        $data = $this->db->get()->row_array();
+        if (ifset($data,'category_id',0)==$category_id) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $data;
+        }
+        return $out;
+    }
+
+    public function get_reliver_subcategories() {
+        $this->db->select('*');
+        $this->db->from('sr_subcategories');
+        $res = $this->db->get()->result_array();
+        return $res;
     }
 
 }

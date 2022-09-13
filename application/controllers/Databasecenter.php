@@ -280,7 +280,12 @@ class Databasecenter extends MY_Controller
 
         foreach ($menu as $item) {
             if ($item['item_link']=='#sritems') {
-                $content_options['itemsview'] = $this->load->view('relieveritems/page_view',[],TRUE);
+                $head['styles'][]=array('style'=>'/css/database_center/relivitemlist.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/relivitemlist.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
+                $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
+                $content_options['itemsview'] = $this->_prepare_sritems_content();
             } elseif ($item['item_link']=='#srcustomers') {
                 $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);
             } elseif ($item['item_link']=='#srpages') {
@@ -333,6 +338,14 @@ class Databasecenter extends MY_Controller
         }
         $head['styles'][] = array('style' => '/css/database_center/main_page.css');
         $head['scripts'][] = array('src' => '/js/database_center/srchannel_page.js');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        // Autocompleter
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Cycle
+        $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
+
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,
@@ -543,6 +556,27 @@ class Databasecenter extends MY_Controller
             'eventtype' => 'purchasing',
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_sritems_content() {
+        $this->load->model('categories_model');
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $categories = $this->categories_model->get_reliver_categories();
+        $activcategory = $categories[0]['category_id'];
+        $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+        $cntitems = $this->items_model->get_items_count(['brand' => 'SR', 'category_id' => $activcategory]);
+        $vendors = $this->vendors_model->get_vendors();
+        $options = [
+            'categories' => $categories,
+            'totals' => $cntitems,
+            'category_id' => $activcategory,
+            'category_label' => $activcategory_label,
+            'vendors' => $vendors,
+        ];
+
+        $content = $this->load->view('relieveritems/page_view', $options,TRUE);
         return $content;
     }
 

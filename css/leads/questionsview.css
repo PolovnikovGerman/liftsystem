@@ -206,6 +206,9 @@ a.find_questbnt {
     width: 196px;
     text-overflow: ellipsis;
 }
+.quest_tabrow > .quest_custommail a, .quest_tabrow > .quest_custommail a:hover {
+    color: #0000FF!important;
+}
 .quest_tabrow > .quest_customphone {
     border-right: 1px solid #2F2F2F;
     text-align: left;

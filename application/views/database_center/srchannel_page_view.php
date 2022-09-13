@@ -1,5 +1,5 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea databasemenu">
+    <div class="maincontentmenuarea databasemenu srchannel">
         <div class="menupage_head">
             <?=$page_menu?>
         </div>
@@ -7,7 +7,7 @@
             <div class="maincontentmenu">
                 <div class="title">Database:</div>
                 <?php foreach ($menu as $item) { ?>
-                    <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
+                    <div class="maincontentmenu_item srelivers <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
                         <?php  if (ifset($item,'newver', 1)==0) { ?>
                             <div class="oldvesionlabel">&nbsp;</div>
                         <?php } ?>
@@ -36,8 +36,21 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img src="/img/dbitems/close_item_popup.png"></span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img src="/img/vendors/close_popup.png"></span></button>
                 <h4 class="modal-title" id="itemDetailsModalLabel">New message</h4>
+            </div>
+            <div class="modal-body" style="float: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="itemImagesModal" tabindex="-1" role="dialog" aria-labelledby="itemImagesModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="itemImagesModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>
