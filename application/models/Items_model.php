@@ -2575,7 +2575,6 @@ Class Items_model extends My_Model
                         $inprint['item_inprint_view'] = '';
                     }
                 }
-                $this->db->set('item_inprint_item', $inprint['item_inprint_item']);
                 $this->db->set('item_inprint_location', $inprint['item_inprint_location']);
                 $this->db->set('item_inprint_size', $inprint['item_inprint_size']);
                 $this->db->set('item_inprint_view', $inprint['item_inprint_view']);
@@ -2583,7 +2582,23 @@ Class Items_model extends My_Model
                     $this->db->where('item_inprint_id', $inprint['item_inprint_id']);
                     $this->db->update('sb_item_inprints');
                 } else {
+                    $this->db->set('item_inprint_item', $item_id);
                     $this->db->insert('sb_item_inprints');
+                }
+            }
+            // Shipboxes
+            $shipboxes = $sessiondata['shipboxes'];
+            foreach ($shipboxes as $shipbox) {
+                $this->db->set('box_qty', $shipbox['box_qty']);
+                $this->db->set('box_width', $shipbox['box_width']);
+                $this->db->set('box_length', $shipbox['box_length']);
+                $this->db->set('box_height', $shipbox['box_height']);
+                if ($shipbox['item_shipping_id'] > 0) {
+                    $this->db->where('item_shipping_id', $shipbox['item_shipping_id']);
+                    $this->db->update('sb_item_shipping');
+                } else {
+                    $this->db->set('item_id', $item_id);
+                    $this->db->insert('sb_item_shipping');
                 }
             }
             $deletes = $sessiondata['deleted'];
