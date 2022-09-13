@@ -65,7 +65,7 @@
         <div class="content-row">
             <div class="itemparamlabel itemsize">Size:</div>
             <div class="itemparamvalue editmode itemsize">
-                <input type="text" class="itemkeyinfoinput itemsize <?=empty($item['item_size']) ? 'missing_info' : ''?>" data-item="item_size" value="<?=$item['item_size']?>"/>
+                <input type="text" class="itemkeyinfoinput itemsize <?=empty($item['item_size']) ? 'missing_info' : ''?>" data-item="item_size" value="<?=htmlspecialchars_decode($item['item_size'])?>"/>
             </div>
         </div>
         <div class="content-row">
