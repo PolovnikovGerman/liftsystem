@@ -44,6 +44,7 @@ class Leadmanagement extends MY_Controller
                 $lead_data['brand'] = $brand;
                 $lead_history = array();
                 $lead_usr = array();
+                $leads_attach = [];
             } else {
                 // $replicas=$this->muser->get_user_leadreplicas(0);
                 $lead_data=$this->leads_model->get_lead($lead_id);
@@ -56,6 +57,7 @@ class Leadmanagement extends MY_Controller
                 }
                 $lead_history=$this->leads_model->get_lead_history($lead_id);
                 $lead_usr=$this->leads_model->get_lead_users($lead_id);
+                $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
             }
             $lead_tasks=$this->leads_model->get_lead_tasks($lead_id);
 
@@ -135,6 +137,8 @@ class Leadmanagement extends MY_Controller
             }
             /* Get Available Items */
             $items_list=$this->leads_model->items_list($lead_data['brand']);
+            // Attachs
+            $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
             // $itemslist=$this->m
             $options=array(
                 'data'=>$lead_data,
@@ -147,6 +151,7 @@ class Leadmanagement extends MY_Controller
                 'save_available'=>$save_av,
                 'dead_option'=>$dead_option,
                 'items' => $items_list,
+                'attachs' => $leadattach_view,
                 'session_id'=>$session_id,
             );
             $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
@@ -183,6 +188,26 @@ class Leadmanagement extends MY_Controller
                     }
                 } else {
                     $mdata['other']=0;
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function lead_attachment_delete() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Attachment ID empty';
+            $postdata = $this->input->post();
+            $attach_id = ifset($postdata,'attach_id',0);
+            if ($attach_id > 0) {
+                $res=$this->leads_model->attachment_remove($attach_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leads_attach = $this->leads_model->get_lead_attachs($res['lead_id']);
+                    $mdata['content'] = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -236,6 +261,7 @@ class Leadmanagement extends MY_Controller
                     $lead_data['lead_number']=$this->leads_model->get_leadnum();
                     $lead_history=array();
                     $lead_usr=array();
+                    $leads_attach = [];
                 } else {
                     $lead_data=$this->leads_model->get_lead($lead_id);
                     if (isset($lead_data['create_date'])) {
@@ -255,6 +281,7 @@ class Leadmanagement extends MY_Controller
                     } else {
                         $lead_usr=$this->leads_model->get_lead_users($lead_id);
                     }
+                    $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
                 }
                 $lead_tasks=$this->leads_model->get_lead_tasks($lead_id);
 
@@ -324,7 +351,7 @@ class Leadmanagement extends MY_Controller
                 }
                 /* Get Available Items */
                 $items_list=$this->leads_model->items_list($lead_data['brand']);
-                // $itemslist=$this->m
+                $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
                 $options=array(
                     'data'=>$lead_data,
                     'history'=>$history,
@@ -336,6 +363,7 @@ class Leadmanagement extends MY_Controller
                     'save_available'=>$save_av,
                     'dead_option'=>$dead_option,
                     'items' => $items_list,
+                    'attachs' => $leadattach_view,
                     'session_id'=>$session_id,
                 );
                 $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
@@ -444,7 +472,8 @@ class Leadmanagement extends MY_Controller
                     /* Tasks */
                     $lead_tasks=[]; // $this->mleads->get_lead_tasks($lead_id);
                     $lead_tasks['edit']=$save_av;
-                    $tasks=$this->load->view('leads/lead_tasks_view',$lead_tasks,TRUE);
+                    $tasks='';
+                    // $tasks=$this->load->view('leads/lead_tasks_view',$lead_tasks,TRUE);
                     /* Questions */
                     $qdat=$this->questions_model->get_lead_questions($lead_id);
                     if (count($qdat)==0) {
@@ -467,7 +496,17 @@ class Leadmanagement extends MY_Controller
                         $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
                     }
 
-                    /* Get Available Items */
+                    $lead['other_item_label']='';
+                    if ($lead['lead_item']=='Other') {
+                        $lead['other_item_label']='Type Other Item Here:';
+                    } elseif ($lead['lead_item']=='Multiple') {
+                        $lead['other_item_label']='Type Multiple Items Here:';
+                    } elseif ($lead['lead_item']=='Custom Shaped Stress Balls') {
+                        $lead['other_item_label']='Type Custom Items Here:';
+                    }
+                    $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
+                    $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
+                    // Get Available Items
                     $items_list=$this->leads_model->items_list($lead['brand']);
 
                     $options=array(
@@ -480,6 +519,7 @@ class Leadmanagement extends MY_Controller
                         'onlineproofs'=>$onlineproofs,
                         'save_available'=>$save_av,
                         'items' => $items_list,
+                        'attachs' => $leadattach_view,
                         'session_id'=>$session_id,
                     );
                     $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);

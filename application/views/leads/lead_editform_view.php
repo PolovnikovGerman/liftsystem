@@ -113,6 +113,7 @@
                 <div class="lead_popup_addrequest">
                     <img src="/img/leads/add_proofrequest_btn.png" alt="Add Proof Request"/>
                 </div>
+                <div class="lead_popup_attachs"><?=$attachs?></div>
             </div>
         </div>
         <div class="lead_popupform_row">
