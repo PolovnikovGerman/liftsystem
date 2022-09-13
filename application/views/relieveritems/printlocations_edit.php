@@ -5,10 +5,10 @@
     <?php foreach ($locations as $location) { ?>
         <div class="locationsdatarow">
             <div class="locationdeleterow" data-idx="<?=$location['item_inprint_id']?>"><i class="fa fa-trash"></i></div>
-            <div class="locationname">
-                <input class="printlocationinpt locationname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=$location['item_inprint_location']?>"/>
+            <div class="locationname editmode">
+                <input class="printlocationinpt locname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=$location['item_inprint_location']?>"/>
             </div>
-            <div class="locationplace">
+            <div class="locationplace editmode">
                 <input class="printlocationinpt locationsize" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_size" value="<?=$location['item_inprint_size']?>"/>
             </div>
             <div class="locationview">
@@ -16,8 +16,8 @@
                     <div class="printimageview" data-link="<?=$location['item_inprint_view']?>">
                         <i class="fa fa-search"></i>
                     </div>
-                    <div class="printimagedel" data-link="<?=$location['item_inprint_view']?>">
-                        <i class="fa fa-search"></i>
+                    <div class="printimagedel" data-idx="<?=$location['item_inprint_id']?>">
+                        <i class="fa fa-trash"></i>
                     </div>
                 <?php } else {?>
                     <div class="printimageadd" data-idx="<?=$location['item_inprint_id']?>" id="uploadprnloc<?=$location['item_inprint_id']?>"></div>

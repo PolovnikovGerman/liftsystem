@@ -4,13 +4,17 @@
         <div class="content-row">
             <div class="itemvendorfilebtn editmode">
                 <div class="content-row">Vector AI</div>
-                <div class="content-row">
-                    <div class="vendorfile_view">
-                        <i class="fa fa-search"></i>
-                    </div>
-                    <div class="vendorfile_delete">
-                        <i class="fa fa-trash"></i>
-                    </div>
+                <div class="content-row vectorfilemanage">
+                    <?php if (empty($item['item_vector_img'])) { ?>
+                        <div id="addvectorfile"></div>
+                    <?php } else { ?>
+                        <div class="vendorfile_view" data-link="<?=$item['item_vector_img']?>">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="vendorfile_delete">
+                            <i class="fa fa-trash"></i>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="custommethodarea">

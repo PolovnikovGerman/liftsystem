@@ -2191,6 +2191,56 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function itemdetails_printloc_delete($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $deleted = $sessiondata['deleted'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        if (!empty($fldidx)) {
+            $newimpr = [];
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    $find=1;
+                } else {
+                    $newimpr[] = $inprint;
+                }
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['inprints'] = $newimpr;
+                if ($fldidx > 0 ) {
+                    $deleted[] = [
+                        'entity' => 'inprints',
+                        'id' => $fldidx,
+                    ];
+                }
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+                $out['inprints'] = $newimpr;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_vectorfile($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg'=> 'Info not found'];
+        $item=$sessiondata['item'];
+        $operation = ifset($postdata,'operation', '');
+        if (!empty($operation)) {
+            $vectorlnk = '';
+            if ($operation=='add') {
+                $item['item_vector_img'] = $postdata['newval'];
+                $vectorlnk = $postdata['newval'];
+            } else {
+                $item['item_vector_img'] = '';
+            }
+            $out['result'] = $this->success_result;
+            $out['vector'] = $vectorlnk;
+        }
+        return $out;
+    }
+
     public function itemdetails_save($sessiondata, $session, $user_id) {
         $out=['result' => $this->error_result, 'msg' => 'Info not found'];
         $reschk = $this->_check_itemdetails($sessiondata);
@@ -2405,6 +2455,23 @@ Class Items_model extends My_Model
                     }
                 }
             }
+            if (empty($item['item_vector_img'])) {
+                $this->db->where('item_id', $item_id);
+                $this->db->set('item_vector_img', null);
+                $this->db->update('sb_items');
+            } else {
+                $vector_fl = $this->config->item('item_aitemplate');
+                $vector_sh = $this->config->item('item_aitemplate_relative');
+                if (stripos($item['item_vector_img'], $preload_sh)!==false) {
+                    $vectorimg = str_replace($preload_sh,'', $item['item_vector_img']);
+                    $cpres = @copy($preload_fl.$vectorimg, $vector_fl.$vectorimg);
+                    if ($cpres) {
+                        $this->db->where('item_id', $item_id);
+                        $this->db->set('item_vector_img', $vector_sh.$vectorimg);
+                        $this->db->update('sb_items');
+                    }
+                }
+            }
 
             // Similar
             $similars = $sessiondata['similar'];
@@ -2492,11 +2559,39 @@ Class Items_model extends My_Model
                     }
                 }
             }
+            // Print Locations
+            $inprints = $sessiondata['inprints'];
+            $imprint_fl = $this->config->item('imprintimages');
+            $imprint_sh = $this->config->item('imprintimages_relative');
+            foreach ($inprints as $inprint) {
+                if (stripos($inprint['item_inprint_view'], $preload_sh)!==false) {
+                    $imprimg = str_replace($preload_sh,'', $inprint['item_inprint_view']);
+                    $cpres = @copy($preload_fl.$imprimg, $imprint_fl.$imprimg);
+                    if ($cpres) {
+                        $inprint['item_inprint_view'] = $imprint_sh.$imprimg;
+                    } else {
+                        $inprint['item_inprint_view'] = '';
+                    }
+                }
+                $this->db->set('item_inprint_item', $inprint['item_inprint_item']);
+                $this->db->set('item_inprint_location', $inprint['item_inprint_location']);
+                $this->db->set('item_inprint_size', $inprint['item_inprint_size']);
+                $this->db->set('item_inprint_view', $inprint['item_inprint_view']);
+                if ($inprint['item_inprint_id'] > 0) {
+                    $this->db->where('item_inprint_id', $inprint['item_inprint_id']);
+                    $this->db->update('sb_item_inprints');
+                } else {
+                    $this->db->insert('sb_item_inprints');
+                }
+            }
             $deletes = $sessiondata['deleted'];
             foreach ($deletes as $deleterow) {
                 if ($deleterow['entity']=='images') {
                     $this->db->where('item_img_id', $deleterow['id']);
                     $this->db->delete('sb_item_images');
+                } elseif ($deleterow['entity']=='inprints') {
+                    $this->db->where('item_inprint_id', $deleterow['id']);
+                    $this->db->delete('sb_item_inprints');
                 }
             }
         }

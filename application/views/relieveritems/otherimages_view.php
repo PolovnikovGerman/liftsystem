@@ -17,7 +17,7 @@
             <?php break;?>
         <?php } ?>
     <?php } ?>
-    <?php if ($numpp%6!==0 && $numpp < 11) { ?>
+    <?php if ($imgcnt > 0 && $numpp%6!==0 && $numpp < 11) { ?>
         </div>
     <?php } ?>
 </div>

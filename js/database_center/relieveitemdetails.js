@@ -536,7 +536,45 @@ function init_relievitemdetails_edit() {
             }
         },'json');
     });
-
+    $(".printimageview").unbind('click').click(function () {
+        var link = $(this).data('link');
+        window.open(link, 'printlocwin', 'width=600, height=800,toolbar=1')
+    });
+    $(".locationdeleterow").unbind('click').click(function () {
+        if (confirm('Remove Print Location?')==true) {
+            var params = new Array();
+            params.push({name: 'session', value: $("#dbdetailsession").val()});
+            params.push({name: 'fldidx', value: $(this).data('idx')});
+            var url="/dbitems/remove_relive_printlocat";
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".printlocationsdata").empty().html(response.data.content);
+                    // Init upload
+                    init_relieve_printlocation();
+                    init_relievitemdetails_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+    $(".printimagedel").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fldidx', value: $(this).data('idx')});
+        params.push({name: 'operation', value: 'del'});
+        var url="/dbitems/save_relive_printlocatview";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".printlocationsdata").empty().html(response.data.content);
+                // Init upload
+                init_relieve_printlocation();
+                init_relievitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     $("input.printlocationinpt").unbind('change').change(function () {
         var newval = $(this).val();
         var fldidx = $(this).data('idx');
@@ -553,6 +591,29 @@ function init_relievitemdetails_edit() {
             }
         },'json');
     });
+    // Upload vector file
+    if ($("#addvectorfile").length > 0) {
+        init_vector_upload();
+    }
+    $(".vendorfile_view").unbind('click').click(function () {
+        var link = $(this).data('link');
+        window.open(link, 'printlocwin', 'width=600, height=800,toolbar=1')
+    });
+    $(".vendorfile_delete").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'operation', value: 'del'});
+        var url="/dbitems/save_relive_vectorfile";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".vectorfilemanage").empty().html(response.data.content);
+                // Init upload
+                init_relievitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    })
 }
 
 function init_relievitemimages_edit() {
@@ -1065,8 +1126,8 @@ function init_relievitemimages_edit() {
 }
 
 function init_relieve_printlocation() {
-    var replacetemp = '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
-        '<em>upload image</em></span></div>' +
+    var replacetemp = '<div class="qq-uploader"><div class="customprint_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+        '<em>browse</em></span></div>' +
         '<ul class="qq-upload-list"></ul>' +
         '<ul class="qq-upload-drop-area"></ul>'+
         '<div class="clear"></div></div>';
@@ -1104,6 +1165,43 @@ function init_relieve_printlocation() {
                 }
             });
         });
-
     }
+}
+
+function init_vector_upload() {
+    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+        '<i class="fa fa-plus"></i> Add</span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('addvectorfile'),
+        allowedExtensions: ['ai','AI'],
+        action: '/utils/save_itemplatetemplate',
+        template: temp,
+        multiple: false,
+        debug: false,
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success) {
+                $("ul.qq-upload-list").css('display','none');
+                var params = new Array();
+                params.push({name: 'session', value: $("#dbdetailsession").val()});
+                params.push({name: 'newval', value: responseJSON.filename});
+                params.push({name: 'operation', value: 'add'});
+                var url="/dbitems/save_relive_vectorfile";
+                $.post(url, params, function(response){
+                    if (response.errors=='') {
+                        $(".vectorfilemanage").empty().html(response.data.content);
+                        // Init upload
+                        init_relievitemdetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+            } else {
+                $("ul.qq-upload-list").css('display','none');
+            }
+        }
+    });
+
 }

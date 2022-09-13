@@ -82,6 +82,8 @@ $config['item_images_relative']=BASEPATH.'../uploads/items_images/';
 // Custom quote
 $config['upload_customquote'] = BASEPATH.'../uploads/customquote/';
 $config['upload_customquote_relative'] = '/uploads/customquote/';
-
+// AI Template
+$config['item_aitemplate']=BASEPATH.'../uploads/aitemp/';
+$config['item_aitemplate_relative']='/uploads/aitemp/';
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

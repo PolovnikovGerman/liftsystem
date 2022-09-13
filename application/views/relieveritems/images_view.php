@@ -6,7 +6,7 @@
                 <div class="itemmainimagetitle">Main Image:</div>
                 <div class="itemmainimagesrc">
                     <?php if (!empty($item['main_image'])) {?>
-                        <img class="img-responsive" src="<?=$item['main_image']?>" alt="Main Image">
+                        <img class="img-responsive" src="<?=$item['main_image']?>" alt="Main Image"/>
                     <?php } ?>
                 </div>
             </div>
@@ -14,7 +14,7 @@
                 <div class="itemcategoryimagetitle">Category Page:</div>
                 <div class="itemcategoryimagesrc">
                     <?php if (!empty($item['category_image'])) {?>
-                        <img class="img-responsive" src="<?=$item['category_image']?>" alt="Category Image">
+                        <img class="img-responsive" src="<?=$item['category_image']?>" alt="Category Image"/>
                     <?php } ?>
                 </div>
             </div>

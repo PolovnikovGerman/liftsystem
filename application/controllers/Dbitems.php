@@ -1026,6 +1026,50 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function remove_relive_printlocat() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_printloc_delete($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('relieveritems/printlocations_edit',['locations' => $res['inprints']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_relive_vectorfile() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->items_model->itemdetails_vectorfile($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if (empty($res['vector'])) {
+                        $mdata['content'] = '<div id="addvectorfile"></div>';
+                    } else {
+                        $mdata['content'] = '<div class="vendorfile_view" data-link="'.$res['vector'].'"><i class="fa fa-search"></i></div><div class="vendorfile_delete"><i class="fa fa-trash"></i></div>';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function item_relive_savedata() {
         if ($this->isAjax()) {
             $mdata = [];

@@ -1266,11 +1266,11 @@ input.printlocationinpt {
     height: 18px;
     line-height: 18px;
 }
-input.locationname {
+input.locname {
     width: 140px;
 }
 input.locationsize {
-    width: 140px;
+    width: 110px;
 }
 .locationnametitle.editmode {
     width: 140px;
@@ -1298,18 +1298,44 @@ input.locationsize {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.locationdeleterow {
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+}
 .locationname {
     padding-left: 8px;
     width: 160px;
+}
+.locationname.editmode {
+    padding-left: 0;
+    width: 143px;
 }
 .locationplace {
     padding-left: 8px;
     width: 140px;
 }
+.locationplace.editmode {
+    padding-left: 0;
+    width: 113px;
+}
 .locationview {
     text-align: center;
     font-size: 16px;
     font-weight: normal;
+}
+.printimageview, .printimagedel {
+    width: 22px;
+    text-align: center;
+    cursor: pointer;
+}
+/* Button upload */
+.customprint_upload {
+    border: 1px solid #4e4e4e;
+    border-radius: 15%;
+    color: #4e4e4e;
+    font-size: 9px;
+    width: 100%;
 }
 /* Meta */
 .relievers_metasearch {
