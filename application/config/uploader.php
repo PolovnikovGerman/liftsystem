@@ -76,7 +76,9 @@ $config['imprint_images']='/uploads/items_imprint/';
 $config['imprint_images_relative']=BASEPATH.'../uploads/items_imprint/';
 $config['item_images']='/uploads/items_images/';
 $config['item_images_relative']=BASEPATH.'../uploads/items_images/';
-
+// Custom quote
+$config['upload_customquote'] = BASEPATH.'../uploads/customquote/';
+$config['upload_customquote_relative'] = '/uploads/customquote/';
 
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

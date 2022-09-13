@@ -595,3 +595,29 @@ img.leadcalendbtn:hover {
     margin-right: 15px;
     width: 90px;
 }
+/* Attachments */
+.lead_popup_attachs {
+    float: left;
+    width: 192px;
+}
+.leadattachrow {
+    float: left;
+    width: 100%;
+}
+.leadattachrow div {
+    float: left;
+}
+.lead_attach_view {
+    cursor: pointer;
+    width: 18px;
+}
+.lead_attach_srcname {
+    width: 147px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lead_attach_remove {
+    cursor: pointer;
+    width: 18px;
+}
