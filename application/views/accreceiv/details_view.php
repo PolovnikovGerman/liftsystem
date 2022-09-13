@@ -16,8 +16,16 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span></span></div>
         <?php } ?>
-        <div class="accreceiv-owndetails-headcustomer">Customer</div>
-        <div class="accreceiv-owndetails-headtype">Type</div>
+        <?php if ($ownsort=='customer_name') { ?>
+            <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
+        <?php } ?>
+        <?php if ($ownsort=='owntype') { ?>
+            <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
+        <?php } ?>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
@@ -58,8 +66,12 @@
         <?php } else { ?>
             <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order</div>
         <?php } ?>
-        <div class="accreceiv-refunddetails-headcustomer">Customer</div>
-<!--        <div class="accreceiv-refunddetails-headtype">Type</div>-->
+        <?php if ($refundsort=='customer_name') { ?>
+            <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php } else { ?>
+            <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer</div>
+        <?php } ?>
+        <!--        <div class="accreceiv-refunddetails-headtype">Type</div>-->
     </div>
     <div class="accreceiv-refunddetails-body">
         <?php if (count($refunds)==0) { ?>
