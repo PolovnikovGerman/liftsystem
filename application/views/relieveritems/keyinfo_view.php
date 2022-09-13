@@ -45,7 +45,7 @@
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemsize">Size:</div>
-            <div class="itemparamvalue itemsize <?=empty($item['item_size']) ? 'missing_info' : ''?>"><?=$item['item_size']?></div>
+            <div class="itemparamvalue itemsize <?=empty($item['item_size']) ? 'missing_info' : ''?>"><?=htmlspecialchars_decode($item['item_size'])?></div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel itemmaterial">Material:</div>
