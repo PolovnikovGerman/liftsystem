@@ -9,7 +9,7 @@
                 <input class="printlocationinpt locname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=htmlspecialchars($location['item_inprint_location'])?>"/>
             </div>
             <div class="locationplace editmode">
-                <input class="printlocationinpt locationsize" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_size" value="<?=htmlspecialchars($location['item_inprint_size'])?>"/>
+                <input class="printlocationinpt locationsize" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_size" value="<?=$location['item_inprint_size']?>"/>
             </div>
             <div class="locationview">
                 <?php if (!empty($location['item_inprint_view'])) { ?>
