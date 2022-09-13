@@ -905,9 +905,10 @@ Class Items_model extends My_Model
 
     public function get_itemlist_details($item_id, $editmode = 0) {
         $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
-        $this->db->select('i.*,sr.category_name');
+        $this->db->select('i.*,sr.category_name, ss.subcategory_name');
         $this->db->from('sb_items i');
         $this->db->join('sr_categories sr', 'sr.category_id=i.category_id');
+        $this->db->join('sr_subcategories ss','sr.subcategory_id=i.subcategory_id','left');
         $this->db->where('item_id', $item_id);
         $item = $this->db->get()->row_array();
         if (ifset($item, 'item_id',0)==$item_id) {
