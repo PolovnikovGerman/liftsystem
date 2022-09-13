@@ -7605,12 +7605,12 @@ Class Orders_model extends MY_Model
         if ($brand!=='ALL') {
             $this->db->where('brand', $brand);
         }
-        $this->db->order_by($ownsort, $owndirec);
+        if ($ownsort!='owntype') {
+            $this->db->order_by($ownsort, $owndirec);
+        }
         $owndats = $this->db->get()->result_array();
-        // $owndats = [];
         $owns=[];
         foreach ($owndats as $owndat) {
-            // $stype = 'Credit Card';
             $sclass = '';
             if ($owndat['balance_manage']==3) {
                 $stype = $this->accrec_terms;
@@ -7627,6 +7627,19 @@ Class Orders_model extends MY_Model
             $owndat['typeclass'] = $sclass;
             $owns[]=$owndat;
         }
+        if ($ownsort=='owntype') {
+            if ($owndirec=='asc') {
+                usort($owns, function ($item1, $item2) {
+                    return $item2['type'] <=> $item1['type'];
+                });
+            } else {
+                usort($owns, function ($item1, $item2) {
+                    return $item1['type'] <=> $item2['type'];
+                });
+            }
+        }
+        //
+
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
