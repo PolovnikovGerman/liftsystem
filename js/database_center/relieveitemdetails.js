@@ -579,6 +579,7 @@ function init_relievitemdetails_edit() {
         var newval = $(this).val();
         var fldidx = $(this).data('idx');
         var fld = $(this).data('item');
+        var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: fldidx});
         params.push({name: 'fld', value: fld});

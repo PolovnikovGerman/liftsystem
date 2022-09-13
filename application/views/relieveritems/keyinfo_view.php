@@ -40,7 +40,7 @@
         </div>
         <div class="content-row">
             <div class="itemparamlabel subcategory">Sub-Cat 1:</div>
-            <div class="itemparamvalue subcategory <?=empty($item['category']) ? 'missing_info' : ''?>"><?=$item['category']?></div>
+            <div class="itemparamvalue subcategory <?=empty($item['subcategory_name']) ? 'missing_info' : ''?>"><?=$item['subcategory_name']?></div>
         </div>
         <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
