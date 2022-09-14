@@ -2575,8 +2575,8 @@ Class Items_model extends My_Model
                         $inprint['item_inprint_view'] = '';
                     }
                 }
-                $this->db->set('item_inprint_location', $inprint['item_inprint_location']);
-                $this->db->set('item_inprint_size', $inprint['item_inprint_size']);
+                $this->db->set('item_inprint_location', htmlspecialchars_decode($inprint['item_inprint_location']));
+                $this->db->set('item_inprint_size', htmlspecialchars_decode($inprint['item_inprint_size']));
                 $this->db->set('item_inprint_view', $inprint['item_inprint_view']);
                 if ($inprint['item_inprint_id'] > 0) {
                     $this->db->where('item_inprint_id', $inprint['item_inprint_id']);
