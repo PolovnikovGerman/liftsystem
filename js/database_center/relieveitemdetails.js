@@ -22,7 +22,7 @@ function init_relievitemdetails_edit() {
     $(".save_itemdetails").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
-        var url='/dbitems/item_relive_savedata';
+        var url='/sritemdetails/item_relive_savedata';
         $("#loader").show();
         $.post(url, params, function (response) {
             if (response.errors=='') {
@@ -40,7 +40,7 @@ function init_relievitemdetails_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_itemcategory';
+        var url='/sritemdetails/change_relive_itemcategory';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".itemdetails-keydatvalue[data-item='item_number']").empty().html(response.data.item_number);
@@ -55,7 +55,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: 'item_active'});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (parseInt(newval)==1) {
@@ -74,7 +74,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: 'item_template'});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -93,7 +93,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: 'subcategory_id'});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -111,7 +111,7 @@ function init_relievitemdetails_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
-        var url='/dbitems/change_relive_checkbox';
+        var url='/sritemdetails/change_relive_checkbox';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (parseInt(response.data.newval)==1) {
@@ -133,7 +133,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (fldname=='bullet1' || fldname=='bullet2' || fldname=='bullet3' || fldname=='bullet4') {
@@ -156,7 +156,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -176,7 +176,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_similar';
+        var url='/sritemdetails/change_relive_similar';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -190,7 +190,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: 'vendor_id'});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_vendor';
+        var url='/sritemdetails/change_relive_vendor';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -242,7 +242,7 @@ function init_relievitemdetails_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: newval});
-        var url = '/dbitems/relive_vendoritem_check';
+        var url = '/sritemdetails/relive_vendoritem_check';
         $.post(url,params,function(response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -270,7 +270,7 @@ function init_relievitemdetails_edit() {
     $(".itemimagepreview").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
-        var url = '/dbitems/relive_images_edit';
+        var url = '/sritemdetails/relive_images_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#itemImagesModalLabel").empty().html(response.data.header);
@@ -296,7 +296,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'fld', value: fld});
         params.push({name: 'priceidx', value: priceidx});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_vendorprice';
+        var url='/sritemdetails/change_relive_vendorprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -319,7 +319,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_vendoritemprice';
+        var url='/sritemdetails/change_relive_vendoritemprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -342,7 +342,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_vendoritemprice';
+        var url='/sritemdetails/change_relive_vendoritemprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -357,7 +357,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_itempricediscount';
+        var url='/sritemdetails/change_relive_itempricediscount';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -383,7 +383,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'fld', value: fld});
         params.push({name: 'priceidx', value: priceidx});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_itemprice';
+        var url='/sritemdetails/change_relive_itemprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -406,7 +406,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_itempriceval';
+        var url='/sritemdetails/change_relive_itempriceval';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#netpricesarea").empty().html(response.data.netprices);
@@ -429,7 +429,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -449,7 +449,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -464,7 +464,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -481,7 +481,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
         params.push({name: 'shipidx', value: shipidx});
-        var url='/dbitems/change_relive_shipbox';
+        var url='/sritemdetails/change_relive_shipbox';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -496,7 +496,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -512,7 +512,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -524,7 +524,7 @@ function init_relievitemdetails_edit() {
     $(".addprintlocation").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
-        var url='/dbitems/relive_itemprintloc_add';
+        var url='/sritemdetails/relive_itemprintloc_add';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".printlocationsdata").empty().html(response.data.content);
@@ -545,7 +545,7 @@ function init_relievitemdetails_edit() {
             var params = new Array();
             params.push({name: 'session', value: $("#dbdetailsession").val()});
             params.push({name: 'fldidx', value: $(this).data('idx')});
-            var url="/dbitems/remove_relive_printlocat";
+            var url="/sritemdetails/remove_relive_printlocat";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".printlocationsdata").empty().html(response.data.content);
@@ -563,7 +563,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('idx')});
         params.push({name: 'operation', value: 'del'});
-        var url="/dbitems/save_relive_printlocatview";
+        var url="/sritemdetails/save_relive_printlocatview";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".printlocationsdata").empty().html(response.data.content);
@@ -584,7 +584,7 @@ function init_relievitemdetails_edit() {
         params.push({name: 'fldidx', value: fldidx});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/relive_itemprintloc_edit';
+        var url='/sritemdetails/relive_itemprintloc_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -604,7 +604,7 @@ function init_relievitemdetails_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'operation', value: 'del'});
-        var url="/dbitems/save_relive_vectorfile";
+        var url="/sritemdetails/save_relive_vectorfile";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".vectorfilemanage").empty().html(response.data.content);
@@ -621,7 +621,7 @@ function init_relievitemimages_edit() {
     $("#itemImagesModal").find("button.close").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
-        var url="/dbitems/item_images_rebuild";
+        var url="/sritemdetails/item_images_rebuild";
         $.post(url, params, function(response) {
             if (response.errors=='') {
                 $(".relievers_itemimages").empty().html(response.data.content);
@@ -664,7 +664,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'main_image'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -692,7 +692,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'main_image'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -710,7 +710,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: ''});
         params.push({name: 'fld', value: 'main_image'})
-        var url="/dbitems/save_relive_image";
+        var url="/sritemdetails/save_relive_image";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -736,7 +736,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'category_image'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -764,7 +764,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'category_image'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -782,7 +782,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: ''});
         params.push({name: 'fld', value: 'category_image'})
-        var url="/dbitems/save_relive_image";
+        var url="/sritemdetails/save_relive_image";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -807,7 +807,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'top_banner'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -835,7 +835,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fld', value: 'top_banner'})
-                    var url="/dbitems/save_relive_image";
+                    var url="/sritemdetails/save_relive_image";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -853,7 +853,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: ''});
         params.push({name: 'fld', value: 'top_banner'})
-        var url="/dbitems/save_relive_image";
+        var url="/sritemdetails/save_relive_image";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".popupimages_section.itemimagesection").empty().html(response.data.content);
@@ -877,7 +877,7 @@ function init_relievitemimages_edit() {
                     var params = new Array();
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/dbitems/save_relive_addimage";
+                    var url="/sritemdetails/save_relive_addimage";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".addimages-slider").empty().html(response.data.content);
@@ -906,7 +906,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fldidx', value: replid});
-                    var url="/dbitems/save_relive_updaddimage";
+                    var url="/sritemdetails/save_relive_updaddimage";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".addimages-slider").empty().html(response.data.content);
@@ -923,7 +923,7 @@ function init_relievitemimages_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_addimagedel";
+        var url="/sritemdetails/save_relive_addimagedel";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".addimages-slider").empty().html(response.data.content);
@@ -938,7 +938,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_addimagesort";
+        var url="/sritemdetails/save_relive_addimagesort";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".addimages-slider").empty().html(response.data.content);
@@ -953,7 +953,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_addimagetitle";
+        var url="/sritemdetails/save_relive_addimagetitle";
         $.post(url, params, function(response){
             if (response.errors=='') {
             } else {
@@ -979,7 +979,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/dbitems/change_relive_item';
+        var url='/sritemdetails/change_relive_item';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -997,7 +997,7 @@ function init_relievitemimages_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
-        var url='/dbitems/change_relive_checkbox';
+        var url='/sritemdetails/change_relive_checkbox';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (parseInt(response.data.newval)==1) {
@@ -1029,7 +1029,7 @@ function init_relievitemimages_edit() {
                     var params = new Array();
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/dbitems/save_relive_addoptionimage";
+                    var url="/sritemdetails/save_relive_addoptionimage";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".colorimages-slider").empty().html(response.data.content);
@@ -1058,7 +1058,7 @@ function init_relievitemimages_edit() {
                     params.push({name: 'session', value: $("#dbdetailsession").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
                     params.push({name: 'fldidx', value: replid});
-                    var url="/dbitems/save_relive_updoptimage";
+                    var url="/sritemdetails/save_relive_updoptimage";
                     $.post(url, params, function(response){
                         if (response.errors=='') {
                             $(".colorimages-slider").empty().html(response.data.content);
@@ -1076,7 +1076,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_optimagesort";
+        var url="/sritemdetails/save_relive_optimagesort";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".colorimages-slider").empty().html(response.data.content);
@@ -1090,7 +1090,7 @@ function init_relievitemimages_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_optimagedel";
+        var url="/sritemdetails/save_relive_optimagedel";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".colorimages-slider").empty().html(response.data.content);
@@ -1105,7 +1105,7 @@ function init_relievitemimages_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
-        var url="/dbitems/save_relive_optimagetitle";
+        var url="/sritemdetails/save_relive_optimagetitle";
         $.post(url, params, function(response){
             if (response.errors=='') {
             } else {
@@ -1151,7 +1151,7 @@ function init_relieve_printlocation() {
                         params.push({name: 'newval', value: responseJSON.filename});
                         params.push({name: 'fldidx', value: locatidx});
                         params.push({name: 'operation', value: 'add'});
-                        var url="/dbitems/save_relive_printlocatview";
+                        var url="/sritemdetails/save_relive_printlocatview";
                         $.post(url, params, function(response){
                             if (response.errors=='') {
                                 $(".printlocationsdata").empty().html(response.data.content);
@@ -1189,7 +1189,7 @@ function init_vector_upload() {
                 params.push({name: 'session', value: $("#dbdetailsession").val()});
                 params.push({name: 'newval', value: responseJSON.filename});
                 params.push({name: 'operation', value: 'add'});
-                var url="/dbitems/save_relive_vectorfile";
+                var url="/sritemdetails/save_relive_vectorfile";
                 $.post(url, params, function(response){
                     if (response.errors=='') {
                         $(".vectorfilemanage").empty().html(response.data.content);
