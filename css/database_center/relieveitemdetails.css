@@ -543,7 +543,8 @@ input.vendordatainpt {
     height: 22px;
     line-height: 22px;
 }
-input.vendordatainpt.terms {
+/* input.vendordatainpt.terms { */
+input.itemkeyinfoinput.terms {
     padding-left: 2px;
     width: 22px;
 }

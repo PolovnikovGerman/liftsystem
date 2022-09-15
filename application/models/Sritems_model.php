@@ -46,9 +46,10 @@ Class Sritems_model extends My_Model
     public function get_relievers_itemslist($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
         // $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        // $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->select('(vm.size+vm.weigth+vm.material+vm.url+vm.meta_title+vm.meta_description+vm.meta_keywords+vm.attributes+vm.images+vm.itemprices+vm.mainprices) as missings');
         $this->db->from('sb_items i');
-        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
         if (ifset($options, 'category',0)!=0) {
             $this->db->where('i.category_id', $options['category']);
@@ -1529,6 +1530,9 @@ Class Sritems_model extends My_Model
             $this->db->set('item_material', $item['item_material']);
             $this->db->set('item_weigth', floatval($item['item_weigth']));
             $this->db->set('item_size', $item['item_size']);
+            $this->db->set('item_lead_a', $item['item_lead_a']);
+            $this->db->set('item_lead_b', $item['item_lead_b']);
+            $this->db->set('item_lead_c', $item['item_lead_c']);
             $this->db->set('item_keywords', $item['item_keywords']);
             $this->db->set('item_url', $item['item_url']);
             $this->db->set('item_meta_title', $item['item_meta_title']);
