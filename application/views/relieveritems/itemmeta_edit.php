@@ -20,13 +20,13 @@
         <div class="content-row">
             <div class="itemparamlabel metakeywords">Meta Keywords:</div>
             <div class="itemparamvalue metakeywords editmode">
-                <textarea class="inputkeyinfotext metakeywords"><?=$item['item_metakeywords']?></textarea>
+                <textarea class="inputkeyinfotext metakeywords <?=empty($item['item_metakeywords']) ? 'missing_info' : ''?>"><?=$item['item_metakeywords']?></textarea>
             </div>
         </div>
         <div class="content-row">
             <div class="itemparamlabel itemkeywords">INTERNAL SEARCH KEYWORDS:</div>
             <div class="itemparamvalue itemkeywords editmode">
-                <textarea class="inputkeyinfotext itemkeywords"><?=$item['item_keywords']?></textarea>
+                <textarea class="inputkeyinfotext itemkeywords <?=empty($item['item_keywords']) ? 'missing_info' : ''?>"><?=$item['item_keywords']?></textarea>
             </div>
         </div>
     </div>

@@ -68,14 +68,16 @@
     <div class="vendorstandrush">
         <div class="vendorrushtitle">Stand:</div>
         <div class="vendorrushterm editmode">
-            <input class="vendordatainpt terms" data-item="stand_days" value="<?= $venditem['stand_days'] ?>"/>
+            <input class="itemkeyinfoinput terms" data-item="item_lead_a" value="<?=$item['item_lead_a']?>"/>
+            <!-- $venditem['stand_days'] -->
         </div>
         <div class="vendorrushtermtitle">biz days</div>
     </div>
     <div class="vendorrush1rush">
         <div class="vendorrushtitle">Rush 1:</div>
         <div class="vendorrushterm editmode">
-            <input class="vendordatainpt terms" data-item="rush1_days" value="<?= $venditem['rush1_days'] ?>"/>
+            <input class="itemkeyinfoinput terms" data-item="item_lead_b" value="<?=$item['item_lead_b']?>"/>
+            <!-- $venditem['rush1_days'] -->
         </div>
         <div class="vendorrushtermtitle">biz days</div>
         <div class="vendorrushprice editmode">
@@ -86,7 +88,8 @@
     <div class="vendorrush2rush">
         <div class="vendorrushtitle">Rush 2:</div>
         <div class="vendorrushterm editmode">
-            <input class="vendordatainpt terms" data-item="rush2_days" value="<?= $venditem['rush2_days'] ?>"/>
+            <input class="itemkeyinfoinput terms" data-item="item_lead_c" value="<?=$item['item_lead_c']?>"/>
+            <!--  $venditem['rush2_days'] -->
         </div>
         <div class="vendorrushtermtitle">biz days</div>
         <div class="vendorrushprice editmode">
