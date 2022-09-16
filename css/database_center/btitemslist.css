@@ -1,0 +1,292 @@
+.itemlistview  {
+    padding-top: 15px;
+    padding-left: 15px;
+}
+.itemlistview input, .itemlistview select {
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+}
+.itemlistview .content-row {
+    clear: both;
+    width: 100%;
+    max-width: 1300px;
+}
+.itemlistview .pageheader {
+    height: 23px;
+    margin-bottom: 17px;
+}
+.itemlistview .pageheader > div {
+    height: 25px;
+    line-height: 25px;
+}
+.itemlistview .pagetitle {
+    font-size: 18px;
+    font-weight: 600;
+    width: 337px;
+}
+.itemlistview .pageheadfilter {
+    margin-right: 6px;
+}
+.itemlistview select.itemcategoryfilter {
+    width: 141px;
+    padding-left: 4px;
+    height: 25px;
+}
+.itemlistview input.itemnamesearch {
+    height: 25px;
+    padding-left: 8px;
+    width: 253px;
+}
+.itemlistview .itemsearchbtn {
+    background: #FF0000;
+    color: #ffffff;
+    font-size: 14px;
+    float: right!important;
+    height: 25px;
+    width: 25px;
+    line-height: 25px;
+    text-align: center;
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    cursor: pointer;
+}
+.itemlistview .itemclearsearch {
+    background: #FF0000;
+    color: #ffffff;
+    text-align: center;
+    /* opacity: 0.5; */
+    width: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    /* cursor: auto; */
+    cursor: pointer;
+}
+.itemlistview .itemclearsearch.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.itemlistview .totalitems {
+    margin-bottom: 5px;
+    float: right;
+    font-style: italic;
+    padding-right: 18px;
+}
+.itemlistview .pageheadcategories {
+    background: #b5b5b5;
+    border: 1px solid #767676;
+    border-radius: 5px;
+    clear: both;
+    /* height: 48px; */
+    margin-bottom: 17px;
+    max-width: 1294px;
+    padding-left: 10px;
+    padding-top: 12px;
+}
+.itemlistview .pageheadcategories > .content-row {
+    margin-bottom: 8px;
+}
+.itemlistview .btcategorybtn {
+    background: #ffffff;
+    border: 1px solid #858585;
+    color: #000000;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    margin-right: 12px;
+    text-align: center;
+    width: 116px;
+}
+.itemlistview .btcategorybtn.separate {
+    width: 192px;
+}
+.itemlistview .btcategorybtn.separatefirst {
+    width: 192px;
+    margin-left: 104px;
+}
+.itemlistview .btcategorybtn.active {
+    background: #00009d;
+    color: #ffffff;
+}
+.itemlistview .btcategorybtn:hover {
+    background: #5f5fff;
+    color: #ffffff;
+}
+.itemlistview .btcategorybtn.locked {
+    color: #858585;
+    background: #c8c8c8;
+    cursor: default;
+}
+
+.itemlistview .datatablearea {
+    background: #00009d;
+    padding: 10px;
+    width: 1296px;
+}
+.itemlistview .tabledatatotals {
+    width: 530px;
+}
+.itemlistview .tabledatatitle {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+}
+.itemlistview .tabledatataotalvalue {
+    clear: both;
+    color: #ffffff;
+    font-size: 13px;
+    font-style: italic;
+    height: 20px;
+    line-height: 20px;
+}
+.itemlistview .tabledatafilter {
+    margin-right: 19px;
+}
+.itemlistview .tabledatafilter select {
+    height: 21px;
+    padding-left: 4px;
+}
+.itemlistview .itemstatusfilter, .itemlistview .itemvendorfilter, .itemlistview .itemmisinfofilter {
+    width: 130px;
+}
+.itemlistview .tabledataexecute {
+    float: right!important;
+    margin-right: 4px;
+    width: 195px;
+}
+.itemlistview .tabledataexport {
+    color: #ffffff;
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+}
+.itemlistview .tabledataexport i {
+    margin-right: 7px;
+}
+.itemlistview .tabledataheader {
+    background: #000040;
+    clear: both;
+    /* width: 1249px;*/
+}
+.itemlistview .tabledataheader > div {
+    height: 29px;
+    line-height: 29px;
+    color: #ffffff;
+    font-size: 13px;
+    text-align: center;
+}
+.itemlistview .tabledataheader .numberpp {
+    width: 65px;
+}
+.itemlistview .tabledataheader .numberpp img {
+    cursor: pointer;
+}
+.itemlistview .tabledataheader .status {
+    width: 48px;
+}
+.itemlistview .tabledataheader .edit {
+    width: 43px;
+}
+.itemlistview .tabledataheader .subcategory {
+    width: 156px;
+}
+.itemlistview .tabledataheader .itemnumber {
+    width: 82px;
+}
+.itemlistview .tabledataheader .itemname {
+    width: 355px;
+}
+.itemlistview .tabledataheader .suplier {
+    width: 140px;
+}
+.itemlistview .tabledataheader .missinfo {
+    width: 384px;
+}
+.itemlistview .tabledataarea {
+    clear: both;
+    width: 1271px;
+    overflow-y: auto;
+    max-height: 427px;
+}
+.itemlistview .tabledataarea .tabrow {
+    width: 100%;
+}
+.itemlistview .tabledataarea .tabrow div {
+    color: #000000;
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    text-align: center;
+}
+.itemlistview .tabledataarea .tabrow .dataview {
+    border-right: 1px solid #000000;
+    width: 30px;
+}
+.itemlistview .tabledataarea .tabrow .dataview i {
+    cursor: pointer;
+}
+.itemlistview .tabledataarea .tabrow .numberpp {
+    border-right: 1px solid #000000;
+    width: 35px;
+}
+.itemlistview .tabledataarea .tabrow .status {
+    border-right: 1px solid #000000;
+    font-size: 12px;
+    width: 48px;
+}
+.itemlistview .tabledataarea .tabrow div.inactive {
+    color: #cccccc;
+}
+.itemlistview .tabledataarea .tabrow .btitemedit {
+    border-right: 3px solid #000000;
+    width: 42px;
+}
+.itemlistview .tabledataarea .tabrow .btitemedit i {
+    cursor: pointer;
+}
+.itemlistview .tabledataarea .tabrow .subcategory {
+    border-right: 1px solid #000000;
+    width: 156px;
+}
+.itemlistview .tabledataarea .tabrow .itemnumber {
+    border-right: 1px solid #000000;
+    width: 82px;
+}
+.itemlistview .tabledataarea .tabrow .itemname {
+    border-right: 3px solid #000000;
+    text-align: left;
+    width: 354px;
+    padding-left: 5px;
+}
+.itemlistview .tabledataarea .tabrow .suplier {
+    border-right: 1px solid #000000;
+    padding-left: 5px;
+    text-align: left;
+    width: 140px;
+}
+.itemlistview .tabledataarea .tabrow .internal {
+    font-weight: 600;
+}
+.itemlistview .tabledataarea .tabrow .missinfo {
+    width: 362px;
+}
+.itemlistview .tabledataarea .tabrow .missinfo.missing {
+    color: #FF0000;
+}
+.itemlistview .tabledataarea .tabrow .emptydataview {
+    color: #FF0000;
+    width: 100%;
+    text-align: center;
+}
+/* Paginator */
+.tabledatapaginator {
+    float: right!important;
+}
+.pagination a {
+    color: #ffffff!important;
+}

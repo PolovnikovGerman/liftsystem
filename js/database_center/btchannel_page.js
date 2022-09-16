@@ -13,7 +13,7 @@ $(document).ready(function(){
 function show_dbcenter_channelcontent(act) {
     if (act=='btitems') {
         $("#btitemsview").show();
-        init_itemslist_view('BT');
+        init_btitemslist_view();
     } else if (act=='sbpages') {
         $("#sbpagesview").show();
         init_sitecontent('SB');

@@ -10,29 +10,41 @@ Class Items_model extends My_Model
         parent::__construct();
     }
 
-    public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
-        $this->db->select('count(i.item_id) as cnt',FALSE);
+    public function count_searchres($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
         $this->db->from('sb_items i');
-        if ($vendor_id) {
+        if (ifset($options, 'vendor_id','')!=='') {
             $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
-            $this->db->where('v.vendor_item_vendor',$vendor_id);
+            $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
         }
-        if ($brand!=='ALL') {
-            $this->db->where('i.brand', $brand);
+        if ($options['brand']!=='ALL') {
+            $this->db->where('i.brand', $options['brand']);
         }
-        if (!empty($search)) {
-            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+        if (ifset($options, 'search','')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
             $this->db->where($where);
         }
-        if ($itemstatus!=0) {
-            if ($itemstatus==1) {
+        if (ifset($options,'itemstatus',0)!=0) {
+            if ($options['itemstatus']==1) {
                 $this->db->where('i.item_active',1);
             } else {
                 $this->db->where('i.item_active',0);
             }
         }
-        $res=$this->db->get()->row_array();
-        return $res['cnt'];
+        if (ifset($options,'category',0) > 0) {
+            $this->db->where('i.category_id',$options['category']);
+        }
+        if (ifset($options,'missinfo','0')!=0) {
+            $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+            $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings>0');
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return count($res);
     }
 
     public function update_imprint_update($data) {
@@ -589,7 +601,7 @@ Class Items_model extends My_Model
 
     public function get_itemlists($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
+        $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
         $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
@@ -612,6 +624,16 @@ Class Items_model extends My_Model
                 $this->db->where('i.item_active', 0);
             }
         }
+        if (ifset($options,'category_id',0)>0) {
+            $this->db->where('i.category_id', $options['category_id']);
+        }
+        if (ifset($options,'missinfo',0)>0) {
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings > 0');
+            }
+        }
         $order_by = ifset($options, 'order_by','item_id');
         $direc = ifset($options, 'direct','asc');
         $this->db->order_by($order_by, $direc);
@@ -628,22 +650,19 @@ Class Items_model extends My_Model
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {
-            $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
-            $item['category1']=$item['category2']=$item['category3']='';
-            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid');
+            // $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
+            $category = '';
+            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid,c.category_leftnavig as category_name');
             $this->db->from('sb_item_categories ic');
+            $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
             $this->db->where('ic.item_categories_itemid',$item['item_id']);
-            $categ=$this->db->get()->result_array();
-            $i=1;
-            foreach ($categ as $cat) {
-                $item['category'.$i]=$cat['item_categories_categoryid'];
-                $i++;
-                if ($i>3) {
-                    break;
-                }
+            $categ=$this->db->get()->row_array();
+            if (ifset($categ,'item_categories_id',0) > 0) {
+                $category = $categ['category_name'];
             }
-            $item['misinfo_class'] = ($item['missings']==0 ? '' : 'missing');
-            $item['misinfo_name'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
+            $item['category'] = $category;
+            $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
+            $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['misinfo_content'] = '';
             if ($item['missings']>0) {
                 $this->db->select('*');
@@ -652,7 +671,15 @@ Class Items_model extends My_Model
                 $misdata = $this->db->get()->row_array();
                 $item['misinfo_content'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
             }
+            $item['status'] = $item['item_active']==1 ? 'Active' : 'Inactve';
+            $item['rowclass'] = $item['item_active']==1 ? '' : 'inactive';
             $item['numpp'] = $numpp;
+            // Bluetrack
+            $item['vendorclass'] = '';
+            if ($item['vendor_code']=='50000') {
+                $item['vendor']='INTERNAL';
+                $item['vendorclass']='internal';
+            }
             $numpp++;
             $out[] = $item;
         }

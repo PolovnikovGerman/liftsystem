@@ -20,15 +20,27 @@ class Dbitems extends MY_Controller
             $mdata = [];
             $error = '';
             $postdata = $this->input->post();
+            $options = [];
+            $options['brand'] = 'BT';
 
-            $brand = ifset($postdata,'brand','ALL');
-            $search = strtoupper(ifset($postdata, 'search', ''));
-            $vendor = ifset($postdata,'vendor', '');
-            $itemstatus = ifset($postdata, 'itemstatus', 0);
-
-            $totals = $this->items_model->count_searchres($search, $brand, $vendor, $itemstatus);
+            $options['search'] = strtoupper(ifset($postdata, 'search', ''));
+            $options['vendor'] = ifset($postdata,'vendor', '');
+            $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
+            $options['category'] = ifset($postdata,'category', 0);
+            $options['missinfo'] = ifset($postdata,'missinfo',0);
+            $totals = $this->items_model->count_searchres($options);
             $mdata['totals'] = $totals;
-            $mdata['totals_view'] = QTYOutput($totals).' Records';
+            $mdata['totals_view'] = QTYOutput($totals).' items';
+            $category_label = '';
+            if ($options['category'] > 0) {
+                $this->load->model('categories_model');
+                $catdat = $this->categories_model->get_srcategory_data($options['category']);
+                if ($catdat['result']==$this->success_result) {
+                    $categ = $catdat['data'];
+                    $category_label = $categ['category_name'];
+                }
+            }
+            $mdata['category_total'] = $category_label;
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -45,19 +57,22 @@ class Dbitems extends MY_Controller
             $options['offset'] = ($pagenum * $options['limit']);
             $options['order_by'] = ifset($postdata, 'order_by', 'item_number');
             $options['direct'] = ifset($postdata,'direction', 'asc');
-            $options['brand'] = ifset($postdata,'brand','ALL');
+            //$options['brand'] = ifset($postdata,'brand','ALL');
             $options['search'] = strtoupper(ifset($postdata, 'search', ''));
             $options['vendor'] = ifset($postdata,'vendor', '');
             $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
-
+            $options['category_id'] = ifset($postdata, 'category', 0);
+            $options['missinfo'] = ifset($postdata,'missinfo',0);
+            $options['brand'] = 'BT';
             $res = $this->items_model->get_itemlists($options);
-            $this->load->model('categories_model');
+            // $this->load->model('categories_model');
             $pageoptions = [
                 'datas' => $res,
-                'categories' => $this->categories_model->get_categories_list(),
-                'brand' => $options['brand'],
+                // 'categories' => $this->categories_model->get_categories_list(),
+                'brand' => 'BT',
             ];
-            $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            // $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -302,7 +317,7 @@ class Dbitems extends MY_Controller
                 $session_id = uniq_link('15');
                 usersession($session_id, $data);
                 $this->load->model('categories_model');
-                $categories = $this->categories_model->get_reliver_categories();
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
                 $header_options = [
                     'item' => $data['item'],
                     'session_id' => $session_id,

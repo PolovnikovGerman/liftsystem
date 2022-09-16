@@ -183,6 +183,9 @@ Class Categories_model extends MY_Model
     public function get_reliver_categories($options=[]) {
         $this->db->select('*');
         $this->db->from('sr_categories');
+        if (isset($options['brand'])) {
+            $this->db->where('brand', $options['brand']);
+        }
         $this->db->order_by('category_order');
         $res = $this->db->get()->result_array();
         return $res;
