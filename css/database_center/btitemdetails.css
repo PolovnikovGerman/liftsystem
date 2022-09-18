@@ -69,7 +69,7 @@
 }
 .itemdetails-namearea {
     margin-left: 8px;
-    width: 415px;
+    width: 403px;
 }
 .itemdetails-namearea .itemdetails-keydatvalue {
     width: 384px;
@@ -91,15 +91,15 @@ select.categoryitemselect {
     width: 230px;
 }
 .itemdetails-itemnumarea {
-    width: 115px;
+    width: 123px;
 }
 .itemdetails-itemnumarea .itemdetails-keydatvalue {
     padding-left: 0;
     text-align: center;
-    width: 82px;
+    width: 112px;
 }
 .itemdetails-itemcategory {
-    width: 279px;
+    width: 268px;
 }
 .itemdetails-itemcategory .itemdetails-keydatvalue {
     width: 248px;
@@ -193,8 +193,9 @@ select.categoryitemselect {
     color: #ffffff;
     font-size: 15px;
     font-weight: 600;
-    text-align: center;
+    text-align: left;
     text-transform: uppercase;
+    padding-left: 7px;
     width: 100%;
 }
 .sectionbody {
@@ -314,10 +315,10 @@ itemparamlabel.tags {
     width: 71px;
 }
 .itemparamvalue.subcategory {
-    width: 167px;
+    width: 158px;
 }
 select.itemsubcategory {
-    width: 167px;
+    width: 158px;
 }
 .itemparamlabel.itemsize, .itemparamlabel.itemmaterial {
     padding-right: 4px;
@@ -333,8 +334,10 @@ input.itemsize, input.itemmaterial {
     width: 70px;
 }
 .itemparamvalue.itemdescrip {
-    height: 70px;
+    height: 74px;
     width: 232px;
+    overflow: hidden;
+    line-height: 18px;
 }
 textarea.inputkeyinfotext {
     padding-left: 3px;
@@ -395,6 +398,9 @@ textarea.itemdescription {
 }
 .itemparamvalue.similarname {
     width: 215px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 select.similaritems {
     height: 22px;
@@ -588,6 +594,7 @@ input.vendorpriceinpt {
     height: 20px;
     line-height: 20px;
     width: 100%;
+    font-size: 11px;
 }
 .vendorextrapricevalue.editmode {
     border: none;
@@ -972,6 +979,7 @@ select.discountselect::-ms-expand {
     float: right!important;
     margin-right: 10px;
     font-size: 18px;
+    cursor: pointer;
 }
 .itemotherimages {
     margin: 0 0 8px 8px;
@@ -1058,7 +1066,7 @@ select.itemdetailsoptions.missing_info {
     margin-top: 2px;
 }
 .itemoptioncheck i {
-    color: #000048;
+    color: #346af5;
     font-size: 16px;
     cursor: pointer;
 }
@@ -1264,6 +1272,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 .itemparamlabel.itemurl {
     margin-left: 136px;
@@ -1278,6 +1287,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 .itemparamvalue.itemkeywords {
     clear: both;
@@ -1285,6 +1295,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 input.metatitle {
     width: 404px;
@@ -1299,7 +1310,7 @@ input.metaurl {
 
 /* Shipping */
 .itemshippingarea {
-    background: #000048;
+    background: #346af5;
     position: relative;
     top: -215px;
     left: 215px;

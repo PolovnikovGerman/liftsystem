@@ -15,19 +15,20 @@ class Itemcolors_model extends My_Model
         $this->db->from('sb_item_colors ci');
         $this->db->where('ci.item_color_itemid',$item_id);
         $result = $this->db->get()->result_array();
-        if ($edit==0) {
-            return $result;
-        } else {
-            $out_colors=array();
-            for ($i=0;$i<$this->config->item('item_colors');$i++) {
-                if (isset ($result[$i]['item_color_id'])) {
-                    $out_colors[$i]=array('item_color_id'=>$result[$i]['item_color_id'],'item_color'=>$result[$i]['item_color']);
-                } else {
-                    $out_colors[$i]=array('item_color_id'=>($i)*(-1),'item_color'=>'');
-                }
-            }
-            return $out_colors;
-        }
+        return $result;
+//        if ($edit==0) {
+//            return $result;
+//        } else {
+//            $out_colors=array();
+//            for ($i=0;$i<$this->config->item('item_colors');$i++) {
+//                if (isset ($result[$i]['item_color_id'])) {
+//                    $out_colors[$i]=array('item_color_id'=>$result[$i]['item_color_id'],'item_color'=>$result[$i]['item_color']);
+//                } else {
+//                    $out_colors[$i]=array('item_color_id'=>($i)*(-1),'item_color'=>'');
+//                }
+//            }
+//            return $out_colors;
+//        }
     }
 
 //    function get_editcolors_item($item_id,$limit) {

@@ -39,7 +39,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img src="/img/dbitems/close_item_popup.png"></span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img src="/img/vendors/close_popup.png"></span></button>
                 <h4 class="modal-title" id="itemDetailsModalLabel">New message</h4>
             </div>
             <div class="modal-body" style="float: left;"></div>

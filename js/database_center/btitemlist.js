@@ -86,6 +86,7 @@ function pageBTItemsListCallback(page_index) {
             $('#btitemspagenum').val(page_index);
             // init_itemlist_manage(brand);
             init_itemlist_content();
+            jQuery.balloon.init();
         } else {
             show_error(response);
         }

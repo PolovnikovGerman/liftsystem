@@ -25,16 +25,6 @@
             <div class="itemotherimagesarea"><?=$otherimages?></div>
         </div>
         <div class="content-row">
-            <div class="specbannertitle">Special Top Banner:</div>
-            <div class="specbannersrc">
-                <?php if (empty($item['top_banner'])) { ?>
-                    no image
-                <?php } else { ?>
-                    <img class="img-responsive" src="<?=$item['top_banner']?>" alt="top banner"/>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="content-row">
             <div class="itemimages_separator">&nbsp;</div>
         </div>
         <div class="content-row">
@@ -42,10 +32,10 @@
             <div class="itemoptionsvalue">
                 <select class="itemdetailsoptions <?=empty($item['options']) ? 'missing_info' : ''?>" disabled>
                     <option value=""></option>
-                    <option value="Colors" <?=$item['options']=='Colors' ? 'selected="selected"' : ''?>>Colors</option>
-                    <option value="Flavors" <?=$item['options']=='Flavors' ? 'selected="selected"' : ''?>>Flavors</option>
-                    <option value="Sizes" <?=$item['options']=='Sizes' ? 'selected="selected"' : ''?>>Sizes</option>
-                    <option value="Shapes" <?=$item['options']=='Shapes' ? 'selected="selected"' : ''?>>Shapes</option>
+                    <option value="colors" <?=$item['options']=='colors' ? 'selected="selected"' : ''?>>Colors</option>
+                    <option value="flavors" <?=$item['options']=='flavors' ? 'selected="selected"' : ''?>>Flavors</option>
+                    <option value="sizes" <?=$item['options']=='sizes' ? 'selected="selected"' : ''?>>Sizes</option>
+                    <option value="shapes" <?=$item['options']=='shapes' ? 'selected="selected"' : ''?>>Shapes</option>
                 </select>
             </div>
             <div class="itemoptioncheck">

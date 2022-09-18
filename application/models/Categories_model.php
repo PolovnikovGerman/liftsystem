@@ -186,6 +186,9 @@ Class Categories_model extends MY_Model
         if (isset($options['brand'])) {
             $this->db->where('brand', $options['brand']);
         }
+        if (isset($options['active'])) {
+            $this->db->where('category_active', $options['active']);
+        }
         $this->db->order_by('category_order');
         $res = $this->db->get()->result_array();
         return $res;
