@@ -196,7 +196,20 @@ select.categoryitemselect {
     text-align: left;
     text-transform: uppercase;
     padding-left: 7px;
-    width: 100%;
+    /* width: 100%; */
+}
+.actionbtn {
+    border-radius: 5px;
+    padding: 0 8px;
+    background: #5684fc;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12.89px;
+    float: right!important;
+    margin-right: 11px;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 4px;
 }
 .sectionbody {
     padding: 8px 8px 0 8px;
@@ -807,7 +820,7 @@ select.discountselect::-ms-expand {
     text-align: center;
     width: 35px;
 }
-.itemprice_extraprice.editmode {
+.itemprice_extraprice.editmode, .itemprice_extrasale.editmode {
     border: none;
 }
 .itemprice_extraprice, .itemprice_extrasale {
@@ -859,10 +872,10 @@ select.discountselect::-ms-expand {
     text-align: center;
     width: 35px;
 }
-.itemprice_pantoneprice.editmode {
+.itemprice_pantoneprice.editmode, .itemprice_pantonesale.editmode {
     border: none;
 }
-.itemprice_rushprice.editmode {
+.itemprice_rushprice.editmode, .itemprice_rushsale.editmode {
     border: none;
 }
 .itemprice_pantoneprice, .itemprice_pantonesale {

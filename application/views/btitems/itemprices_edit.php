@@ -65,7 +65,7 @@
                 <div class="itemprice_extraprice editmode">
                     <input type="text" class="itempriceinpt" data-item="item_price_print" value="<?=$item['item_price_print']?>"/>
                 </div>
-                <div class="itemprice_extrasale" data-item="item_sale_print">
+                <div class="itemprice_extrasale editmode" data-item="item_sale_print">
                     <input type="text" class="itempriceinpt" data-item="item_sale_print" value="<?=$item['item_sale_print']?>"/>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                 <div class="itemprice_extraprice editmode">
                     <input type="text" class="itempriceinpt" data-item="item_price_setup" value="<?=$item['item_price_setup']?>"/>
                 </div>
-                <div class="itemprice_extrasale" data-item="item_sale_setup">
+                <div class="itemprice_extrasale editmode" data-item="item_sale_setup">
                     <input type="text" class="itempriceinpt" data-item="item_sale_setup" value="<?=$item['item_sale_setup']?>"/>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                 <div class="itemprice_extraprice editmode">
                     <input type="text" class="itempriceinpt" data-item="item_price_repeat" value="<?=$item['item_price_repeat']?>"/>
                 </div>
-                <div class="itemprice_extrasale" data-item="item_sale_repeat">
+                <div class="itemprice_extrasale editmode" data-item="item_sale_repeat">
                     <input type="text" class="itempriceinpt" data-item="item_sale_repeat" value="<?=$item['item_sale_repeat']?>"/>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                 <div class="itemprice_rushprice editmode">
                     <input type="text" class="itempriceinpt" data-item="item_price_rush1" value="<?=$item['item_price_rush1']?>"/>
                 </div>
-                <div class="itemprice_rushsale" data-item="item_sale_rush1">
+                <div class="itemprice_rushsale editmode" data-item="item_sale_rush1">
                     <input type="text" class="itempriceinpt" data-item="item_sale_rush1" value="<?=$item['item_sale_rush1']?>"/>
                 </div>
             </div>
@@ -103,7 +103,7 @@
                 <div class="itemprice_rushprice editmode">
                     <input type="text" class="itempriceinpt" data-item="item_price_rush2" value="<?=$item['item_price_rush2']?>"/>
                 </div>
-                <div class="itemprice_rushsale" data-item="item_sale_rush2">
+                <div class="itemprice_rushsale editmode" data-item="item_sale_rush2">
                     <input type="text" class="itempriceinpt" data-item="item_sale_rush2" value="<?=$item['item_sale_rush2']?>"/>
                 </div>
             </div>
@@ -113,7 +113,7 @@
             <div class="itemprice_pantoneprice editmode">
                 <input type="text" class="itempriceinpt" data-item="item_price_pantone" value="<?=$item['item_price_pantone']?>"/>
             </div>
-            <div class="itemprice_pantonesale" data-item="item_sale_pantone">
+            <div class="itemprice_pantonesale editmode" data-item="item_sale_pantone">
                 <input type="text" class="itempriceinpt" data-item="item_sale_pantone" value="<?=$item['item_sale_pantone']?>"/>
             </div>
         </div>

@@ -20,8 +20,26 @@ function init_btitemdetails_view(item) {
             if (response.errors=='') {
                 $("#itemDetailsModalLabel").empty().html(response.data.header);
                 $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
-                // init_relievitemdetails_edit();
+                init_btitemdetails_edit();
             } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_btitemdetails_edit() {
+    $(".save_itemdetails").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url='/btitemdetails/save_itemdetails';
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#itemDetailsModal").modal('hide');
+                init_btitemslist_view();
+            } else {
+                $("#loader").hide();
                 show_error(response);
             }
         },'json');

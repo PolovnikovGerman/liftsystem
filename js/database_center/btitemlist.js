@@ -1,4 +1,4 @@
-function init_btitemslist_view(brand) {
+function init_btitemslist_view() {
     initItemsListPagination();
     $(".itemlist-tablehead").find(".sortable").unbind('click').click(function () {
         var fld=$(this).data('sortcell');
@@ -41,10 +41,6 @@ function init_btitemslist_view(brand) {
     });
     $(".itemmisinfofilter").unbind('change').change(function(){
         search_itemlists();
-    });
-
-    $(".listaction").unbind('click').click(function(){
-        edit_itemlist(0, brand);
     });
 }
 

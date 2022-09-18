@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dbitemdetails extends MY_Controller
+class Btitemdetails extends MY_Controller
 {
     private $session_error = 'Edit session lost. Please, reload page';
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('dbitemdetails_model');
+        $this->load->model('btitemdetails_model');
     }
 
     // Edit parameter
@@ -20,7 +20,7 @@ class Dbitemdetails extends MY_Controller
             $session_id=ifset($postdata, 'session_id','defsess');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->change_parameter($session_data, $postdata, $session_id);
+                $res = $this->btitemdetails_model->change_parameter($session_data, $postdata, $session_id);
                 $error=$res['msg'];
                 $mdata['oldvalue'] = $res['oldvalue'];
                 if ($res['result']==$this->success_result) {
@@ -374,7 +374,7 @@ class Dbitemdetails extends MY_Controller
             $session_id = ifset($postdata, 'session_id', 'defsess');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->save_itemdetails($session_data, $session_id, $this->USR_ID, $this->USR_ROLE);
+                $res = $this->btitemdetails_model->save_itemdetails($session_data, $session_id, $this->USR_ID, $this->USR_ROLE);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';

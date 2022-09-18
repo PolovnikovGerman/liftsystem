@@ -2,7 +2,7 @@
 
 
 
-class Dbitemdetails_model extends MY_Model
+class Btitemdetails_model extends MY_Model
 {
     function __construct()
     {
