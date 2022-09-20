@@ -13,7 +13,6 @@
             <?php if ($numpp==10) { ?>
                 <?php break;?>
             <?php } ?>
-            <div class="content-row">
         <?php } ?>
     <?php } ?>
     <?php if ($imgcnt > 0 && $numpp%5!==0) { ?>
