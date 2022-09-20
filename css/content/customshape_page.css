@@ -560,7 +560,7 @@ textarea.custom_casestudyexpand {
 }
 .custom_upload {
     clear: both;
-    background: url("/img/browse.png") no-repeat scroll 0 0 transparent !important;
+    background: url("/img/page_view/browse.png") no-repeat scroll 0 0 transparent !important;
     clear: both;
     height: 80px !important;
     width: 120px !important;

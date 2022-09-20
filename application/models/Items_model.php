@@ -691,6 +691,8 @@ Class Items_model extends My_Model
         $item = [
             'item_id' => -1,
             'item_number' => '',
+            'item_numberone' => '',
+            'item_numbersec' => '',
             'item_name' => '',
             'item_active' => 1,
             'item_new' => 0,
@@ -894,13 +896,22 @@ Class Items_model extends My_Model
             ];
         }
         $colors = [];
-        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
-            $idx = ($i + 1) * (-1);
-            $colors[] = [
-                'item_color_id' => $idx,
-                'item_color' => '',
+//        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
+//            $idx = ($i + 1) * (-1);
+//            $colors[] = [
+//                'item_color_id' => $idx,
+//                'item_color' => '',
+//            ];
+//        }
+        $categor = [];
+        for ($i=0; $i<3; $i++) {
+            $categor[] = [
+                'item_categories_id' => $i*(-1),
+                'category_id' => '',
+                'category_name' => '',
             ];
         }
+
         $shipboxes = [];
         for ($i=0; $i<3; $i++) {
             $shipboxes[] = [
@@ -923,6 +934,7 @@ Class Items_model extends My_Model
             'prices' => $prices,
             'similar' => $similar,
             'shipboxes' => $shipboxes,
+            'categories' => $categor,
             'deleted' => [],
         ];
         // $out['data'] = $data;
@@ -946,6 +958,7 @@ Class Items_model extends My_Model
             $this->load->model('similars_model');
             $this->load->model('itemcolors_model');
             $this->load->model('shipping_model');
+            $this->load->model('categories_model');
             // Discounts
             $def_discount = 0;
 //            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
@@ -1007,6 +1020,7 @@ Class Items_model extends My_Model
                     ];
                 }
             }
+            $categories = $this->categories_model->get_categories_list();
             // Colors
             $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
             $colors = [];
@@ -1016,6 +1030,7 @@ Class Items_model extends My_Model
                     'item_color_id' => $itmcolor['item_color_id'],
                     'item_color' => $itmcolor['item_color'],
                     'item_color_image' => $itmcolor['item_color_image'],
+                    'item_color_order' => $numpp+1,
                 ];
                 $numpp++;
             }
@@ -1161,7 +1176,7 @@ Class Items_model extends My_Model
                     'shipbox' => $price['shipbox'],
                     'shipweight' => $price['shipweight'],
                     'profit_class' => $profitclass,
-                    'profit_perc' => (empty($profitperc) ? $profitperc : $profitperc.'%'),
+                    'profit_perc' => $profitperc,
                 ];
                 $numpp++;
                 if ($numpp > $pricesmax) {

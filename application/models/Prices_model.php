@@ -591,32 +591,32 @@ Class Prices_model extends My_Model
             $res['profit_rush1_class']=$res['profit_rush1_perc']=$res['profit_rush2_class']=$res['profit_rush2_perc']=$res['profit_pantone_class']=$res['profit_pantone_perc']='';
             if (floatval($res['item_sale_print'])!=0 && $res['profit_print']!==NULL) {
                 $profit_perc = round(($res['profit_print']/$res['item_sale_print'])*100,1);
-                $res['profit_print_perc'] =$profit_perc.'%';
+                $res['profit_print_perc'] =$profit_perc;
                 $res['profit_print_class'] = profit_bgclass($profit_perc);
             }
             if (floatval($res['item_sale_setup'])!=0 && $res['profit_setup']!==NULL) {
                 $profit_perc = round($res['profit_setup']/$res['item_sale_setup']*100,1);
-                $res['profit_setup_perc'] = $profit_perc.'%';
+                $res['profit_setup_perc'] = $profit_perc;
                 $res['profit_setup_class'] = profit_bgclass($profit_perc);
             }
             if (floatval($res['item_sale_repeat'])!=0 && $res['profit_repeat']!==NULL) {
                 $profit_perc = round($res['profit_repeat']/$res['item_sale_repeat']*100,1);
-                $res['profit_repeat_perc'] = $profit_perc.'%';
+                $res['profit_repeat_perc'] = $profit_perc;
                 $res['profit_repeat_class'] = profit_bgclass($profit_perc);
             }
             if (floatval($res['item_sale_rush1'])!=0 && $res['profit_rush1']!==NULL) {
                 $profit_perc = round($res['profit_rush1']/$res['item_sale_rush1']*100,1);
-                $res['profit_rush1_perc'] = $profit_perc.'%';
+                $res['profit_rush1_perc'] = $profit_perc;
                 $res['profit_rush1_class'] = profit_bgclass($profit_perc);
             }
             if (floatval($res['item_sale_rush2'])!=0 && $res['profit_rush2']!==NULL) {
                 $profit_perc = round($res['profit_rush2']/$res['item_sale_rush2']*100,1);
-                $res['profit_rush2_perc'] = $profit_perc.'%';
+                $res['profit_rush2_perc'] = $profit_perc;
                 $res['profit_rush2_class'] = profit_bgclass($profit_perc);
             }
             if (floatval($res['item_sale_pantone'])!=0 && $res['profit_pantone']!==NULL) {
                 $profit_perc = round($res['profit_pantone']/$res['item_sale_pantone']*100,1);
-                $res['profit_pantone_perc'] = $profit_perc.'%';
+                $res['profit_pantone_perc'] = $profit_perc;
                 $res['profit_pantone_class'] = profit_bgclass($profit_perc);
             }
         }

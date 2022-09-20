@@ -1669,8 +1669,8 @@ Class Sritems_model extends My_Model
             }
             // Add Images
             $images = $sessiondata['images'];
+            $numpp=1;
             foreach ($images as $image) {
-                $numpp=1;
                 if (stripos($image['item_img_name'], $preload_sh)!==FALSE) {
                     $img_src = str_replace($preload_sh, '', $image['item_img_name']);
                     $cpres = @copy($preload_fl.$img_src, $itemimg_fl.$img_src);
@@ -1680,9 +1680,11 @@ Class Sritems_model extends My_Model
                         $image['item_img_name'] = '';
                     }
                 }
-                if (empty($image['item_img_name']) && $image['item_img_id'] > 0) {
-                    $this->db->where('item_img_id', $image['item_img_id']);
-                    $this->db->delete('sb_item_images');
+                if (empty($image['item_img_name'])) {
+                    if ($image['item_img_id'] > 0) {
+                        $this->db->where('item_img_id', $image['item_img_id']);
+                        $this->db->delete('sb_item_images');
+                    }
                 } else {
                     $this->db->set('item_img_name', $image['item_img_name']);
                     $this->db->set('item_img_label', $image['item_img_label']);
@@ -1893,6 +1895,9 @@ Class Sritems_model extends My_Model
                     $this->db->delete('sb_item_inprints');
                 }
             }
+        }
+        if ($out['result']==$this->success_result) {
+            usersession($session, null);
         }
         return $out;
     }

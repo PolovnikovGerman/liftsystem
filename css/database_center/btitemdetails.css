@@ -80,11 +80,27 @@ input.itemname {
     line-height: 30px!important;
     width: 374px;
 }
+input.itemnumberone {
+    border: none!important;
+    height: 30px!important;
+    line-height: 30px!important;
+    width: 32px;
+    font-size: 19px;
+}
+input.itemnumber {
+    border: none!important;
+    height: 30px!important;
+    line-height: 30px!important;
+    width: 64px;
+    text-transform: uppercase;
+    font-size: 19px;
+}
 select.categoryitemselect {
     border: none!important;
     background: #ffffff;
-    height: 27px;
-    line-height: 27px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 24px;
     -webkit-appearance: none;
     appearance: none;
     padding-left: 6px;
@@ -1684,6 +1700,11 @@ select.imageorderinpt {
 }
 .optionimagesection .itemoptionchecklabel {
     margin-top: 3px;
+    margin-right: 14px;
+}
+#addoptiontxt {
+    margin-top: 3px;
+    cursor: pointer;
 }
 .colorimages-slider {
     padding: 0 40px;
@@ -1707,4 +1728,9 @@ select.optimageorderinpt {
 .itemimagecaption.optimage {
     margin-top: 0;
     margin-bottom: 7px;
+}
+/* Color Options */
+.optionstextarea {
+    width: 180px;
+    margin-right: 10px;
 }

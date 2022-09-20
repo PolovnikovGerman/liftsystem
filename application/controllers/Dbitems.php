@@ -112,7 +112,7 @@ class Dbitems extends MY_Controller
             $error = 'Item Not Send';
             $postdata = $this->input->post();
             $item_id = ifset($postdata, 'item_id', -1);
-            $brand = ifset($postdata,'brand', 'SB');
+            $brand = ifset($postdata,'brand', 'BT');
             $editmode = ifset($postdata,'editmode', 0);
             $this->load->model('items_model');
             if ($item_id>=0) {

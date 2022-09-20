@@ -11,210 +11,408 @@ class Btitemdetails extends MY_Controller
         $this->load->model('btitemdetails_model');
     }
 
-    // Edit parameter
-    public function change_parameter() {
+    // Change item category
+    public function change_item_category() {
         if ($this->isAjax()) {
-            $postdata=$this->input->post();
-            $error=$this->session_error;
             $mdata=[];
-            $session_id=ifset($postdata, 'session_id','defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->btitemdetails_model->change_parameter($session_data, $postdata, $session_id);
-                $error=$res['msg'];
-                $mdata['oldvalue'] = $res['oldvalue'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    if ($res['entity']=='item') {
-                        if ($res['fld']=='item_sale' || $res['fld']=='item_new') {
-                            if ($res['newval']==0) {
-                                $mdata['newcheck'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
-                            } else {
-                                $mdata['newcheck'] = '<i class="fa fa-square" aria-hidden="true"></i>';
-                            }
-                        }  elseif ($res['fld']=='sellblank' || $res['fld']=='sellcolor' || $res['fld']=='sellcolors') {
-                            if ($res['newval']==0) {
-                                $mdata['newcheck'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
-                            } else {
-                                $mdata['newcheck'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
-                            }
-                        } elseif ($res['fld']=='printlocat_example_img') {
-                            $session_data = usersession($session_id);
-                            $mdata['content'] = $this->load->view('dbitemdetails/advimage_edit', ['item' => $session_data['item']], TRUE);
-                        }
-                    }
-//                    if ($res['entity']=='item_images') {
-//                        // Build new slider
-//                        $img_options=array(
-//                            'images'=>$res['images'],
-//                            'pos'=>0,
-//                            'edit'=>0,
-//                            'limit'=>$this->config->item('slider_images'),
-//                            'video'=> '', // $video,
-//                            'audio'=> '', // $audio,
-//                            'faces'=> '', // $faces,
-//                        );
-//                        $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
-//                    } elseif ($res['entity']=='item_prices') {
-//                        $profit = $res['profit'];
-//                        $mdata['profitdat'] = $this->load->view('itemdetails/stressball_profit_view', array('prices' => $profit, 'price_types' => $this->config->item('price_types')), TRUE);
-//                        $mdata['research']=$res['research'];
-//                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function searchvendor() {
-        $vend_name=$this->input->get('q');
-        $this->load->model('vendors_model');
-        $get_dat=$this->vendors_model->search_vendors($vend_name);
-        echo json_encode($get_dat);
-    }
-
-    public function vendor_check() {
-        if ($this->isAjax()) {
-            $postdata=$this->input->post();
-            $error=$this->session_error;
-            $mdata=[];
-            $session_id=ifset($postdata, 'session_id','defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->check_vendor($postdata, $session_data, $session_id);
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_category($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['showvendor']=$res['newvendor'];
-                    $session_data = usersession($session_id);
-                    $item = $session_data['item'];
-                    $vendor = $session_data['vendor_item'];
-                    $vendor_price = $session_data['vendor_price'];
-                    $mdata['vendor_id']=$vendor['vendor_item_vendor'];
-                    if ($res['newvendor']==1) {
-                        // Vendor data
-                        $vendor_options = [
-                            'vendor_item' => $vendor,
-                            'vendor_price' => $vendor_price,
-                            'item' => $item,
-                            'editmode' => 1,
-                        ];
-                        $mdata['vendor_view'] = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
-                    }
+                    $mdata['item_numberone'] = $res['item_numberone'];
+                    $mdata['item_numbersec'] = $res['item_numbersec'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
-
-    public function search_vendor_item() {
-        $vend_it_num=$this->input->get('q');
-        $vendor_id=$this->input->get('vendor_id');
-        $this->load->model('vendors_model');
-        $get_dat=$this->vendors_model->search_vendor_items($vend_it_num, $vendor_id);
-        echo json_encode($get_dat);
+    // Item Status
+    public function change_item_status() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_itemstatus($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['item_active'] = $res['item_active'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
-
+    // Item parameter
+    public function change_btitem() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_iteminfo($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['item_active'] = $res['item_active'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Item category
+    public function change_item_subcategory() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_subcategory($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Item checkbox value
+    public function change_btitem_checkbox() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_itemcheck($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['newval'] = $res['newval'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Similar
+    public function change_btsimilar() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_similar($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Vendor
+    public function change_btvendor() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_vendor($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data = $res['data'];
+                    $vendor = $data['vendor'];
+                    $mdata = $this->_prepare_price_response($session);
+                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
+                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
+                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
+                    $mdata['po_note'] = $vendor['po_note'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Vendor item
     public function vendoritem_check() {
         if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
             $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->check_vendor_item($postdata, $session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    $session_data = usersession($session_id);
-                    $item = $session_data['item'];
-                    $vendor = $session_data['vendor_item'];
-                    $vendor_price = $session_data['vendor_price'];
-                    $mdata['vendor_id']=$vendor['vendor_item_vendor'];
-                    // Vendor data
-                    $vendor_options = [
-                        'vendor_item' => $vendor,
-                        'vendor_price' => $vendor_price,
-                        'item' => $item,
-                        'editmode' => 1,
-                    ];
-                    $mdata['vendor_view'] = $this->load->view('dbitemdetails/vendor_view', $vendor_options, TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata,$error);
-        }
-        show_404();
-    }
-
-    public function change_price() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->change_price($postdata, $session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    $session_data = usersession($session_id);
-                    $prices = $session_data['prices'];
-                    $item = $session_data['item'];
-                    $mdata['profit_view'] = $this->load->view('dbitemdetails/price_profit_view', ['prices' => $prices, 'item' => $item], TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function inprint_prepare() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->get_inprint_area($postdata, $session_data, $session_id);
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_check_vendoritem($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $imprsession_id = 'imprint'.uniq_link(10);
-                    usersession($imprsession_id, ['imprint'=>$res['inprint']]);
-                    $options = [
-                        'session' => $imprsession_id,
-                        'imprint' => $res['inprint'],
+                    $mdata = $this->_prepare_price_response($session);
+                    $sessiondata=usersession($session);
+                    $vendor = $sessiondata['vendor'];
+                    $vendor_item = $sessiondata['vendor_item'];
+                    $mdata['vendor_id'] = $vendor['vendor_id'];
+                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
+                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
+                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
+                    $mdata['po_note'] = $vendor['po_note'];
+                    $mdata['vendor_item_number'] = $vendor_item['vendor_item_number'];
+                    $mdata['vendor_item_name'] = $vendor_item['vendor_item_name'];
+                    $vendor_price = $sessiondata['vendor_price'];
+                    $item = $sessiondata['item'];
+                    $vprice_options = [
+                        'vendor_prices' => $vendor_price,
+                        'venditem' => $vendor_item,
+                        'item' => $item,
                     ];
-                    $mdata['content'] = $this->load->view('dbitemdetails/inprintlocation_add_view', $options, TRUE);
+                    $mdata['vendor_prices'] = $this->load->view('relieveritems/vendorprices_edit',$vprice_options,TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
-
-    public function change_imprintlocation() {
+    // Open images for edit
+    public function btitem_images_edit() {
         if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
             $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $imprsession = ifset($postdata,'imprsession', 'defsess');
-            $imprsession_data = usersession($imprsession);
-            if (!empty($imprsession_data)) {
-                $res = $this->dbitemdetails_model->change_imprintlocation($postdata, $imprsession_data, $imprsession);
-                $error=$res['msg'];
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $error = '';
+                $item = $sessiondata['item'];
+                $main_view = $this->load->view('btitems/popup_mainimage_edit',['item' => $item], TRUE);
+                $images = $sessiondata['images'];
+                $cntimages = count($images);
+                $addslider = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images,'cntimages' => $cntimages], TRUE);
+                $add_view = $this->load->view('btitems/popup_addimage_edit',['slider' => $addslider], TRUE);
+                $colors = $sessiondata['colors'];
+                if ($item['option_images']==1) {
+                    $colorslider = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                } else {
+                    $colorslider = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                }
+                $optionview = $this->load->view('btitems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
+                $mdata['header'] = 'IMAGES & OPTIONS:';
+                $options = [
+                    'main_view' => $main_view,
+                    'add_view' => $add_view,
+                    'options_view' => $optionview,
+                ];
+                $mdata['content'] = $this->load->view('btitems/popup_image_edit',$options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Save Item Images
+    public function save_btimage() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_iteminfo($sessiondata, $postdata, $session);
+                $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error='';
-                    if ($res['newfld']=='item_inprint_view') {
-                        $options = [
-                            'item_inprint_view' => $res['imprintview_src'],
-                        ];
-                        $mdata['content']=$this->load->view('itemdetails/iteminprint_preview', $options, TRUE);
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $item = $sessiondata['item'];
+                    $mdata['content'] = $this->load->view('btitems/popup_mainimage_edit',['item' => $item], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Save additional images
+    public function save_btaddimage() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_save_addimages($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['images'];
+                    $cntimages = count($images);
+                    $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images,'cntimages'=>$cntimages], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Update additional image
+    public function save_btupdaddimage() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_save_updimages($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['images'];
+                    $numimgs = count($images);
+                    $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Update add items sort
+    public function save_btaddimagesort() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_save_imagessort($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['images'];
+                    $numimgs = count($images);
+                    $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Remove additional image
+    public function save_btaddimagedel() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_addimages_delete($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $images = $sessiondata['images'];
+                    $numimgs = count($images);
+                    $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Add item title
+    public function save_btaddimagetitle() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->sritems_model->itemdetails_addimages_title($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Color
+    // Change Options Images
+    public function change_options_checkbox() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_change_itemcheck($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['newval'] = $res['newval'];
+                    $sessiondata = usersession($session);
+                    $colors = $sessiondata['colors'];
+                    if ($res['newval']==1) {
+                        // With Images
+                        $mdata['slideroptions'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        // Text only
+                        $mdata['slideroptions'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    public function save_addoptionis() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_optionis_add($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $colors = $sessiondata['colors'];
+                    $item = $sessiondata['item'];
+                    if ($item['option_images']==1) {
+                        // With Images
+                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        // Text only
+                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
                     }
                 }
             }
@@ -223,21 +421,28 @@ class Btitemdetails extends MY_Controller
         show_404();
     }
 
-    public function save_imprintlocation() {
+    public function save_updoptimage() {
         if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
             $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $imprsession = ifset($postdata, 'imprsession','defsess');
-            $imprsession_data = usersession($imprsession);
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($imprsession_data) && !empty($session_data)) {
-                $res = $this->dbitemdetails_model->save_imprint($imprsession_data, $imprsession, $session_data, $session_id);
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_optionimages_update($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error='';
-                    $mdata['content']=$this->load->view('dbitemdetails/inprintdata_view',array('inprints'=>$res['imprints'],'editmode' => 1),TRUE);
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $colors = $sessiondata['colors'];
+                    $item = $sessiondata['item'];
+                    if ($item['option_images']==1) {
+                        // With Images
+                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        // Text only
+                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -245,120 +450,28 @@ class Btitemdetails extends MY_Controller
         show_404();
     }
 
-    public function remove_inprint() {
+    public function save_optionsort() {
         if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
             $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->remove_inprint($postdata, $session_data, $session_id);
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_save_optimagessort($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error='';
-                    $mdata['content'] = $this->load->view('dbitemdetails/inprintdata_view',['inprints' => $res['inprints'],'editmode' => 1,], TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-    }
-
-    public function change_pictures() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->change_picture($postdata, $session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    // Images
-                    $slider_options = [
-                        'images' => $res['images'],
-                        'limit' => count($res['images']),
-                    ];
-                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-
-        }
-        show_404();
-    }
-
-    public function delete_picture() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->delete_picture($postdata, $session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    // Images
-                    $slider_options = [
-                        'images' => $res['images'],
-                        'limit' => count($res['images']),
-                    ];
-                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-
-        }
-        show_404();
-    }
-
-    public function sort_picture_prepare() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->sort_picture_prepare($session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    // Images
-                    $image_options = [
-                        'images' => $res['images'],
-                    ];
-                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_sort_view', $image_options, TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-
-        }
-        show_404();
-    }
-
-    public function sort_picture_save() {
-        if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $mdata=[];
-            $error = $this->session_error;
-            $session_id = ifset($postdata,'session_id', 'defsess');
-            $session_data = usersession($session_id);
-            if (!empty($session_data)) {
-                $res = $this->dbitemdetails_model->sort_picture_save($postdata, $session_data, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    // Images
-                    $slider_options = [
-                        'images' => $res['images'],
-                        'limit' => count($res['images']),
-                    ];
-                    $mdata['content'] = $this->load->view('dbitemdetails/pictures_slider_edit', $slider_options, TRUE);
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $colors = $sessiondata['colors'];
+                    $item = $sessiondata['item'];
+                    if ($item['option_images']==1) {
+                        // With Images
+                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        // Text only
+                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -366,15 +479,149 @@ class Btitemdetails extends MY_Controller
         show_404();
     }
 
+    public function save_optiondel() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_optimages_delete($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $colors = $sessiondata['colors'];
+                    $item = $sessiondata['item'];
+                    if ($item['option_images']==1) {
+                        // With Images
+                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        // Text only
+                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function save_optiontitle() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_optimages_title($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Rebuild Images view
+    public function item_images_rebuild() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $item = $sessiondata['item'];
+                $images = $sessiondata['images'];
+                $colors = $sessiondata['colors'];
+                $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
+                $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                $imagesoptions = [
+                    'otherimages' => $otherimages,
+                    'optionsimg' => $optionsimg,
+                    'item' => $item,
+                ];
+                $mdata['content'] = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change Vendor Item Price
+    public function change_btvendorprice() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_vendor_price($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change vendor item - price section
+    public function change_btvendoritemprice() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_vendoritem_price($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Change prices
+    public function change_btitemprice() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $res = $this->btitemdetails_model->itemdetails_item_price($sessiondata, $postdata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+    // Save item
     public function save_itemdetails() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();
             $mdata = [];
             $error=$this->session_error;
-            $session_id = ifset($postdata, 'session_id', 'defsess');
+            $session_id = ifset($postdata, 'session', 'defsess');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $res = $this->btitemdetails_model->save_itemdetails($session_data, $session_id, $this->USR_ID, $this->USR_ROLE);
+                $res = $this->btitemdetails_model->save_itemdetails($session_data, $session_id, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
@@ -385,5 +632,20 @@ class Btitemdetails extends MY_Controller
         show_404();
     }
 
+    private function _prepare_price_response($session) {
+        $sessiondata = usersession($session);
+        $prices = $sessiondata['prices'];
+        $item = $sessiondata['item'];
+        $mdata = [];
+        // $mdata['netprices'] = $this->load->view('relieveritems/itemprice_net_view',['prices' => $prices], TRUE);
+        $mdata['profit'] = $this->load->view('btitems/itemprice_profit_view',['item' => $item,'prices'=> $prices],TRUE);
+        $mdata['saleprint'] = $item['item_sale_print'];
+        $mdata['salesetup'] = $item['item_sale_setup'];
+        $mdata['salerepeat'] = $item['item_sale_repeat'];
+        $mdata['salerush1'] = $item['item_sale_rush1'];
+        $mdata['salerush2'] = $item['item_sale_rush2'];
+        $mdata['salepantone'] = $item['item_sale_pantone'];
+        return $mdata;
+    }
 
 }

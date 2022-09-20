@@ -246,6 +246,11 @@ class Databasecenter extends MY_Controller
         $head['scripts'][] = array('src' => '/js/adminpage/easySlider1.5.js');
         $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
         $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+        // Autocompleter
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Cycle
+        $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
 
         $options = ['title' => $head['title'],
             'user_id' => $this->USR_ID,

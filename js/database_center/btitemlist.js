@@ -138,7 +138,7 @@ function edit_btitem(item) {
             $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
             $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(response.data.editmode)==1) {
-                // init_btitemdetails_edit();
+                init_btitemdetails_edit();
             } else {
                 init_btitemdetails_view(item);
             }

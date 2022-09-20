@@ -19,7 +19,14 @@
         </div>
         <div class="itemdetails-itemnumarea">
             <div class="namearea-label">Item #</div>
-            <div class="itemdetails-keydatvalue" data-item="item_number"><?=$item['item_number']?></div>
+            <div class="itemdetails-keydatvalue" data-item="item_number">
+                <?php if ($item['item_id'] > 0) { ?>
+                    <?=$item['item_number']?>
+                <?php } else { ?>
+                    <input type="text" class="itemkeyinfoinput itemnumberone" readonly="readonly" value="<?=$item['item_numberone']?>"/>
+                    <input type="text" class="itemkeyinfoinput itemnumber"  data-item="item_numbersec" value="<?=$item['item_numbersec']?>"/>
+                <?php } ?>
+            </div>
         </div>
         <div class="itemdetails-itemcategory">
             <div class="namearea-label">Category:</div>

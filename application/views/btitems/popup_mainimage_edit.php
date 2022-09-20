@@ -23,28 +23,6 @@
         <input class="itemimagecaption mainimage" placeholder="Enter Caption..."/>
     </div>
 </div>
-<div class="categoryimage_area">
-    <div class="content-row">
-        <div class="imagetitle">Category Page:</div>
-        <?php if (!empty($item['category_image'])) { ?>
-            <div class="replaceimage categoryimage" id="replaceimagecategory"></div>
-        <?php } ?>
-    </div>
-    <div class="content-row categoryimage_view">
-        <?php if (empty($item['category_image'])) { ?>
-            <div class="emptyimage categoryimage">
-                    <div id="uploadcategoryimage" style="float: unset"></div>
-            </div>
-        <?php } else { ?>
-            <div class="previewimage categoryimage">
-                <img src="<?=$item['category_image']?>" alt="Category Image"/>
-            </div>
-            <div class="removeimage categoryimage">
-                <i class="fa fa-trash"></i>
-            </div>
-        <?php } ?>
-    </div>
-</div>
 <div class="topbannerimage_area">
     <div class="content-row">
         <div class="imagetitle">Special Top Banner:</div>
