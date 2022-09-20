@@ -784,6 +784,130 @@ class Btitemdetails_model extends MY_Model
         return $out;
     }
 
+    public function itemdetails_printloc_add($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $newidx = count($inprints) + 1;
+        $inprints[] = [
+            'item_inprint_id' => (-1)*$newidx,
+            'item_inprint_location' => '',
+            'item_inprint_size' => '',
+            'item_inprint_view' => '',
+            'item_imprint_mostpopular' => 0,
+        ];
+        $out['result'] = $this->success_result;
+        $sessiondata['inprints'] = $inprints;
+        usersession($session, $sessiondata);
+        $out['inprints'] = $inprints;
+        return $out;
+    }
+
+    public function itemdetails_printloc_edit($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        $fld = ifset($postdata, 'fld','');
+        if (!empty($fldidx) && !empty($fld)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    $inprints[$idx][$fld] = $postdata['newval'];
+                    $find = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $sessiondata['inprints']=$inprints;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+                $out['inprints'] = $inprints;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_printloc_view($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        $operation = ifset($postdata,'operation','');
+        if (!empty($fldidx) && !empty($operation)) {
+            $idx = 0;
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    if ($operation=='add') {
+                        $inprints[$idx]['item_inprint_view'] = $postdata['newval'];
+                    } else {
+                        $inprints[$idx]['item_inprint_view'] = '';
+                    }
+                    $find = 1;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $sessiondata['inprints'] = $inprints;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
+                $out['inprints'] = $inprints;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_printloc_delete($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info not found'];
+        $inprints = $sessiondata['inprints'];
+        $deleted = $sessiondata['deleted'];
+        $fldidx = ifset($postdata,'fldidx', '');
+        if (!empty($fldidx)) {
+            $newimpr = [];
+            $find = 0;
+            foreach ($inprints as $inprint) {
+                if ($inprint['item_inprint_id']==$fldidx) {
+                    $find=1;
+                } else {
+                    $newimpr[] = $inprint;
+                }
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['inprints'] = $newimpr;
+                if ($fldidx > 0 ) {
+                    $deleted[] = [
+                        'entity' => 'inprints',
+                        'id' => $fldidx,
+                    ];
+                }
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+                $out['inprints'] = $newimpr;
+            }
+        }
+        return $out;
+    }
+
+    public function itemdetails_vectorfile($sessiondata, $postdata, $session) {
+        $out=['result' => $this->error_result, 'msg'=> 'Info not found'];
+        $item=$sessiondata['item'];
+        $operation = ifset($postdata,'operation', '');
+        if (!empty($operation)) {
+            $vectorlnk = '';
+            if ($operation=='add') {
+                $item['item_vector_img'] = $postdata['newval'];
+                $vectorlnk = $postdata['newval'];
+            } else {
+                $item['item_vector_img'] = '';
+            }
+            $out['result'] = $this->success_result;
+            $out['vector'] = $vectorlnk;
+        }
+        return $out;
+    }
+
     // Save item data
     public function save_itemdetails($sessiondata, $session, $user_id) {
         $out=['result' => $this->error_result, 'msg' => 'Info not found'];

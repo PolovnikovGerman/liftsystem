@@ -345,7 +345,7 @@ function init_btitemdetails_edit() {
             }
         },'json');
     });
-    // EDIT
+    // Change item price
     $(".priceinpt").unbind('change').change(function () {
         var newval=$(this).val();
         var fld = $(this).data('item');
@@ -364,6 +364,7 @@ function init_btitemdetails_edit() {
             }
         },'json');
     });
+    // Change Item - price section
     $(".itempriceinpt").unbind('change').change(function () {
         var newval=$(this).val();
         var fld = $(this).data('item');
@@ -371,7 +372,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_itempriceval';
+        var url='/btitemdetails/change_btitempriceval';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#profitdataarea").empty().html(response.data.profit);
@@ -380,6 +381,7 @@ function init_btitemdetails_edit() {
             }
         },'json');
     });
+    // Meta
     $("textarea.metadescription").unbind('change').change(function () {
         var newval = $(this).val();
         var fldname = 'item_metadescription';
@@ -387,7 +389,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_item';
+        var url='/btitemdetails/change_btitem';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (newval=='') {
@@ -407,7 +409,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_item';
+        var url='/btitemdetails/change_btitem';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -422,7 +424,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_item';
+        var url='/btitemdetails/change_btitem';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -439,7 +441,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
         params.push({name: 'shipidx', value: shipidx});
-        var url='/sritemdetails/change_relive_shipbox';
+        var url='/btitemdetails/change_btshipbox';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -454,7 +456,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_item';
+        var url='/btitemdetails/change_btitem';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -470,7 +472,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fld', value: fldname});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/change_relive_item';
+        var url='/btitemdetails/change_btitem';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -482,13 +484,13 @@ function init_btitemdetails_edit() {
     $(".addprintlocation").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
-        var url='/sritemdetails/relive_itemprintloc_add';
+        var url='/btitemdetails/itemprintloc_add';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".printlocationsdata").empty().html(response.data.content);
                 // Init upload
-                init_relieve_printlocation();
-                init_relievitemdetails_edit();
+                init_btprintlocation();
+                init_btitemdetails_edit();
             } else {
                 show_error(response);
             }
@@ -503,13 +505,13 @@ function init_btitemdetails_edit() {
             var params = new Array();
             params.push({name: 'session', value: $("#dbdetailsession").val()});
             params.push({name: 'fldidx', value: $(this).data('idx')});
-            var url="/sritemdetails/remove_relive_printlocat";
+            var url="/btitemdetails/remove_printlocat";
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     $(".printlocationsdata").empty().html(response.data.content);
                     // Init upload
-                    init_relieve_printlocation();
-                    init_relievitemdetails_edit();
+                    init_btprintlocation();
+                    init_btitemdetails_edit();
                 } else {
                     show_error(response);
                 }
@@ -521,13 +523,13 @@ function init_btitemdetails_edit() {
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('idx')});
         params.push({name: 'operation', value: 'del'});
-        var url="/sritemdetails/save_relive_printlocatview";
+        var url="/btitemdetails/save_printlocatview";
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".printlocationsdata").empty().html(response.data.content);
                 // Init upload
-                init_relieve_printlocation();
-                init_relievitemdetails_edit();
+                init_btprintlocation();
+                init_btitemdetails_edit();
             } else {
                 show_error(response);
             }
@@ -542,7 +544,7 @@ function init_btitemdetails_edit() {
         params.push({name: 'fldidx', value: fldidx});
         params.push({name: 'fld', value: fld});
         params.push({name: 'newval', value: newval});
-        var url='/sritemdetails/relive_itemprintloc_edit';
+        var url='/btitemdetails/itemprintloc_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {
@@ -562,12 +564,12 @@ function init_btitemdetails_edit() {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'operation', value: 'del'});
-        var url="/sritemdetails/save_relive_vectorfile";
+        var url="/btitemdetails/save_vectorfile";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $(".vectorfilemanage").empty().html(response.data.content);
                 // Init upload
-                init_relievitemdetails_edit();
+                init_btitemdetails_edit();
             } else {
                 show_error(response);
             }
@@ -1021,7 +1023,7 @@ function init_optionslider() {
     });
 }
 
-function init_relieve_printlocation() {
+function init_btprintlocation() {
     var replacetemp = '<div class="qq-uploader"><div class="customprint_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
         '<em>browse</em></span></div>' +
         '<ul class="qq-upload-list"></ul>' +
@@ -1046,13 +1048,13 @@ function init_relieve_printlocation() {
                         params.push({name: 'newval', value: responseJSON.filename});
                         params.push({name: 'fldidx', value: locatidx});
                         params.push({name: 'operation', value: 'add'});
-                        var url="/sritemdetails/save_relive_printlocatview";
+                        var url="/btitemdetails/save_printlocatview";
                         $.post(url, params, function(response){
                             if (response.errors=='') {
                                 $(".printlocationsdata").empty().html(response.data.content);
                                 // Init upload
-                                init_relieve_printlocation();
-                                init_relievitemdetails_edit();
+                                init_btprintlocation();
+                                init_btitemdetails_edit();
                             } else {
                                 show_error(response);
                             }
@@ -1084,12 +1086,12 @@ function init_vector_upload() {
                 params.push({name: 'session', value: $("#dbdetailsession").val()});
                 params.push({name: 'newval', value: responseJSON.filename});
                 params.push({name: 'operation', value: 'add'});
-                var url="/sritemdetails/save_relive_vectorfile";
+                var url="/btitemdetails/save_vectorfile";
                 $.post(url, params, function(response){
                     if (response.errors=='') {
                         $(".vectorfilemanage").empty().html(response.data.content);
                         // Init upload
-                        init_relievitemdetails_edit();
+                        init_btitemdetails_edit();
                     } else {
                         show_error(response);
                     }
@@ -1099,5 +1101,4 @@ function init_vector_upload() {
             }
         }
     });
-
 }
