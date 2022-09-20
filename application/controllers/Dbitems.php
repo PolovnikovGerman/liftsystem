@@ -20,15 +20,27 @@ class Dbitems extends MY_Controller
             $mdata = [];
             $error = '';
             $postdata = $this->input->post();
+            $options = [];
+            $options['brand'] = 'BT';
 
-            $brand = ifset($postdata,'brand','ALL');
-            $search = strtoupper(ifset($postdata, 'search', ''));
-            $vendor = ifset($postdata,'vendor', '');
-            $itemstatus = ifset($postdata, 'itemstatus', 0);
-
-            $totals = $this->items_model->count_searchres($search, $brand, $vendor, $itemstatus);
+            $options['search'] = strtoupper(ifset($postdata, 'search', ''));
+            $options['vendor'] = ifset($postdata,'vendor', '');
+            $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
+            $options['category'] = ifset($postdata,'category', 0);
+            $options['missinfo'] = ifset($postdata,'missinfo',0);
+            $totals = $this->items_model->count_searchres($options);
             $mdata['totals'] = $totals;
-            $mdata['totals_view'] = QTYOutput($totals).' Records';
+            $mdata['totals_view'] = QTYOutput($totals).' items';
+            $category_label = '';
+            if ($options['category'] > 0) {
+                $this->load->model('categories_model');
+                $catdat = $this->categories_model->get_srcategory_data($options['category']);
+                if ($catdat['result']==$this->success_result) {
+                    $categ = $catdat['data'];
+                    $category_label = $categ['category_name'];
+                }
+            }
+            $mdata['category_total'] = $category_label;
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -45,19 +57,22 @@ class Dbitems extends MY_Controller
             $options['offset'] = ($pagenum * $options['limit']);
             $options['order_by'] = ifset($postdata, 'order_by', 'item_number');
             $options['direct'] = ifset($postdata,'direction', 'asc');
-            $options['brand'] = ifset($postdata,'brand','ALL');
+            //$options['brand'] = ifset($postdata,'brand','ALL');
             $options['search'] = strtoupper(ifset($postdata, 'search', ''));
             $options['vendor'] = ifset($postdata,'vendor', '');
             $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
-
+            $options['category_id'] = ifset($postdata, 'category', 0);
+            $options['missinfo'] = ifset($postdata,'missinfo',0);
+            $options['brand'] = 'BT';
             $res = $this->items_model->get_itemlists($options);
-            $this->load->model('categories_model');
+            // $this->load->model('categories_model');
             $pageoptions = [
                 'datas' => $res,
-                'categories' => $this->categories_model->get_categories_list(),
-                'brand' => $options['brand'],
+                // 'categories' => $this->categories_model->get_categories_list(),
+                'brand' => 'BT',
             ];
-            $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            // $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
+            $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -78,10 +93,10 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
-    public function itemmainimage($item_id) {
-        // $item_id=$this->input->get('id');
-        $this->load->model('leadorder_model');
-        $res = $this->leadorder_model->get_leadorder_itemimage($item_id);
+    public function itemmainimage() {
+        $item_id=$this->input->get('v');
+        $this->load->model('items_model');
+        $res = $this->items_model->get_item_mainimage($item_id);
         $content = '';
         if ($res['result']==$this->success_result) {
             $viewopt=$res['viewoptions'];
@@ -90,8 +105,140 @@ class Dbitems extends MY_Controller
         echo $content;
     }
 
-    // Edit Item
+    // Add / edit item
     public function itemlistdetails() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Item Not Send';
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata, 'item_id', -1);
+            $brand = ifset($postdata,'brand', 'BT');
+            $editmode = ifset($postdata,'editmode', 0);
+            $this->load->model('items_model');
+            if ($item_id>=0) {
+                // $editmode = 0;
+                if ($item_id==0) {
+                    $error = '';
+                    $editmode = 1;
+                    $data = $this->items_model->new_itemlist($brand);
+                } else {
+                    $res = $this->items_model->get_itemlist_details($item_id, $editmode);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $data = $res['data'];
+                    }
+                }
+            }
+            if ($error=='') {
+                // Build HTML
+                $session_id = uniq_link('15');
+                usersession($session_id, $data);
+                $this->load->model('categories_model');
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT','active'=>1]);
+                $header_options = [
+                    'item' => $data['item'],
+                    'session_id' => $session_id,
+                    'categories' => $categories,
+                ];
+                if ($editmode==0) {
+                    $mdata['header'] = $this->load->view('btitems/header_view', $header_options, TRUE);
+                } else {
+                    $mdata['header'] = $this->load->view('btitems/header_edit', $header_options, TRUE);
+                }
+                // Key info
+
+                $subcategories = $this->categories_model->get_categories();
+                $this->load->model('prices_model');
+                // $discounts = $this->prices_model->get_price_discounts();
+                $this->load->model('vendors_model');
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
+                if ($editmode==0) {
+//                    $category = '';
+//                    if (!empty($data['item']['category_id'])) {
+//                        $catdat = $this->categories_model->get_srcategory_data($data['item']['category_id']);
+//                        if ($catdat['result']==$this->success_result) {
+//                            $data['item']['category'] = $catdat['data']['category_name'];
+//                        }
+//                    }
+                    $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
+                    $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
+                    $vendor_main = $this->load->view('btitems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    $price_options = [
+                        'item' => $data['item'],
+                        'prices'=> $data['prices'],
+                        'profit_view' => $profit_view,
+                    ];
+                    $itemprices = $this->load->view('btitems/itemprices_view', $price_options,TRUE);
+                    $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
+                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+
+                    $imagesoptions = [
+                        'otherimages' => $otherimages,
+                        'optionsimg' => $optionsimg,
+                        'item' => $data['item'],
+                    ];
+                    $itemimages = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
+                    $locations = $this->load->view('btitems/printlocations_view',['locations' => $data['inprints']], TRUE);
+                    $customview = $this->load->view('btitems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
+                    $metaview = $this->load->view('btitems/itemmeta_view',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('btitems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                } else {
+                    $keyinfo = $this->load->view('btitems/keyinfo_edit',['item' => $data['item'],'categories'=>$data['categories'], 'subcategories' => $subcategories], TRUE);
+                    $simitems = $this->items_model->get_items(['item_active' => 1],'item_number','asc');
+                    $similar = $this->load->view('btitems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
+                    $vendoptions = [
+                        'vendor_item' => $data['vendor_item'],
+                        'vendor' => $data['vendor'],
+                        'item' => $data['item'],
+                        'vendors' => $vendors,
+                    ];
+                    $vendor_main = $this->load->view('btitems/vendormain_edit', $vendoptions,TRUE);
+                    $vendor_prices = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
+                    $price_options = [
+                        'item' => $data['item'],
+                        'prices'=> $data['prices'],
+                        'profit_view' => $profit_view,
+                    ];
+                    $itemprices = $this->load->view('btitems/itemprices_edit', $price_options,TRUE);
+                    $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
+                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+                    $imagesoptions = [
+                        'otherimages' => $otherimages,
+                        'optionsimg' => $optionsimg,
+                        'item' => $data['item'],
+                    ];
+                    $itemimages = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
+                    $locations = $this->load->view('btitems/printlocations_edit',['locations' => $data['inprints']], TRUE);
+                    $customview = $this->load->view('btitems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations], TRUE);
+                    $metaview = $this->load->view('btitems/itemmeta_edit',['item' => $data['item']], TRUE);
+                    $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                }
+                $body_options = [
+                    'keyinfo' => $keyinfo,
+                    'similar' => $similar,
+                    'vendor_main' => $vendor_main,
+                    'vendor_prices' => $vendor_prices,
+                    'itemprices' => $itemprices,
+                    'itemimages' => $itemimages,
+                    'customview' => $customview,
+                    'metaview' => $metaview,
+                    'shipping' => $shippingview,
+                ];
+                $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
+                $mdata['editmode'] = $editmode;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
+    // Edit Item
+    public function olditemlistdetails() {
         if ($this->isAjax()) {
             $mdata = [];
             $error = 'Item Not Send';
@@ -302,7 +449,7 @@ class Dbitems extends MY_Controller
                 $session_id = uniq_link('15');
                 usersession($session_id, $data);
                 $this->load->model('categories_model');
-                $categories = $this->categories_model->get_reliver_categories();
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
                 $header_options = [
                     'item' => $data['item'],
                     'session_id' => $session_id,

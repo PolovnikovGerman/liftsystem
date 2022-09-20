@@ -1,641 +1,58 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-Class Sritems_model extends My_Model
+
+
+class Btitemdetails_model extends MY_Model
 {
-    public function __construct()
+    function __construct()
     {
         parent::__construct();
     }
 
-    public function get_relievers_itemscount($options=[]) {
-        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-        $this->db->from('sb_items i');
-        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
-        $this->db->where('i.brand', 'SR');
-        if (ifset($options, 'category',0)!=0) {
-            $this->db->where('i.category_id', $options['category']);
-        }
-        if (ifset($options, 'search', '')!=='') {
-            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
-            $this->db->where($where);
-        }
-        if (ifset($options, 'status', 0) > 0) {
-            if ($options['status']==1) {
-                $this->db->where('i.item_active', 1);
-            } else {
-                $this->db->where('i.item_active', 0);
-            }
-        }
-        if (ifset($options,'vendor', '')!=='') {
-            $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
-            $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
-            $this->db->where('v.vendor_id', $options['vendor']);
-        }
-        if (ifset($options,'misinfo',0) > 0) {
-            if ($options['misinfo']==1) {
-                $this->db->having('missings=0');
-            } else {
-                $this->db->having('missings>0');
-            }
-        }
-        $res = $this->db->get()->result_array();
-        return count($res);
-    }
-
-    public function get_relievers_itemslist($options) {
-        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        // $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
-        // $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.url+vm.meta_title+vm.meta_description+vm.meta_keywords+vm.attributes+vm.images+vm.itemprices+vm.mainprices) as missings');
-        $this->db->from('sb_items i');
-        $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
-        $this->db->where('i.brand', 'SR');
-        if (ifset($options, 'category',0)!=0) {
-            $this->db->where('i.category_id', $options['category']);
-        }
-        if (ifset($options, 'search', '')!=='') {
-            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
-            $this->db->where($where);
-        }
-        if (ifset($options, 'status', 0) > 0) {
-            if ($options['status']==1) {
-                $this->db->where('i.item_active', 1);
-            } else {
-                $this->db->where('i.item_active', 0);
-            }
-        }
-        if (ifset($options,'vendor', '')!=='') {
-            $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
-            $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
-            $this->db->where('v.vendor_id', $options['vendor']);
-        }
-        if (ifset($options,'misinfo',0) > 0) {
-            if ($options['misinfo']==1) {
-                $this->db->having('missings=0');
-            } else {
-                $this->db->having('missings>0');
-            }
-        }
-        $order_by = ifset($options, 'order_by','i.item_id');
-        $direc = ifset($options, 'direct','asc');
-        $this->db->order_by($order_by, $direc);
-        $limit = ifset($options, 'limit', 0);
-        $offset = ifset($options, 'offset', 0);
-        if ($limit > 0) {
-            if ($offset>0) {
-                $this->db->limit($limit, $offset);
-            } else {
-                $this->db->limit($limit);
-            }
-        }
-        $res = $this->db->get()->result_array();
-        $out=[];
-        $numpp = $offset + 1;
-        foreach ($res as $row) {
-            $rowclass='';
-            if ($row['item_active']==0) {
-                $rowclass='inactive';
-            }
-            $row['rowclass']=$rowclass;
-            $row['status'] = $row['item_active']==1 ? 'Active' : 'Inactive';
-            if ($row['missings']==0) {
-                $row['misclas'] = '';
-                $row['misinfo'] = '-';
-            } else {
-                $row['misclas'] = 'missing';
-                if ($row['missings']==1) {
-                    $row['misinfo'] = '1 field';
-                } else {
-                    $row['misinfo'] = $row['missings'].' fields';
-                }
-            }
-            $row['numpp'] = $numpp;
-            $out[] = $row;
-            $numpp++;
-        }
-        return $out;
-    }
-
-    public function new_sritemlist() {
-        $brand = 'SR';
-        // Start
-        $item = [
-            'item_id' => -1,
-            'item_number' => '',
-            'item_name' => '',
-            'item_active' => 1,
-            'item_new' => 0,
-            'item_sale' => 0,
-            'item_topsale' => 0,
-            'item_template' => '',
-            'item_lead_a' => 0,
-            'item_lead_b' => 0,
-            'item_lead_c' => 0,
-            'item_material' => '',
-            'subcategory_id' => '',
-            'item_weigth' => 0,
-            'item_size' => '',
-            'item_keywords' => '',
-            'item_url' => '',
-            'item_meta_title' => '',
-            'item_metadescription' => '',
-            'item_metakeywords' => '',
-            'item_description1' => '',
-            'item_description2' => '',
-            'item_vector_img' => '',
-            'options' => '',
-            'note_material' => '',
-            'brand' => $brand,
-            'printlocat_example_img' => '',
-            'sellblank' => 0,
-            'sellcolor' => 0,
-            'sellcolors' => 0,
-            'item_price_id' => -1,
-            'item_price_print' => 0.00,
-            'item_sale_print' => 0.00,
-            'profit_print' => '',
-            'item_price_setup' => 0.00,
-            'item_sale_setup' => 0.00,
-            'profit_setup' => '',
-            'profit_print_class' => '',
-            'profit_print_perc' => '',
-            'profit_setup_class' => '',
-            'profit_setup_perc' => '',
-            'bullet1' => '',
-            'bullet2' => '',
-            'bullet3' => '',
-            'bullet4' => '',
-            'item_minqty' => '',
-            'main_image' => '',
-            'category_image' => '',
-            'top_banner' => '',
-            'option_images' => 0,
-            'imprint_method' => '',
-            'imprint_color' => '',
-            'charge_pereach' => '',
-            'charge_perorder' => '',
-            // Price
-            'item_price_id' => -1,
-            'item_price_print' => '',
-            'item_sale_print' => '',
-            'profit_print' => '',
-            'item_price_setup' => '',
-            'item_sale_setup' => '',
-            'profit_setup' => '',
-            'profit_print_class' => '',
-            'profit_print_perc' => '',
-            'profit_setup_class' => '',
-            'profit_setup_perc' => '',
-            'profit_repeat_class' => '',
-            'profit_repeat_perc' => '',
-            'item_price_rush1' => '',
-            'item_sale_rush1' => '',
-            'profit_rush1' => 0,
-            'profit_rush1_class' => '',
-            'profit_rush1_perc' => '',
-            'item_price_rush2' => '',
-            'item_sale_rush2' => '',
-            'profit_rush2' => '',
-            'profit_rush2_class' => '',
-            'profit_rush2_perc' => '',
-            'item_price_pantone' => '',
-            'item_sale_pantone' => '',
-            'profit_pantone' => '',
-            'profit_pantone_class' => '',
-            'profit_pantone_perc' => '',
-            'price_discount' => '',
-            'price_discount_val' => '',
-            'print_discount' => '',
-            'print_discount_val' => '',
-            'setup_discount' => '',
-            'setup_discount_val' => '',
-            'repeat_discount' => '',
-            'repeat_discount_val' => '',
-            'rush1_discount' => '',
-            'rush1_discount_val' => '',
-            'rush2_discount' => '',
-            'rush2_discount_val' => '',
-            'pantone_discount' => '',
-            'pantone_discount_val' => '',
-            'item_price_repeat' => '',
-            'item_sale_repeat' => '',
-            'profit_repeat' => '',
-            'pantone_profit' => '',
-        ];
-        $vendor = [
-            'vendor_id' => '',
-            'vendor_name' => '',
-            'vendor_zipcode' => '',
-            'shipaddr_state' => '',
-            'shipaddr_country' => '',
-            'po_note' => '',
-        ];
-
-        $vitem=[
-            'vendor_item_id' => -1,
-            'vendor_item_vendor' => '',
-            'vendor_item_number' => '',
-            'vendor_item_name' => '',
-            'vendor_item_blankcost' => '',
-            'vendor_item_cost' => '',
-            'vendor_item_exprint' => '',
-            'vendor_item_setup' => '',
-            'vendor_item_repeat' => '',
-            'vendor_item_notes' => '',
-            'vendor_item_zipcode' => '',
-            'printshop_item_id' => '',
-            'vendor_name' => '',
-            'vendor_zipcode' => '',
-            'stand_days' => '',
-            'rush1_days' => '',
-            'rush1_price' => '',
-            'rush2_days' => '',
-            'rush2_price' => '',
-            'pantone_match' => '',
-        ];
-        $vprices = [];
-
-        $pricesmax = $this->config->item('relievers_prices_val');
-
-        for ($i=1; $i<=$pricesmax-1; $i++) {
-            $vprices[] = [
-                'vendorprice_id' => $i*-1,
-                'vendor_item_id' => -1,
-                'vendorprice_qty' => '',
-                'vendorprice_val' => '',
-                'vendorprice_color' => '',
-            ];
-        }
-        $images = [];
-        $imprints = [];
-        $prices = [];
-        for ($i=1; $i<=$pricesmax; $i++) {
-            $prices[] = [
-                'promo_price_id' => $i * (-1),
-                'item_id' => -1,
-                'item_qty' => '',
-                'price' => '',
-                'sale_price' => '',
-                'profit' => '',
-                'show_first' => '0',
-                'shipbox' => 0,
-                'shipweight' => 0.000,
-                'profit_class' => '',
-                'profit_perc' => '',
-            ];
-        }
-        $similar = [];
-        $maxnum = $this->config->item('relievers_similar_items');
-        for ($i=1; $i<=$maxnum; $i++) {
-            $similar[] = [
-                'item_similar_id' => $i*(-1),
-                'item_similar_similar' => '',
-                'item_number' => '',
-                'item_name' => '',
-                'item_template' => '',
-            ];
-        }
-        $colors = [];
-        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
-            $idx = ($i + 1) * (-1);
-            $colors[] = [
-                'item_color_id' => $idx,
-                'item_color' => '',
-            ];
-        }
-        $shipboxes = [];
-        for ($i=0; $i<3; $i++) {
-            $shipboxes[] = [
-                'item_shipping_id' => (-1)*($i+1),
-                'box_qty' => '',
-                'box_width' => '',
-                'box_length' => '',
-                'box_height' => '',
-            ];
-        }
-        $data=[
-            'item' => $item,
-            'colors' => $colors,
-            'vendor' => $vendor,
-            'vendor_item' => $vitem,
-            'vendor_price' => $vprices,
-            'images' => $images,
-            'option_images' => [],
-            'inprints' => $imprints,
-            'prices' => $prices,
-            'similar' => $similar,
-            'shipboxes' => $shipboxes,
-            'deleted' => [],
-        ];
-        return $data;
-
-    }
-
-    // Item for View / Edit
-    public function get_itemlist_details($item_id, $editmode) {
-        $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
-        $this->db->select('i.*,sr.category_name, ss.subcategory_name');
-        $this->db->from('sb_items i');
-        $this->db->join('sr_categories sr', 'sr.category_id=i.category_id');
-        $this->db->join('sr_subcategories ss','ss.subcategory_id=i.subcategory_id','left');
-        $this->db->where('item_id', $item_id);
-        $item = $this->db->get()->row_array();
-        if (ifset($item, 'item_id',0)==$item_id) {
-            $out['result'] = $this->success_result;
-            $this->load->model('itemimages_model');
-            $this->load->model('vendors_model');
-            $this->load->model('imprints_model');
-            $this->load->model('prices_model');
-            $this->load->model('similars_model');
-            $this->load->model('itemcolors_model');
-            $this->load->model('shipping_model');
-            // Discounts
-            $def_discount = 0;
-            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
-            $item['repeat_discount_val'] = $item['rush1_discount_val'] = $item['rush2_discount_val'] = $item['pantone_discount_val'] = $def_discount;
-            if (!empty($item['price_discount'])) {
-                $disc = $this->prices_model->get_discount($item['price_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['price_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['print_discount'])) {
-                $disc = $this->prices_model->get_discount($item['print_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['print_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['setup_discount'])) {
-                $disc = $this->prices_model->get_discount($item['setup_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['setup_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['repeat_discount'])) {
-                $disc = $this->prices_model->get_discount($item['repeat_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['repeat_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['rush1_discount'])) {
-                $disc = $this->prices_model->get_discount($item['rush1_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['rush1_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['rush2_discount'])) {
-                $disc = $this->prices_model->get_discount($item['rush2_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['rush2_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['pantone_discount'])) {
-                $disc = $this->prices_model->get_discount($item['pantone_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['pantone_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            // Colors
-            $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
-            $colors = [];
-            $numpp=0;
-            foreach ($colorsrc as $itmcolor) {
-                $colors[] = [
-                    'item_color_id' => $itmcolor['item_color_id'],
-                    'item_color' => $itmcolor['item_color'],
-                ];
-                $numpp++;
-            }
-            if ($numpp < 9 ) {
-                for ($i=$numpp; $i < 9 ; $i++) {
-                    $colors[] = [
-                        'item_color_id' => $i*(-1),
-                        'item_color_itemid' => $item_id,
-                        'item_color' => '',
-                    ];
-                }
-            }
-            // Vendor Info
-            $pricesmax = $this->config->item('relievers_prices_val');
-            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
-            $vprices = [];
-            if (ifset($vitem,'vendor_item_id', 0 )==0) {
-                $vitem=[
-                    'vendor_item_id' => -1,
-                    'vendor_item_vendor' => '',
-                    'vendor_item_number' => '',
-                    'vendor_item_name' => '',
-                    'vendor_item_blankcost' => 0,
-                    'vendor_item_cost' => 0,
-                    'vendor_item_exprint' => 0,
-                    'vendor_item_setup' => 0,
-                    'vendor_item_repeat' => 0,
-                    'vendor_item_notes' => '',
-                    'vendor_item_zipcode' => '',
-                    'printshop_item_id' => '',
-                    'stand_days' => '',
-                    'rush1_days' => '',
-                    'rush2_days' => '',
-                    'rush1_price' => '',
-                    'rush2_price' => '',
-                    'pantone_match' => '',
-                ];
-                for ($i=1; $i<=$pricesmax-1; $i++) {
-                    $vprices[] = [
-                        'vendorprice_id' => $i*-1,
-                        'vendor_item_id' => -1,
-                        'vendorprice_qty' => '',
-                        'vendorprice_val' => '',
-                        'vendorprice_color' => '',
-                    ];
-                }
-                $vendor = [
-                    'vendor_id' => '',
-                    'vendor_name' => '',
-                    'vendor_zipcode' => '',
-                    'shipaddr_state' => '',
-                    'shipaddr_country' => '',
-                    'po_note' => '',
-                ];
-            } else {
-                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
-                if ($vdat['result']==$this->error_result) {
-                    $vendor = [
-                        'vendor_id' => '',
-                        'vendor_name' => '',
-                        'vendor_zipcode' => '',
-                        'shipaddr_state' => '',
-                        'shipaddr_country' => '',
-                        'po_note' => '',
-                    ];
-                } else {
-                    $vendor = $vdat['data'];
-                }
-                $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
-                $numpp = 1;
-                foreach ($results as $result) {
-                    $vprices[] = [
-                        'vendorprice_id' => $result['vendorprice_id'],
-                        'vendor_item_id' => $result['vendor_item_id'],
-                        'vendorprice_qty' => $result['vendorprice_qty'],
-                        'vendorprice_val' => $result['vendorprice_val'],
-                        'vendorprice_color' => $result['vendorprice_color'],
-                    ];
-                    $numpp++;
-                }
-                for ($i=$numpp; $i<=$pricesmax-1; $i++) {
-                    $vprices[] = [
-                        'vendorprice_id' => $i*-1,
-                        'vendor_item_id' => $vitem['vendor_item_id'],
-                        'vendorprice_qty' => '',
-                        'vendorprice_val' => '',
-                        'vendorprice_color' => '',
-                    ];
-                }
-            }
-            $imagsrc = $this->itemimages_model->get_itemlist_images($item_id);
-            $numpp = 1;
-            $images = [];
-            foreach ($imagsrc as $image) {
-                $title = 'Pic '.$numpp;
-                $images[]=[
-                    'item_img_id' => $image['item_img_id'],
-                    'item_img_item_id' => $image['item_img_item_id'],
-                    'item_img_name' => $image['item_img_name'],
-                    'item_img_thumb' => $image['item_img_thumb'],
-                    'item_img_order' => $image['item_img_order'],
-                    'item_img_big' => $image['item_img_big'],
-                    'item_img_medium' => $image['item_img_medium'],
-                    'item_img_small' => $image['item_img_small'],
-                    'item_img_label' => $image['item_img_label'],
-                    'title' => $title,
-                ];
-                $numpp++;
-                if ($numpp > $this->config->item('slider_images')) {
-                    break;
-                }
-            }
-            // Options images
-            if ($item['option_images']==0) {
-                $option_images = [];
-            } else {
-                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
-            }
-            $imprints = $this->imprints_model->get_imprint_item($item_id);
-            $priceres = $this->prices_model->get_itemlist_price($item_id);
-            $prices = [];
-            $numpp = 1;
-            foreach ($priceres as $price) {
-                $profitperc = $profitclass = '';
-                if (floatval($price['sale_price']) > 0 && $price['profit']!==NULL) {
-                    $profitperc = round(($price['profit'] / ($price['sale_price']*$price['item_qty'])) * 100,1);
-                    $profitclass = profit_bgclass($profitperc);
-                }
-                $prices[] = [
-                    'promo_price_id' => $price['promo_price_id'],
-                    'item_id' => $price['item_id'],
-                    'item_qty' => $price['item_qty'],
-                    'price' => $price['price'],
-                    'sale_price' => $price['sale_price'],
-                    'profit' => $price['profit'],
-                    'show_first' => $price['show_first'],
-                    'shipbox' => $price['shipbox'],
-                    'shipweight' => $price['shipweight'],
-                    'profit_class' => $profitclass,
-                    'profit_perc' => (empty($profitperc) ? $profitperc : $profitperc.'%'),
-                ];
-                $numpp++;
-                if ($numpp > $pricesmax) {
-                    break;
-                }
-            }
-            if ($numpp < $pricesmax) {
-                $idx = 1;
-                for ($i=$numpp; $i<=$pricesmax; $i++) {
-                    $prices[] = [
-                        'promo_price_id' => $idx * (-1),
-                        'item_id' => $item_id,
-                        'item_qty' => '',
-                        'price' => '',
-                        'sale_price' => '',
-                        'profit' => '',
-                        'show_first' => '0',
-                        'shipbox' =>  '',
-                        'shipweight' =>  '',
-                        'profit_class' =>  '',
-                        'profit_perc' =>  '',
-                    ];
-                    $idx++;
-                }
-            }
-            // Special price - setup, print
-            $specprice = $this->prices_model->get_itemlist_specprice($item_id);
-            foreach ($specprice as $key => $val) {
-                $item[$key] = $val;
-            }
-            $shipboxes = $this->shipping_model->get_itemshipbox($item_id, $editmode);
-            // Simular
-            $similar = $this->similars_model->get_similar_items($item_id, $item['brand']);
-            // config
-            $data=[
-                'item' => $item,
-                'colors' => $colors,
-                'vendor' => $vendor,
-                'vendor_item' => $vitem,
-                'vendor_price' => $vprices,
-                'images' => $images,
-                'option_images' => $option_images,
-                'inprints' => $imprints,
-                'prices' => $prices,
-                'similar' => $similar,
-                'shipboxes' => $shipboxes,
-                'deleted' => [],
-            ];
-            $out['data'] = $data;
-        }
-        return $out;
-    }
-
+    // Change item category
     public function itemdetails_change_category($sessiondata, $postdata, $session) {
         $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
         $item = $sessiondata['item'];
         if (ifset($postdata,'newval','')=='') {
             $item['category_id'] = NULL;
             $item['item_number'] = '';
+            $item['item_numberone'] = '';
+            $item['item_numbersec'] = '';
             $out['result'] = $this->success_result;
-            $out['item_number'] = '';
         } else {
             $this->load->model('categories_model');
             $res = $this->categories_model->get_srcategory_data($postdata['newval']);
             $out['msg'] = $res['msg'];
             if ($res['result']==$this->success_result) {
-                $category = $res['data'];
-                $item['category_id'] = $category['category_id'];
-                $this->db->select('count(item_id) as cnt, max(item_number) as maxnum');
-                $this->db->from('sb_items');
-                $this->db->where('category_id', $category['category_id']);
-                $this->db->where('brand','SR');
-                $dat = $this->db->get()->row_array();
-                if ($dat['cnt']==0) {
-                    $newnumber=$category['category_code'].'001';
-                } else {
-                    $lastcode = intval(substr($dat['maxnum'],1));
-                    $lastcode += 1;
-                    $newnumber = $category['category_code'].str_pad($lastcode,3,'0',STR_PAD_LEFT);
-                }
-                $item['item_number'] = $newnumber;
                 $out['result'] = $this->success_result;
-                $out['item_number'] = $newnumber;
+                $item['item_numberone'] = $res['data']['category_code'].'-';
+                $item['item_numbersec'] = '';
             }
         }
         if ($out['result']==$this->success_result) {
+            $out['item_numberone'] = $item['item_numberone'];
+            $out['item_numbersec'] = $item['item_numbersec'];
             $sessiondata['item'] = $item;
             usersession($session, $sessiondata);
         }
         return $out;
     }
-
+    // Change item status
+    public function itemdetails_change_itemstatus($sessiondata, $postdata, $session) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
+        $item = $sessiondata['item'];
+        if ($item['item_active']==0) {
+            $item['item_active'] = 1;
+        } else {
+            $item['item_active'] = 0;
+        }
+        $out['result'] = $this->success_result;
+        $out['item_active'] = $item['item_active'];
+        $sessiondata['item'] = $item;
+        usersession($session, $sessiondata);
+        return $out;
+    }
+    // Change item parameter
     public function itemdetails_change_iteminfo($sessiondata, $options, $sessionsid) {
         $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
         $item = $sessiondata['item'];
@@ -644,12 +61,35 @@ Class Sritems_model extends My_Model
         if (array_key_exists($fldname, $item)) {
             $out['result'] = $this->success_result;
             $item[$fldname] = $newval;
+            if ($fldname=='item_numbersec') {
+                $item['item_number'] = $item['item_numberone'].$item['item_numbersec'];
+            }
             $sessiondata['item'] = $item;
             usersession($sessionsid, $sessiondata);
         }
         return $out;
     }
-
+    // Change item subcategory
+    public function itemdetails_change_subcategory($sessiondata, $postdata, $session) {
+        $out=['result'=>$this->error_result, 'msg' => 'Category Not Found'];
+        $categories = $sessiondata['categories'];
+        $catid = ifset($postdata,'fld','');
+        if (!empty($catid)) {
+            $find = 0;
+            $idx = 0;
+            foreach ($categories as $category) {
+                if ($category['item_categories_id']==$catid) {
+                    $find = 1;
+                    $categories[$idx]['category_id'] = $postdata['newval'];
+                    $out['result'] = $this->success_result;
+                    break;
+                }
+                $idx++;
+            }
+        }
+        return $out;
+    }
+    // Change checkbox
     public function itemdetails_change_itemcheck($sessiondata, $options, $sessionsid) {
         $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
         $item = $sessiondata['item'];
@@ -669,7 +109,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Change similar
     public function itemdetails_change_similar($sessiondata, $options, $sessionsid) {
         $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
         $similars = $sessiondata['similar'];
@@ -692,7 +132,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Change vendor
     public function itemdetails_change_vendor($sessiondata, $postdata, $sessionsid) {
         $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
         $vendor = $sessiondata['vendor'];
@@ -747,7 +187,7 @@ Class Sritems_model extends My_Model
             ];
             $vprices = [];
             // if ($brand=='SR') {
-            $pricesmax = $this->config->item('relievers_prices_val');
+            $pricesmax = $this->config->item('prices_val');
             // } else {
             //    $pricesmax = $this->config->item('prices_val');
             // }
@@ -781,7 +221,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Change Vendor item
     public function itemdetails_check_vendoritem($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
         $this->load->model('vendors_model');
@@ -903,7 +343,7 @@ Class Sritems_model extends My_Model
         $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
         return $out;
     }
-
+    // Save additional images
     public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
         $images = $sessiondata['images'];
@@ -926,7 +366,7 @@ Class Sritems_model extends My_Model
         $out['result'] = $this->success_result;
         return $out;
     }
-
+    // Update add image
     public function itemdetails_save_updimages($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
         $images = $sessiondata['images'];
@@ -951,7 +391,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Change Add image sort
     public function itemdetails_save_imagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
         $images = $sessiondata['images'];
@@ -998,7 +438,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Remove additional image
     public function itemdetails_addimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
         $images = $sessiondata['images'];
@@ -1034,7 +474,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // Update Add image title
     public function itemdetails_addimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
         $images = $sessiondata['images'];
@@ -1058,58 +498,62 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
-    public function itemdetails_optionimages_add($sessiondata, $postdata, $session) {
+    // Add Option
+    public function itemdetails_optionis_add($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
-        $neword = 0;
-        foreach ($images as $image) {
-            if ($neword < $image['item_img_order']) {
-                $neword = $image['item_img_order'];
-            }
+        $colors = $sessiondata['colors'];
+        $item = $sessiondata['item'];
+        $newid = (count($colors)+1) * (-1);
+        $neword = count($colors)+1;
+        if ($item['option_images']==0) {
+            $colors[] = [
+                'item_color_id' => $newid,
+                'item_color' => '',
+                'item_color_image' => '',
+                'item_color_order' => $neword,
+            ];
+        } else {
+            $colors[] = [
+                'item_color_id' => $newid,
+                'item_color' => '',
+                'item_color_image' => $postdata['newval'],
+                'item_color_order' => $neword,
+            ];
         }
-        $neword+=1;
-        $newid = (count($images)+1) * (-1);
-        $images[] = [
-            'item_img_id' => $newid,
-            'item_img_name' => $postdata['newval'],
-            'item_img_label' => '',
-            'item_img_order' => $neword,
-        ];
-        $sessiondata['option_images'] = $images;
+        $sessiondata['colors'] = $colors;
         usersession($session, $sessiondata);
         $out['result'] = $this->success_result;
         return $out;
     }
-
+    // Update option image
     public function itemdetails_optionimages_update($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
+        $colors = $sessiondata['colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = str_replace('reploptimg', '',$imgidx);
             $find = 0;
             $idx = 0;
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$imgidx) {
                     $find = 1;
-                    $images[$idx]['item_img_name'] = $postdata['newval'];
+                    $colors[$idx]['item_color_image'] = $postdata['newval'];
                     break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $images;
+                $sessiondata['colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
         return $out;
     }
-
+    // Update image sort
     public function itemdetails_save_optimagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
+        $colors = $sessiondata['colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = intval($imgidx);
@@ -1119,16 +563,16 @@ Class Sritems_model extends My_Model
                 $numord = 1;
                 $newimg = [];
                 $arrimg = [];
-                for ($i=0; $i<count($images); $i++) {
-                    foreach ($images as $image) {
-                        if (!in_array($image['item_img_id'], $arrimg)) {
+                for ($i=0; $i<count($colors); $i++) {
+                    foreach ($colors as $color) {
+                        if (!in_array($color['item_color_id'], $arrimg)) {
                             if ($numord==$numpp) {
                                 array_push($arrimg, $imgidx);
                                 $numord++;
                                 break;
                             } else {
-                                if ($image['item_img_id']!=$imgidx) {
-                                    array_push($arrimg, $image['item_img_id']);
+                                if ($color['item_color_id']!=$imgidx) {
+                                    array_push($arrimg, $color['item_color_id']);
                                     $numord++;
                                     break;
                                 }
@@ -1138,26 +582,25 @@ Class Sritems_model extends My_Model
                 }
                 $numord=1;
                 foreach ($arrimg as $keyval) {
-                    foreach ($images as $image) {
-                        if ($image['item_img_id']==$keyval) {
-                            $image['item_img_order'] = $numord;
-                            $newimg[] = $image;
+                    foreach ($colors as $color) {
+                        if ($color['item_color_id']==$keyval) {
+                            $color['item_color_order'] = $numord;
+                            $newimg[] = $color;
                             $numord++;
                         }
                     }
                 }
-                $sessiondata['option_images'] = $newimg;
+                $sessiondata['colors'] = $newimg;
                 usersession($session, $sessiondata);
                 $out['result'] = $this->success_result;
             }
         }
         return $out;
-
     }
-
+    // Delete option
     public function itemdetails_optimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['option_images'];
+        $colors = $sessiondata['colors'];
         $deleted = $sessiondata['deleted'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
@@ -1165,56 +608,56 @@ Class Sritems_model extends My_Model
             $idx = 0;
             $numrow = 1;
             $newimg = [];
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$imgidx) {
                     $find = 1;
                     if ($imgidx > 0) {
                         $deleted[] = [
-                            'entity' => 'images',
+                            'entity' => 'colors',
                             'id' => $imgidx,
                         ];
                     }
                 } else {
-                    $image['item_img_order'] = $numrow;
-                    $newimg[] = $image;
+                    $color['item_color_order'] = $numrow;
+                    $newimg[] = $color;
                     $numrow++;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $newimg;
+                $sessiondata['colors'] = $newimg;
                 $sessiondata['deleted'] = $deleted;
                 usersession($session, $sessiondata);
             }
         }
         return $out;
     }
-
+    // Change option caption
     public function itemdetails_optimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['option_images'];
+        $colors = $sessiondata['colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
             $idx = 0;
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$imgidx) {
                     $find = 1;
-                    $images[$idx]['item_img_label'] = $postdata['newval'];
+                    $colors[$idx]['item_color'] = $postdata['newval'];
                     break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $images;
+                $sessiondata['colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
         return $out;
     }
-
+    // Update vendor item price
     public function itemdetails_vendor_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $vendor_prices = $sessiondata['vendor_price'];
@@ -1245,7 +688,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
+    // update vendor item - price section
     public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $vendoritem = $sessiondata['vendor_item'];
@@ -1265,46 +708,7 @@ Class Sritems_model extends My_Model
         }
         return $out;
     }
-
-    public function itemdetails_price_discount($sessiondata, $postdata, $session) {
-        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
-        $item = $sessiondata['item'];
-        $fldname = ifset($postdata, 'fld', '');
-        if (!empty($fldname) && array_key_exists($fldname, $item)) {
-            $fldval = $fldname.'_val';
-            if (empty($postdata['newval'])) {
-                $item[$fldname] = '';
-                $item[$fldval] = '';
-                $out['result'] = $this->success_result;
-            } else {
-                $this->load->model('prices_model');
-                $res = $this->prices_model->get_discount($postdata['newval']);
-                $out['msg'] = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $out['result'] = $this->success_result;
-                    $discount = $res['discount'];
-                    $item[$fldval] = $discount['discount_val'];
-                    $item[$fldname] = $discount['price_discount_id'];
-                }
-            }
-            if ($out['result']==$this->success_result) {
-                // Recount prices
-                $prices = $sessiondata['prices'];
-                $recount = $this->_recalc_prices($item, $prices);
-                $item = $recount['item'];
-                $prices = $recount['prices'];
-                $sessiondata['item'] = $item;
-                $sessiondata['prices'] = $prices;
-                usersession($session, $sessiondata);
-                $vendor_prices = $sessiondata['vendor_price'];
-                $commonprice = $this->_prepare_common_prices($sessiondata);
-                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
-                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
-            }
-        }
-        return $out;
-    }
-
+    // Update item prices
     public function itemdetails_item_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $prices = $sessiondata['prices'];
@@ -1324,9 +728,6 @@ Class Sritems_model extends My_Model
             if ($find==1) {
                 $out['result'] = $this->success_result;
                 $item = $sessiondata['item'];
-                $recount = $this->_recalc_prices($item, $prices);
-                $item = $recount['item'];
-                $prices = $recount['prices'];
                 $sessiondata['item'] = $item;
                 $sessiondata['prices'] = $prices;
                 usersession($session, $sessiondata);
@@ -1347,9 +748,6 @@ Class Sritems_model extends My_Model
             $out['result'] = $this->success_result;
             $item[$fldname] = $postdata['newval'];
             $prices = $sessiondata['prices'];
-            $recount = $this->_recalc_prices($item, $prices);
-            $item = $recount['item'];
-            $prices = $recount['prices'];
             $sessiondata['item'] = $item;
             $sessiondata['prices'] = $prices;
             usersession($session, $sessiondata);
@@ -1510,7 +908,8 @@ Class Sritems_model extends My_Model
         return $out;
     }
 
-    public function itemdetails_save($sessiondata, $session, $user_id) {
+    // Save item data
+    public function save_itemdetails($sessiondata, $session, $user_id) {
         $out=['result' => $this->error_result, 'msg' => 'Info not found'];
         $reschk = $this->_check_itemdetails($sessiondata);
         if ($reschk['result']==$this->error_result) {
@@ -1547,7 +946,6 @@ Class Sritems_model extends My_Model
             $this->db->set('option_images', $item['option_images']);
             $this->db->set('charge_pereach', floatval($item['charge_pereach']));
             $this->db->set('charge_perorder', floatval($item['charge_perorder']));
-            $this->db->set('subcategory_id', empty($item['subcategory_id']) ? NULL : $item['subcategory_id']);
             $this->db->set('item_sale', $item['item_sale']);
             $this->db->set('item_topsale', $item['item_topsale']);
             $this->db->set('item_minqty', empty($item['item_minqty']) ? NULL : intval($item['item_minqty']));
@@ -1555,13 +953,6 @@ Class Sritems_model extends My_Model
             $this->db->set('bullet2', empty($item['bullet2']) ? NULL : $item['bullet2']);
             $this->db->set('bullet3', empty($item['bullet3']) ? NULL : $item['bullet3']);
             $this->db->set('bullet4', empty($item['bullet4']) ? NULL : $item['bullet4']);
-            $this->db->set('price_discount', empty($item['price_discount'])? null: $item['price_discount']);
-            $this->db->set('print_discount', empty($item['print_discount'])? null: $item['print_discount']);
-            $this->db->set('setup_discount', empty($item['setup_discount'])? null: $item['setup_discount']);
-            $this->db->set('repeat_discount', empty($item['repeat_discount'])? null: $item['repeat_discount']);
-            $this->db->set('rush1_discount', empty($item['rush1_discount'])? null : $item['rush1_discount']);
-            $this->db->set('rush2_discount', empty($item['rush2_discount'])? null : $item['rush2_discount']);
-            $this->db->set('pantone_discount', empty($item['pantone_discount'])? null : $item['pantone_discount']);
             if ($item['item_id']>0) {
                 $this->db->set('update_user', $user_id);
                 $this->db->where('item_id', $item['item_id']);
@@ -1572,34 +963,13 @@ Class Sritems_model extends My_Model
                 $this->db->set('create_time', date('Y-m-d H:i:s'));
                 $this->db->set('create_user', $user_id);
                 $this->db->set('update_user', $user_id);
-                $this->db->set('brand','SR');
+                $this->db->set('item_number', $item['item_number']);
+                $this->db->set('brand','BT');
                 $this->db->insert('sb_items');
                 $item_id = $this->db->insert_id();
                 if ($item_id > 0) {
                     $out['result'] = $this->success_result;
                     // Check code
-                    $category_id = $item['category_id'];
-                    $this->load->model('categories_model');
-                    $catdat = $this->categories_model->get_srcategory_data($category_id);
-                    $category = $catdat['data'];
-                    // New Item #
-                    $this->db->select('count(item_id) as cnt, max(item_number) as maxnum');
-                    $this->db->from('sb_items');
-                    $this->db->where('category_id', $category['category_id']);
-                    $this->db->where('brand', 'SR');
-                    $this->db->where('item_id != ', $item_id);
-                    $dat = $this->db->get()->row_array();
-                    if ($dat['cnt'] == 0) {
-                        $newnumber = $category['category_code'] . '001';
-                    } else {
-                        $lastcode = intval(substr($dat['maxnum'], 1));
-                        $lastcode += 1;
-                        $newnumber = $category['category_code'] . str_pad($lastcode, 3, '0', STR_PAD_LEFT);
-                    }
-                    $this->db->set('category_id', $item['category_id']);
-                    $this->db->set('item_number', $newnumber);
-                    $this->db->where('item_id', $item_id);
-                    $this->db->update('sb_items');
                 } else {
                     $out['msg'] = 'Error During insert Item Data';
                     return $out;
@@ -1648,15 +1018,6 @@ Class Sritems_model extends My_Model
                         $this->db->update('sb_items');
                     }
                 }
-                if (stripos($item['category_image'], $preload_sh)!==FALSE) {
-                    $categimg_src = str_replace($preload_sh, '', $item['category_image']);
-                    $cpres = @copy($preload_fl.$categimg_src, $itemimg_fl.$categimg_src);
-                    if ($cpres) {
-                        $this->db->set('category_image', $itemimg_sh.$categimg_src);
-                        $this->db->where('item_id', $item_id);
-                        $this->db->update('sb_items');
-                    }
-                }
                 if (stripos($item['top_banner'], $preload_sh)!==FALSE) {
                     $topbanner_src = str_replace($preload_sh, '', $item['top_banner']);
                     $cpres = @copy($preload_fl.$topbanner_src, $itemimg_fl.$topbanner_src);
@@ -1664,6 +1025,25 @@ Class Sritems_model extends My_Model
                         $this->db->set('top_banner', $itemimg_sh.$topbanner_src);
                         $this->db->where('item_id', $item_id);
                         $this->db->update('sb_items');
+                    }
+                }
+            }
+            // Add categories
+            $categories = $sessiondata['categories'];
+            foreach ($categories as $category) {
+                if (empty($category['category_id'])) {
+                    if ($category['item_categories_id'] > 0) {
+                        $this->db->where('item_categories_id', $category['item_categories_id']);
+                        $this->db->delete('sb_item_categories');
+                    }
+                } else {
+                    $this->db->set('item_categories_categoryid', $category['category_id']);
+                    if ($category['item_categories_id'] > 0) {
+                        $this->db->where('item_categories_id', $category['item_categories_id']);
+                        $this->db->update('sb_item_categories');
+                    } else {
+                        $this->db->set('item_categories_itemid', $item_id);
+                        $this->db->insert('sb_item_categories');
                     }
                 }
             }
@@ -1699,37 +1079,37 @@ Class Sritems_model extends My_Model
                     $numpp++;
                 }
             }
-            // Option images
-            if ($item['option_images']==0) {
-                // Delete old images
-                $this->db->where('item_id', $item_id);
-                $this->db->delete('sb_itemoption_images');
-            } else {
-                $optionimages = $sessiondata['option_images'];
-                foreach ($optionimages as $optionimage) {
-                    if (stripos($optionimage['item_img_name'], $preload_sh)!==FALSE) {
-                        $optimg_src = str_replace($preload_sh, '', $optionimage['item_img_name']);
-                        $cpres = @copy($preload_fl.$optimg_src, $itemimg_fl.$optimg_src);
+            // Colors
+            $colors = $sessiondata['colors'];
+            foreach ($colors as $color) {
+                if (empty($color['item_color'])) {
+                    if ($color['item_color_id'] > 0) {
+                        $this->db->where('item_color_id', $color['item_color_id']);
+                        $this->db->delete('sb_item_colors');
+                    }
+                } else {
+                    if (!empty($color['item_color_image']) && stripos($color['item_color_image'], $preload_sh)) {
+                        $img_src = str_replace($preload_sh, '', $color['item_color_image']);
+                        $cpres = @copy($preload_fl . $img_src, $itemimg_fl . $img_src);
                         if ($cpres) {
-                            $optionimage['item_img_name'] = $itemimg_sh.$optimg_src;
+                            $color['item_color_image'] = $itemimg_sh . $img_src;
                         } else {
-                            $optionimage['item_img_name'] = NULL;
+                            $color['item_color_image'] = '';
                         }
                     }
-                    if (!empty($optionimage['item_img_name'])) {
-                        $this->db->set('image_url', $optionimage['item_img_name']);
-                        $this->db->set('image_label', $optionimage['item_img_label']);
-                        $this->db->set('image_order', $optionimage['item_img_order']);
-                        if ($optionimage['item_img_id'] > 0) {
-                            $this->db->where('itemoption_image_id', $optionimage['item_img_id']);
-                            $this->db->update('sb_itemoption_images');
-                        } else {
-                            $this->db->set('item_id', $item_id);
-                            $this->db->insert('sb_itemoption_images');
-                        }
+                    $this->db->set('item_color', $color['item_color']);
+                    $this->db->set('item_color_image', $color['item_color_image']);
+                    $this->db->set('item_color_order', $color['item_color_order']);
+                    if ($color['item_color_id'] > 0) {
+                        $this->db->where('item_color_id', $color['item_color_id']);
+                        $this->db->update('sb_item_colors');
+                    } else {
+                        $this->db->set('item_color_itemid', $item_id);
+                        $this->db->insert('sb_item_colors');
                     }
                 }
             }
+            // Vector template
             if (empty($item['item_vector_img'])) {
                 $this->db->where('item_id', $item_id);
                 $this->db->set('item_vector_img', null);
@@ -1747,7 +1127,6 @@ Class Sritems_model extends My_Model
                     }
                 }
             }
-
             // Similar
             $similars = $sessiondata['similar'];
             foreach ($similars as $similar) {
@@ -1885,6 +1264,7 @@ Class Sritems_model extends My_Model
                     }
                 }
             }
+            // Remove objects
             $deletes = $sessiondata['deleted'];
             foreach ($deletes as $deleterow) {
                 if ($deleterow['entity']=='images') {
@@ -1893,6 +1273,9 @@ Class Sritems_model extends My_Model
                 } elseif ($deleterow['entity']=='inprints') {
                     $this->db->where('item_inprint_id', $deleterow['id']);
                     $this->db->delete('sb_item_inprints');
+                } elseif ($deleterow['entity']=='colors') {
+                    $this->db->where('item_color_id', $deleterow['id']);
+                    $this->db->delete('sb_item_colors');
                 }
             }
         }
@@ -1902,87 +1285,6 @@ Class Sritems_model extends My_Model
         return $out;
     }
 
-    private function _recalc_prices($item, $prices) {
-        // Item Prices
-        if (empty($item['price_discount'])) {
-            $idx = 0;
-            foreach ($prices as $price) {
-                $prices[$idx]['sale_price'] = '';
-                $idx++;
-            }
-        } else {
-            $idx = 0;
-            foreach ($prices as $price) {
-                if ($price['price']!='') {
-                    $prices[$idx]['sale_price'] = round($price['price']*(100-$item['price_discount_val'])/100,3);
-                }
-                $idx++;
-            }
-        }
-        // Print
-        if (empty($item['print_discount'])) {
-            $item['item_sale_print'] = '';
-        } else {
-            if ($item['item_price_print']=='') {
-                $item['item_sale_print'] = '';
-            } else {
-                $item['item_sale_print'] = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
-            }
-        }
-        // Setup
-        if (empty($item['setup_discount'])) {
-            $item['item_sale_setup'] = '';
-        } else {
-            if ($item['item_price_setup']=='') {
-                $item['item_sale_setup'] = '';
-            } else {
-                $item['item_sale_setup'] = round(floatval($item['item_price_setup'])*(100-floatval($item['setup_discount_val']))/100, 3);
-            }
-        }
-        // Repeat
-        if (empty($item['repeat_discount'])) {
-            $item['item_sale_repeat'] = '';
-        } else {
-            if ($item['item_price_repeat']=='') {
-                $item['item_sale_repeat'] = '';
-            } else {
-                $item['item_sale_repeat'] = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
-            }
-        }
-        // Rush
-        if (empty($item['rush1_discount'])) {
-            $item['item_sale_rush1'] = '';
-        } else {
-            if ($item['item_price_rush1']=='') {
-                $item['item_sale_rush1'] = '';
-            } else {
-                $item['item_sale_rush1'] = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
-            }
-        }
-        if (empty($item['rush2_discount'])) {
-            $item['item_sale_rush2'] = '';
-        } else {
-            if ($item['item_price_rush2']=='') {
-                $item['item_sale_rush2'] = '';
-            } else {
-                $item['item_sale_rush2'] = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
-            }
-        }
-        // Pantone
-        if (empty($item['pantone_discount'])) {
-            $item['item_sale_pantone'] = '';
-        } else {
-            if ($item['item_price_pantone']=='') {
-                $item['item_sale_pantone'] = '';
-            } else {
-                $item['item_sale_pantone'] = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
-            }
-        }
-        return [
-            'item' => $item,
-            'prices' => $prices,
-        ];
-    }
 
     // Recalc Promo Profit
     private function _recalc_promo_profit($prices, $vendprices, $commonprices)
@@ -2128,18 +1430,19 @@ Class Sritems_model extends My_Model
                             $row['vendprice'] = $qrow['vendorprice_color'];
                         }
                     }
-                    if (floatval($row['vendprice']) != 0) {
+                    // if (floatval($row['vendprice']) != 0) {
                         $profit = ($row['base_cost'] - $row['vendprice']) * $row['base'];
+                        // $profit_perc = $profit / ($row['base_cost'] * $row['base']) * 100;
                         $row['profit'] = round($profit, 0);
-                        $row['profit_perc'] = round($profit / ($row['base_cost'] * $row['base']) * 100, 0);
+                        $row['profit_perc'] = round($profit / ($row['base_cost'] * $row['base']) * 100, 1);
                         $row['profit_class'] = profit_bgclass($row['profit_perc']);
-                    }
+                    //}
                 } else {
-                    if (floatval($row['vendprice']) != 0) {
+                    // if (floatval($row['vendprice']) != 0) {
                         $row['profit'] = round($row['base_cost'] - $row['vendprice'], 2);
-                        $row['profit_perc'] = round($row['profit'] / ($row['base_cost']) * 100, 0);
+                        $row['profit_perc'] = round($row['profit'] / ($row['base_cost']) * 100, 1);
                         $row['profit_class'] = profit_bgclass($row['profit_perc']);
-                    }
+                    // }
                 }
             }
             $out[] = $row;
@@ -2247,6 +1550,14 @@ Class Sritems_model extends My_Model
         }
         if ($item['item_id']<=0 && (empty($item['category_id']) || empty($item['item_number']))) {
             array_push($errmsg, 'Item Number empty');
+        }
+        if ($item['option_images']==1) {
+            $colors = $sessiondata['colors'];
+            foreach ($colors as $color) {
+                if (!empty($color['item_color']) && empty($color['item_color_image'])) {
+                    array_push($errmsg, 'Option '.$color['item_color'].' - empty Image');
+                }
+            }
         }
         if (count($errmsg) > 0) {
             $out['result'] = $this->error_result;

@@ -10,29 +10,41 @@ Class Items_model extends My_Model
         parent::__construct();
     }
 
-    public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
-        $this->db->select('count(i.item_id) as cnt',FALSE);
+    public function count_searchres($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
         $this->db->from('sb_items i');
-        if ($vendor_id) {
+        if (ifset($options, 'vendor_id','')!=='') {
             $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
-            $this->db->where('v.vendor_item_vendor',$vendor_id);
+            $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
         }
-        if ($brand!=='ALL') {
-            $this->db->where('i.brand', $brand);
+        if ($options['brand']!=='ALL') {
+            $this->db->where('i.brand', $options['brand']);
         }
-        if (!empty($search)) {
-            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+        if (ifset($options, 'search','')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
             $this->db->where($where);
         }
-        if ($itemstatus!=0) {
-            if ($itemstatus==1) {
+        if (ifset($options,'itemstatus',0)!=0) {
+            if ($options['itemstatus']==1) {
                 $this->db->where('i.item_active',1);
             } else {
                 $this->db->where('i.item_active',0);
             }
         }
-        $res=$this->db->get()->row_array();
-        return $res['cnt'];
+        if (ifset($options,'category',0) > 0) {
+            $this->db->where('i.category_id',$options['category']);
+        }
+        if (ifset($options,'missinfo','0')!=0) {
+            $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+            $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings>0');
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return count($res);
     }
 
     public function update_imprint_update($data) {
@@ -589,7 +601,7 @@ Class Items_model extends My_Model
 
     public function get_itemlists($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
+        $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
         $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
@@ -612,6 +624,16 @@ Class Items_model extends My_Model
                 $this->db->where('i.item_active', 0);
             }
         }
+        if (ifset($options,'category_id',0)>0) {
+            $this->db->where('i.category_id', $options['category_id']);
+        }
+        if (ifset($options,'missinfo',0)>0) {
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings > 0');
+            }
+        }
         $order_by = ifset($options, 'order_by','item_id');
         $direc = ifset($options, 'direct','asc');
         $this->db->order_by($order_by, $direc);
@@ -628,22 +650,19 @@ Class Items_model extends My_Model
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {
-            $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
-            $item['category1']=$item['category2']=$item['category3']='';
-            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid');
+            // $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
+            $category = '';
+            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid,c.category_leftnavig as category_name');
             $this->db->from('sb_item_categories ic');
+            $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
             $this->db->where('ic.item_categories_itemid',$item['item_id']);
-            $categ=$this->db->get()->result_array();
-            $i=1;
-            foreach ($categ as $cat) {
-                $item['category'.$i]=$cat['item_categories_categoryid'];
-                $i++;
-                if ($i>3) {
-                    break;
-                }
+            $categ=$this->db->get()->row_array();
+            if (ifset($categ,'item_categories_id',0) > 0) {
+                $category = $categ['category_name'];
             }
-            $item['misinfo_class'] = ($item['missings']==0 ? '' : 'missing');
-            $item['misinfo_name'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
+            $item['category'] = $category;
+            $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
+            $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['misinfo_content'] = '';
             if ($item['missings']>0) {
                 $this->db->select('*');
@@ -652,7 +671,15 @@ Class Items_model extends My_Model
                 $misdata = $this->db->get()->row_array();
                 $item['misinfo_content'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
             }
+            $item['status'] = $item['item_active']==1 ? 'Active' : 'Inactve';
+            $item['rowclass'] = $item['item_active']==1 ? '' : 'inactive';
             $item['numpp'] = $numpp;
+            // Bluetrack
+            $item['vendorclass'] = '';
+            if ($item['vendor_code']=='50000') {
+                $item['vendor']='INTERNAL';
+                $item['vendorclass']='internal';
+            }
             $numpp++;
             $out[] = $item;
         }
@@ -664,6 +691,8 @@ Class Items_model extends My_Model
         $item = [
             'item_id' => -1,
             'item_number' => '',
+            'item_numberone' => '',
+            'item_numbersec' => '',
             'item_name' => '',
             'item_active' => 1,
             'item_new' => 0,
@@ -867,13 +896,22 @@ Class Items_model extends My_Model
             ];
         }
         $colors = [];
-        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
-            $idx = ($i + 1) * (-1);
-            $colors[] = [
-                'item_color_id' => $idx,
-                'item_color' => '',
+//        for ($i=0; $i<$this->config->item('item_colors'); $i++) {
+//            $idx = ($i + 1) * (-1);
+//            $colors[] = [
+//                'item_color_id' => $idx,
+//                'item_color' => '',
+//            ];
+//        }
+        $categor = [];
+        for ($i=0; $i<3; $i++) {
+            $categor[] = [
+                'item_categories_id' => $i*(-1),
+                'category_id' => '',
+                'category_name' => '',
             ];
         }
+
         $shipboxes = [];
         for ($i=0; $i<3; $i++) {
             $shipboxes[] = [
@@ -896,6 +934,7 @@ Class Items_model extends My_Model
             'prices' => $prices,
             'similar' => $similar,
             'shipboxes' => $shipboxes,
+            'categories' => $categor,
             'deleted' => [],
         ];
         // $out['data'] = $data;
@@ -905,8 +944,9 @@ Class Items_model extends My_Model
 
     public function get_itemlist_details($item_id, $editmode = 0) {
         $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
-        $this->db->select('i.*');
+        $this->db->select('i.*, c.category_name');
         $this->db->from('sb_items i');
+        $this->db->join('sr_categories c','c.category_id=i.category_id');
         $this->db->where('item_id', $item_id);
         $item = $this->db->get()->row_array();
         if (ifset($item, 'item_id',0)==$item_id) {
@@ -918,52 +958,69 @@ Class Items_model extends My_Model
             $this->load->model('similars_model');
             $this->load->model('itemcolors_model');
             $this->load->model('shipping_model');
+            $this->load->model('categories_model');
             // Discounts
             $def_discount = 0;
-            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
-            $item['repeat_discount_val'] = $item['rush1_discount_val'] = $item['rush2_discount_val'] = $item['pantone_discount_val'] = $def_discount;
-            if (!empty($item['price_discount'])) {
-                $disc = $this->prices_model->get_discount($item['price_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['price_discount_val'] = $disc['discount']['discount_val'];
+//            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
+//            $item['repeat_discount_val'] = $item['rush1_discount_val'] = $item['rush2_discount_val'] = $item['pantone_discount_val'] = $def_discount;
+//            if (!empty($item['price_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['price_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['price_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['print_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['print_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['print_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['setup_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['setup_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['setup_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['repeat_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['repeat_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['repeat_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['rush1_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['rush1_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['rush1_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['rush2_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['rush2_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['rush2_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+//            if (!empty($item['pantone_discount'])) {
+//                $disc = $this->prices_model->get_discount($item['pantone_discount']);
+//                if ($disc['result']==$this->success_result) {
+//                    $item['pantone_discount_val'] = $disc['discount']['discount_val'];
+//                }
+//            }
+            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid as category_id, c.category_leftnavig as category_name');
+            $this->db->from('sb_item_categories ic');
+            $this->db->join('sb_categories c','ic.item_categories_categoryid = c.category_id');
+            $this->db->where('ic.item_categories_itemid', $item_id);
+            $this->db->limit(3);
+            $categor = $this->db->get()->result_array();
+            if (count($categor)<3) {
+                for ($i=count($categor); $i<3; $i++) {
+                    $categor[] = [
+                        'item_categories_id' => $i*(-1),
+                        'category_id' => '',
+                        'category_name' => '',
+                    ];
                 }
             }
-            if (!empty($item['print_discount'])) {
-                $disc = $this->prices_model->get_discount($item['print_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['print_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['setup_discount'])) {
-                $disc = $this->prices_model->get_discount($item['setup_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['setup_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['repeat_discount'])) {
-                $disc = $this->prices_model->get_discount($item['repeat_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['repeat_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['rush1_discount'])) {
-                $disc = $this->prices_model->get_discount($item['rush1_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['rush1_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['rush2_discount'])) {
-                $disc = $this->prices_model->get_discount($item['rush2_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['rush2_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
-            if (!empty($item['pantone_discount'])) {
-                $disc = $this->prices_model->get_discount($item['pantone_discount']);
-                if ($disc['result']==$this->success_result) {
-                    $item['pantone_discount_val'] = $disc['discount']['discount_val'];
-                }
-            }
+            $categories = $this->categories_model->get_categories_list();
             // Colors
             $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
             $colors = [];
@@ -972,18 +1029,21 @@ Class Items_model extends My_Model
                 $colors[] = [
                     'item_color_id' => $itmcolor['item_color_id'],
                     'item_color' => $itmcolor['item_color'],
+                    'item_color_image' => $itmcolor['item_color_image'],
+                    'item_color_order' => $numpp+1,
                 ];
                 $numpp++;
             }
-            if ($numpp < 9 ) {
-                for ($i=$numpp; $i < 9 ; $i++) {
-                    $colors[] = [
-                        'item_color_id' => $i*(-1),
-                        'item_color_itemid' => $item_id,
-                        'item_color' => '',
-                    ];
-                }
-            }
+
+//            if ($numpp < 9 ) {
+//                for ($i=$numpp; $i < 9 ; $i++) {
+//                    $colors[] = [
+//                        'item_color_id' => $i*(-1),
+//                        'item_color_itemid' => $item_id,
+//                        'item_color' => '',
+//                    ];
+//                }
+//            }
             // Vendor Info
             $pricesmax = $this->config->item('prices_val');
             $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
@@ -1090,11 +1150,11 @@ Class Items_model extends My_Model
                 }
             }
             // Options images
-            if ($item['option_images']==0) {
-                $option_images = [];
-            } else {
-                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
-            }
+//            if ($item['option_images']==0) {
+//                $option_images = [];
+//            } else {
+//                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
+//            }
             $imprints = $this->imprints_model->get_imprint_item($item_id);
             $priceres = $this->prices_model->get_itemlist_price($item_id);
             $prices = [];
@@ -1116,7 +1176,7 @@ Class Items_model extends My_Model
                     'shipbox' => $price['shipbox'],
                     'shipweight' => $price['shipweight'],
                     'profit_class' => $profitclass,
-                    'profit_perc' => (empty($profitperc) ? $profitperc : $profitperc.'%'),
+                    'profit_perc' => $profitperc,
                 ];
                 $numpp++;
                 if ($numpp > $pricesmax) {
@@ -1153,12 +1213,13 @@ Class Items_model extends My_Model
             // config
             $data=[
                 'item' => $item,
+                'categories' => $categor,
                 'colors' => $colors,
                 'vendor' => $vendor,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,
-                'option_images' => $option_images,
+                // 'option_images' => $option_images,
                 'inprints' => $imprints,
                 'prices' => $prices,
                 'similar' => $similar,
@@ -1168,6 +1229,54 @@ Class Items_model extends My_Model
             $out['data'] = $data;
         }
         return $out;
+    }
+
+    public function get_item_mainimage($item_id) {
+        $out=array('result'=>  $this->error_result, 'msg'=>'Item Not Found');
+        $this->db->select('item_id, main_image');
+        $this->db->from('sb_items');
+        $this->db->where('item_id', $item_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['item_id'])) {
+            $out['msg']='Image Not Found';
+            return $out;
+        }
+        $path_sh=$this->config->item('itemimages_relative');
+        $path_fl=$this->config->item('itemimages');
+        $source=$res['main_image'];
+        $filesource=  str_replace($path_sh, $path_fl, $source);
+        if (!file_exists($filesource)) {
+            $out['msg']='Source File '.$filesource.' Not Found ';
+            return $out;
+        }
+        $viewopt=array(
+            'source'=>$source,
+        );
+        list($width, $height, $type, $attr) = getimagesize($filesource);
+        // Rate
+        if ($width >= $height) {
+            if ($width<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$width;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        } else {
+            if ($height<=200) {
+                $viewopt['width']=$width;
+                $viewopt['height']=$height;
+            } else {
+                $rate=200/$height;
+                $viewopt['width']=ceil($width*$rate);
+                $viewopt['height']=ceil($height*$rate);
+            }
+        }
+        $out['result']=$this->success_result;
+        $out['viewoptions']=$viewopt;
+        return $out;
+
     }
 
 }
