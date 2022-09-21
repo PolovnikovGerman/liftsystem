@@ -148,7 +148,7 @@ class Dbitems extends MY_Controller
                 }
                 // Key info
 
-                $subcategories = $this->categories_model->get_categories();
+                $subcategories = $this->categories_model->get_categories(['show_dropdown'=>2]);
                 $this->load->model('prices_model');
                 // $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
