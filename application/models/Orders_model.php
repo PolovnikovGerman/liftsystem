@@ -7630,11 +7630,11 @@ Class Orders_model extends MY_Model
         if ($ownsort=='owntype') {
             if ($owndirec=='asc') {
                 usort($owns, function ($item1, $item2) {
-                    return $item2['type'] <=> $item1['type'];
+                    return $item1['type'] <=> $item2['type'];
                 });
             } else {
                 usort($owns, function ($item1, $item2) {
-                    return $item1['type'] <=> $item2['type'];
+                    return $item2['type'] <=> $item1['type'];
                 });
             }
         }
