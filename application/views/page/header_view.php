@@ -30,7 +30,7 @@
             <?php if ($inventorychk) { ?>
                 <div class="inforeports" id="inventory">
                     <div class="icon" title="Inventory">
-                        <img src="/img/icons/inventory.svg" class="img-responsive"/>
+                        <img src="/img/icons/inventory-white.svg" class="img-responsive"/>
                     </div>
                     <!-- <div class="infotext">Reports</div> -->
                 </div>
