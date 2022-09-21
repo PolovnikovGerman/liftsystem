@@ -43,6 +43,9 @@ $(document).ready(function () {
     $("#publicdescsearch_btn").unbind('click').click(function () {
         liftsite_search('desktop');
     })
+    $("#inventory").unbind('click').click(function () {
+        window.location.href='/fulfillment?start=printshopinventview';
+    })
     // $("select.publicsearch_type").unbind('change').change(function(){
     //     var newval = $(this).val();
     //     if (newval=='Orders') {

@@ -133,6 +133,8 @@ body div {
 }
 .publicsearch {
     margin-left: 5px;
+    /* Compensation for magnif.icon */
+    margin-right: -16px;
 }
 .publicsearch > select.publicsearch_type {
     height: 29px;
