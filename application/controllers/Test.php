@@ -956,6 +956,35 @@ class Test extends CI_Controller
 
     }
 
+    public function customattach() {
+        $this->db->select('q.custom_quote_id, l.lead_id');
+        $this->db->from('ts_custom_quotes q');
+        $this->db->join('ts_lead_emails le','q.custom_quote_id = le.custom_quote_id');
+        $this->db->join('ts_leads l','le.lead_id = l.lead_id');
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Custom ID '.$dat['custom_quote_id'].PHP_EOL;
+            $this->db->select('*');
+            $this->db->from('ts_customquote_attachment');
+            $this->db->where('custom_quote_id', $dat['custom_quote_id']);
+            $customattachs = $this->db->get()->result_array();
+            // Get attach to lead
+            $this->db->select('*');
+            $this->db->from('ts_lead_attachs');
+            $this->db->where('lead_id', $dat['lead_id']);
+            $leadattachs = $this->db->get()->result_array();
+            if (count($customattachs)>0 && count($leadattachs)==0) {
+                foreach ($customattachs as $customattach) {
+                    $this->db->set('lead_id', $dat['lead_id']);
+                    $this->db->set('source_name', $customattach['source_name']);
+                    $this->db->set('attachment', $customattach['attachment']);
+                    $this->db->set('quoteattach', 1);
+                    $this->db->insert('ts_lead_attachs');
+                }
+            }
+        }
+    }
+
     public function addinventory() {
         $lbsitem=[5,10, 16, 23];
         $yrditem=[4,11, 15, 21];
