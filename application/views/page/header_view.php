@@ -12,14 +12,6 @@
                     <img src="/img/page_view/lift_logo.png"/>
                 </div>
             </div>
-            <?php if ($reportchk) { ?>
-                <div class="inforeports" id="reports">
-                    <div class="icon" title="Reports">
-                        <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
-                    </div>
-<!--                    <div class="infotext">Reports</div>-->
-                </div>
-            <?php } ?>
             <div class="period_analitic_info"><?=$total_view?></div>
             <div class="publicsearch">
                 <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
@@ -27,6 +19,22 @@
                     <img src="/img/page_view/search_icon_blue.png"/>
                 </div>
             </div>
+            <?php if ($reportchk) { ?>
+                <div class="inforeports" id="reports">
+                    <div class="icon" title="Reports">
+                        <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                    </div>
+                    <div class="infotext">Reports</div>
+                </div>
+            <?php } ?>
+            <?php if ($inventorychk) { ?>
+                <div class="inforeports" id="inventory">
+                    <div class="icon" title="Inventory">
+                        <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
+                    </div>
+                    <!-- <div class="infotext">Reports</div> -->
+                </div>
+            <?php } ?>
         </div>
         <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
             <div class="row">

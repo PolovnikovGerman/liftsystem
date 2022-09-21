@@ -1031,7 +1031,10 @@ class Art extends MY_Controller {
             }
         }
         /* Add Location View */
-        $addlocat=$this->load->view('artpage/artwork_advancedadd_view',array('artwork'=>$artwork_id),TRUE);
+        // get number of attached files
+        $attachs = $this->artwork_model->get_attached_logos($artwork['mail_id']);
+        $numatt = count($attachs);
+        $addlocat=$this->load->view('artpage/artwork_advancedadd_view',array('artwork'=>$artwork_id,'attachs'=>$numatt),TRUE);
 
         $artshead=$this->load->view('artpage/arts_head_view',array(),TRUE);
 

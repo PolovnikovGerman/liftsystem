@@ -117,6 +117,14 @@ class Template
             }
         }
 
+        // Inventory
+        $inventory_permissions = 0;
+        $inventory_old = 1;
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview');
+        if ($inventorychk['result']==$this->success_result) {
+            $inventory_permissions = 1;
+            $inventory_old = $inventorychk['menuitem']['newver'];
+        }
 //        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
 //        if ($alertchk['result']==$this->success_result) {
 //            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
@@ -153,6 +161,8 @@ class Template
             'reportsold' => $reports_old,
             'resourcechk' => $resource_permissions,
             'resourceold' => $resource_old,
+            'inventorychk' => $inventory_permissions,
+            'inventoryold' => $inventory_old,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
