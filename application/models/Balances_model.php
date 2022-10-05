@@ -3163,7 +3163,11 @@ class Balances_model extends My_Model
         }
         $diffpayroll=round($placepayroll-$prvyear_netdata['payroll'],0);
         if ($diffpayroll!=0) {
-            $diffpayroll_prc=round($diffpayroll/$prvyear_netdata['payroll']*100,0);
+            if ($prvyear_netdata['payroll']==0) {
+                $diffpayroll_prc=100;
+            } else {
+                $diffpayroll_prc=round($diffpayroll/$prvyear_netdata['payroll']*100,0);
+            }
             $diffpayroll_class=($diffpayroll<0 ? 'negative' : '');
 
             $compare['payroll']=array(
