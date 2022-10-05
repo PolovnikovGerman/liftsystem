@@ -1,3 +1,4 @@
+<div class="tq_total">&nbsp;</div>
 <div class="cell_running_total">Running Total:</div>
 <div class="cell_sales"><?= $out_sales ?></div>
 <div class="cell_revenue"><?= $out_revenue ?></div>
