@@ -1,5 +1,4 @@
 <input id="detailssession" type="hidden" value="<?=$session?>"/>
-<div class="tax_quarter">&nbsp;</div>
 <div class="cell_buttonedit">
     <div class="but-accept">
         <a href="javascript:void(0);" id="netprofitdetailsave"><img src="/img/icons/accept.png"/></a>

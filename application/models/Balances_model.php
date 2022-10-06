@@ -3087,7 +3087,7 @@ class Balances_model extends My_Model
         $diffexpens=round($placeexpens-$prv_expenses,0);
         if ($diffexpens!=0) {
             if ($prv_expenses==0) {
-                $diffexpens_prc = 100;
+                $diffexpens_prc = $diffexpens > 0 ? 100 : -100;
             } else {
                 $diffexpens_prc=round($diffexpens/$prv_expenses*100,0);
             }
@@ -3113,7 +3113,11 @@ class Balances_model extends My_Model
         }
         $diffoperating=round($placeoperating-$prvyear_netdata['operating'],0);
         if ($diffoperating!=0) {
-            $diffoperating_prc=round($diffoperating/$prvyear_netdata['operating']*100,0);
+            if ($prvyear_netdata['operating']==0) {
+                $diffoperating_prc = $diffoperating > 0 ? 100 : -100;
+            } else {
+                $diffoperating_prc=round($diffoperating/$prvyear_netdata['operating']*100,0);
+            }
             $diffoperating_class=($diffoperating<0 ? 'negative' : '');
 
             $compare['operating']=array(
@@ -3137,9 +3141,9 @@ class Balances_model extends My_Model
         $diffadvertising=round($placeadvertising-$prvyear_netdata['advertising'],0);
         if ($diffadvertising!=0) {
             if ($prvyear_netdata['advertising']==0) {
-                $diffadvertising_prc=100;
+                $diffadvertising_prc = $diffadvertising > 0 ? 100 : -100;
             } else {
-                $diffadvertising_prc=round($diffadvertising/$prvyear_netdata['advertising']*100,0);
+                $diffadvertising_prc = round($diffadvertising/$prvyear_netdata['advertising']*100,0);
             }
             $diffadvertising_class=($diffadvertising<0 ? 'negative' : '');
 
@@ -3163,7 +3167,11 @@ class Balances_model extends My_Model
         }
         $diffpayroll=round($placepayroll-$prvyear_netdata['payroll'],0);
         if ($diffpayroll!=0) {
-            $diffpayroll_prc=round($diffpayroll/$prvyear_netdata['payroll']*100,0);
+            if ($prvyear_netdata['payroll']==0) {
+                $diffpayroll_prc = $diffpayroll > 0 ? 100 : -100;
+            } else {
+                $diffpayroll_prc=round($diffpayroll/$prvyear_netdata['payroll']*100,0);
+            }
             $diffpayroll_class=($diffpayroll<0 ? 'negative' : '');
 
             $compare['payroll']=array(
@@ -3187,7 +3195,7 @@ class Balances_model extends My_Model
         $diffodesk=round($placeodesk-$prvyear_netdata['odesk'],0);
         if ($diffodesk!=0) {
             if ($prvyear_netdata['odesk']==0) {
-                $diffodesk_prc=100;
+                $diffodesk_prc = $diffodesk > 0 ? 100 : -100;
             } else {
                 $diffodesk_prc=round($diffodesk/$prvyear_netdata['odesk']*100,0);
             }
@@ -3213,7 +3221,7 @@ class Balances_model extends My_Model
         $diffw9=round($placew9-$prvyear_netdata['profitw9'],0);
         if ($diffw9!=0) {
             if ($prvyear_netdata['profitw9']==0) {
-                $diffw9_prc=100;
+                $diffw9_prc= $diffw9 > 0 ? 100 : -100;
             } else {
                 $diffw9_prc=round($diffw9/$prvyear_netdata['profitw9']*100,0);
             }
@@ -3238,7 +3246,11 @@ class Balances_model extends My_Model
         }
         $diffpurchases=round($placepurchases-$prvyear_netdata['purchases'],0);
         if ($diffpurchases!=0) {
-            $diffpurchases_prc=round($diffpurchases/$prvyear_netdata['purchases']*100,0);
+            if ($prvyear_netdata['purchases']==0) {
+                $diffpurchases_prc=$diffpurchases > 0 ? 100 : -100;
+            } else {
+                $diffpurchases_prc=round($diffpurchases/$prvyear_netdata['purchases']*100,0);
+            }
             $diffpurchases_class=($diffpurchases<0 ? 'negative' : '');
 
             $compare['purchases']=array(
@@ -3257,7 +3269,11 @@ class Balances_model extends My_Model
         $placenetprofit=$placeprofit-$placeexpens;
         $diffnetprofit=round($placenetprofit-($prvyear_orders['gross_profit']-$prv_expenses),0);
         if ($diffnetprofit!=0) {
-            $diffnetprofit_prc=round($diffnetprofit/($prvyear_orders['gross_profit']-$prv_expenses)*100,0);
+            if (($prvyear_orders['gross_profit']-$prv_expenses) ==0) {
+                $diffnetprofit_prc= $diffnetprofit > 0 ? 100 : -100;
+            }  else {
+                $diffnetprofit_prc=round($diffnetprofit/($prvyear_orders['gross_profit']-$prv_expenses)*100,0);
+            }
             $diffnetprofit_class=($diffnetprofit<0 ? 'negative' : '');
 
             $compare['netprofit']=array(
@@ -3275,7 +3291,12 @@ class Balances_model extends My_Model
         if ($placerevenue!=0) {
             $currevenprc=round($placenetprofit/$placerevenue*100,0);
         }
-        $prvrevenprc=round(($prvyear_orders['gross_profit']-$prv_expenses)/$prvyear_orders['revenue']*100);
+        if ($prvyear_orders['revenue']==0) {
+            $prvrevenprc=($prvyear_orders['gross_profit']-$prv_expenses) > 0 ? 100 : -100;
+        } else {
+            $prvrevenprc=round(($prvyear_orders['gross_profit']-$prv_expenses)/$prvyear_orders['revenue']*100);
+        }
+
         $diffrevgrow=round($currevenprc-$prvrevenprc,0);
         if ($diffrevgrow!=0) {
             $compare['revenuegrow']=array(
