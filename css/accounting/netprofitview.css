@@ -176,7 +176,9 @@ select.weekselect {
     width: 63px;
 }
 .cell_purchases {
-    width: 86px;
+    /* width: 86px; */
+    width: 85px;
+    border-right: 1px solid #000000;
 }
 .cell_purchases2 {
     border-right: 1px solid;
