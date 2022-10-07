@@ -119,7 +119,11 @@ function init_questions_content() {
             $(this).removeClass("current_row");
         }
     );
-    $("div.quest_tabrow").click(function(){
+    $(".quest_numrec").unbind('click').click(function(){
+        var question = $(this).data('email');
+        showquestdetails(question);
+    })
+    $("div.questshowdetailsrow").click(function(){
         var question = $(this).data('email');
         showquestdetails(question);
     })
