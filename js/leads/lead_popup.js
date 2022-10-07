@@ -153,7 +153,35 @@ function init_leadpopupedit() {
             delete_lead_attachment(attachid);
         }
     });
-
+    if ($("#addleadattachment").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('addleadattachment'),
+            action: '/utils/save_leadattach',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $("li.qq-upload-success").hide();
+                    console.log(responseJSON);
+                    var params=new Array();
+                    params.push({name: 'session_id', value: $("#session_attach").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'src', value: responseJSON.source});
+                    var url=mainurl+"/lead_attachment_add";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $(".lead_popup_attachs").empty().html(response.data.content);
+                            init_leadpopupedit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
     /* Question */
     $("div.lead_popup_questchck").unbind('click').click(function(){
         show_questdetails(this);
@@ -250,7 +278,10 @@ function init_leadpopupedit() {
 
 function delete_lead_attachment(attachid) {
     var url=mainurl+"/lead_attachment_delete";
-    $.post(url,{'attach_id': attachid}, function (response) {
+    var params=new Array();
+    params.push({name: 'session_id', value: $("#session_attach").val()});
+    params.push({name: 'attach_id', value: attachid});
+    $.post(url,params, function (response) {
         if (response.errors=='') {
             $(".lead_popup_attachs").empty().html(response.data.content);
             init_leadpopupedit();
@@ -452,6 +483,7 @@ function save_lead() {
    var dat=$("form#leadeditform").serializeArray();
    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
    dat.push({name: 'session_id', value: $("#session").val()});
+   dat.push({name: 'session_attach', value: $("#session_attach").val()});
    var url=mainurl+"/save_lead";
    $.post(url, dat, function(response){
        if (response.errors=='') {
