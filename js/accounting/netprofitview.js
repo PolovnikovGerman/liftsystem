@@ -376,7 +376,8 @@ function edit_profdat(profit) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.cell_week2").unbind('click');
-            $("div#nerpr"+response.data.weekid).empty().html(response.data.content);
+            // $("div#nerpr"+response.data.weekid).empty().html(response.data.content);
+            $("div.netprofitdataeditarea[data-profit='"+profit+"']").empty().html(response.data.content);
             init_netprofitdetails_edit();
             $("#loader").hide();
         } else {

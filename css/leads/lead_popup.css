@@ -621,3 +621,17 @@ img.leadcalendbtn:hover {
     cursor: pointer;
     width: 18px;
 }
+/* Upload*/
+.btn-addfile {
+    float: right!important;
+    color: #fff;
+    font-size: 15px;
+    line-height: 28px;
+    height: 28px!important;
+    background: #5b5b5b!important;
+    border-radius: 7px;
+    padding: 0 12px;
+    cursor: pointer;
+    width: auto!important;
+    margin-top: 5px;
+}

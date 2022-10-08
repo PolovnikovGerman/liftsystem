@@ -32,7 +32,7 @@
                     <div class="icon" title="Inventory">
                         <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
                     </div>
-                    <!-- <div class="infotext">Reports</div> -->
+                    <div class="infotext">Inventory</div>
                 </div>
             <?php } ?>
         </div>

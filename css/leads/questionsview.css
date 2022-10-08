@@ -154,27 +154,27 @@ a.find_questbnt {
 .quest_tabrow.leadentered {
     color: #9A9695 !important;
 }
-.quest_tabrow > div {
+.quest_tabrow  div {
     height: 21px;
     line-height: 21px!important;
     text-align: center;
 }
-.quest_tabrow > .quest_numrec {
+.quest_tabrow .quest_numrec {
     width: 41px;
     border-right: 1px solid #2F2F2F;
 }
-.quest_tabrow > .quest_websys {
+.quest_tabrow .quest_websys_dat {
     width: 65px;
     border-right: 1px solid #2F2F2F;
 }
-.quest_tabrow > .quest_websys img {
+.quest_tabrow .quest_websys_dat img {
     width: 14px;
 }
-.quest_tabrow > .quest_status {
+.quest_tabrow .quest_status {
     width: 65px;
     border-right: 1px solid #2F2F2F;
 }
-.quest_tabrow > .quest_status.questassign {
+.quest_tabrow .quest_status.questassign {
     background: url(/img/art/assign_lead_btn.png) no-repeat scroll 7px 1px transparent;
     color: #FFFFFF;
 }
@@ -184,11 +184,11 @@ a.find_questbnt {
     line-height: 21px!important;
     text-align: center;
 }
-.quest_tabrow > .quest_date {
+.quest_tabrow .quest_date {
     width: 68px;
     border-right: 1px solid #2F2F2F;
 }
-.quest_tabrow > .quest_customname {
+.quest_tabrow .quest_customname {
     border-right: 1px solid #2F2F2F;
     text-align: left;
     padding-left: 5px;
@@ -197,7 +197,7 @@ a.find_questbnt {
     width:127px;
     text-overflow: ellipsis;
 }
-.quest_tabrow > .quest_custommail {
+.quest_tabrow .quest_custommail {
     border-right: 1px solid #2F2F2F;
     text-align: left;
     padding-left: 5px;
@@ -206,10 +206,10 @@ a.find_questbnt {
     width: 196px;
     text-overflow: ellipsis;
 }
-.quest_tabrow > .quest_custommail a, .quest_tabrow > .quest_custommail a:hover {
+.quest_tabrow .quest_custommail a, .quest_tabrow .quest_custommail a:hover {
     color: #0000FF!important;
 }
-.quest_tabrow > .quest_customphone {
+.quest_tabrow .quest_customphone {
     border-right: 1px solid #2F2F2F;
     text-align: left;
     padding-left: 5px;
@@ -218,12 +218,12 @@ a.find_questbnt {
     width: 92px;
     text-overflow: ellipsis;
 }
-.quest_tabrow > .quest_type {
+.quest_tabrow .quest_type {
     border-right: 1px solid #2F2F2F;
     /* height: 18px; */
     width:72px;
 }
-.quest_tabrow > .quest_text {
+.quest_tabrow .quest_text {
     border-right: 1px solid #2F2F2F;
     padding-left: 5px;
     text-align: left;
@@ -232,7 +232,7 @@ a.find_questbnt {
     width: 151px;
     text-overflow: ellipsis;
 }
-.quest_tabrow > .quest_webpage {
+.quest_tabrow .quest_webpage {
     padding-left: 5px;
     text-align: left;
     overflow: hidden;
