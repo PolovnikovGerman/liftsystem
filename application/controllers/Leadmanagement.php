@@ -93,6 +93,12 @@ class Leadmanagement extends MY_Controller
             // Save User Lead into session
             $session_id='leadusers'.uniq_link(10);
             usersession($session_id, $lead_replic);
+            $attachsess = 'leadattach'.uniq_link(10);
+            $leadattach = [
+                'lead_attach' => $leads_attach,
+                'deleted' => [],
+            ];
+            usersession($attachsess, $leadattach);
             $lead_data['other_item_label']='';
             if ($lead_data['lead_item']=='Other') {
                 $lead_data['other_item_label']='Type Other Item Here:';
@@ -153,6 +159,7 @@ class Leadmanagement extends MY_Controller
                 'items' => $items_list,
                 'attachs' => $leadattach_view,
                 'session_id'=>$session_id,
+                'session_attach' => $attachsess,
             );
             $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
             $mdata['title'] = 'Lead L'.$lead_data['lead_number'].' Details';
@@ -198,15 +205,37 @@ class Leadmanagement extends MY_Controller
     public function lead_attachment_delete() {
         if ($this->isAjax()) {
             $mdata=[];
-            $error = 'Attachment ID empty';
+            $error = 'Attachment session empty';
             $postdata = $this->input->post();
-            $attach_id = ifset($postdata,'attach_id',0);
-            if ($attach_id > 0) {
-                $res=$this->leads_model->attachment_remove($attach_id);
+            $session_id = ifset($postdata,'session_id','unkn');
+            $leadattachs = usersession($session_id);
+            if (!empty($leadattachs)) {
+                $res=$this->leads_model->attachment_remove($leadattachs, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $leads_attach = $this->leads_model->get_lead_attachs($res['lead_id']);
+                    $leads_attach = $res['attachs'];
+                    $mdata['content'] = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function lead_attachment_add() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Attachment session empty';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session_id','unkn');
+            $leadattachs = usersession($session_id);
+            if (!empty($leadattachs)) {
+                $res=$this->leads_model->attachment_add($leadattachs, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leads_attach = $res['attachs'];
                     $mdata['content'] = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
                 }
             }
@@ -313,6 +342,12 @@ class Leadmanagement extends MY_Controller
                 // Save User Lead into session
                 $session_id='leadusers'.uniq_link(10);
                 usersession($session_id, $lead_replic);
+                $attachsess = 'leadattach'.uniq_link(10);
+                $leadattach = [
+                    'lead_attach' => $leads_attach,
+                    'deleted' => [],
+                ];
+                usersession($attachsess, $leadattach);
                 $lead_data['other_item_label']='';
                 if ($lead_data['lead_item']=='Other') {
                     $lead_data['other_item_label']='Type Other Item Here:';
@@ -365,6 +400,7 @@ class Leadmanagement extends MY_Controller
                     'items' => $items_list,
                     'attachs' => $leadattach_view,
                     'session_id'=>$session_id,
+                    'session_attach' => $attachsess,
                 );
                 $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
                 $mdata['title'] = 'Lead L'.$lead_data['lead_number'].' Details';
@@ -505,6 +541,13 @@ class Leadmanagement extends MY_Controller
                         $lead['other_item_label']='Type Custom Items Here:';
                     }
                     $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
+                    $attachsess = 'leadattach'.uniq_link(10);
+                    $leadattach = [
+                        'lead_attach' => $leads_attach,
+                        'deleted' => [],
+                    ];
+                    usersession($attachsess, $leadattach);
+
                     $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
                     // Get Available Items
                     $items_list=$this->leads_model->items_list($lead['brand']);
@@ -521,6 +564,7 @@ class Leadmanagement extends MY_Controller
                         'items' => $items_list,
                         'attachs' => $leadattach_view,
                         'session_id'=>$session_id,
+                        'session_attach' => $attachsess,
                     );
                     $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
                     $error = '';
