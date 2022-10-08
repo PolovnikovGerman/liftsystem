@@ -154,9 +154,15 @@ function init_leadpopupedit() {
         }
     });
     if ($("#addleadattachment").length > 0) {
+        var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
+            '+ Add Attachment</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '<div class="clear"></div></div>';
+
         var uploader = new qq.FileUploader({
             element: document.getElementById('addleadattachment'),
             action: '/utils/save_leadattach',
+            template: qq_template,
             uploadButtonText: '',
             multiple: false,
             debug: false,
