@@ -938,6 +938,31 @@ class Leads extends My_Controller {
         }
     }
 
+    public function question_include() {
+        if ($this->isAjax()) {
+            $mdata=array();
+
+            $quest_id=$this->input->post('question_id');
+            $this->load->model('questions_model');
+            $questdat = $this->questions_model->get_quest_data($quest_id);
+            $error = $questdat['msg'];
+            if ($questdat['result']==$this->success_result) {
+                $quest = $questdat['data'];
+                $newval=($quest['email_include_lead']==1 ? 0 : 1 );
+                $res=$this->questions_model->question_include($quest_id,$newval);
+                $error=$res['msg'];
+                if ($res['result']==$this->error_result) {
+                    $error = '';
+                    $mdata['newicon']=$res['newicon'];
+                    $mdata['newclass']=$res['newclass'];
+                    $mdata['newmsg']=$res['newmsg'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function question_detail() {
         if ($this->isAjax()) {
             $mdata=array();

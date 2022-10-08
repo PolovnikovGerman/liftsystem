@@ -536,6 +536,37 @@ Class Leads_model extends MY_Model
                     $this->db->set('user_id',$row);
                     $this->db->insert('ts_lead_users');
                 }
+                // Attachments
+                $session_attach = ifset($leadpost,'session_attach','unkn');
+                $lead_attachs = usersession($session_attach);
+                $attachs = ifset($lead_attachs,'lead_attach', array());
+                $deleted = ifset($lead_attachs,'deleted', array());
+                $srcpath_sh = $this->config->item('pathpreload');
+                $srcpath_fl = $this->config->item('upload_path_preload');
+                $destpath_sh = $this->config->item('upload_customquote_relative');
+                $destpath_fl = $this->config->item('upload_customquote');
+
+                foreach ($attachs as $attach) {
+                    if ($attach['leadattch_id'] < 0 ) {
+                        $purefile = str_replace($srcpath_sh, '', $attach['attachment']);
+                        $srcfile = $srcpath_fl.$purefile;
+                        $destfile = $destpath_fl.$purefile;
+                        $res = @copy($srcfile, $destfile);
+                        if ($res) {
+                            // File copied successfully
+                            $this->db->set('lead_id', $leadpost['lead_id']);
+                            $this->db->set('source_name', $attach['source_name']);
+                            $this->db->set('attachment', $destpath_sh.$purefile);
+                            $this->db->set('quoteattach', $attach['quoteattach']);
+                            $this->db->insert('ts_lead_attachs');
+                        }
+                    }
+                }
+                foreach ($deleted as $row) {
+                    $this->db->where('leadattch_id', $row);
+                    $this->db->delete('ts_lead_attachs');
+                }
+                usersession($session_attach, null);
                 $out['msg']='';
                 $out['result']=$leadpost['lead_id'];
             }
@@ -2205,17 +2236,56 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
-    public function attachment_remove($attach_id) {
+    public function attachment_remove($leadattachs, $data, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Attachment not found'];
-        $this->db->select('*');
-        $this->db->from('ts_lead_attachs');
-        $this->db->where('leadattch_id', $attach_id);
-        $res = $this->db->get()->row_array();
-        if (ifset($res,'leadattch_id',0)==$attach_id) {
-            $this->db->where('leadattch_id', $attach_id);
-            $this->db->delete('ts_lead_attachs');
+        $attach_id = ifset($data,'attach_id',0);
+        if (!empty($attach_id)) {
+            $attachs = $leadattachs['lead_attach'];
+            $found = 0;
+            $newattach = [];
+            foreach ($attachs as $attach) {
+                if ($attach['leadattch_id']==$attach_id) {
+                    $found = 1;
+                } else {
+                    $newattach[] = $attach;
+                }
+            }
+            if ($found==1) {
+                $leadattachs['lead_attach'] = $newattach;
+                if ($attach_id > 0) {
+                    $deleted = $leadattachs['deleted'];
+                    array_push($deleted, $attach_id);
+                    $leadattachs['deleted'] = $deleted;
+                }
+                $out['result'] = $this->success_result;
+                $out['attachs'] = $newattach;
+                usersession($session_id, $leadattachs);
+            }
+        }
+        return $out;
+    }
+
+    public function attachment_add($leadattachs, $data, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Attachment not found'];
+        if (ifset($data,'newval','')!=='') {
+            $attachs = $leadattachs['lead_attach'];
+            $lastid = 0;
+            foreach ($attachs as $attach) {
+                if ($attach['leadattch_id'] < $lastid) {
+                    $lastid = $attach['leadattch_id'];
+                }
+            }
+            $lastid = $lastid - 1;
+            $attach[] = [
+                'leadattch_id' => $lastid,
+                'source_name' => ifset($data,'src','new_lead_attach'),
+                'attachment' => $data['newval'],
+                'quoteattach' => 0,
+            ];
+            $leadattachs['lead_attach'] = $attach;
             $out['result'] = $this->success_result;
-            $out['lead_id'] = $res['lead_id'];
+            $out['attachs'] = $attach;
+            usersession($session_id, $leadattachs);
         }
         return $out;
     }

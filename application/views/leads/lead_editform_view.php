@@ -6,6 +6,7 @@
     <input type="hidden" id="lead_item_id" value="<?=$data['lead_item_id']?>"/>
     <input type="hidden" id="brand" name="brand" value="<?=$data['brand']?>"/>
     <input type="hidden" id="session" value="<?=$session_id?>"/>
+    <input type="hidden" id="session_attach" value="<?=$session_attach?>"/>
     <div class="lead_popup_content">
         <div class="lead_popupform_row">
             <div class="lead_popup_number">Lead # <?=$data['lead_number']?></div>
@@ -114,6 +115,9 @@
                     <img src="/img/leads/add_proofrequest_btn.png" alt="Add Proof Request"/>
                 </div>
                 <div class="lead_popup_attachs"><?=$attachs?></div>
+                <?php if ($save_available==1) { ?>
+                    <div id="addleadattachment"></div>
+                <?php } ?>
             </div>
         </div>
         <div class="lead_popupform_row">
