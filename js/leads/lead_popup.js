@@ -164,7 +164,6 @@ function init_leadpopupedit() {
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $("li.qq-upload-success").hide();
-                    console.log(responseJSON);
                     var params=new Array();
                     params.push({name: 'session_id', value: $("#session_attach").val()});
                     params.push({name: 'newval', value: responseJSON.filename});
@@ -331,6 +330,7 @@ function add_proofrequest() {
         var dat=$("form#leadeditform").serializeArray();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
+        dat.push({name: 'session_attach', value: $("#session_attach").val()});
         $("#loader").show();
         $.ajax({
             url: url,
@@ -458,6 +458,7 @@ function duplicatelead() {
    // var lead_id=$("input#lead_id").val();
    var dat=$("form#leadeditform").serializeArray();
    dat.push({name:'session_id', value: $("#session").val()});
+   dat.push({name: 'session_attach', value: $("#session_attach").val()});
    var lead_number=$("div.lead_popup_number").text();
    if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
        var url=mainurl+"/dublicatelead";

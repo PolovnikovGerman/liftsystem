@@ -342,6 +342,12 @@ class Leadmanagement extends MY_Controller
                 // Save User Lead into session
                 $session_id='leadusers'.uniq_link(10);
                 usersession($session_id, $lead_replic);
+                $attachsess = 'leadattach'.uniq_link(10);
+                $leadattach = [
+                    'lead_attach' => $leads_attach,
+                    'deleted' => [],
+                ];
+                usersession($attachsess, $leadattach);
                 $lead_data['other_item_label']='';
                 if ($lead_data['lead_item']=='Other') {
                     $lead_data['other_item_label']='Type Other Item Here:';
@@ -394,6 +400,7 @@ class Leadmanagement extends MY_Controller
                     'items' => $items_list,
                     'attachs' => $leadattach_view,
                     'session_id'=>$session_id,
+                    'session_attach' => $attachsess,
                 );
                 $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
                 $mdata['title'] = 'Lead L'.$lead_data['lead_number'].' Details';
@@ -534,6 +541,13 @@ class Leadmanagement extends MY_Controller
                         $lead['other_item_label']='Type Custom Items Here:';
                     }
                     $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
+                    $attachsess = 'leadattach'.uniq_link(10);
+                    $leadattach = [
+                        'lead_attach' => $leads_attach,
+                        'deleted' => [],
+                    ];
+                    usersession($attachsess, $leadattach);
+
                     $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
                     // Get Available Items
                     $items_list=$this->leads_model->items_list($lead['brand']);
@@ -550,6 +564,7 @@ class Leadmanagement extends MY_Controller
                         'items' => $items_list,
                         'attachs' => $leadattach_view,
                         'session_id'=>$session_id,
+                        'session_attach' => $attachsess,
                     );
                     $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
                     $error = '';
