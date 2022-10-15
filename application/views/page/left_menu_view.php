@@ -3,10 +3,17 @@
     <div class="brandcontentmenu">
         <?php foreach ($permissions as $menu) { ?>
             <?php if ($menu['item_link']=='/marketing') { ?>
-                <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
-                    <div class="brandmenuicon"><img src="/img/page_view/noun-megaphone-white.svg"/></div>
-                    <div class="brandmenutitle">Marketing</div>
-                </div>
+                <?php if ($activelnk == $menu['item_link']) { ?>
+                    <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon active"><img src="/img/page_view/noun-megaphone-black.svg"/></div>
+                        <div class="brandmenutitle active">Marketing</div>
+                    </div>
+                <?php } else { ?>
+                    <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon"><img src="/img/page_view/noun-megaphone-white.svg"/></div>
+                        <div class="brandmenutitle">Marketing</div>
+                    </div>
+                <?php } ?>
             <?php } ?>
             <?php if ($menu['item_link']=='/leads') { ?>
                 <?php if ($activelnk == $menu['item_link']) { ?>

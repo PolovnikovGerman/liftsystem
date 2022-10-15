@@ -163,7 +163,7 @@ class Template
             $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         }
         $leftoptions = [
-            'brand' => 'stressballs',
+            'brand' => isset($options['brand']) ? $options['brand'] : 'SB',
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
         ];

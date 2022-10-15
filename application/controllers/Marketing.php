@@ -30,11 +30,12 @@ class Marketing extends MY_Controller
         $head = [];
         $head['title'] = 'Marketing';
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
 
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
+//        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+//        if (count($brands)==0) {
+//            redirect('/');
+//        }
 
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
@@ -44,82 +45,80 @@ class Marketing extends MY_Controller
                 // Search results by time
                 $head['styles'][]=array('style'=>'/css/marketing/searchestimeview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchestimeview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand);
             } elseif ($row['item_link']=='#searcheswordview') {
                 // Search Results by Keywords
                 $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand);
             } elseif ($row['item_link']=='#searchesipadrview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['searchesipadrview'] = $this->_prepare_searckipaddress($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['searchesipadrview'] = $this->_prepare_searckipaddress($brand);
             } elseif ($row['item_link']=='#signupview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/signupview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/signupview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['signupview'] = $this->_prepare_signup($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['signupview'] = $this->_prepare_signup($brand);
             } elseif ($row['item_link']=='#couponsview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['couponsview'] = $this->_prepare_couponsview($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['couponsview'] = $this->_prepare_couponsview($brand);
             }
         }
 
-        $content_options['menu'] = $menu;
-        $content_view = $this->load->view('marketing/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/marketing/page.js');
         $head['styles'][] = array('style' => '/css/marketing/marketpage.css');
@@ -140,8 +139,13 @@ class Marketing extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['menu'] = $menu;
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('marketing/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -511,33 +515,30 @@ class Marketing extends MY_Controller
     }
 
 
-    private function _prepare_searchbytime($brand, $top_menu) {
+    private function _prepare_searchbytime($brand) {
         $options = [
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         return $this->load->view('marketing/search_time_view', $options,TRUE);
     }
 
-    private function _prepare_searchbywords($brand, $top_menu) {
+    private function _prepare_searchbywords($brand) {
         $options = [
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         // searchkeyword_view
         return $this->load->view('marketing/search_keyword_view', $options,TRUE);
     }
 
-    private function _prepare_searckipaddress($brand, $top_menu) {
+    private function _prepare_searckipaddress($brand) {
         $options = [
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         // searchkeyword_view
         return $this->load->view('marketing/search_ipaddress_view', $options,TRUE);
     }
 
-    private function _prepare_signup($brand, $top_menu) {
+    private function _prepare_signup($brand) {
         $this->load->model('email_model');
         $total_rec=$this->email_model->get_emails_count($brand, 'Signups');
         /* 2 special Counter */
@@ -560,13 +561,12 @@ class Marketing extends MY_Controller
             'mailstat'=>$mailstat,
             'perpage'=>500,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
 
         return $this->load->view('marketing/signups_head_view',$content_dat,TRUE);
     }
 
-    private function _prepare_couponsview($brand, $top_menu) {
+    private function _prepare_couponsview($brand) {
         $options=[
             'coupon_deleted'=>0,
             'brand' => $brand,
@@ -586,7 +586,6 @@ class Marketing extends MY_Controller
             'cur_page'=>$cur_page,
             'perpage' => 100,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         return $this->load->view('marketing/coupons_view',$view_options,TRUE);
 
