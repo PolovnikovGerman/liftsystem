@@ -1306,7 +1306,12 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+
         }
         $res=$this->db->get()->row_array();
         return $res['mindate'];
@@ -1342,7 +1347,11 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_cog is null');
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $this->db->where('o.is_canceled',0);
         $this->db->group_by('week');

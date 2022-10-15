@@ -16,9 +16,14 @@ class Welcome extends MY_Controller {
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,
+            'activelnk' => '/leads',
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $dat['content_view'] = '';
+        $options=[
+            'left_menu' => $dat['left_menu'],
+            'brand' => 'SB',
+        ];
+        $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
         $this->load->view('page/page_template_view', $dat);
     }
 

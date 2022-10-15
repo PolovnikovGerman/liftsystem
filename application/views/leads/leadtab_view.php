@@ -4,6 +4,7 @@
 <input type="hidden" id="curpagelead" value="<?=$curpage?>"/>
 <input type="hidden" id="showfuturereport" value="0"/>
 <input type="hidden" id="totalcuryearorders" value="<?=$totalorders?>"/>
+<input type="hidden" id="leadsveiwbrand" value="<?=$brand?>"/>
 <div class="leads_content">
     <!-- Search page -->
     <div class="leads_headarea">
@@ -82,8 +83,4 @@
             <div id="leadcloseddataarea">&nbsp;</div>
         </div>
     </div>
-</div>
-<input type="hidden" id="leadsveiwbrand" value="<?=$brand?>"/>
-<div id="leadsviewbrandmenu">
-    <?=$top_menu?>
 </div>
