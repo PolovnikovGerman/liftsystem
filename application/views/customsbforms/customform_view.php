@@ -37,6 +37,3 @@
     </div>
     <div class="customform_tabledat"></div>
 </div>
-<div id="customformviewbrandmenu">
-    <?=$top_menu?>
-</div>
