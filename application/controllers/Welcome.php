@@ -16,7 +16,7 @@ class Welcome extends MY_Controller {
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
             'user_name' => $this->USER_NAME,
-            'activelnk' => '/leads',
+            'activelnk' => '',
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $options=[
@@ -88,6 +88,22 @@ class Welcome extends MY_Controller {
             $totals = $res['data'];
             $mdata['sales'] = QTYOutput($totals['sales']);
             $mdata['revenue'] = MoneyOutput($totals['revenue'],0);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function brandnavigate() {
+        if ($this->isAjax()) {
+            $error = 'Url Not Found';
+            $mdata = [];
+            $postdata = $this->input->post();
+            if (ifset($postdata,'url', '')!=='') {
+                $error = '';
+                $currentbrand=ifset($postdata,'brand','SB');
+                usersession('currentbrand', $currentbrand);
+                $mdata['url'] = $postdata['url'];
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

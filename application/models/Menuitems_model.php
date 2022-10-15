@@ -857,4 +857,12 @@ Class Menuitems_model extends MY_Model
         return $menu;
     }
 
+    public function get_current_brand() {
+        $brand =  usersession('currentbrand');
+        if (!empty($brand)) {
+            usersession('currentbrand', $brand);
+        }
+        return $brand;
+    }
+
 }
