@@ -1,5 +1,6 @@
 <div class="batchcontent">
     <input type="hidden" id="batchcurrent" value=""/>
+    <input type="hidden" id="finbatchesbrand" value="<?=$brand?>">
     <div class="batch_details">
         <div class="batchfilter">
             <select name="batchfilter" id="batchfilter" class="batchviewselect">                
@@ -20,7 +21,4 @@
         <?=$calendar?>
     </div>
 </div>
-<input type="hidden" id="finbatchesbrand" value="<?=$brand?>">
-<div id="finbatchesbrandmenu">
-    <?=$top_menu?>
-</div>
+

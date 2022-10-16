@@ -36,6 +36,7 @@ class Accounting extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Finance';
+        $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
         $start = $this->input->get('start', TRUE);
@@ -44,31 +45,31 @@ class Accounting extends MY_Controller
             if ($row['item_link']=='#profitordesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/profitordesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['profitordesview'] = $this->_prepare_order_profit($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['profitordesview'] = $this->_prepare_order_profit($brand);
             } elseif ($row['item_link']=='#profitdatesview') {
                 $head['styles'][] = array('style' => '/css/accounting/profitdatesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/profitdatesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand);
             } elseif ($row['item_link']=='#purchaseordersview') {
 //                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
 //                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
@@ -85,106 +86,105 @@ class Accounting extends MY_Controller
 //                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
                 $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#openinvoicesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand);
             } elseif ($row['item_link']=='#financebatchesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/financebatchesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['financebatchesview'] = $this->_prepare_batches_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['financebatchesview'] = $this->_prepare_batches_view($brand);
             } elseif ($row['item_link']=='#netprofitview') {
                 $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand);
             } elseif ($row['item_link']=='#ownertaxesview') {
                 $head['styles'][] = array('style' => '/css/accounting/ownertaxesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/ownertaxesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_view($brand);
             } elseif ($row['item_link']=='#expensesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/expensesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/expensesview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['expensesview'] = $this->_prepare_expensives_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['expensesview'] = $this->_prepare_expensives_view($brand);
             } elseif ($row['item_link']=='#accreceiv') {
                 $head['styles'][]=array('style'=>'/css/accounting/accreceiv.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['accreceivview'] = $this->_prepare_accreceiv_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['accreceivview'] = $this->_prepare_accreceiv_view($brand);
             }
         }
         $content_options['menu'] = $menu;
         $content_options['start'] = $start;
-        $content_view = $this->load->view('accounting/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/accounting/page.js');
         $head['styles'][] = array('style' => '/css/accounting/accountpage.css');
@@ -221,6 +221,9 @@ class Accounting extends MY_Controller
         ];
 
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = 'SB';
+        $content_view = $this->load->view('accounting/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -1324,7 +1327,7 @@ class Accounting extends MY_Controller
 
 
     // Private functions - Orders Profit
-    private function _prepare_order_profit ($brand, $top_menu) {
+    private function _prepare_order_profit ($brand) {
         // $search_form=''
         $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
         /* Calc total orders */
@@ -1351,7 +1354,6 @@ class Accounting extends MY_Controller
             'total_row'=>'', // $totalrow,
             'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $years=$this->orders_model->get_orders_dates($options);
         $orders_cnttotal='';
@@ -1373,7 +1375,7 @@ class Accounting extends MY_Controller
         return $content;
     }
 
-    private function _prepare_profitcalend_content($brand, $top_menu) {
+    private function _prepare_profitcalend_content($brand) {
         $dats=$this->orders_model->get_profit_limitdates($brand);
         $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
         /* Cur Month */
@@ -3780,7 +3782,7 @@ class Accounting extends MY_Controller
     }
 
     // Open Invoices
-    private function _prepare_openinvoice_content($brand, $top_menu) {
+    private function _prepare_openinvoice_content($brand) {
         $filtr=array(
             'paid'=>1,
             'brand' => $brand,
@@ -3811,14 +3813,13 @@ class Accounting extends MY_Controller
             'searchform'=>$searchform,
             'paid'=>1,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
 
         $content=$this->load->view('finopenivoice/paymonitor_view',$options,TRUE);
         return $content;
     }
 
-    private function _prepare_batches_view($brand, $top_menu) {
+    private function _prepare_batches_view($brand) {
         /* Batch calendar */
         /*get data about batches from current data */
         $details='';
@@ -3831,13 +3832,12 @@ class Accounting extends MY_Controller
             'calendar'=>$calendar_view,
             'years'=>$years_list,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $content=$this->load->view('batch/batches_view',$options,TRUE);
         return $content;
     }
 
-    private function _prepare_netprofit_content($brand, $top_menu) {
+    private function _prepare_netprofit_content($brand) {
         $title=$this->load->view('netprofit/admin_netprofitweek_view',array(),TRUE);
         // Get List of weeks
         $weeklist=$this->balances_model->get_weeklist();
@@ -3927,83 +3927,28 @@ class Accounting extends MY_Controller
             'cur_end'=>$expancedates['dateend'],
             'w9purchase'=>$w9purchase_view,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $content=$this->load->view('netprofit/admin_netprofit_view',$pageoptions ,TRUE);
         return $content;
     }
 
-    private function _prepare_ownerstaxes_view($brand, $top_menu) {
+    private function _prepare_ownerstaxes_view($brand) {
         $options = [
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         return $this->load->view('accounting/ownertaxes_view', $options, TRUE);
     }
 
-    private function _prepare_expensives_view($brand, $top_menu) {
+    private function _prepare_expensives_view($brand) {
         $options = [
             'calcdirec'=>'desc',
             'calcsort'=>'yearly',
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
     }
 
-    private function _prepare_purchaseorders_view_old($brand, $top_menu) {
-        $this->load->model('orders_model');
-        $this->load->model('payments_model');
-        $this->load->model('vendors_model');
-        // $search_form
-        $optionstotal=array(
-            'status'=>'showclosed',
-            'brand' => $brand,
-        );
-        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
-        $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
-
-        $sort_array=array(
-            'oa.amount_date-desc'=>'Date &#9660;',
-            'oa.amount_date-asc'=>'Date &#9650;',
-            'o.order_num-desc'=>'PO# &#9660;',
-            'o.order_num-asc'=>'PO# &#9650;',
-            'v.vendor_name-desc'=>'Vendor &#9660;',
-            'v.vendor_name-asc'=>'Vendor &#9650;',
-            'oa.amount_sum-desc'=>'Amount &#9660;',
-            'oa.amount_sum-asc'=>'Amount &#9650;',
-        );
-
-        $vsort=['order_by' => 'v.vendor_name'];
-        $vendors=$this->vendors_model->get_vendors_list($vsort);
-
-        $nonplaceview='';
-        if ($total_notplaced!=0) {
-            // Non placed
-            $nonplaceview=$this->load->view('fulfillment/pototals_nonplacehead_view', array(), TRUE);
-        }
-        $perpages = $this->config->item('orders_perpage');
-        $options=array(
-            'total'=>$total_rec,
-            'total_nonplaced'=>$total_notplaced,
-            'nonplacedview'=>$nonplaceview,
-            'order'=>'oa.amount_date desc',
-            'direc'=>'',
-            'curpage'=>0,
-            'curstatus'=>'showclosed',
-            'showplace'=>'show',
-            'sort'=>$sort_array,
-            'current_sort'=>'oa.amount_date-desc',
-            'brand' => $brand,
-            'top_menu' => $top_menu,
-            'perpages' => $perpages,
-            'perpage' => $perpages[0],
-            'vendors' => $vendors,
-        );
-        return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
-    }
-
-    private function _prepare_purchaseorders_view($brand, $top_menu) {
+    private function _prepare_purchaseorders_view($brand) {
         $inner = 0;
         $this->load->model('orders_model');
         $this->load->model('payments_model');
@@ -4026,7 +3971,6 @@ class Accounting extends MY_Controller
             'totals' => $totals,
             'inner' => $inner,
             'brand' => $brand,
-            'top_menu' => $top_menu,
             'years' => $years,
             'year1' => $year1,
             'year2' => $year2,
@@ -4037,10 +3981,9 @@ class Accounting extends MY_Controller
         return $this->load->view('pototals/page_view',$options,TRUE);
     }
 
-    private function _prepare_accreceiv_view($brand, $top_menu) {
+    private function _prepare_accreceiv_view($brand) {
         $options=[
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         return $this->load->view('accreceiv/page_view',$options, TRUE);
     }
