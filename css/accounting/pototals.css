@@ -216,14 +216,14 @@
 .poreport_detailmessage {
     background-color: #ffffff!important;
     float: left;
-    padding: 0;
+    padding: 0 10px;
     color: #000!important;
     text-align: center!important;
     border-color: #000000!important;
     font-family: arial, verdana, sans-serif;
     font-size: 13px;
-    line-height: 24px;
-    height: 24px;
+    line-height: 28px;
+    height: 28px;
 }
 /* Edit Purchase Methods */
 #modalManage .modal-dialog {

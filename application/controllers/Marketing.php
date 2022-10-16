@@ -29,8 +29,8 @@ class Marketing extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Marketing';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
 
 //        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
 //        if (count($brands)==0) {
