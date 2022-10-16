@@ -1,5 +1,6 @@
 <input type="hidden" id="totalordlists" value="<?=$total?>"/>
 <input type="hidden" id="leadordlistpage" value="0"/>
+<input type="hidden" id="orderlistsviewbrand" value="<?=$brand?>"/>
 <div class="leadord_headarea">
     <div class="leadord_headrow">
         <div class="leadordlist_search">
@@ -38,8 +39,4 @@
     </div>
     <div class="leadordlist_dataarea">&nbsp;</div>
     <div class="leadordlist_datatotal"><?=$total_view?></div>
-</div>
-<input type="hidden" id="orderlistsviewbrand" value="<?=$brand?>"/>
-<div id="orderlistsviewbrandmenu">
-    <?=$top_menu?>
 </div>

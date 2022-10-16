@@ -196,7 +196,7 @@ class Leads extends My_Controller {
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
-        $content_options['brand'] = 'SB';
+        $content_options['brand'] = $brand;
         $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
