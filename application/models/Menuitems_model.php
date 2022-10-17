@@ -164,7 +164,7 @@ Class Menuitems_model extends MY_Model
         return $out;
     }
 
-    public function get_user_permissions($user_id) {
+    public function get_user_permissions($user_id, $brand='') {
         $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.newver');
         $this->db->from('menu_items m');
         $this->db->join('user_permissions u','m.menu_item_id = u.menu_item_id');
@@ -172,6 +172,9 @@ Class Menuitems_model extends MY_Model
         $this->db->where('u.permission_type > ', 0);
         $this->db->where('m.parent_id is null');
         $this->db->where_not_in('m.menu_section',['adminsection','alertsection']);
+        if (!empty($brand)) {
+            $this->db->where('m.brand', $brand);
+        }
         $this->db->order_by('m.menu_order, m.menu_section');
         $menu = $this->db->get()->result_array();
         // Get submenus
@@ -231,11 +234,14 @@ Class Menuitems_model extends MY_Model
         return $out;
     }
 
-    public function get_itemsubmenu($user_id, $root_lnk) {
+    public function get_itemsubmenu($user_id, $root_lnk, $brand) {
         $this->db->select('m.menu_item_id, m.item_name, m.menu_section, m.item_link, m.brand_access, m.newver');
         $this->db->from('menu_items mm');
         $this->db->join('menu_items m','m.parent_id=mm.menu_item_id');
         $this->db->where('mm.item_link', $root_lnk);
+        if (!empty($brand)) {
+            $this->db->where('mm.brand', $brand);
+        }
         $this->db->order_by('m.menu_order, m.menu_section');
         $res=$this->db->get()->result_array();
         $menuitems = [];

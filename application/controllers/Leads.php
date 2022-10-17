@@ -54,8 +54,8 @@ class Leads extends My_Controller {
     function index() {
         $head = [];
         $head['title'] = 'Leads';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
         $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;

@@ -71,12 +71,12 @@ class Template
         if (isset($options['scripts'])) {
             $scripts=$options['scripts'];
         }
-
+        $brand  = $this->CI->menuitems_model->get_current_brand();
         // Build left menu
-        $menu_options = [
-            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
-            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
-        ];
+//        $menu_options = [
+//            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+//            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+//        ];
         // $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
         // Mobile menu
         $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
@@ -165,7 +165,7 @@ class Template
         $leftoptions = [
             'brand' => isset($options['brand']) ? $options['brand'] : 'SB',
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
-            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
+            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
         ];
         $dat['left_menu'] = $this->CI->load->view('page/left_menu_view', $leftoptions, TRUE);
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);

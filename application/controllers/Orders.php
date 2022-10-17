@@ -30,7 +30,7 @@ class Orders extends MY_Controller
         $head = [];
         $head['title'] = 'Orders';
         $brand = $this->menuitems_model->get_current_brand();
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         $search = usersession('liftsearch');

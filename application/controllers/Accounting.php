@@ -37,7 +37,7 @@ class Accounting extends MY_Controller
         $head = [];
         $head['title'] = 'Finance';
         $brand = $this->menuitems_model->get_current_brand();
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $start = $this->input->get('start', TRUE);
         $content_options = [];

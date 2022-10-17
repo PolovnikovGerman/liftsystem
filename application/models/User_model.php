@@ -641,12 +641,15 @@ Class User_model extends MY_Model
     }
 
     public function default_page($user_page) {
-        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->select('menu_item_id, parent_id, item_link, brand');
         $this->db->from('menu_items');
         $this->db->where('menu_item_id', $user_page);
         $res = $this->db->get()->row_array();
         if (ifset($res, 'menu_item_id', 0)==0) {
             return 'welcome';
+        }
+        if (!empty($res['brand']) && $res['brand']!=='NONE') {
+            usersession('currentbrand', $res['brand']);
         }
         if (empty($res['parent_id'])) {
             return $res['item_link'];

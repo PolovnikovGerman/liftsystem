@@ -36,7 +36,7 @@ class Fulfillment extends MY_Controller
         $head = [];
         $head['title'] = 'Fulfillment';
         $brand = $this->menuitems_model->get_current_brand();
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
 //        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
 //        if (count($brands)==0) {
