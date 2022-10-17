@@ -18,13 +18,12 @@ Class Items_model extends My_Model
             $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
         }
         if ($options['brand']!=='ALL') {
-            $this->db->where('i.brand', $options['brand']);
-        if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('i.brand', ['SB','BT']);
+            if ($options['brand'] == 'SB') {
+                $this->db->where_in('i.brand', ['SB', 'BT']);
             } else {
-                $this->db->where('i.brand', $brand);
+                $this->db->where('i.brand', $options['brand']);
             }
+        }
         if (ifset($options, 'search','')!=='') {
             $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
         }
