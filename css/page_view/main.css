@@ -87,7 +87,7 @@ body div {
     margin: 13px 25.5px 12px 25.5px;
 }
 .stressballs_logo.active {
-    margin: 9px 10.5px 0 10.5px;
+    margin: 9px 10.5px 4px 10.5px;
 }
 .content_tab_header.relievers {
     background: #000048;
@@ -554,6 +554,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
     border-bottom: 1.5px solid #000000;
     margin: 18px 8px;
     width: 123px;
+}
+.branmenudevider.relievers {
+    border-bottom: 1.5px solid #929292;
 }
 .maincontentmenuarea {
     width: calc(100% - 162px);
