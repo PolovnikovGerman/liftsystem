@@ -1,15 +1,28 @@
 <div class="mainheader">
     <div class="content_tabs_headers">
-        <div class="content_tab_header active stressballs">
-            <div class="stressballs_logo active">
-                <img src="/img/page_view/stessball_logo_activ.png" alt="Stressballs">
+        <?php if ($brand=='SB') { ?>
+            <div class="content_tab_header active stressballs" data-brand="SB">
+                <div class="stressballs_logo active">
+                    <img src="/img/page_view/stessball_logo_activ.png" alt="Stressballs">
+                </div>
             </div>
-        </div>
-        <div class="content_tab_header relievers">
-            <div class="relievers_logo">
-                <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+            <div class="content_tab_header relievers" data-brand="SR">
+                <div class="relievers_logo">
+                    <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+                </div>
             </div>
-        </div>
+        <?php } else { ?>
+            <div class="content_tab_header active relievers" data-brand="SR">
+                <div class="relievers_logo active">
+                    <img src="/img/page_view/stressreiliv_logo_activ.png" alt="StressRelievers">
+                </div>
+            </div>
+            <div class="content_tab_header stressballs" data-brand="SB">
+                <div class="stressballs_logo">
+                    <img src="/img/page_view/stessball_logo.png" alt="Stressballs">
+                </div>
+            </div>
+        <?php } ?>
     </div>
     <div class="mainsiteheader">
         <div class="datarow">

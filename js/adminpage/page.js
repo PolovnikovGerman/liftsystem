@@ -25,6 +25,21 @@ $(document).ready(function () {
                 show_error(response);
             }
         },'json');
+    });
+    $(".content_tab_header").unbind('click').click(function () {
+        if ($(this).hasClass('active')) {
+        } else {
+            var params = new Array();
+            params.push({name: 'brand', value: $(this).data('brand')});
+            var url='/welcome/brandshow';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    window.location.href='/';
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     })
     $("#signout").unbind('click').click(function () {
         if (confirm('You want to sign out?')==true) {

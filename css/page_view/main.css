@@ -73,6 +73,7 @@ body div {
     line-height: initial;
 }
 .content_tab_header {
+    cursor: pointer;
     width: 187px;
 }
 .content_tab_header.stressballs {
@@ -82,8 +83,11 @@ body div {
     background: #3736fe;
     position: relative;
 }
+.stressballs_logo {
+    margin: 13px 25.5px 12px 25.5px;
+}
 .stressballs_logo.active {
-    margin: 13px 10.5px 0 10.5px;
+    margin: 9px 10.5px 0 10.5px;
 }
 .content_tab_header.relievers {
     background: #000048;
@@ -92,25 +96,12 @@ body div {
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
 }
+.relievers_logo.active {
+    margin: 5px 8.5px 0 8.5px;
+}
 .mainsiteheader {
     width: calc(100% - 390px);
 }
-/*.brands-logos {*/
-/*    !* width: 282px; *!*/
-/*}*/
-/*.brands-logos > .bluetrack_logo {*/
-/*    height: 32px;*/
-/*    width: 107px;*/
-/*}*/
-/*.brands-logos > .stressballs_logo {*/
-/*    height: 32px;*/
-/*    width: 119px;*/
-/*}*/
-/*.brands-logos > .lift_logo {*/
-/*    height: 17px;*/
-/*    padding-top: 15px;*/
-/*    width: 49px;*/
-/*}*/
 .period_analitic_info {
     border: 1px solid #9b9b9b;
 }
@@ -496,6 +487,16 @@ ul.mainmenu #collapsed.dropdown-menu li {
     margin-top: -7px;
     position: relative;
 }
+.relieverssubtitle {
+    display: block;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 11px;
+    margin-top: -7px;
+    position: relative;
+}
 .brandcontentmenu {
     margin-top: 25px;
     width: 100%;
@@ -511,6 +512,13 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .brandmenuitem:hover {
     background: #16019e;
+}
+.brandmenuitem.relievers {
+    border: 1px solid #929292;
+    background: #000084;
+}
+.brandmenuitem.relievers:hover {
+    background: #2537ff;
 }
 .brandmenuitemactive {
     background: #ffffff;

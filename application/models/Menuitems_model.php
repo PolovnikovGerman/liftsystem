@@ -251,73 +251,92 @@ Class Menuitems_model extends MY_Model
             $this->db->from('user_permissions p');
             $this->db->where('p.menu_item_id', $row['menu_item_id']);
             $this->db->where('p.user_id', $user_id);
-            if ($row['brand_access']=='BRAND') {
-                $this->db->where('p.permission_type > 0');
-                $userperm = $this->db->get()->result_array();
-                if (count($userperm)>0) {
-                    $newbrand = [];
-                    foreach ($userperm as $permrow) {
-                        array_push($newbrand, $permrow);
-                    }
-                    $menuitems[] = [
-                        'menu_item_id' => $row['menu_item_id'],
-                        'item_name' => $row['item_name'],
-                        'menu_section' => $row['menu_section'],
-                        'item_link' => $row['item_link'],
-                        'brand_access' => $row['brand_access'],
-                        'brand' => $newbrand,
-                        'newver' => $row['newver'],
-                    ];
-                }
-            } else {
-                $this->db->where('p.permission_type >= 0');
-                $userperm = $this->db->get()->row_array();
-                if ($userperm['permission_type'] > 0 ) {
-                    if ($row['brand_access']=='NONE') {
-                        $menuitems[] = [
-                            'menu_item_id' => $row['menu_item_id'],
-                            'item_name' => $row['item_name'],
-                            'menu_section' => $row['menu_section'],
-                            'item_link' => $row['item_link'],
-                            'brand_access' => $row['brand_access'],
-                            'brand' => null,
-                            'newver' => $row['newver'],
-                        ];
-                    } else {
-                        if (ifset($userperm,'brand','')!=='') {
-                            $menuitems[] = [
-                                'menu_item_id' => $row['menu_item_id'],
-                                'item_name' => $row['item_name'],
-                                'menu_section' => $row['menu_section'],
-                                'item_link' => $row['item_link'],
-                                'brand_access' => $row['brand_access'],
-                                'brand' => $userperm['brand'],
-                                'newver' => $row['newver'],
-                            ];
-                        }
-                    }
-                } elseif ($userperm['subitem'] > 0) {
-                    // Count sub-permissions
-                    $this->db->select('count(p.user_permission_id) as cnt');
-                    $this->db->from('user_permissions p');
-                    $this->db->join('menu_items m', 'm.menu_item_id=p.menu_item_id');
-                    $this->db->where('m.parent_id', $row['menu_item_id']);
-                    $this->db->where('p.permission_type > 0');
-                    $this->db->where('p.user_id', $user_id);
-                    $sumdat = $this->db->get()->row_array();
-                    if ($sumdat['cnt'] > 0) {
-                        $menuitems[] = [
-                            'menu_item_id' => $row['menu_item_id'],
-                            'item_name' => $row['item_name'],
-                            'menu_section' => $row['menu_section'],
-                            'item_link' => $row['item_link'],
-                            'brand_access' => $row['brand_access'],
-                            'brand' => null,
-                            'newver' => $row['newver'],
-                        ];
-                    }
-                }
+            $this->db->where('p.permission_type > 0');
+            $userperm = $this->db->get()->result_array();
+            if (count($userperm)>0) {
+                $menuitems[] = [
+                    'menu_item_id' => $row['menu_item_id'],
+                    'item_name' => $row['item_name'],
+                    'menu_section' => $row['menu_section'],
+                    'item_link' => $row['item_link'],
+                    // 'brand_access' => $row['brand_access'],
+                    // 'brand' => null,
+                    'newver' => $row['newver'],
+                ];
             }
+//            $this->db->select('p.brand, p.user_permission_id, p.permission_type');
+//            $this->db->select("(select count(*) from menu_items where parent_id={$row['menu_item_id']}) as subitem");
+//            $this->db->from('user_permissions p');
+//            $this->db->where('p.menu_item_id', $row['menu_item_id']);
+//            $this->db->where('p.user_id', $user_id);
+//            $this->db->where('p.permission_type > 0');
+//            if ($row['brand_access']=='BRAND') {
+//                $this->db->where('p.permission_type > 0');
+//                $userperm = $this->db->get()->result_array();
+//                if (count($userperm)>0) {
+//                    $newbrand = [];
+//                    foreach ($userperm as $permrow) {
+//                        array_push($newbrand, $permrow);
+//                    }
+//                    $menuitems[] = [
+//                        'menu_item_id' => $row['menu_item_id'],
+//                        'item_name' => $row['item_name'],
+//                        'menu_section' => $row['menu_section'],
+//                        'item_link' => $row['item_link'],
+//                        'brand_access' => $row['brand_access'],
+//                        'brand' => $newbrand,
+//                        'newver' => $row['newver'],
+//                    ];
+//                }
+//            } else {
+//                $this->db->where('p.permission_type >= 0');
+//                $userperm = $this->db->get()->row_array();
+//                if ($userperm['permission_type'] > 0 ) {
+//                    if ($row['brand_access']=='NONE') {
+//                        $menuitems[] = [
+//                            'menu_item_id' => $row['menu_item_id'],
+//                            'item_name' => $row['item_name'],
+//                            'menu_section' => $row['menu_section'],
+//                            'item_link' => $row['item_link'],
+//                            'brand_access' => $row['brand_access'],
+//                            'brand' => null,
+//                            'newver' => $row['newver'],
+//                        ];
+//                    } else {
+//                        if (ifset($userperm,'brand','')!=='') {
+//                            $menuitems[] = [
+//                                'menu_item_id' => $row['menu_item_id'],
+//                                'item_name' => $row['item_name'],
+//                                'menu_section' => $row['menu_section'],
+//                                'item_link' => $row['item_link'],
+//                                'brand_access' => $row['brand_access'],
+//                                'brand' => $userperm['brand'],
+//                                'newver' => $row['newver'],
+//                            ];
+//                        }
+//                    }
+//                } elseif ($userperm['subitem'] > 0) {
+//                    // Count sub-permissions
+//                    $this->db->select('count(p.user_permission_id) as cnt');
+//                    $this->db->from('user_permissions p');
+//                    $this->db->join('menu_items m', 'm.menu_item_id=p.menu_item_id');
+//                    $this->db->where('m.parent_id', $row['menu_item_id']);
+//                    $this->db->where('p.permission_type > 0');
+//                    $this->db->where('p.user_id', $user_id);
+//                    $sumdat = $this->db->get()->row_array();
+//                    if ($sumdat['cnt'] > 0) {
+//                        $menuitems[] = [
+//                            'menu_item_id' => $row['menu_item_id'],
+//                            'item_name' => $row['item_name'],
+//                            'menu_section' => $row['menu_section'],
+//                            'item_link' => $row['item_link'],
+//                            'brand_access' => $row['brand_access'],
+//                            'brand' => null,
+//                            'newver' => $row['newver'],
+//                        ];
+//                    }
+//                }
+//            }
         }
         return $menuitems;
     }
@@ -869,6 +888,22 @@ Class Menuitems_model extends MY_Model
             usersession('currentbrand', $brand);
         }
         return $brand;
+    }
+
+    public function get_userbrands($user_id) {
+        $this->db->select('i.brand, count(i.menu_item_id) as cnt');
+        $this->db->from('menu_items i');
+        $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
+        $this->db->where('u.user_id', $user_id);
+        $this->db->where('u.permission_type > ',0);
+        $this->db->where('i.brand != ','NONE');
+        $this->db->group_by('i.brand');
+        $dats = $this->db->get()->result_array();
+        $brands = [];
+        foreach ($dats as $dat) {
+            array_push($brands, $dat['brand']);
+        }
+        return $brands;
     }
 
 }

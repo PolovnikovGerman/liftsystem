@@ -156,6 +156,7 @@ class Template
             'inventorychk' => $inventory_permissions,
             'inventoryold' => $inventory_old,
             'test_server' => $this->CI->config->item('test_server'),
+            'brand' => $brand,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -163,7 +164,7 @@ class Template
             $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         }
         $leftoptions = [
-            'brand' => isset($options['brand']) ? $options['brand'] : 'SB',
+            'brand' => $brand,
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
         ];
