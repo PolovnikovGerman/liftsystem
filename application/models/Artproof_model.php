@@ -49,8 +49,11 @@ Class Artproof_model extends MY_Model
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            // $this->db->where('e.email_websys',$options['brand']);
-            $this->db->where('e.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            } else {
+                $this->db->where('e.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -398,7 +401,11 @@ Class Artproof_model extends MY_Model
             }
         }
         if ($brand!=='ALL') {
-            $this->db->where('v.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('v.brand', ['SB','BT']);
+            } else {
+                $this->db->where('v.brand', $brand);
+            }
         }
 
         if ($order_by=='time') {
@@ -436,8 +443,11 @@ Class Artproof_model extends MY_Model
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            // $this->db->where('e.email_websys',$search['brand']);
-            $this->db->where('e.brand', $search['brand']);
+            if ($search['brand']=='SB') {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            } else {
+                $this->db->where('e.brand', $search['brand']);
+            }
         }
         if (isset($search['show_deleted'])) {
             $this->db->where('e.email_status != ',3);

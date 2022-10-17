@@ -4,6 +4,7 @@
 <input type="hidden" id="curpagequest" value="<?=$cur_page?>"/>
 <input type="hidden" id="sortquest" value="<?=$order_by?>"/>
 <input type="hidden" id="sortdirquest" value="<?=$direction?>"/>
+<input type="hidden" id="questionsviewbrand" value="<?=$brand?>"/>
 <div class="questions_content">
     <div class="questions_header">
         <div class="questions_selecttype_label">Display:</div>
@@ -36,8 +37,4 @@
         <div class="quest_webpage">Webpage</div>
     </div>
     <div class="question_tabledat"></div>
-</div>
-<input type="hidden" id="questionsviewbrand" value="<?=$brand?>"/>
-<div id="questionsviewbrandmenu">
-    <?=$top_menu?>
 </div>

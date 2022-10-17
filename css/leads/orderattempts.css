@@ -33,7 +33,8 @@
     clear: both;
     float: left;
     /* margin-left: 12px; */
-    max-height: 568px;
+    /* max-height: 568px; */
+    max-height: 532px;
     overflow-y: scroll;
     margin-bottom: 10px;
     /* width: 995px; */

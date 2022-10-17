@@ -173,7 +173,8 @@ input.lead_searchinput {
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
     clear: both;
-    height: 565px;
+    /* height: 565px; */
+    height: 492px;
     overflow-y: scroll;
     width: 557px;
 }
@@ -423,7 +424,8 @@ input.lead_searchinput {
     overflow-x: hidden!important;
 }
 .leadclosedreportdataweeks {
-    height: 471px;
+    /* height: 471px; */
+    height: 399px;
     overflow-y: auto;
     width: 419px;
     overflow-x: hidden;

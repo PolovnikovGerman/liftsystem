@@ -1,6 +1,7 @@
 <input type="hidden" id="totalleaditems" value="<?=$total?>"/>
 <input type="hidden" id="leaditempage" value="<?=$cur_page?>"/>
 <input type="hidden" id="leaditemperpage" value="150"/>
+<input type="hidden" id="itemslistbrand" value="<?=$brand?>"/>
 <div class="leaditem_headarea">
     <div class="leaditem_headrow">
         <div class="leaditem_search">
@@ -73,8 +74,4 @@
         <div class="vendorsetup">Setup</div>
     </div>
     <div class="leaditems_dataarea">&nbsp;</div>
-</div>
-<input type="hidden" id="itemslistbrand" value="<?=$brand?>"/>
-<div id="itemslistbrandmenu">
-    <?=$top_menu?>
 </div>

@@ -35,12 +35,13 @@ class Fulfillment extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Fulfillment';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
-        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-        if (count($brands)==0) {
-            redirect('/');
-        }
+//        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+//        if (count($brands)==0) {
+//            redirect('/');
+//        }
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
@@ -51,20 +52,6 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#fullfilstatusview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/postatus.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand, $top_menu);
-            } elseif ($row['item_link']=='#pototalsview') {
-//                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-//                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
 //                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
 //                if (count($brands)==0) {
 //                    redirect('/');
@@ -75,80 +62,80 @@ class Fulfillment extends MY_Controller
 //                    'active' => $brand,
 //                ];
 //                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-//                $content_options['pototalsview'] = $this->_prepare_pototals_view($brand, $top_menu);
+                $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand);
+            } elseif ($row['item_link']=='#pototalsview') {
                 $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
             } elseif ($row['item_link']=='#invneedlistview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['invneedlistview'] = $this->_prepare_needlist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['invneedlistview'] = $this->_prepare_needlist_view($brand);
             } elseif ($row['item_link']=='#salesrepinventview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/salesrepinventview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/salesrepinventview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['salesrepinventview'] = $this->_prepare_inventsalesrep_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['salesrepinventview'] = $this->_prepare_inventsalesrep_view($brand);
             } elseif ($row['item_link']=='#printshopreportview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand);
             }
         }
         $content_options['menu'] = $menu;
-        $content_view = $this->load->view('fulfillment/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/fulfillment/page.js');
         $head['styles'][] = array('style' => '/css/fulfillment/fulfilmpage.css');
@@ -168,8 +155,12 @@ class Fulfillment extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('fulfillment/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -1881,7 +1872,7 @@ class Fulfillment extends MY_Controller
         return $content;
     }
 
-    private function _prepare_status_view($brand, $top_menu) {
+    private function _prepare_status_view($brand) {
         $dat=strtotime(date('m/d/Y',time())." -6 months");
         $def_options=array(
             'profit_perc'=>NULL,
@@ -1898,65 +1889,12 @@ class Fulfillment extends MY_Controller
             'total'=>$totals,
             'curpage'=>0,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $content=$this->load->view('fulfillment/status_view',$options,TRUE);
         return $content;
     }
 
-//    private function _prepare_pototals_view($brand, $top_menu) {
-//        $this->load->model('orders_model');
-//        $this->load->model('payments_model');
-//        $this->load->model('vendors_model');
-//        // $search_form
-//        $optionstotal=array(
-//            'status'=>'showclosed',
-//            'brand' => $brand,
-//        );
-//        $total_rec=$this->payments_model->get_count_purchorders($optionstotal);
-//        $total_notplaced=$this->orders_model->count_notplaced_orders(['brand'=>$brand]);
-//
-//        $sort_array=array(
-//            'oa.amount_date-desc'=>'Date &#9660;',
-//            'oa.amount_date-asc'=>'Date &#9650;',
-//            'o.order_num-desc'=>'PO# &#9660;',
-//            'o.order_num-asc'=>'PO# &#9650;',
-//            'v.vendor_name-desc'=>'Vendor &#9660;',
-//            'v.vendor_name-asc'=>'Vendor &#9650;',
-//            'oa.amount_sum-desc'=>'Amount &#9660;',
-//            'oa.amount_sum-asc'=>'Amount &#9650;',
-//        );
-//
-//        $vsort=['order_by' => 'v.vendor_name'];
-//        $vendors=$this->vendors_model->get_vendors_list($vsort);
-//
-//        $nonplaceview='';
-//        if ($total_notplaced!=0) {
-//            // Non placed
-//            $nonplaceview=$this->load->view('fulfillment/pototals_nonplacehead_view', array(), TRUE);
-//        }
-//        $perpages = $this->config->item('orders_perpage');
-//        $options=array(
-//            'total'=>$total_rec,
-//            'total_nonplaced'=>$total_notplaced,
-//            'nonplacedview'=>$nonplaceview,
-//            'order'=>'oa.amount_date desc',
-//            'direc'=>'',
-//            'curpage'=>0,
-//            'curstatus'=>'showclosed',
-//            'showplace'=>'show',
-//            'sort'=>$sort_array,
-//            'current_sort'=>'oa.amount_date-desc',
-//            'brand' => $brand,
-//            'top_menu' => $top_menu,
-//            'perpages' => $perpages,
-//            'perpage' => $perpages[0],
-//            'vendors' => $vendors,
-//        );
-//        return $this->load->view('fulfillment/pototals_head_view',$options,TRUE);
-//    }
-
-    private function _prepare_purchaseorders_view($brand, $top_menu) {
+    private function _prepare_purchaseorders_view($brand) {
         $inner = 0;
         $this->load->model('orders_model');
         $this->load->model('payments_model');
@@ -1979,7 +1917,6 @@ class Fulfillment extends MY_Controller
             'totals' => $totals,
             'inner' => $inner,
             'brand' => $brand,
-            'top_menu' => $top_menu,
             'years' => $years,
             'year1' => $year1,
             'year2' => $year2,
@@ -1991,7 +1928,7 @@ class Fulfillment extends MY_Controller
     }
 
 
-    private function _prepare_printshop_inventory($brand, $top_menu) {
+    private function _prepare_printshop_inventory($brand) {
         $this->load->model('printshop_model');
         $addcost=$this->printshop_model->invaddcost();
         $totals=$this->printshop_model->count_prinshop_items();
@@ -2037,13 +1974,12 @@ class Fulfillment extends MY_Controller
             'fullview'=>$headview,
             'maxsum'=>$totalinv['maxsum'],
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
         return $content;
     }
 
-    private function _prepare_needlist_view($brand, $top_menu) {
+    private function _prepare_needlist_view($brand) {
         $this->load->model('printshop_model');
         $addcost=$this->printshop_model->invaddcost();
         $totals=$this->printshop_model->count_prinshop_items();
@@ -2082,14 +2018,13 @@ class Fulfillment extends MY_Controller
             'totals'=>$totals,
             'headview'=>$headview,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
 
         $content=$this->load->view('inventoryview/page_data_view', $invoption, TRUE);
         return $content;
     }
 
-    private function _prepare_inventsalesrep_view($brand, $top_menu) {
+    private function _prepare_inventsalesrep_view($brand) {
         $this->load->model('printshop_model');
         $addcost=$this->printshop_model->invaddcost();
         $totals=$this->printshop_model->count_prinshop_items();
@@ -2132,7 +2067,6 @@ class Fulfillment extends MY_Controller
             'fullview'=>$headview,
             'maxsum'=>$totalinv['maxsum'],
             'brand' => $brand,
-            'top_menu'=>$top_menu,
         );
 
         $content=$this->load->view('invsalesrep/page_view', $invoption, TRUE);
@@ -2140,7 +2074,7 @@ class Fulfillment extends MY_Controller
 
     }
 
-    private function _prepare_printshop_report($brand, $top_menu) {
+    private function _prepare_printshop_report($brand) {
         $this->load->model('printshop_model');
         $total_options = ['brand'=> $brand];
         $totalrecs=$this->printshop_model->get_orderreport_counts($total_options);
@@ -2157,7 +2091,6 @@ class Fulfillment extends MY_Controller
             'beigeplate_price' => $addcosts['beigeplate_price'],
             'report_years'=>$report_years,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         // Get Summary
         $content=$this->load->view('printshop/pagereport_view', $options, TRUE);

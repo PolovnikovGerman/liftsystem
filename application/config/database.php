@@ -94,23 +94,3 @@ $db['default'] = array(
 $db['default']['username']=getenv('DB_USER');
 $db['default']['password']=getenv('DB_PASSWORD');
 $db['default']['database']=getenv('DB_DATABASE');
-/*
-switch($_SERVER['SERVER_NAME']) {
-    case 'lifttest.stressballs.com':
-    case 'lift.stressballs.com':
-        $db['default']['username']='stressball_liftnew';
-        $db['default']['password']='fDQa0ral9KJm'; //
-        $db['default']['database']='stressball_liftnew';
-        break;
-    case 'lift.bluetrack.com':
-        $db['default']['username']='bluetrack_liftnew';
-        $db['default']['password']='fDQa0ral9KJm'; //
-        $db['default']['database']='bluetrack_liftnew';
-        break;
-    default:
-        $db['default']['username']=getenv('DB_USER');
-        $db['default']['password']=getenv('DB_PASSWORD');
-        $db['default']['database']=getenv('DB_DATABASE');
-        break;
-}
-*/

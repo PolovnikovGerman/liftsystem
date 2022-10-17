@@ -9,10 +9,38 @@ $(document).ready(function () {
     // $(window).resize(function() {
     //     autocollapse(1);
     // });
-    $(".menubutton").unbind('click').click(function () {
-        var url=$(this).data('menulink');
-        window.location.href=url;
+    // $(".menubutton").unbind('click').click(function () {
+    //     var url=$(this).data('menulink');
+    //     window.location.href=url;
+    // });
+    $(".brandmenuitem").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'url', value: $(this).data('url')});
+        params.push({name: 'brand', value: $(this).data('brand')});
+        var url='/welcome/brandnavigate';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                window.location.href=response.data.url;
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
+    $(".content_tab_header").unbind('click').click(function () {
+        if ($(this).hasClass('active')) {
+        } else {
+            var params = new Array();
+            params.push({name: 'brand', value: $(this).data('brand')});
+            var url='/welcome/brandshow';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    window.location.href='/';
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
     $("#signout").unbind('click').click(function () {
         if (confirm('You want to sign out?')==true) {
             window.location.href='/login/logout';
