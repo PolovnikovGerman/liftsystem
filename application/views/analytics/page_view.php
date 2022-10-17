@@ -1,5 +1,8 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea adminmenu">
+    <div class="leftmenuarea">
+        <?=$left_menu?>
+    </div>
+    <div class="maincontentmenuarea <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
         <div class="maincontentmenu">
             <div class="title">Analytics:</div>
             <?php foreach ($menu as $item) { ?>

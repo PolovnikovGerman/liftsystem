@@ -39,11 +39,11 @@
                 <?php } ?>
             </div>
             <?php if ($test_server==1) { ?>
-<!--                <div class="row">-->
-<!--                    <div class="col-12 text-center">-->
-<!--                        <div class="testsitelabel">TEST</div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="testsitelabel">TEST</div>
+                    </div>
+                </div>
             <?php } ?>
             <div class="right-box">
                 <div class="userinfo">
