@@ -136,8 +136,17 @@ body div {
 }
 .period_analitic_info .param_value.money {
     min-width: 45px;
-    border-left: 1px solid #9b9b9b;
     padding-left: 7px;
+    cursor: pointer;
+}
+.period_analitic_info .allbrandstotalweek {
+    border-left: 1px solid #9b9b9b;
+    font-weight: bold;
+    font-size: 13px;
+    color: #55aeff;
+    text-transform: uppercase;
+    padding-left: 5px;
+    padding-right: 7px;
     cursor: pointer;
 }
 .publicsearch {
@@ -1150,4 +1159,34 @@ div.oldvesionlabel {
 }
 .color_red, .color_red2 {
     color: #FF0000;
+}
+/* Week totals popup */
+.brantotalarea {
+    display: inline-table;
+    width: 230px;
+    background: #000000;
+    border: 1px solid #adadad;
+    padding: 7px;
+    margin-top: -10px;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -11px;
+}
+.brantotalarea .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalarea .totalrowlabel {
+    width: 120px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
 }

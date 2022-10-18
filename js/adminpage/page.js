@@ -107,6 +107,21 @@ $(document).ready(function () {
     })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
+    $("div.allbrandstotalweek").hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('viewsrc'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'bottom',
+                    html: true
+                }).popover('show');
+            });
+        }
+        , function(){
+            $(this).popover('hide');
+        }
+    );
 });
 
 $(window).resize(function() {
