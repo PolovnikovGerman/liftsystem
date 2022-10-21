@@ -52,6 +52,7 @@ if (!function_exists('calculate_shipcost')) {
         if ($transit_arr['result'] == FALSE) {
             $out['result'] = FALSE;
             $out['error'] = $transit_arr['msg'];
+            $errmsg = $transit_arr['msg'];
             $out['error_code'] = 'TNT';
         } else {
             $transit_arr = $transit_arr['times'];
