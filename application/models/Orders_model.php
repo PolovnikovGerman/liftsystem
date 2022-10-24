@@ -2932,35 +2932,28 @@ Class Orders_model extends MY_Model
                         $row['order_new']=ucfirst($row['arttype']);
                     }
                 }
-                if (in_array('balance', $fields)) {
-                    $this->db->select('count(batch_id) batchcnt, sum(batch_amount) batchsum');
-                    $this->db->from('ts_order_batches');
-                    $this->db->where('order_id', $row['order_id']);
-                    $this->db->where('batch_term',0);
-                    $balanceres = $this->db->get()->row_array();
-                    $balance = $row['revenue'];
-                    if ($balanceres['batchcnt']>0) {
-                        $balance = $row['revenue'] - $balanceres['batchsum'];
-                    }
-                    $row['balance']=$balance;
-                }
-                if (in_array('payment_system', $fields)) {
-                    $this->db->select('balance_manage');
+                if (in_array('balance', $fields) || in_array('payment_system', $fields)) {
+                    $this->db->select('balance, balance_manage, cntcard');
                     $this->db->from('v_order_balances');
                     $this->db->where('order_id', $row['order_id']);
                     $owndat = $this->db->get()->row_array();
-                    $stype = '';
-                    if ($owndat['balance_manage']==3) {
-                        $stype = $this->accrec_terms;
-                    } elseif ($owndat['balance_manage']==2) {
-                        $stype = $this->accrec_prepay;
-                    } elseif ($owndat['balance_manage']==1) {
-                        $stype = $this->accrec_willupd;
-                        if (!empty($owndat['cntcard'])) {
-                            $stype = $this->accrec_credit;
-                        }
+                    if (in_array('balance', $fields)) {
+                        $row['balance']=$owndat['balance'];
                     }
-                    $row['payment_system'] = $stype;
+                    if (in_array('payment_system', $fields)) {
+                        $stype = '';
+                        if ($owndat['balance_manage']==3) {
+                            $stype = $this->accrec_terms;
+                        } elseif ($owndat['balance_manage']==2) {
+                            $stype = $this->accrec_prepay;
+                        } elseif ($owndat['balance_manage']==1) {
+                            $stype = $this->accrec_willupd;
+                            if (!empty($owndat['cntcard'])) {
+                                $stype = $this->accrec_credit;
+                            }
+                        }
+                        $row['payment_system'] = $stype;
+                    }
                 }
                 $datarow=[];
                 foreach ($fields as $frow) {
