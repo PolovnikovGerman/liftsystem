@@ -2681,10 +2681,10 @@ Class Orders_model extends MY_Model
     public function get_profitexport_fields() {
         $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
             'field_order_items', 'field_revenue', 'field_balance', 'field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
-            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new'];
+            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system'];
         $labels=['Date', 'Order#', 'Canceled', 'Customer', 'QTY', 'Colors', 'Item #',
             'Item Name', 'Revenue', 'Balance', 'Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
-            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat'];
+            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System'];
         $data=[];
         $idx=0;
         foreach ($fields as $row) {
@@ -2754,7 +2754,9 @@ Class Orders_model extends MY_Model
             }
             $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue');
             foreach ($select_flds as $select_fld) {
-                $this->db->select("o.{$select_fld}");
+                if ($select_fld!=='payment_system') {
+                    $this->db->select("o.{$select_fld}");
+                }
             }
             $this->db->from('ts_orders o');
 
@@ -2942,6 +2944,24 @@ Class Orders_model extends MY_Model
                     }
                     $row['balance']=$balance;
                 }
+                if (in_array('payment_system', $fields)) {
+                    $this->db->select('balance_manage');
+                    $this->db->from('v_order_balances');
+                    $this->db->where('order_id', $row['order_id']);
+                    $owndat = $this->db->get()->row_array();
+                    $stype = '';
+                    if ($owndat['balance_manage']==3) {
+                        $stype = $this->accrec_terms;
+                    } elseif ($owndat['balance_manage']==2) {
+                        $stype = $this->accrec_prepay;
+                    } elseif ($owndat['balance_manage']==1) {
+                        $stype = $this->accrec_willupd;
+                        if (!empty($owndat['cntcard'])) {
+                            $stype = $this->accrec_credit;
+                        }
+                    }
+                    $row['payment_system'] = $stype;
+                }
                 $datarow=[];
                 foreach ($fields as $frow) {
                     $datarow[$frow]=$row[$frow];
@@ -3015,6 +3035,8 @@ Class Orders_model extends MY_Model
                 array_push($labels, 'PO Vendors');
             } elseif ($frow=='order_new') {
                 array_push($labels, 'Order Type');
+            } elseif ($frow=='payment_system') {
+                array_push($labels, 'Payment System');
             }
         }
         return $labels;
