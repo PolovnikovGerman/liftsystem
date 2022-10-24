@@ -153,40 +153,46 @@ function init_leadpopupedit() {
             delete_lead_attachment(attachid);
         }
     });
-    if ($("#addleadattachment").length > 0) {
-        var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
-            '+ Add Attachment</div>' +
-            '<ul class="qq-upload-list"></ul>' +
-            '<div class="clear"></div></div>';
 
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('addleadattachment'),
-            action: '/utils/save_leadattach',
-            template: qq_template,
-            uploadButtonText: '',
-            multiple: false,
-            debug: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success==true) {
-                    $("li.qq-upload-success").hide();
-                    var params=new Array();
-                    params.push({name: 'session_id', value: $("#session_attach").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'src', value: responseJSON.source});
-                    var url=mainurl+"/lead_attachment_add";
-                    $.post(url, params, function (response) {
-                        if (response.errors=='') {
-                            $(".lead_popup_attachs").empty().html(response.data.content);
-                            init_leadpopupedit();
-                        } else {
-                            show_error(response);
-                        }
-                    },'json');
-                }
-            }
-        });
-    }
+    // if ($("#addleadattachment").length > 0) {
+    //     var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
+    //         '+ Add Attachment</div>' +
+    //         '<ul class="qq-upload-list"></ul>' +
+    //         '<div class="clear"></div></div>';
+    //
+    //     try {
+    //         var uploader = new qq.FileUploader({
+    //             element: document.getElementById('addleadattachment'),
+    //             action: '/utils/save_leadattach',
+    //             template: qq_template,
+    //             uploadButtonText: '',
+    //             multiple: false,
+    //             debug: false,
+    //             allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
+    //             onComplete: function(id, fileName, responseJSON){
+    //                 if (responseJSON.success==true) {
+    //                     // $("li.qq-upload-success").hide();
+    //                     $("ul.qq-upload-list").css('display','none');
+    //                     var params=new Array();
+    //                     params.push({name: 'session_id', value: $("#session_attach").val()});
+    //                     params.push({name: 'newval', value: responseJSON.filename});
+    //                     params.push({name: 'src', value: responseJSON.source});
+    //                     var url=mainurl+"/lead_attachment_add";
+    //                     $.post(url, params, function (response) {
+    //                         if (response.errors=='') {
+    //                             $(".lead_popup_attachs").empty().html(response.data.content);
+    //                             init_leadpopupedit();
+    //                         } else {
+    //                             show_error(response);
+    //                         }
+    //                     },'json');
+    //                 }
+    //             }
+    //         });
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
     /* Question */
     $("div.lead_popup_questchck").unbind('click').click(function(){
         show_questdetails(this);
