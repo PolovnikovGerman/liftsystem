@@ -861,6 +861,9 @@ Class Leadorder_model extends My_Model {
                     $newshipcalc = 1;
                 }
             }
+            if ($entity=='artwork' && $fldname=='artwork_blank') {
+                $leadorder['order']['order_blank'] = $newval;
+            }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
                 $params=explode("-", $newval);
