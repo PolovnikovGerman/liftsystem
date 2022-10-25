@@ -69,8 +69,10 @@ Class Shipping_model extends MY_Model
             $start_time=$startdate;
         }
         $start_time=$startdate;
-
-        $proof_date=$this->_get_business_date($start_time, 1, $item_id);
+        $proof_date = $start_time;
+        if ($this->_chk_business_day($start_time, $item_id)==0) {
+            $proof_date=$this->_get_business_date($start_time, 1, $item_id);
+        }
 
         $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
         $this->db->from("sb_items i");
