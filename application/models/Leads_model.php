@@ -2325,15 +2325,15 @@ Class Leads_model extends MY_Model
                 }
             }
             $lastid = $lastid - 1;
-            $attach[] = [
+            $attachs[] = [
                 'leadattch_id' => $lastid,
                 'source_name' => ifset($data,'src','new_lead_attach'),
                 'attachment' => $data['newval'],
                 'quoteattach' => 0,
             ];
-            $leadattachs['lead_attach'] = $attach;
+            $leadattachs['lead_attach'] = $attachs;
             $out['result'] = $this->success_result;
-            $out['attachs'] = $attach;
+            $out['attachs'] = $attachs;
             usersession($session_id, $leadattachs);
         }
         return $out;
