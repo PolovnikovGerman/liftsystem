@@ -64,21 +64,20 @@ class Template
         if (isset($options['styles'])) {
             $styles=$options['styles'];
         }
-        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {
+        if ($this->CI->config->item('test_server')) {
             $styles[]=array('style'=>'/css/page_view/testsite_view.css');
         }
         $scripts=[];
         if (isset($options['scripts'])) {
             $scripts=$options['scripts'];
         }
-
+        $brand  = $this->CI->menuitems_model->get_current_brand();
         // Build left menu
-        $menu_options = [
-            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
-            // 'activeitem' => (isset($options['activeitem']) ? $options['activeitem'] : ''),
-            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id']),
-        ];
-        $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
+//        $menu_options = [
+//            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+//            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+//        ];
+        // $menu_view = $this->CI->load->view('page/menu_new_view', $menu_options, TRUE);
         // Mobile menu
         $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
         // Admin and Alerts
@@ -125,13 +124,6 @@ class Template
             $inventory_permissions = 1;
             $inventory_old = $inventorychk['menuitem']['newver'];
         }
-//        $alertchk = $this->CI->menuitems_model->get_menuitem('/alerts');
-//        if ($alertchk['result']==$this->success_result) {
-//            $alert_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $alertchk['menuitem']['menu_item_id']);
-//            if ($alert_permissionchk['result']==$this->success_result && $alert_permissionchk['permission']>0) {
-//                $alert_permission = 1;
-//            }
-//        }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
 
@@ -154,7 +146,7 @@ class Template
             'user_name' => $options['user_name'],
             'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
             'total_view' => $total_view,
-            'menu_view' => $menu_view,
+            // 'menu_view' => $menu_view,
             'adminchk' => $admin_permission,
             'adminold' => $admin_old,
             'reportchk' => $reports_permissions,
@@ -163,13 +155,20 @@ class Template
             'resourceold' => $resource_old,
             'inventorychk' => $inventory_permissions,
             'inventoryold' => $inventory_old,
+            'test_server' => $this->CI->config->item('test_server'),
+            'brand' => $brand,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
         } else {
             $dat['header_view'] = $this->CI->load->view('page/header_view', $topmenu_options, TRUE);
         }
-
+        $leftoptions = [
+            'brand' => $brand,
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+        ];
+        $dat['left_menu'] = $this->CI->load->view('page/left_menu_view', $leftoptions, TRUE);
         // $dat['popups_view'] = $this->CI->load->view('page/popups_view', [], TRUE);
         return $dat;
     }

@@ -1,6 +1,7 @@
 <input type="hidden" id="totalleadorders" value="<?=$total?>"/>
 <input type="hidden" id="leadorderpage" value="0"/>
 <input type="hidden" id="leadorderactivate" value="<?=$activesearch?>"/>
+<input type="hidden" id="ordersviewbrand" value="<?=$brand?>"/>
 <div class="leadord_headarea">
     <div class="leadord_headrow">
         <div class="leadord_search">
@@ -78,8 +79,4 @@
         <div class="ordstatus">Status</div>
     </div>
     <div class="leadorder_dataarea">&nbsp;</div>
-</div>
-<input type="hidden" id="ordersviewbrand" value="<?=$brand?>"/>
-<div id="ordersviewbrandmenu">
-    <?=$top_menu?>
 </div>

@@ -1,5 +1,6 @@
 <input type="hidden" id="calcsort" value="<?=$calcsort?>"/>
 <input type="hidden" id="calcdirec" value="<?=$calcdirec?>"/>
+<input type="hidden" id="expensesviewbrand" value="<?=$brand?>">
 <div class="calculator">
     <div class="calculatortitle">
         <div class="calc_cell-00">&nbsp;</div>
@@ -57,8 +58,4 @@
         <div class="calc-totalpercent">&nbsp;</div>
         <div class="calc-grandtotal-end">&nbsp;</div>
     </div>
-</div>
-<input type="hidden" id="expensesviewbrand" value="<?=$brand?>">
-<div id="expensesviewbrandmenu">
-    <?=$top_menu?>
 </div>

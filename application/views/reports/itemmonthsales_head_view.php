@@ -2,6 +2,7 @@
 <input type="hidden" id="curpageitemmonth" value="0"/>
 <input type="hidden" id="itemmonthcurrentyear" value="<?=$curentyear?>"/>
 <input type="hidden" id="itemmonthstartyear" value="<?=$startyear?>"/>
+<input type="hidden" id="itemmonthreportbrand" value="<?=$brand?>"/>
 
 <div class="itemmonthsalesreportarea">
     <div class="itemmonthheadrow">
@@ -66,8 +67,4 @@
         <div class="monthdetail monthdatalast">Dec</div>
     </div>
     <div class="itemmonth_data">&nbsp;</div>
-</div>
-<input type="hidden" id="itemmonthreportbrand" value="<?=$brand?>"/>
-<div id="itemmonthreporttopmenu">
-    <?=$top_menu?>
 </div>

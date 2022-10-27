@@ -1,11 +1,29 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea databasemenu">
-        <div class="menupage_head">
-            <?=$page_menu?>
+    <div class="leftmenuarea">
+        <?=$left_menu?>
+    </div>
+    <div class="maincontentmenuarea  <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
+        <div class="maincontentmenu">
+            <?php if ($brand_menu==1) { ?>
+                <div class="subtitlelink" data-link="dbbrand">Brand Database:</div>
+            <?php } else {?>
+                <div class="subtitle"></div>
+            <?php } ?>
+            <div class="title">Master Database:</div>
+
+            <?php foreach ($menu as $item) { ?>
+                <div class="maincontentmenu_item <?=str_replace('#','', $item['item_link'])?>lnk <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
+                    <?php  if (ifset($item,'newver', 1)==0) { ?>
+                        <div class="oldvesionlabel">&nbsp;</div>
+                    <?php } ?>
+                    <?=$item['item_name']?>
+                </div>
+            <?php } ?>
         </div>
         <div class="maincontent_view">
+            <!-- vendorsview -->
             <?php if (isset($vendorsview)) { ?>
-                <div class="dbcontentarea" id="vendorsview" style="display: none;"><?=$vendorsview?></div>
+                <div class="dbcontentarea" id="mastervendors" style="display: none;"><?=$vendorsview?></div>
             <?php } ?>
             <?php if (isset($settingsview)) { ?>
                 <div class="dbcontentarea" id="settingsview" style="display: none;"><?=$settingsview?></div>

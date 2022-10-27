@@ -4,6 +4,7 @@
     <input type="hidden" id="totaltab1" value="<?=$total?>"/>
     <input type="hidden" id="curpagetab1" value="<?=$curpage;?>"/>
     <input type="hidden" id="quickbookexclude" value="1"/>
+    <input type="hidden" id="profitordersbrand" value="<?=$brand?>">
     <div class="profitorder-head-row">
         <div class="legend"><?=$legend?></div>
         <div>
@@ -142,8 +143,3 @@
     </div>
 
 </div>
-<input type="hidden" id="profitordersbrand" value="<?=$brand?>">
-<div id="profitordersbrandmenu">
-    <?=$top_menu?>
-</div>
-

@@ -29,7 +29,12 @@ Class Quotes_model extends My_Model {
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('e.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            } else {
+                $this->db->where('e.brand', $options['brand']);
+            }
+
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -52,8 +57,11 @@ Class Quotes_model extends My_Model {
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($search['brand'])) {
-            // $this->db->where('e.email_websys',$search['brand']);
-            $this->db->where('e.brand',$search['brand']);
+            if ($search['brand']=='SB') {
+                $this->db->where_in('e.brand',['BT','SB']);
+            } else {
+                $this->db->where('e.brand',$search['brand']);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);

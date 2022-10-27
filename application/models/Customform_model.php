@@ -21,7 +21,11 @@ class Customform_model extends MY_Model
             $this->db->where('active', $params['hideincl']);
         }
         if (ifset($params,'brand','')!=='') {
-            $this->db->where('brand', $params['brand']);
+            if ($params['brand']=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $params['brand']);
+            }
         }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
@@ -43,7 +47,11 @@ class Customform_model extends MY_Model
             $this->db->where('le.leademail_id is null');
         }
         if (ifset($options,'brand','')!=='') {
-            $this->db->where('q.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('q.brand', ['BT','SB']);
+            } else {
+                $this->db->where('q.brand', $options['brand']);
+            }
         }
         if (ifset($options,'hideincl',0)==1) {
             $this->db->where('q.active', $options['hideincl']);

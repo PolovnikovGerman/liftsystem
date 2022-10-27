@@ -1,3 +1,4 @@
+<input type="hidden" id="attemptsviewbrand" value="<?= $brand ?>"/>
 <div class="attempts_content">
     <div class="attempts_header">
         <div class="graph">
@@ -22,8 +23,4 @@
             <div class="totalresult">TOTAL WEEK</div>
         </div>
     <div class="table-atempts-info" id="attemptsreportsinfo"></div>
-</div>
-<input type="hidden" id="attemptsviewbrand" value="<?= $brand ?>"/>
-<div id="attemptsviewbrandmenu">
-    <?= $top_menu ?>
 </div>
