@@ -605,6 +605,19 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #ffffff;
     margin-top: 3px;
 }
+.maincontentmenu > .subtitle, .maincontentmenu > .subtitlelink {
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 6px;
+    position: relative;
+    margin-left: 14px;
+    color: #5554ff;
+    height: 24px;
+}
+.maincontentmenu > .subtitlelink {
+    cursor: pointer;
+}
 .maincontentmenu_item {
     background: #5a5aff;
     margin-top: 5px;

@@ -10,6 +10,10 @@ $(document).ready(function(){
     } else {
         start = $(".maincontentmenu_item:first").data('link');
     }
+    $(".maincontentmenu").find("div.subtitlelink").unbind('click').click(function(){
+        var url = '/database?start='+$(this).data('link');
+        window.location.href=url;
+    })
     init_page(start);
     $(".maincontentmenu_item").unbind('click').click(function () {
         var objid = $(this).data('link');
@@ -25,6 +29,10 @@ function init_page(objid) {
     switch (objid) {
         case 'vendorsview':
             $("#vendorsview").show();
+            init_vendorpage();
+            break;
+        case 'mastervendors':
+            $("#mastervendors").show();
             init_vendorpage();
             break;
         case 'legacyview':
