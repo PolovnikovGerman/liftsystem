@@ -255,6 +255,7 @@ body div {
     float: right!important;
     cursor: pointer;
     padding: 0 6px;
+    margin-top: 2.5px;
 }
 .infoalerts:hover {
     background: #000080;
@@ -557,7 +558,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     height: 35px;
     line-height: 35px!important;
     font-size: 18px;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 .branmenudevider {
     border-bottom: 1.5px solid #000000;
@@ -1176,7 +1177,7 @@ div.oldvesionlabel {
 /* Week totals popup */
 .brantotalarea {
     display: inline-table;
-    width: 230px;
+    width: 240px;
     background: #000000;
     border: 1px solid #adadad;
     padding: 7px;
@@ -1190,7 +1191,7 @@ div.oldvesionlabel {
     line-height: 22px!important;
 }
 .brantotalarea .totalrowlabel {
-    width: 120px;
+    width: 130px;
     padding-right: 7px;
     text-align: right;
     color: #4ca4ee;

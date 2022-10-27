@@ -122,6 +122,21 @@ $(document).ready(function () {
             $(this).popover('hide');
         }
     );
+    $('.period_analitic_info').find('div.period_name').hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('viewsrc'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'bottom',
+                    html: true
+                }).popover('show');
+            });
+        }
+        , function(){
+            $(this).popover('hide');
+        }
+    );
 });
 
 $(window).resize(function() {

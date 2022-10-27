@@ -44,7 +44,7 @@ Class Dashboard_model extends MY_Model
         return ['data'=>$options, 'label'=>$label];
     }
 
-    public function get_totals_brand($dayview) {
+    public function get_totals_brand($resulttype = 'totals') {
         $weeknum = date('W');
         $year = date('Y');
         $dates = getDatesByWeek($weeknum, $year);
@@ -57,11 +57,14 @@ Class Dashboard_model extends MY_Model
         $this->db->group_by('brand');
         $res = $this->db->get()->result_array();
         $sbtotal = $srtotal = 0;
+        $sborders = $srorders = 0;
         foreach ($res as $row) {
             if ($row['brand']=='SR') {
                 $srtotal+=$row['revenue'];
+                $srorders+=$row['cnt'];
             } else {
                 $sbtotal+=$row['revenue'];
+                $sborders+=$row['cnt'];
             }
         }
         // Temporary -
@@ -69,9 +72,18 @@ Class Dashboard_model extends MY_Model
             $srtotal = 5204;
             $sbtotal = 17405;
         }
+        if ($sborders==0 && $srorders==0 && $this->config->item('test_server')==1) {
+            $sborders = 32;
+            $srorders = 20;
+        }
         $out = [];
-        $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
-        $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
+        if ($resulttype=='totals') {
+            $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
+            $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
+        } else {
+            $out[] = ['label' => 'Stress Balls', 'value' => QTYOutput($sborders,0)];
+            $out[] = ['label' => 'Stress Relievers', 'value' => QTYOutput($srorders,0)];
+        }
         return $out;
     }
 }

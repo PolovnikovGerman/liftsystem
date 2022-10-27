@@ -549,15 +549,25 @@ Class Orders_model extends MY_Model
     }
 
     // Get Order by num (template)
-    public function get_orderbynum($ordernum) {
+    public function get_orderbynum($ordernum, $brand = 'SB') {
         $this->db->select('count(o.order_id) as cnt');
         $this->db->from('ts_orders o');
         $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+        if ($brand=='SB') {
+            $this->db->where_in('brand',['BT', 'SB']);
+        } else {
+            $this->db->where('brand','SR');
+        }
         $res=$this->db->get()->row_array();
         if ($res['cnt']==1) {
             $this->db->select('order_id');
             $this->db->from('ts_orders o');
             $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT', 'SB']);
+            } else {
+                $this->db->where('brand','SR');
+            }
             $detail=$this->db->get()->row_array();
             $out=array(
                 'numrec'=>1,

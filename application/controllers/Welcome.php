@@ -140,7 +140,14 @@ class Welcome extends MY_Controller {
 
     public function weektotals() {
         $this->load->model('dashboard_model');
-        $totals = $this->dashboard_model->get_totals_brand('week');
+        $totals = $this->dashboard_model->get_totals_brand( 'totals');
+        $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
+        echo $msg;
+    }
+
+    public function weektotalorders() {
+        $this->load->model('dashboard_model');
+        $totals = $this->dashboard_model->get_totals_brand('orders');
         $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
         echo $msg;
     }

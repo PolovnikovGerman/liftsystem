@@ -456,7 +456,7 @@ class Orders extends MY_Controller
         $ordertemplate=$liftsearch;
         if (!empty($ordertemplate)) {
             // Check, that such order exits and # of orders==1
-            $res=$this->orders_model->get_orderbynum($ordertemplate);
+            $res=$this->orders_model->get_orderbynum($ordertemplate, $brand);
             if ($res['detail']!=0) {
                 $datqs['activesearch']=$res['detail'];
             }
