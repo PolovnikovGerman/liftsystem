@@ -32,7 +32,7 @@ class Database extends MY_Controller
 
     public function index() {
         $head = [];
-        $head['title'] = 'Orders';
+        $head['title'] = 'Database';
         $getdata = $this->input->get();
         $start = ifset($getdata,'start','');
         $brand = $this->menuitems_model->get_current_brand();
@@ -100,7 +100,7 @@ class Database extends MY_Controller
         $head['title'] = 'Database Master';
         $pagelnk = '#dbmaster';
         $brand = $this->menuitems_model->get_current_brand();
-        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink, $brand);
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $brand_menu = 0;
         if (count($main_menu)>1) {
             $brand_menu = 1;
@@ -111,7 +111,7 @@ class Database extends MY_Controller
 //        ];
 //        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk, $brand);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
         $content_options=[
             // 'page_menu' => $page_menu,
@@ -161,7 +161,7 @@ class Database extends MY_Controller
         $head['title'] = 'Bluetrack/Stressballs';
         $pagelnk = '#dbbrand';
         $brand = $this->menuitems_model->get_current_brand();
-        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink, $brand);
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $master_menu = 0;
         if (count($main_menu) > 1) {
             $master_menu = 1;
@@ -172,7 +172,7 @@ class Database extends MY_Controller
 //        ];
 //        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk, $brand);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
         $content_options=[
             // 'page_menu' => $page_menu,
