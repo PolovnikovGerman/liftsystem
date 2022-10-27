@@ -135,7 +135,8 @@ select.quotehideincl option {
 /* Table data */
 .quotes_tabledat {
     clear: both;
-    max-height: 525px;
+    /* max-height: 525px; */
+    max-height: 505px;
     overflow-y: auto;
     overflow-x: hidden;
     width: 969px;

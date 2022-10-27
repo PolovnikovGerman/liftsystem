@@ -8,6 +8,7 @@
 <input type="hidden" id="needapr_direc" value="<?=$direc_needapr?>"/>
 <input type="hidden" id="aproved_sort" value="<?=$sort_aproved?>"/>
 <input type="hidden" id="aproved_direc" value="<?=$direc_aproved?>"/>
+<input type="hidden" id="arttasksviewbrand" value="<?=$brand?>"/>
 <div class="taskview_conteiner">
     <div class="taskview_manage">
         <div class="tasklist_search">
@@ -105,8 +106,4 @@
             <div class="taskview_devstage_data" id="dataaprovedarea">&nbsp;</div>
         </div>
     </div>
-</div>
-<input type="hidden" id="arttasksviewbrand" value="<?=$brand?>"/>
-<div id="arttasksviewbrandmenu">
-    <?=$top_menu?>
 </div>

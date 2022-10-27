@@ -9,38 +9,6 @@ Class Payments_model extends MY_Model {
         parent::__construct();
     }
 
-//    function get_payment_results($options) {
-//        $res=array('unbilled'=>0, 'billbymethods'=>array());
-//        $this->db->select('m.method_name, (coalesce(pay.sum_bill,0) - coalesce(sum_pay,0)) as sum_pay',FALSE);
-//        $this->db->from('purchase_methods m');
-//        $this->db->join('(select oa.method_id, sum(oa.amount_sum) as sum_bill , sum(op.charge_sum) as sum_pay from ts_order_amounts oa
-//                          left join ts_order_charges op on op.amount_id=oa.amount_id
-//                          join ts_orders o on o.order_id=oa.order_id where o.is_canceled=0 and o.is_closed=0
-//                          group by oa.method_id) pay','pay.method_id=m.method_id','left');
-//        $this->db->order_by('m.method_name');
-//        $result=$this->db->get()->result_array();
-//        /* Select sum unnamed */
-//        $this->db->select('sum(revenue-profit) as sum_pay');
-//        $this->db->from('ts_orders');
-//        $this->db->where("is_canceled",0);
-//        $this->db->where('order_cog is null');
-//        $resunb=$this->db->get()->row_array();
-//        $result[]=array('method_name'=>'', 'sum_pay'=>$resunb['sum_pay']);
-//        /* Calculate Total unbilled */
-//
-//        $sumall=0;
-//        $out_arr=array();
-//        foreach ($result as $row) {
-//            $sumall=$sumall+floatval($row['sum_pay']);
-//            $row['sum_pay']=($row['sum_pay']=='' ? '-' : number_format($row['sum_pay'],2,'.',','));
-//            $row['method_title']=($row['method_name']=='' ? 'Unplaced (est 66%)' : $row['method_name']);
-//            $row['method_class']=($row['method_name']=='' ? 'unplacecharge' : 'methodcharge');
-//            $out_arr[]=$row;
-//        }
-//        $res['billbymethods']=$out_arr;
-//        $res['unbilled']=($sumall==0 ? '-' : '$'.number_format($sumall,2,'.',','));
-//        return $res;
-//    }
 
     public function get_count_purchorders($options) {
         $this->db->select('count(oa.amount_id) as cnt_rec');
@@ -59,68 +27,16 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.order_num', $options['searchpo']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt_rec'];
     }
 
-//    public function get_amountrow($amount_id) {
-//        $this->db->select('oa.amount_id, oa.amount_date, oa.amount_sum, oa.order_id, o.order_num, o.profit_perc, o.profit, o.order_cog');
-//        $this->db->select('v.vendor_name, m.method_name, oa.date_charge, coalesce(pay.numchr,0) as numchr, pay.sumchr',FALSE);
-//        $this->db->select('coalesce(oa.amount_sum,0)-coalesce(pay.sumchr,0) as rest, oa.is_closed ,  oa.order_replica, ad.cnt_att ',FALSE);
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->join('(select amount_id, count(charge_id) as numchr, sum(charge_sum) sumchr from ts_order_charges group by amount_id) pay','pay.amount_id=oa.amount_id','left');
-//        $this->db->join('purchase_methods m','m.method_id=oa.method_id');
-//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//        $this->db->join('(select amount_id, count(amountdoc_id) as cnt_att from ts_amount_docs group by amount_id) ad','ad.amount_id=oa.amount_id','left');
-//        $this->db->where("oa.amount_id",$amount_id);
-//        $res=$this->db->get()->row_array();
-//
-//        $res['amount_date']=date('m/d/y',$res['amount_date']);
-//        $res['amount_sum']=($res['amount_sum']=='' ? '-' : '$'.number_format($res['amount_sum'],2,'.',','));
-//        if (floatval($res['profit'])==0) {
-//            $res['profit']='-';
-//        } else {
-//            $res['profit']='$'.number_format($res['profit'],2,'.',',');
-//        }
-//        if ($res['order_cog']=='') {
-//            $res['order_cog']='-';
-//            $res['profit_class']='projprof';
-//            $res['profit_perc']='PROJ';
-//        } else {
-//            // $res['order_cog']='$'.number_format($res['order_cog'],2,'.',',');
-//            $res['profit_class']=$this->profit_class($res['profit_perc']);
-//            $res['profit_perc']=($res['profit_perc']=='' ? '' :  number_format($res['profit_perc'],1,'.',',').'%');
-//        }
-//        $res['vendor_name']=($res['vendor_name']=='' ? '&nbsp;' : $res['vendor_name']);
-//        $res['method_name']=($res['method_name']=='' ? '&nbsp;' : $res['method_name']);
-//        $res['datcharclass']='';
-//        if ($res['numchr']==0) {
-//            $res['date_charge']='&nbsp';
-//        } elseif ($res['numchr']==1) {
-//            $res['date_charge']=date('m/d/Y',$res['date_charge']);
-//        } else {
-//            $res['date_charge']='Multiple';
-//            $res['datcharclass']='multy';
-//        }
-//        $res['rowclass']=($res['is_closed']==1 ? 'closedorder' : '');
-//        $res['sumchr']=($res['sumchr']=='' ? '-' : '$'.number_format($res['sumchr'],2,'.',','));
-//        $res['rest']=($res['is_closed']==1 ? 0 : $res['rest']);
-//        $res['rest']=($res['rest']==0  ? '---' : '$'.number_format($res['rest'],2,'.',','));
-//        $res['closed_view']='/img/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png';
-//        $res['order_replica']=($res['order_replica']=='' ? '&nbsp' : $res['order_replica']);
-//        $res['out_attach']='<img src="/img/empty_square.png" alt="Empty"/>';
-//        $res['attclass']='';
-//        $res['atttitle']='';
-//        if (intval($res['cnt_att'])!=0) {
-//            $res['out_attach']='<img src="/img/red_square.png" alt="Exist"/>';
-//            $res['attclass']='allowattach';
-//            $res['atttitle']=$res['cnt_att'].' Attachments';
-//        }
-//        return $res;
-//    }
 
     public function get_purchorders($options,$order_by,$direct,$limit,$offset, $user_id) {
         $usrdata=$this->user_model->get_user_data($user_id);
@@ -145,7 +61,11 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.order_num', $options['searchpo']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         if ($order_by=='oa.amount_date') {
             $order_by='oa.amount_date, oa.amount_id';
@@ -1007,7 +927,11 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.is_canceled',0);
             $this->db->where('v.payinclude',1);
             if ($brand!=='ALL') {
-                $this->db->where('o.brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('o.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('o.brand', $brand);
+                }
             }
             $this->db->group_by('oa.vendor_id');
             $vpays=$this->db->get()->result_array();
@@ -1045,7 +969,11 @@ Class Payments_model extends MY_Model {
         $this->db->from('ts_order_amounts oa');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->group_by('pay_year');
         $this->db->order_by('pay_year','desc');
@@ -1213,7 +1141,11 @@ Class Payments_model extends MY_Model {
         $this->db->from('ts_order_amounts');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=ts_order_amounts.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $res=$this->db->get()->row_array();
         $maxyear = date('Y', $res['maxdate']);
@@ -1237,7 +1169,11 @@ Class Payments_model extends MY_Model {
         $this->db->group_by('oa.vendor_id');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $res = $this->db->get()->result_array();
         return count($res);
@@ -1249,7 +1185,11 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year1);
         if ($brand!='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->group_by('oa.vendor_id');
         $yearsql1 = $this->db->get_compiled_select();
@@ -1258,7 +1198,11 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year2);
         if ($brand!='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->group_by('oa.vendor_id');
         $yearsql2 = $this->db->get_compiled_select();
@@ -1267,7 +1211,11 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year3);
         if ($brand!='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->group_by('oa.vendor_id');
         $yearsql3 = $this->db->get_compiled_select();
@@ -1279,7 +1227,11 @@ Class Payments_model extends MY_Model {
         $this->db->group_by('oa.vendor_id');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $vendorsel = $this->db->get_compiled_select();
         $this->db->select('v.vendor_id, v.vendor_name, y1.vqty as qty_year1, y1.cost as cost_year1, y1.profit as profit_year1, y1.avgprofit as avgprof_year1');
@@ -1425,7 +1377,11 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
         if ($brand!='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $totalres = $this->db->get()->row_array();
         $this->db->select('count(oa.amount_id) as vqty, sum(oa.amount_sum) as cost, sum(o.profit) as profit');
@@ -1433,19 +1389,32 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
         if ($brand!='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->where('oa.vendor_id', $vendor_id);
         $vendres = $this->db->get()->row_array();
         $msg='';
         if ($type=='qty') {
-            $vendproc = round($vendres['vqty'] / $totalres['vqty'] *100,0);
+            $vendproc = ($vendres['vqty'] != 0 ? '100' : 0);
+            if ($totalres['vqty']!==0) {
+                $vendproc = round($vendres['vqty'] / $totalres['vqty'] *100,0);
+            }
             $msg = $vendproc.'% of '.QTYOutput($totalres['vqty']).' Total POs';
         } elseif ($type=='cost') {
-            $vendproc = round($vendres['cost'] / $totalres['cost'] *100,0);
+            $vendproc = ($vendres['cost'] !=0 ? '100' : 0);
+            if ($totalres['cost']!==0) {
+                $vendproc = round($vendres['cost'] / $totalres['cost'] *100,0);
+            }
             $msg = $vendproc.'% of '.MoneyOutput($totalres['cost'],0).' Total Cost';
         } elseif ($type=='profit') {
-            $vendproc = round($vendres['profit'] / $totalres['profit'] *100,0);
+            $vendproc = ($vendres['profit']!==0 ? 100 : 0);
+            if ($totalres['profit']!==0) {
+                $vendproc = round($vendres['profit'] / $totalres['profit'] *100,0);
+            }
             $msg = $vendproc.'% of '.MoneyOutput($totalres['profit'],0).' Total Profit $$';
         }
         return $msg;

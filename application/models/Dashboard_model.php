@@ -43,5 +43,36 @@ Class Dashboard_model extends MY_Model
         }
         return ['data'=>$options, 'label'=>$label];
     }
+
+    public function get_totals_brand($dayview) {
+        $weeknum = date('W');
+        $year = date('Y');
+        $dates = getDatesByWeek($weeknum, $year);
+        $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
+        $this->db->select('brand, count(order_id) as cnt, sum(revenue) as revenue');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $dates['start_week']);
+        $this->db->where('order_date < ', $dates['end_week']);
+        $this->db->where('is_canceled',0);
+        $this->db->group_by('brand');
+        $res = $this->db->get()->result_array();
+        $sbtotal = $srtotal = 0;
+        foreach ($res as $row) {
+            if ($row['brand']=='SR') {
+                $srtotal+=$row['revenue'];
+            } else {
+                $sbtotal+=$row['revenue'];
+            }
+        }
+        // Temporary -
+        if ($srtotal==0 && $sbtotal==0 && $this->config->item('test_server')==1) {
+            $srtotal = 5204;
+            $sbtotal = 17405;
+        }
+        $out = [];
+        $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
+        $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
+        return $out;
+    }
 }
 ?>

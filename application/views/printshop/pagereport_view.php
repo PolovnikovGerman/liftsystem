@@ -5,6 +5,7 @@
         <input type="hidden" id="orderrepcurpage" value="0"/>
         <input type="hidden" id="report_year" value=""/>
         <input type="hidden" id="showorangeplate" value="0"/>
+        <input type="hidden" id="printshopreportbrand" value="<?=$brand?>"/>
         <div class="orderreportheadrow">
             <div class="search_orderreports">
                 <img src="/img/icons/magnifier.png">
@@ -85,8 +86,4 @@
         <div class="orderreporttablebody" id="orderreportdataarea"></div>
         <div id="neworderprofitview" class="neworderprofitview"></div>    
     </div>
-</div>
-<input type="hidden" id="printshopreportbrand" value="<?=$brand?>"/>
-<div id="printshopreportbrandmenu">
-    <?=$top_menu?>
 </div>

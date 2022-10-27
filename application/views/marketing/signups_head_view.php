@@ -3,6 +3,7 @@
 <input type="hidden" id="direcsign" value="<?= $direction ?>"/>
 <input type="hidden" id="cursign" value="<?= $cur_page ?>"/>
 <input type="hidden" id="perpagesign" value="<?=$perpage?>"/>
+<input type="hidden" id="signupemailbrand" value="<?=$brand?>"/>
 <div class="signup_content">
     <div class="signup_header">
         <div>
@@ -18,8 +19,4 @@
         <div class="left-table" id="tabinfo_left"></div>
         <div class="right-table" id="tabinfo_right"></div>
     </div>
-</div>
-<input type="hidden" id="signupemailbrand" value="<?=$brand?>"/>
-<div id="signupemailbrandmenu">
-    <?=$top_menu?>
 </div>

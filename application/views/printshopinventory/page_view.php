@@ -1,6 +1,7 @@
 <div class="printshopinventor" id="printshopinventor">
     <input type="hidden" id="inventorytotals" value="<?= $totals ?>"/>
     <input type="hidden" id="showonlinemaxvalue" value="0"/>
+    <input type="hidden" id="printshopinventbrand" value="<?=$brand?>"/>
     <div class="maxinventsum">
         <div class="datarow">
             <div class="labeltxt">Current Inventory Value:</div>
@@ -32,8 +33,4 @@
     </div>
     <div id="stockdataarea" style="display: none; width: 366px; height: 346px;"></div>
     <div id="onboatarea" style="display: none; width: 366px; height: 346px;"></div>
-</div>
-<input type="hidden" id="printshopinventbrand" value="<?=$brand?>"/>
-<div id="printshopinventbrandmenu">
-    <?=$top_menu?>
 </div>

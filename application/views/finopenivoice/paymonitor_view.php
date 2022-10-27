@@ -3,6 +3,7 @@
     <input type="hidden" id="directiontab4" value="<?=$direc?>"/>
     <input type="hidden" id="totaltab4" value="<?=$total?>"/>
     <input type="hidden" id="curpagetab4" value="<?=$curpage;?>"/>
+    <input type="hidden" id="paymentmonitorbrand" value="<?=$brand?>">
     <div class="monitor-head">
         <div class="monitor-head-totals">
             <div class="total_notinvoiced">Total Not Invoiced <?=$total_inv?></div>
@@ -78,8 +79,3 @@
     </div>
     -->
 </div>
-<input type="hidden" id="paymentmonitorbrand" value="<?=$brand?>">
-<div id="paymentmonitorbrandmenu">
-    <?=$top_menu?>
-</div>
-

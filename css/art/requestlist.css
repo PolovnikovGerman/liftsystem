@@ -60,7 +60,8 @@ input.proofsearch {
 .proof_tabledat {
     clear: both;
     float: left;
-    max-height: 564px;
+    /* max-height: 564px; */
+    max-height: 502px;
     overflow-y: auto;
     width: 971px;
 }

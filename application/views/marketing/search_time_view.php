@@ -1,3 +1,4 @@
+<input type="hidden" id="searchtimebrand" value="<?=$brand?>"/>
 <div class="searchtime_content">
     <div class="searhctime_head">
         <div class="select_timesearsch">
@@ -31,8 +32,4 @@
 
         </div>
     </div>
-</div>
-<input type="hidden" id="searchtimebrand" value="<?=$brand?>"/>
-<div id="searchtimebrandmenu">
-    <?=$top_menu?>
 </div>

@@ -1,3 +1,4 @@
+<input type="hidden" id="checkoutreportbrand" value="<?=$brand?>"/>
 <div class="content_header">
     <div class="graph">
         <div class="graph-days">
@@ -12,10 +13,6 @@
                 Graph by Weeks
             </div>
         </div>
-    </div>
-    <input type="hidden" id="checkoutreportbrand" value="<?=$brand?>"/>
-    <div id="checkoutreporttopmenu">
-        <?=$top_menu?>
     </div>
 </div>
 <div class="clearfix"></div>

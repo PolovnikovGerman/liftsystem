@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='2.01983';
-$config['css_version']='2.01983';
+$config['js_version']='2.01985';
+$config['css_version']='2.01985';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -257,40 +257,34 @@ if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bl
 $config['geo_apikey'] = getenv('GEOIP_KEY');
 $config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
 $config['message_subject']='Bluetrack.com Research Question';
-switch ($_SERVER['SERVER_NAME']) {
-    case 'bluetrack.sys':
-    case 'www.bluetrack.sys':
-    case 'bluetrack.golden-team.org':
-    case 'germanzp.ml':
-    case 'www.bluetrack.golden-team.org':
-    case 'front.stressballs.com':
-        $config['mail_research']='to_german@yahoo.com';
-        $config['mail_sales']='sales@golden-team.org';
-        $config['mail_direct_from']='direct@golden-team.org';
-        $config['mail_artdepart']="art@golden-team.org";
-        $config['mail_artdepart_cc']=array(
-            'sage@golden-team.org',
-            'sean@golden-team.org'
-        );
-        $config['mail_research_from']='research@golden-team.org';
-        // $config['email_notification_sender']='grey@golden-team.org';
-        $config['customer_notification_sender']='sales@golden-team.org';
-        $config['proofrequest_notification']='proof-req@golden-team.org';
-        break;
-    default :
-        $config['mail_research']='sean@bluetrack.com';
-        $config['mail_sales']='sales@bluetrack.com';
-        $config['mail_direct_from']='direct@bluetrack.com';
-        $config['mail_artdepart']="art@bluetrack.com";
-        $config['mail_artdepart_cc']=array(
-            'sage@bluetrack.com',
-            'sean@bluetrack.com'
-        );
-        $config['mail_research_from']='research@bluetrack.com';
-        // $config['email_notification_sender']='grey@bluetrack.com';
-        $config['customer_notification_sender']='sales@bluetrack.com';
-        $config['proofrequest_notification']='proof-req@bluetrack.com';
-        break;
+$config['test_server'] = getenv('TEST_SERVER');
+if ($config['test_server']==1) {
+    $config['mail_research']='to_german@yahoo.com';
+    $config['mail_sales']='sales@golden-team.org';
+    $config['mail_direct_from']='direct@golden-team.org';
+    $config['mail_artdepart']="art@golden-team.org";
+    $config['mail_artdepart_cc']=array(
+        'sage@golden-team.org',
+        'sean@golden-team.org'
+    );
+    $config['mail_research_from']='research@golden-team.org';
+    // $config['email_notification_sender']='grey@golden-team.org';
+    $config['customer_notification_sender']='sales@golden-team.org';
+    $config['proofrequest_notification']='proof-req@golden-team.org';
+} else {
+    $config['mail_research']='sean@bluetrack.com';
+    $config['mail_sales']='sales@bluetrack.com';
+    $config['mail_direct_from']='direct@bluetrack.com';
+    $config['mail_artdepart']="art@bluetrack.com";
+    $config['mail_artdepart_cc']=array(
+        'sage@bluetrack.com',
+        'sean@bluetrack.com'
+    );
+    $config['mail_research_from']='research@bluetrack.com';
+    // $config['email_notification_sender']='grey@bluetrack.com';
+    $config['customer_notification_sender']='sales@bluetrack.com';
+    $config['proofrequest_notification']='proof-req@bluetrack.com';
 }
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
+$config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);

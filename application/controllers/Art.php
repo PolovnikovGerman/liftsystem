@@ -42,52 +42,52 @@ class Art extends MY_Controller {
     public function index() {
         $head=[];
         $head['title']='ART';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['taskview'] = $this->_prepare_task_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['taskview'] = $this->_prepare_task_view($brand);
             } elseif ($row['item_link']=='#orderlist') {
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['orderlist'] = $this->_prepare_orderlist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['orderlist'] = $this->_prepare_orderlist_view($brand);
             } elseif ($row['item_link']=='#requestlist') {
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['requestlist'] = $this->_prepare_requestlist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['requestlist'] = $this->_prepare_requestlist_view($brand);
             }
         }
         $content_options['menu']=$menu;
-        $content_view = $this->load->view('artpage/page_view', $content_options, TRUE);
         // Add Page Management
         $head['styles'][]=array('style'=>'/css/art/orderslist.css');
         $head['scripts'][]=array('src'=>'/js/art/orderslist.js');
@@ -137,6 +137,9 @@ class Art extends MY_Controller {
             'scripts' => $head['scripts'],
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('artpage/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -908,10 +911,9 @@ class Art extends MY_Controller {
         }
     }
 
-    private function _prepare_task_view($brand, $top_menu) {
+    private function _prepare_task_view($brand) {
         $datf=array(
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $datf['sort_need_art']='time';
         $datf['direc_needart']='desc';
@@ -927,10 +929,9 @@ class Art extends MY_Controller {
         return $content;
     }
 
-    private function _prepare_orderlist_view($brand, $top_menu) {
+    private function _prepare_orderlist_view($brand) {
         $datqs=array(
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $datqs['perpage']=$this->artorderperpage;
         $search=array('hideart'=>0);
@@ -945,10 +946,9 @@ class Art extends MY_Controller {
         return $content;
     }
 
-    private function _prepare_requestlist_view($brand, $top_menu) {
+    private function _prepare_requestlist_view($brand) {
         $datqs=[
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         $datqs['perpage']=$this->artorderperpage;
         $search=array('assign'=>'','hideart'=>0, 'brand'=>$brand);

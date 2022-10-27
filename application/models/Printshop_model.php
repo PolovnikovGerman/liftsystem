@@ -567,7 +567,11 @@ Class Printshop_model extends MY_Model
         $this->db->group_by('onboat_container, onboat_status, onboat_date');
         /*$this->db->order_by('onboat_date', 'asc');*/
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $res = $this->db->get()->result_array();
 
@@ -712,7 +716,11 @@ Class Printshop_model extends MY_Model
             $this->db->where('i.item_color', $color);
         }
         if ($brand!=='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $reserv=$this->db->get()->row_array();
         $reserved = 0;
@@ -729,7 +737,11 @@ Class Printshop_model extends MY_Model
             $this->db->where('printshop_color_id', $printshop_color_id);
         }
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $back=$this->db->get()->row_array();
         $backup = 0;
@@ -749,7 +761,11 @@ Class Printshop_model extends MY_Model
         }
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','oa.order_id=o.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $data=$this->db->get()->row_array();
         $outcome=intval($data['shipped'])+intval($data['kepted'])+intval($data['misprint']);
@@ -1182,7 +1198,11 @@ Class Printshop_model extends MY_Model
         $this->db->where('printshop_color_id', $printshop_color_id);
         $this->db->order_by('instock_date','desc');
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $res=$this->db->get()->result_array();
 
@@ -1357,7 +1377,11 @@ Class Printshop_model extends MY_Model
             $this->db->where('oa.printshop_date < ', $finish);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -1393,6 +1417,11 @@ Class Printshop_model extends MY_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         $res['misprintperc']='0%';
@@ -1439,7 +1468,11 @@ Class Printshop_model extends MY_Model
             }
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $this->db->order_by("sortdatefld desc, oa.update_date desc");
 
@@ -1744,7 +1777,11 @@ Class Printshop_model extends MY_Model
         $this->db->from('ts_printshop_instock');
         $this->db->where('printshop_color_id', $printshop_color_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $stockres=$this->db->get()->row_array();
         if (isset($stockres['stock'])) {
@@ -1758,7 +1795,11 @@ Class Printshop_model extends MY_Model
         $this->db->where('oa.printshop_color_id', $printshop_color_id);
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $data=$this->db->get()->row_array();
         $outcome=intval($data['shipped'])+intval($data['kepted'])+intval($data['misprint']);
@@ -2560,7 +2601,11 @@ Class Printshop_model extends MY_Model
         $this->db->order_by('year_amount','desc');
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->result_array();
         // Additional Options

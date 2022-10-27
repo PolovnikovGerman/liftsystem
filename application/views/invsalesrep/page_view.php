@@ -1,6 +1,7 @@
 <div class="inventsalesreport" id="inventsalesrep">
     <input type="hidden" id="inventorytotals" value="<?= $totals ?>"/>
     <input type="hidden" id="showonlinemaxvalue" value="0"/>
+    <input type="hidden" id="inventsalesreportbrand" value="<?=$brand?>"/>
 
     <div class="head_title">
         <div class="on_boat">&nbsp;</div>
@@ -16,8 +17,4 @@
         </div>
     </div>
     <?php echo $fullview?>
-</div>
-<input type="hidden" id="inventsalesreportbrand" value="<?=$brand?>"/>
-<div id="inventsalesreportbrandmenu">
-    <?=$top_menu?>
 </div>

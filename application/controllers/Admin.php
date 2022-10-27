@@ -30,7 +30,7 @@ class Admin extends MY_Controller
     public function index() {
         $head=[];
         $head['title']='Admin';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink,'');
 
         $content_options = [];
         foreach ($menu as $row) {
