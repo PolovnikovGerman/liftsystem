@@ -471,7 +471,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     line-height: initial;
 }
 .leftmenuarea {
-    width: 161px;
+    width: 126px;
 }
 .content_tab {
     display: none;
@@ -517,7 +517,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     height: 25px;
     background: #5856ff;
     color: #ffffff;
-    width: 123px;
+    width: 114px;
     cursor: pointer;
 }
 .brandmenuitem:hover {
@@ -533,16 +533,17 @@ ul.mainmenu #collapsed.dropdown-menu li {
 .brandmenuitemactive {
     background: #ffffff;
     color: #000000;
-    width: 153px;
+    width: 118px;
     margin: 8px 0 8px 8px;
-    height: 35px;
+    /* height: 35px; */
+    height: 25px;
 }
 .brandmenuicon {
     width: 16px;
     margin: 2px 6px;
 }
 .brandmenuicon.active {
-    margin: 9px 6px;
+    /* margin: 9px 6px; */
 }
 .brandmenuicon img {
     width: 100%;
@@ -555,7 +556,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     line-height: 23px!important;
 }
 .brandmenutitle.active {
-    height: 35px;
+    /* height: 35px;
     line-height: 35px!important;
     font-size: 18px;
     /* text-transform: uppercase; */
@@ -569,7 +570,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     border-bottom: 1.5px solid #929292;
 }
 .maincontentmenuarea {
-    width: calc(100% - 162px);
+    width: calc(100% - 126px);
     padding: 10px 10px 10px 0;
 }
 .maincontentmenuarea.stresballstab {

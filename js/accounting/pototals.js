@@ -15,6 +15,7 @@ function init_potables_content() {
             $(".poplace-approvtablebody").empty().html(response.data.approvview);
             $(".poplace-prooftablebody").empty().html(response.data.needproofview);
             init_poorders_content();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }
@@ -434,6 +435,7 @@ function pagePOReportCallback(page_index) {
             $("#poreportcurpage").val(page_index);
             jQuery.balloon.init();
             init_poorders_content();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }
