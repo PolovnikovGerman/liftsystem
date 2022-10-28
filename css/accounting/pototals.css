@@ -131,6 +131,9 @@
     border: 1px solid #000000;
     margin-bottom: 8px;
 }
+.poplace-unsigntablebody {
+    width: 500px;
+}
 .poplace-tablerow {
     width: 100%;
 }

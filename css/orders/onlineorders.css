@@ -116,12 +116,13 @@ input.onlinecustomer {
 }
 .onlineorderslist {
     clear: both;
-    max-height: 546px;
+    height: 546px;
     overflow-y: auto;
     width: 974px;
     border-left: 2px solid #000;
     border-bottom: 2px solid #000;
     border-right: 2px solid #000;
+    margin-bottom: 12px;
 }
 .online-data-row {
     clear: both;
