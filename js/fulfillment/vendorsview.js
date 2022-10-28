@@ -43,6 +43,7 @@ function pageVendorCallback(page_index) {
         $("#loader").css('display','none');
         if (response.errors=='') {
             $("div#vendorinfo").empty().html(response.data.content);
+            leftmenu_alignment();
             init_vendor_content();
         } else {
             alert(response.errors);

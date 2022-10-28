@@ -1,0 +1,1 @@
+<div class="datarow error">There are no data about Vendors</div>

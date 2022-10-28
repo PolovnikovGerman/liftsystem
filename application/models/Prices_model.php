@@ -377,8 +377,8 @@ Class Prices_model extends My_Model
             $base_cost = 0;
             if (floatval($row['sale_price']) != 0) {
                 $base_cost = floatval($row['sale_price']);
-            } elseif (floatval($prices['price']) != 0) {
-                $base_cost = floatval($prices['price']);
+            } elseif (floatval($row['price']) != 0) {
+                $base_cost = floatval($row['price']);
             }
             $profits[] = array(
                 'price_id' => $row['promo_price_id'],
@@ -535,5 +535,105 @@ Class Prices_model extends My_Model
         return $retprice;
     }
 
+    public function get_itemlist_price($item_id) {
+        $this->db->select('*');
+        $this->db->from('sb_promo_price');
+        $this->db->where('item_id', $item_id);
+        $this->db->order_by('item_qty');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_itemlist_specprice($item_id) {
+        $this->db->select('item_price_id, item_price_print, item_sale_print, profit_print, item_price_setup, item_sale_setup, profit_setup');
+        $this->db->from('sb_item_prices');
+        $this->db->where('item_price_itemid', $item_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'item_price_id', 0)==0) {
+            // Not found
+            $res = [
+                'item_price_id' => -1,
+                'item_price_print' => 0,
+                'item_sale_print' => 0,
+                'profit_print' => 0,
+                'item_price_setup' => 0,
+                'item_sale_setup' => 0,
+                'profit_setup' => 0,
+                'profit_print_class' => '',
+                'profit_print_perc' => '',
+                'profit_setup_class' => '',
+                'profit_setup_perc' => '',
+            ];
+        } else {
+            $res['profit_print_class']=$res['profit_print_perc']=$res['profit_setup_class']=$res['profit_setup_perc']='';
+            if (floatval($res['item_sale_print'])!=0 && $res['profit_print']!==NULL) {
+                $profit_perc = round(($res['profit_print']/$res['item_sale_print'])*100,1);
+                $res['profit_print_perc'] =$profit_perc.'%';
+                $res['profit_print_class'] = profit_bgclass($profit_perc);
+            }
+            if (floatval($res['item_sale_setup'])!=0 && $res['profit_setup']!==NULL) {
+                $profit_perc = round($res['profit_setup']/$res['item_sale_setup']*100,1);
+                $res['profit_setup_perc'] = $profit_perc.'%';
+                $res['profit_setup_class'] = profit_bgclass($profit_perc);
+            }
+        }
+        return $res;
+    }
+//    // Recalc profit for Promo Prices
+//    public function recalc_promo_profit($vendor_prices, $item_prices) {
+//        $priceidx = 0;
+//        foreach ($item_prices  as $item_price) {
+//            $item_prices[$priceidx]['profit']=$item_prices[$priceidx]['profit_class']=$item_prices[$priceidx]['profit_perc']='';
+//            if (intval($item_price['item_qty'])>0 && (floatval($item_price['price']) > 0 || floatval($item_price['sale_price']) > 0)) {
+//                // Calc
+//                $basecost = (floatval($item_price['sale_price'])>0 ? $item_price['sale_price'] : $item_price['price']);
+//                $baseqty = intval($item_price['item_qty']);
+//                $vendqty = intval($vendor_prices[0]['vendorprice_qty']);
+//                $vendprice = floatval($vendor_prices[0]['vendorprice_color']);
+//                foreach ($vendor_prices as $vendor_price) {
+//                    if (intval($vendor_price['vendorprice_qty'])>0 && intval($vendor_price['vendorprice_qty'])<=$baseqty && floatval($vendor_price['vendorprice_color'])>0) {
+//                        $vendqty=intval($vendor_price['vendorprice_qty']);
+//                        $vendprice = floatval($vendor_price['vendorprice_color']);
+//                        if ($vendqty > 75) {
+//                            $tt=1;
+//                        }
+//                    }
+//                }
+//
+//                if ($vendprice>0) {
+//                    $profit = ($basecost - $vendprice)*$baseqty;
+//                    $profperc = round($profit / ($basecost * $baseqty) * 100, 2);
+//                    $item_prices[$priceidx]['profit']=round($profit, 0);
+//                    $item_prices[$priceidx]['profit_perc'] = round($profperc,0).'%';
+//                    $item_prices[$priceidx]['profit_class']=profit_bgclass($profperc);
+//                }
+//            }
+//            $priceidx++;
+//        }
+//        return $item_prices;
+//    }
+    // Recalc inprint and setup Profit
+    public function recalc_setup_profit($item, $vendor_item) {
+        // Imprint
+        $item['profit_print']=$item['profit_print_class']=$item['profit_print_perc']='';
+        $item['profit_setup']=$item['profit_setup_class']=$item['profit_setup_perc']='';
+        $printbasecost = (floatval($item['item_sale_print'])>0 ? floatval($item['item_sale_print']) : floatval($item['item_price_print']));
+        if ($printbasecost > 0) {
+            $profit = round($printbasecost - floatval($vendor_item['vendor_item_exprint']),2);
+            $profitperc = $profit / $printbasecost * 100;
+            $item['profit_print']=$profit;
+            $item['profit_print_perc']=round($profitperc,0).'%';
+            $item['profit_print_class']=profit_bgclass($profitperc);
+        }
+        $setupbasecost = floatval($item['item_sale_setup'])>0 ? floatval($item['item_sale_setup']) : floatval($item['item_price_setup']);
+        if ($setupbasecost > 0) {
+            $profit = round($setupbasecost - floatval($vendor_item['vendor_item_setup']),2);
+            $profitperc = $profit / $setupbasecost * 100;
+            $item['profit_setup']=$profit;
+            $item['profit_setup_perc']=round($profitperc,0).'%';
+            $item['profit_setup_class']=profit_bgclass($profitperc);
+        }
+        return $item;
+    }
 
 }

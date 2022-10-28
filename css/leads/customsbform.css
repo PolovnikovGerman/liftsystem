@@ -1,0 +1,375 @@
+.customform_content {
+    clear: both;
+    float: left;
+    width: 994px;
+    margin-left: 10px;
+}
+.customform_header {
+    clear: both;
+    float: left;
+    width: 994px;
+    margin-top: 14px;
+    margin-bottom: 0px;
+    position: relative;
+    /* z-index: 7; */
+}
+.customform_header > .label {
+    width: 50px;
+    height: 24px;
+    line-height: 24px!important;
+}
+.customform_header > .status_select {
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 120px;
+    height: 24px;
+    line-height: 24px!important;
+}
+.customform_header > .search_input {
+    background-color: #fff;
+    border: 1px solid #000;
+    float: left;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 206px;
+    height: 24px;
+    line-height: 24px!important;
+}
+a.find_customformbnt {
+    background: url(/img/art/search_button_bg.png) no-repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0px 0 0 8px;
+    padding-top: 3px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+}
+.customform_pagination {
+    float: right!important;
+}
+.customform_tabtitle {
+    clear: both;
+    width: 1040px;
+    margin-top: 10px;
+    border: 1.5px solid #000000;
+}
+.customform_tabtitle > div {
+    height: 28px;
+    line-height: 28px!important;
+    background: none repeat scroll 0 0 #BCBCBC;
+    text-align: center;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    color: #000000;
+}
+.customform_tabtitle > .numrec {
+    width: 43px;
+    /* border-right: 1px solid #2F2F2F; */
+}
+.customform_tabtitle > .websys {
+    width: 76px;
+}
+.customform_tabtitle > .websys select.customformhideincl {
+    float: left;
+    font-size: 11px;
+    font-weight: normal;
+    /* color: #FFF; */
+    background: transparent;
+    border: none;
+    margin-top: 7px;
+    width: 76px;
+}
+
+.customform_tabtitle > .status {
+    width: 65px;
+}
+.customform_tabtitle > .date {
+    width:68px;
+}
+.customform_tabtitle > .customname {
+    width:126px;
+}
+.customform_tabtitle > .custommail {
+    width: 197px;
+}
+.customform_tabtitle > .customphone {
+    width: 91px;
+}
+.customform_tabtitle > .itemdescription {
+    width: 238px;
+}
+.customform_tabtitle > .itemqty {
+    width:72px;
+}
+.customform_tabtitle > .eventdate {
+    width:61px;
+}
+.customform_tabledat {
+    clear: both;
+    width: 1040px;
+    border-left: 1.5px solid #000000;
+    border-bottom: 1.5px solid #000000;
+    border-right: 1.5px solid #000000;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+.customform_tabledat .content-row {
+    width: 100%;
+    cursor: pointer;
+}
+.customform_tabledat .content-row.empty {
+    color: #FF0000;
+}
+.customform_tabledat .content-row.current_row {
+    background: #0000FF;
+    color: #ffffff;
+}
+.customform_tabledat .content-row > div {
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: normal;
+}
+.customform_tabledat .content-row > .numrec {
+    width: 43px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .websys {
+    width: 76px;
+    border-right: 1px solid #000000;
+    font-size: 15px;
+}
+.customform_tabledat .content-row > .websys i {
+    cursor: pointer;
+}
+.customform_tabledat .content-row > .status {
+    width: 65px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .date {
+    width:68px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .customname {
+    width:126px;
+    border-right: 1px solid #000000;
+    text-align: left;
+    overflow: hidden;
+    padding-left: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.customform_tabledat .content-row > .custommail {
+    width: 197px;
+    border-right: 1px solid #000000;
+    text-align: left;
+    overflow: hidden;
+    padding-left: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.customform_tabledat .content-row >.customphone {
+    width: 91px;
+    border-right: 1px solid #000000;
+    text-align: left;
+    overflow: hidden;
+    padding-left: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.customform_tabledat .content-row > .itemdescription {
+    width: 238px;
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.customform_tabledat .content-row > .itemqty {
+    text-align: right;
+    width: 61px;
+    padding-right: 7px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .eventdate {
+    width: 57px;
+}
+.customform_popmessage {
+    background-color: #ffffff!important;
+    float: left;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+    font-size: 14px;
+    padding: 12px;
+    line-height: 20px;
+    max-width: 360px;
+}
+/*Popup */
+.customformdtails_area {
+    float: left;
+    margin: -15px;
+    background: #088aff;
+    width: 723px;
+    padding: 15px;
+}
+.customformdtails_area div {
+    float: left;
+}
+.custom-form {
+    width: 693px;
+    min-height: 424px;
+    border-radius: 10px;
+    border: 1px solid #fff;
+    padding: 15px;
+
+}
+.custom-form .formleft {
+    width: 350px;
+}
+.csf-inputgroup {
+    width: 100%;
+    margin-bottom: 8px;
+}
+.custom-form input {
+    float: right;
+    border: 1px solid #0768c0;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+}
+.custom-form label {
+    color: #fff;
+    font-style: italic;
+    font-size: 15px;
+    font-weight: normal!important;
+    line-height: 30px;
+    float: right;
+    margin-right: 5px;
+
+}
+.custom-form textarea {
+    float: right;
+    border: 1px solid #0768c0;
+    height: 157px;
+    padding: 10px;
+    resize: none;
+    width: 320px;
+    color: #000;
+    font-size: 15px;
+    font-style: normal;
+}
+.custom-form select {
+    float: right;
+    border: 1px solid #0768c0;
+    height: 33px;
+    line-height: 30px;
+    padding-left: 10px;
+    background: #fff;
+}
+.csf-group-1 {
+    width: 153px;
+    margin-right: 22px;
+}
+.csf-group-2 {
+    width: 167px;
+    float: right!important;
+}
+csf-group-1 p, .csf-group-2 p {
+    float: right;
+    text-align: right;
+    width: 100%;
+    color: #fff;
+    font-style: italic;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+.custom-input-2 {
+    width: 100px;
+}
+.custom-form .formright {
+    float: right;
+    width: 300px;
+    position: relative;
+    /* height: 420px; */
+}
+.custom-input-1 {
+    width: 228px;
+}
+.custom-input-5 {
+    width: 69px;
+}
+.custom-input-4 {
+    width: 42px;
+    margin-right: 8px;
+}
+.custom-input-3 {
+    width: 101px;
+    margin-right: 8px;
+}
+.attachimg {
+    margin-top: 25px;
+    padding-right: 9px;
+}
+.attachimg h5 {
+    float: right;
+    text-align: right;
+    color: #fff;
+    /* font-family: HelveticaBoldItalic; */
+    font-style: italic;
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 17px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.file-box {
+    float: right;
+    background: #fff;
+    border: 1px solid #0768c0;
+    /* width: 310px; */
+    height: 30px;
+    padding-left: 10px;
+    position: relative;
+}
+.icon-clip {
+    margin-right: 7px;
+    float: left;
+}
+.icon-clip img {
+    height: 18px;
+    width: auto;
+    margin-top: 4px;
+}
+.name-file {
+    color: #000;
+    font-size: 16px;
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 240px;
+    line-height: 30px;
+    cursor: pointer;
+}
+.btn-closefile {
+    cursor: pointer;
+    width: 22px;
+    text-align: center;
+}
+.btn-closefile img {
+    height: 12px;
+    width: auto;
+    margin-top: 5px
+}

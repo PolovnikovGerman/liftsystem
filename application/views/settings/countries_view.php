@@ -1,5 +1,5 @@
-<div class="page_container">
-    <div class="right_maincontent">
+<!--<div class="page_container">-->
+<!--    <div class="right_maincontent">-->
         <div class="countriescontent">
             <input id="search_template" type="hidden" value=""/>
             <div class="search_templates">
@@ -18,5 +18,5 @@
             </div>
             <div class="countries_data"></div>
         </div>
-    </div>
-</div>
+<!--    </div>-->
+<!--</div>-->

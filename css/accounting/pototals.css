@@ -1,0 +1,465 @@
+.pototalsdataview {
+    clear: both;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.pototalsdataview .pageheader {
+    width: 100%;
+    margin-bottom: 16px;
+}
+.pototalsdataview .pagetitle {
+    font-size: 24px;
+    font-weight: 600;
+}
+.pototalsdataview .manage-purchase-methods {
+    float: right!important;
+    width: 66px;
+    height: 37px;
+    cursor: pointer;
+    background: url('/img/fulfillment/manage_purchase_methods.png') no-repeat;
+    color: #fff;
+    text-align: center;
+    padding-top: 2px;
+    font-size: 12px;
+    line-height: 17px!important;
+}
+.pototals-toplacehead {
+    margin-right: 54px;
+    width: 500px;
+}
+.pototals-placetitle {
+    font-size: 16px;
+    font-weight: 600;
+    height: 22px;
+    line-height: 22px!important;
+    margin-bottom: 10px;
+}
+.pototals-placefiltr {
+    margin-left: 14px;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #010101;
+    padding-top: 6px;
+}
+.pototals-placefiltr i {
+    font-size: 14px;
+}
+.pototals-placeresult {
+    float: right!important;
+    margin-top: -8px;
+}
+.pototals-placeresult-data {
+    width: 100%;
+    text-align: right;
+    font-size: 13px;
+    height: 18px;
+    line-height: 18px;
+}
+.pototals-placeresult-data span {
+    font-weight: 600;
+}
+.poplace-tablehead {
+    border: 1px solid #000000;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.poplace-tablehead > div {
+    background: #545454;
+    color: #ffffff;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 28px;
+    height: 28px;
+}
+.poplace-tablehead .poplace-timehead {
+    width: 13.5%;
+    text-align: right;
+    padding-right: 0.3rem;
+}
+.poplace-tablehead .poplace-orderhead {
+    width: 11.7%;
+}
+.poplace-tablehead .poplace-itemhead {
+    width: 30.7%;
+}
+.poplace-tablehead .poplace-vendorhead {
+    width: 20.9%;
+}
+.poplace-tablehead .poplace-esttotalhead {
+    width: 13%;
+}
+.poplace-tablehead .poplace-actionhead {
+    width: 10.2%;
+}
+.addnonlistedpo {
+    background: #5e5eff;
+    color: #ffffff;
+    padding: 0 8px;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    height: 21px;
+    line-height: 21px!important;
+    width: 102px;
+    float: unset!important;
+}
+.addnonlistedpo:hover {
+    opacity: 0.8;
+}
+.pototalsrow {
+    margin-bottom: 8px;
+}
+.pototals-unsign-tolalqty, .pototals-approved-tolalqty, .pototals-proof-tolalqty {
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    color: #078f00;
+    width: 75.9%;
+}
+.pototals-unsign-tolalsum, .pototals-approved-tolalsum, .pototals-proof-tolalsum {
+    font-size: 13px;
+    font-weight: bold;
+    padding-top: 2px;
+    text-align: center;
+    width: 13.2%;
+}
+.poplace-approvtablebody, .poplace-unsigntablebody, .poplace-prooftablebody {
+    border: 1px solid #000000;
+    margin-bottom: 8px;
+}
+.poplace-tablerow {
+    width: 100%;
+}
+.poplace-tablerow.current_row {
+    background: #0000FF;
+    color: #ffffff!important;
+}
+.poplace-tablerow > div {
+    font-size: 12px;
+    height: 25px;
+    line-height: 25px;
+}
+.poplace-rush {
+    color: #FF0000;
+    padding-left: 4px;
+    font-size: 14px;
+    width: 18px;
+}
+.poplace-late {
+    border-right: 1px solid #000000;
+    padding-right: 6px;
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+    width: 40px;
+}
+.poplace-order {
+    border-right: 1px #000000 solid;
+    text-align: center;
+    color: #0000ff;
+    font-weight: 600;
+    width: 11.7%;
+    cursor: pointer;
+}
+.current_row .poplace-order {
+    color: #ffffff;
+}
+.poplace-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    border-right: 1px #000000 solid;
+    width: 30.7%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.poplace-vendor {
+    border-right: 1px #000000 solid;
+    width: 20.9%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.poplace-esttotal {
+    border-right: 1px #000000 solid;
+    width: 14%;
+    text-align: center;
+}
+.poplace-poaction {
+    width: 10.2%;
+}
+.poplace-poactionbtn {
+    color: #ffffff;
+    background: #5757ff;
+    margin: 0 auto;
+    text-align: center;
+    height: 17px;
+    line-height: 17px!important;
+    margin-top: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    float: unset!important;
+    width: 30px;
+}
+.poplace-poactionbtn:hover {
+    opacity: 0.8;
+}
+.poplace-tablerow .poplace-item.customitem, .poplace-tablerow .poplace-vendor.customitem {
+    font-weight: 600;
+}
+.poreport_detailmessage {
+    background-color: #ffffff!important;
+    float: left;
+    padding: 0 10px;
+    color: #000!important;
+    text-align: center!important;
+    border-color: #000000!important;
+    font-family: arial, verdana, sans-serif;
+    font-size: 13px;
+    line-height: 28px;
+    height: 28px;
+}
+/* Edit Purchase Methods */
+#modalManage .modal-dialog {
+    width: 300px;
+    margin-right: 251px;
+}
+#modalManage .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#modalManage .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#modalManage .modal-title {
+    font-weight: 600;
+}
+input.addnewpurchase {
+    width: 159px;
+    height: 23px;
+    padding-left: 3px;
+}
+.addmethodbtn {
+    background: #5151ff;
+    border-radius: 9px;
+    cursor: pointer;
+    color: #ffffff;
+    font-style: italic;
+    text-align: center;
+    font-size: 12px;
+    margin-left: 4px;
+    padding: 0 5px;
+    height: 23px;
+    line-height: 23px;
+    float: right;
+}
+.methodslabel {
+    width: 100%;
+    font-weight: bold;
+    font-size: 16px;
+    height: 24px;
+    line-height: 24px;
+    margin-top: 10px;
+}
+.purchmethodname {
+    font-size: 14px;
+    padding-left: 16px;
+    height: 27px;
+    line-height: 27px;
+    width: 180px;
+    float: left;
+}
+.purchmethodaction {
+    border-radius: 8px;
+    color: #ffffff;
+    text-align: center;
+    font-style: italic;
+    width: 76px;
+    float: right;
+}
+.purchmethodaction.deactivate {
+    background: #ff2b2b;
+    cursor: pointer;
+}
+.purchmethodaction.activate {
+    background: #178900;
+    cursor: pointer;
+}
+/* Edit Purchase Popup */
+#modalEditpurchase .modal-dialog {
+    width: 500px;
+}
+#modalEditpurchase .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#modalEditpurchase .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#modalEditpurchase .modal-title {
+    font-weight: 600;
+    width: 90%;
+    float: left;
+}
+.purchaseorder_popuparea {
+}
+.purchaseorder_popuparea div {
+    float: left;
+}
+.purchaseorder_popuparea input, .purchaseorder_popuparea select {
+    height: 23px;
+}
+.purchaseorder_popuparea .datarow {
+    margin-top: 8px;
+}
+.poeditlabel {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    width: 65px;
+    padding-right: 4px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput {
+    width: 173px;
+    height: 28.8px;
+    line-height: 28.8px;
+}
+.poeditinput span {
+    float: left;
+    margin-right: 6px;
+}
+.poamntdateinpt, .amountvalueinpt, .ordernuminpt {
+    width: 78px;
+    text-align: left;
+}
+.amountvendorselect, .amountmethodselect {
+    width: 195.2px;
+}
+.orderitemnameplace, .ordercustomerplace {
+    width: 218px;
+    line-height: 28.8px;
+    height: 28.8px;
+    color: #0000ff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.amountprofitval, .amountprofitprc {
+    height: 24px;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    /* width: 46px; */
+    text-align: center;
+    font-weight: 600;
+}
+.pocommentlabel {
+    width: 320px;
+    font-weight: 600;
+    padding-left: 11px;
+    margin-bottom: -5px;
+}
+.poreasondata {
+    width: 100%;
+    resize: none;
+    overflow-y: auto;
+}
+.poamount-save {
+    float: right!important;
+    display: none;
+}
+.poamount-save img {
+    cursor: pointer;
+}
+/* PO Reports */
+.pototals-poreports {
+    width: 687px;
+}
+.poreport-sorting {
+    width: 177px;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+.poreportsortselect {
+    height: 20px;
+    padding-left: 6px;
+    width: 96px;
+}
+.poreporttablehead {
+    width: 169px;
+    text-align: right;
+    padding-right: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.poreportyeardata {
+    padding-left: 9px;
+    width: 172px;
+}
+.poyearcompare {
+    height: 20px;
+    padding-left: 5px;
+    width: 75px;
+}
+.poreporttablebody {
+    border-left: 3px solid #000000;
+    border-top: 3px solid #000000;
+}
+.poreportdatacell {
+    border-right: 1px solid #000000;
+    border-bottom: 3px solid #000000;
+    width: 171px;
+}
+.poreportdatacell:last-child {
+    border-right: 3px solid #000000;
+}
+.poreportdatacell.vendornamedat {
+    padding-left: 0.5rem;
+    padding-right: 0.2rem;
+    padding-top: 0.5rem;
+    font-weight: 600;
+    font-size: 15px;
+    height: 89.4px;
+}
+.poreportdata {
+    color: #717171;
+    width: 61%;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    height: 21.6px;
+    line-height: 21.6px!important;
+}
+.poreportdata span {
+    font-weight: 600;
+}
+.poreportdatagrow {
+    width: 39%;
+    padding-left: 3.2px;
+    padding-right: 3.2px;
+    text-align: right;
+    height: 21.6px;
+    line-height: 21.6px!important;
+}
+.grownegative {
+    color: #ff0000;
+}
+.growpositive {
+    color: #0000ff;
+}
+.poreportPaginator .pagination {
+    float: right!important;
+}

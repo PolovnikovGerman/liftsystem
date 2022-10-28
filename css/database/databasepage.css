@@ -475,3 +475,35 @@ a.itemtitle.nearlyupdate {
 .summenu_item.active {
     background: #ffffff;
 }
+/* Brand menu */
+.dbcenter_main_menu {
+    float: unset!important;
+    margin: 8px auto;
+    max-width: 774px;
+}
+.dbcenter-main-button {
+    background: url('/img/database_center/mainmenu_button.png');
+    color: #ffffff;
+    font-size: 16px;
+    margin-right: 8px;
+    width: 185px;
+    height: 30px;
+    line-height: 30px!important;
+    text-align: center;
+    cursor: pointer;
+}
+.dbcenter-main-button.active {
+    background: url('/img/database_center/mainmenu_button_active.png');
+    color: #000000;
+    /* font-size: 18px; */
+    font-weight: 600;
+}
+.maincontentmenuarea {
+    /*padding: 0px!important;
+    margin-top: -20px;*/
+}
+.menupage_head {
+    padding: 0 7px;
+    /* margin-bottom: 9px; */
+    width: 100%;
+}

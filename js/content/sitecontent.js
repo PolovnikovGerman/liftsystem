@@ -7,10 +7,10 @@ function init_sitecontent(brand) {
             start = $("#btcontentview").find(".submenu_item:first").data('link');
         }
     } else {
-        if ($("#sbcontentview").find(".submenu_item.active").length > 0 ) {
-            start = $("#sbcontentview").find(".submenu_item.active").data('link');
+        if ($("#sbpagesview").find(".submenu_item.active").length > 0 ) {
+            start = $("#sbpagesview").find(".submenu_item.active").data('link');
         } else {
-            start = $("#sbcontentview").find(".submenu_item:first").data('link');
+            start = $("#sbpagesview").find(".submenu_item:first").data('link');
         }
     }
     init_sitecontent_page(start, brand);
@@ -84,8 +84,12 @@ function init_contentpage(page_name, brand) {
             if (page_name=='home') {
                 if (brand=='SB') {
                     $("#sbhomeview").show().empty().html(response.data.content);
-                } else {
+                    $(".submenu_manage[data-link='sbhomeview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                } else if(brand=='BT') {
                     $("#bthomeview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='bthomeview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='bthomeview']").find('div.buttons').empty().html(response.data.buttons);
                 }
             } else if (page_name=='custom') {
                 if (brand=='SB') {
@@ -101,29 +105,45 @@ function init_contentpage(page_name, brand) {
             } else if (page_name=='faq') {
                 if (brand=='SB') {
                     $("#sbfaqview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbfaqview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbfaqview']").find('div.buttons').empty().html(response.data.buttons);
                 } else {
                     $("#btfaqview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='btfaqview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='btfaqview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_faqpage_view(brand);
             } else if (page_name=='terms') {
                 if (brand=='BT') {
                     $("#bttermsview").show().empty().html(response.data.content);
-                } else {
+                    $(".submenu_manage[data-link='bttermsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='bttermsview']").find('div.buttons').empty().html(response.data.buttons);
+                } else if (brand=='SB') {
                     $("#sbtermsview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbtermsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_terms_view(brand);
             } else if (page_name=='about') {
                 if (brand=='BT') {
                     $("#btaboutusview").show().empty().html(response.data.content);
-                } else {
+                    $(".submenu_manage[data-link='btaboutusview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='btaboutusview']").find('div.buttons').empty().html(response.data.buttons);
+                } else if (brand=='SB') {
                     $("#sbaboutusview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbaboutusview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbaboutusview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_aboutpage_view(brand);
             } else if (page_name=='contactus') {
                 if (brand=='BT') {
                     $("#btcontactusview").show().empty().html(response.data.content);
-                } else {
+                    $(".submenu_manage[data-link='btcontactusview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='btcontactusview']").find('div.buttons').empty().html(response.data.buttons);
+                } else if (brand=='SB') {
                     $("#sbcontactusview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbcontactusview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbcontactusview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_contactus_view(brand);
             } else if (page_name=='extraservice') {

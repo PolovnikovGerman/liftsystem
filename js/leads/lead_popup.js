@@ -1,7 +1,6 @@
 var mainurl = '/leadmanagement';
 function show_new_lead(lead_id,type, brand) {
     var url=mainurl+"/edit_lead";
-    console.log('View New Lead');
     params = new Array();
     params.push({name: 'lead_id', value :lead_id});
     params.push({name: 'brand', value: brand});
@@ -26,6 +25,8 @@ function show_new_lead(lead_id,type, brand) {
                     initQuotesPagination();
                 } else if (type=='question') {
                     initQuestionPagination();
+                } else if (type=='customquote') {
+                    initCustomFormPagination();
                 } else {
                     initProofPagination();
                 }
@@ -140,6 +141,56 @@ function init_leadpopupedit() {
             }
         }
     })
+    // Attachments
+    $("div.lead_attach_view").unbind('click').click(function () {
+        var link = $(this).data('link');
+        window.open(link, 'attachwin', 'width=600, height=800,toolbar=1')
+    });
+    // Delete attachment
+    $("div.lead_attach_remove").unbind('click').click(function () {
+        if (confirm('Remove attachment ?')==true) {
+            var attachid = $(this).data('attachid');
+            delete_lead_attachment(attachid);
+        }
+    });
+
+    if ($("#addleadattachment").length > 0) {
+        var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
+            '+ Add Attachment</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '<ul class="qq-upload-drop-area"></ul>'+
+            '<div class="clear"></div></div>';
+
+
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('addleadattachment'),
+            action: '/utils/save_leadattach',
+            template: qq_template,
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    // $("li.qq-upload-success").hide();
+                    $("ul.qq-upload-list").css('display','none');
+                    var params=new Array();
+                    params.push({name: 'session_id', value: $("#session_attach").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'src', value: responseJSON.source});
+                    var url=mainurl+"/lead_attachment_add";
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $(".lead_popup_attachs").empty().html(response.data.content);
+                            init_leadpopupedit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                }
+            }
+        });
+    }
     /* Question */
     $("div.lead_popup_questchck").unbind('click').click(function(){
         show_questdetails(this);
@@ -234,6 +285,21 @@ function init_leadpopupedit() {
     });
 }
 
+function delete_lead_attachment(attachid) {
+    var url=mainurl+"/lead_attachment_delete";
+    var params=new Array();
+    params.push({name: 'session_id', value: $("#session_attach").val()});
+    params.push({name: 'attach_id', value: attachid});
+    $.post(url,params, function (response) {
+        if (response.errors=='') {
+            $(".lead_popup_attachs").empty().html(response.data.content);
+            init_leadpopupedit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
 function addnewleaderpl() {    
     var params=new Array();
     var numpp=0;
@@ -274,6 +340,7 @@ function add_proofrequest() {
         var dat=$("form#leadeditform").serializeArray();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
+        dat.push({name: 'session_attach', value: $("#session_attach").val()});
         $("#loader").show();
         $.ajax({
             url: url,
@@ -401,17 +468,18 @@ function duplicatelead() {
    // var lead_id=$("input#lead_id").val();
    var dat=$("form#leadeditform").serializeArray();
    dat.push({name:'session_id', value: $("#session").val()});
+   dat.push({name: 'session_attach', value: $("#session_attach").val()});
    var lead_number=$("div.lead_popup_number").text();
    if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
        var url=mainurl+"/dublicatelead";
        $.post(url, dat, function(response){
             if (response.errors=='') {
-                $("#pageModal").modal('hide');
+                // $("#pageModal").modal('hide');
                 initLeaddataPagination();
                 $("#pageModalLabel").empty().html(response.data.title);
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                $("#pageModal").find('div.modal-dialog').css('width','970px');
-                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                // $("#pageModal").find('div.modal-dialog').css('width','970px');
+                // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_leadpopupedit();
             } else {
                 show_error(response);
@@ -426,6 +494,7 @@ function save_lead() {
    var dat=$("form#leadeditform").serializeArray();
    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
    dat.push({name: 'session_id', value: $("#session").val()});
+   dat.push({name: 'session_attach', value: $("#session_attach").val()});
    var url=mainurl+"/save_lead";
    $.post(url, dat, function(response){
        if (response.errors=='') {

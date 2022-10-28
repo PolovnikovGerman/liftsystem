@@ -116,11 +116,14 @@ function save_user() {
     var url="/admin/userdata_save";
     var params = new Array();
     params.push({name: 'session', value: $("#session").val()});
+    $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#pageModal").modal('hide');
             initUserPagination();
+            $("#loader").hide();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     }, 'json');
@@ -280,8 +283,8 @@ function user_edit_manage() {
         params.push({name: 'newval', value: $(this).val()});
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                if (itemname=='user_passwd_txt') {
-                    if ($("#user_passwd_txt").val()=='') {
+                if (itemname=='user_passwd_txt1') {
+                    if ($("#user_passwd_txt1").val()=='') {
                         $("div.retypepasswd").css('display','hide');
                         $("#user_passwd_txt2").val('');
                     } else {

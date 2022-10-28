@@ -1,61 +1,67 @@
 .calendarscontent {
     clear: both;
-    margin-top: 23px;
-    margin-left: 20px;
-    position: relative;
+    margin-top: 3px;
+    /* margin-left: 20px; */
+    /* position: relative; */
     min-height: 565px;
 }
 .calendartable-head {
     clear: both;
     width: 780px;
+    background: #545454;
+    color: #ffffff;
+}
+.calendartable-head > div {
+    text-align: center;
+    height: 32px;
+    line-height: 32px!important;
+    font-size: 17px;
+    font-weight: bold;
 }
 .calendar-actions {
-    text-align: center;
     width: 95px;
 }
 .newcalend {
+    /*
     background: url("/img/others/addnew.png") no-repeat scroll 0 0 transparent;
     clear: both;
     height: 27px;
     text-align: center;
     width: 89px;
     line-height: 27px!important;
-}
-.newcalend a {
-    color:#ffffff;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: bold;
+     */
+    background: url(/img/vendors/addnewbtn.png) no-repeat;
+    width: 50px;
+    text-align: center;
+    height: 22px;
+    line-height: 19px!important;
+    color: #000000;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 6px;
+    margin-left: 6px;
+    cursor: pointer;
 }
 .calendartable-head > .calendar_name {
-    font-size: 17px;
-    font-weight: bold;
     width: 220px;
-    line-height: 27px;
-    height: 27px;
-    text-align: center;
 }
 .calendartable-head > .calendar_status {
-    font-size: 17px;
-    font-weight: bold;
-    width: 60px;
-    line-height: 27px;
-    height: 27px;
-    text-align: center;
+    width: 120px;
 }
 .calendartable-data {
     background-color: #ffffff;
     border: 1px solid #b9b9b9;
     clear: both;
-    float: left;
+    /* float: left; */
     height: 546px;
-    margin-left: 20px;
-    margin-top: 10px;
+    /* margin-left: 20px; */
+    /* margin-top: 10px; */
     margin-bottom: 15px;
     overflow-x: hidden;
     overflow-y: auto;
-    position: relative;
-    width: 948px;
+    /* position: relative; */
+    /* width: 948px; */
+    width: 780px;
 }
 .calendardatarow {
     clear: both;
@@ -67,16 +73,20 @@
     line-height: 22px;
     text-align: center;
     font-size: 13px;
+    border-right: 1px solid #000000;
+}
+.calendardatarow > div:last-child {
+    border-right: none;
 }
 .calendardatarow > .calendar-actions {
-    width: 55px;
+    width: 94px;
 }
 .calendardatarow > .calendar-actions > .caldel,
 .calendardatarow > .calendar-actions > .caledit
 {
     height: 22px;
     line-height: 22px;
-    width: 27px;
+    width: 42px;
 }
 .calendardatarow > .calendar-actions > .caldel i,
 .calendardatarow > .calendar-actions > .caledit i {
@@ -102,7 +112,7 @@
 .savecalendar {
     background: url("/img/others/addnew.png") no-repeat scroll 0 0 transparent;
     float: left;
-    height: 24px;
+    height: 27px;
     margin-left: 85px;
     padding-top: 2px;
     text-align: center;

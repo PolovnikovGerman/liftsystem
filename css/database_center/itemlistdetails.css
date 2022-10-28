@@ -1,0 +1,1057 @@
+/*
+    Created on : Apr 09, 2021, 4:18:26 PM
+    Author     : polovnikov-go
+    Popup Window for Item (SB) Details
+*/
+#itemDetailsModal .modal-content {
+    padding: 10px;
+}
+#itemDetailsModal .modal-header {
+    padding: 0;
+    background: #e5e5e5;
+    height: 35px;
+    border: 1px solid #000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding-top: 5px;
+}
+#itemDetailsModal .modal-header .close {
+    margin-top: -12px;
+    margin-right: -7px;
+    opacity: 1;
+}
+#itemDetailsModal .modal-body {
+    padding: 0;
+    background: #e5e5e5;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+#itemDetailsModal .modal-footer {
+    padding: 0px;
+}
+.itemlistdetails-header div {
+    float: left;
+}
+.itemlistdetails-left-header {
+    margin-left: 14px;
+}
+.itemstatusview, .itemstatusbtn {
+    height: 24px;
+    line-height: 24px!important;
+    padding-left: 13px;
+    padding-right: 13px;
+    /* width: 73px; */
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    margin-right: 8px;
+}
+.itemnumberview {
+    color: #0000ff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 7px;
+    width: 88px;
+}
+.itemnameview {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: -4px;
+}
+.itemnameedit {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: -6px;
+}
+.itemlistdetails-right-header {
+    float: right!important;
+    margin-right: 113px;
+}
+.itemlistmodeview {
+    font-size: 17px;
+    font-weight: bold;
+    color: #000000;
+    margin-right: 8px;
+}
+.itemlistactivatetbtn {
+    background: #cd00d5;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px!important;
+    padding-left: 13px;
+    padding-right: 13px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+.itemlistsaveactionbtn {
+    background: #1B6633;
+    color: #ffffff;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px!important;
+    padding-left: 13px;
+    padding-right: 13px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+.itemdetails-body {
+    padding: 14px 12px;
+}
+.itemdetails-body div {
+    float: left;
+}
+.itemdetails-body .chapterlabel {
+    height: 27px;
+    line-height: 27px;
+    background: #6e6e6e;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 15px;
+}
+.itemdetails-body .chapterlabel.leftpart {
+    width: 254px;
+}
+.itemdetails-body .chapterlabel.centerpart {
+    width: 575px;
+}
+.itemdetails-body .chapterlabel.rightpart {
+    width: 375px;
+}
+.itemdetails-body > .left-part {
+    width: 254px;
+}
+.itemdetails-body > .center-part {
+    margin-left: 45px;
+    width: 575px;
+}
+.itemdetails-body > .right-part {
+    margin-left: 48px;
+    width: 375px;
+}
+.itemdetails-webdesign {
+    margin-bottom: 18px;
+}
+.itemdetails-webdesign .content-row {
+    margin-top: 3px;
+}
+.itemdetails-webdesign .tempalte_label {
+    height: 23px;
+    line-height: 23px;
+    margin-left: 9px;
+    margin-right: 6px;
+    font-size: 13px;
+}
+.itemdetails-webdesign .template_design {
+}
+.itemdetails-webdesign .template_design .viewdesignvalue {
+    height: 23px;
+    line-height: 23px;
+    background: #ffffff;
+    color: #000000;
+    font-size: 13px;
+    font-weight: bold;
+    padding-left: 7px;
+    padding-right: 25px;
+}
+.itemdetails-webdesign .template-checkbox {
+    width: 19px;
+    height: 23px;
+    line-height: 23px;
+}
+.itemdetails-webdesign .template-checkbox i {
+    font-size: 16px;
+}
+.itemdetails-webdesign .template-checkbox-label {
+    margin-right: 20px;
+    font-size: 14px;
+    height: 23px;
+    line-height: 23px;
+}
+.itemdetails-metadata {
+    margin-bottom: 16px;
+}
+.itemdetails-metadata .content-row {
+    width: 100%;
+}
+.itemdetails-metadata .metadata-label {
+    height: 17px;
+    line-height: 17px;
+    margin-left: 11px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+.itemdetails-metadata .metadata-value {
+    margin-left: 11px;
+    width: 243px;
+}
+.itemdetails-metadata .metadata-value .viewparam {
+    padding-left: 5px;
+    background: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.itemdetails-metadata .metadata-value .viewparam-multirow {
+    padding: 5px;
+    background: #ffffff;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    min-height: 70px;
+}
+.itemdetails-intersearchdata {
+
+}
+.itemdetails-intersearchdata .content-row {
+    width: 100%;
+}
+.itemdetails-intersearchdata .intersearch-label {
+    height: 17px;
+    line-height: 17px;
+    margin-left: 11px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+.itemdetails-intersearchdata .intersearch-value {
+    margin-left: 11px;
+    width: 243px;
+}
+.itemdetails-intersearchdata .intersearch-value .intersearch-simular {
+    width: 75px;
+    margin-right: 6px;
+}
+.itemdetails-intersearchdata .intersearch-value .viewparam-multirow {
+    padding: 5px;
+    background: #ffffff;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    min-height: 70px;
+}
+.itemdetails-intersearchdata .simulardataview {
+    width: 30%;
+    margin-right: 3%;
+    background: #FFF;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+.itemdetails-images {
+    margin-bottom: 15px;
+}
+.pictureslderarea {
+    padding-left: 11px;
+}
+.itemdetails-images .itemmedia {
+    margin-left:36px;
+    margin-top: 5px;
+}
+/* Picture Slider */
+#sliderlist ul, #sliderlist li{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+#sliderlist, #sliderlist li{
+    height: 132px;
+    overflow: hidden;
+    width: 435px;
+}
+.itemdetails-images #nextBtn {
+    position: relative;
+    left: 437px;
+    top: -29px;
+}
+.itemdetails-images #prevBtn {
+    position: relative;
+    left: -28px;
+}
+.itemdetails-images #prevBtn a {
+    background: url('/img/dbitems/slider_left_arrow.png') no-repeat scroll 0 0 transparent;
+}
+.itemdetails-images #nextBtn a {
+    background: url('/img/dbitems/slider_right_arrow.png') no-repeat scroll 0 0 transparent;
+}
+.itemdetails-images .imgcontent {
+    width: 77px;
+    margin-right: 10px;
+}
+.itemdetails-images .imgcontent:last-child {
+    margin-right: 0px;
+}
+.itemdetails-images .imagetitle {
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 2px;
+    text-align: center;
+    width: 100%;
+}
+.itemdetails-images .pictures {
+    position: relative;
+    float: left;
+    background-image: url("/img/itemdetails/pictures.png");
+    width: 77px;
+    height: 77px;
+}
+.itemdetails-images .picturename {
+    margin-top: 8px;
+    width: 77px;
+}
+.itemdetails-images .picturename .viewparam {
+    height: 22px;
+    line-height: 22px;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    background: #ffffff;
+    padding-left: 5px;
+}
+
+.itemdetails-images .picture-none {
+    position: relative;
+    float:right;
+    background-image: url("/img/itemdetails/picture-none.png");
+    width: 77px;
+    height: 77px;
+    background-color: #fff;
+}
+.itemdetails-images .picture-none .qq-upload-button {
+    background: none!important;
+    position: relative;
+    top: 20px;
+}
+.itemdetails-images .remove-slideimage {
+    float:right;
+    padding-right: 5px;
+    position: relative;
+    cursor: pointer;
+}
+.itemdetails-images .pic {
+    padding-left: 9px;
+}
+.itemdetails-images .pic .qq-upload-button {
+    background: none!important;
+    position: relative;
+    top: 20px;
+}
+
+.imagesort {
+    width: 70px;
+    margin-left: 22px;
+    margin-top: 43px;
+    color: #0000ff;
+    text-align: center;
+}
+.imagesortarea {
+    cursor: pointer;
+}
+.itemdetails-vendorinfo {
+    margin-bottom: 12px;
+}
+.itemdetails-vendorinfo > .content-row {
+    width: 576px;
+}
+.leadstime-label {
+    float: right!important;
+    margin-top: -26px;
+    margin-right: 15px;
+}
+.leadstime-label .lead-label {
+    font-size: 9px;
+    color: #ffffff;
+    margin-top: 10px;
+    text-align: center;
+    width: 32px;
+}
+.vendorinfo-label {
+    padding-left: 11px;
+    margin-right: 6px;
+    margin-top: 4px;
+}
+.vendorinfo-label.colorprice {
+    margin-right: 31px
+}
+.vendorinfo-value {
+    height: 22px;
+    line-height: 22px;
+    margin-top: 4px;
+}
+.vendorinfo-value.vendorname {
+    margin-right: 11px;
+    width: 129px;
+}
+.vendorinfo-value.vendorzip {
+    width: 59px;
+}
+.vendorinfo-value.leadtimes {
+    margin-right: 9px;
+    width: 21px;
+}
+.vendorinfo-value.vendoritemnum {
+    width: 87px;
+    margin-right: 9px;
+}
+.vendorinfo-value.vendoritemname {
+    width: 227px;
+}
+.vendorinfo-value.vendoritemnote {
+    width: 461px;
+}
+.vendorinfo-value.vendoritemqty {
+    width: 39px;
+    margin-left: 5px;
+}
+.vendorinfo-value.vendoritemspecqty {
+    width: 51px;
+    margin-left: 5px;
+}
+.vendorinfo-value .viewparam {
+    background: #ffffff;
+    padding-left: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.itemdetails-vendorinfo .price_subtitle {
+    font-size: 11px;
+    color: #000000;
+    margin-left: 105px;
+    margin-bottom: -3px;
+}
+.itemdetails_prices {
+    margin-bottom: 12px;
+}
+.priceinfoarea {
+    margin-left: 14px;
+    margin-top: 13px;
+}
+.priceinfoarea .content-row {
+    margin-bottom: 4px;
+    width: 100%;
+}
+.pricedatlabel {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+}
+.pricedatlabel.qty {
+    margin-right: 11px;
+}
+.pricedatlabel.price {
+    margin-right: 46px;
+}
+.pricedatlabel.specprice {
+    width: 48px;
+    text-align: center;
+    margin-right: 6px;
+}
+.pricedatlabel.saleprice {
+    margin-right: 16px;
+}
+.pricedatlabel.displayprice {
+    margin-left: 1px;
+}
+.pricedatlabel.shipbox {
+    margin-right: 6px;
+}
+.pricedatlabel.shipweight {
+    margin-right: 6px;
+}
+.pricedatlabel.profitval {
+    margin-right: 26px;
+}
+.pricedatlabel.profitperc {
+    margin-right: 29px;
+}
+.pricedatvalue {
+}
+.pricedatvalue.qty {
+    width: 39px;
+    margin-right: 7px;
+}
+.pricedatvalue.specprice {
+    width: 48px;
+    margin-right: 7px;
+}
+.pricedatvalue.displayprice {
+    width: 46px;
+    border-bottom: 1.5px solid;
+    text-align: center;
+    height: 26px;
+    line-height: 23px;
+}
+.pricedatvalue.shipbox {
+    width: 26px;
+    margin-right: 20px;
+}
+.pricedatvalue.shipweight {
+    width: 46px;
+    height: 29px;
+    border-bottom: 1.5px solid #000000;
+    padding-right: 7px;
+}
+.pricedatvalue.profitperc {
+    width: 39px;
+    margin-right: 7px;
+    text-align: center;
+}
+.pricedatvalue.specprofit {
+    width: 48px;
+    margin-right: 7px;
+    text-align: center;
+}
+.pricedatvalue .viewparam {
+    background: #ffffff;
+    padding-left: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 22px;
+    line-height: 22px;
+}
+.pricedatvalue.profitperc .viewparam, .pricedatvalue.specprofit .viewparam {
+    padding-left: 0;
+}
+.priceinfoarea .price_subtitle {
+    font-size: 11px;
+    color: #000000;
+    margin-left: 87px;
+    margin-top: -2px;
+}
+.priceinfoarea .priceshiplabel {
+    font-size: 13px;
+    font-style: italic;
+    line-height: 16px;
+    width: 85px;
+    border-bottom: 1.5px solid #000000;
+    margin-top: -3px;
+}
+/* Special classes for color TD */
+.priceinfoarea .white {
+    color: #222222;
+    background: #ffffff;
+}
+.priceinfoarea .orange {
+    color: #222222;
+    background: #ff7300;
+}
+.priceinfoarea .red {
+    color: #222222;
+    background: #ff0000;
+}
+.priceinfoarea .blue {
+    color: #FFFFFF;
+    background: #fe3cd7;
+    width: 47px;
+}
+.priceinfoarea .green {
+    color: #222222;
+    background: #49fd9e;
+}
+.priceinfoarea .black {
+    background: #000000;
+    color: #FFFFFF;
+}
+.priceinfoarea .maroon {
+    background-color: #800000;
+    color: #FFFFFF;
+}
+.itemdetails_keyinfo {
+    margin-bottom: 27px;
+    width: 375px;
+}
+.itemdetails_keyinfo .content-row {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.itemdetails_keyinfo .keyinfoarea-left {
+    margin-left: 9px;
+    margin-top: 4px;
+    width: 140px;
+}
+.itemdetails_keyinfo .keyinfoarea-right {
+    margin-top: 4px;
+    width: 220px;
+}
+
+.keydatlabel {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+}
+.keydatlabel.options {
+    margin-right: 3px;
+}
+.keydatlabel.size {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.note {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.material {
+    margin-left: 6px;
+    margin-right: 11px;
+}
+.keydatlabel.description {
+    margin-left: 6px;
+}
+.keydatvalue {
+}
+.keydatvalue.options {
+    width: 80px;
+}
+.keydatvalue.colors {
+    width: 130px;
+}
+.keydatvalue.colorsedit {
+    width: 130px;
+    max-height: 219px;
+    overflow-y: auto;
+}
+.keydatvalue.size {
+    width: 172px;
+}
+.keydatvalue.note {
+    width: 169px;
+}
+.keydatvalue.material {
+    width: 151px;
+}
+.keydatvalue.description {
+    width: 217px;
+}
+
+.keydatvalue .viewparam {
+    background: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    padding-left: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.keydatvalue .viewtextparam {
+    height: 89px;
+    line-height: 14px;
+    padding: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #fff;
+}
+.itemdetails_inprintinfo {
+    margin-bottom: 26px;
+}
+.itemdetails_inprintinfo .inprintarea {
+    margin-top: 6px;
+    margin-left: 8px;
+    width: 360px;
+}
+.itemdetails_inprintinfo .inprintarea .content-row {
+    width: 100%;
+    margin-bottom: 4px;
+}
+.inprintarea .implintdatalabel {
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.implintdatalabel.cansell {
+    margin-right: 10px;
+}
+.implintdatalabel.selloptions {
+    margin-right: 13px;
+}
+.implintdatalabel.vectorfile {
+    margin-right: 7px;
+}
+.implintdatavalue {
+    height: 20px;
+    line-height: 20px;
+}
+.implintdatavalue.sellopt {
+    width: 20px;
+}
+.implintdatavalue.vectorfile {
+    color: #0000ff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+.imprintheader {
+}
+.imprintheader > div {
+    height: 22px;
+    line-height: 22px;
+    background: #b7b7b7;
+    text-align: center;
+}
+.inprintheadname {
+    width: 129px;
+}
+.inprintheadsize {
+    width: 179px;
+}
+.inprintheadview {
+    width: 50px;
+}
+.imprintcontent {
+    min-height: 136px;
+    width: 357px;
+    background: #ffffff;
+}
+.inprintdatarow {
+    width: 100%;
+}
+.inprintdatarow > div {
+    height: 17px;
+    line-height: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000000;
+}
+.inprintdatarow .inprintdataname {
+    padding-left: 4px;
+    width: 127px;
+    border-right: 2px solid #b7b7b7;
+}
+.inprintdatarow .delimprint {
+    font-size: 15px;
+    cursor: pointer;
+    margin-right: 3px;
+    width: 15px;
+    text-align: center;
+}
+.inprintdatarow .inprintdatanameedit {
+    padding-left: 4px;
+    width: 109px;
+    border-right: 2px solid #b7b7b7;
+    cursor: pointer;
+}
+.inprintdatarow .inprintdatasize {
+    padding-left: 4px;
+    width: 177px;
+    border-right: 2px solid #b7b7b7;
+}
+.inprintdatarow .inprintdataview {
+    text-align: center;
+    width: 50px;
+    cursor: pointer;
+}
+.itemdetails_advinfo {
+    margin-bottom: 16px;
+}
+.advinfoarea {
+    margin-top: 12px;
+    margin-left: 12px;
+    width: 357px;
+}
+.advinfolabel.advimgsize {
+    float: right!important;
+    font-size: 13px;
+    font-style: italic;
+    margin-right: 9px;
+    color: #000;
+}
+.advimagearea {
+    width: 100%;
+}
+.advimagearea .emptyimage {
+    height: 74px;
+    width: calc(100% - 2px);
+    border: 1px dashed #000000;
+    line-height: 74px;
+    text-align: center;
+    font-size: 13px;
+    color: #7c7c7c;
+}
+.advimagearea .emptyimage.edit {
+    cursor: pointer;
+}
+.newadvimage {
+    width: 80px;
+    margin: 0 auto;
+    float: unset!important;
+    margin-top: 27px;
+}
+.advimagearea .image {
+    width: 100%;
+}
+.advimagearea .image img {
+    width: 100%;
+}
+.deladvimage {
+    margin-top: -11px;
+    float: right!important;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+/* EDIT */
+.itemstatusbtn {
+    border-radius: 7px;
+    cursor: pointer;
+}
+.itemstatusview.active, .itemstatusbtn.active {
+    background: #0000ff;
+    color: #ffffff;
+}
+.itemstatusview.inactive, .itemstatusbtn.inactive {
+    background: #ededed;
+    color: #000000;
+}
+input.itemlistdetailsinpt, input.vendordatainpt, input.vendorpriceinpt, input.vendornameinpt, input.pricevalinpt, input.shipvalinpt, input.itemcolorinpt, input.imagesinpt {
+    border: 1px solid #000000;
+    height: 22px;
+    padding-left: 5px;
+    font-size: 14px;
+    color: #000000;
+}
+input.itemcolorinpt {
+    height: 19px;
+    margin-top: 1px;
+    margin-bottom: 2px;
+}
+select.itemlistdetailsselect, select.vendordatainpt {
+    background: #ffffff;
+    border: 1px solid #000000;
+    height: 22px;
+    padding-left: 5px;
+    font-size: 14px;
+    color: #000000;
+}
+textarea.itemlistdetailsinpt, textarea.vendordatainpt {
+    border: 1px solid #000000;
+    font-size: 14px;
+    color: #000000;
+    resize: none;
+}
+input.itemnumber {
+    width: 88px;
+    text-transform: uppercase;
+}
+input.itemname {
+    width: 250px;
+}
+select.webdesign {
+    width: 90px;
+}
+input.metadata {
+    width: 243px;
+}
+textarea.metadata {
+    width: 243px;
+    height: 70px;
+}
+select.simulardataselect {
+    background: #ffffff;
+    border: 1px solid #000000;
+    height: 20px;
+    font-size: 11px;
+    color: #000000;
+    width: 75px;
+    margin-right: 7px;
+    /* margin-right: 2%; */
+}
+/*
+input.vendorname {
+    width: 129px;
+}
+*/
+select.vendorname {
+    width: 129px;
+}
+input.vendorzip {
+    width: 59px;
+}
+input.leadtimes {
+    width: 21px;
+}
+input.vendoritemnum {
+    width: 87px;
+}
+input.vendoritemname {
+    width: 227px;
+}
+textarea.vendoritemnote {
+    width: 461px;
+    height: 22px;
+}
+input.vendorprice_qty {
+    width: 39px;
+}
+input.vendorprice_special {
+    width: 48px;
+}
+input.price_qty {
+    width: 39px;
+}
+input.shipbox {
+    width: 26px;
+}
+input.shipweight {
+    width: 43px;
+}
+input.item_color {
+    width: 116px;
+}
+input.item_size {
+    width: 172px;
+}
+input.item_description2 {
+    width: 169px;
+}
+input.item_material {
+    width: 151px;
+}
+input.note_material {
+    width: 169px;
+}
+textarea.item_description1 {
+    width: 217px;
+    height: 108px;
+}
+input.imglabel {
+    width: 80px;
+}
+.newimprintloaction {
+    color: #0000ff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 19px;
+}
+/* Auto compliter */
+.autocompleter {
+    width: 23%!important;
+}
+/* Edit Location area */
+.locationedit-body {
+    background: url(/img/itemdetails/imprinting-itemdetails-bg.png);
+    clear: both;
+    height: 315px;
+    margin: 0 auto;
+    padding: 17px;
+    width: 462px;
+}
+.locationedit-row {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.locationedit-rowlegend {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100px;
+    height: 22px;
+    line-height: 22px;
+}
+.locationedit-rowvalue {
+    float: left;
+    margin-left: 5px;
+    width: 230px;
+}
+input.inprintlocationedit {
+    border: 1px solid #000000;
+    font-size: 14px;
+    height: 22px;
+    width: 235px;
+}
+.inprintimage_preview {
+    float: left;
+    width: 150px;
+    height: 150px;
+}
+.inprintimage_preview img {
+    width: 100%;
+}
+.delinprintview {
+    float: left;
+    background: #000;
+    color: #fff;
+    width: 16px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    top: -150px;
+    left: 134px;
+}
+.savelocationedit {
+    clear: both;
+    display: none;
+    float: left;
+    margin-left: 336px;
+    width: 88px;
+}
+/*Sort images */
+.imagesortcontent {
+    float: left;
+    width: 493px;
+    padding: 10px;
+}
+.imagesortcontent div {
+    float: left;
+}
+.imagesortrow {
+    clear: both;
+    width: 90%;
+    float: left;
+}
+.itemimagesort {
+    width: 80px;
+    margin-right: 7px;
+    border: 1px solid;
+    margin-bottom: 7px;
+}
+.itemimagesort img {
+    width: 100%;
+}
+.savesort {
+    background: #0000ff;
+    color: #fff;
+    width: 125px;
+    text-align: center;
+    padding: 7px;
+    float: right;
+    border-radius: 7px;
+    font-weight: 600;
+    cursor: pointer;
+}

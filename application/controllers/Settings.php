@@ -7,116 +7,116 @@ class Settings extends MY_Controller
     private $pagelink = '/settings';
     protected $PERPAGE=1000;
     private $session_error = 'Edit session lost. Please, reload page';
-
-    public function __construct()
-    {
-        parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
-        if ($pagedat['result'] == $this->error_result) {
-            show_404();
-        }
-        $page = $pagedat['menuitem'];
-        $permdat = $this->menuitems_model->get_menuitem_userpermisiion($this->USR_ID, $page['menu_item_id']);
-        if ($permdat['result'] == $this->success_result && $permdat['permission'] > 0) {
-        } else {
-            if ($this->isAjax()) {
-                $this->ajaxResponse(array('url' => '/'), 'Your have no permission to this page');
-            } else {
-                redirect('/');
-            }
-        }
-    }
-
-    public function index()
-    {
-        $head = [];
-        $head['title'] = 'Settings';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
-        $content_options = [
-            'menu' => $menu,
-            'start' => $this->input->get('start', TRUE),
-        ];
-//        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-//        if (count($brands)==0) {
-//            redirect('/');
+//
+//    public function __construct()
+//    {
+//        parent::__construct();
+//        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+//        if ($pagedat['result'] == $this->error_result) {
+//            show_404();
 //        }
-//        $brand = $brands[0]['brand'];
-//        $left_options = [
-//            'brands' => $brands,
-//            'active' => $brand,
+//        $page = $pagedat['menuitem'];
+//        $permdat = $this->menuitems_model->get_menuitem_userpermisiion($this->USR_ID, $page['menu_item_id']);
+//        if ($permdat['result'] == $this->success_result && $permdat['permission'] > 0) {
+//        } else {
+//            if ($this->isAjax()) {
+//                $this->ajaxResponse(array('url' => '/'), 'Your have no permission to this page');
+//            } else {
+//                redirect('/');
+//            }
+//        }
+//    }
+//
+//    public function index()
+//    {
+//        $head = [];
+//        $head['title'] = 'Settings';
+//        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+//        $content_options = [
+//            'menu' => $menu,
+//            'start' => $this->input->get('start', TRUE),
 //        ];
-//        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
-
-        foreach ($menu as $row) {
-            if ($row['item_link']=='#countriesview') {
-                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
-                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
-                $content_options['countriesview'] = $this->_prepare_countries_view();
-            } elseif ($row['item_link'] == '#calendarsview') {
-                $head['styles'][] = array('style' => '/css/settings/calendars.css');
-                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
-                $content_options['calendarsview'] = $this->_prepare_calendars_view();
-            } elseif ($row['item_link'] =='#btsettingsview' ) {
-                $bt_options = [];
-                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
-                foreach ($submenu as $menu) {
-                    if ($menu['item_link']=='#btshippingview') {
-                        $bt_options['btshippingview'] = $this->_prepare_shipping_view('BT');
-                    } elseif ($menu['item_link'] == '#btnotificationsview') {
-                        $bt_options['btnotificationsview'] = $this->_prepare_notifications_view('BT');
-                    } elseif ($menu['item_link'] == '#btrushoptionsview') {
-                        $bt_options['btrushoptionsview'] = $this->_prepare_rushoptions_view('BT');
-                    }
-                    $submenu_options = [
-                        'menus' => $submenu,
-                        'brand' => 'BT',
-                    ];
-                }
-                $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
-                $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
-            } elseif ($row['item_link']=='#sbsettingsview') {
-                $sb_options = [];
-                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
-                foreach ($submenu as $menu) {
-                    if ($menu['item_link']=='#sbshippingview') {
-                        $sb_options['sbshippingview'] = $this->_prepare_shipping_view('SB');
-                    } elseif ($menu['item_link'] == '#sbnotificationsview') {
-                        $sb_options['sbnotificationsview'] = $this->_prepare_notifications_view('SB');
-                    } elseif ($menu['item_link'] == '#sbrushoptionsview') {
-                        $sb_options['sbrushoptionsview'] = $this->_prepare_rushoptions_view('SB');
-                    }
-                    $submenu_options = [
-                        'menus' => $submenu,
-                        'brand' => 'SB',
-                    ];
-                }
-                $sb_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
-                $content_options['sbsettingsview'] = $this->load->view('settings/page_content_view', $sb_options, TRUE);
-            }
-        }
-        $head['styles'][] = array('style' => '/css/settings/shippings.css');
-        $head['scripts'][] = array('src' => '/js/settings/shippings.js');
-        $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
-        $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
-        $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
-        $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
-        $head['scripts'][] = array('src' => '/js/settings/sitesettings.js');
-        $content_view = $this->load->view('settings/page_view', $content_options, TRUE);
-        // Add main page management
-        $head['scripts'][] = array('src' => '/js/settings/page.js');
-        $head['styles'][] = array('style' => '/css/settings/settingpage.css');
-        // Utils
-        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
-        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
-        // Datepicker
-        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
-        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
-
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
-        $dat = $this->template->prepare_pagecontent($options);
-        $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
-    }
+////        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
+////        if (count($brands)==0) {
+////            redirect('/');
+////        }
+////        $brand = $brands[0]['brand'];
+////        $left_options = [
+////            'brands' => $brands,
+////            'active' => $brand,
+////        ];
+////        $left_menu = $this->load->view('page/left_menu_view', $left_options, TRUE);
+//
+//        foreach ($menu as $row) {
+//            if ($row['item_link']=='#countriesview') {
+//                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
+//                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
+//                $content_options['countriesview'] = $this->_prepare_countries_view();
+//            } elseif ($row['item_link'] == '#calendarsview') {
+//                $head['styles'][] = array('style' => '/css/settings/calendars.css');
+//                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
+//                $content_options['calendarsview'] = $this->_prepare_calendars_view();
+//            } elseif ($row['item_link'] =='#btsettingsview' ) {
+//                $bt_options = [];
+//                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
+//                foreach ($submenu as $menu) {
+//                    if ($menu['item_link']=='#btshippingview') {
+//                        $bt_options['btshippingview'] = $this->_prepare_shipping_view('BT');
+//                    } elseif ($menu['item_link'] == '#btnotificationsview') {
+//                        $bt_options['btnotificationsview'] = $this->_prepare_notifications_view('BT');
+//                    } elseif ($menu['item_link'] == '#btrushoptionsview') {
+//                        $bt_options['btrushoptionsview'] = $this->_prepare_rushoptions_view('BT');
+//                    }
+//                    $submenu_options = [
+//                        'menus' => $submenu,
+//                        'brand' => 'BT',
+//                    ];
+//                }
+//                $bt_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+//                $content_options['btsettingsview'] = $this->load->view('settings/page_content_view', $bt_options, TRUE);
+//            } elseif ($row['item_link']=='#sbsettingsview') {
+//                $sb_options = [];
+//                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
+//                foreach ($submenu as $menu) {
+//                    if ($menu['item_link']=='#sbshippingview') {
+//                        $sb_options['sbshippingview'] = $this->_prepare_shipping_view('SB');
+//                    } elseif ($menu['item_link'] == '#sbnotificationsview') {
+//                        $sb_options['sbnotificationsview'] = $this->_prepare_notifications_view('SB');
+//                    } elseif ($menu['item_link'] == '#sbrushoptionsview') {
+//                        $sb_options['sbrushoptionsview'] = $this->_prepare_rushoptions_view('SB');
+//                    }
+//                    $submenu_options = [
+//                        'menus' => $submenu,
+//                        'brand' => 'SB',
+//                    ];
+//                }
+//                $sb_options['submenu'] = $this->load->view('settings/submenu_view', $submenu_options, TRUE);
+//                $content_options['sbsettingsview'] = $this->load->view('settings/page_content_view', $sb_options, TRUE);
+//            }
+//        }
+//        $head['styles'][] = array('style' => '/css/settings/shippings.css');
+//        $head['scripts'][] = array('src' => '/js/settings/shippings.js');
+//        $head['styles'][] = array('style' => '/css/settings/notificationsview.css');
+//        $head['scripts'][] = array('src' => '/js/settings/notificationsview.js');
+//        $head['styles'][] = array('style' => '/css/settings/rushoptionsview.css');
+//        $head['scripts'][] = array('src' => '/js/settings/rushoptionsview.js');
+//        $head['scripts'][] = array('src' => '/js/settings/sitesettings.js');
+//        $content_view = $this->load->view('settings/page_view', $content_options, TRUE);
+//        // Add main page management
+//        $head['scripts'][] = array('src' => '/js/settings/page.js');
+//        $head['styles'][] = array('style' => '/css/settings/settingpage.css');
+//        // Utils
+//        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+//        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+//        // Datepicker
+//        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+//        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+//
+//        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+//        $dat = $this->template->prepare_pagecontent($options);
+//        $dat['content_view'] = $content_view;
+//        $this->load->view('page/page_template_view', $dat);
+//    }
 
     public function shippingdata() {
         if ($this->isAjax()) {

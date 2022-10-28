@@ -87,7 +87,7 @@ switch($_SERVER['SERVER_NAME']){
             'sage@bluetrack.com',
             'art@bluetrack.com',
             'robert@bluetrack.com',
-            'darrell.martin@bluetrack.com',
+            /* 'darrell.martin@bluetrack.com', */
         );
         $config['netexportsecure']=1;
         $config['netexportdata']='http://bluetrack.net/system/controller/exportbrowndata.php';
@@ -156,7 +156,7 @@ $config['bonus_1000']=2;
 $config['bonus_1200']=5;
 $config['bonus_price']=5;
 $config['bonus_week_base']=150;
-$config['netprofit_debt_start']=-160000;
+$config['netprofit_debt_start']=0; //-160000;
 $config['bonus_time']=strtotime('2019-03-04');
 /* Diff for pricing - in Cents */
 $config['price_diff']=3;
@@ -254,42 +254,37 @@ $config['item_quote_images'] = 'http://'.$_SERVER['SERVER_NAME'];
 if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bluetrack.com') {
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
 }
-$config['geo_apikey']='4b81812eeadb21fdb1ee0927218859cc46d35d0b88e0aa802ce28d25a774d8ef';
+$config['geo_apikey'] = getenv('GEOIP_KEY');
+$config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
 $config['message_subject']='Bluetrack.com Research Question';
-switch ($_SERVER['SERVER_NAME']) {
-    case 'bluetrack.sys':
-    case 'www.bluetrack.sys':
-    case 'bluetrack.golden-team.org':
-    case 'germanzp.ml':
-    case 'www.bluetrack.golden-team.org':
-    case 'front.stressballs.com':
-        $config['mail_research']='to_german@yahoo.com';
-        $config['mail_sales']='sales@golden-team.org';
-        $config['mail_direct_from']='direct@golden-team.org';
-        $config['mail_artdepart']="art@golden-team.org";
-        $config['mail_artdepart_cc']=array(
-            'sage@golden-team.org',
-            'sean@golden-team.org'
-        );
-        $config['mail_research_from']='research@golden-team.org';
-        // $config['email_notification_sender']='grey@golden-team.org';
-        $config['customer_notification_sender']='sales@golden-team.org';
-        $config['proofrequest_notification']='proof-req@golden-team.org';
-        break;
-    default :
-        $config['mail_research']='sean@bluetrack.com';
-        $config['mail_sales']='sales@bluetrack.com';
-        $config['mail_direct_from']='direct@bluetrack.com';
-        $config['mail_artdepart']="art@bluetrack.com";
-        $config['mail_artdepart_cc']=array(
-            'sage@bluetrack.com',
-            'sean@bluetrack.com'
-        );
-        $config['mail_research_from']='research@bluetrack.com';
-        // $config['email_notification_sender']='grey@bluetrack.com';
-        $config['customer_notification_sender']='sales@bluetrack.com';
-        $config['proofrequest_notification']='proof-req@bluetrack.com';
-        break;
+$config['test_server'] = getenv('TEST_SERVER');
+if ($config['test_server']==1) {
+    $config['mail_research']='to_german@yahoo.com';
+    $config['mail_sales']='sales@golden-team.org';
+    $config['mail_direct_from']='direct@golden-team.org';
+    $config['mail_artdepart']="art@golden-team.org";
+    $config['mail_artdepart_cc']=array(
+        'sage@golden-team.org',
+        'sean@golden-team.org'
+    );
+    $config['mail_research_from']='research@golden-team.org';
+    // $config['email_notification_sender']='grey@golden-team.org';
+    $config['customer_notification_sender']='sales@golden-team.org';
+    $config['proofrequest_notification']='proof-req@golden-team.org';
+} else {
+    $config['mail_research']='sean@bluetrack.com';
+    $config['mail_sales']='sales@bluetrack.com';
+    $config['mail_direct_from']='direct@bluetrack.com';
+    $config['mail_artdepart']="art@bluetrack.com";
+    $config['mail_artdepart_cc']=array(
+        'sage@bluetrack.com',
+        'sean@bluetrack.com'
+    );
+    $config['mail_research_from']='research@bluetrack.com';
+    // $config['email_notification_sender']='grey@bluetrack.com';
+    $config['customer_notification_sender']='sales@bluetrack.com';
+    $config['proofrequest_notification']='proof-req@bluetrack.com';
 }
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
+$config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);

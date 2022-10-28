@@ -424,22 +424,6 @@ if (!function_exists('creditcard_format')) {
     }
 }
 
-if (!function_exists('formatPhoneNumber')) {
-    function formatPhoneNumber($phoneNumber)
-    {
-        $plusdig = 0;
-        if (substr($phoneNumber, 0, 1) == '+') {
-            $plusdig = 1;
-            $phoneNumber = substr($phoneNumber, 1);
-        }
-        $areaCode = substr($phoneNumber, 0, 3);
-        $nextThree = substr($phoneNumber, 3, 3);
-        $lastFour = substr($phoneNumber, 6);
-        $phoneNumber = ($plusdig == 1 ? '+' : '') . $areaCode . '-' . $nextThree . '-' . $lastFour;
-        return $phoneNumber;
-    }
-}
-
 if (!function_exists('getVMDDueDate')) {
     function getVMDDueDate($batch_date, $paymethod) {
         if ($paymethod=='PAYPAL') {
@@ -540,6 +524,40 @@ if (!function_exists('BankDays')) {
         return $bank_days;
     }
 }
+
+if (!function_exists('TNTDays')) {
+    function TNTDays($datbgn, $datend, $calendar_id=0) {
+        $bank_days = 0;
+        $ci=&get_instance();
+        if ($calendar_id==0) {
+            $def_calendar=$ci->config->item('bank_calendar');
+        } else {
+            $def_calendar=$calendar_id;
+        }
+
+        $ci->load->model('calendars_model');
+        $holidays_src=$ci->calendars_model->get_calendar_holidays($def_calendar, $datbgn, $datend);
+        $holidays=array();
+        foreach ($holidays_src as $row) {
+            array_push($holidays, date('Y-m-d',$row));
+        }
+
+        $weekends=array(0,6);
+        $earlier = new DateTime(date('Y-m-d', $datend));
+        $later = new DateTime(date('Y-m-d', $datbgn));
+        $days = $later->diff($earlier)->format("%r%a");
+
+        // $days = ceil(($datend - $datbgn) / 3600 / 24);
+        for ($i = 1; $i <= $days; $i++) {
+            $curr = strtotime('+' . $i . ' days', $datbgn);
+            if (!in_array(date('Y-m-d',$curr), $holidays) && (!in_array(date('w', $curr), $weekends))) {
+                $bank_days++;
+            }
+        }
+        return $bank_days;
+    }
+}
+
 if (!function_exists('short_number')) {
     function short_number($value, $precesion=1) {
         $base=1000;
@@ -619,6 +637,72 @@ if (!function_exists('PriceOutput')) {
             $output = substr($output,0,-1);
         }
         return $output;
+    }
+}
+
+if (!function_exists('formatPhoneNumber')) {
+    function formatPhoneNumber($phoneNumber,$ext=0) {
+        if (!empty($phoneNumber)) {
+            $numadd = '';
+            if (stripos($phoneNumber, 'ext') || stripos($phoneNumber,'extension') || stripos($phoneNumber,'x')) {
+                if (stripos($phoneNumber,'extension')) {
+                    $pos = stripos($phoneNumber, 'extension');
+                    $numadd = substr($phoneNumber, $pos);
+                } elseif (stripos($phoneNumber, 'ext')) {
+                    $pos = stripos($phoneNumber, 'ext');
+                    $numadd = substr($phoneNumber, $pos);
+                } elseif (stripos($phoneNumber,'x')) {
+                    $pos = stripos($phoneNumber, 'x');
+                    $numadd = substr($phoneNumber, $pos);
+                }
+                $phoneNumber = trim(substr($phoneNumber, 0, $pos));
+                $numadd = preg_replace('/[^0-9]/','',$numadd);
+            }
+            $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+
+            if(strlen($phoneNumber) > 10) {
+                $countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
+                $areaCode = substr($phoneNumber, -10, 3);
+                $nextThree = substr($phoneNumber, -7, 3);
+                $lastFour = substr($phoneNumber, -4, 4);
+
+                $phoneNumber = '+'.$countryCode.' ('.$areaCode.') '.$nextThree.'-'.$lastFour;
+            }
+            else if(strlen($phoneNumber) == 10) {
+                $areaCode = substr($phoneNumber, 0, 3);
+                $nextThree = substr($phoneNumber, 3, 3);
+                $lastFour = substr($phoneNumber, 6, 4);
+                if ($ext==1) {
+                    $phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
+                } else {
+                    $phoneNumber = $areaCode.'-'.$nextThree.'-'.$lastFour;
+                }
+            }
+            else if(strlen($phoneNumber) == 7) {
+                $nextThree = substr($phoneNumber, 0, 3);
+                $lastFour = substr($phoneNumber, 3, 4);
+
+                $phoneNumber = $nextThree.'-'.$lastFour;
+            }
+            $phoneNumber=$phoneNumber.(!empty($numadd) ? 'x'.$numadd : '');
+        }
+        return $phoneNumber;
+    }
+}
+
+if (!function_exists('isMobile')) {
+    function isMobile() {
+        $ci=&get_instance();
+        $ci->load->library('Mobile_Detect');
+        return intval($ci->mobile_detect->isMobile());
+    }
+}
+
+if (!function_exists('isTablet')) {
+    function isTablet() {
+        $ci=&get_instance();
+        $ci->load->library('Mobile_Detect');
+        return intval($ci->mobile_detect->isTablet());
     }
 }
 

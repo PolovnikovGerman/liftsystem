@@ -30,36 +30,172 @@ class Database extends MY_Controller
         }
     }
 
-    public function index()
-    {
+    public function index() {
         $head = [];
         $head['title'] = 'Database';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
-        $content_options = [
-            'menu' => $menu,
-            'start' => $this->input->get('start', TRUE),
-        ];
-        $search = usersession('liftsearch');
-        usersession('liftsearch', NULL);
-        foreach ($menu as $row) {
-            if ($row['item_link'] == '#customersview') {
+        $getdata = $this->input->get();
+        $start = ifset($getdata,'start','');
+        $brand = $this->menuitems_model->get_current_brand();
+        $content_options['start'] = $start; // $this->input->get('start', TRUE);
+        if ($start=='') {
+            $mainmenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+            $brandmenu=0;
+            foreach ($mainmenu as $row) {
+                if ($row['item_link']=='#dbbrand') {
+                    $brandmenu=1;
+                }
+            }
+            if ($brandmenu==0) {
+                $this->masteritems();
+            } else {
+                // if ($brand=='SB') {
+                    $this->btchannelitems();
+                //} else {
+                //    $this->srchannelitems();
+                //}
+            }
+        } else {
+            if ($start=='dbbrand') {
+                $this->btchannelitems();
+            } elseif ($start=='dbcentermaster') {
+                $this->masteritems();
+            } elseif ($start=='dbcenterrelievers') {
+                $this->srchannelitems();
+            } elseif ($start=='legacyview') {
+                $this->legacyitems();
+            }
+        }
+    }
 
-            } elseif ($row['item_link'] == '#vendorsview') {
+    public function oldindex() {
+        $getdata = $this->input->get();
+        $start = ifset($getdata,'start','');
+        if ($start=='') {
+            $menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+            if ($menu[0]['item_link']=='#dbcentermaster') {
+                $this->masteritems();
+            } elseif ($menu[0]['item_link']=='#dbcenterbtchannel') {
+                $this->btchannelitems();
+            } elseif ($menu[0]['item_link']=='#dbcenterrelievers') {
+                $this->srchannelitems();
+            } elseif ($menu[0]['item_link']=='#legacyview') {
+                $this->legacyitems();
+            }
+        } else {
+            //
+            if ($start=='dbcenterbtchannel') {
+                $this->btchannelitems();
+            } elseif ($start=='dbcentermaster') {
+                $this->masteritems();
+            } elseif ($start=='dbcenterrelievers') {
+                $this->srchannelitems();
+            } elseif ($start=='legacyview') {
+                $this->legacyitems();
+            }
+        }
+    }
+
+    public function masteritems() {
+        $head = [];
+        $head['title'] = 'Database Master';
+        $pagelnk = '#dbmaster';
+        $brand = $this->menuitems_model->get_current_brand();
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $brand_menu = 0;
+        if (count($main_menu)>1) {
+            $brand_menu = 1;
+        }
+//        $menu_options = [
+//            'menus' => $main_menu,
+//            'start' => $pagelnk,
+//        ];
+//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        // Add main page management
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
+
+        $content_options=[
+            // 'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#mastervendors') {  // vendorsview
                 $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
                 $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
-            } elseif ($row['item_link'] == '#btitemsview') {
+            } elseif ($row['item_link']=='#masterinventory') {
+            } elseif ($row['item_link']=='#mastersettings') {
+            }
+        }
+        // Add main page management
+        $head['scripts'][] = array('src' => '/js/database/page.js');
+        $head['styles'][] = array('style' => '/css/database/databasepage.css');
+        // Add Item details
+        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
+        // Utils
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+        $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Item details
+        $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['brand_menu'] = $brand_menu;
+        $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
 
-            } elseif ($row['item_link'] == '#sbitemsview') {
+        $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
+    }
 
-            } elseif ($row['item_link'] == '#amazonitemsview') {
+    public function btchannelitems() {
+        $head = [];
+        $head['title'] = 'Bluetrack/Stressballs';
+        $pagelnk = '#dbbrand';
+        $brand = $this->menuitems_model->get_current_brand();
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $master_menu = 0;
+        if (count($main_menu) > 1) {
+            $master_menu = 1;
+        }
+//        $menu_options = [
+//            'menus' => $main_menu,
+//            'start' => $pagelnk,
+//        ];
+//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        // Add main page management
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
-            } elseif ($row['item_link'] == '#legacyview') {
+        $content_options=[
+            // 'page_menu' => $page_menu,
+            //'start_menu' => $pagelnk,
+            'menus' => $main_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#vendorsview') {
+            } elseif ($row['item_link']=='#masterinventory') {
+            } elseif ($row['item_link']=='#mastersettings') {
+            } elseif ($row['item_link']=='#btsettings') {
+                // Shipping Settings
+                $head['styles'][] = array('style' => '/css/settings/shippings.css');
+                $head['scripts'][] = array('src' => '/js/settings/shippings.js');
+                $content_options['shippingview'] = $this->_prepare_shipping_view('BT');
+            } elseif ($row['item_link']=='#legacyview') {
+                $legacylnk = '#legacyview';
                 $head['scripts'][]=array('src'=>'/js/database/legacy.js');
-                // Get Submenu
+                $legacymenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $legacylnk, $brand);
                 $legacy_options = [];
-                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
-                foreach ($submenu as $smenu) {
+                foreach ($legacymenu as $smenu) {
                     if ($smenu['item_link']=='#itempriceview') {
                         $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
                         $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
@@ -102,14 +238,69 @@ class Database extends MY_Controller
                         $legacy_options['categoryview'] = $this->_content_view($page_name);
                     }
                 }
-                // $page_name = strtolower($submenu[0]['item_name']);
                 $submenu_options = [
-                    'menus' => $submenu,
+                    'menus' => $legacymenu,
                 ];
                 $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
                 $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
             }
+        }
+        // Add main page management
+        $head['scripts'][] = array('src' => '/js/database/page.js');
+        $head['styles'][] = array('style' => '/css/database/databasepage.css');
+        // Add Item details
+        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
+        // Utils
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+        $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Item details
+        // $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['master_menu'] = $master_menu;
+        $content_view = $this->load->view('database_center/brand_database_view', $content_options, TRUE);
 
+        $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
+    }
+
+    public function srchannelitems() {
+        $head = [];
+//        $start = $this->input->get('start');
+//        if (empty($start)) {
+//            $start='#dbcentermaster';
+//        }
+        $head['title'] = 'StressRelievers';
+        $pagelnk = '#dbbrand';
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+        $menu_options = [
+            'menus' => $main_menu,
+            'start' => $pagelnk,
+        ];
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        // Add main page management
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+
+        $content_options=[
+            'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#vendorsview') {
+            } elseif ($row['item_link']=='#masterinventory') {
+            } elseif ($row['item_link']=='#mastersettings') {
+            }
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/database/page.js');
@@ -137,6 +328,216 @@ class Database extends MY_Controller
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
+
+    public function legacyitems() {
+        $head = [];
+//        $start = $this->input->get('start');
+//        if (empty($start)) {
+//            $start='#dbcentermaster';
+//        }
+        $head['title'] = 'Legacy';
+        $pagelnk = '#legacyview';
+        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
+        $menu_options = [
+            'menus' => $main_menu,
+            'start' => $pagelnk,
+        ];
+        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        // Add main page management
+        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+
+        $content_options=[
+            'page_menu' => $page_menu,
+            'menu' => $menu,
+            'start' => str_replace('#','',$menu[0]['item_link'])
+        ];
+        $head['scripts'][]=array('src'=>'/js/database/legacy.js');
+        // Get Submenu
+        // $legacy_options = [];
+        // $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk);
+        foreach ($menu as $smenu) {
+            if ($smenu['item_link']=='#itempriceview') {
+                $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
+                $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+                $page_name = 'itemprice';
+                $content_options['itempriceview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemcategoryview') {
+                $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
+                $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+                $page_name = 'itemcategory';
+                $content_options['itemcategoryview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemsequenceview') {
+                $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+                $page_name = 'itemsequence';
+                $content_options['itemsequenceview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemmisinfoview') {
+                $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+                $page_name = 'itemmisinfo';
+                $content_options['itemmisinfoview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemprofitview') {
+                $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
+                $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+                $page_name = 'itemprofit';
+                $content_options['itemprofitview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemtemplateview') {
+                $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+                $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
+                $page_name = 'itemtemplates';
+                $content_options['itemtemplateview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link']=='#itemexportview') {
+                $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+                $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+                $page_name = 'itemexport';
+                $content_options['itemexportview'] = $this->_content_view($page_name);
+            } elseif ($smenu['item_link'] == '#categoryview') {
+                $head['styles'][] = array('style' => '/css/database/categories.css');
+                $head['scripts'][] = array('src' => '/js/database/categories.js');
+                $page_name = 'categories';
+                $content_options['categoryview'] = $this->_content_view($page_name);
+            }
+        }
+        // $page_name = strtolower($submenu[0]['item_name']);
+        // $submenu_options = [
+        //    'menus' => $submenu,
+        // ];
+        // $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
+        // $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
+        // Add main page management
+        $head['scripts'][] = array('src' => '/js/database/page.js');
+        $head['styles'][] = array('style' => '/css/database/databasepage.css');
+        // Add Item details
+        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
+        // Utils
+        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+        $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Item details
+        $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $dat = $this->template->prepare_pagecontent($options);
+
+        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
+
+        $dat['content_view'] = $content_view;
+        $this->load->view('page/page_template_view', $dat);
+    }
+
+//    public function index()
+//    {
+//        $head = [];
+//        $head['title'] = 'Database';
+//        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+//        $content_options = [
+//            'menu' => $menu,
+//            'start' => $this->input->get('start', TRUE),
+//        ];
+//        $search = usersession('liftsearch');
+//        usersession('liftsearch', NULL);
+//        foreach ($menu as $row) {
+//            if ($row['item_link'] == '#customersview') {
+//
+//            } elseif ($row['item_link'] == '#vendorsview') {
+//                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+//                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+//                $content_options['vendorsview'] = $this->_prepare_vendors_view();
+//            } elseif ($row['item_link'] == '#btitemsview') {
+//
+//            } elseif ($row['item_link'] == '#sbitemsview') {
+//
+//            } elseif ($row['item_link'] == '#amazonitemsview') {
+//
+//            } elseif ($row['item_link'] == '#legacyview') {
+//                $head['scripts'][]=array('src'=>'/js/database/legacy.js');
+//                // Get Submenu
+//                $legacy_options = [];
+//                $submenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $row['item_link']);
+//                foreach ($submenu as $smenu) {
+//                    if ($smenu['item_link']=='#itempriceview') {
+//                        $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
+//                        $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+//                        $page_name = 'itemprice';
+//                        $legacy_options['itempriceview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemcategoryview') {
+//                        $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
+//                        $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+//                        $page_name = 'itemcategory';
+//                        $legacy_options['itemcategoryview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemsequenceview') {
+//                        $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
+//                        $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+//                        $page_name = 'itemsequence';
+//                        $legacy_options['itemsequenceview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemmisinfoview') {
+//                        $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
+//                        $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+//                        $page_name = 'itemmisinfo';
+//                        $legacy_options['itemmisinfoview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemprofitview') {
+//                        $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
+//                        $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+//                        $page_name = 'itemprofit';
+//                        $legacy_options['itemprofitview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemtemplateview') {
+//                        $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+//                        $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
+//                        $page_name = 'itemtemplates';
+//                        $legacy_options['itemtemplateview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link']=='#itemexportview') {
+//                        $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+//                        $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+//                        $page_name = 'itemexport';
+//                        $legacy_options['itemexportview'] = $this->_content_view($page_name);
+//                    } elseif ($smenu['item_link'] == '#categoryview') {
+//                        $head['styles'][] = array('style' => '/css/database/categories.css');
+//                        $head['scripts'][] = array('src' => '/js/database/categories.js');
+//                        $page_name = 'categories';
+//                        $legacy_options['categoryview'] = $this->_content_view($page_name);
+//                    }
+//                }
+//                // $page_name = strtolower($submenu[0]['item_name']);
+//                $submenu_options = [
+//                    'menus' => $submenu,
+//                ];
+//                $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
+//                $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
+//            }
+//
+//        }
+//        // Add main page management
+//        $head['scripts'][] = array('src' => '/js/database/page.js');
+//        $head['styles'][] = array('style' => '/css/database/databasepage.css');
+//        // Add Item details
+//        $head['scripts'][] = array('src' => '/js/database/itemdetails.js');
+//        // Utils
+//        $head['styles'][] = array('style' => '/css/page_view/pagination_shop.css');
+//        $head['scripts'][] = array('src' => '/js/adminpage/jquery.mypagination.js');
+//        $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+//        $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+//        $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+//        $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+//        $head['scripts'][] = array('src' => '/js/adminpage/jquery.sortable.js');
+//        $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
+//        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+//        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+//        // Item details
+//        $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+//        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+//        $dat = $this->template->prepare_pagecontent($options);
+//
+//        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
+//
+//        $dat['content_view'] = $content_view;
+//        $this->load->view('page/page_template_view', $dat);
+//    }
 
     // private function _content_view($page_name, $brand, $left_menu, $search='') {
     private function _content_view($page_name, $search='') {
@@ -772,7 +1173,7 @@ class Database extends MY_Controller
                 'direct' => $direction,
             ];
             $this->load->model('vendors_model');
-            $vendors=$this->vendors_model->get_vendors_list($options);
+            $vendors=$this->vendors_model->get_vendors_oldlist($options);
             if (count($vendors)==0) {
                 $content=$this->load->view('fulfillment/vendors_emptydata_view', array(), TRUE);
             } else {
@@ -1457,6 +1858,32 @@ class Database extends MY_Controller
             'curpage'=>0,
         );
         $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_shipping_view($brand) {
+        $months=array();
+        for ($i=1; $i<13; $i++) {
+            $key=str_pad($i,2,'0',STR_PAD_LEFT);
+            $name=date('F',strtotime('1980-'.$key.'-01'));
+            $months[]=array('id'=>$key, 'name'=>$name);
+        }
+        $this->load->model('shipping_model');
+        $mindate=$this->shipping_model->shipcalk_stardate($brand);
+        $startyear=date('Y',$mindate);
+        $curyear=date('Y');
+        $years=array();
+        for ($i=$startyear; $i<=$curyear; $i++) {
+            $years[]=array('id'=>$i, 'name'=>$i);
+        }
+        $options=[
+            'months'=>$months,
+            'years'=>$years,
+            'curmonth'=>date('m'),
+            'curyear'=>date('Y'),
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('settings/shippings_view',$options,TRUE);
         return $content;
     }
 

@@ -24,6 +24,9 @@ class MY_Loader extends CI_Loader {
             if (in_array($db->platform(), array('mysql', 'mysqli')))
             {
                 // $db->query("SET time_zone = '".date('P')."'");
+                if ($this->config->item('debug_mode')) {
+                    $db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+                }
             }
 
             return $db;
@@ -35,6 +38,9 @@ class MY_Loader extends CI_Loader {
 
             if (in_array($CI->db->platform(), array('mysql', 'mysqli')))
             {
+                if ($CI->config->item('debug_mode')) {
+                    $CI->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+                }
                 // $CI->db->query("SET time_zone = '-05:00'");
             }
 

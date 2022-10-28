@@ -3,6 +3,7 @@
     <input type="hidden" id="cur_year" value="<?= $cur_year ?>"/>
     <input type="hidden" id="cur_month" value="<?= $cur_month ?>"/>
     <input type="hidden" id="showgrowth" value="<?= $showgrowth ?>"/>
+    <input type="hidden" id="profitcalendarbrand" value="<?= $brand ?>">
     <div class="profitdate-control">
         <div class="profitdate-bookmark">
             <?php $i = $max_year; ?>
@@ -113,7 +114,3 @@
     </div>
 </div>
 <div id="profitdategoaledit" style="display: none; width: 420px; height: 280px;"></div>
-<input type="hidden" id="profitcalendarbrand" value="<?= $brand ?>">
-<div id="profitcalendarbrandmenu">
-    <?= $top_menu ?>
-</div>

@@ -121,6 +121,14 @@ function init_netprofit_content() {
         var profit=$(this).data('debincl');
         include_debt(profit);
     });
+    $("div.cell_week_runincl").unbind('click').click(function () {
+        var profit = $(this).data('weekincl');
+        include_week(profit);
+    });
+    $("div.cell_week_check").unbind('click').click(function () {
+        var profit = $(this).data('weekcheck');
+        check_week(profit);
+    })
     $("select#netreportsortorder").unbind('change').change(function () {
         init_netprofitpage();
     })
@@ -368,7 +376,8 @@ function edit_profdat(profit) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.cell_week2").unbind('click');
-            $("div#nerpr"+response.data.weekid).empty().html(response.data.content);
+            // $("div#nerpr"+response.data.weekid).empty().html(response.data.content);
+            $("div.netprofitdataeditarea[data-profit='"+profit+"']").empty().html(response.data.content);
             init_netprofitdetails_edit();
             $("#loader").hide();
         } else {
@@ -788,6 +797,38 @@ function include_debt(profit) {
         if (response.errors=='') {
             $("div.cell_for_debtincl[data-debincl='"+profit+"']").empty().html(response.data.debincl);
             $("div.color_total").empty().html(response.data.content);
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function include_week(profit) {
+    var params=new Array();
+    params.push({name: 'profit_id', value: profit});
+    params.push({name: 'type', value: $("select#but-reportview").val()});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_weekincl"
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("div.cell_week_runincl[data-weekincl='"+profit+"']").empty().html(response.data.runincl);
+            $("div.color_total").empty().html(response.data.content);
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function check_week(profit) {
+    var params=new Array();
+    params.push({name: 'profit_id', value: profit});
+    params.push({name: 'type', value: $("select#but-reportview").val()});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_checkweek"
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("div.cell_week_check[data-weekcheck='"+profit+"']").empty().html(response.data.weekcheck);
+            $("div.cell_week_check[data-weekcheck='"+profit+"']").removeClass('included').addClass(response.data.weekclass)
         } else {
             show_error(response);
         }

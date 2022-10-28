@@ -4,6 +4,8 @@
 <input type="hidden" id='artordorderby' value="<?= $order_by ?>"/>
 <input type="hidden" id="artorddirection" value="<?= $direction ?>"/>
 <input type="hidden" id="artordcurpage" value="<?= $cur_page ?>"/>
+<input type="hidden" id="artordersviewbrand" value="<?=$brand?>"/>
+
 <div class="generealorder_content">
     <div class="headrow">
         <div class="searchform">
@@ -54,8 +56,4 @@
         <div class="salesrepl">Sales Rep</div>
     </div>
     <div class="tabledata">&nbsp;</div>
-</div>
-<input type="hidden" id="artordersviewbrand" value="<?=$brand?>"/>
-<div id="artordersviewbrandmenu">
-    <?=$top_menu?>
 </div>

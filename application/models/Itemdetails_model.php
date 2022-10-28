@@ -275,6 +275,8 @@ Class Itemdetails_model extends My_Model
                         $newprofit['profit_setup_class'] = $profit['profit_class'];
                     }
                 }
+                $session_data['item_prices'] = $prices;
+                usersession($session_id, $session_data);
                 $out['profit'] = $newprofit;
                 // $out['profitrecalc'] = 0;
             }
@@ -1181,13 +1183,14 @@ Class Itemdetails_model extends My_Model
                     $base=floatval($promo['price']);
                 }
                 if ($base!=0) {
-                    $this->db->select('get_profit_qty(' . $base . ' , ' . $item_id . ' , ' . $promo['item_qty']. ' ) as itm_profit', FALSE);
-                    $prof = $this->db->get()->row_array();
-                    if ($prof['itm_profit']) {
-                        $this->db->set('profit',$prof['itm_profit']);
-                    } else {
-                        $this->db->set('profit',NULL);
-                    }
+                    // $this->db->select('get_profit_qty(' . $base . ' , ' . $item_id . ' , ' . $promo['item_qty']. ' ) as itm_profit', FALSE);
+                    // $prof = $this->db->get()->row_array();
+                    // if ($prof['itm_profit']) {
+                    //    $this->db->set('profit',$prof['itm_profit']);
+                    // } else {
+                    //    $this->db->set('profit',NULL);
+                    // }
+                    $this->db->set('profit',$promo['profit']);
                 } else {
                     $this->db->set('profit',NULL);
                 }

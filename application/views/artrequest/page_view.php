@@ -4,8 +4,8 @@
 <input type="hidden" id="curpageproof" value="<?=$cur_page?>"/>
 <input type="hidden" id="perpageproof" value="<?=$perpage?>"/>
 <input type="hidden" id="hideartproof" value="<?=(isset($hideart) ? $hideart : '')?>"/>
+<input type="hidden" id="proofrequestsbrand" value="<?=$brand?>"/>
 <div class="proof_content">
-
     <div class="proof_select_type">
         <div class="proof_selecttype_label">Display:</div>
         <select id="proof_status" class="proof_status_select">
@@ -49,8 +49,4 @@
         <div class="quest_tablefoot_right">&nbsp;</div>
     </div>
     <div id="proof_dialog" style="display: none; width: 895px; height: 443px;"></div>
-</div>
-<input type="hidden" id="proofrequestsbrand" value="<?=$brand?>"/>
-<div id="proofrequestsbrandmenu">
-    <?=$top_menu?>
 </div>

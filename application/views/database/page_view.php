@@ -1,5 +1,8 @@
 <div class="maincontent">
     <div class="maincontentmenuarea databasemenu">
+        <div class="menupage_head">
+            <?=$page_menu?>
+        </div>
         <div class="maincontentmenu">
             <div class="title">Database:</div>
             <?php foreach ($menu as $item) { ?>
@@ -19,6 +22,35 @@
                 <div class="dbcontentarea" id="legacyview" style="display: none; background: #ededed;">
                     <?=$legacyview?>
                 </div>
+            <?php } ?>
+            <?php if (isset($shippingview)) { ?>
+                <div class="dbcontentarea" id="shippingview" style="display: none;">
+                    <?=$shippingview?>
+                </div>
+            <?php } ?>
+            <?php if (isset($itempriceview)) { ?>
+                <div class="page_container dbitemspage" id="itempriceview" style="display: none;"><?=$itempriceview?></div>
+            <?php } ?>
+            <?php if (isset($itemcategoryview)) { ?>
+                <div class="page_container dbitemspage" id="itemcategoryview" style="display: none;"><?=$itemcategoryview?></div>
+            <?php } ?>
+            <?php if (isset($itemsequenceview)) { ?>
+                <div class="page_container dbitemspage" id="itemsequenceview" style="display: none;"><?=$itemsequenceview?></div>
+            <?php } ?>
+            <?php if (isset($itemmisinfoview)) { ?>
+                <div class="page_container dbitemspage" id="itemmisinfoview" style="display: none;"><?=$itemmisinfoview?></div>
+            <?php } ?>
+            <?php if (isset($itemprofitview)) { ?>
+                <div class="page_container dbitemspage" id="itemprofitview" style="display: none;"><?=$itemprofitview?></div>
+            <?php } ?>
+            <?php if (isset($itemtemplateview)) { ?>
+                <div class="page_container dbitemspage" id="itemtemplateview" style="display: none;"><?=$itemtemplateview?></div>
+            <?php } ?>
+            <?php if (isset($categoryview)) { ?>
+                <div class="page_container dbitemspage" id="categoryview" style="display: none;"><?=$categoryview?></div>
+            <?php } ?>
+            <?php if (isset($itemexportview)) { ?>
+                <div class="page_container dbitemspage" id="itemexportview" style="display: none;"><?=$itemexportview?></div>
             <?php } ?>
             <div class="dbcontentarea" id="itemdetailsview" style="display: none;">
                 <div class="left_maincontent"></div>

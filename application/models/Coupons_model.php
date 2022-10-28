@@ -21,7 +21,11 @@ Class Coupons_model extends MY_Model
             }
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -37,7 +41,11 @@ Class Coupons_model extends MY_Model
             $this->db->where('coupon_deleted',$options['coupon_deleted']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $options['brand']);
+            }
         }
         if (isset($options['order_by']) && !empty($options['order_by'])) {
             if (isset($options['direction']) && !empty($options['direction'])) {

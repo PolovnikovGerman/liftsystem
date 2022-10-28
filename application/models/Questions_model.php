@@ -26,8 +26,11 @@ Class Questions_model extends My_Model {
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            // $this->db->where('e.email_websys',$options['brand']);
-            $this->db->where('e.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            } else {
+                $this->db->where('e.brand', $options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -49,8 +52,11 @@ Class Questions_model extends My_Model {
             $this->db->where('lem.email_id is null');
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            // $this->db->where('e.email_websys',$search['brand']);
-            $this->db->where('e.brand', $search['brand']);
+            if ($search['brand']=='SB') {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            } else {
+                $this->db->where('e.brand', $search['brand']);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);
@@ -138,48 +144,48 @@ Class Questions_model extends My_Model {
         return $out;
     }
 
-//    function get_todays() {
-//        // $todaybgn=strtotime($this->startdate);
-//        $this->db->select('count(e.email_id) as cnt');
-//        $this->db->from('ts_emails e');
-//        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
-//        $this->db->where('email_type',  Questions_model::EMAIL_TYPE);
-//        $this->db->where('lem.email_id is null');
-//        $this->db->where('e.email_include_lead',1);
-//        // $this->db->where('unix_timestamp(email_date) >=',$todaybgn);
-//        $res=$this->db->get()->row_array();
-//        if ($res['cnt']==0) {
-//            $retval='';
-//        } else {
-//            $retval=$res['cnt'];
-//        }
-//        return $retval;
-//    }
-//
-//    function question_include($email_id, $newval) {
-//        $out=array('result'=>  Questions_model::ERR_FLAG, 'msg'=>  Questions_model::INIT_ERRMSG);
-//        $incl_icon='<img src="/img/noninclide_lead_icon.png" alt="Include"/>';
-//        $nonincl_icon='<img src="/img/inclide_lead_icon.png" alt="Non Include"/>';
-//        $this->db->set('email_include_lead',$newval);
-//        $this->db->where('email_id',$email_id);
-//        $this->db->update('ts_emails');
-//        if ($this->db->affected_rows()==1) {
-//            $out['result']=  Questions_model::SUCCESS_RESULT;
-//            $out['msg']='';
-//            $out['newicon']=($newval==0 ? $nonincl_icon : $incl_icon);
-//            $options=array(
-//                'assign'=>1,
-//                'hideincl'=>1,
-//            );
-//            $totals=$this->get_count_questions($options);
-//            $out['newmsg']=($totals==0 ? '' : intval($totals));
-//            $today=$this->get_todays();
-//            $out['newclass']=(floatval($today)==0 ? 'empval' : 'curmail');
-//        } else {
-//            $out['msg']='Question Not Found';
-//        }
-//        return $out;
-//    }
+    function get_todays() {
+        // $todaybgn=strtotime($this->startdate);
+        $this->db->select('count(e.email_id) as cnt');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('email_type',  $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        // $this->db->where('unix_timestamp(email_date) >=',$todaybgn);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            $retval='';
+        } else {
+            $retval=$res['cnt'];
+        }
+        return $retval;
+    }
+
+    public function question_include($email_id, $newval) {
+        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
+        $incl_icon='<img src="/img/noninclide_lead_icon.png" alt="Include"/>';
+        $nonincl_icon='<img src="/img/inclide_lead_icon.png" alt="Non Include"/>';
+        $this->db->set('email_include_lead',$newval);
+        $this->db->where('email_id',$email_id);
+        $this->db->update('ts_emails');
+        if ($this->db->affected_rows()==1) {
+            $out['result']=  $this->success_result;
+            $out['msg']='';
+            $out['newicon']=($newval==0 ? $nonincl_icon : $incl_icon);
+            $options=array(
+                'assign'=>1,
+                'hideincl'=>1,
+            );
+            $totals=$this->get_count_questions($options);
+            $out['newmsg']=($totals==0 ? '' : intval($totals));
+            $today=$this->get_todays();
+            $out['newclass']=(floatval($today)==0 ? 'empval' : 'curmail');
+        } else {
+            $out['msg']='Question Not Found';
+        }
+        return $out;
+    }
 
 }
 /* End of file questions_model.php */

@@ -3,6 +3,7 @@
 <input type="hidden" id="direcquotes" value="<?=$direction?>"/>
 <input type="hidden" id="curpagequotes" value="<?=$cur_page?>"/>
 <input type="hidden" id="perpagequotes" value="<?=$perpage?>"/>
+<input type="hidden" id="onlinequotesbrand" value="<?=$brand?>"/>
 <div class="quote_content">
     <div class="quote_header">
         <div class="quotes_selecttype_label">Display:</div>
@@ -38,8 +39,4 @@
         <div class="quote_total">Total</div>
     </div>
     <div class="quotes_tabledat"></div>
-</div>
-<input type="hidden" id="onlinequotesbrand" value="<?=$brand?>"/>
-<div id="onlinequotesbrandmenu">
-    <?=$top_menu?>
 </div>

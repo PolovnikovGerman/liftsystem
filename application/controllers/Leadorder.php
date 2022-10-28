@@ -867,7 +867,7 @@ class Leadorder extends MY_Controller
                 $this->load->model('orders_model');
                 $dboptions=array(
                     'exclude'=>array(-4, -5, -2),
-                    'brand' => $order['brand'],
+                    'brand' => ($order['brand']=='SB' ? 'BT' : 'SR'),
                 );
                 $items=$this->orders_model->get_item_list($dboptions);
                 $options=array(
@@ -2587,32 +2587,97 @@ class Leadorder extends MY_Controller
                 }
                 // Place a new charge
                 $order_payment_id=$postdata['order_payment_id'];
-                $res=$this->leadorder_model->leadorder_paycharge($leadorder, $order_payment_id, $this->USR_ID, $ordersession);
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
-                    $leadorder = usersession($ordersession);
-                    $payments = $leadorder['payments'];
-                    $order = $leadorder['order'];
-                    // Build view
-                    $mdata['content'] = $this->load->view('leadorderdetails/payment_history_view', array('payments' => $payments), TRUE);
-                    // Total
-                    $total_due = $order['revenue'] - $order['payment_total'];
-                    $dueoptions = array(
-                        'totaldue' => $total_due,
+                $payres=$this->leadorder_model->leadorder_paycharge($leadorder, $order_payment_id, $this->USR_ID, $ordersession);
+                $error=$payres['msg'];
+                if ($payres['result']==$this->success_result) {
+                    // Save Order
+                    $leadorder=usersession($ordersession);
+                    $saveres = $this->leadorder_model->save_order($leadorder, $this->USR_ID, $ordersession);
+                    $error = $saveres['msg'];
+                    if ($saveres['result']==$this->success_result) {
+                        if (isset($leadorder['locrecid'])) {
+                            $this->engaded_model->clean_engade($leadorder['locrecid']);
+                        }
+                        $order = $saveres['order_id'];
+                        $brand = $postdata['brand'];
+                        // Get Order data
+                        $res = $this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            // Lock record
+                            $lockoptions=array(
+                                'entity'=>'ts_orders',
+                                'entity_id'=>$order,
+                                'user_id'=>$this->USR_ID,
+                            );
+                            // Check lock of record
+                            $chklock=$this->engaded_model->check_engade($lockoptions);
+                            if ($chklock==$this->error_result) {
+                                $error='Order was locked for edit by other user. Try later';
+                                $this->ajaxResponse($mdata, $error);
+                            }
+                            $locking=$this->engaded_model->lockentityrec($lockoptions);
+                            $orderres['locrecid']=$locking;
+                            $orddata=$res['order'];
+                            // Build Head
+                            $head_options = [
+                                'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
+                                'prvorder' => $res['prvorder'],
+                                'nxtorder' => $res['nxtorder'],
+                            ];
+                            // Build View
+                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
+                            $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+                            // Build Content
+                            $options['order_data']=$order_data;
+                            $options['locrecid']=$locking;
+                            $options['leadsession']=$ordersession;
+                            if ($this->input->ip_address()=='127.0.0.1') {
+                                $options['timeout']=(time()+$this->config->item('loctimeout_local'))*1000;
+                            } else {
+                                $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
+                            }
+                            $options['current_page']=ifset($postdata,'callpage','art_tasks');
+                            $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
+                            $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
+                            /* Save to session */
+                            if ($res['order_system_type']=='old') {
+                                $leadorder=array(
+                                    'order'=>$orddata,
+                                    'payments'=>$res['payments'],
+                                    'artwork'=>$res['artwork'],
+                                    'artlocations'=>$res['artlocations'],
+                                    'artproofs'=>$res['proofdocs'],
+                                    'message'=>$res['message'],
+                                    'order_system'=>$res['order_system_type'],
+                                    'locrecid'=>$locking,
                     );
-                    $mdata['ordersystem']=$leadorder['order_system'];
-                    $mdata['balanceopen']=1;
-                    if ($total_due == 0 && $order['payment_total'] > 0) {
-                        $dueoptions['class'] = 'closed';
-                        $mdata['balanceopen']=0;
-                    } else {
-                        $dueoptions['class'] = 'open';
-                        if ($total_due<0) {
-                            $dueoptions['class']='overflow';
+                                );
+                            } else {
+                                $leadorder=array(
+                                    'order'=>$orddata,
+                                    'payments'=>$res['payments'],
+                                    'artwork'=>$res['artwork'],
+                                    'artlocations'=>$res['artlocations'],
+                                    'artproofs'=>$res['proofdocs'],
+                                    'message'=>$res['message'],
+                                    'contacts'=>$res['contacts'],
+                                    'order_items'=>$res['order_items'],
+                                    'order_system'=>$res['order_system_type'],
+                                    'shipping'=>$res['shipping'],
+                                    'shipping_address'=>$res['shipping_address'],
+                                    'billing'=>$res['order_billing'],
+                                    'charges'=>$res['charges'],
+                                    'delrecords'=>array(),
+                                    'locrecid'=>$locking,
+                                );
+                            }
+                            usersession($ordersession, $leadorder);
+                            $mdata['content']=$content;
+                            $mdata['header']=$header;
                         }
                     }
-                    $mdata['total_due'] = $this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                 }
             }
             // Calc new period for lock
@@ -4691,13 +4756,14 @@ class Leadorder extends MY_Controller
             $options=array(
                 'data'=>$res,
                 'profit_class'=>$postdata['clas'],
+                'edit_mode' => (ifset($postdata,'edit',1)),
             );
             $cogcontent=$this->load->view('leadorderdetails/ordercog_details_view', $options, TRUE);
         }
         echo $cogcontent;
     }
 
-    private function _profit_data_view($order) {
+    private function _profit_data_view($order, $edit_mode=1) {
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
         $options=array(
             'profit_perc'=>$order['profit_perc'],
@@ -4705,7 +4771,27 @@ class Leadorder extends MY_Controller
             'profit_view'=>'',
             'profit_class'=>orderProfitClass($order['profit_perc']),
             'order_id'=>$order['order_id'],
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
+            'edit_mode' => $edit_mode,
         );
+        if (!empty($order['profit_perc'])) {
+            $classprof = orderProfitClass($order['profit_perc']);
+            if ($classprof=='green') {
+                $options['bgcolor']='#00e947';
+            } elseif ($classprof=='red') {
+                $options['bgcolor']='#ff0000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='black') {
+                $options['bgcolor']='#000000';
+                $options['hitcolor']='#ffffff';
+            } elseif ($classprof=='orange') {
+                $options['bgcolor']='#ea8a0e';
+            } elseif ($classprof=='moroon') {
+                $options['bgcolor']='#6d0303';
+                $options['hitcolor']='#ffffff';
+            }
+        }
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';
             $options['profit_view']='points';
@@ -4713,7 +4799,11 @@ class Leadorder extends MY_Controller
         if (empty($order['profit_perc'])) {
             $content=$this->load->view('leadorderdetails/profitproject_view', $options, TRUE);;
         } else {
-            $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            if ($options['profit_view']=='points') {
+                $content=$this->load->view('leadorderdetails/profit_points_view', $options, TRUE);
+            } else {
+                $content=$this->load->view('leadorderdetails/profit_view', $options, TRUE);
+            }
         }
         return $content;
     }
@@ -4893,4 +4983,111 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
+    public function pototal_remove() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amount = ifset($postdata,'amount',0);
+                $editmode = ifset($postdata,'editmode',0);
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->remove_amount($amount, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $leadorder = usersession($ordersession);
+                    $order = $leadorder['order'];
+                    $mdata['content']=$this->_profit_data_view($order,0);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pototal_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amount = ifset($postdata,'amount',0);
+                $editmode = ifset($postdata,'editmode',0);
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->edit_amount($amount, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $this->load->model('vendors_model');
+                    $this->load->model('orders_model');
+                    $v_options = [
+                        'order_by' => 'v.vendor_name',
+                    ];
+                    $vendors=$this->vendors_model->get_vendors_list($v_options);
+                    $methods=$this->orders_model->get_methods_edit();
+                    $order_view=$this->load->view('pototals/purchase_orderdata_view', $res['order'],TRUE);
+                    $poeditview = $this->load->view('pototals/purchase_reason_view', $res['amount'],TRUE);
+                    $lowprofit_view = '';
+                    if (!empty($res['order']['reason'])) {
+                        $lowprofit_view = $this->load->view('pototals/lowprofit_reason_view', $res['order'],TRUE);
+                    }
+                    $options=array(
+                        'order'=>$res['order'],
+                        'amount'=>$res['amount'],
+                        'attach'=>'',
+                        'vendors'=>$vendors,
+                        'methods'=>$methods,
+                        'order_view'=>$order_view,
+                        'lowprofit_view'=>$lowprofit_view,
+                        'editpo_view'=>$poeditview,
+                    );
+                    $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
+                    $mdata['content']=$content;
+                    $data=array(
+                        'amount'=>$res['amount'],
+                        'order'=>$res['order'],
+                        'attach'=>array(),
+                    );
+                    // Save Data to Session
+                    usersession('editpurchase', $data);
+                    // $mdata['content']=$this->_profit_data_view($order);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function amount_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $amntdata=usersession('editpurchase');
+                if (!empty($amntdata)) {
+                    $editmode = ifset($postdata,'editmode',0);
+                    $this->load->model('leadorder_model');
+                    $res=$this->leadorder_model->amount_save($amntdata, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $leadorder = usersession($ordersession);
+                        $order = $leadorder['order'];
+                        $mdata['content']=$this->_profit_data_view($order, 0);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

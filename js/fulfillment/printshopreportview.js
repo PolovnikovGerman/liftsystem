@@ -64,6 +64,7 @@ function pageOrderReportsCallback(page_index) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#orderreportdataarea").empty().html(response.data.content);
+            leftmenu_alignment();
             // Init new content manage
             init_orderreport_page();
             $("#loader").hide();

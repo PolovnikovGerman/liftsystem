@@ -161,7 +161,11 @@ class Email_model extends My_Model
         $this->db->from('ts_emails');
         $this->db->where("email_type", $type);
         if ($brand!=='ALL') {
-            $this->db->where('brand',$brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$brand);
+            }
         }
         // $this->db->where('email_websys', $this->websys);
         if ($status != -1) {
@@ -188,6 +192,11 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
+            if ($options=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
         }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
@@ -210,6 +219,12 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
+
         }
         $this->db->order_by('email_id');
         $res = $this->db->get()->result_array();
@@ -227,7 +242,11 @@ class Email_model extends My_Model
         $this->db->select('email_type, email_status, count(*) as cnt_rec', FALSE);
         $this->db->from('ts_emails');
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$brand);
+            }
         }
         // $this->db->where('email_websys', $this->websys);
         $this->db->group_by('email_type, email_status');
@@ -264,7 +283,11 @@ class Email_model extends My_Model
             }
         }
         if ($options['brand']!=='ALL') {
-            $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
         }
         $this->db->order_by($order_by, $direct);
         $this->db->limit($limit, $offset);
@@ -1448,7 +1471,16 @@ class Email_model extends My_Model
                     $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
                     $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
                     $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
-                    $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
+                    $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                    $colorstr = '';
+                    foreach ($itemcolors as $itemcolor) {
+                        $colorstr.=$itemcolor.',';
+                    }
+                    if (count($itemcolors)>0) {
+                        $colorstr=substr($colorstr,0,-1);
+                    }
+                    $mail['colors'] = $colorstr;
+                        // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
                     $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
                     $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
                     $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
@@ -1460,9 +1492,12 @@ class Email_model extends My_Model
                         $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
                         $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     } else {
-                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
-                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
-                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
+//                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
+//                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+//                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     }
                     $mail['imgpath']=$this->config->item('img_path');
                     $mail['itemimgpath']=$this->config->item('item_quote_images');

@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/css/page_view/font-awesome.min.css">
 <link rel="stylesheet" href="/css/page_view/main.css?v=<?=getsitecssversion()?>">
 <link rel="stylesheet" href="/css/jsflash/flash.css">
+<link rel="stylesheet" href="/css/mb_ballons/mb.balloon.css"/>
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>
@@ -18,7 +19,11 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/adminpage/page.js?v=<?=getsitejsversion()?>"></script>
 <script src="/js/jsflash/flash.js"></script>
+<script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>
 <script src="/js/adminpage/jquery.qtip.js"></script>
+<?php if ($gmaps==1) { ?>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('googlemapapi')?>&libraries=places&v=weekly" async></script>
+<?php } ?>

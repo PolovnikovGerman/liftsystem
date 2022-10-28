@@ -1,5 +1,8 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea marketmenu">
+    <div class="leftmenuarea">
+        <?=$left_menu?>
+    </div>
+    <div class="maincontentmenuarea <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
         <div class="maincontentmenu">
             <div class="title">Leads:</div>
             <?php foreach ($menu as $item) { ?>
@@ -26,6 +29,9 @@
             <?php } ?>
             <?php if (isset($questionsview)) { ?>
                 <div class="leadscontentarea" id="questionsview" style="display: none;"><?=$questionsview?></div>
+            <?php } ?>
+            <?php if (isset($customsbformview)) { ?>
+                <div class="leadscontentarea" id="customsbformview" style="display: none;"><?=$customsbformview?></div>
             <?php } ?>
             <?php if (isset($checkoutattemptsview)) { ?>
                 <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>

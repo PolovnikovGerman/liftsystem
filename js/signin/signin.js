@@ -1,21 +1,22 @@
 $(document).ready(function () {
-    var heigth = window.innerHeight;
-    $(".maincontent").css('height', heigth);
+    init_signin_resize();
     init_signin();
-    // var heigth = window.innerHeight;
-    // $(".maincontent").css('height', heigth);
-    // $("#openincome").unbind('click').click(function () {
-    //     $.post('/login/show_signinform',{}, function (response) {
-    //         if (response.errors=='') {
-    //             $("#form").empty().html(response.data.content);
-    //             init_signin();
-    //         } else {
-    //             show_errors(response);
-    //         }
-    //     },'json');
-    // });
-})
+});
 
+$(window).resize(function() {
+    init_signin_resize();
+});
+
+function init_signin_resize() {
+    var totalheigth = window.innerHeight;
+    var headheigth = parseInt($(".header").css('height'));
+    var heigth = parseInt(totalheigth) - headheigth;
+    var marginform = parseInt(heigth / 3);
+
+    $(".login-form").css('height', heigth);
+    $(".signin_form").css('margin-top',marginform);
+
+}
 function init_signin() {
     $("#letsgo").unbind('click').click(function () {
         var params=new Array();

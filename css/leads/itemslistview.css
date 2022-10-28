@@ -160,7 +160,8 @@ select.leaditem_filterselect {
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
     clear: both;
-    height: 557px;
+    /* height: 557px; */
+    height: 482px;
     overflow-y: scroll;
     width: 990px;
     overflow-x: hidden;
