@@ -151,6 +151,7 @@ Class Items_model extends My_Model
         $this->load->model('itemimages_model');
 
         foreach ($res as $row) {
+            $item_image = '';
             $item_image_src = $this->itemimages_model->get_item_images($row['item_id'], 1);
             if (count($item_image_src)>0) {
                 $item_image = $item_image_src[0]['item_img_name'];
