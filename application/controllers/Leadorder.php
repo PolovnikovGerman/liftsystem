@@ -2652,7 +2652,6 @@ class Leadorder extends MY_Controller
                                     'message'=>$res['message'],
                                     'order_system'=>$res['order_system_type'],
                                     'locrecid'=>$locking,
-                    );
                                 );
                             } else {
                                 $leadorder=array(

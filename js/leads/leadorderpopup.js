@@ -3546,42 +3546,43 @@ function init_profitedit_call(edit_mode) {
 function init_pochange(edit_mode) {
     // Change Ship Check
     // Add Order Data
-    $("input.amountvalueinpt").unbind('change').change(function(){
-        var newval=$(this).val();
+    $("input.amountvalueinpt").unbind('change').change(function () {
+        var newval = $(this).val();
         show_amountchangesave();
         save_amntchangedetails('amount_sum', newval);
     });
-    $("input.po_shipping").unbind('click').click(function(){
-        var value=0;
-        if ($(this).prop('checked')==true) {
-            value=1;
+    $("input.po_shipping").unbind('click').click(function () {
+        var value = 0;
+        if ($(this).prop('checked') == true) {
+            value = 1;
         }
         show_amountchangesave();
         save_amntchangedetails('is_shipping', value);
     });
-    $("select.amountvendorselect").unbind('change').change(function(){
-        var newval=$(this).val();
+    $("select.amountvendorselect").unbind('change').change(function () {
+        var newval = $(this).val();
         show_amountchangesave();
         save_amntchangedetails('vendor_id', newval);
     })
-    $("select.amountmethodselect").unbind('change').change(function(){
-        var newval=$(this).val();
+    $("select.amountmethodselect").unbind('change').change(function () {
+        var newval = $(this).val();
         show_amountchangesave();
         save_amntchangedetails('method_id', newval);
     });
-    $("textarea#change_comment").unbind('change').change(function(){
-        var newval=$(this).val();
+    $("textarea#change_comment").unbind('change').change(function () {
+        var newval = $(this).val();
         show_amountchangesave();
         save_amntchangedetails('comment', newval);
     });
-    $("textarea#po_comment").unbind('change').change(function(){
-        var newval=$(this).val();
+    $("textarea#po_comment").unbind('change').change(function () {
+        var newval = $(this).val();
         show_amountchangesave();
         save_amntchangedetails('low_profit', newval);
     });
-    $("div.poamount-save").find('img').unbind('click').click(function(){
+    $("div.poamount-save").find('img').unbind('click').click(function () {
         save_amountchange(edit_mode);
     });
+}
 
 /* Save in session AMOUNT DETAILS */
 function save_amntchangedetails(fldname, newval) {
@@ -4788,21 +4789,21 @@ function init_rushpast() {
     $("#rushpast").datepicker({
         autoclose: true,
         todayHighlight: true
-    }).on('changeDate', function (e){
-        var newdate = e.format(0,"yyyy-mm-dd");
-        var params=new Array();
+    }).on('changeDate', function (e) {
+        var newdate = e.format(0, "yyyy-mm-dd");
+        var params = new Array();
         params.push({name: 'newval', value: newdate});
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        var url="/leadorder/change_leadorder_rushpast";
+        var url = "/leadorder/change_leadorder_rushpast";
         $("#loader").show();
-        $.post(url, params, function(response){
-            if (response.errors=='') {
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
                 // $("div.orderdatechange").empty().html(response.data.order_dateview);
                 $("input#loctimeout").val(response.data.loctime);
                 // Change rush options
                 $("div#rushdatalistarea").empty().html(response.data.rushview);
-                if (parseInt(response.data.cntshipadrr)===1) {
-                    $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                if (parseInt(response.data.cntshipadrr) === 1) {
+                    $("div.ship_tax_container2[data-shipadr='" + response.data.shipaddress + "']").empty().html(response.data.shipcost);
                 } else {
                     $("div.multishipadresslist").empty().html(response.data.shipcost);
                 }
@@ -4814,20 +4815,20 @@ function init_rushpast() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');
+        }, 'json');
     });
     $("#arrivedatepast").datepicker({
         autoclose: true,
         todayHighlight: true
-    }).on('changeDate', function (e){
-        var newdate = e.format(0,"yyyy-mm-dd");
-        var params=new Array();
+    }).on('changeDate', function (e) {
+        var newdate = e.format(0, "yyyy-mm-dd");
+        var params = new Array();
         params.push({name: 'newval', value: newdate});
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        var url="/leadorder/change_leadorder_arrivepast";
+        var url = "/leadorder/change_leadorder_arrivepast";
         $("#loader").show();
-        $.post(url, params, function(response){
-            if (response.errors=='') {
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
                 $("input#loctimeout").val(response.data.loctime);
                 // Change rush options
                 $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
@@ -4838,7 +4839,6 @@ function init_rushpast() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');
+        }, 'json');
     });
-
 }
