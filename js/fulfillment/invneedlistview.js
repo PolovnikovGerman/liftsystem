@@ -49,6 +49,7 @@ function init_needinvlist(mainurl) {
             $("div.needinventlist").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
             $("div.needinventlist").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent);
             $("div.needinventlist").find("div.inventorytableright").empty().html(response.data.speccontent);
+            leftmenu_alignment();
             if (parseInt(response.data.margin) >= 0) {
                 $("div.needinventlist").find("div.left_arrow").removeClass('active');
             } else {

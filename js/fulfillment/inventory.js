@@ -67,6 +67,7 @@ function init_inventory_data() {
             $("#printshopinventor").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent).css('visibility','visible');
             $("#printshopinventor").find("div.inventorytableright").empty().html(response.data.speccontent);
             $("div#curinvtotal").empty().html(response.data.total_inventory);
+            leftmenu_alignment();
             if (parseInt(response.data.margin) >= 0) {
                 $("div.left_arrow").removeClass('active');
             } else {

@@ -59,6 +59,7 @@ function init_invsalesreport() {
             $("#inventsalesrep").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
             $("#inventsalesrep").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent);
             $("#inventsalesrep").find("div.inventorytableright").empty().html(response.data.speccontent);
+            leftmenu_alignment();
             if (parseInt(response.data.margin) >= 0) {
                 $("#inventsalesrep").find("div.left_arrow").removeClass('active');
             } else {
