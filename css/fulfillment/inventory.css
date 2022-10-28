@@ -1615,6 +1615,7 @@ input.addlcostinpt {
 .boat_download > .onboatarea {
     overflow: hidden;
     max-width: 240px;
+    margin-bottom: 8px;
 }
 /* Devider */
 .printshopinventor  .inventorytablebody .devider {

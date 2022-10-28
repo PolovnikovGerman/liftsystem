@@ -1,4 +1,5 @@
 function init_leadorderlist() {
+    leftmenu_alignment();
     initLeadOrdListPagination();
     $("select#leadordlistperpage").unbind('change').change(function(){
         initLeadOrdListPagination();
