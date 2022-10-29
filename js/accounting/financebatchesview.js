@@ -66,6 +66,7 @@ function init_batches() {
             $("#batchcalmaxdate").val(response.data.max_date);
             $("#batchcalmindate").val(response.data.min_date);
             /* View full data about customer & note */
+            leftmenu_alignment();
             $("div.batchnoteview").qtip({
                 content: {
                     attr: 'data-content'
