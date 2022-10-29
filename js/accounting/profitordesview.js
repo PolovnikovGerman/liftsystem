@@ -264,6 +264,7 @@ function pageProfitOrederCallback(page_index) {
         $("#loader").css('display','none');
         if (response.errors=='') {
             $("#curpagetab1").val(page_index);
+            leftmenu_alignment();
             $('#tableinfotab1').empty().html(response.data.content);
             try {
                 jQuery.balloon.init();
