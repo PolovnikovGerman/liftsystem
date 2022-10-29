@@ -1241,7 +1241,11 @@ Class Leads_model extends MY_Model
     public function items_list($brand) {
         $this->db->select('item_id, item_name, item_number');
         $this->db->from('v_itemsearch');
-        $this->db->where('(brand=\''.$brand.'\' or brand=\'\')');
+        if ($brand=='SB') {
+            $this->db->where_in('brand',['BT','SB','']);
+        } else {
+            $this->db->where_in('brand',[$brand,'']);
+        }
         $this->db->order_by('item_name');
         $result=$this->db->get()->result_array();
         return $result;
