@@ -268,8 +268,9 @@ class Admin extends MY_Controller
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
                 $menuitem = ifset($postdata, 'menuitem', 0);
+                $brand = ifset($postdata,'brand','');
                 $newval = ifset($postdata,'newval', 0);
-                $res = $this->menuitems_model->update_userpage_permission($session_data, $menuitem, $newval, $session_id);
+                $res = $this->menuitems_model->update_userpage_permission($session_data, $menuitem, $brand, $newval, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
