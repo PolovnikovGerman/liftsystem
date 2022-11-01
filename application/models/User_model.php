@@ -480,7 +480,7 @@ Class User_model extends MY_Model
                 $this->update_iprestrict($userip, $user_id);
                 // Update page permissions
                 $this->load->model('menuitems_model');
-                // $this->menuitems_model->save_userpermissions($webpages, $user_id);
+                $this->menuitems_model->save_userpermissions($webpages, $user_id);
                 foreach ($deleted as $row) {
                     $this->db->where('user_restriction_id', $row);
                     $this->db->delete('user_restrictions');

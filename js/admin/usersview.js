@@ -163,6 +163,7 @@ function user_edit_init() {
 function user_edit_manage() {
     $('input.pageuseraccess').unbind('change').change(function () {
         var menuitem = $(this).data('menuitem');
+        var brand = $(this).data('brand');
         var newval = 0;
         if ($(this).prop('checked')==true) {
             newval=1;
@@ -171,6 +172,7 @@ function user_edit_manage() {
         var url = '/admin/changepagepermission';
         var params = new Array();
         params.push({name: 'menuitem', value: menuitem});
+        params.push({name: 'brand', value: brand});
         params.push({name: 'newval', value: newval});
         params.push({name: 'session', value: $("#session").val()});
         $.post(url, params, function (response) {
