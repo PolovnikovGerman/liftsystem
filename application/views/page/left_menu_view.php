@@ -71,12 +71,12 @@
                 <?php if ($activelnk == $menu['item_link']) { ?>
                     <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SB">
                         <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-black.svg"/></div>
-                        <div class="brandmenutitle active">Finance</div>
+                        <div class="brandmenutitle active">Accounting</div>
                     </div>
                 <?php } else { ?>
                     <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
                         <div class="brandmenuicon"><img src="/img/page_view/icon-calculate-white.svg"/></div>
-                        <div class="brandmenutitle">Finance</div>
+                        <div class="brandmenutitle">Accounting</div>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -184,12 +184,12 @@
                 <?php if ($activelnk == $menu['item_link']) { ?>
                     <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
                         <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-black.svg"/></div>
-                        <div class="brandmenutitle active">Finance</div>
+                        <div class="brandmenutitle active">Accounting</div>
                     </div>
                 <?php } else { ?>
                     <div class="brandmenuitem relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
                         <div class="brandmenuicon"><img src="/img/page_view/icon-calculate-black.svg"/></div>
-                        <div class="brandmenutitle">Finance</div>
+                        <div class="brandmenutitle">Accounting</div>
                     </div>
                 <?php } ?>
             <?php } ?>
