@@ -3,7 +3,8 @@ var timeLapse = 600000;
 $(document).ready(function () {
     clearTimeout(timerId);
     // Calc
-    rebuild_market_offset()
+    rebuild_market_offset();
+    leftmenu_alignment();
     // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     // $(window).resize(function() {

@@ -408,7 +408,7 @@ Class Menuitems_model extends MY_Model
 
     }
 
-    public function get_webpage($pid, $user_id) {
+    public function get_webpage($pid, $user_id, $brand) {
         $system_brands = [];
         $system_brands[] = ['key'=> 'All','label'=>'Univ'];
         $system_brands[] = ['key' => 'SB', 'label'=> 'Stressball'];
@@ -417,77 +417,78 @@ Class Menuitems_model extends MY_Model
         $this->db->from('menu_items wp');
         $this->db->where('wp.parent_id', $pid);
         $this->db->where('wp.item_link is not null');
+        $this->db->where('wp.brand', $brand);
         $this->db->order_by('wp.menu_order');
         $result=$this->db->get()->result_array();
         // , rp.permission_type, rp.brand
         // $this->db->join('(select menu_item_id, permission_type, brand from user_permissions where user_id='.$user_id.') rp','rp.menu_item_id=wp.menu_item_id','left');
         $out = [];
         foreach ($result as $row) {
-            $this->db->select('user_permission_id, menu_item_id, permission_type, brand');
+            $this->db->select('user_permission_id, menu_item_id, permission_type');
             $this->db->from('user_permissions');
             $this->db->where('user_id', $user_id);
             $this->db->where('menu_item_id', $row['menu_item_id']);
-            if ($row['brand_access']=='BRAND') {
-                $permres = $this->db->get()->result_array();
-            } else {
+//            if ($row['brand_access']=='BRAND') {
+//                $permres = $this->db->get()->result_array();
+//            } else {
                 $permres = $this->db->get()->row_array();
-            }
+//            }
 
-            if ($row['brand_access']=='NONE') {
+//            if ($row['brand_access']=='NONE') {
                 $out[] = [
                     'menu_item_id' => $row['menu_item_id'],
                     'item_name' => $row['item_name'],
                     'brand_access' => $row['brand_access'],
                     'permission_type' => isset($permres['permission_type']) ? $permres['permission_type'] : '',
-                    'brand' => NULL,
+                    // 'brand' => NULL,
                 ];
-            } elseif ($row['brand_access']=='SITE') {
-                $out[] = [
-                    'menu_item_id' => $row['menu_item_id'],
-                    'item_name' => $row['item_name'],
-                    'brand_access' => $row['brand_access'],
-                    'permission_type' => isset($permres['permission_type']) ? $permres['permission_type'] : '',
-                    'brand' => isset($permres['brand']) ? $permres['brand'] : NULL,
-                ];
-            } else {
-                $newbrand = [];
-                $idx = 1;
-                foreach ($system_brands as $brow) {
-                    $found = 0;
-                    $pidx = 0;
-                    foreach ($permres as $prow) {
-                        if ($prow['brand']==$brow['key']) {
-                            $found=1;
-                            break;
-                        }
-                        $pidx++;
-                    }
-                    if ($found==1) {
-                        $newbrand[] = [
-                            'user_permission_id' => $permres[$pidx]['user_permission_id'],
-                            'permission_type' => 1,
-                            'brand' => $brow['key'],
-                            'label' => $brow['label'],
-                            'checkval' => 1,
-                        ];
-                    } else {
-                        $newbrand[] = [
-                            'user_permission_id' => $idx * (-1),
-                            'permission_type' => 0,
-                            'brand' => $brow['key'],
-                            'label' => $brow['label'],
-                            'checkval' => 0,
-                        ];
-                    }
-                }
-                $out[] = [
-                    'menu_item_id' => $row['menu_item_id'],
-                    'item_name' => $row['item_name'],
-                    'brand_access' => $row['brand_access'],
-                    'permission_type' => count($newbrand)==0 ? '' : 1,
-                    'brand' => $newbrand,
-                ];
-            }
+//            } elseif ($row['brand_access']=='SITE') {
+//                $out[] = [
+//                    'menu_item_id' => $row['menu_item_id'],
+//                    'item_name' => $row['item_name'],
+//                    'brand_access' => $row['brand_access'],
+//                    'permission_type' => isset($permres['permission_type']) ? $permres['permission_type'] : '',
+//                    'brand' => isset($permres['brand']) ? $permres['brand'] : NULL,
+//                ];
+//            } else {
+//                $newbrand = [];
+//                $idx = 1;
+//                foreach ($system_brands as $brow) {
+//                    $found = 0;
+//                    $pidx = 0;
+//                    foreach ($permres as $prow) {
+//                        if ($prow['brand']==$brow['key']) {
+//                            $found=1;
+//                            break;
+//                        }
+//                        $pidx++;
+//                    }
+//                    if ($found==1) {
+//                        $newbrand[] = [
+//                            'user_permission_id' => $permres[$pidx]['user_permission_id'],
+//                            'permission_type' => 1,
+//                            'brand' => $brow['key'],
+//                            'label' => $brow['label'],
+//                            'checkval' => 1,
+//                        ];
+//                    } else {
+//                        $newbrand[] = [
+//                            'user_permission_id' => $idx * (-1),
+//                            'permission_type' => 0,
+//                            'brand' => $brow['key'],
+//                            'label' => $brow['label'],
+//                            'checkval' => 0,
+//                        ];
+//                    }
+//                }
+//                $out[] = [
+//                    'menu_item_id' => $row['menu_item_id'],
+//                    'item_name' => $row['item_name'],
+//                    'brand_access' => $row['brand_access'],
+//                    'permission_type' => count($newbrand)==0 ? '' : 1,
+//                    'brand' => $newbrand,
+//                ];
+//            }
         }
         return $out;
     }
@@ -639,7 +640,9 @@ Class Menuitems_model extends MY_Model
     }
 
     public function save_userpermissions($webpages, $user_id) {
+
         foreach ($webpages as $row) {
+
             $menuchk = $this->get_menuitem('', $row['id']);
             if ($menuchk['result']==$this->success_result) {
                 $menuitem = $menuchk['menuitem'];

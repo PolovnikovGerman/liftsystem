@@ -38,6 +38,7 @@ function pageUserCallback(page_index) {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div#userinfo").empty().html(response.data.content);
+            leftmenu_alignment();
             $("#loader").hide();
             /* Change view */
             init_usercontent_management();
@@ -147,7 +148,12 @@ function edit_user(user_id) {
 }
 
 function user_edit_init() {
-    $("ul#tree").Tree();
+    $("ul#sbtree").Tree();
+    $("ul#srtree").Tree();
+    $("ul#commontree").Tree();
+    $(".webbrandtitle:first").addClass('active');
+    var menuview=$(".webbrandtitle:first").data('brand');
+    $(".menuitemsview[data-brand='"+menuview+"']").addClass('active');
     $("#saveusr").click(function(){
         save_user();
     });
@@ -340,6 +346,13 @@ function user_edit_manage() {
             }
         },'json');
     });
+    $(".webbrandtitle").unbind('click').click(function () {
+        var brand = $(this).data('brand');
+        $(".webbrandtitle").removeClass('active');
+        $(".menuitemsview").removeClass('active');
+        $(this).addClass('active');
+        $(".menuitemsview[data-brand='"+brand+"']").addClass('active');
+    })
 }
 
 function add_user() {

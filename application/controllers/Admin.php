@@ -30,6 +30,7 @@ class Admin extends MY_Controller
     public function index() {
         $head=[];
         $head['title']='Admin';
+        $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink,'');
 
         $content_options = [];
@@ -52,7 +53,6 @@ class Admin extends MY_Controller
         }
 
         $content_options['menu']=$menu;
-        $content_view = $this->load->view('admin/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][]=array('src'=>'/js/admin/page.js');
         $head['styles'][] = array('style'=> '/css/admin/page.css');
@@ -75,7 +75,12 @@ class Admin extends MY_Controller
             'scripts' => $head['scripts'],
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+
+        $content_view = $this->load->view('admin/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+
         $this->load->view('page/page_template_view', $dat);
     }
 
@@ -160,8 +165,15 @@ class Admin extends MY_Controller
             }
 
             if ($error=='') {
-                $wpages=$this->tree(null, 0, $user_id);
-                $pagepermiss=$this->load->view('admin/webpage_tree_view',array('pages'=>$wpages),TRUE);
+                $sbpages = $this->tree(null, 0, $user_id, 'SB');
+                $srpages = $this->tree(null, 0, $user_id, 'SR');
+                $commonpages = $this->tree(null, 0, $user_id, 'NONE');
+                $wpages=[
+                    'sbpages' => $sbpages,
+                    'srpages' => $srpages,
+                    'commpages' => $commonpages,
+                ];
+                $pagepermiss=$this->load->view('admin/webpage_tree_view', $wpages,TRUE);
                 $iprestricts = $this->load->view('admin/user_iprestrict_view',['userip'=>$userip], TRUE);
                 $pages_list=$this->menuitems_model->get_webpages();
                 $pages_select = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list, 'defpage' => $data['user_page']], TRUE);
@@ -190,8 +202,8 @@ class Admin extends MY_Controller
     }
 
     /* Recursion Function */
-    private function tree($pid, $lvl, $user_id){
-        $wpages=$this->menuitems_model->get_webpage($pid, $user_id);
+    private function tree($pid, $lvl, $user_id, $brand){
+        $wpages=$this->menuitems_model->get_webpage($pid, $user_id, $brand);
         $out=array();
         foreach ($wpages as $wrow){
             $lvl++;
@@ -199,12 +211,12 @@ class Admin extends MY_Controller
             // 'brand_access' => $wrow['brand_access'],
             // 'brand' => $wrow['brand'],
 
-            if ($wrow['brand_access']!=='' && $wrow['brand_access']!=='NONE') {
-                $label.='&nbsp;'.$this->_sitemenu_useraccess($wrow, $user_id);
-            }
+            // if ($wrow['brand_access']!=='' && $wrow['brand_access']!=='NONE') {
+            //    $label.='&nbsp;'.$this->_sitemenu_useraccess($wrow, $user_id);
+            // }
             $id=$wrow['menu_item_id'];
             $value=($wrow['permission_type']=='' ? 0 : $wrow['permission_type']);
-            $elem=$this->tree($id, $lvl--,$user_id);
+            $elem=$this->tree($id, $lvl--,$user_id, $brand);
             if ($elem==array()) {
                 $elem=$wrow['permission_type'];
             }
@@ -213,7 +225,7 @@ class Admin extends MY_Controller
                 'id'=>$id,
                 'element'=>$elem,
                 'value'=>$value,
-                'brand' => $wrow['brand'],
+                // 'brand' => $wrow['brand'],
             );
         }
         return $out;
