@@ -87,11 +87,14 @@ body div {
     margin: 13px 25.5px 12px 25.5px;
 }
 .stressballs_logo.active {
-    margin: 9px 10.5px 4px 10.5px;
+    margin: 9px 10.5px 4.5px 10.5px;
 }
 .content_tab_header.relievers {
-    background: #000048;
+    background: rgba(253, 255, 68, 0.4);
     padding-bottom: 8px;
+}
+.content_tab_header.active.relievers {
+    background: rgba(253, 255, 68, 1);
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
@@ -485,7 +488,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     background: #3736fe;
 }
 .content_tab.relievers {
-    background: #000048;
+    background: #fdff44;
 }
 .stressballssubtitle {
     display: block;
@@ -499,7 +502,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .relieverssubtitle {
     display: block;
-    color: #FFFFFF;
+    color: #000000;
     font-size: 15px;
     font-weight: 600;
     font-style: italic;
@@ -508,7 +511,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     position: relative;
 }
 .brandcontentmenu {
-    margin-top: 25px;
+    margin-top: 24px;
     width: 100%;
 }
 .brandmenuitem {
@@ -524,11 +527,13 @@ ul.mainmenu #collapsed.dropdown-menu li {
     background: #16019e;
 }
 .brandmenuitem.relievers {
-    border: 1px solid #929292;
-    background: #000084;
+    border: 1px solid #000000;
+    background: #ebebeb;
+    color: #00004b;
 }
 .brandmenuitem.relievers:hover {
-    background: #2537ff;
+    background: #00004b;
+    color: #ffffff;
 }
 .brandmenuitemactive {
     background: #ffffff;
@@ -537,6 +542,13 @@ ul.mainmenu #collapsed.dropdown-menu li {
     margin: 8px 0 8px 8px;
     /* height: 35px; */
     height: 25px;
+}
+.brandmenuitemactive.relievers {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    position: relative;
+    width: 119px;
 }
 .brandmenuicon {
     width: 16px;
@@ -577,7 +589,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     background: #3736fe;
 }
 .maincontentmenuarea.relieverstab {
-    background: #000048;
+    background: #fdff44;
 }
 .maincontentmenuarea.adminmenu {
     /* background: #ff1c1c; */
@@ -606,6 +618,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
     font-size: 19px;
     color: #ffffff;
     margin-top: 3px;
+}
+.relieverstab .maincontentmenu > .title {
+    color: #00004b;
 }
 .maincontentmenu > .subtitle, .maincontentmenu > .subtitlelink {
     width: 100%;
@@ -638,6 +653,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     border-top-left-radius: 5px;
     margin-top: 9px;
     color: #f7f4f4;
+    position: relative;
 }
 .maincontentmenu_item.oldver {
     padding: 0 13px 0 1px;
@@ -658,7 +674,11 @@ ul.mainmenu #collapsed.dropdown-menu li {
 .maincontent_view {
     background: #ffffff;
     width: 100%;
-    min-height: 597px;
+    min-height: 598px;
+    margin-top: -1px;
+}
+.relieverstab .maincontent_view {
+    border: 1px solid #000000;
 }
 .databrands {
     float: right!important;
@@ -801,7 +821,7 @@ div.oldvesionlabel {
     background-color: #b53535;
     width: 12px;
     margin-top: 0px;
-    height: 24px;
+    height: 23px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
     background: #3636ff;

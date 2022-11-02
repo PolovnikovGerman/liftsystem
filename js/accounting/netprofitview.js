@@ -26,6 +26,7 @@ function init_netprofit() {
     init_netprofitpage();
     init_expensive_help();
     rebuild_w9table();
+    leftmenu_alignment();
     // Init management of Chart Area
     $("select.weektotalsviewtype").unbind('change').change(function(){
         var showdetail=$(this).val();
@@ -87,7 +88,6 @@ function init_netprofit() {
 }
 
 function init_netprofitpage() {
-    console.log('SHOW CONTENT');
     var url='/accounting/netprofitdat';
     var radio = $("div.radio_button input:checked").val();
     var params=new Array();

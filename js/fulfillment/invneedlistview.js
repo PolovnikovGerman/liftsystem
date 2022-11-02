@@ -7,6 +7,7 @@ $(document).ready(function(){
 
 function init_needinvlist_content(mainurl) {
     init_needinvlist(mainurl);
+    leftmenu_alignment();
     $("#inventoryneedlistbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
         $("#inventoryneedlistbrand").val(brand);
@@ -49,7 +50,6 @@ function init_needinvlist(mainurl) {
             $("div.needinventlist").find("div.inventorytableleft").empty().html(response.data.totalinvcontent);
             $("div.needinventlist").find("div.inventoryonboatarea").empty().html(response.data.onboatcontent);
             $("div.needinventlist").find("div.inventorytableright").empty().html(response.data.speccontent);
-            leftmenu_alignment();
             if (parseInt(response.data.margin) >= 0) {
                 $("div.needinventlist").find("div.left_arrow").removeClass('active');
             } else {

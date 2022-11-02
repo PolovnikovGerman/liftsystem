@@ -175,6 +175,7 @@ function pageWhitelistCallback(page_index) {
         if (response.errors=='') {
             $("#loader").hide();
             $("div.whitelist_parselog_data").empty().html(response.data.content);
+            leftmenu_alignment();
             init_parsedlog_content();
         } else {
             $("#loader").hide();

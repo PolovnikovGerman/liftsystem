@@ -2,6 +2,7 @@ var timerId;
 var timeout=10000;
 var timeoutlock=60000;
 function init_ordersviewdata() {
+    leftmenu_alignment();
     initLeadOrderPagination();
     $('select.usrreplica').unbind('change').change(function(){
         search_leadorders();
