@@ -1,3 +1,4 @@
+<input type="hidden" id="salestypereportbrand" value="<?=$brand?>"/>
 <div class="salestype_viewarea">
     <?php if (!empty($customs_view)) { ?>
         <div class="salestype_dataarea">
@@ -48,5 +49,3 @@
         </div>
     <?php } ?>
 </div>
-<input type="hidden" id="salestypereportbrand" value="<?=$brand?>"/>
-<?=$top_menu?>

@@ -1,5 +1,5 @@
 html {
-    background-color: #dfdfdf;
+    background-color: #252525;
     font-family: arial, verdana, sans-serif;
 }
 body {
@@ -63,35 +63,47 @@ body div {
     width: 100%;
 }
 .mainheader {
-    /* width: calc(100% - 10px); */
     width: 100%;
-    /* height: 66px;
-    background: #252525;
-    padding: 7px 5px; */
-    /* height: 73px; */
     float: left;
     background: #252525;
-    padding: 7px 10px;
+    padding: 7px 10px 0 0;
 }
 .mainheader div {
     float: left;
     line-height: initial;
 }
-.brands-logos {
-    /* width: 282px; */
+.content_tab_header {
+    cursor: pointer;
+    width: 187px;
 }
-.brands-logos > .bluetrack_logo {
-    height: 32px;
-    width: 107px;
+.content_tab_header.stressballs {
+    background: #3537fc;
 }
-.brands-logos > .stressballs_logo {
-    height: 32px;
-    width: 119px;
+.content_tab_header.stressballs.active {
+    background: #3736fe;
+    position: relative;
 }
-.brands-logos > .lift_logo {
-    height: 17px;
-    padding-top: 15px;
-    width: 49px;
+.stressballs_logo {
+    margin: 13px 25.5px 12px 25.5px;
+}
+.stressballs_logo.active {
+    margin: 9px 10.5px 4.5px 10.5px;
+}
+.content_tab_header.relievers {
+    background: rgba(253, 255, 68, 0.4);
+    padding-bottom: 8px;
+}
+.content_tab_header.active.relievers {
+    background: rgba(253, 255, 68, 1);
+}
+.relievers_logo {
+    margin: 5px 20.5px 0 20.5px;
+}
+.relievers_logo.active {
+    margin: 5px 8.5px 0 8.5px;
+}
+.mainsiteheader {
+    width: calc(100% - 390px);
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -127,8 +139,17 @@ body div {
 }
 .period_analitic_info .param_value.money {
     min-width: 45px;
-    border-left: 1px solid #9b9b9b;
     padding-left: 7px;
+    cursor: pointer;
+}
+.period_analitic_info .allbrandstotalweek {
+    border-left: 1px solid #9b9b9b;
+    font-weight: bold;
+    font-size: 13px;
+    color: #55aeff;
+    text-transform: uppercase;
+    padding-left: 5px;
+    padding-right: 7px;
     cursor: pointer;
 }
 .publicsearch {
@@ -237,6 +258,7 @@ body div {
     float: right!important;
     cursor: pointer;
     padding: 0 6px;
+    margin-top: 2.5px;
 }
 .infoalerts:hover {
     background: #000080;
@@ -438,19 +460,136 @@ ul.mainmenu #collapsed.dropdown-menu li {
     float: left;
     width: calc(100% - 25px);
 }
+.container-fluid {
+    padding-left: 0!important;
+    padding-right: 0!important;
+}
 .maincontent {
     width: 100%;
-    background: #000000;
+    background: #252525;
     float: left;
 }
 .maincontent div {
     float: left;
     line-height: initial;
 }
-.maincontentmenuarea {
+.leftmenuarea {
+    width: 126px;
+}
+.content_tab {
+    display: none;
     width: 100%;
-    padding: 10px;
-    margin-top: -20px;
+    min-height: 650px;
+}
+.content_tab.active {
+    display: block;
+}
+.content_tab.stressballs {
+    background: #3736fe;
+}
+.content_tab.relievers {
+    background: #fdff44;
+}
+.stressballssubtitle {
+    display: block;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 11px;
+    margin-top: -7px;
+    position: relative;
+}
+.relieverssubtitle {
+    display: block;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 11px;
+    margin-top: -7px;
+    position: relative;
+}
+.brandcontentmenu {
+    margin-top: 24px;
+    width: 100%;
+}
+.brandmenuitem {
+    margin: 8px;
+    border: 1px solid #000000;
+    height: 25px;
+    background: #5856ff;
+    color: #ffffff;
+    width: 114px;
+    cursor: pointer;
+}
+.brandmenuitem:hover {
+    background: #16019e;
+}
+.brandmenuitem.relievers {
+    border: 1px solid #000000;
+    background: #ebebeb;
+    color: #00004b;
+}
+.brandmenuitem.relievers:hover {
+    background: #00004b;
+    color: #ffffff;
+}
+.brandmenuitemactive {
+    background: #ffffff;
+    color: #000000;
+    width: 118px;
+    margin: 8px 0 8px 8px;
+    /* height: 35px; */
+    height: 25px;
+}
+.brandmenuitemactive.relievers {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    position: relative;
+    width: 119px;
+}
+.brandmenuicon {
+    width: 16px;
+    margin: 2px 6px;
+}
+.brandmenuicon.active {
+    /* margin: 9px 6px; */
+}
+.brandmenuicon img {
+    width: 100%;
+    height: auto;
+}
+.brandmenutitle {
+    font-size: 15px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px!important;
+}
+.brandmenutitle.active {
+    /* height: 35px;
+    line-height: 35px!important;
+    font-size: 18px;
+    /* text-transform: uppercase; */
+}
+.branmenudevider {
+    border-bottom: 1.5px solid #000000;
+    margin: 18px 8px;
+    width: 123px;
+}
+.branmenudevider.relievers {
+    border-bottom: 1.5px solid #929292;
+}
+.maincontentmenuarea {
+    width: calc(100% - 126px);
+    padding: 10px 10px 10px 0;
+}
+.maincontentmenuarea.stresballstab {
+    background: #3736fe;
+}
+.maincontentmenuarea.relieverstab {
+    background: #fdff44;
 }
 .maincontentmenuarea.adminmenu {
     /* background: #ff1c1c; */
@@ -480,6 +619,22 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #ffffff;
     margin-top: 3px;
 }
+.relieverstab .maincontentmenu > .title {
+    color: #00004b;
+}
+.maincontentmenu > .subtitle, .maincontentmenu > .subtitlelink {
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 6px;
+    position: relative;
+    margin-left: 14px;
+    color: #5554ff;
+    height: 24px;
+}
+.maincontentmenu > .subtitlelink {
+    cursor: pointer;
+}
 .maincontentmenu_item {
     background: #5a5aff;
     margin-top: 5px;
@@ -498,6 +653,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     border-top-left-radius: 5px;
     margin-top: 9px;
     color: #f7f4f4;
+    position: relative;
 }
 .maincontentmenu_item.oldver {
     padding: 0 13px 0 1px;
@@ -511,12 +667,18 @@ ul.mainmenu #collapsed.dropdown-menu li {
     height: 26px;
     margin-top: 7px;
 }
-.maincontent_view {
-    background: #ffffff;
-    /* margin: 15px;
-    width: calc(100% - 30px);*/
+.maincontentarea {
     width: 100%;
     min-height: 640px;
+}
+.maincontent_view {
+    background: #ffffff;
+    width: 100%;
+    min-height: 598px;
+    margin-top: -1px;
+}
+.relieverstab .maincontent_view {
+    border: 1px solid #000000;
 }
 .databrands {
     float: right!important;
@@ -620,6 +782,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
 .left-box {
     /* float: left; */
     /* width: 70%; */
+    margin-left: 12px;
 }
 .right-box {
     float: right!important;
@@ -658,7 +821,7 @@ div.oldvesionlabel {
     background-color: #b53535;
     width: 12px;
     margin-top: 0px;
-    height: 24px;
+    height: 23px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
     background: #3636ff;
@@ -1031,4 +1194,34 @@ div.oldvesionlabel {
 }
 .color_red, .color_red2 {
     color: #FF0000;
+}
+/* Week totals popup */
+.brantotalarea {
+    display: inline-table;
+    width: 240px;
+    background: #000000;
+    border: 1px solid #adadad;
+    padding: 7px;
+    margin-top: -10px;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -11px;
+}
+.brantotalarea .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
 }

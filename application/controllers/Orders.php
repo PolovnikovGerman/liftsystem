@@ -29,7 +29,8 @@ class Orders extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Orders';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         $search = usersession('liftsearch');
@@ -39,50 +40,49 @@ class Orders extends MY_Controller
                 // Orders
                 $head['styles'][]=array('style'=>'/css/orders/ordersview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/ordersview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['ordersview'] = $this->_prepare_orders_view($brand, $top_menu, $search);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['ordersview'] = $this->_prepare_orders_view($brand, $search);
             } elseif ($row['item_link']=='#orderlistsview') {
                 $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand);
             } elseif ($row['item_link']=='#onlineordersview') {
                 $head['styles'][]=array('style'=>'/css/orders/onlineorders.css');
                 $head['scripts'][]=array('src'=>'/js/orders/onlineorders.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand);
             }
         }
 
         $content_options['menu'] = $menu;
-        $content_view = $this->load->view('orders/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/orders/page.js');
         $head['styles'][] = array('style' => '/css/orders/orderspage.css');
@@ -114,6 +114,9 @@ class Orders extends MY_Controller
             'scripts' => $head['scripts'],
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('orders/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -439,10 +442,9 @@ class Orders extends MY_Controller
         return $out;
     }
 
-    private function _prepare_orders_view($brand, $top_menu, $liftsearch) {
+    private function _prepare_orders_view($brand, $liftsearch) {
         $datqs=[
             'brand' => $brand,
-            'top_menu' => $top_menu,
             'perpage' => $this->config->item('perpage_orders'),
             'activesearch' => '',
         ];
@@ -450,17 +452,16 @@ class Orders extends MY_Controller
         $users=$this->user_model->get_user_leadreplicas();
 
         $options=[];
-        // $ordertemplate=usersession('searchordertemplate');
+
         $ordertemplate=$liftsearch;
         if (!empty($ordertemplate)) {
             // Check, that such order exits and # of orders==1
-            $res=$this->orders_model->get_orderbynum($ordertemplate);
+            $res=$this->orders_model->get_orderbynum($ordertemplate, $brand);
             if ($res['detail']!=0) {
                 $datqs['activesearch']=$res['detail'];
             }
             $options['search']=strtoupper($ordertemplate);
             $datqs['search']=$ordertemplate;
-            // usersession('searchordertemplate',NULL);
         } else {
             $datqs['search']='';
         }
@@ -475,10 +476,9 @@ class Orders extends MY_Controller
         return  $this->load->view('orders/orders_head_view',$datqs,TRUE);
     }
 
-    private function _prepare_orderlist_view($brand, $top_menu) {
+    private function _prepare_orderlist_view($brand) {
         $datqs=[
             'brand' => $brand,
-            'top_menu' => $top_menu,
             'perpage' => [30, 60, 90, 120],
             'order_by' => 'order_id',
             'direction' => 'desc',
@@ -496,15 +496,13 @@ class Orders extends MY_Controller
         return $this->load->view('orders/orderlist_head_view',$datqs,TRUE);
     }
 
-    private function _prepare_onlineorders($brand, $top_menu) {
+    private function _prepare_onlineorders($brand) {
         $datl=[
             'order_by' => 'order_id',
             'direction' => 'desc',
             'cur_page' => 0,
             'perpage' => 250,
             'brand' => $brand,
-            'top_menu' => $top_menu,
-
         ];
         $this->load->model('orders_model');
         $datl['total_rec']=$this->orders_model->count_onlineorders($brand);

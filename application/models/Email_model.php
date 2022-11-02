@@ -161,7 +161,11 @@ class Email_model extends My_Model
         $this->db->from('ts_emails');
         $this->db->where("email_type", $type);
         if ($brand!=='ALL') {
-            $this->db->where('brand',$brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$brand);
+            }
         }
         // $this->db->where('email_websys', $this->websys);
         if ($status != -1) {
@@ -188,6 +192,11 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
+            if ($options=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
         }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
@@ -210,6 +219,12 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
+
         }
         $this->db->order_by('email_id');
         $res = $this->db->get()->result_array();
@@ -227,7 +242,11 @@ class Email_model extends My_Model
         $this->db->select('email_type, email_status, count(*) as cnt_rec', FALSE);
         $this->db->from('ts_emails');
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$brand);
+            }
         }
         // $this->db->where('email_websys', $this->websys);
         $this->db->group_by('email_type, email_status');
@@ -264,7 +283,11 @@ class Email_model extends My_Model
             }
         }
         if ($options['brand']!=='ALL') {
-            $this->db->where('brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['BT','SB']);
+            } else {
+                $this->db->where('brand',$options['brand']);
+            }
         }
         $this->db->order_by($order_by, $direct);
         $this->db->limit($limit, $offset);

@@ -222,6 +222,38 @@ textarea.emailsignature {
     width: 518px;
     padding: 7px;
 }
+.permissioninfo div {
+    float: left;
+}
+.webbrandtitle {
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 7px;
+    padding: 0 6px;
+    line-height: 18px!important;
+    height: 18px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.webbrandtitle.active {
+    font-weight: 600;
+}
+.menuitemsview {
+    border: 1px solid;
+    font-size: 12px!important;
+    padding: 8px;
+    display: none;
+    width: 420px;
+}
+.menuitemsview.active {
+    display: block;
+}
+.jquery-tree-controls {
+    width: 100%;
+}
 span.usrpermissionlabel {
     float: left;
     margin-right: 4px;

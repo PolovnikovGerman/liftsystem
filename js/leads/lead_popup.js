@@ -153,11 +153,14 @@ function init_leadpopupedit() {
             delete_lead_attachment(attachid);
         }
     });
+
     if ($("#addleadattachment").length > 0) {
         var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
             '+ Add Attachment</div>' +
             '<ul class="qq-upload-list"></ul>' +
+            '<ul class="qq-upload-drop-area"></ul>'+
             '<div class="clear"></div></div>';
+
 
         var uploader = new qq.FileUploader({
             element: document.getElementById('addleadattachment'),
@@ -169,7 +172,8 @@ function init_leadpopupedit() {
             allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
-                    $("li.qq-upload-success").hide();
+                    // $("li.qq-upload-success").hide();
+                    $("ul.qq-upload-list").css('display','none');
                     var params=new Array();
                     params.push({name: 'session_id', value: $("#session_attach").val()});
                     params.push({name: 'newval', value: responseJSON.filename});

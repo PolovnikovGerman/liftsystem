@@ -3,6 +3,7 @@
 <input type="hidden" id="directcoupon" value="<?= $direction ?>"/>
 <input type="hidden" id="curcoupon" value="<?= $cur_page ?>"/>
 <input type="hidden" id="perpagecoupon" value="<?=$perpage?>"/>
+<input type="hidden" id="couponmanagebrand" value="<?=$brand?>"/>
 <div class="coupons_content">
     <div class="coupons_header">
         <div class="addnewcoupon">&nbsp;</div>
@@ -20,8 +21,4 @@
         <div class="coupon_manage">Edit / Delete</div>
     </div>
     <div class="coupondata_content">&nbsp;</div>
-</div>
-<input type="hidden" id="couponmanagebrand" value="<?=$brand?>"/>
-<div id="couponmanagebrandmenu">
-    <?=$top_menu?>
 </div>

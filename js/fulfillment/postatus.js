@@ -83,6 +83,7 @@ function pageStatusCallback(page_index) {
             $("#loader").css('display','none');
             $("div#statustableinfo").empty().html(response.data.content);
             // init_fulfillmentview();
+            leftmenu_alignment();
         } else {
             $("#loader").css('display','none');
             show_error(response);

@@ -1,3 +1,4 @@
+<input type="hidden" id="searchipaddrbrand" value="<?=$brand?>"/>
 <div class="searchipaddres_content">
     <div class="searchipaddres_head">
         <div class="select_timesearsch">
@@ -22,9 +23,5 @@
 
         </div>
     </div>
-</div>
-<input type="hidden" id="searchipaddrbrand" value="<?=$brand?>"/>
-<div id="searchipaddrmenu">
-    <?=$top_menu?>
 </div>
 

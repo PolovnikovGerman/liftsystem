@@ -3,16 +3,66 @@ var timeLapse = 600000;
 $(document).ready(function () {
     clearTimeout(timerId);
     // Calc
-    rebuild_market_offset()
+    rebuild_market_offset();
+    leftmenu_alignment();
+    $(".brandmenuitem.relievers").hover(
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        },
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        }
+    );
+    $("div.rowdata").hover(
+        function(){
+            rowid=$(this).data('orderid');
+            $("div.rowdata[data-orderid="+rowid+"]").addClass("current_row");
+        },
+        function(){
+            rowid=$(this).data('orderid');
+            $("div.rowdata[data-orderid="+rowid+"]").removeClass("current_row");
+        }
+    );
+
     // autocollapse(0); // when document first loads
     // $(window).on('resize', autocollapse); // when window is resized
     // $(window).resize(function() {
     //     autocollapse(1);
     // });
-    $(".menubutton").unbind('click').click(function () {
-        var url=$(this).data('menulink');
-        window.location.href=url;
+    // $(".menubutton").unbind('click').click(function () {
+    //     var url=$(this).data('menulink');
+    //     window.location.href=url;
+    // });
+    $(".brandmenuitem").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'url', value: $(this).data('url')});
+        params.push({name: 'brand', value: $(this).data('brand')});
+        var url='/welcome/brandnavigate';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                window.location.href=response.data.url;
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
+    $(".content_tab_header").unbind('click').click(function () {
+        if ($(this).hasClass('active')) {
+        } else {
+            var params = new Array();
+            params.push({name: 'brand', value: $(this).data('brand')});
+            var url='/welcome/brandshow';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    window.location.href='/';
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
     $("#signout").unbind('click').click(function () {
         if (confirm('You want to sign out?')==true) {
             window.location.href='/login/logout';
@@ -79,6 +129,36 @@ $(document).ready(function () {
     })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
+    $("div.allbrandstotalweek").hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('viewsrc'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'bottom',
+                    html: true
+                }).popover('show');
+            });
+        }
+        , function(){
+            $(this).popover('hide');
+        }
+    );
+    $('.period_analitic_info').find('div.period_name').hover(
+        function(){
+            var e=$(this);
+            $.get(e.data('viewsrc'),function(d) {
+                e.popover({
+                    content: d,
+                    placement: 'bottom',
+                    html: true
+                }).popover('show');
+            });
+        }
+        , function(){
+            $(this).popover('hide');
+        }
+    );
 });
 
 $(window).resize(function() {
@@ -205,4 +285,11 @@ function ordertotalsparse() {
             show_error(response);
         }
     },'json');
+}
+
+function leftmenu_alignment() {
+    var mainheight = $("div.maincontentmenuarea").css('height');
+    console.log('Main Height '+mainheight);
+    $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
+
 }

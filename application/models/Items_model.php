@@ -10,41 +10,33 @@ Class Items_model extends My_Model
         parent::__construct();
     }
 
-    public function count_searchres($options) {
-        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+    public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
+        $this->db->select('count(i.item_id) as cnt',FALSE);
         $this->db->from('sb_items i');
-        if (ifset($options, 'vendor_id','')!=='') {
+        if ($vendor_id) {
             $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
-            $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
+            $this->db->where('v.vendor_item_vendor',$vendor_id);
         }
-        if ($options['brand']!=='ALL') {
-            $this->db->where('i.brand', $options['brand']);
+        if ($brand!=='ALL') {
+            if ($brand=='SB') {
+                $this->db->where_in('i.brand', ['SB','BT']);
+            } else {
+                $this->db->where('i.brand', $brand);
+            }
         }
-        if (ifset($options, 'search','')!=='') {
-            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
+        if (!empty($search)) {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
             $this->db->where($where);
         }
-        if (ifset($options,'itemstatus',0)!=0) {
-            if ($options['itemstatus']==1) {
+        if ($itemstatus!=0) {
+            if ($itemstatus==1) {
                 $this->db->where('i.item_active',1);
             } else {
                 $this->db->where('i.item_active',0);
             }
         }
-        if (ifset($options,'category',0) > 0) {
-            $this->db->where('i.category_id',$options['category']);
-        }
-        if (ifset($options,'missinfo','0')!=0) {
-            $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-            $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
-            if ($options['missinfo']==1) {
-                $this->db->having('missings=0');
-            } else {
-                $this->db->having('missings>0');
-            }
-        }
-        $res = $this->db->get()->result_array();
-        return count($res);
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
     }
 
     public function update_imprint_update($data) {
@@ -116,7 +108,11 @@ Class Items_model extends My_Model
             $this->db->like('upper(concat(i.item_number, i.item_name))', strtoupper($options['search']));
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('i.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('i.brand', ['BT','SB']);
+            } else {
+                $this->db->where('i.brand', $options['brand']);
+            }
         }
         $res = $this->db->get()->row_array();
         return $res['cnt'];
@@ -135,7 +131,12 @@ Class Items_model extends My_Model
             $this->db->like('upper(concat(i.item_number, i.item_name))', strtoupper($options['search']));
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('i.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('i.brand', ['BT','SB']);
+            } else {
+                $this->db->where('i.brand', $options['brand']);
+            }
+
         }
         $this->db->order_by('i.item_sequence');
         if (isset($options['limit'])) {
@@ -150,6 +151,7 @@ Class Items_model extends My_Model
         $this->load->model('itemimages_model');
 
         foreach ($res as $row) {
+            $item_image = '';
             $item_image_src = $this->itemimages_model->get_item_images($row['item_id'], 1);
             if (count($item_image_src)>0) {
                 $item_image = $item_image_src[0]['item_img_name'];
@@ -236,7 +238,11 @@ Class Items_model extends My_Model
         foreach ($options as $key=>$value) {
             if ($key=='brand') {
                 if ($value!=='ALL') {
-                    $this->db->where('i.brand', $value);
+                    if ($value=='SB') {
+                        $this->db->where_in('i.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('i.brand', $value);
+                    }
                 }
             } else {
                 $this->db->where($key,$value);
@@ -327,7 +333,11 @@ Class Items_model extends My_Model
         foreach ($options as $key=>$val) {
             if ($key=='brand') {
                 if ($val!=='ALL') {
-                    $this->db->where('i.brand', $val);
+                    if ($val=='SB') {
+                        $this->db->where_in('i.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('i.brand', $val);
+                    }
                 }
             } else {
                 $this->db->where($key,$val);
@@ -435,7 +445,11 @@ Class Items_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('sb_items itm','itm.item_id=i.item_id');
-            $this->db->where('itm.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('itm.brand', ['BT','SB']);
+            } else {
+                $this->db->where('itm.brand', $options['brand']);
+            }
         }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
@@ -498,7 +512,11 @@ Class Items_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('sb_items i','i.item_id=v_stressprofits.item_id');
-            $this->db->where('i.brand',$options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('i.brand',['BT','SB']);
+            } else {
+                $this->db->where('i.brand',$options['brand']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
@@ -608,7 +626,11 @@ Class Items_model extends My_Model
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
         $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
-            $this->db->where('i.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('i.brand', ['BT','SB']);
+            } else {
+                $this->db->where('i.brand', $options['brand']);
+            }
         }
         if (ifset($options, 'search', '')!=='') {
             $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";

@@ -54,8 +54,8 @@ class Leads extends My_Controller {
     function index() {
         $head = [];
         $head['title'] = 'Leads';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
-
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
@@ -64,105 +64,104 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
                 $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['leadsview'] = $this->_prepare_leadsview($brand, $top_menu);
+                // $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+                // if (count($brands)==0) {
+                //    redirect('/');
+                //}
+                // $brand = $brands[0]['brand'];
+                // $top_options = [
+                //    'brands' => $brands,
+                //    'active' => $brand,
+                // ];
+                // $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#itemslistview') {
                 $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['itemslistview'] = $this->_prepare_itemslistview($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['itemslistview'] = $this->_prepare_itemslistview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#onlinequotesview') {
                 $head['styles'][]=array('style'=>'/css/leads/onlinequotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/onlinequotes.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#proofrequestsview') {
                 $head['styles'][] = array('style' => '/css/art/requestlist.css');
                 $head['scripts'][] = array('src' => '/js/art/requestlist.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#questionsview') {
                 $head['styles'][] = array('style' => '/css/leads/questionsview.css');
                 $head['scripts'][] = array('src' => '/js/leads/questionsview.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands) == 0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['questionsview'] = $this->_prepare_questionslist_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands) == 0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['questionsview'] = $this->_prepare_questionslist_view($brand); // $brand, $top_menu
                 // Custom shaped
             } elseif ($row['item_link']=='#customsbform') {
                 $head['styles'][] = array('style' => '/css/leads/customsbform.css');
                 $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands) == 0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands) == 0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
                 $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
-                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                if (count($brands)==0) {
-                    redirect('/');
-                }
-                $brand = $brands[0]['brand'];
-                $top_options = [
-                    'brands' => $brands,
-                    'active' => $brand,
-                ];
-                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-                $content_options['checkoutattemptsview'] = $this->_prepare_attempts_view($brand, $top_menu);
+//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
+//                if (count($brands)==0) {
+//                    redirect('/');
+//                }
+//                $brand = $brands[0]['brand'];
+//                $top_options = [
+//                    'brands' => $brands,
+//                    'active' => $brand,
+//                ];
+//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                $content_options['checkoutattemptsview'] = $this->_prepare_attempts_view($brand); // $brand, $top_menu
             }
         }
-        $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
         // Add main page management
         $head['scripts'][] = array('src' => '/js/leads/page.js');
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
@@ -196,6 +195,9 @@ class Leads extends My_Controller {
             'scripts' => $head['scripts'],
         ];
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
     }
@@ -316,7 +318,6 @@ class Leads extends My_Controller {
                 $mdata['content']=$this->load->view('leads/leads_closedata_view', $out_options, TRUE);
             }
             $this->ajaxResponse($mdata,$error);
-
         }
         show_404();
     }
@@ -1197,7 +1198,7 @@ class Leads extends My_Controller {
     }
 
 
-    private function _prepare_leadsview($brand, $top_menu) {
+    private function _prepare_leadsview($brand) {
         $ldat=array();
         $this->load->model('leads_model');
         /* Prepare Right part */
@@ -1207,6 +1208,7 @@ class Leads extends My_Controller {
         $total_options=array(
             'enddate'=>$dateend,
             'user_id'=>$this->USR_ID,
+            'brand' => $brand,
         );
         $rdattop=$this->leads_model->count_closed_totals($total_options);
         $rdat['prev']=$rdattop['prev'];
@@ -1226,6 +1228,7 @@ class Leads extends My_Controller {
         $options=array(
             'lead_type'=>1,
             'usrrepl'=>  $this->USR_ID,
+            'brand' => $brand,
         );
 
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
@@ -1234,15 +1237,14 @@ class Leads extends My_Controller {
         $this->load->model('orders_model');
         $ldat['totalorders']=$this->orders_model->orders_total_year(date('Y'));
         $ldat['brand'] = $brand;
-        $ldat['top_menu'] = $top_menu;
+        // $ldat['top_menu'] = $top_menu;
         $content=$this->load->view('leads/leadtab_view',$ldat,TRUE);
         return $content;
     }
 
-    private function _prepare_itemslistview($brand, $top_menu) {
+    private function _prepare_itemslistview($brand) {
         $datqs=array(
             'brand' => $brand,
-            'top_menu' => $top_menu,
         );
         $this->load->model('vendors_model');
         $this->load->model('items_model');
@@ -1264,8 +1266,7 @@ class Leads extends My_Controller {
         return $content;
     }
 
-    private function _prepare_onlinequotesview($brand, $top_menu) {
-        $datqs=array();
+    private function _prepare_onlinequotesview($brand) {
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
@@ -1280,7 +1281,7 @@ class Leads extends My_Controller {
         return $content;
     }
 
-    private function _prepare_requestlist_view($brand, $top_menu) {
+    private function _prepare_requestlist_view($brand) {
         $datqs = [
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
@@ -1289,7 +1290,6 @@ class Leads extends My_Controller {
             'assign' => '',
             'hideart' => 0,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
 
         $search=array('assign'=>'','hideart'=>0, 'brand' => $brand);
@@ -1300,14 +1300,13 @@ class Leads extends My_Controller {
 
     }
 
-    private function _prepare_questionslist_view($brand, $top_menu) {
+    private function _prepare_questionslist_view($brand) {
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
             'direction' => 'desc',
             'cur_page' => 0,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         // $datqs['search_form']=$this->load->view('questions/search_form_view',array(),TRUE);
 
@@ -1320,23 +1319,21 @@ class Leads extends My_Controller {
 
     }
 
-    private function _prepare_attempts_view($brand, $top_menu) {
+    private function _prepare_attempts_view($brand) {
         $options = [
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
         $content=$this->load->view('leads/order_attempts_view', $options,TRUE);
         return $content;
     }
 
-    private function _prepare_customsbform_view($brand, $top_menu) {
+    private function _prepare_customsbform_view($brand) {
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'date_add',
             'direction' => 'desc',
             'cur_page' => 0,
             'brand' => $brand,
-            'top_menu' => $top_menu,
         ];
 
         $search=array('assign'=>1,'brand'=>$brand);

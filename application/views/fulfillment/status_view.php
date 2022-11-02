@@ -3,6 +3,7 @@
 <input type="hidden" id="directionproj" value="<?=$direc?>"/>
 <input type="hidden" id="totalproj" value="<?=$total?>"/>
 <input type="hidden" id="curpageproj" value="<?=$curpage;?>"/>
+<input type="hidden" id="postatusviewbrand" value="<?=$brand?>"/>
 <div class="postatuses_content">
     <div class="monitor-head inner">
         <div class="adminsearchform">
@@ -51,8 +52,4 @@
     <div class="table-status">
         <div class="content-status-table" id="statustableinfo"></div>
     </div>
-</div>
-<input type="hidden" id="postatusviewbrand" value="<?=$brand?>"/>
-<div id="postatusviewbrandmenu">
-    <?=$top_menu?>
 </div>

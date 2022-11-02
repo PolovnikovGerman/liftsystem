@@ -9,6 +9,7 @@ $(document).ready(function(){
 
 function init_inventory_content() {
     init_inventory_data();
+    leftmenu_alignment();
     var vendor = $("#printshopinventbrand").val();
     if (vendor!=='ALL') {
         $("#printshopinventor").find("span.add_onboat").css('visibility','visible');

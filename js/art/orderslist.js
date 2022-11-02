@@ -1,4 +1,5 @@
 function init_orders() {
+    leftmenu_alignment();
     $("select#artorder_options").unbind('change').change(function(){
         search_artorderdata();
     })
@@ -95,6 +96,7 @@ function pageArtOrderCallback(page_index){
         if (response.errors=='') {
             $("#loader").hide();
             $('div.tabledata').empty().html(response.data.content);
+            leftmenu_alignment();
             $("#artordcurpage").val(page_index);
             artorders_view_init();
         } else {

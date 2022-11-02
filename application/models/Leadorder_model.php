@@ -145,7 +145,11 @@ Class Leadorder_model extends My_Model {
             $this->db->where('o.is_canceled',0);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
@@ -860,6 +864,9 @@ Class Leadorder_model extends My_Model {
                 if (!empty($shipping['rush_idx'])) {
                     $newshipcalc = 1;
                 }
+            }
+            if ($entity=='artwork' && $fldname=='artwork_blank') {
+                $leadorder['order']['order_blank'] = $newval;
             }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
@@ -5287,7 +5294,11 @@ Class Leadorder_model extends My_Model {
         $this->db->from('ts_orders');
         $this->db->where('order_id < ', $order_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT', 'SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         // $this->db->where('is_canceled',0);
         $this->db->order_by('order_id', 'desc');
@@ -5305,7 +5316,11 @@ Class Leadorder_model extends My_Model {
         $this->db->from('ts_orders');
         $this->db->where('order_id > ', $order_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT', 'SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         // $this->db->where('is_canceled',0);
         $this->db->order_by('order_id', 'asc');
@@ -5328,7 +5343,7 @@ Class Leadorder_model extends My_Model {
         $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
         $this->db->where('i.item_id', $item_id);
         $itmres=$this->db->get()->row_array();
-        if ($item_id>0 && count($itmres)>0) {
+        if ($item_id>0 && !empty($itmres)) {
             if (empty($itmres['printshop_item_id'])) {
                 // Get Item Price, Item Colors
                 // Get Colors

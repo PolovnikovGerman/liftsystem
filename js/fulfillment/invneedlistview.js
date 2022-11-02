@@ -7,6 +7,7 @@ $(document).ready(function(){
 
 function init_needinvlist_content(mainurl) {
     init_needinvlist(mainurl);
+    leftmenu_alignment();
     $("#inventoryneedlistbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
         $("#inventoryneedlistbrand").val(brand);

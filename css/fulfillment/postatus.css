@@ -47,6 +47,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     width: 928px;
+    margin-bottom: 12px;
 }
 .status_data_row {
     clear: both;

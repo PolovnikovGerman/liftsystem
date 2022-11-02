@@ -1,78 +1,94 @@
 <div class="mainheader">
-    <div class="datarow">
-        <div class="left-box">
-            <div class="brands-logos">
-                <div class="bluetrack_logo">
-                    <img src="/img/page_view/bluetrack_logo.png"/>
+    <div class="content_tabs_headers">
+        <?php if ($brand=='SB') { ?>
+            <div class="content_tab_header active stressballs" data-brand="SB">
+                <div class="stressballs_logo active">
+                    <img src="/img/page_view/stessball_logo_activ.png" alt="Stressballs">
                 </div>
+            </div>
+            <div class="content_tab_header relievers" data-brand="SR">
+                <div class="relievers_logo">
+                    <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+                </div>
+            </div>
+        <?php } else { ?>
+            <div class="content_tab_header active relievers" data-brand="SR">
+                <div class="relievers_logo active">
+                    <img src="/img/page_view/stressreiliv_logo_activ.png" alt="StressRelievers">
+                </div>
+            </div>
+            <div class="content_tab_header stressballs" data-brand="SB">
                 <div class="stressballs_logo">
-                    <img src="/img/page_view/stressballs_logo.png"/>
-                </div>
-                <div class="lift_logo">
-                    <img src="/img/page_view/lift_logo.png"/>
-                </div>
-            </div>
-            <div class="period_analitic_info"><?=$total_view?></div>
-            <div class="publicsearch">
-                <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
-                <div class="publicsearch_btn">
-                    <img src="/img/page_view/search_icon_blue.png"/>
-                </div>
-            </div>
-            <?php if ($reportchk) { ?>
-                <div class="inforeports" id="reports">
-                    <div class="icon" title="Reports">
-                        <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
-                    </div>
-                    <div class="infotext">Reports</div>
-                </div>
-            <?php } ?>
-            <?php if ($inventorychk) { ?>
-                <div class="inforeports" id="inventory">
-                    <div class="icon" title="Inventory">
-                        <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
-                    </div>
-                    <div class="infotext">Inventory</div>
-                </div>
-            <?php } ?>
-        </div>
-        <?php if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com' || $_SERVER['SERVER_NAME']=='lift.local') {  //  || $_SERVER['SERVER_NAME']=='lift.local'?>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <div class="testsitelabel">TEST</div>
+                    <img src="/img/page_view/stessball_logo.png" alt="Stressballs">
                 </div>
             </div>
         <?php } ?>
-        <div class="right-box">
-            <div class="userinfo">
-                <div class="datarow">
-                    <div class="signout" id="signout">[sign out]</div>
-                    <div class="usersigninfo"><?=$user_name?></div>
-                </div>
-                <div class="datarow">
-                    <div class="dateinfo">
-                        <?=date('D, F j, Y')?>
+    </div>
+    <div class="mainsiteheader">
+        <div class="datarow">
+            <div class="left-box">
+                <div class="period_analitic_info"><?=$total_view?></div>
+                <div class="publicsearch">
+                    <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
+                    <div class="publicsearch_btn">
+                        <img src="/img/page_view/search_icon_blue.png"/>
                     </div>
                 </div>
+                <?php if ($reportchk) { ?>
+                    <div class="inforeports" id="reports">
+                        <div class="icon" title="Reports">
+                            <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                        </div>
+                        <div class="infotext">Reports</div>
+                    </div>
+                <?php } ?>
+                <?php if ($inventorychk) { ?>
+                    <div class="inforeports" id="inventory">
+                        <div class="icon" title="Inventory">
+                            <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
+                        </div>
+                        <div class="infotext">Inventory</div>
+                    </div>
+                <?php } ?>
             </div>
-            <?php if ($adminchk) { ?>
-                <div class="infoalerts" id="admin">
-                    <div class="alerticon admin" title="Admin">
-                        <img src="/img/icons/cog_white.svg" class="img-responsive"/>
+            <?php if ($test_server==1) { ?>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="testsitelabel">TEST</div>
                     </div>
-<!--                    <div class="alerttext">Admin</div>-->
                 </div>
             <?php } ?>
-            <?php if ($resourcechk) { ?>
-                <div class="infoalerts resources" id="resources">
-                    <div class="alerticon" title="Resources">
-                        <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+            <div class="right-box">
+                <div class="userinfo">
+                    <div class="datarow">
+                        <div class="signout" id="signout">[sign out]</div>
+                        <div class="usersigninfo"><?=$user_name?></div>
                     </div>
-<!--                    <div class="alerttext">Resources</div>-->
+                    <div class="datarow">
+                        <div class="dateinfo">
+                            <?=date('D, F j, Y')?>
+                        </div>
+                    </div>
                 </div>
-            <?php } ?>
+                <?php if ($adminchk) { ?>
+                    <div class="infoalerts" id="admin">
+                        <div class="alerticon admin" title="Admin">
+                            <img src="/img/icons/cog_white.svg" class="img-responsive"/>
+                        </div>
+                        <!--                    <div class="alerttext">Admin</div>-->
+                    </div>
+                <?php } ?>
+                <?php if ($resourcechk) { ?>
+                    <div class="infoalerts resources" id="resources">
+                        <div class="alerticon" title="Resources">
+                            <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                        </div>
+                        <!--                    <div class="alerttext">Resources</div>-->
+                    </div>
+                <?php } ?>
+            </div>
         </div>
     </div>
-    <div class="datarow menurow"><div class="row"><?=$menu_view?></div></div>
     <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
+    <input type="hidden" id="currentbrand" value="SB"/>
 </div>

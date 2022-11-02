@@ -5,7 +5,7 @@
 <input type="hidden" id="online_perpage" value="<?=$perpage?>"/>
 <input type="hidden" id="last_orderid" value="<?=$last_order?>"/>
 <input type="hidden" id="last_cartid" value="<?=$last_cart?>"/>
-
+<input type="hidden" id="onlineordersbrand" value="<?=$brand?>"/>
 <div class="onlineorders_content">
     <div class="searchbox">
         <div class="srchtitle_replica">
@@ -48,8 +48,4 @@
         <div class="order_export">Export</div>
     </div>
     <div class="onlineorderslist" id="onlinetabinfo"></div>
-</div>
-<input type="hidden" id="onlineordersbrand" value="<?=$brand?>"/>
-<div id="onlineordersbrandmenu">
-    <?=$top_menu?>
 </div>

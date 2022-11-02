@@ -33,6 +33,7 @@ function init_calc() {
             $("div.calc-totalquart").empty().html(response.data.total_quart);
             $("div.calc-totalyear").empty().html(response.data.total_year)
             $("#loader").hide();
+            leftmenu_alignment();
             init_calc_management();
         } else {
             $("#loader").hide();

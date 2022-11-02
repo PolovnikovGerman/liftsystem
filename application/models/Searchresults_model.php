@@ -17,7 +17,11 @@ class Searchresults_model extends My_Model
             $this->db->select('max(search_time) as max_time');
             $this->db->from('sb_search_results');
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $res = $this->db->get()->row_array();
             if (isset($res['max_time'])) {
@@ -133,7 +137,11 @@ class Searchresults_model extends My_Model
         $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
         $this->db->where('unix_timestamp(search_time) <= ', $d_end);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $this->db->group_by('search_date,search_result');
         $this->db->order_by('search_date');
@@ -187,7 +195,11 @@ class Searchresults_model extends My_Model
             $this->db->select('max(search_time) as max_time');
             $this->db->from('sb_search_results');
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $res=$this->db->get()->row_array();
             if (isset($res['max_time'])) {
@@ -205,7 +217,11 @@ class Searchresults_model extends My_Model
             $this->db->select('min(search_time) as min_time');
             $this->db->from('sb_search_results');
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $res=$this->db->get()->row_array();
             if (isset($res['min_time'])) {
@@ -223,7 +239,11 @@ class Searchresults_model extends My_Model
         $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
         $this->db->where('unix_timestamp(search_time) <= ', $d_end);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         if ($show_result==0) {
             $this->db->where('search_result',0);
@@ -241,7 +261,11 @@ class Searchresults_model extends My_Model
             $this->db->select('max(search_time) as max_time');
             $this->db->from('sb_search_results');
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $res=$this->db->get()->row_array();
             if (isset($res['max_time'])) {
@@ -259,7 +283,11 @@ class Searchresults_model extends My_Model
             $this->db->select('min(search_time) as min_time');
             $this->db->from('sb_search_results');
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $res=$this->db->get()->row_array();
             if (isset($res['min_time'])) {
@@ -277,7 +305,11 @@ class Searchresults_model extends My_Model
         $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
         $this->db->where('unix_timestamp(search_time) <= ', $d_end);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $this->db->group_by('search_ip, search_user');
         $this->db->order_by('cnt','desc');

@@ -28,7 +28,11 @@ class Balances_model extends My_Model
             $this->db->select('calc_id,description,monthsum as monthly, weeksum as weekly');
             $this->db->select('(coalesce(monthsum,0)/4+coalesce(weeksum,0)) as quarta, coalesce(monthsum,0)*12+coalesce(weeksum,0)*52 as yearly');
             $this->db->from('calcdata');
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $this->db->order_by($sort, $direction);
         $res=$this->db->get()->result_array();
@@ -300,7 +304,11 @@ class Balances_model extends My_Model
         $this->db->where('nd.dateend <= ',$dateend);
         $this->db->where('nd.profit_month is NULL');
         if ($brand!=='ALL') {
-            $this->db->where('np.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            } else {
+                $this->db->where('np.brand', $brand);
+            }
         }
         $this->db->group_by('nd.datebgn, nd.dateend, nd.profit_id');
         $this->db->order_by($order, $direc);
@@ -666,7 +674,11 @@ class Balances_model extends My_Model
         $this->db->where('nd.dateend <= ',$dateend);
         $this->db->where('nd.profit_week is NULL');
         if ($brand!=='ALL') {
-            $this->db->where('np.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            } else {
+                $this->db->where('np.brand', $brand);
+            }
         }
         $this->db->group_by('nd.datebgn, nd.dateend, nd.profit_id');
         $this->db->order_by($order, $direc);
@@ -1131,7 +1143,11 @@ class Balances_model extends My_Model
         $this->db->from('netprofit_dat');
         $this->db->where('profit_id', $profit_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $res=$this->db->get()->row_array();
         if (isset($res['profit_id'])) {
@@ -1145,7 +1161,11 @@ class Balances_model extends My_Model
             }
             $this->db->where('profit_id', $profit_id);
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $this->db->set('debtinclude', $newdata);
             $this->db->update('netprofit_dat');
@@ -1167,7 +1187,11 @@ class Balances_model extends My_Model
         $this->db->from('netprofit_dat');
         $this->db->where('profit_id', $profit_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $res=$this->db->get()->row_array();
         if (isset($res['profit_id'])) {
@@ -1181,7 +1205,11 @@ class Balances_model extends My_Model
             }
             $this->db->where('profit_id', $profit_id);
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $this->db->set('runinclude', $newdata);
             $this->db->update('netprofit_dat');
@@ -1203,7 +1231,11 @@ class Balances_model extends My_Model
         $this->db->from('netprofit_dat');
         $this->db->where('profit_id', $profit_id);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $res=$this->db->get()->row_array();
         if (isset($res['profit_id'])) {
@@ -1219,7 +1251,11 @@ class Balances_model extends My_Model
             }
             $this->db->where('profit_id', $profit_id);
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $this->db->set('weekcheck', $newdata);
             $this->db->update('netprofit_dat');
@@ -2238,7 +2274,11 @@ class Balances_model extends My_Model
             $this->db->where("date_format(from_unixtime(o.order_date),'%v') <= ", $weekend);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $this->db->group_by('orddat');
         $this->db->order_by('orddat');
@@ -2257,7 +2297,11 @@ class Balances_model extends My_Model
             $this->db->where("nd.profit_week <= ", $weekend);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('np.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            } else {
+                $this->db->where('np.brand', $options['brand']);
+            }
         }
         $this->db->group_by('nd.profit_year');
         $debtres=$this->db->get()->result_array();
@@ -2409,7 +2453,11 @@ class Balances_model extends My_Model
                 $this->db->where('o.order_date >= ', $pacedatstart);
                 $this->db->where('o.order_date < ', $now);
                 if (isset($options['brand']) && $options['brand']!=='ALL') {
-                    $this->db->where('o.brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('o.brand', ['BT','SB']);
+                    } else {
+                        $this->db->where('o.brand', $options['brand']);
+                    }
                 }
                 $curordat=$this->db->get()->row_array();
                 $salespace=intval($curordat['cnt']);
@@ -2439,7 +2487,11 @@ class Balances_model extends My_Model
                 $this->db->where('nd.datebgn >= ', $pacedatstart);
                 $this->db->where('nd.dateend < ', $now);
                 if (isset($options['brand']) && $options['brand']!=='ALL') {
-                    $this->db->where('np.brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('np.brand', ['BT','SB']);
+                    } else {
+                        $this->db->where('np.brand', $options['brand']);
+                    }
                 }
                 $curdebtres=$this->db->get()->row_array();
                 // Prev Year
@@ -2605,7 +2657,11 @@ class Balances_model extends My_Model
             $this->db->where("date_format(from_unixtime(o.order_date),'%v') <= ", $weekend);
         }
         if ($brand!=='ALL') {
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
         }
         $this->db->group_by('orddat');
         $this->db->order_by('orddat');
@@ -2625,7 +2681,11 @@ class Balances_model extends My_Model
             $this->db->where("np.profit_week <= ", $weekend);
         }
         if ($brand!=='ALL') {
-            $this->db->where('np.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            } else {
+                $this->db->where('np.brand', $brand);
+            }
         }
         $this->db->group_by('nd.profit_year');
         $debtres=$this->db->get()->result_array();
@@ -2878,7 +2938,11 @@ class Balances_model extends My_Model
         $this->db->where("date_format(from_unixtime(o.order_date),'%x') = {$curyear}");
         $this->db->where('o.order_date < ', $now);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $curyear_orders=$this->db->get()->row_array();
         // Get Prev year
@@ -2888,7 +2952,11 @@ class Balances_model extends My_Model
         $this->db->where('o.is_canceled',0);
         $this->db->where("date_format(from_unixtime(o.order_date),'%x') ={$prevyear}");
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $options['brand']);
+            }
         }
         $prvyear_orders=$this->db->get()->row_array();
         if ($paceincome==2) {
@@ -2900,7 +2968,11 @@ class Balances_model extends My_Model
             $this->db->where('o.order_date >= ', $pacedatstart);
             $this->db->where('o.order_date < ', $now);
             if (isset($options['brand']) && $options['brand']!=='ALL') {
-                $this->db->where('o.brand', $options['brand']);
+                if ($options['brand']=='SB') {
+                    $this->db->where_in('o.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('o.brand', $options['brand']);
+                }
             }
             $paceordat=$this->db->get()->row_array();
         }
@@ -3032,7 +3104,11 @@ class Balances_model extends My_Model
         $this->db->where('nd.profit_week is not NULL');
         $this->db->where('nd.profit_year', $prevyear);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('np.brand', $options['brand']);
+            if ($options['brand']=='SB') {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            } else {
+                $this->db->where('np.brand', $options['brand']);
+            }
         }
         $prvyear_netdata=$this->db->get()->row_array();
         if ($paceexpense==1) {
@@ -3046,7 +3122,11 @@ class Balances_model extends My_Model
             $this->db->where('nd.profit_year', $curyear);
             $this->db->where('nd.dateend < ', $now);
             if (isset($options['brand']) && $options['brand']!=='ALL') {
-                $this->db->where('np.brand', $options['brand']);
+                if ($options['brand']=='SB') {
+                    $this->db->where_in('np.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('np.brand', $options['brand']);
+                }
             }
             $curyear_netdata=$this->db->get()->row_array();
             foreach ($curyear_netdata as $row) {
@@ -3062,7 +3142,11 @@ class Balances_model extends My_Model
             $this->db->where('nd.datebgn >= ', $pacedatstart);
             $this->db->where('nd.dateend < ', $now);
             if (isset($options['brand']) && $options['brand']!=='ALL') {
-                $this->db->where('np.brand', $options['brand']);
+                if ($options['brand']=='SB') {
+                    $this->db->where_in('np.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('np.brand', $options['brand']);
+                }
             }
             $pace_netdata=$this->db->get()->row_array();
         }
@@ -3382,7 +3466,11 @@ class Balances_model extends My_Model
         $this->db->where('date_format(from_unixtime(o.order_date),\'%x\')', $year);
         $this->db->where('o.order_date < ', $now);
         if ($brand!=='ALL') {
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['BT','SB']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
         }
         $ordersres=$this->db->get()->row_array();
         if ($paceincome==2) {
@@ -3393,7 +3481,11 @@ class Balances_model extends My_Model
             $this->db->where('o.order_date >= ', $pacedatstart);
             $this->db->where('o.order_date < ', $now);
             if ($brand!=='ALL') {
-                $this->db->where('brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('brand', ['BT','SB']);
+                } else {
+                    $this->db->where('brand', $brand);
+                }
             }
             $paceordat=$this->db->get()->row_array();
             $grossprofit=round(floatval($paceordat['gross_profit']),0);
@@ -3411,7 +3503,11 @@ class Balances_model extends My_Model
             $this->db->where('nd.profit_year', $year);
             $this->db->where('nd.dateend < ', $now);
             if ($brand!=='ALL') {
-                $this->db->where('np.brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('np.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('np.brand', $brand);
+                }
             }
             $curyear_netdata=$this->db->get()->row_array();
             foreach ($curyear_netdata as $row) {
@@ -3428,7 +3524,11 @@ class Balances_model extends My_Model
             $this->db->where('nd.datebgn >= ', $pacedatstart);
             $this->db->where('nd.dateend < ', $now);
             if ($brand!=='ALL') {
-                $this->db->where('np.brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('np.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('np.brand', $brand);
+                }
             }
             $curdebtres=$this->db->get()->row_array();
             $expensive=0;
@@ -4021,7 +4121,11 @@ class Balances_model extends My_Model
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {
-            $this->db->where('d.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('d.brand', ['BT','SB']);
+            } else {
+                $this->db->where('d.brand', $brand);
+            }
         }
         $totaldata=$this->db->get()->row_array();
         $totals=  floatval($totaldata['amount']);
@@ -4041,7 +4145,11 @@ class Balances_model extends My_Model
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {
-            $this->db->where('d.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('d.brand', ['BT','SB']);
+            } else {
+                $this->db->where('d.brand', $brand);
+            }
         }
         $this->db->group_by('d.netprofit_category_id');
         $this->db->order_by($w9sortfld, $w9sortdir);
@@ -4074,7 +4182,11 @@ class Balances_model extends My_Model
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {
-            $this->db->where('d.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('d.brand', ['BT','SB']);
+            } else {
+                $this->db->where('d.brand', $brand);
+            }
         }
         $totaldata=$this->db->get()->row_array();
         $totals=  floatval($totaldata['amount']);
@@ -4094,7 +4206,11 @@ class Balances_model extends My_Model
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {
-            $this->db->where('d.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('d.brand', ['BT','SB']);
+            } else {
+                $this->db->where('d.brand', $brand);
+            }
         }
         $this->db->group_by('d.netprofit_category_id');
         $this->db->order_by($purchasesortfld, $purchasesortdir);
@@ -4232,7 +4348,11 @@ class Balances_model extends My_Model
         $this->db->join('ts_netprofit_categories c','c.netprofit_category_id=d.netprofit_category_id');
         $this->db->where('d.profit_id', $profit_id);
         if ($brand!=='ALL') {
-            $this->db->where('d.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('d.brand', ['BT','SB']);
+            } else {
+                $this->db->where('d.brand', $brand);
+            }
         }
         $res=$this->db->get()->row_array();
         if ($res['cnt']>0) {
@@ -4328,7 +4448,11 @@ class Balances_model extends My_Model
             }
             $this->db->where('d.details_type', $type);
             if ($brand!=='ALL') {
-                $this->db->where('d.brand', $brand);
+                if ($brand=='SB') {
+                    $this->db->where_in('d.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('d.brand', $brand);
+                }
             }
             $this->db->group_by('n.datebgn, n.dateend, d.vendor, d.description');
             $this->db->order_by('n.datebgn','desc');

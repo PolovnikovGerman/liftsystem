@@ -1,7 +1,10 @@
 <div class="maincontent">
-    <div class="maincontentmenuarea marketmenu">
+    <div class="leftmenuarea">
+        <?=$left_menu?>
+    </div>
+    <div class="maincontentmenuarea <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
         <div class="maincontentmenu">
-            <div class="title">Finance:</div>
+            <div class="title">Accounting:</div>
             <?php foreach ($menu as $item) { ?>
                 <div class="maincontentmenu_item <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> <?=ifset($item,'newver', 1)==0 ? 'oldver' :  ''?>" data-link="<?=str_replace('#','', $item['item_link'])?>">
                     <?php  if (ifset($item,'newver', 1)==0) { ?>

@@ -1,5 +1,6 @@
 <div class="netprofitviewcontent">
     <input type="hidden" value="<?=$limitrow?>" id="limitweekshow"/>
+    <input type="hidden" id="netprofitviewbrand" value="<?=$brand?>">
     <div class="netprofit_header">
         <div class="netprofit_sortview">
             <span>Sort by:</span>
@@ -90,8 +91,4 @@
         </div>
         <div class="w9totalsarea"><?=$w9purchase?></div>
     </div>
-</div>
-<input type="hidden" id="netprofitviewbrand" value="<?=$brand?>">
-<div id="netprofitviewbrandmenu">
-    <?=$top_menu?>
 </div>

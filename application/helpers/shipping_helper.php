@@ -48,9 +48,11 @@ if (!function_exists('calculate_shipcost')) {
         }
         $tntweigth = $itemweight * $qty;
         $transit_arr = $upsserv->ship_time($zip, $cnt_code, $tntpack, $tntweigth, date('Ymd', $startdeliv), $vendorzip);
+        $ratescalc =0;
         if ($transit_arr['result'] == FALSE) {
             $out['result'] = FALSE;
             $out['error'] = $transit_arr['msg'];
+            $errmsg = $transit_arr['msg'];
             $out['error_code'] = 'TNT';
         } else {
             $transit_arr = $transit_arr['times'];

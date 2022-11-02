@@ -2,8 +2,8 @@
 <input type="hidden" id="curpageitemsale" value="0"/>
 <input type="hidden" id="itemsalecurrentyear" value="<?= $curentyear ?>"/>
 <input type="hidden" id="itemsaleprevyear" value="<?= $prevyear ?>"/>
+<input type="hidden" id="itemsalesreportbrand" value="<?=$brand?>"/>
 <div class="itemsalesreportarea">
-
     <div class="itemsalesheadrow">
         <div class="sortitemsalesarea">
             <div class="labeltxt">Sort by:</div>
@@ -101,5 +101,3 @@
     </div>
     <div class="itemsalesreportdata"></div>
 </div>
-<input type="hidden" id="itemsalesreportbrand" value="<?=$brand?>"/>
-<?=$top_menu?>
