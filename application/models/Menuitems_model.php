@@ -973,6 +973,23 @@ Class Menuitems_model extends MY_Model
         $brand =  usersession('currentbrand');
         if (!empty($brand)) {
             usersession('currentbrand', $brand);
+        } else {
+            $user = $this->user_model->current_user();
+            $userdata = ifset($user,'data',[]);
+            $userid = ifset($userdata,'id',0);
+            $this->db->select('count(i.menu_item_id) as cnt');
+            $this->db->from('menu_items i');
+            $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
+            $this->db->where('u.user_id', $userid);
+            $this->db->where('u.permission_type > ',0);
+            $this->db->where('i.brand = ','SB');
+            $dats = $this->db->get()->row_array();
+            if ($dats['cnt'] > 0) {
+                $brand = 'SB';
+            } else {
+                $brand = 'SR';
+            }
+            usersession('currentbrand', $brand);
         }
         return $brand;
     }
