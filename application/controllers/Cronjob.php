@@ -194,16 +194,20 @@ Class Cronjob extends CI_Controller
         $email_cc = $this->config->item('artorderdaily_cc');
         $email_from = 'fulfillment@bluetrack.com';
         /* step 1 count # of project orders */
-        // $brands = ['BT', 'SB'];
-        $brands = ['BT'];
+        // $brands = ['SB', 'SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $this->db->select('count(order_id) as cnt');
             $this->db->from('v_order_statuses');
             $this->db->where('status_type','O');
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             // $this->db->where('order_num >= ',$min_ordernum);
             $res = $this->db->get()->row_array();
-            if ($res['cnt'] == 0) {
+            if ($res['cnt'] > 0) {
                 $message_body = $this->load->view('messages/artorder_empty_view', array(), TRUE);
             } else {
                 /* Begin analize */
@@ -283,10 +287,10 @@ Class Cronjob extends CI_Controller
             $this->email->bcc($this->config->item('developer_email'));
             $this->email->from($email_from);
             $mail_subj = 'Orders in PROJ stage ' . date('m/d/Y');
-            if ($brand=='BT') {
-                $mail_subj.=' (Bluetrack.com)';
-            } elseif ($brand=='SB') {
-                $mail_subj.=' (Stressballs.com)';
+            if ($brand=='SB') {
+                $mail_subj.=' (Bluetrack/Stressballs)';
+            } elseif ($brand=='SR') {
+                $mail_subj.=' (StressRelievers.com)';
             }
             $this->email->subject($mail_subj);
             $this->email->message($message_body);
@@ -298,8 +302,8 @@ Class Cronjob extends CI_Controller
     public function pochange_notification() {
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-        // $brands = ['BT', 'SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             // Get users list
             $this->db->select('oa.create_user, u.user_name, count(oa.amount_id) as cnt');
@@ -308,7 +312,11 @@ Class Cronjob extends CI_Controller
             $this->db->join('users u','u.user_id=oa.create_user');
             $this->db->where('oa.create_date >=', $datestart);
             $this->db->where('oa.create_date < ', $dateend);
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
             $this->db->group_by('oa.create_user, u.user_name');
             $crres=$this->db->get()->result_array();
             $usrids=array();
@@ -326,7 +334,11 @@ Class Cronjob extends CI_Controller
             $this->db->join('users u','u.user_id=oa.update_user');
             $this->db->where('oa.update_date >=', $datestart);
             $this->db->where('oa.update_date < ', $dateend);
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
             $this->db->group_by('oa.update_user, u.user_name');
             $upres=$this->db->get()->result_array();
             foreach ($upres as $row) {
@@ -351,7 +363,11 @@ Class Cronjob extends CI_Controller
                     $this->db->where("o.is_canceled",0);
                     $this->db->where('oa.create_date >=', $datestart);
                     $this->db->where('oa.create_date < ', $dateend);
-                    $this->db->where('o.brand', $brand);
+                    if ($brand=='SB') {
+                        $this->db->where_in('o.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('o.brand', $brand);
+                    }
                     $usrcr=$this->db->get()->result_array();
                     $list=array();
                     if (count($usrcr)>0) {
@@ -409,7 +425,11 @@ Class Cronjob extends CI_Controller
                     $this->db->where('oa.update_date >=', $datestart);
                     $this->db->where('oa.update_date < ', $dateend);
                     $this->db->where('oa.create_date <', $datestart);
-                    $this->db->where('o.brand', $brand);
+                    if ($brand=='SB') {
+                        $this->db->where_in('o.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('o.brand', $brand);
+                    }
                     $usrupd=$this->db->get()->result_array();
                     $list=array();
                     if (count($usrupd)) {
@@ -475,10 +495,10 @@ Class Cronjob extends CI_Controller
             // Temporary ADD for check
             $this->email->bcc([$this->config->item('developer_email')]);
             $title=date('D - M d, Y', $datestart).' - POs added to ';
-            if ($brand=='BT') {
-                $title.='Bluetrack.com';
-            } elseif ($brand=='SB') {
-                $title.='Stressballs.com';
+            if ($brand=='SB') {
+                $title.='Bluetrack/Stressballs';
+            } elseif ($brand=='SR') {
+                $title.='StressRelievers.com';
             }
             $this->email->subject($title);
             if ($msgbody=='') {
@@ -496,8 +516,8 @@ Class Cronjob extends CI_Controller
     public function tickets_report() {
         $this->load->model('tickets_model');
         // Prepare Overview
-        // $brands = ['BT', 'SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $overview=$this->tickets_model->get_ticketreport_overview($brand);
             $msgdata='';
@@ -523,10 +543,10 @@ Class Cronjob extends CI_Controller
             $this->email->cc($email_cc);
 
             $title=date('D - M d, Y').' - Issues Report ';
-            if ($brand=='BT') {
-                $title.='(Bluetrack.com)';
-            } elseif ($brand=='SB') {
-                $title.='(Stressball.com)';
+            if ($brand=='SB') {
+                $title.='(Bluetrack/Stressballs)';
+            } elseif ($brand=='SR') {
+                $title.='(StressRelievers.com)';
             }
             $this->email->subject($title);
             $this->email->message($msgbody);
@@ -559,8 +579,8 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
-        // $brands = ['BT', 'SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $this->load->model('reports_model');
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
@@ -569,10 +589,10 @@ Class Cronjob extends CI_Controller
             if (!empty($out)) {
                 // Prepare report
                 $title=date('D - M d, Y', $datestart).' - Art Proof Report ';
-                if ($brand=='BT') {
-                    $title.='(Bluetrack.com)';
-                } elseif ($brand=='SB') {
-                    $title.='(stressballs.com)';
+                if ($brand=='SB') {
+                    $title.='(Bluetrack/Stressballs)';
+                } elseif ($brand=='SR') {
+                    $title.='(StressRelievers)';
                 }
                 $total=$data['total'];
                 $totaltype = $data['totaltype'];
@@ -623,17 +643,17 @@ Class Cronjob extends CI_Controller
         ];
 
         $this->load->model('orders_model');
-        // $brands = ['BT','SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $options['brand']=$brand;
             $res=$this->orders_model->get_week_quotes($options);
             if ($res['result']==1) {
                 $title='Quotes, Proof Requests, Orders ('.date('m/d/Y', $monday).' - '.date('m/d/Y', $sunday-1).')';
-                if ($brand=='BT') {
-                    $title.=' Bluetrack.com';
+                if ($brand=='SB') {
+                    $title.=' Bluetrack/Stressballs';
                 } elseif ($brand=='SB') {
-                    $title.=' Stressballs.com';
+                    $title.=' StressRelievers';
                 }
                 $params['lists']=$res['data'];
                 $params['title']=$title;
@@ -667,8 +687,8 @@ Class Cronjob extends CI_Controller
     public function bonus_report() {
         $user_id=23; // Shanequa Hall
         $this->load->model('orders_model');
-        // $brands = ['BT', 'SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
             $out=$results['out'];
@@ -689,10 +709,10 @@ Class Cronjob extends CI_Controller
             $this->email->cc($email_cc);
             $this->email->bcc($this->config->item('developer_email'));
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
-            if ($brand=='BT') {
-                $title.='(Bluetrack.com)';
-            } elseif ($brand=='SB') {
-                $title.='(Stressballs.com)';
+            if ($brand=='SB') {
+                $title.='(Bluetrack/Stressballs)';
+            } elseif ($brand=='SR') {
+                $title.='(StressRelievers)';
             }
             $this->email->subject($title);
             $body_options=[
@@ -714,9 +734,9 @@ Class Cronjob extends CI_Controller
             // $this->email->to('to_german@yahoo.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
             if ($brand=='BT') {
-                $title.='(Bluetrack.com)';
+                $title.='(Bluetrack/Stressballs)';
             } elseif ($brand=='SB') {
-                $title.='(Stressballs.com)';
+                $title.='(StressRelievers)';
             }
             $this->email->subject($title);
             $body_options=[
@@ -740,15 +760,19 @@ Class Cronjob extends CI_Controller
 
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-        // $brands = ['BT','SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $this->db->select('*');
             $this->db->from('ts_orders');
             $this->db->where('order_date >= ', $datestart);
             $this->db->where('order_date < ', $dateend);
             $this->db->where('is_canceled',0);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->order_by('order_num');
             $res = $this->db->get()->result_array();
             if (count($res)>0) {
@@ -801,10 +825,10 @@ Class Cronjob extends CI_Controller
                 $this->email->to($email_to);
 
                 $title=date('D - M d, Y', $datestart).' - Check Orders Maths ';
-                if ($brand=='BT') {
-                    $title.='(Bluetrack.com)';
-                } elseif ($brand=='SB') {
-                    $title.='(Stressballs.com)';
+                if ($brand=='SB') {
+                    $title.='Bluetrack/Stressballs';
+                } elseif ($brand=='SR') {
+                    $title.='StressRelievers';
                 }
                 $this->email->subject($title);
                 $this->email->message($mail_body);
@@ -820,8 +844,8 @@ Class Cronjob extends CI_Controller
         $end_time = strtotime(date('Y-m-d'));
         $start_time = strtotime(date('Y-m-d', strtotime(date('Y-m-d',$end_time). ' - 1 day')));
         $this->load->model('orders_model');
-        // $brands = ['BT','SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $out = $this->orders_model->orderdiscount_msg($start_time, $end_time, $brand);
 
@@ -842,17 +866,16 @@ Class Cronjob extends CI_Controller
             $this->email->cc($this->config->item('developer_email'));
 
             $title=date('D - M d, Y', $start_time).' - Discount Orders ';
-            if ($brand=='BT') {
-                $title.='(Bluetrack.com)';
-            } elseif ($brand=='SB') {
-                $title.='(Stressballs.com)';
+            if ($brand=='SB') {
+                $title.='(Bluetrack/Stressballs)';
+            } elseif ($brand=='SR') {
+                $title.='(StressRelievers)';
             }
             $this->email->subject($title);
             $this->email->message($msgbody);
             $this->email->send();
             $this->email->clear(TRUE);
         }
-
     }
 
     public function order_autoparse() {
@@ -894,7 +917,6 @@ Class Cronjob extends CI_Controller
             $this->db->where('order_id',$row['order_id']);
             $this->db->update('sb_orders');
         }
-
     }
 
     public function attempts_report() {
@@ -911,8 +933,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function searchresults_weekreport() {
-        // $brands = ['BT','SB'];
-        $brands = ['BT'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $dat_mon = strtotime('last week Monday');
         $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
         foreach ($brands as $brand) {
@@ -921,7 +943,11 @@ Class Cronjob extends CI_Controller
             $this->db->where('search_result',0);
             $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
             $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->group_by('search_text');
             $this->db->order_by('cnt desc, search_text asc');
             $res = $this->db->get()->result_array();
@@ -943,7 +969,7 @@ Class Cronjob extends CI_Controller
             $this->email->cc($mail_cc);
 
             $this->email->from('no-replay@bluetrack.com');
-            $title = 'Weekly Report about Unsuccessful Searches '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
+            $title = 'Weekly Report about Unsuccessful Searches '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
             $res=$this->email->send();
@@ -954,7 +980,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function unpaid_orders() {
-        $brands = ['BT'];
+        // $brands = ['SB', 'SR'];
+        $brands = ['SB'];
         $yearbgn = intval(date('Y'))-1;
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
@@ -983,12 +1010,11 @@ Class Cronjob extends CI_Controller
             $this->email->cc($mail_cc);
 
             $this->email->from('no-replay@bluetrack.com');
-            $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Stressballs.com)' : '(Bluetrack.com)');
+            $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
             $res=$this->email->send();
             $this->email->clear(TRUE);
         }
-
     }
 }
