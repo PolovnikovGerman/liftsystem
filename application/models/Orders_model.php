@@ -5664,7 +5664,11 @@ Class Orders_model extends MY_Model
                     $this->db->where('email_type','Leads');
                     $this->db->where('email_subtype','Quote');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $quotes=$this->db->get()->row_array();
                     // count proof requests
                     $this->db->select('count(email_id) as cnt');
@@ -5673,14 +5677,22 @@ Class Orders_model extends MY_Model
                     $this->db->where('unix_timestamp(email_date) < ', $newdate);
                     $this->db->where('email_type','Art_Submit');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $proofreq=$this->db->get()->row_array();
                     // count orders
                     $this->db->select('count(order_id) as cnt');
                     $this->db->from('ts_orders');
                     $this->db->where('order_date >= ', $date);
                     $this->db->where('order_date < ', $newdate);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $this->db->where('is_canceled',0);
                     $orders=$this->db->get()->row_array();
                     if ($orders['cnt']!=0 || $quotes['cnt']!=0 || $proofreq['cnt']!=0) {
@@ -5733,7 +5745,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',0);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $res=$this->db->get()->result_array();
             $ord_500=$ord_1000=$ord_1200=0;
@@ -5752,7 +5768,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',1);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $cancres=$this->db->get()->result_array();
             $canc_500=$canc_1000=$canc_1200=0;
@@ -5830,7 +5850,11 @@ Class Orders_model extends MY_Model
         $this->db->where('h.created_time >= ', $start_time);
         $this->db->where('h.created_time < ', $end_time);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
         $out=[];
@@ -7654,8 +7678,13 @@ Class Orders_model extends MY_Model
         $this->db->select('o.order_id, o.order_num, o.order_date, o.order_confirmation, o.customer_name, o.revenue, b.cnt, b.paysum');
         $this->db->from('ts_orders o');
         $this->db->join('('.$batchsql.') b','b.order_id=o.order_id','left');
-        $this->db->where('order_date >= ', $datebgn);
-        $this->db->where('is_canceled', 0);
+        $this->db->where('o.order_date >= ', $datebgn);
+        $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $res = $this->db->get()->result_array();
 
         $out = [];
@@ -7700,6 +7729,11 @@ Class Orders_model extends MY_Model
         $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
         $res = $this->db->get()->result_array();
         return $res;
