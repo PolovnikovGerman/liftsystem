@@ -4,6 +4,7 @@ $(document).ready(function(){
 })
 
 function init_profitcalend_content() {
+    leftmenu_alignment();
     show_curent_calend();
     // Change Brand
     $("#profitcalendarbrandmenu").find("div.brandchoseval").unbind('click').click(function(){

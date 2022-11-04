@@ -1,6 +1,7 @@
 var empty_proofsearch='Customer,company, email..';
 var main_proofurl="/proofrequests"
 function init_proofdata() {
+    leftmenu_alignment();
     $("select#proof_status").unbind('change').change(function(){
         search_proofs();
     })

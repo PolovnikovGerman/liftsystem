@@ -1,4 +1,5 @@
 function init_orderreport_content() {
+    leftmenu_alignment();
     init_orderreport_data();
     // var url="/fulfillment/orderreport_head";
     // $.post(url,{},function(response){

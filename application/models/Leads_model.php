@@ -1241,7 +1241,11 @@ Class Leads_model extends MY_Model
     public function items_list($brand) {
         $this->db->select('item_id, item_name, item_number');
         $this->db->from('v_itemsearch');
-        $this->db->where('(brand=\''.$brand.'\' or brand=\'\')');
+        if ($brand=='SB') {
+            $this->db->where_in('brand',['BT','SB','']);
+        } else {
+            $this->db->where_in('brand',[$brand,'']);
+        }
         $this->db->order_by('item_name');
         $result=$this->db->get()->result_array();
         return $result;
@@ -2325,15 +2329,15 @@ Class Leads_model extends MY_Model
                 }
             }
             $lastid = $lastid - 1;
-            $attach[] = [
+            $attachs[] = [
                 'leadattch_id' => $lastid,
                 'source_name' => ifset($data,'src','new_lead_attach'),
                 'attachment' => $data['newval'],
                 'quoteattach' => 0,
             ];
-            $leadattachs['lead_attach'] = $attach;
+            $leadattachs['lead_attach'] = $attachs;
             $out['result'] = $this->success_result;
-            $out['attachs'] = $attach;
+            $out['attachs'] = $attachs;
             usersession($session_id, $leadattachs);
         }
         return $out;

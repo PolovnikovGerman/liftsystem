@@ -1,5 +1,6 @@
 function init_orderview() {
     initOnlinePagination();
+    leftmenu_alignment();
     $("#find_onlines").click(function(){
         search_onlineorderdata();
     })

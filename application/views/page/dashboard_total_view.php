@@ -1,4 +1,4 @@
-<div class="period_name">This Week</div>
+<div class="period_name" data-viewsrc="/welcome/weektotalorders">This Week</div>
 <div id="showtotalthisweek">
     <div class="param_value_label">ORDERS:</div>
     <div class="param_value" id="totalsales"><?=$data['sales']?></div>

@@ -63,33 +63,16 @@ Class Shipping_model extends MY_Model
     // Get Rush list
     public function get_rushlist($item_id, $startdate=0) {
         if ($startdate==0) {
-//            $resttimeto = mktime(18,00,0);
-//            $time1 = time();
-//
-//            if ($time1 <$resttimeto) {
-//                $start=date("Y-m-d");// current date
-//            } else {
-//                $start_time=$this->_get_business_date(time(), 1, $item_id);
-//                $start=date('Y-m-d',$start_time);
-//            }
-//            /* Check Current Day - may be it is weekend or holiday */
             $start=date("Y-m-d");// current date
             $start_time=strtotime($start);
         } else {
             $start_time=$startdate;
         }
         $start_time=$startdate;
+        $proof_date = $start_time;
         if ($this->_chk_business_day($start_time, $item_id)==0) {
-            while(true) {
-                $start_time=$this->_get_business_date($start_time, 1, $item_id);
-                if ($this->_chk_business_day($start_time, $item_id)==1) {
-                    break;
-                }
-            }
-            $start=date('Y-m-d',$start_time);
+            $proof_date=$this->_get_business_date($start_time, 1, $item_id);
         }
-
-        $proof_date=$start_time;
 
         $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
         $this->db->from("sb_items i");
@@ -163,7 +146,7 @@ Class Shipping_model extends MY_Model
         }
 
         // $i=0;$cnt=1; // changed for add current day
-        $i=-1;$cnt=0;
+        $i=0;$cnt=1;
         $rush=array();$current_rush=0;
         while ($i <= $cicle_min) {
             $current=0;
@@ -188,7 +171,6 @@ Class Shipping_model extends MY_Model
                     $rush[]=array(
                         'id'=>$dat.'-'.$prefix,
                         'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
-                        // 'list'=>$rushterm.'-'.($prefix==0 ? '' : '$'.$prefix.' - ').date('M d (D)',$dat),
                         'current'=>$current,
                         'rushterm'=>$rushterm,
                         'date'=>$dat,
@@ -219,16 +201,8 @@ Class Shipping_model extends MY_Model
         } else {
             $start_time=$startdate;
         }
-
-        if ($this->_chk_business_day($start_time, $item_id)==0) {
-            while(true) {
-                $start_time=$this->_get_business_date($start_time, 1, $item_id);
-                if ($this->_chk_business_day($start_time, $item_id)==1) {
-                    break;
-                }
-            }
-            $start=date('Y-m-d',$start_time);
-        }
+        // Add 1 business day
+        $start_time=$this->_get_business_date($start_time, 1, $item_id);
 
         $proof_date=$start_time;
 
@@ -332,7 +306,6 @@ Class Shipping_model extends MY_Model
                     $rush[]=array(
                         'id'=>$dat.'-'.$prefix,
                         'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
-                        // 'list'=>$rushterm.'-'.($prefix==0 ? '' : '$'.$prefix.' - ').date('M d (D)',$dat),
                         'current'=>$current,
                         'rushterm'=>$rushterm,
                         'date'=>$dat,

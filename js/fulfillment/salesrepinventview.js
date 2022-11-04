@@ -12,6 +12,7 @@ $(document).ready(function(){
 });
 
 function init_invsalesreport_content() {
+    leftmenu_alignment();
     init_invsalesreport();
     // Change Brand
     $("#inventsalesreportbrandmenu").find("div.brandchoseval").unbind('click').click(function(){

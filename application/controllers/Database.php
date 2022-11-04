@@ -31,6 +31,43 @@ class Database extends MY_Controller
     }
 
     public function index() {
+        $head = [];
+        $head['title'] = 'Database';
+        $getdata = $this->input->get();
+        $start = ifset($getdata,'start','');
+        $brand = $this->menuitems_model->get_current_brand();
+        $content_options['start'] = $start; // $this->input->get('start', TRUE);
+        if ($start=='') {
+            $mainmenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+            $brandmenu=0;
+            foreach ($mainmenu as $row) {
+                if ($row['item_link']=='#dbbrand') {
+                    $brandmenu=1;
+                }
+            }
+            if ($brandmenu==0) {
+                $this->masteritems();
+            } else {
+                // if ($brand=='SB') {
+                    $this->btchannelitems();
+                //} else {
+                //    $this->srchannelitems();
+                //}
+            }
+        } else {
+            if ($start=='dbbrand') {
+                $this->btchannelitems();
+            } elseif ($start=='dbcentermaster') {
+                $this->masteritems();
+            } elseif ($start=='dbcenterrelievers') {
+                $this->srchannelitems();
+            } elseif ($start=='legacyview') {
+                $this->legacyitems();
+            }
+        }
+    }
+
+    public function oldindex() {
         $getdata = $this->input->get();
         $start = ifset($getdata,'start','');
         if ($start=='') {
@@ -60,28 +97,29 @@ class Database extends MY_Controller
 
     public function masteritems() {
         $head = [];
-//        $start = $this->input->get('start');
-//        if (empty($start)) {
-//            $start='#dbcentermaster';
-//        }
         $head['title'] = 'Database Master';
-        $pagelnk = '#dbcentermaster';
-        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
-        $menu_options = [
-            'menus' => $main_menu,
-            'start' => $pagelnk,
-        ];
-        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        $pagelnk = '#dbmaster';
+        $brand = $this->menuitems_model->get_current_brand();
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $brand_menu = 0;
+        if (count($main_menu)>1) {
+            $brand_menu = 1;
+        }
+//        $menu_options = [
+//            'menus' => $main_menu,
+//            'start' => $pagelnk,
+//        ];
+//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
         $content_options=[
-            'page_menu' => $page_menu,
+            // 'page_menu' => $page_menu,
             'menu' => $menu,
             'start' => str_replace('#','',$menu[0]['item_link'])
         ];
         foreach ($menu as $row) {
-            if ($row['item_link']=='#vendorsview') {
+            if ($row['item_link']=='#mastervendors') {  // vendorsview
                 $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
                 $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
@@ -109,8 +147,10 @@ class Database extends MY_Controller
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
-
-        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['brand_menu'] = $brand_menu;
+        $content_view = $this->load->view('database_center/master_page_view', $content_options, TRUE);
 
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
@@ -118,23 +158,26 @@ class Database extends MY_Controller
 
     public function btchannelitems() {
         $head = [];
-//        $start = $this->input->get('start');
-//        if (empty($start)) {
-//            $start='#dbcentermaster';
-//        }
         $head['title'] = 'Bluetrack/Stressballs';
-        $pagelnk = '#dbcenterbtchannel';
-        $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
-        $menu_options = [
-            'menus' => $main_menu,
-            'start' => $pagelnk,
-        ];
-        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+        $pagelnk = '#dbbrand';
+        $brand = $this->menuitems_model->get_current_brand();
+        $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $master_menu = 0;
+        if (count($main_menu) > 1) {
+            $master_menu = 1;
+        }
+//        $menu_options = [
+//            'menus' => $main_menu,
+//            'start' => $pagelnk,
+//        ];
+//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
-        $menu = $this->menuitems_model->get_submenu($this->USR_ID, $pagelnk);
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
         $content_options=[
-            'page_menu' => $page_menu,
+            // 'page_menu' => $page_menu,
+            //'start_menu' => $pagelnk,
+            'menus' => $main_menu,
             'menu' => $menu,
             'start' => str_replace('#','',$menu[0]['item_link'])
         ];
@@ -147,6 +190,59 @@ class Database extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/shippings.css');
                 $head['scripts'][] = array('src' => '/js/settings/shippings.js');
                 $content_options['shippingview'] = $this->_prepare_shipping_view('BT');
+            } elseif ($row['item_link']=='#legacyview') {
+                $legacylnk = '#legacyview';
+                $head['scripts'][]=array('src'=>'/js/database/legacy.js');
+                $legacymenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $legacylnk, $brand);
+                $legacy_options = [];
+                foreach ($legacymenu as $smenu) {
+                    if ($smenu['item_link']=='#itempriceview') {
+                        $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+                        $page_name = 'itemprice';
+                        $legacy_options['itempriceview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemcategoryview') {
+                        $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+                        $page_name = 'itemcategory';
+                        $legacy_options['itemcategoryview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemsequenceview') {
+                        $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
+                        $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+                        $page_name = 'itemsequence';
+                        $legacy_options['itemsequenceview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemmisinfoview') {
+                        $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
+                        $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+                        $page_name = 'itemmisinfo';
+                        $legacy_options['itemmisinfoview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemprofitview') {
+                        $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
+                        $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+                        $page_name = 'itemprofit';
+                        $legacy_options['itemprofitview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemtemplateview') {
+                        $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
+                        $page_name = 'itemtemplates';
+                        $legacy_options['itemtemplateview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link']=='#itemexportview') {
+                        $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+                        $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+                        $page_name = 'itemexport';
+                        $legacy_options['itemexportview'] = $this->_content_view($page_name);
+                    } elseif ($smenu['item_link'] == '#categoryview') {
+                        $head['styles'][] = array('style' => '/css/database/categories.css');
+                        $head['scripts'][] = array('src' => '/js/database/categories.js');
+                        $page_name = 'categories';
+                        $legacy_options['categoryview'] = $this->_content_view($page_name);
+                    }
+                }
+                $submenu_options = [
+                    'menus' => $legacymenu,
+                ];
+                $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
+                $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
             }
         }
         // Add main page management
@@ -169,8 +265,10 @@ class Database extends MY_Controller
         // $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
-
-        $content_view = $this->load->view('database/page_view', $content_options, TRUE);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['master_menu'] = $master_menu;
+        $content_view = $this->load->view('database_center/brand_database_view', $content_options, TRUE);
 
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
@@ -183,7 +281,7 @@ class Database extends MY_Controller
 //            $start='#dbcentermaster';
 //        }
         $head['title'] = 'StressRelievers';
-        $pagelnk = '#dbcenterrelievers';
+        $pagelnk = '#dbbrand';
         $main_menu = $this->menuitems_model->get_submenu($this->USR_ID, $this->pagelink);
         $menu_options = [
             'menus' => $main_menu,

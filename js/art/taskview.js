@@ -42,6 +42,7 @@ function init_tasks_management() {
 }
 
 function init_tasks_page() {
+    leftmenu_alignment();
     var inclreq=$("input#ordersproofs").prop('checked');
     var showreq=0;
     if (inclreq===true) {

@@ -499,8 +499,8 @@ a.itemtitle.nearlyupdate {
     font-weight: 600;
 }
 .maincontentmenuarea {
-    padding: 0px!important;
-    margin-top: -20px;
+    /*padding: 0px!important;
+    margin-top: -20px;*/
 }
 .menupage_head {
     padding: 0 7px;

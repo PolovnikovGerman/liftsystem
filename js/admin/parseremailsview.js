@@ -175,6 +175,7 @@ function pageWhitelistCallback(page_index) {
         if (response.errors=='') {
             $("#loader").hide();
             $("div.whitelist_parselog_data").empty().html(response.data.content);
+            leftmenu_alignment();
             jQuery.balloon.init();
             init_parsedlog_content();
         } else {
@@ -185,5 +186,24 @@ function pageWhitelistCallback(page_index) {
 }
 
 function init_parsedlog_content() {
-
+    $(".wlparse_email").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light parserlog_tooltip'
+    });
+    $(".wlparse_subject").qtip({
+        content: {
+            attr: 'data-content'
+        },
+        position: {
+            my: 'bottom right',
+            at: 'top left',
+        },
+        style: 'qtip-light parserlog_tooltip'
+    });
 }

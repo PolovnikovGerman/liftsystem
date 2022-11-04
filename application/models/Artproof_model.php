@@ -923,7 +923,11 @@ Class Artproof_model extends MY_Model
                 $this->db->order_by('order_rush desc, status_type asc, order_num asc');
             }
         }
-        $this->db->where('brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->result_array();
         $out=array();
         $rushimg="<img src='/img/art/task_rushicon.png' alt='Rush'/>";

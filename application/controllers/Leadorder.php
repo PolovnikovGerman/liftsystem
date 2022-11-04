@@ -867,7 +867,7 @@ class Leadorder extends MY_Controller
                 $this->load->model('orders_model');
                 $dboptions=array(
                     'exclude'=>array(-4, -5, -2),
-                    'brand' => $order['brand'],
+                    'brand' => ($order['brand']=='SB' ? 'BT' : 'SR'),
                 );
                 $items=$this->orders_model->get_item_list($dboptions);
                 $options=array(

@@ -25,6 +25,7 @@ function init_ownertax() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div#ownertax").empty().html(response.data.content);
+            leftmenu_alignment();
             $("div.ownertaxessave").hide();
             init_ownertax_manage();
         } else {

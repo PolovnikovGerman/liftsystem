@@ -56,6 +56,7 @@ function init_accreceive_details() {
             // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
             // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
             $(".accreceiv-details").empty().html(response.data.content);
+            leftmenu_alignment();
             init_accreceive_content();
         } else {
             show_error(response);

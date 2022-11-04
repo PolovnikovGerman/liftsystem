@@ -146,6 +146,7 @@ function pagePaymonitCallback(page_index) {
     $.post(url, params, function (response) {
         if (response.errors == '') {
             $('#tableinfotab4').empty().html(response.data.content);
+            leftmenu_alignment();
             $("div.total_notinvoiced").empty().html('Total Not Invoiced ' + response.data.not_invoiced);
             $("div.total_notpaid").empty().html('Partial Paid Orders ' + response.data.not_paid);
             $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced ' + response.data.qty_inv);
