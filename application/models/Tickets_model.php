@@ -390,7 +390,11 @@ Class Tickets_model extends My_Model
         $this->db->from('ts_tickets');
         $this->db->where('ticket_date is not null');
         $this->db->where('ticket_closed',0);
-        // $this->db->where('brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
         $this->db->order_by('ticket_date');
         $this->db->group_by('tickquat, tickyear');
         $res=$this->db->get()->result_array();
@@ -415,7 +419,11 @@ Class Tickets_model extends My_Model
         $this->db->where('t.ticket_closed',0);
         $this->db->where('quarter(from_unixtime(ticket_date))', $quater);
         $this->db->where("date_format(from_unixtime(ticket_date), '%Y')={$year}");
-        // $this->db->where('t.brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where_in('t.brand', ['SB','BT']);
+        } else {
+            $this->db->where('t.brand', $brand);
+        }
         $this->db->order_by('ticket_date');
         $res=$this->db->get()->result_array();
         return $res;
