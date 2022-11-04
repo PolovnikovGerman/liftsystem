@@ -225,11 +225,10 @@
     border-right: 1px solid #000000;
 }
 .netprofitviewdata {
-    overflow-y: scroll;
     border-bottom: 1px solid #000000;
-    /* padding-left: 27px;
-    width: 1235px; */
+    border-right: 1px solid #000000;
     max-height: 273px;
+    overflow-y: scroll;
 }
 .weeknumber {
     color: #069ec5;
@@ -328,76 +327,201 @@
     border-right: 1px solid #000000;
 }
 .netprofit-table-data .includeweek {
-    width: 21px;
+    width: 20px;
     border-right: 1px solid #000000;
 }
-/*
-.weekname {
-    width: 110px;
+.expandnetprofittableview, .collapsenetprofittableview {
+    clear: both;
+    margin-left: 522px;
+    color: #3736fe;
+    font-style: italic;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px!important;
 }
-.sales {
-    width: 38px;
+.collapsenetprofittableview {
+    display: none;
 }
-.revenue {
-    width: 66px;
+.netprofitchartdata {
+    clear: both;
+    width: 100%;
 }
-.grossprofit {
-    width: 67px;
+.netprofitchartdata_title {
+    padding-left: 45px;
+    width: 100%;
 }
-.profitperc {
-    width: 31px;
+.netprofitchartdata_title select {
+    width: 100%;
+    height: 20px;
 }
-.operating {
-    width: 62px;
+.netprofitbrandselect {
+    width: 120px;
+    margin-right: 38px;
 }
-.ads {
-    width: 61px;
+.netprofitheadoptionlabel.compareyear {
+    color: #39dd50;
 }
-.payroll {
-    width: 64px;
+.netprofitperiodselect {
+    width: 120px;
 }
-.upwork {
-    width: 56px;
+.weektotalsdataarea {
+    clear: both;
+    width: 100%;
 }
-.w9work {
-    width: 64px;
+.weektotalsdataarea > .weektotalsrow {
+    clear: both;
+    height: 22px;
+    width: 100%;
 }
-.discretionary {
-    width: 84px;
-    border-right: 1.5px solid #000000;
+.weektotalsdataarea > .weektotalsrow.small {
+    height: 16px;
 }
-.totalcost {
-    width: 66px;
+.weektotalsdataarea > .weektotalsrow.small > div {
+    line-height: 16px!important;
+    font-size: 11px;
 }
-.totalcostperc {
-    width: 31px;
+.weektotalsdataarea > .weektotalsrow.expensivesrow {
+    display: none;
 }
-.netprofit {
-    width: 61px;
+.weektotalsdataarea > .weektotalsrow > div {
+    color: #010101;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
 }
-.netprofitperc {
-    width: 31px;
-    border-right: 3px solid #000000;
+.weektotalsdataarea > .weektotalsrow > .parameterlabel {
+    padding-right: 5px;
+    width: 88px;
+    text-align: right;
+    border-right: 1px solid #000000;
 }
-.invest {
-    width: 51px;
+.weektotalsdataarea > .weektotalsrow.small > .parameterlabel {
+    border-right: 1px solid #FFFFFF;
 }
-.investperc {
-    width: 31px;
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.prognosis {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0000FF;
 }
-.od {
-    width: 52px;
+.weektotalsdataarea > .weektotalsrow > .parameterlabel.netprofit {
+    font-weight: bold;
 }
-.odperc {
-    width: 31px;
+.weektotalsdataarea > .weektotalsrow > .parameterlabel.expensives {
+    color: #ff0000;
 }
-.retained {
-    width: 58px;
+.weektotalsdataarea > .weektotalsrow > .parameterlabel > span.exponsivedata {
+    cursor: pointer;
 }
-.retainedperc {
-    width: 31px;
+.weektotalsdataarea > .weektotalsrow > .parametervalue {
+    width: 73px;
+    border-right: 1px solid #000000;
 }
-.emptyspace {
-    width: 32px;
+.weektotalsdataarea > .weektotalsrow > .parametervalue.currentyearval {
+    display: block;
+    background: #ededed;
 }
- */
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue {
+    border-right: 1px solid #FFFFFF;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.showhidecuryear {
+    color: #0000ff;
+    cursor: pointer;
+    text-align: center;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.netprofit {
+    font-weight: bold;
+}
+.weektotalsdataarea > .weektotalsrow.bottomborder > .parametervalue {
+    border-bottom: 1px solid #000000;
+    height: 21px;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata {
+    background-color: #d6d6d6;
+    font-size: 13px;
+    font-weight: bold;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    height: 22px;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis {
+    color: #ffffff;
+    width: 146px;
+    background: #413dd6;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.currentyear {
+    display: block;
+}
+
+.netprofitexpensesarea {
+    margin-top: 68px;
+    padding-left: 30px;
+    width: 100%;
+}
+.expensesdataarea {
+    width: 270px;
+    margin-right: 26px;
+}
+.expensesdata_title {
+    height: 25px;
+    line-height: 25px!important;
+    color: #010101;
+    font-weight: 600;
+}
+.expensesdata_title span {
+    font-weight: normal;
+}
+.expensesdata_managecategories {
+    float: right!important;
+    color: #0000ff;
+    cursor: pointer;
+    height: 25px;
+    line-height: 25px!important;
+}
+.expensesdata-table-head {
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 2px solid #000000;
+}
+.expensesdata-table-head div {
+    height: 20px;
+    line-height: 20px!important;
+    text-align: center;
+}
+.expensesdata-table-head .category_name {
+    width: 141px;
+}
+.expensesdata-table-head .amountvalue {
+    width: 76px;
+}
+.expensesdata-table-head .percentvalue {
+    width: 49px;
+}
+.expensesdata-table-data {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.expensesdata-table-data div {
+    height: 20px;
+    line-height: 20px!important;
+}
+.expensesdata-table-data .category_name {
+    width: 141px;
+    border-right: 1px solid #7f7f7f;
+    padding-left: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.expensesdata-table-data .amountvalue {
+    width: 76px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #7f7f7f;
+}
+.expensesdata-table-data .percentvalue {
+    width: 49px;
+    text-align: center;
+}

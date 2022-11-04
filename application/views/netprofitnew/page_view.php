@@ -1,3 +1,8 @@
+<?php
+$start_year = 2013;
+$end_year = 2022;
+$compareweek = 0;
+?>
 <div class="netprofitviewarea">
     <div class="netprofitviewtitle">
         <div class="datarow">
@@ -605,6 +610,334 @@
                 <div class="retainedperc">&nbsp;</div>
                 <div class="includeweek">
                     <i class="fa fa-square-o" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="expandnetprofittableview">+ Expand to 26 weeks</div>
+    <div class="collapsenetprofittableview">- Collapse to 13 weeks</div>
+    <div class="netprofitchartdata">
+        <div class="netprofitchartdata_title">
+            <div class="netprofitheadoptionlabel">Brand</div>
+            <div class="netprofitbrandselect">
+                <select>
+                    <option>Both Brands</option>
+                </select>
+            </div>
+            <div class="netprofitheadoptionlabel compareyear">Compare</div>
+            <div class="netprofitperiodselect">
+                <select>
+                    <option>Full Years</option>
+                </select>
+            </div>
+        </div>
+        <div class="weektotalsdataarea">
+            <div class="weektotalsrow small">
+                <div class="parameterlabel">&nbsp;</div>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue prognosis">&nbsp;</div>
+                <?php } ?>
+                <div class="parametervalue prognosis">Yr to Date</div>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue prognosis">On Pace</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Years</div>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue headdata years"><?= $i ?></div>
+                <?php } ?>
+                <div class="parametervalue headdata prognosis currentyear"><?=$i?></div>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Orders #</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">1000</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">1000</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">1001</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Pcs Sold </div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">10,000</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">10,000</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">10,000</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Revenue:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">$9,999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">$9,999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">$9,999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Gross Profit:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">$9,999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">$9,999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">$9,999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Gross Profit %</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">43%</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">43%</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">43%</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow bottomborder">
+                <div class="parameterlabel">Expenses:
+                    <span class="exponsivedata shown"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
+                </div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow expensivesrow">
+                <div class="parameterlabel expensives">Operating:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow  expensivesrow">
+                <div class="parameterlabel expensives">Adwords:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow  expensivesrow">
+                <div class="parameterlabel expensives">Payroll:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow  expensivesrow">
+                <div class="parameterlabel expensives">Upwork:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow  expensivesrow">
+                <div class="parameterlabel expensives">W9 Work:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow  expensivesrow bottomborder">
+                <div class="parameterlabel expensives">Purchases:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel netprofit">Net Profit:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue netprofit">$999,999</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval netprofit">$999,999</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue netprofit">$999,999</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow">
+                <div class="parameterlabel">Net Profit %:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">43%</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">43%</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">43%</div>
+                <?php } ?>
+            </div>
+            <div class="weektotalsrow bottomborder">
+                <div class="parameterlabel">Net/Gross %:</div>
+                <?php $j = 0; ?>
+                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
+                    <div class="parametervalue">43%</div>
+                    <?php $j++; ?>
+                <?php } ?>
+                <div class="parametervalue currentyearval">43%</div>
+                <?php $j++; ?>
+                <?php if ($compareweek==0) { ?>
+                    <div class="parametervalue">43%</div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+    <div class="netprofitexpensesarea">
+        <div class="expensesdataarea ads">
+            <div class="datarow">
+                <div class="expensesdata_title">Ads <span>$7,123.11</span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data">
+                <div class="datarow">
+                    <div class="category_name">W9 other</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+                <div class="datarow">
+                    <div class="category_name">Improve Clifton - Contractors</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+            </div>
+        </div>
+        <div class="expensesdataarea upwork">
+            <div class="datarow">
+                <div class="expensesdata_title">Upwork <span>$7,123.11</span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data">
+                <div class="datarow">
+                    <div class="category_name">W9 other</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+                <div class="datarow">
+                    <div class="category_name">Improve Clifton - Contractors</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+            </div>
+        </div>
+        <div class="expensesdataarea w9work">
+            <div class="datarow">
+                <div class="expensesdata_title">W9 Work <span>$7,123.11</span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data">
+                <div class="datarow">
+                    <div class="category_name">W9 other</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+                <div class="datarow">
+                    <div class="category_name">Improve Clifton - Contractors</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+            </div>
+        </div>
+        <div class="expensesdataarea discretionary">
+            <div class="datarow">
+                <div class="expensesdata_title">Discretionary <span>$7,123.11</span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data">
+                <div class="datarow">
+                    <div class="category_name">W9 other</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
+                </div>
+                <div class="datarow">
+                    <div class="category_name">Improve Clifton - Contractors</div>
+                    <div class="amountvalue">$10.000.22</div>
+                    <div class="percentvalue">43%</div>
                 </div>
             </div>
         </div>
