@@ -1,1 +1,22 @@
-<?php
+<div class="weekname">Running Total:</div>
+<div class="sales">1295</div>
+<div class="revenue">$9,999,999</div>
+<div class="grossprofit">$999,999</div>
+<div class="profitperc">43%</div>
+<div class="operating">----</div>
+<div class="ads">$99,999</div>
+<div class="payroll">$999,9999</div>
+<div class="upwork">$99,999</div>
+<div class="w9work">----</div>
+<div class="discretionary">----</div>
+<div class="totalcost">$999,999</div>
+<div class="totalcostperc">$43</div>
+<div class="netprofit">$999,999</div>
+<div class="netprofitperc">43%</div>
+<div class="invest">----</div>
+<div class="investperc">&nbsp;</div>
+<div class="od">----</div>
+<div class="odperc">&nbsp;</div>
+<div class="retained">----</div>
+<div class="retainedperc">&nbsp;</div>
+<div class="emptyspace">&nbsp;</div>
