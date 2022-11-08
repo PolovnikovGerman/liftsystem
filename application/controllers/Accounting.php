@@ -2038,6 +2038,162 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $error='';
             $mdata=array();
+            $radio=$this->input->post('radio');
+            $datbgn=$this->config->item('netprofit_start');
+            $order_by=$this->input->post('order_by');
+            $limitshow=$this->input->post('limitshow');
+            // $brand = $this->input->post('brand');
+            $brand = 'ALL';
+            $order='nd.datebgn';
+            $direc='desc';
+            switch ($order_by) {
+                case 'profitdate_desc':
+                    break;
+                case 'profitdate_asc':
+                    $direc='asc';
+                    break;
+                case 'sales_desc':
+                    $order='sales';
+                    break;
+                case 'sales_asc':
+                    $order='sales';
+                    $direc='asc';
+                    break;
+                case 'revenue_desc':
+                    $order='revenue';
+                    break;
+                case 'revenue_desc':
+                    $order='revenue';
+                    $direc='asc';
+                    break;
+                case 'grosprofit_desc':
+                    $order='gross_profit';
+                    break;
+                case 'grosprofit_asc':
+                    $order='gross_profit';
+                    $direc='asc';
+                    break;
+                case 'operating_desc':
+                    $order='np.profit_operating';
+                    break;
+                case 'operating_asc':
+                    $order='np.profit_operating';
+                    $direc='asc';
+                    break;
+                case 'payroll_desc':
+                    $order='profit_payroll';
+                    break;
+                case 'payroll_asc':
+                    $order='profit_payroll';
+                    $direc='asc';
+                    break;
+                case 'advertising_desc':
+                    $order='profit_advertising';
+                    break;
+                case 'advertising_asc':
+                    $order='profit_advertising';
+                    $direc='asc';
+                    break;
+                case 'projects_desc':
+                    $order='profit_projects';
+                    break;
+                case 'projects_asc':
+                    $order='profit_projects';
+                    $direc='asc';
+                    break;
+                case 'w9work_desc':
+                    $order='profit_projects';
+                    break;
+                case 'w9work_asc':
+                    $order='profit_projects';
+                    $direc='asc';
+                    break;
+                case 'purchases_desc':
+                    $order='profit_purchases';
+                    break;
+                case 'purchases_asc':
+                    $order='profit_purchases';
+                    $direc='asc';
+                    break;
+                case 'totalcost_desc':
+                    $order='totalcost';
+                    break;
+                case 'totalcost_asc':
+                    $order='totalcost';
+                    $direc='asc';
+                    break;
+                case 'netprofit_desc':
+                    $order='netprofit';
+                    break;
+                case 'netprofit_asc':
+                    $order='netprofit';
+                    $direc='asc';
+                    break;
+                case 'netsaved_desc':
+                    $order='np.profit_saved';
+                    break;
+                case 'netsaved_asc':
+                    $order='np.profit_saved';
+                    $direc='asc';
+                    break;
+                case 'owners_desc':
+                    $order='np.profit_owners';
+                    break;
+                case 'owners_asc':
+                    $order='np.profit_owners';
+                    $direc='asc';
+                    break;
+                case 'od2_desc':
+                    $order='np.od2';
+                    break;
+                case 'od2_asc':
+                    $order='np.od2';
+                    $direc='asc';
+                    break;
+            }
+            // $this->balances_model->_check_current_week($this->USR_ID);
+            $dat_end=date('Y-m-d', strtotime("Sunday this week", time())).' 23:59:59';
+            $datend=strtotime($dat_end);
+            $data=$this->balances_model->get_netprofit_data($datbgn,$datend, $order, $direc, $this->USR_ID, $radio, $brand, $limitshow);
+            // Run Totals
+            $fromweek=$this->input->post('fromweek');
+            $untilweek=$this->input->post('untilweek');
+            $options=array(
+                'type'=>'week',
+                'start'=>0,
+                'end'=>0,
+                'brand' => $brand,
+            );
+            // Get start && end date
+            if ($fromweek) {
+                $res=$this->balances_model->getweekdetail($fromweek,'start');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $options['start']=$res['date'];
+            }
+            if ($untilweek) {
+                $res=$this->balances_model->getweekdetail($untilweek,'end');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $options['end']=$res['date'];
+            }
+            $runtotal=$this->balances_model->get_netprofit_runs($options, $radio);
+            $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
+            $content_options=array(
+                'data'=>$data,
+                'limitshow'=>$limitshow,
+            );
+            $mdata['content']=$this->load->view('netprofitnew/table_data_view',$content_options,TRUE);
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function old_netprofitdat() {
+        if ($this->isAjax()) {
+            $error='';
+            $mdata=array();
             $type=$this->input->post('type');
             $radio=$this->input->post('radio');
             $datbgn=$this->config->item('netprofit_start');
@@ -2805,6 +2961,41 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function netprofit_expensetable() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Expense Type';
+            $postdata=$this->input->post();
+            $expenstype = ifset($postdata,'expenstype','');
+            if (!empty($expenstype)) {
+                $error = '';
+                $brand = ifset($postdata,'brand','ALL');
+                $year = ifset($postdata,'year', date('Y'));
+                // $year = 2017;
+                $sortfld = ifset($postdata,'sortfld','category_name');
+                $sortdir = ifset($postdata,'sortdir','asc');
+                if ($expenstype=='ads') {
+                    $data=$this->balances_model->get_expresyeardetails('ADS', $year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='w9work') {
+                    $data=$this->balances_model->get_expresyeardetails('W9', $year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='discretionary') {
+                    $data=$this->balances_model->get_expresyeardetails('Purchase', $year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='upwork') {
+                    $data=$this->balances_model->get_expresyeardetails('Upwork', $year, $brand, $sortfld, $sortdir);
+                }
+                $mdata['totals'] = empty($data['totals']) ? '' : MoneyOutput($data['totals']);
+                if (count($data['details'])==0) {
+                    $mdata['tableview'] = $this->load->view('netprofitnew/expensives_empty_view',[],TRUE);
+                } else {
+                    $mdata['tableview'] = $this->load->view('netprofitnew/expensives_view', ['datas' => $data['details']], TRUE);
+                }
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function netprofit_w9purchasetable() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2848,7 +3039,7 @@ class Accounting extends MY_Controller
             $postdata=$this->input->post();
             $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($postdata);
             $yearstotals['compareweek']=$postdata['compareweek'];
-            $mdata['content']=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
+            $mdata['content']=$this->load->view('netprofitnew/years_totals_view',$yearstotals, TRUE);
             $error='';
         }
         $this->ajaxResponse($mdata,$error);
@@ -3737,8 +3928,15 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_netprofit_content($brand) {
-
-        $content=$this->load->view('netprofitnew/page_view', [],TRUE);
+        $weeklist=$this->balances_model->get_weeklist();
+        $weekyearlist=$this->balances_model->get_currentyearweeks();
+        $page_options = [
+            'weeklists'=>$weeklist,
+            'weekyearlist' => $weekyearlist,
+            'brand' => $brand,
+            'limitrow' => $this->weekshow_limit
+        ];
+        $content=$this->load->view('netprofitnew/page_view', $page_options ,TRUE);
         return $content;
 
     }

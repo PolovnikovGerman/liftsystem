@@ -291,6 +291,9 @@
     width: 19px;
     border-right: 1.5px solid #000000;
 }
+.netprofit-table-data .discretionarynote img {
+    width: 11px;
+}
 .netprofit-table-data .totalcost {
     width: 66px;
 }
@@ -363,10 +366,15 @@
 }
 .netprofitperiodselect {
     width: 120px;
+    margin-right: 37px;
+}
+.netprofitcompareperiodselect {
+    display: none;
 }
 .weektotalsdataarea {
     clear: both;
     width: 100%;
+    margin-top: 7px;
 }
 .weektotalsdataarea > .weektotalsrow {
     clear: both;
@@ -398,6 +406,10 @@
 }
 .weektotalsdataarea > .weektotalsrow.small > .parameterlabel {
     border-right: 1px solid #FFFFFF;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.incomplete {
+    color: #ff0000;
+    font-style: italic;
 }
 .weektotalsdataarea > .weektotalsrow.small > .parametervalue.prognosis {
     font-size: 13px;
@@ -432,6 +444,12 @@
 .weektotalsdataarea > .weektotalsrow > .parametervalue.netprofit {
     font-weight: bold;
 }
+.weektotalsdataarea > .weektotalsrow > .parametervalue.pcssold {
+    color: #8e8e8e;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.grossprofitperc {
+    color: #0000FF;
+}
 .weektotalsdataarea > .weektotalsrow.bottomborder > .parametervalue {
     border-bottom: 1px solid #000000;
     height: 21px;
@@ -448,6 +466,9 @@
     color: #ffffff;
     width: 146px;
     background: #413dd6;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.narrow {
+    width: 73px;
 }
 .weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.currentyear {
     display: block;
@@ -496,7 +517,7 @@
     width: 76px;
 }
 .expensesdata-table-head .percentvalue {
-    width: 49px;
+    width: 50px;
 }
 .expensesdata-table-data {
     border-left: 1px solid #000000;
@@ -524,4 +545,9 @@
 .expensesdata-table-data .percentvalue {
     width: 49px;
     text-align: center;
+}
+.expensesdata-table-data .emptyexpenses {
+    width: 267px;
+    text-align: center;
+    color: #FF0000;
 }

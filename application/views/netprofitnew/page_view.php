@@ -1,43 +1,74 @@
-<?php
-$start_year = 2013;
-$end_year = 2022;
-$compareweek = 0;
-?>
+<input type="hidden" value="<?=$limitrow?>" id="limitweekshow"/>
+<input type="hidden" id="netprofitviewbrand" value="<?=$brand?>">
+<input type="hidden" id="netprofitviewtype" value="amount"/>
 <div class="netprofitviewarea">
     <div class="netprofitviewtitle">
         <div class="datarow">
             <div class="netprofitheadoptionlabel">Sort by</div>
             <div class="netprofitsortselect">
-                <select>
-                    <option value="date_desc">Date <i class="fa fa-caret-down" aria-hidden="true"></i></option>
+                <select id="netreportsortorder">
+                    <option value="profitdate_desc">Date &#9660;</option>
+                    <option value="profitdate_asc">Date &#9650;</option>
+                    <option value="sales_desc">Sales &#9660;</option>
+                    <option value="sales_asc">Sales &#9650;</option>
+                    <option value="revenue_desc">Revenue &#9660;</option>
+                    <option value="revenue_asc">Revenue &#9650;</option>
+                    <option value="grosprofit_desc">Gross Profit &#9660;</option>
+                    <option value="grosprofit_asc">Gross Profit &#9650;</option>
+                    <option value="operating_desc">Operating &#9660;</option>
+                    <option value="operating_asc">Operating &#9650;</option>
+                    <option value="payroll_desc">US Payroll &#9660;</option>
+                    <option value="payroll_asc">US Payroll &#9650;</option>
+                    <option value="advertising_desc">Ads &#9660;</option>
+                    <option value="advertising_asc">Ads &#9650;</option>
+                    <option value="projects_desc">Upwork &#9660;</option>
+                    <option value="projects_asc">Upwork &#9650;</option>
+                    <option value="w9work_desc">W9 Work &#9660;</option>
+                    <option value="w9work_asc">W9 Work &#9650;</option>
+                    <option value="purchases_desc">Discretionary &#9660;</option>
+                    <option value="purchases_asc">Discretionary &#9650;</option>
+                    <option value="totalcost_desc">Total Cost &#9660;</option>
+                    <option value="totalcost_asc">Total Cost &#9650;</option>
+                    <option value="netprofit_desc">Net Profit &#9660;</option>
+                    <option value="netprofit_asc">Net Profit &#9650;</option>
+                    <option value="netsaved_desc">Savings &#9660;</option>
+                    <option value="netsaved_asc">Savings &#9650;</option>
+                    <option value="owners_desc">OD1 &#9660;</option>
+                    <option value="owners_asc">OD1 &#9650;</option>
+                    <option value="od2_desc">OD2 &#9660;</option>
+                    <option value="od2_asc">OD2 &#9650;</option>
                 </select>
             </div>
             <div class="netprofitheadoptionlabel">
                 From:
             </div>
             <div class="netprofitweekselect">
-                <select>
+                <select id="weekselectfrom">
                     <option value=""></option>
-                    <option value="33">Oct/Nov 31-6, 2022</option>
+                    <?php foreach ($weeklists as $weeklist) { ?>
+                        <option value="<?=$weeklist['id']?>"><?=$weeklist['label']?></option>
+                    <?php } ?>
                 </select>
             </div>
             <div class="netprofitheadoptionlabel">
                 Until:
             </div>
             <div class="netprofitweekselect">
-                <select>
+                <select id="weekselectuntil">
                     <option value=""></option>
-                    <option value="33">Oct/Nov 31-6, 2022</option>
+                    <?php foreach ($weeklists as $weeklist) { ?>
+                        <option value="<?=$weeklist['id']?>"><?=$weeklist['label']?></option>
+                    <?php } ?>
                 </select>
             </div>
-            <div class="netprofitheadocheck first active">
+            <div class="netprofitheadocheck first active" data-viewtype="amount">
                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
             </div>
             <div class="netprofitheadochecklabel">Amnt</div>
-            <div class="netprofitheadocheck">
+            <div class="netprofitheadocheck" data-viewtype="percent">
                 <i class="fa fa-circle-o" aria-hidden="true"></i>
             </div>
-            <div class="netprofitheadochecklabel">Amnt</div>
+            <div class="netprofitheadochecklabel">% Only</div>
             <div class="netprofitviewdataselect">
                 <select>
                     <option value="detail">Detailed</option>
@@ -74,784 +105,54 @@ $compareweek = 0;
             </div>
         </div>
         <div class="datarow">
-            <div class="netprofit-running">
-                <div class="weekname">Running Total:</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="emptyspace">&nbsp;</div>
-            </div>
+            <div class="netprofit-running"></div>
         </div>
     </div>
-    <div class="netprofitviewdata">
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data whitedatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="quoternumber">TQ3</div>
-            <div class="netprofit-table-data whitedatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="weeknumber">42</div>
-            <div class="netprofit-table-data greydatarow">
-                <div class="weekname">Oct 10-16,2022</div>
-                <div class="sales">1295</div>
-                <div class="revenue">$9,999,999</div>
-                <div class="grossprofit">$999,999</div>
-                <div class="profitperc">43%</div>
-                <div class="operating">----</div>
-                <div class="ads">$99,999</div>
-                <div class="payroll">$999,9999</div>
-                <div class="upwork">$99,999</div>
-                <div class="w9work">----</div>
-                <div class="discretionary">----</div>
-                <div class="discretionarynote">
-                    <img src="/img/accounting/list.png" alt="Note"/>
-                </div>
-                <div class="totalcost">$999,999</div>
-                <div class="totalcostperc">$43</div>
-                <div class="netprofit">$999,999</div>
-                <div class="netprofitperc">43%</div>
-                <div class="invest">----</div>
-                <div class="investperc">&nbsp;</div>
-                <div class="od">----</div>
-                <div class="odperc">&nbsp;</div>
-                <div class="retained">----</div>
-                <div class="retainedperc">&nbsp;</div>
-                <div class="includeweek">
-                    <i class="fa fa-square-o" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="netprofitviewdata"></div>
     <div class="expandnetprofittableview">+ Expand to 26 weeks</div>
     <div class="collapsenetprofittableview">- Collapse to 13 weeks</div>
     <div class="netprofitchartdata">
         <div class="netprofitchartdata_title">
             <div class="netprofitheadoptionlabel">Brand</div>
             <div class="netprofitbrandselect">
-                <select>
-                    <option>Both Brands</option>
+                <select id="netprofitchartdatabrand">
+                    <option value="ALL">Both Brands</option>
+                    <option value="SB">StressBalls</option>
+                    <option value="SR">StressRelievers</option>
                 </select>
             </div>
             <div class="netprofitheadoptionlabel compareyear">Compare</div>
             <div class="netprofitperiodselect">
-                <select>
-                    <option>Full Years</option>
+                <select class="weektotalsviewtype">
+                    <option value="0">Full Year</option>
+                    <option value="1">Portion of year</option>
                 </select>
             </div>
-        </div>
-        <div class="weektotalsdataarea">
-            <div class="weektotalsrow small">
-                <div class="parameterlabel">&nbsp;</div>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue prognosis">&nbsp;</div>
-                <?php } ?>
-                <div class="parametervalue prognosis">Yr to Date</div>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue prognosis">On Pace</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Years</div>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue headdata years"><?= $i ?></div>
-                <?php } ?>
-                <div class="parametervalue headdata prognosis currentyear"><?=$i?></div>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Orders #</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">1000</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">1000</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">1001</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Pcs Sold </div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">10,000</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">10,000</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">10,000</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Revenue:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">$9,999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">$9,999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">$9,999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Gross Profit:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">$9,999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">$9,999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">$9,999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Gross Profit %</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">43%</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">43%</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">43%</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow bottomborder">
-                <div class="parameterlabel">Expenses:
-                    <span class="exponsivedata shown"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
+            <div class="netprofitcompareperiodselect">
+                <div class="netprofitheadoptionlabel">From:</div>
+                <div class="netprofitweekselect">
+                    <select id="strweek">
+                        <?php foreach ($weekyearlist as $row) { ?>
+                            <option value="<?=$row['weeknum']?>">#<?=$row['weeknum']?> <?=$row['label']?></option>
+                        <?php } ?>
+                    </select>
                 </div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow expensivesrow">
-                <div class="parameterlabel expensives">Operating:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow  expensivesrow">
-                <div class="parameterlabel expensives">Adwords:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow  expensivesrow">
-                <div class="parameterlabel expensives">Payroll:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow  expensivesrow">
-                <div class="parameterlabel expensives">Upwork:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow  expensivesrow">
-                <div class="parameterlabel expensives">W9 Work:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow  expensivesrow bottomborder">
-                <div class="parameterlabel expensives">Purchases:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval helpexpensive" data-content="">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue helpexpensive" data-content="">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel netprofit">Net Profit:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue netprofit">$999,999</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval netprofit">$999,999</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue netprofit">$999,999</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow">
-                <div class="parameterlabel">Net Profit %:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">43%</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">43%</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">43%</div>
-                <?php } ?>
-            </div>
-            <div class="weektotalsrow bottomborder">
-                <div class="parameterlabel">Net/Gross %:</div>
-                <?php $j = 0; ?>
-                <?php for ($i = $start_year; $i < $end_year; $i++) { ?>
-                    <div class="parametervalue">43%</div>
-                    <?php $j++; ?>
-                <?php } ?>
-                <div class="parametervalue currentyearval">43%</div>
-                <?php $j++; ?>
-                <?php if ($compareweek==0) { ?>
-                    <div class="parametervalue">43%</div>
-                <?php } ?>
+                <div class="netprofitheadoptionlabel">Until:</div>
+                <div class="netprofitweekselect">
+                    <select id="endweek">
+                        <?php foreach ($weekyearlist as $row) { ?>
+                            <option value="<?=$row['weeknum']?>" <?=$row['current']==1 ? 'selected="selected"' : ''?>>#<?=$row['weeknum']?> <?=$row['label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
             </div>
         </div>
+        <div class="weektotalsdataarea"></div>
     </div>
     <div class="netprofitexpensesarea">
         <div class="expensesdataarea ads">
             <div class="datarow">
-                <div class="expensesdata_title">Ads <span>$7,123.11</span></div>
+                <div class="expensesdata_title">Ads <span id="adstotals"></span></div>
                 <div class="expensesdata_managecategories">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -859,22 +160,11 @@ $compareweek = 0;
                 <div class="amountvalue">Amount</div>
                 <div class="percentvalue">%</div>
             </div>
-            <div class="expensesdata-table-data">
-                <div class="datarow">
-                    <div class="category_name">W9 other</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-                <div class="datarow">
-                    <div class="category_name">Improve Clifton - Contractors</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-            </div>
+            <div class="expensesdata-table-data ads"></div>
         </div>
         <div class="expensesdataarea upwork">
             <div class="datarow">
-                <div class="expensesdata_title">Upwork <span>$7,123.11</span></div>
+                <div class="expensesdata_title">Upwork <span id="upworktotals"></span></div>
                 <div class="expensesdata_managecategories">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -882,22 +172,11 @@ $compareweek = 0;
                 <div class="amountvalue">Amount</div>
                 <div class="percentvalue">%</div>
             </div>
-            <div class="expensesdata-table-data">
-                <div class="datarow">
-                    <div class="category_name">W9 other</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-                <div class="datarow">
-                    <div class="category_name">Improve Clifton - Contractors</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-            </div>
+            <div class="expensesdata-table-data upwork"></div>
         </div>
         <div class="expensesdataarea w9work">
             <div class="datarow">
-                <div class="expensesdata_title">W9 Work <span>$7,123.11</span></div>
+                <div class="expensesdata_title">W9 Work <span id="w9worktotals"></span></div>
                 <div class="expensesdata_managecategories">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -905,22 +184,11 @@ $compareweek = 0;
                 <div class="amountvalue">Amount</div>
                 <div class="percentvalue">%</div>
             </div>
-            <div class="expensesdata-table-data">
-                <div class="datarow">
-                    <div class="category_name">W9 other</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-                <div class="datarow">
-                    <div class="category_name">Improve Clifton - Contractors</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-            </div>
+            <div class="expensesdata-table-data w9work"></div>
         </div>
         <div class="expensesdataarea discretionary">
             <div class="datarow">
-                <div class="expensesdata_title">Discretionary <span>$7,123.11</span></div>
+                <div class="expensesdata_title">Discretionary <span id="discretionarytotals"></span></div>
                 <div class="expensesdata_managecategories">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -928,18 +196,7 @@ $compareweek = 0;
                 <div class="amountvalue">Amount</div>
                 <div class="percentvalue">%</div>
             </div>
-            <div class="expensesdata-table-data">
-                <div class="datarow">
-                    <div class="category_name">W9 other</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-                <div class="datarow">
-                    <div class="category_name">Improve Clifton - Contractors</div>
-                    <div class="amountvalue">$10.000.22</div>
-                    <div class="percentvalue">43%</div>
-                </div>
-            </div>
+            <div class="expensesdata-table-data discretionary"></div>
         </div>
     </div>
 </div>
