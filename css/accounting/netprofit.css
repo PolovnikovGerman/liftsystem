@@ -467,6 +467,9 @@
     width: 146px;
     background: #413dd6;
 }
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.narrow {
+    width: 73px;
+}
 .weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.currentyear {
     display: block;
 }
@@ -542,4 +545,9 @@
 .expensesdata-table-data .percentvalue {
     width: 49px;
     text-align: center;
+}
+.expensesdata-table-data .emptyexpenses {
+    width: 267px;
+    text-align: center;
+    color: #FF0000;
 }

@@ -10,6 +10,7 @@ class Balances_model extends My_Model
 {
 
     private $EMPTY_PROFIT='------';
+    private $NOT_CALC_YET = 'Not Calc Yet';
     private $empty_html_content='&nbsp;';
     private $start_netprofitdatashow=2013;
 
@@ -369,7 +370,7 @@ class Balances_model extends My_Model
             $profit_debt=floatval($result['netprofit'])-$profit_od2-$profit_saved;
             // Prepare columns for out
             $row['out_revenue'] = empty($result['revenue']) ? $this->EMPTY_PROFIT : MoneyOutput($result['revenue'],0);
-            $row['out_profit'] = empty($result['out_profit']) ? $this->EMPTY_PROFIT : MoneyOutput($result['gross_profit'],0);
+            $row['out_profit'] = empty($result['gross_profit']) ? $this->EMPTY_PROFIT : MoneyOutput($result['gross_profit'],0);
             $row['profit_class']=(floatval($result['cntproj'])==0 ? '' : 'projprof');
             $row['out_profitperc'] = $profit_revenue==0 ? $this->empty_html_content : round($result['gross_profit']/$profit_revenue*100,0).'%';
             $row['operating_class'] = ($profit_operating == 0 ? '' : ($profit_operating > 0 ? 'color_red' : 'color_green'));
@@ -4007,14 +4008,14 @@ class Balances_model extends My_Model
         return $out;
     }
 
-    public function get_adsyeardetails($year, $brand, $sortfld, $sortdir) {
+    public function get_expresyeardetails($expensetype, $year, $brand, $sortfld, $sortdir) {
         $now=getDayOfWeek(date('W'), date('Y'),1);
         // Totals
         $this->db->select('sum(d.amount) amount');
         $this->db->from('ts_netprofit_details d');
         $this->db->join('netprofit n','n.profit_id=d.profit_id');
         $this->db->where('n.profit_week is not null');
-        $this->db->where('d.details_type','ADS');
+        $this->db->where('d.details_type',$expensetype);
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {
@@ -4038,7 +4039,7 @@ class Balances_model extends My_Model
         $this->db->join('ts_netprofit_categories c', 'c.netprofit_category_id=d.netprofit_category_id','left');
         $this->db->join('netprofit n','n.profit_id=d.profit_id');
         $this->db->where('n.profit_week is not null');
-        $this->db->where('d.details_type','ADS');
+        $this->db->where('d.details_type', $expensetype);
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
         if ($brand!=='ALL') {

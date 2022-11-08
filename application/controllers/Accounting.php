@@ -2970,21 +2970,26 @@ class Accounting extends MY_Controller
             if (!empty($expenstype)) {
                 $error = '';
                 $brand = ifset($postdata,'brand','ALL');
-                // $year = ifset($postdata,'year', date('Y'));
-                $year = 2017;
+                $year = ifset($postdata,'year', date('Y'));
+                // $year = 2017;
                 $sortfld = ifset($postdata,'sortfld','category_name');
                 $sortdir = ifset($postdata,'sortdir','asc');
                 if ($expenstype=='ads') {
-                    $data=$this->balances_model->get_expyeardetails($year, $brand, $sortfld, $sortdir);
+                    $data=$this->balances_model->get_expresyeardetails('ADS', $year, $brand, $sortfld, $sortdir);
                 } elseif ($expenstype=='w9work') {
-                    $data=$this->balances_model->get_w9yeardetails($year, $brand, $sortfld, $sortdir);
+                    $data=$this->balances_model->get_expresyeardetails('W9', $year, $brand, $sortfld, $sortdir);
                 } elseif ($expenstype=='discretionary') {
-                    $data = $this->balances_model->get_purchaseyeardetails($year, $brand, $sortfld, $sortdir);
+                    $data=$this->balances_model->get_expresyeardetails('Purchase', $year, $brand, $sortfld, $sortdir);
                 } elseif ($expenstype=='upwork') {
-
+                    $data=$this->balances_model->get_expresyeardetails('Upwork', $year, $brand, $sortfld, $sortdir);
                 }
                 $mdata['totals'] = empty($data['totals']) ? '' : MoneyOutput($data['totals']);
-                $mdata['tableview'] = $this->load->view('netprofitnew/expensives_view', ['datas' => $data['details']], TRUE);
+                if (count($data['details'])==0) {
+                    $mdata['tableview'] = $this->load->view('netprofitnew/expensives_empty_view',[],TRUE);
+                } else {
+                    $mdata['tableview'] = $this->load->view('netprofitnew/expensives_view', ['datas' => $data['details']], TRUE);
+                }
+
             }
             $this->ajaxResponse($mdata, $error);
         }

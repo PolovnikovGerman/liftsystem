@@ -19,14 +19,14 @@
                     <option value="operating_asc">Operating &#9650;</option>
                     <option value="payroll_desc">US Payroll &#9660;</option>
                     <option value="payroll_asc">US Payroll &#9650;</option>
-                    <option value="advertising_desc">Adwords &#9660;</option>
-                    <option value="advertising_asc">Adwords &#9650;</option>
-                    <option value="projects_desc">Int Upwork &#9660;</option>
-                    <option value="projects_asc">Int Upwork &#9650;</option>
+                    <option value="advertising_desc">Ads &#9660;</option>
+                    <option value="advertising_asc">Ads &#9650;</option>
+                    <option value="projects_desc">Upwork &#9660;</option>
+                    <option value="projects_asc">Upwork &#9650;</option>
                     <option value="w9work_desc">W9 Work &#9660;</option>
                     <option value="w9work_asc">W9 Work &#9650;</option>
-                    <option value="purchases_desc">Purchases &#9660;</option>
-                    <option value="purchases_asc">Purchases &#9650;</option>
+                    <option value="purchases_desc">Discretionary &#9660;</option>
+                    <option value="purchases_asc">Discretionary &#9650;</option>
                     <option value="totalcost_desc">Total Cost &#9660;</option>
                     <option value="totalcost_asc">Total Cost &#9650;</option>
                     <option value="netprofit_desc">Net Profit &#9660;</option>
@@ -61,14 +61,14 @@
                     <?php } ?>
                 </select>
             </div>
-            <div class="netprofitheadocheck first active">
+            <div class="netprofitheadocheck first active" data-viewtype="amount">
                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
             </div>
             <div class="netprofitheadochecklabel">Amnt</div>
-            <div class="netprofitheadocheck">
+            <div class="netprofitheadocheck" data-viewtype="percent">
                 <i class="fa fa-circle-o" aria-hidden="true"></i>
             </div>
-            <div class="netprofitheadochecklabel">Amnt</div>
+            <div class="netprofitheadochecklabel">% Only</div>
             <div class="netprofitviewdataselect">
                 <select>
                     <option value="detail">Detailed</option>
@@ -115,17 +115,17 @@
         <div class="netprofitchartdata_title">
             <div class="netprofitheadoptionlabel">Brand</div>
             <div class="netprofitbrandselect">
-                <select>
-                    <option value="">Both Brands</option>
+                <select id="netprofitchartdatabrand">
+                    <option value="ALL">Both Brands</option>
                     <option value="SB">StressBalls</option>
                     <option value="SR">StressRelievers</option>
                 </select>
             </div>
             <div class="netprofitheadoptionlabel compareyear">Compare</div>
             <div class="netprofitperiodselect">
-                <select>
-                    <option>Full Year</option>
-                    <option>Portion of year</option>
+                <select class="weektotalsviewtype">
+                    <option value="0">Full Year</option>
+                    <option value="1">Portion of year</option>
                 </select>
             </div>
             <div class="netprofitcompareperiodselect">
@@ -147,8 +147,7 @@
                 </div>
             </div>
         </div>
-        <div class="weektotalsdataarea">
-        </div>
+        <div class="weektotalsdataarea"></div>
     </div>
     <div class="netprofitexpensesarea">
         <div class="expensesdataarea ads">
