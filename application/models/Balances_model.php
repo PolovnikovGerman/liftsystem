@@ -10,7 +10,7 @@ class Balances_model extends My_Model
 {
 
     private $EMPTY_PROFIT='------';
-    private $NOT_CALC_YET = 'Not Calc Yet';
+    private $NOT_CALC_YET = 'Not Calc'; // 'Not Calc Yet';
     private $empty_html_content='&nbsp;';
     private $start_netprofitdatashow=2013;
 
@@ -427,8 +427,8 @@ class Balances_model extends My_Model
                 $row['out_w9'] = $profit_w9 == 0 ? $this->EMPTY_PROFIT : ($profit_w9 < 0 ? MoneyOutput(abs($profit_w9),0) : '('.MoneyOutput(abs($profit_w9),0).')');
                 $row['out_purchases'] = $profit_purchases == 0 ? $this->EMPTY_PROFIT : ($profit_purchases < 0 ? MoneyOutput(abs($profit_purchases),0) : '('.MoneyOutput(abs($profit_purchases),0).')');
                 $row['out_purchases'] = $profit_purchases == 0 ? $this->EMPTY_PROFIT : ($profit_purchases < 0 ? MoneyOutput(abs($profit_purchases),0) : '('.MoneyOutput(abs($profit_purchases),0).')');
-                $row['out_totalcost'] = $result['totalcost'] == 0 ? $this->EMPTY_PROFIT : ($result['totalcost'] < 0 ? MoneyOutput(abs($result['totalcost']),0) : '('.MoneyOutput(abs($result['totalcost']),0).')');
-                $row['out_netprofit'] = $result['netprofit'] == 0 ? $this->EMPTY_PROFIT : ($result['netprofit'] < 0 ? MoneyOutput(abs($result['netprofit']),0) : '('.MoneyOutput(abs($result['netprofit']),0).')');
+                $row['out_totalcost'] = $result['totalcost'] == 0 ? $this->NOT_CALC_YET : ($result['totalcost'] < 0 ? MoneyOutput(abs($result['totalcost']),0) : '('.MoneyOutput(abs($result['totalcost']),0).')');
+                $row['out_netprofit'] = $result['netprofit'] == 0 ? $this->NOT_CALC_YET : ($result['netprofit'] < 0 ? MoneyOutput(abs($result['netprofit']),0) : '('.MoneyOutput(abs($result['netprofit']),0).')');
                 $row['out_saved'] = $profit_saved == 0 ? $this->EMPTY_PROFIT : ($profit_saved > 0 ? MoneyOutput($profit_saved,0) : '('.MoneyOutput(abs($profit_saved),0).')');
                 $row['out_od'] = $profit_od2 == 0 ? $this->EMPTY_PROFIT : ($profit_od2 > 0 ? MoneyOutput(abs($profit_od2),0) : '('.MoneyOutput(abs($profit_od2),0).')');
                 $row['out_debt'] = $profit_debt == 0 ? $this->EMPTY_PROFIT : ($profit_debt > 0 ? MoneyOutput(abs($profit_debt),0) : '('.MoneyOutput(abs($profit_debt),0).')');
@@ -457,11 +457,11 @@ class Balances_model extends My_Model
                 if ($profit_purchases != 0 && $profit_revenue != 0) {
                     $row['out_purchases'] = $profit_purchases < 0 ? round(abs($profit_purchases/$profit_revenue)*100,0).'%' : '('.round(abs($profit_purchases/$profit_revenue)*100,0).'%'.')';
                 }
-                $row['out_totalcost']=$this->EMPTY_PROFIT;
+                $row['out_totalcost']=$this->NOT_CALC_YET;
                 if ($result['totalcost'] != 0 && $profit_revenue != 0) {
                     $row['out_totalcost'] = $result['totalcost'] < 0 ? round(abs($result['totalcost']/$profit_revenue)*100,0).'%' : '('.round(abs($result['totalcost']/$profit_revenue)*100,0).'%'.')';
                 }
-                $row['out_netprofit']=$this->EMPTY_PROFIT;
+                $row['out_netprofit']=$this->NOT_CALC_YET;
                 if ($result['netprofit'] != 0 && $profit_revenue != 0) {
                     $row['out_netprofit'] = $result['netprofit'] > 0 ? round(abs($result['netprofit']/$profit_revenue)*100,0).'%' : '('.round(abs($result['netprofit']/$profit_revenue)*100,0).'%'.')';
                 }
@@ -1031,7 +1031,7 @@ class Balances_model extends My_Model
         return $out;
     }
 
-    public function include_netprofit_week($profit_id, $brand, $type) {
+    public function include_netprofit_week($profit_id, $brand, $type='week') {
         $out=array('result'=>$this->error_result,'msg'=>'Period Not Found');
         $this->db->select('profit_id, runinclude');
         $this->db->from('netprofit_dat');
@@ -1054,23 +1054,24 @@ class Balances_model extends My_Model
                 $outinclude='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
             }
             $this->db->where('profit_id', $profit_id);
-            if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('brand', ['BT','SB']);
-                } else {
-                    $this->db->where('brand', $brand);
-                }
-            }
+            // if ($brand!=='ALL') {
+            //    if ($brand=='SB') {
+            //        $this->db->where_in('brand', ['BT','SB']);
+            //    } else {
+            //        $this->db->where('brand', $brand);
+            //    }
+            // }
             $this->db->set('runinclude', $newdata);
             $this->db->update('netprofit_dat');
             $out['runincl']=$outinclude;
+
             /* Get data about Netprofit  */
-            $total_options=array(
-                'type'=>$type,
-                'start'=>$this->config->item('netprofit_start'),
-                'brand' => $brand,
-            );
-            $out['totals']=$this->get_netprofit_runs($total_options);
+//            $total_options=array(
+//                'type'=>$type,
+//                'start'=>$this->config->item('netprofit_start'),
+//                'brand' => $brand,
+//            );
+//            $out['totals']=$this->get_netprofit_runs($total_options);
         }
         return $out;
     }
@@ -4447,6 +4448,53 @@ class Balances_model extends My_Model
             $out['totals']=$totals;
         }
         return $out;
+    }
+
+    public function netprofit_weekdetails($profit_id) {
+        $this->db->select('*');
+        $this->db->from('netprofit');
+        $this->db->where('profit_id', $profit_id);
+        $prof = $this->db->get()->row_array();
+        $datebgn = $prof['datebgn'];
+        $dateend = $prof['dateend'];
+        $this->db->select('brand, count(order_id) as cnt, sum(revenue) as revenue, sum(profit) as profit');
+        $this->db->from('ts_orders');
+        $this->db->where('is_canceled',0);
+        $this->db->where('order_date >= ', $datebgn);
+        $this->db->where('order_date <= ', $dateend);
+        $this->db->group_by('brand');
+        $details = $this->db->get()->result_array();
+        $sborders = $srorders = $sbrevenue = $srrevenue = $sbprofit = $srprofit = 0;
+        foreach ($details as $detail) {
+            if ($detail['brand']=='SR') {
+                $srorders+=intval($detail['cnt']);
+                $srrevenue += floatval($detail['revenue']);
+                $srprofit += floatval($detail['profit']);
+            } else {
+                $sborders+=intval($detail['cnt']);
+                $sbrevenue += floatval($detail['revenue']);
+                $sbprofit += floatval($detail['profit']);
+            }
+        }
+        $out=[];
+        $out[] = [
+            'brand' => 'Stressballs',
+            'sales' => QTYOutput($sborders),
+            'revenue' => MoneyOutput($sbrevenue, 0),
+            'profit' => MoneyOutput($sbprofit, 0),
+            'profitperc' => ($sbrevenue==0 ? $this->empty_html_content : round($sbprofit/$sbrevenue*100, 0).'%'),
+        ];
+        $out[] = [
+            'brand' => 'StressRelievers',
+            'sales' => QTYOutput($srorders),
+            'revenue' => MoneyOutput($srrevenue, 0),
+            'profit' => MoneyOutput($srprofit, 0),
+            'profitperc' => ($srrevenue==0 ? $this->empty_html_content : round($srprofit/$srrevenue*100, 0).'%'),
+        ];
+
+        return $out;
+
+
     }
 
 }

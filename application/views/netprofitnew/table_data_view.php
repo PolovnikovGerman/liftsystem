@@ -6,11 +6,14 @@
         <?php } else { ?>
             <div class="quoternumber"><?=$datum['tax_quarter']?></div>
         <?php } ?>
-        <div class="netprofit-table-data <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$datum['datarowclass']?>">
+        <div class="netprofit-table-data <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$datum['datarowclass']?>" data-profit="<?=$datum['profit_id']?>">
             <div class="weekname editdata" data-profit="<?=$datum['profit_id']?>"><?=$datum['week']?></div>
             <div class="sales"><?=$datum['sales'] ?></div>
             <div class="revenue"><?=$datum['out_revenue']?></div>
-            <div class="grossprofit <?= $datum['profit_class'] ?>"><?= $datum['out_profit'] ?></div>
+            <div class="grossprofit <?= $datum['profit_class'] ?>" data-event="hover" data-css="poreport_detailmessage" data-bgcolor="#FFFFFF" data-bordercolor="#000"
+                 data-textcolor="#000" data-position="down" data-balloon="{ajax} /accounting/netprofit_weekdetails?id=<?=$datum['profit_id']?>">
+                <?= $datum['out_profit'] ?>
+            </div>
             <div class="profitperc"><?=$datum['out_profitperc']?></div>
             <div class="operating <?= $datum['operating_class'] ?>"><?=$datum['out_operating']?></div>
             <div class="ads <?=$datum['advertising_class']?>"><?=$datum['out_advertising'] ?></div>
@@ -31,7 +34,7 @@
             <div class="odperc"><?=$datum['out_odperc']?></div>
             <div class="retained <?= $datum['debt_class'] ?>"><?= $datum['out_debt'] ?></div>
             <div class="retainedperc"><?=$datum['out_debtperc']?></div>
-            <div class="includeweek"><?=$datum['run_include']?></div>
+            <div class="includeweek" data-profit="<?=$datum['profit_id']?>"><?=$datum['run_include']?></div>
         </div>
     </div>
     <?php $numpp++;?>

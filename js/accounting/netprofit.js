@@ -25,8 +25,9 @@ function init_netprofitpage() {
         if (response.errors=='') {
             $("div.netprofitviewdata").empty().html(response.data.content);
             $("div.netprofit-running").empty().html(response.data.total_view);
-            // init_netprofit_content();
+            init_netprofit_content();
             $("#loader").hide();
+            jQuery.balloon.init();
         } else {
             $("#loader").hide();
             show_error(response);
@@ -92,6 +93,33 @@ function init_expenses_details(expenstype) {
         }
     },'json');
 }
+
+function init_netprofit_content() {
+    $(".includeweek").unbind('click').click(function () {
+        var profit = $(this).data('profit');
+        check_week(profit);
+    });
+}
+
+function check_week(profit) {
+    var params=new Array();
+    params.push({name: 'profit_id', value: profit});
+    // params.push({name: 'brand', value: 'ALL'});
+    params.push({name: 'fromweek', value: $("select#weekselectfrom").val()});
+    params.push({name: 'untilweek', value: $("select#weekselectuntil").val()});
+    params.push({name: 'viewtype', value: $("#netprofitviewtype").val()});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url="/accounting/netprofit_checkweek"
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $(".includeweek[data-profit='"+profit+"']").empty().html(response.data.weekcheck);
+            $("div.netprofit-running").empty().html(response.data.total_view);
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
 
 function init_charttable_content() {
     $("span.exponsivedata").unbind('click').click(function(){
