@@ -2365,6 +2365,13 @@ class Accounting extends MY_Controller
         }
     }
 
+    public function netprofit_weekdetails() {
+        $profit_id = $this->input->get('id');
+        $details = $this->balances_model->netprofit_weekdetails($profit_id);
+        $content = $this->load->view('netprofitnew/netprofit_weekdetails_view',['details' => $details], TRUE);
+        echo $content;
+    }
+
     public function manage_profcategory() {
         if ($this->isAjax()) {
             $error='';
@@ -2940,25 +2947,66 @@ class Accounting extends MY_Controller
 
     public function netprofit_checkweek() {
         if ($this->isAjax()) {
-            $mdata=array();
-            $error='Unknown period';
+            $mdata=[];
+            $error = 'Empty Profit';
             $postdata = $this->input->post();
-            $type=ifset($postdata, 'type','week');
-            $profit_id=ifset($postdata, 'profit_id',0);
-            $brand = ifset($postdata, 'brand','ALL');
-            //
-            if (!empty($profit_id)) {
-                $res = $this->balances_model->netprofit_check_week($profit_id, $brand, $type);
+            $profit_id = ifset($postdata, 'profit_id', 0);
+            if ($profit_id) {
+                $brand = ifset($postdata,'brand','ALL');
+                $res = $this->balances_model->include_netprofit_week($profit_id, $brand);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['weekcheck']=$res['weekcheck'];
-                    $mdata['weekclass']=$res['weekclass'];
+                    $mdata['weekcheck']=$res['runincl'];
+                    // Get start && end date
+                    $options = [
+                        'type' => 'week',
+                        'brand' => 'ALL',
+                    ];
+                    $fromweek = ifset($postdata, 'fromweek',0);
+                    $untilweek = ifset($postdata,'untilweek', 0);
+                    if ($fromweek) {
+                        $res=$this->balances_model->getweekdetail($fromweek,'start');
+                        if ($res['result']==$this->error_result) {
+                            $this->ajaxResponse($mdata, $res['msg']);
+                        }
+                        $options['start']=$res['date'];
+                    }
+                    if ($untilweek) {
+                        $res=$this->balances_model->getweekdetail($untilweek,'end');
+                        if ($res['result']==$this->error_result) {
+                            $this->ajaxResponse($mdata, $res['msg']);
+                        }
+                        $options['end']=$res['date'];
+                    }
+                    $viewtype = ifset($postdata,'viewtype', 'amount');
+                    $runtotal=$this->balances_model->get_netprofit_runs($options, $viewtype);
+                    $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+//        if ($this->isAjax()) {
+//            $mdata=array();
+//            $error='Unknown period';
+//            $postdata = $this->input->post();
+//            $type=ifset($postdata, 'type','week');
+//            $profit_id=ifset($postdata, 'profit_id',0);
+//            $brand = ifset($postdata, 'brand','ALL');
+//            //
+//            if (!empty($profit_id)) {
+//                $res = $this->balances_model->netprofit_check_week($profit_id, $brand, $type);
+//                $error = $res['msg'];
+//                if ($res['result']==$this->success_result) {
+//                    $error = '';
+//                    $mdata['weekcheck']=$res['weekcheck'];
+//                    $mdata['weekclass']=$res['weekclass'];
+//                }
+//            }
+//            $this->ajaxResponse($mdata, $error);
+//        }
+//        show_404();
     }
 
     public function netprofit_expensetable() {

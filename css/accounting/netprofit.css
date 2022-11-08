@@ -551,3 +551,37 @@
     text-align: center;
     color: #FF0000;
 }
+/* Weekdetails */
+.netprofit_weekdetails_area {
+    width: 307px;
+    margin: -12px;
+    float: left;
+}
+.netprofit_weekdetails_area div {
+    float: left;
+    font-size: 12px;
+}
+.netprofit_weekdetails_area .datarow > div {
+    height: 20px;
+    line-height: 20px!important;
+    text-align: center;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_brandname {
+    width: 108px;
+    text-align: right!important;
+    color: #001072;
+    font-weight: 600;
+    padding-right: 12px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_sales {
+    width: 33px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_revenue {
+    width: 61px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_grossprofit {
+    width: 66px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_profitperc {
+    width: 38px;
+}
