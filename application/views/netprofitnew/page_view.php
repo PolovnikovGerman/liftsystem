@@ -116,19 +116,88 @@
             <div class="netprofitheadoptionlabel">Brand</div>
             <div class="netprofitbrandselect">
                 <select>
-                    <option>Both Brands</option>
+                    <option value="">Both Brands</option>
+                    <option value="SB">StressBalls</option>
+                    <option value="SR">StressRelievers</option>
                 </select>
             </div>
             <div class="netprofitheadoptionlabel compareyear">Compare</div>
             <div class="netprofitperiodselect">
                 <select>
-                    <option>Full Years</option>
+                    <option>Full Year</option>
+                    <option>Portion of year</option>
                 </select>
+            </div>
+            <div class="netprofitcompareperiodselect">
+                <div class="netprofitheadoptionlabel">From:</div>
+                <div class="netprofitweekselect">
+                    <select id="strweek">
+                        <?php foreach ($weekyearlist as $row) { ?>
+                            <option value="<?=$row['weeknum']?>">#<?=$row['weeknum']?> <?=$row['label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="netprofitheadoptionlabel">Until:</div>
+                <div class="netprofitweekselect">
+                    <select id="endweek">
+                        <?php foreach ($weekyearlist as $row) { ?>
+                            <option value="<?=$row['weeknum']?>" <?=$row['current']==1 ? 'selected="selected"' : ''?>>#<?=$row['weeknum']?> <?=$row['label']?></option>
+                        <?php } ?>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="weektotalsdataarea">
         </div>
     </div>
     <div class="netprofitexpensesarea">
+        <div class="expensesdataarea ads">
+            <div class="datarow">
+                <div class="expensesdata_title">Ads <span id="adstotals"></span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data ads"></div>
+        </div>
+        <div class="expensesdataarea upwork">
+            <div class="datarow">
+                <div class="expensesdata_title">Upwork <span id="upworktotals"></span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data upwork"></div>
+        </div>
+        <div class="expensesdataarea w9work">
+            <div class="datarow">
+                <div class="expensesdata_title">W9 Work <span id="w9worktotals"></span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data w9work"></div>
+        </div>
+        <div class="expensesdataarea discretionary">
+            <div class="datarow">
+                <div class="expensesdata_title">Discretionary <span id="discretionarytotals"></span></div>
+                <div class="expensesdata_managecategories">manage categories</div>
+            </div>
+            <div class="expensesdata-table-head">
+                <div class="category_name">Category</div>
+                <div class="amountvalue">Amount</div>
+                <div class="percentvalue">%</div>
+            </div>
+            <div class="expensesdata-table-data discretionary"></div>
+        </div>
     </div>
 </div>

@@ -2180,12 +2180,10 @@ class Accounting extends MY_Controller
                 $options['end']=$res['date'];
             }
             $runtotal=$this->balances_model->get_netprofit_runs($options, $radio);
-            $total_view=$this->load->view('netprofit/netprofit_totals_view', $runtotal, TRUE);
+            $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
             $content_options=array(
                 'data'=>$data,
-                'totals'=>$total_view,
                 'limitshow'=>$limitshow,
-                'brand' => $brand,
             );
             $mdata['content']=$this->load->view('netprofitnew/table_data_view',$content_options,TRUE);
             $this->ajaxResponse($mdata,$error);
@@ -2963,6 +2961,36 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function netprofit_expensetable() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Expense Type';
+            $postdata=$this->input->post();
+            $expenstype = ifset($postdata,'expenstype','');
+            if (!empty($expenstype)) {
+                $error = '';
+                $brand = ifset($postdata,'brand','ALL');
+                // $year = ifset($postdata,'year', date('Y'));
+                $year = 2017;
+                $sortfld = ifset($postdata,'sortfld','category_name');
+                $sortdir = ifset($postdata,'sortdir','asc');
+                if ($expenstype=='ads') {
+                    $data=$this->balances_model->get_expyeardetails($year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='w9work') {
+                    $data=$this->balances_model->get_w9yeardetails($year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='discretionary') {
+                    $data = $this->balances_model->get_purchaseyeardetails($year, $brand, $sortfld, $sortdir);
+                } elseif ($expenstype=='upwork') {
+
+                }
+                $mdata['totals'] = empty($data['totals']) ? '' : MoneyOutput($data['totals']);
+                $mdata['tableview'] = $this->load->view('netprofitnew/expensives_view', ['datas' => $data['details']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function netprofit_w9purchasetable() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -3006,7 +3034,7 @@ class Accounting extends MY_Controller
             $postdata=$this->input->post();
             $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($postdata);
             $yearstotals['compareweek']=$postdata['compareweek'];
-            $mdata['content']=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
+            $mdata['content']=$this->load->view('netprofitnew/years_totals_view',$yearstotals, TRUE);
             $error='';
         }
         $this->ajaxResponse($mdata,$error);
@@ -3896,8 +3924,14 @@ class Accounting extends MY_Controller
 
     private function _prepare_netprofit_content($brand) {
         $weeklist=$this->balances_model->get_weeklist();
-
-        $content=$this->load->view('netprofitnew/page_view', ['weeklists'=>$weeklist, 'brand' => $brand, 'limitrow' => $this->weekshow_limit],TRUE);
+        $weekyearlist=$this->balances_model->get_currentyearweeks();
+        $page_options = [
+            'weeklists'=>$weeklist,
+            'weekyearlist' => $weekyearlist,
+            'brand' => $brand,
+            'limitrow' => $this->weekshow_limit
+        ];
+        $content=$this->load->view('netprofitnew/page_view', $page_options ,TRUE);
         return $content;
 
     }

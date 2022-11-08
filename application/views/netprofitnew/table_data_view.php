@@ -1,72 +1,38 @@
 <?php $numpp=1;?>
 <?php foreach ($data as $datum) { ?>
     <div class="datarow" data-profit="<?=$datum['profit_id']?>">
-        <?php if (empty($datum['tax_quarter_class'])) { ?>
+        <?php if (empty($datum['tax_quarter'])) { ?>
             <div class="weeknumber"><?=$datum['profit_week']?></div>
         <?php } else { ?>
             <div class="quoternumber"><?=$datum['tax_quarter']?></div>
         <?php } ?>
         <div class="netprofit-table-data <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$datum['datarowclass']?>">
-            <div class="weekname"><?=$datum['week']?></div>
-            <div class="sales">1295</div>
-            <div class="revenue">$9,999,999</div>
-            <div class="grossprofit">$999,999</div>
-            <div class="profitperc">43%</div>
-            <div class="operating">----</div>
-            <div class="ads">$99,999</div>
-            <div class="payroll">$999,9999</div>
-            <div class="upwork">$99,999</div>
-            <div class="w9work">----</div>
-            <div class="discretionary">----</div>
-            <div class="discretionarynote">
+            <div class="weekname editdata" data-profit="<?=$datum['profit_id']?>"><?=$datum['week']?></div>
+            <div class="sales"><?=$datum['sales'] ?></div>
+            <div class="revenue"><?=$datum['out_revenue']?></div>
+            <div class="grossprofit <?= $datum['profit_class'] ?>"><?= $datum['out_profit'] ?></div>
+            <div class="profitperc"><?=$datum['out_profitperc']?></div>
+            <div class="operating <?= $datum['operating_class'] ?>"><?=$datum['out_operating']?></div>
+            <div class="ads <?=$datum['advertising_class']?>"><?=$datum['out_advertising'] ?></div>
+            <div class="payroll <?= $datum['payroll_class'] ?>"><?= $datum['out_payroll'] ?></div>
+            <div class="upwork <?= $datum['projects_class'] ?>"><?= $datum['out_projects'] ?></div>
+            <div class="w9work <?= $datum['w9work_class'] ?>"><?=$datum['out_w9']?></div>
+            <div class="discretionary <?=$datum['notesclass']?> <?= $datum['purchases_class'] ?>"><?= $datum['out_purchases'] ?></div>
+            <div class="discretionarynote <?=$datum['notesclass']?>">
                 <img src="/img/accounting/list.png" alt="Note"/>
             </div>
-            <div class="totalcost">$999,999</div>
-            <div class="totalcostperc">$43</div>
-            <div class="netprofit">$999,999</div>
-            <div class="netprofitperc">43%</div>
-            <div class="invest">----</div>
-            <div class="investperc">&nbsp;</div>
-            <div class="od">----</div>
-            <div class="odperc">&nbsp;</div>
-            <div class="retained">----</div>
-            <div class="retainedperc">&nbsp;</div>
-            <div class="includeweek">
-                <i class="fa fa-square-o" aria-hidden="true"></i>
-            </div>
+            <div class="totalcost <?= $datum['totalcost_class'] ?>"><?= $datum['out_totalcost'] ?></div>
+            <div class="totalcostperc"></div>
+            <div class="netprofit <?= $datum['netprofit_class'] ?>"><?= $datum['out_netprofit'] ?></div>
+            <div class="netprofitperc"><?=$datum['out_netprofitperc']?></div>
+            <div class="invest <?= $datum['saved_class']?>"><?= $datum['out_saved'] ?></div>
+            <div class="investperc"><?=$datum['out_savedperc']?></div>
+            <div class="od <?= $datum['od_class']?>"><?=$datum['out_od']?></div>
+            <div class="odperc"><?=$datum['out_odperc']?></div>
+            <div class="retained <?= $datum['debt_class'] ?>"><?= $datum['out_debt'] ?></div>
+            <div class="retainedperc"><?=$datum['out_debtperc']?></div>
+            <div class="includeweek"><?=$datum['run_include']?></div>
         </div>
     </div>
     <?php $numpp++;?>
 <?php } ?>
-<div class="datarow">
-    <div class="quoternumber">TQ3</div>
-    <div class="netprofit-table-data whitedatarow">
-        <div class="weekname">Oct 10-16,2022</div>
-        <div class="sales">1295</div>
-        <div class="revenue">$9,999,999</div>
-        <div class="grossprofit">$999,999</div>
-        <div class="profitperc">43%</div>
-        <div class="operating">----</div>
-        <div class="ads">$99,999</div>
-        <div class="payroll">$999,9999</div>
-        <div class="upwork">$99,999</div>
-        <div class="w9work">----</div>
-        <div class="discretionary">----</div>
-        <div class="discretionarynote">
-            <img src="/img/accounting/list.png" alt="Note"/>
-        </div>
-        <div class="totalcost">$999,999</div>
-        <div class="totalcostperc">$43</div>
-        <div class="netprofit">$999,999</div>
-        <div class="netprofitperc">43%</div>
-        <div class="invest">----</div>
-        <div class="investperc">&nbsp;</div>
-        <div class="od">----</div>
-        <div class="odperc">&nbsp;</div>
-        <div class="retained">----</div>
-        <div class="retainedperc">&nbsp;</div>
-        <div class="includeweek">
-            <i class="fa fa-square-o" aria-hidden="true"></i>
-        </div>
-    </div>
-</div>
