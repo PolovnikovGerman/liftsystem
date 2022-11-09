@@ -99,6 +99,10 @@ function init_netprofit_content() {
         var profit = $(this).data('profit');
         check_week(profit);
     });
+    $("div.weekname.editdata").unbind('click').click(function(){
+        var profit=$(this).data('profit');
+        edit_profdat(profit);
+    });
 }
 
 function check_week(profit) {
@@ -120,6 +124,77 @@ function check_week(profit) {
     }, 'json');
 }
 
+function edit_profdat(profit_id) {
+    var params=new Array();
+    params.push({name: 'profit_id', value: profit_id});
+    params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    var url='/accounting/netprofitedit';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("div.cell_week2").unbind('click');
+            $("div.netprofit-table-data[data-profit='"+profit_id+"']").empty().html(response.data.content);
+            init_netprofitdetails_edit();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function init_netprofitdetails_edit() {
+    $(".but-cancel").unbind('click').click(function () {
+        init_netprofitpage();
+    });
+    $("input.netprofitedit").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#detailssession").val()});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/accounting/netprofit_details_change";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("div.btneditnetprofit").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#detailssession").val()});
+        var url='/accounting/netprofit_purchase';
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                show_popup('netproofpurchasedata');
+                $("div#pop_content").empty().html(response.data.content);
+                $("a#popupContactClose").unbind('click').click(function(){
+                    disablePopup();
+                });
+                init_netprofitdetails_popup();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // Include / exclude
+    $("#editnetdetailsdebtincl").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#detailssession").val()});
+        var url='/accounting/netprofit_details_debtincl';
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#editnetdetailsdebtincl").empty().html(response.data.content);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+}
+
+function init_netprofitdetails_popup() {
+
+}
 
 function init_charttable_content() {
     $("span.exponsivedata").unbind('click').click(function(){

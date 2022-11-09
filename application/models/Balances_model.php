@@ -1277,7 +1277,177 @@ class Balances_model extends My_Model
         return $out;
     }
 
-    public function get_netprofit_dataedit($profit_id, $brand) {
+    public function get_netprofit_dataedit($profit_id, $brand)
+    {
+        $out = array('result' => $this->error_result, 'msg' => 'Data Not Found');
+        $this->db->select('*');
+        $this->db->from('netprofit');
+        $this->db->where('profit_id', $profit_id);
+        $common = $this->db->get()->row_array();
+        if (ifset($common,'profit_id',0)==$profit_id) {
+            $out['result'] = $this->success_result;
+            $this->db->select('nd.profit_id, sum(np.profit_operating) as profit_operating, sum(np.interest) as interest');
+            $this->db->select('sum(np.profit_payroll) as profit_payroll, sum(np.profit_advertising) as profit_advertising');
+            $this->db->select('sum(np.profit_projects) as profit_projects, sum(np.profit_w9) as profit_w9, sum(np.profit_purchases) as profit_purchases');
+            $this->db->select('sum(np.profit_saved) as profit_saved, sum(np.profit_debt) as profit_debt, sum(np.profit_owners) as profit_owners');
+            $this->db->select('sum(np.od2) as od2');
+            $this->db->select('netprofit_revenue(nd.datebgn, nd.dateend, \'ALL\') as revenue, netprofit_profit(nd.datebgn, nd.dateend,\'ALL\') as gross_profit,');
+            $this->db->select('netprofit_cntsale(nd.datebgn, nd.dateend, \'ALL\') as sales, netprofit_cntproj(nd.datebgn, nd.dateend,\'ALL\') as cntproj');
+            $this->db->select('netprofit_totalcost(nd.datebgn, nd.dateend,1,\'ALL\') as totalcost');
+            $this->db->select('netprofit_netprofit(nd.datebgn, nd.dateend,1,\'ALL\') as netprofit');
+            $this->db->select('min(runinclude) as runinclude');
+            $this->db->from('netprofit_dat np');
+            $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
+            $this->db->where('nd.profit_id', $profit_id);
+            if ($brand!=='ALL') {
+                if ($brand=='SB') {
+                    $this->db->where_in('np.brand', ['BT','SB']);
+                } else {
+                    $this->db->where('np.brand', $brand);
+                }
+            }
+            $this->db->group_by('nd.profit_id');
+            $result=$this->db->get()->row_array();
+            $data=[];
+            $data['profit_id'] = $profit_id;
+            $dstart = $common['datebgn'];
+            $dend = $common['dateend'];
+            $weekname = '';
+            if (date('M', $dstart) != date('M', $dend)) {
+                $weekname .= date('M', $dstart) . '/' . date('M', $dend);
+            } else {
+                $weekname .= date('M', $dstart);
+            }
+            $weekname .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
+            $weekname .= ',' . date('Y', $dend);
+            $data['week'] = $weekname;
+            $runinclude = intval($result['runinclude']);
+            $data['run_include']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+            if ($runinclude==1) {
+                $data['run_include']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+            }
+            $data['sales'] = (empty($result['sales']) ? $this->empty_html_content : QTYOutput($result['sales']));
+            // Prepere data for calculation
+            $profit_operating = floatval($result['profit_operating']);
+            $interest = floatval($result['interest']);
+            $profit_payroll = floatval($result['profit_payroll']);
+            $profit_advertising = floatval($result['profit_advertising']);
+            $profit_projects = floatval($result['profit_projects']);
+            $profit_w9 = floatval($result['profit_w9']);
+            $profit_purchases = floatval($result['profit_purchases']);
+            $profit_saved = floatval($result['profit_saved']);
+            $profit_od2 = floatval($result['od2']) + floatval($result['profit_owners']);
+            $profit_revenue = floatval($result['revenue']);
+            $profit_debt=floatval($result['netprofit'])-$profit_od2-$profit_saved;
+            // Prepare columns for out
+            $data['out_revenue'] = empty($result['revenue']) ? $this->EMPTY_PROFIT : MoneyOutput($result['revenue'],0);
+            $data['out_profit'] = empty($result['gross_profit']) ? $this->EMPTY_PROFIT : MoneyOutput($result['gross_profit'],0);
+            $data['profit_class']=(floatval($result['cntproj'])==0 ? '' : 'projprof');
+            $data['out_profitperc'] = $profit_revenue==0 ? $this->empty_html_content : round($result['gross_profit']/$profit_revenue*100,0).'%';
+            $data['operating_class'] = ($profit_operating == 0 ? '' : ($profit_operating > 0 ? 'color_red' : 'color_green'));
+            $data['advertising_class'] = $profit_advertising == 0 ? '' : ($profit_advertising > 0 ? 'color_red' : 'color_green');
+            $data['payroll_class'] = $profit_payroll == 0 ? '' : ($profit_payroll > 0 ? 'color_red' : 'color_green');
+            $data['projects_class'] = $profit_projects == 0 ? '' : ($profit_projects > 0 ? 'color_red' : 'color_green');
+            $data['w9work_class'] = $profit_w9 == 0 ? '' : ($profit_w9 > 0 ? 'color_red' : 'color_green');
+            $data['purchases_class'] = $profit_purchases == 0 ? '' : ($profit_purchases > 0 ? 'color_red' : 'color_green');
+            $data['totalcost_class'] = $result['totalcost'] == 0 ? '' : ($result['totalcost'] > 0 ? 'color_red2' : 'color_red2');
+            $data['totalcostperc'] = $this->empty_html_content;
+            if (abs($result['totalcost']) > 0 && $profit_revenue != 0) {
+                $data['totalcostperc'] = round(abs($result['totalcost']) / $profit_revenue *100,0).'%';
+                if ($result['totalcost'] > 0 ) {
+                    $data['totalcostperc'] = '('.$data['totalcostperc'].')';
+                }
+            }
+            $data['netprofit_class'] = $result['netprofit'] == 0 ? '' : ($result['netprofit'] > 0 ? 'color_green' : 'color_red');
+            $data['out_netprofitperc'] = $this->empty_html_content;
+            if ($result['netprofit'] != 0 && $profit_revenue != 0) {
+                $data['out_netprofitperc'] = round(abs($result['netprofit']/$profit_revenue)*100,0).'%';
+                if ($result['netprofit'] < 0 ) {
+                    $data['out_netprofitperc'] = '('.$data['out_netprofitperc'].')';
+                }
+            }
+            $data['saved_class'] = $profit_saved == 0 ? '' : ($profit_saved < 0 ? 'color_red' : 'color_blue2');
+            $data['out_savedperc'] = $this->empty_html_content;
+            if ($profit_saved != 0  && $profit_revenue != 0) {
+                $data['out_savedperc'] = round(abs($profit_saved/$profit_revenue)*100,0).'%';
+                if ($profit_saved < 0 ) {
+                    $data['out_savedperc'] ='('.$data['out_savedperc'].')';
+                }
+            }
+            $data['od_class'] = $profit_od2 == 0 ? '' : ($profit_od2 > 0 ? 'color_blue2' : 'color_red');
+            $data['out_odperc'] = $this->empty_html_content;
+            if ($profit_od2 != 0 && $profit_revenue != 0) {
+                $data['out_odperc'] = round(abs($profit_od2/$profit_revenue)*100,0).'%';
+                if ($profit_od2 < 0) {
+                    $data['out_odperc'] = '('.$data['out_odperc'].')';
+                }
+            }
+            $data['debt_class'] = $profit_debt == 0 ? '' : ($profit_debt > 0 ? 'color_blue2' : 'color_red');
+            $data['out_debtperc'] = $this->empty_html_content;
+            if ($profit_debt != 0 && $profit_revenue != 0) {
+                $data['out_debtperc'] = round(abs($profit_debt/$profit_revenue)*100,0).'%';
+                if ($profit_debt < 0) {
+                    $data['out_debtperc'] = '('.$data['out_debtperc'].')';
+                }
+            }
+            $data['operating'] = $profit_operating;
+            $data['out_advertising'] = $profit_advertising == 0 ? $this->EMPTY_PROFIT : ($profit_advertising < 0 ? MoneyOutput(abs($profit_advertising),0) : '('.MoneyOutput($profit_advertising).')');
+            $data['payroll'] = $profit_payroll;
+            $data['out_projects'] = $profit_projects == 0 ? $this->EMPTY_PROFIT : ($profit_projects < 0 ? MoneyOutput(abs($profit_projects),0) : '('.MoneyOutput(abs($profit_projects),0).')');
+            $data['out_w9'] = $profit_w9 == 0 ? $this->EMPTY_PROFIT : ($profit_w9 < 0 ? MoneyOutput(abs($profit_w9),0) : '('.MoneyOutput(abs($profit_w9),0).')');
+            $data['out_purchases'] = $profit_purchases == 0 ? $this->EMPTY_PROFIT : ($profit_purchases < 0 ? MoneyOutput(abs($profit_purchases),0) : '('.MoneyOutput(abs($profit_purchases),0).')');
+            $data['out_totalcost'] = $result['totalcost'] == 0 ? $this->NOT_CALC_YET : ($result['totalcost'] < 0 ? MoneyOutput(abs($result['totalcost']),0) : '('.MoneyOutput(abs($result['totalcost']),0).')');
+            $data['out_netprofit'] = $result['netprofit'] == 0 ? $this->NOT_CALC_YET : ($result['netprofit'] < 0 ? MoneyOutput(abs($result['netprofit']),0) : '('.MoneyOutput(abs($result['netprofit']),0).')');
+            $data['saved'] = $profit_saved;
+            $data['od2'] = $profit_od2;
+            $data['debt'] = $profit_debt;
+            $out['data'] = $data;
+            // Get data about expenses
+            $this->db->select('*');
+            $this->db->from('ts_netprofit_details');
+            $this->db->where('profit_id', $profit_id);
+            $this->db->where('details_type','Purchase');
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+            $out['purchase_details'] = $this->db->get()->result_array();
+            $this->db->select('*');
+            $this->db->from('ts_netprofit_details');
+            $this->db->where('profit_id', $profit_id);
+            $this->db->where('details_type','W9');
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+            $out['w9work_details'] = $this->db->get()->result_array();
+            $this->db->select('*');
+            $this->db->from('ts_netprofit_details');
+            $this->db->where('profit_id', $profit_id);
+            $this->db->where('details_type','Upwork');
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+            $out['upwork_details'] = $this->db->get()->result_array();
+            $this->db->select('*');
+            $this->db->from('ts_netprofit_details');
+            $this->db->where('profit_id', $profit_id);
+            $this->db->where('details_type','Ads');
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+            $out['ads_details'] = $this->db->get()->result_array();
+        }
+        return $out;
+    }
+
+    public function old_get_netprofit_dataedit($profit_id, $brand) {
         $out=array('result'=>$this->error_result, 'msg'=>'Data Not Found');
         $this->db->select('np.*, nd.datebgn, nd.dateend, nd.profit_month, nd.profit_week, nd.profit_year,  netprofit_revenue(nd.datebgn, nd.dateend,\''.$brand.'\') as revenue,
             netprofit_profit(nd.datebgn, nd.dateend,\''.$brand.'\') as gross_profit,

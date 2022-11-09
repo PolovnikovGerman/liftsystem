@@ -585,3 +585,29 @@
 .netprofit_weekdetails_area .datarow .weekdetails_profitperc {
     width: 38px;
 }
+/* Edit */
+.cell_buttonedit {
+}
+.cell_buttonedit .but-accept, .cell_buttonedit .but-cancel {
+    padding-top: 3px;
+    text-align: center;
+    width: 15px;
+}
+.cell_buttonedit .but-accept img, .cell_buttonedit .but-cancel img{
+    cursor: pointer;
+    width: 90%;
+}
+.cell_week2edt {
+    width: 79px;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+}
+input.netprofitedit {
+    height: 20px;
+    line-height: 20px!important;
+    width: 100%;
+}
+.includeweek_edit {
+    width: 20px;
+    border-right: 1px solid #000000;
+}

@@ -2525,27 +2525,30 @@ class Accounting extends MY_Controller
                     $error='';
                     // Session ID
                     $session='purchedit'.uniq_link(15);
-
-                    $type=$res['type'];
-                    $data=$res['data'];
-                    $data['session']=$session;
-                    $mdata['weekid']=$res['weekid'];
-                    if ($type=='week') {
-                        $mdata['content']=$this->load->view('netprofit/netprofit_edit_view',$data,TRUE);
-                    } else {
-                        $mdata['content']=$this->load->view('netprofit/netprofit_editmonth_view',$data,TRUE);
-                    }
                     // Save to session
                     $sessiondata=array(
                         'session'=>$session,
                         'profit_id'=>$profit_id,
                         'netprofit'=>$res['data'],
-                        'type'=>$type,
+                        // 'type'=>$type,
                         'purchase_details'=>$res['purchase_details'],
                         'w9work_details'=>$res['w9work_details'],
+                        'upwork_details' => $res['upwork_details'],
+                        'ads_details' => $res['ads_details'],
                         'delrecords'=>array(),
                     );
                     usersession($session, $sessiondata);
+
+                    // $type=$res['type'];
+                    $data=$res['data'];
+                    $data['session']=$session;
+                    // $mdata['weekid']=$res['weekid'];
+//                    if ($type=='week') {
+//                        $mdata['content']=$this->load->view('netprofit/netprofit_edit_view',$data,TRUE);
+//                    } else {
+//                        $mdata['content']=$this->load->view('netprofit/netprofit_editmonth_view',$data,TRUE);
+//                    }
+                    $mdata['content'] = $this->load->view('netprofitnew/weekdata_edit_view', $data, TRUE);
                 }
             }
             $this->ajaxResponse($mdata,$error);
@@ -2613,15 +2616,16 @@ class Accounting extends MY_Controller
 
                     $options=array(
                         'session'=>$session_id,
-                        'datebgn'=>$netprofit['datebgn'],
-                        'dateend'=>$netprofit['dateend'],
-                        'weeknote'=>$netprofit['weeknote'],
+                        //'datebgn'=>$netprofit['datebgn'],
+                        //'dateend'=>$netprofit['dateend'],
+                        'weeknote'=>'', //$netprofit['weeknote'],
                         'profit_purchases'=>$purchase_totals,
                         'putchase_tableview'=>$purch_tableview,
                         'w9work_tableview'=>$w9work_tableview,
                         'profit_w9'=>$w9work_total,
                     );
-                    $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
+                    // $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
+                    $mdata['title'] = '<b>W9 Work &amp; Purchases</b>';
                     $mdata['content']=$this->load->view('netprofit/purchase_details_view', $options, TRUE);
                     $error='';
                 }
