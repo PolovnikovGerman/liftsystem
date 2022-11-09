@@ -109,6 +109,9 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        // Colorbox
+        $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
+        $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
 
         $options = [
             'title' => $head['title'],
@@ -2589,6 +2592,7 @@ class Accounting extends MY_Controller
                 if (!empty($netprofitdata)) {
                     $netprofit=$netprofitdata['netprofit'];
                     $purchase_details=$netprofitdata['purchase_details'];
+
                     $purchsession='purchedit'.uniq_link(15);
                     // Table view
                     $purch_categories=$this->balances_model->get_profit_categories('Purchase');
@@ -2608,25 +2612,50 @@ class Accounting extends MY_Controller
                         'data'=>$w9work_details,
                         'category'=>$w9work_categories,
                     );
-                    $w9work_tableview=$this->load->view('netprofit/w9work_tabledata_view', $w9options, TRUE);
+                    $w9work_tableview=$this->load->view('netprofitnew/w9work_tabledata_view', $w9options, TRUE);
                     $w9work_total=0;
                     foreach ($w9work_details as $wrow) {
                         $w9work_total+=$wrow['amount'];
                     }
+                    $ads_details = $netprofitdata['ads_details'];
+                    $ads_categories=$this->balances_model->get_profit_categories('Ads');
+                    $adsoptions=array(
+                        'data'=>$ads_details,
+                        'category'=>$ads_categories,
+                    );
+                    $ads_tableview=$this->load->view('netprofitnew/ads_tabledata_view', $adsoptions, TRUE);
+                    $ads_total=0;
+                    foreach ($ads_details as $wrow) {
+                        $ads_total+=$wrow['amount'];
+                    }
+
+                    $upwork_details = $netprofitdata['upwork_details'];
+                    $upwork_categories=$this->balances_model->get_profit_categories('Upwork');
+                    $upworkoptions=array(
+                        'data'=>$upwork_details,
+                        'category'=>$upwork_categories,
+                    );
+                    $upwork_tableview=$this->load->view('netprofitnew/upwork_tabledata_view', $upworkoptions, TRUE);
+                    $upwork_total=0;
+                    foreach ($upwork_details as $wrow) {
+                        $upwork_total+=$wrow['amount'];
+                    }
 
                     $options=array(
                         'session'=>$session_id,
-                        //'datebgn'=>$netprofit['datebgn'],
-                        //'dateend'=>$netprofit['dateend'],
                         'weeknote'=>'', //$netprofit['weeknote'],
                         'profit_purchases'=>$purchase_totals,
                         'putchase_tableview'=>$purch_tableview,
                         'w9work_tableview'=>$w9work_tableview,
                         'profit_w9'=>$w9work_total,
+                        'ads_tableview'=>$ads_tableview,
+                        'profit_ads' => $ads_total,
+                        'upwork_tableview' => $upwork_tableview,
+                        'profit_upwork' => $upwork_total,
                     );
                     // $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
                     $mdata['title'] = '<b>W9 Work &amp; Purchases</b>';
-                    $mdata['content']=$this->load->view('netprofit/purchase_details_view', $options, TRUE);
+                    $mdata['content']=$this->load->view('netprofitnew/expensives_details_view', $options, TRUE);
                     $error='';
                 }
             }
@@ -2781,6 +2810,48 @@ class Accounting extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function netprofit_newdetails() {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $error = $this->restore_data_error;
+            $postdata = $this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id = $postdata['session'];
+                $netprofitdata = usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $error = 'Empty Expense type';
+                    $expence_type = ifset($postdata,'expense','');
+                    if (!empty($expence_type)) {
+                        $netprofitdata=usersession($session_id);
+                        if ($expence_type == 'Upwork') {
+
+                        } elseif ($expence_type=='Ads') {
+
+                        } elseif ($expence_type=='W9') {
+                            $res=$this->balances_model->w9work_details_add($netprofitdata, $session_id);
+                            $error=$res['msg'];
+                            if ($res['result']==$this->success_result) {
+                                $error='';
+                                $netprofitdata=usersession($session_id);
+                                $details=$netprofitdata['w9work_details'];
+                                $categories=$this->balances_model->get_profit_categories('W9');
+                                $tableoptions=array(
+                                    'category'=>$categories,
+                                    'data'=>$details,
+                                );
+                                // Table view
+                                $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
+                            }
+                        } else {
+
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     public function profit_categorysave() {

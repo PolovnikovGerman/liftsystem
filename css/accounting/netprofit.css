@@ -611,3 +611,214 @@ input.netprofitedit {
     width: 20px;
     border-right: 1px solid #000000;
 }
+/* Expense popup */
+.netproofpurchasearea {
+    clear: both;
+    float: left;
+    background-color: #f2f2f2;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    height: 680px;
+    /* width: 937px; */
+}
+.netproofpurchasearea div {
+    float: left;
+    font-size: 12px;
+    text-align: left;
+    color: #000000;
+}
+.netproofpurchasearea input {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 12px;
+    height: 15px;
+    padding-left: 2px;
+}
+.netproofpurchasearea textarea {
+    font-size: 12px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    resize: none;
+    overflow-y: auto;
+}
+.netproofpurchasearea > .title {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .subtitle {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea {
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea {
+    width: 349px;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 82px;
+    text-align: center;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > textarea.weeknoteedit {
+    height: 485px;
+    width: 340px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea {
+    margin-top: 20px;
+    width: 567px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea {
+    /*    border: 1px dotted #000000;
+        height: 314px;*/
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    text-align: left;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead {
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > div {
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell {
+    font-weight: normal;
+    color: #0000ff;
+    font-size: 16px;
+    height: 22px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell > i {
+    cursor: pointer;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .amount {
+    width: 56px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .vendor {
+    width: 154px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .category {
+    width: 154px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .description {
+    width: 173px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody {
+    border: 1px solid #000000;
+    height: 212px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 560px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow {
+    overflow-x: hidden;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > div {
+    height: 21px;
+    line-height: 21px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell {
+    font-weight: normal;
+    color: #000000;
+    font-size: 16px;
+    height: 19px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell > i {
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 1px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .amount {
+    border-right: 1px solid;
+    width: 55px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .vendor {
+    border-right: 1px solid;
+    width: 153px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .category {
+    border-right: 1px solid;
+    width: 156px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .description {
+    width: 159px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata {
+    padding-left: 10px;
+    width: 400px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .totaldata > .label {
+    margin-right: 5px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .savedata {
+    background: transparent url("/img/accounting/save_netprofitpopup_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    height: 27px;
+    margin-top: -17px;
+    text-align: center;
+    width: 67px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.amount,
+.netproofpurchasearea > .editdataarea input.w9workinput.amount {
+    width: 47px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.vendor,
+.netproofpurchasearea > .editdataarea input.w9workinput.vendor {
+    margin-left: 2px;
+    width: 144px;
+}
+.netproofpurchasearea > .editdataarea select.purchaselect,
+.netproofpurchasearea > .editdataarea select.w9workselect {
+    margin-left: 2px;
+    height: 19px;
+    width: 137px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn {
+    width: 12px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn > i {
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.descript,
+.netproofpurchasearea > .editdataarea input.w9workinput.descript {
+    margin-left: 2px;
+    width: 165px;
+}
