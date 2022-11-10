@@ -1196,16 +1196,22 @@ div.oldvesionlabel {
     color: #FF0000;
 }
 /* Week totals popup */
+.weekbrandtotals {
+    padding: 0!important
+}
 .brantotalarea {
     display: inline-table;
     width: 240px;
     background: #000000;
-    border: 1px solid #adadad;
+    /*border: 1px solid #adadad; */
     padding: 7px;
-    margin-top: -10px;
+    /* margin-top: -10px;
     margin-left: -16px;
     margin-right: -16px;
-    margin-bottom: -11px;
+    margin-bottom: -11px; */
+}
+.brantotalarea div {
+    float: left;
 }
 .brantotalarea .datarow > div {
     height: 22px;
