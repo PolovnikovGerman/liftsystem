@@ -132,10 +132,25 @@ class Netprofit extends MY_Controller
             // $this->balances_model->_check_current_week($this->USR_ID);
             $dat_end=date('Y-m-d', strtotime("Sunday this week", time())).' 23:59:59';
             $datend=strtotime($dat_end);
-            $data=$this->balances_model->get_netprofit_data($datbgn,$datend, $order, $direc, $this->USR_ID, $radio, $brand, $limitshow);
-            // Run Totals
+            // Get start && end date
             $fromweek=$this->input->post('fromweek');
             $untilweek=$this->input->post('untilweek');
+            if ($fromweek) {
+                $res=$this->balances_model->getweekdetail($fromweek,'start');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $datbgn=$res['date'];
+            }
+            if ($untilweek) {
+                $res=$this->balances_model->getweekdetail($untilweek,'end');
+                if ($res['result']==$this->error_result) {
+                    $this->ajaxResponse($mdata, $res['msg']);
+                }
+                $datend=$res['date'];
+            }
+            $data=$this->balances_model->get_netprofit_data($datbgn,$datend, $order, $direc, $this->USR_ID, $radio, $brand, $limitshow);
+            // Run Totals
             $options=array(
                 'type'=>'week',
                 'start'=>0,
