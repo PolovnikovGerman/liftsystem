@@ -1067,4 +1067,56 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function update_netprofitdetails() {
+        $this->db->set('category_type','Ads');
+        $this->db->set('category_name','Google Ads');
+        $this->db->insert('ts_netprofit_categories');
+        $adscat = $this->db->insert_id();
+        $this->db->select('d.profit_id, d.brand, d.netprofit_data_id, d.profit_advertising, d.profit_projects, n.datebgn, n.dateend');
+        $this->db->from('netprofit_dat d');
+        $this->db->join('netprofit n', 'n.profit_id=d.profit_id');
+        $this->db->where('n.profit_month', NULL);
+        $datas = $this->db->get()->result_array();
+        foreach ($datas as $data) {
+            echo 'Week '.date('d.m.Y', $data['datebgn']).' - '.date('d.m.Y', $data['dateend']).PHP_EOL;
+            if (!empty($data['profit_advertising'])) {
+                $this->db->select('count(*) as cnt, sum(amount) as total');
+                $this->db->from('ts_netprofit_details');
+                $this->db->where('profit_id', $data['profit_id']);
+                $this->db->where('brand', $data['brand']);
+                $this->db->where('details_type','Ads');
+                $chkdat = $this->db->get()->row_array();
+                if ($chkdat['cnt']==0) {
+                    $amntval = $data['profit_advertising'];
+                } else {
+                    $amntval = $chkdat['total'] - $data['profit_advertising'];
+                }
+                $this->db->set('profit_id', $data['profit_id']);
+                $this->db->set('details_type', 'Ads');
+                $this->db->set('netprofit_category_id', $adscat);
+                $this->db->set('amount', $amntval);
+                $this->db->set('brand', $data['brand']);
+                $this->db->insert('ts_netprofit_details');
+            }
+            if (!empty($data['profit_projects'])) {
+                $this->db->select('count(*) as cnt, sum(amount) as total');
+                $this->db->from('ts_netprofit_details');
+                $this->db->where('profit_id', $data['profit_id']);
+                $this->db->where('brand', $data['brand']);
+                $this->db->where('details_type','Upwork');
+                $chkdat = $this->db->get()->row_array();
+                if ($chkdat['cnt']==0) {
+                    $amntval = $data['profit_projects'];
+                } else {
+                    $amntval = $chkdat['total'] - $data['profit_projects'];
+                }
+                $this->db->set('profit_id', $data['profit_id']);
+                $this->db->set('details_type', 'Upwork');
+                $this->db->set('amount', $amntval);
+                $this->db->set('brand', $data['brand']);
+                $this->db->insert('ts_netprofit_details');
+            }
+        }
+    }
 }
