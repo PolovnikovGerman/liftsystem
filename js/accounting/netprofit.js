@@ -192,6 +192,7 @@ function init_netprofitdetails_edit() {
 }
 
 function init_netprofitdetails_popup() {
+    // Close btn
     // Save
     $("div#purchasepopupsavevalue").unbind('click').click(function(response){
         var params=new Array();
@@ -263,6 +264,58 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
+    // Change category
+    $("select.purchaselect").unbind('change').change(function(){
+        var category_type = $(this).data('detailtype');
+        var params=new Array();
+        params.push({name:'session', value: $("#detailssession").val()});
+        params.push({name: 'detail_id', value: $(this).data('detail')});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'category_type', value: category_type});
+        var url="/netprofit/purchase_editdetails";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                if (category_type=='Purchase') {
+                    $("div#purchasepopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='W9') {
+                    $("div#w9workpopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='Upwork') {
+                    $("div#upworkpopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='Ads') {
+                    $("div#adspopuptotalvalue").empty().html(response.data.total);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Edit Details data
+    $("input.purchaseinput").unbind('change').change(function(){
+        var category_type = $(this).data('detailtype');
+        var params=new Array();
+        params.push({name:'session', value: $("#detailssession").val()});
+        params.push({name: 'detail_id', value: $(this).data('detail')});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'category_type', value: $(this).data('detailtype')});
+        var url="/netprofit/purchase_editdetails";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                if (category_type=='Purchase') {
+                    $("div#purchasepopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='W9') {
+                    $("div#w9workpopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='Upwork') {
+                    $("div#upworkpopuptotalvalue").empty().html(response.data.total);
+                } else if (category_type=='Ads') {
+                    $("div#adspopuptotalvalue").empty().html(response.data.total);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     // add new purchase
     $("#addnewpurchasedetails").unbind('click').click(function(){
         var params=new Array();
@@ -278,40 +331,7 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
-    $("select.purchaselect").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Purchase'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#purchasepopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    // Edit Details data
-    $("input.purchaseinput").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Purchase'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#purchasepopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    // W9 Work
+    // add W9 Work
     $("#addneww9workdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
@@ -326,40 +346,7 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
-    $("select.w9workselect").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'W9'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#w9workpopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $("input.w9workinput").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'W9'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#w9workpopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-
-    // Upwork
+    // add Upwork
     $("#addnewupworkdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
@@ -374,39 +361,6 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
-    $("select.upworkselect").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Upwork'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#upworkpopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $("input.upworkinput").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Upwork'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#upworkpopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-
     // Ads
     $("#addnewadsdetails").unbind('click').click(function(){
         var params=new Array();
@@ -422,38 +376,6 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
-    $("select.adsselect").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Ads'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#adspopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $("input.adsinput").unbind('change').change(function(){
-        var params=new Array();
-        params.push({name:'session', value: $("#detailssession").val()});
-        params.push({name: 'detail_id', value: $(this).data('detail')});
-        params.push({name: 'fldname', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'category_type', value: 'Ads'});
-        var url="/netprofit/purchase_editdetails";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div#adspopuptotalvalue").empty().html(response.data.total);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
 }
 
 function init_newnetcategory(detail, category_type) {
@@ -463,7 +385,7 @@ function init_newnetcategory(detail, category_type) {
         params.push({name: 'detail', value: detail});
         params.push({name: 'category', value: $("input#newcategoryvalue").val()});
         params.push({name: 'category_type', value: category_type});
-        var url="/accounting/profit_categorysave";
+        var url="/netprofit/profit_categorysave";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $.colorbox.close();

@@ -2417,44 +2417,6 @@ class Accounting extends MY_Controller
         show_404();
     }
 
-    public function profit_categorysave() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $res=$this->balances_model->netprofit_newcategory($netprofitdata,$postdata, $session_id);
-                    $error=$res['msg'];
-                    if ($res['result']==$this->success_result) {
-                        $error='';
-                        $netprofitdata=usersession($session_id);
-                        $categories=$this->balances_model->get_profit_categories($postdata['category_type']);
-                        if ($postdata['category_type']=='Purchase') {
-                            $details=$netprofitdata['purchase_details'];
-                        } else {
-                            $details=$netprofitdata['w9work_details'];
-                        }
-                        $tableoptions=array(
-                            'data'=>$details,
-                            'category'=>$categories,
-                        );
-                        if ($postdata['category_type']=='Purchase') {
-                            $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $tableoptions, TRUE);
-                        } else {
-                            $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
-                        }
-                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
     public function netprofit_weeknote() {
         if ($this->isAjax()) {
             $mdata=array();

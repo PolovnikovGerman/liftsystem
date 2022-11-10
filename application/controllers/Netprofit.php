@@ -435,6 +435,45 @@ class Netprofit extends MY_Controller
         echo $content;
     }
 
+    public function profit_categorysave() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->netprofit_newcategory($netprofitdata,$postdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $netprofitdata=usersession($session_id);
+                        $categories=$this->balances_model->get_profit_categories($postdata['category_type']);
+                        if ($postdata['category_type']=='Purchase') {
+                            $details=$netprofitdata['purchase_details'];
+                        } elseif ($postdata['category_type']=='W9') {
+                            $details=$netprofitdata['w9work_details'];
+                        } elseif ($postdata['category_type']=='Upwork') {
+                            $details=$netprofitdata['upwork_details'];
+                        } elseif ($postdata['category_type']=='Ads') {
+                            $details=$netprofitdata['ads_details'];
+                        }
+                        $tableoptions=array(
+                            'data'=>$details,
+                            'categories'=>$categories,
+                            'category' => $postdata['category_type'],
+                        );
+                        $mdata['content']=$this->load->view('netprofitnew/expensive_tabledata_view', $tableoptions, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function purchase_deletedetails() {
         if ($this->isAjax()) {
             $mdata=array();
