@@ -4,6 +4,6 @@
         <input type="text" id="newcategoryvalue" value=""/>
     </div>
     <div class="newcategoryname_save">
-        <img src="/img/saveticket.png" alt="Save"/>
+        <img src="/img/accounting/save_netprofitpopup_btn.png" alt="Save"/>
     </div>    
 </div>

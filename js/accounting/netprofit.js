@@ -9,7 +9,7 @@ function init_netprofit_area() {
 }
 
 function init_netprofitpage() {
-    var url='/accounting/netprofitdat';
+    var url='/netprofit/netprofitdat';
     var radio = $("#netprofitviewtype").val();
     var params=new Array();
     params.push({name: 'type', value:$("select#but-reportview").val()});
@@ -48,7 +48,7 @@ function rebuild_charttable() {
     params.push({name: 'paceincome', value: $("input#projincome").val()});
     params.push({name: 'paceexpense', value: $("input#projexpence").val()});
     params.push({name: 'brand', value: $("#netprofitchartdatabrand").val()});
-    var url="/accounting/netprofit_charttabledata";
+    var url="/netprofit/netprofit_charttabledata";
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.weektotalsdataarea").empty().html(response.data.content);
@@ -71,7 +71,7 @@ function init_expenses_details(expenstype) {
     var params=new Array();
     params.push({name: 'expenstype', value: expenstype});
     params.push({name: 'brand', value: $("#netprofitchartdatabrand").val()});
-    var url="/accounting/netprofit_expensetable";
+    var url="/netprofit/netprofit_expensetable";
     $.post(url,params,function(response){
         if (response.errors=='') {
             if (expenstype=='ads') {
@@ -113,7 +113,7 @@ function check_week(profit) {
     params.push({name: 'untilweek', value: $("select#weekselectuntil").val()});
     params.push({name: 'viewtype', value: $("#netprofitviewtype").val()});
     params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
-    var url="/accounting/netprofit_checkweek"
+    var url="/netprofit/netprofit_checkweek"
     $.post(url, params, function(response){
         if (response.errors=='') {
             $(".includeweek[data-profit='"+profit+"']").empty().html(response.data.weekcheck);
@@ -128,7 +128,7 @@ function edit_profdat(profit_id) {
     var params=new Array();
     params.push({name: 'profit_id', value: profit_id});
     params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
-    var url='/accounting/netprofitedit';
+    var url='/netprofit/netprofitedit';
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -152,7 +152,7 @@ function init_netprofitdetails_edit() {
         params.push({name: 'session', value: $("#detailssession").val()});
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
-        var url="/accounting/netprofit_details_change";
+        var url="/netprofit/netprofit_details_change";
         $.post(url, params, function(response){
             if (response.errors=='') {
             } else {
@@ -163,7 +163,7 @@ function init_netprofitdetails_edit() {
     $("div.btneditnetprofit").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url='/accounting/netprofit_purchase';
+        var url='/netprofit/netprofit_purchase';
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#pageModal").find('div.modal-dialog').css('width','1186px');
@@ -180,7 +180,7 @@ function init_netprofitdetails_edit() {
     $("#editnetdetailsdebtincl").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url='/accounting/netprofit_details_debtincl';
+        var url='/accounting/netprofit_details_debtincl'; // ??
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#editnetdetailsdebtincl").empty().html(response.data.content);
@@ -197,13 +197,12 @@ function init_netprofitdetails_popup() {
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
         params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
-        var url="/accounting/netprofit_details_save";
+        var url="/netprofit/netprofit_details_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#pageModal").modal('hide');
                 init_netprofitpage();
                 if (parseInt(response.data.refresh)===1) {
-                    drawChart();
                     rebuild_charttable();
                     // Rebuild W9 Work
                     rebuild_w9table();
@@ -226,7 +225,7 @@ function init_netprofitdetails_popup() {
             transition: 'fade',
             ajax: true,
             width:440,
-            href: '/accounting/profit_newcategory',
+            href: '/netprofit/profit_newcategory',
             data: params,
             onComplete: function() {
                 // init_check();
@@ -242,7 +241,7 @@ function init_netprofitdetails_popup() {
         params.push({name:'session', value: $("#detailssession").val()});
         params.push({name: 'detail_id', value: $(this).data('detail')});
         params.push({name: 'category_type', value: category_type});
-        var url="/accounting/purchase_deletedetails";
+        var url="/netprofit/purchase_deletedetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 if (category_type=='Purchase') {
@@ -268,7 +267,8 @@ function init_netprofitdetails_popup() {
     $("#addnewpurchasedetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url="/accounting/purchase_newdetails";
+        params.push({name: 'expense', value: 'Purchase'});
+        var url="/netprofit/netprofit_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='purchase']").empty().html(response.data.content);
@@ -285,7 +285,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Purchase'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#purchasepopuptotalvalue").empty().html(response.data.total);
@@ -302,7 +302,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Purchase'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#purchasepopuptotalvalue").empty().html(response.data.total);
@@ -315,7 +315,8 @@ function init_netprofitdetails_popup() {
     $("#addneww9workdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
-        var url="/accounting/w9work_newdetails";
+        params.push({name: 'expense', value: 'W9'});
+        var url="/netprofit/netprofit_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='w9work']").empty().html(response.data.content);
@@ -332,7 +333,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'W9'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#w9workpopuptotalvalue").empty().html(response.data.total);
@@ -348,7 +349,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'W9'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#w9workpopuptotalvalue").empty().html(response.data.total);
@@ -362,7 +363,8 @@ function init_netprofitdetails_popup() {
     $("#addnewupworkdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
-        var url="/accounting/upwork_newdetails";
+        params.push({name: 'expense', value: 'Upwork'});
+        var url="/netprofit/netprofit_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='upwork']").empty().html(response.data.content);
@@ -379,7 +381,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Upwork'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#upworkpopuptotalvalue").empty().html(response.data.total);
@@ -395,7 +397,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Upwork'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#upworkpopuptotalvalue").empty().html(response.data.total);
@@ -409,7 +411,8 @@ function init_netprofitdetails_popup() {
     $("#addnewadsdetails").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
-        var url="/accounting/ads_newdetails";
+        params.push({name: 'expense', value: 'Ads'});
+        var url="/netprofit/netprofit_newdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div.netproofpurchasearea").find("div.tablebody[data-content='ads']").empty().html(response.data.content);
@@ -426,7 +429,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Ads'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#adspopuptotalvalue").empty().html(response.data.total);
@@ -442,7 +445,7 @@ function init_netprofitdetails_popup() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         params.push({name: 'category_type', value: 'Ads'});
-        var url="/accounting/purchase_editdetails";
+        var url="/netprofit/purchase_editdetails";
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("div#adspopuptotalvalue").empty().html(response.data.total);
@@ -451,7 +454,6 @@ function init_netprofitdetails_popup() {
             }
         },'json');
     });
-
 }
 
 function init_newnetcategory(detail, category_type) {

@@ -3726,8 +3726,12 @@ class Balances_model extends My_Model
         $out=array('result'=>$this->error_result, 'msg'=>'Record Not Found');
         if ($category_type=='Purchase') {
             $details=$netprofitdata['purchase_details'];
-        } else {
+        } elseif ($category_type=='W9') {
             $details=$netprofitdata['w9work_details'];
+        } elseif ($category_type=='Ads') {
+            $details=$netprofitdata['ads_details'];
+        } elseif ($category_type=='Upwork') {
+            $details=$netprofitdata['upwork_details'];
         }
         $delrecords=$netprofitdata['delrecords'];
         $newdetail=array();
@@ -3747,6 +3751,15 @@ class Balances_model extends My_Model
                 $netprofitdata['purchase_details']=$newdetail;
             } else {
                 $netprofitdata['w9work_details']=$newdetail;
+            }
+            if ($category_type=='Purchase') {
+                $netprofitdata['purchase_details']=$newdetail;
+            } elseif ($category_type=='W9') {
+                $netprofitdata['w9work_details']=$newdetail;
+            } elseif ($category_type=='Ads') {
+                $netprofitdata['ads_details']=$newdetail;
+            } elseif ($category_type=='Upwork') {
+                $netprofitdata['upwork_details']=$newdetail;
             }
             $netprofitdata['delrecords']=$delrecords;
             usersession($session_id, $netprofitdata);
@@ -3848,6 +3861,54 @@ class Balances_model extends My_Model
 //        }
 //        return $out;
 //    }
+
+    public function netprofit_details_add($netprofitdata, $category_type, $session_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Record Not Found');
+        $profit_id=$netprofitdata['profit_id'];
+        if ($category_type=='Purchase') {
+            $details = $netprofitdata['purchase_details'];
+            $categories=$this->get_profit_categories('Purchase');
+        } elseif ($category_type=='W9') {
+            $details = $netprofitdata['w9work_details'];
+            $categories=$this->get_profit_categories('W9');
+        } elseif ($category_type=='Ads') {
+            $details = $netprofitdata['ads_details'];
+            $categories=$this->get_profit_categories('Ads');
+        } elseif ($category_type=='Upwork') {
+            $details = $netprofitdata['upwork_details'];
+            $categories=$this->get_profit_categories('Upwork');
+        }
+        $minid=0;
+        foreach ($details as $row) {
+            if ($row['netprofit_detail_id']<$minid) {
+                $minid=$row['netprofit_detail_id'];
+            }
+        }
+        $minid=$minid-1;
+        $details[]=array(
+            'netprofit_detail_id'=>$minid,
+            'profit_id'=>$profit_id,
+            'netprofit_category_id'=> (count($categories)==0 ? '' : $categories[0]['netprofit_category_id']),
+            'category_name'=> (count($categories)==0 ? '' : $categories[0]['category_name']),
+            'amount'=>'',
+            'vendor'=>'',
+            'description'=>'',
+        );
+        // Save to new session
+        if ($category_type=='Purchase') {
+            $netprofitdata['purchase_details'] = $details;
+        } elseif ($category_type=='W9') {
+            $netprofitdata['w9work_details'] = $details;
+        } elseif ($category_type=='Ads') {
+            $netprofitdata['ads_details'] = $details;
+        } elseif ($category_type=='Upwork') {
+            $netprofitdata['upwork_details'] = $details;
+        }
+        usersession($session_id, $netprofitdata);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
 
     public function w9work_details_add($netprofitdata, $session_id) {
         $out=array('result'=>$this->error_result, 'msg'=>'Record Not Found');
