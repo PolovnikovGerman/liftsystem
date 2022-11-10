@@ -289,7 +289,6 @@ function ordertotalsparse() {
 
 function leftmenu_alignment() {
     var mainheight = $("div.maincontentmenuarea").css('height');
-    console.log('Main Height '+mainheight);
     $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
 
 }

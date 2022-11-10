@@ -153,7 +153,7 @@
         <div class="expensesdataarea ads">
             <div class="datarow">
                 <div class="expensesdata_title">Ads <span id="adstotals"></span></div>
-                <div class="expensesdata_managecategories">manage categories</div>
+                <div class="expensesdata_managecategories" data-category="Ads">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
                 <div class="category_name">Category</div>
@@ -165,7 +165,7 @@
         <div class="expensesdataarea upwork">
             <div class="datarow">
                 <div class="expensesdata_title">Upwork <span id="upworktotals"></span></div>
-                <div class="expensesdata_managecategories">manage categories</div>
+                <div class="expensesdata_managecategories" data-category="Upwork">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
                 <div class="category_name">Category</div>
@@ -177,7 +177,7 @@
         <div class="expensesdataarea w9work">
             <div class="datarow">
                 <div class="expensesdata_title">W9 Work <span id="w9worktotals"></span></div>
-                <div class="expensesdata_managecategories">manage categories</div>
+                <div class="expensesdata_managecategories" data-category="W9">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
                 <div class="category_name">Category</div>
@@ -189,7 +189,7 @@
         <div class="expensesdataarea discretionary">
             <div class="datarow">
                 <div class="expensesdata_title">Discretionary <span id="discretionarytotals"></span></div>
-                <div class="expensesdata_managecategories">manage categories</div>
+                <div class="expensesdata_managecategories" data-category="Purchase">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
                 <div class="category_name">Category</div>

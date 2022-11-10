@@ -206,7 +206,12 @@ function init_netprofitdetails_popup() {
                 if (parseInt(response.data.refresh)===1) {
                     rebuild_charttable();
                     // Rebuild W9 Work
-                    rebuild_w9table();
+                    // rebuild_w9table();
+                    init_expenses_details('ads');
+                    init_expenses_details('upwork');
+                    init_expenses_details('w9work');
+                    init_expenses_details('discretionary');
+                    leftmenu_alignment();
                 }
             } else {
                 show_error(response);
@@ -476,5 +481,89 @@ function init_netprofit_areacontent() {
     })
     $("#weekselectuntil").unbind('change').change(function () {
         init_netprofitpage();
+    });
+    // Manage categories
+    $("div.expensesdata_managecategories").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'category_type', value:$(this).data('category')});
+        var url="/netprofit/manage_profcategory";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','470px');
+                $("#pageModalLabel").empty().html('Edit Categories');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                init_manage_categories();
+            } else {
+                show_error(response)
+            }
+        },'json');
+    });
+}
+
+function init_manage_categories() {
+    $("div.netprofitcategoryeditarea").find('div.datarow > div.deedcell').unbind('click').click(function(){
+        // Edit
+        var category_id=$(this).data('category');
+        var params=new Array();
+        params.push({name: 'category_id', value: category_id});
+        var url="/netprofit/profcategory_edit";
+        $.post(url, params, function(response){
+            if (response.errors==0) {
+                $("div.netprofitcategoryeditarea").find('div.datarow > div.deedcell').unbind('click');
+                $("#addnewcategoryprofit").unbind('click');
+                $("div.netprofitcategoryeditarea").find("div.datarow[data-category='"+category_id+"']").empty().html(response.data.content);
+                manage_profit_categories();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("#addnewcategoryprofit").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'category_id', value: 0});
+        var url="/netprofit/profcategory_edit";
+        $.post(url, params, function(response){
+            if (response.errors==0) {
+                $("div.netprofitcategoryeditarea").find('div.datarow > div.deedcell').unbind('click');
+                $("#addnewcategoryprofit").unbind('click');
+                $("div.netprofitcategoryeditarea").find('div.tablebody').prepend('<div class="datarow">'+response.data.content+'</div>');
+                manage_profit_categories();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // manage_profit_categories();
+}
+
+function manage_profit_categories() {
+    $("div.saveeditnetprofitcategory").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'category_id', value: $(this).data('category')});
+        params.push({name: 'category_name', value: $("input#profitcategorynameinpt").val()});
+        params.push({name: 'category_type', value: $("input#netprofitcategorytype").val()});
+        var url="/netprofit/profcategory_save";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("div.netprofitcategoryeditarea").find('div.tablebody').empty().html(response.data.content);
+                init_manage_categories();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("div.canceleditnetprofitcategory").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'category_type', value: $("input#netprofitcategorytype").val()});
+        var url="/netprofit/profcategory_cancel";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("div.netprofitcategoryeditarea").find('div.tablebody').empty().html(response.data.content);
+                init_manage_categories();
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
 }

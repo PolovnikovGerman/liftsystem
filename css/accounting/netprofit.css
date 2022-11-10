@@ -828,3 +828,104 @@ input.netprofitedit {
     margin-left: 2px;
     max-width: 165px;
 }
+/* Manage Categories */
+/* Edit manage */
+.netprofitcategoryeditarea {
+    background-color: #ffffff;
+    border-radius: 10px;
+    height: 300px;
+    width: 415px;
+    padding: 10px;
+}
+.netprofitcategoryeditarea div {
+    float: left;
+    color: #000000;
+    font-size: 12px;
+}
+.netprofitcategoryeditarea > .title {
+    height: 21px;
+    line-height: 21px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.netprofitcategoryeditarea > .category_table {
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead {
+    font-weight: bold;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell {
+    height: 17px;
+    padding-top: 5px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell > i {
+    font-size: 16px;
+    cursor: pointer;
+    color: #0000ff;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .category_name {
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody {
+    border: 1px solid #000000;
+    clear: both;
+    height: 241px;
+    overflow-y: auto;
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow {
+/*    overflow-x: hidden;
+    clear: both;
+    width: 100%;*/
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell {
+    height: 19px;
+    text-align: center;
+    padding-top: 3px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > i {
+    font-size: 16px;
+    color : #5e4316;
+    cursor: pointer;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .category_name {
+    padding-left: 3px;
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .saveeditnetprofitcategory {
+    color: #00850c;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 12px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .canceleditnetprofitcategory {
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 13px;
+}
+.netprofitcategoryeditarea input.profitcategorynameinpt {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 11px;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 3px;
+    width: 351px;
+}

@@ -4196,12 +4196,12 @@ class Balances_model extends My_Model
                 $this->orders_model->notify_netdebtchanged($noteoptions);
             }
         }
-        $out['refresh']=0;
+        $out['refresh']=1;
         // $now=strtotime('monday this week');
         // $now=getDayOfWeek(date('W'), date('Y'),1);
 
         // if ($type=='week' && $netprofit['dateend']<$now) {
-            $out['refresh']=1;
+        //    $out['refresh']=1;
         // }
         return $out;
     }
@@ -4502,46 +4502,46 @@ class Balances_model extends My_Model
         return $out;
     }
 
-//    public function get_profit_category($category_id) {
-//        $out=array('result'=>$this->error_result, 'msg'=>'Category Not Found');
-//        $this->db->select('*');
-//        $this->db->from('ts_netprofit_categories');
-//        $this->db->where('netprofit_category_id', $category_id);
-//        $res=$this->db->get()->row_array();
-//        if (isset($res['netprofit_category_id'])) {
-//            $out['result']=$this->success_result;
-//            $out['data']=$res;
-//        }
-//        return $out;
-//    }
-//
-//    public function save_profit_category($data) {
-//        $out=array('result'=>$this->error_result, 'msg'=>'Category Empty');
-//        $category_id=$data['category_id'];
-//        $category_type=$data['category_type'];
-//        $category_name=$data['category_name'];
-//        if (!empty($category_name)) {
-//            $out['msg']='Category Not Unique';
-//            $this->db->select('count(*) as cnt');
-//            $this->db->from('ts_netprofit_categories');
-//            $this->db->where('upper(category_name)', strtoupper($category_name));
-//            $this->db->where('category_type', $category_type);
-//            $this->db->where('netprofit_category_id != ', $category_id);
-//            $chkres=$this->db->get()->row_array();
-//            if ($chkres['cnt']==0) {
-//                $out['result']=$this->success_result;
-//                $this->db->set('category_name', $category_name);
-//                if ($category_id<0) {
-//                    $this->db->set('category_type', $category_type);
-//                    $this->db->insert('ts_netprofit_categories');
-//                } else {
-//                    $this->db->where('netprofit_category_id', $category_id);
-//                    $this->db->update('ts_netprofit_categories');
-//                }
-//            }
-//        }
-//        return $out;
-//    }
+    public function get_profit_category($category_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Category Not Found');
+        $this->db->select('*');
+        $this->db->from('ts_netprofit_categories');
+        $this->db->where('netprofit_category_id', $category_id);
+        $res=$this->db->get()->row_array();
+        if (isset($res['netprofit_category_id'])) {
+            $out['result']=$this->success_result;
+            $out['data']=$res;
+        }
+        return $out;
+    }
+
+    public function save_profit_category($data) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Category Empty');
+        $category_id=$data['category_id'];
+        $category_type=$data['category_type'];
+        $category_name=$data['category_name'];
+        if (!empty($category_name)) {
+            $out['msg']='Category Not Unique';
+            $this->db->select('count(*) as cnt');
+            $this->db->from('ts_netprofit_categories');
+            $this->db->where('upper(category_name)', strtoupper($category_name));
+            $this->db->where('category_type', $category_type);
+            $this->db->where('netprofit_category_id != ', $category_id);
+            $chkres=$this->db->get()->row_array();
+            if ($chkres['cnt']==0) {
+                $out['result']=$this->success_result;
+                $this->db->set('category_name', $category_name);
+                if ($category_id<0) {
+                    $this->db->set('category_type', $category_type);
+                    $this->db->insert('ts_netprofit_categories');
+                } else {
+                    $this->db->where('netprofit_category_id', $category_id);
+                    $this->db->update('ts_netprofit_categories');
+                }
+            }
+        }
+        return $out;
+    }
 
     public function get_netprofit_purchasedetails($profit_id, $brand) {
         $out=array('result'=>$this->error_result, $msg='Empty Purchase Details');

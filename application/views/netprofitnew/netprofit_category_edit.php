@@ -1,4 +1,4 @@
-<div class="deedcell">
+<div class="deedcell" style="margin-top: -3px;">
     <div class="saveeditnetprofitcategory" data-category="<?=$category_id?>">
         <i class="fa fa-check-circle" aria-hidden="true"></i>
     </div>
