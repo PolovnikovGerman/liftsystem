@@ -25,7 +25,7 @@
                 <img src="/img/accounting/list.png" alt="Note"/>
             </div>
             <div class="totalcost <?= $datum['totalcost_class'] ?>"><?= $datum['out_totalcost'] ?></div>
-            <div class="totalcostperc"></div>
+            <div class="totalcostperc"><?=$datum['totalcostperc']?></div>
             <div class="netprofit <?= $datum['netprofit_class'] ?>"><?= $datum['out_netprofit'] ?></div>
             <div class="netprofitperc"><?=$datum['out_netprofitperc']?></div>
             <div class="invest <?= $datum['saved_class']?>"><?= $datum['out_saved'] ?></div>
