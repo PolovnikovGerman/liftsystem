@@ -317,6 +317,29 @@ class Netprofit extends MY_Controller
         show_404();
     }
 
+    public function netprofit_weekruncheck() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_data_error;
+            $postdata=$this->input->post();
+            if (isset($postdata['session'])) {
+                $session_id=$postdata['session'];
+                // Restore session data
+                $netprofitdata=usersession($session_id);
+                if (!empty($netprofitdata)) {
+                    $res=$this->balances_model->netprofit_weekrun_edit($netprofitdata, $session_id);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $mdata['content'] = $res['run_include'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function netprofit_purchase() {
         if ($this->isAjax()) {
             $mdata=array();

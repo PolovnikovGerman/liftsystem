@@ -1609,6 +1609,23 @@ class Balances_model extends My_Model
         return $out;
     }
 
+    public function netprofit_weekrun_edit($netprofitdata, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Record not found'];
+        $netprofit=$netprofitdata['netprofit'];
+        if (array_key_exists('runinclude', $netprofit)) {
+            $newval = ($netprofit['runinclude']==1 ? 0 : 1);
+            $netprofit['runinclude'] = $newval;
+            $out['result'] = $this->success_result;
+            if ($newval==0) {
+                $out['run_include']='<i class="fa fa-square-o" aria-hidden="true"></i>';
+            } else {
+                $out['run_include']='<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+            }
+            $netprofitdata['netprofit']=$netprofit;
+            usersession($session_id, $netprofitdata);
+        }
+        return $out;
+    }
 //    public function netprofit_details_debtincl($netprofitdata, $session_id) {
 //        $out=array('result'=>$this->error_result, 'msg'=>'Record Not Found');
 //        $netprofit=$netprofitdata['netprofit'];
@@ -4122,7 +4139,7 @@ class Balances_model extends My_Model
         // $this->db->set('profit_owners',(floatval($netprofit['profit_owners'])==0 ? NULL : floatval($netprofit['profit_owners'])));
         $this->db->set('od2',(floatval($netprofit['od2'])==0 ? NULL : floatval($netprofit['od2'])));
         $this->db->set('profit_saved',(floatval($netprofit['saved'])==0 ? NULL : floatval($netprofit['saved'])));
-        // $this->db->set('debtinclude',intval($netprofit['debtinclude']));
+        $this->db->set('runinclude',intval($netprofit['runinclude']));
         // $this->db->set('weeknote', $netprofit['weeknote']);
         $this->db->where('profit_id', $profit_id);
         $this->db->where('brand', $brand);

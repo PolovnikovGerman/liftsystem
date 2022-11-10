@@ -147,6 +147,29 @@ function init_netprofitdetails_edit() {
     $(".but-cancel").unbind('click').click(function () {
         init_netprofitpage();
     });
+    $(".but-accept").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#detailssession").val()});
+        params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+        var url="/netprofit/netprofit_details_save";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                init_netprofitpage();
+                if (parseInt(response.data.refresh)===1) {
+                    rebuild_charttable();
+                    // Rebuild W9 Work
+                    init_expenses_details('ads');
+                    init_expenses_details('upwork');
+                    init_expenses_details('w9work');
+                    init_expenses_details('discretionary');
+                    leftmenu_alignment();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+
     $("input.netprofitedit").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
@@ -177,13 +200,13 @@ function init_netprofitdetails_edit() {
         }, 'json');
     });
     // Include / exclude
-    $("#editnetdetailsdebtincl").unbind('click').click(function(){
+    $(".includeweek_edit").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'session', value: $("#detailssession").val()});
-        var url='/accounting/netprofit_details_debtincl'; // ??
+        var url='/netprofit/netprofit_weekruncheck';
         $.post(url, params, function(response){
             if (response.errors=='') {
-                $("#editnetdetailsdebtincl").empty().html(response.data.content);
+                $(".includeweek_edit").empty().html(response.data.content);
             } else {
                 show_error(response);
             }
