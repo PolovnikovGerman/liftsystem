@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="purchasedataarea">
-                <div class="title">Purchases:</div>
+                <div class="title">Discretionary:</div>
                 <div class="tablehead">
                     <div class="deedcell">
                         <i class="fa fa-plus-circle" aria-hidden="true" id="addnewpurchasedetails"></i>

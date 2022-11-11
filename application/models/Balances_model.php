@@ -2381,22 +2381,26 @@ class Balances_model extends My_Model
             $revenue[]= $this->empty_html_content;
             $projects[] = 0;
             $grossprofit[]=$this->empty_html_content;
-            $expensiveval=$netprofitval=$revenuepercval=$grossprofitpercval=0;
+            $pcssold[]=$this->empty_html_content;
+            $expensive[]=$this->empty_html_content;
+            $expensiveclass[]='';
             $operating[]=$this->empty_html_content;
             $advertising[]=$this->empty_html_content;
             $payroll[]=$this->empty_html_content;
             $odesk[]=$this->empty_html_content;
             $profitw9[]=$this->empty_html_content;
             $purchases[]=$this->empty_html_content;
+            $netprofit[]=$this->empty_html_content;
+            $revenue_perc[]=$this->empty_html_content;
+            $grossprofit_perc[]=$this->empty_html_content;
+            $grossrevenue_perc[] = $this->empty_html_content;
             $operating_help[]=$this->empty_html_content;
             $advertising_help[]=$this->empty_html_content;
             $payroll_help[]=$this->empty_html_content;
             $odesk_help[]=$this->empty_html_content;
             $profitw9_help[]=$this->empty_html_content;
             $purchases_help[]=$this->empty_html_content;
-            $pcssold[]=$this->empty_html_content;
-            $expensive[]=$this->empty_html_content;
-            $expensiveclass[]='';
+            $expensiveval=$netprofitval=$revenuepercval=$grossprofitpercval=0;
             $tablekey=count($sales)-1;
             foreach ($ordersres as $row) {
                 if ($row['orddat']==$i) {
@@ -2492,6 +2496,10 @@ class Balances_model extends My_Model
             $purchases_help[]=$this->empty_html_content;
             $expensiveclass[] = '';
             $expensive[] = $this->empty_html_content;
+            $netprofit[]=$this->empty_html_content;
+            $revenue_perc[]=$this->empty_html_content;
+            $grossprofit_perc[]=$this->empty_html_content;
+            $grossrevenue_perc[] = $this->empty_html_content;
             $tablekey=count($sales)-1;
             $operatingpace = 0;
             $advertisingpace = 0;
@@ -4309,10 +4317,10 @@ class Balances_model extends My_Model
         $out=array();
         foreach ($data as $row) {
             $row['amount_class']='';
-            $row['amout_out']=$this->EMPTY_PROFIT;
-            if ($row['amount']>0) {
+            $row['amount_out']=$this->EMPTY_PROFIT;
+            if (floatval($row['amount'])>0) {
                 $row['amount_out']=MoneyOutput($row['amount'],2);
-            } elseif ($row['amount']<0) {
+            } elseif (floatval($row['amount'])<0) {
                 $row['amount_class']='color_red2';
                 $row['amount_out']='('.MoneyOutput(abs($row['amount']),2).')';
             }

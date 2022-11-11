@@ -12,6 +12,9 @@
         </div>
         <div class="category">
             <select class="category purchaseselect" data-detail="<?=$row['netprofit_detail_id']?>" data-fld="netprofit_category_id" data-detailtype="<?=$category?>">
+                <?php if (empty($row['netprofit_category_id'])) { ?>
+                    <option value="" selected="selected">Unclassified</option>
+                <?php } ?>
                 <?php foreach ($categories as $trow) { ?>
                     <option value="<?=$trow['netprofit_category_id']?>" <?=($trow['netprofit_category_id']==$row['netprofit_category_id'] ? 'selected="selected"' : '')?> ><?=$trow['category_name']?></option>
                 <?php } ?>
