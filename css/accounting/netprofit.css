@@ -136,7 +136,7 @@
     width: 35px;
 }
 .netprofit-table-head .emptyspace {
-    width: 33px;
+    width: 30px;
 }
 .netprofit-running {
     color: #aaaabc;
@@ -221,18 +221,29 @@
     border-right: 1px solid #000000;
 }
 .netprofit-running .emptyspace {
-    width: 34px;
+    width: 31px;
     border-right: 1px solid #000000;
 }
 .netprofitviewdata {
-    /* border-bottom: 1px solid #000000; */
     border-right: 1px solid #000000;
     max-height: 336px;
-    overflow-y: scroll;
+}
+/* Scrollbar */
+.netprofitviewdata .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.netprofitviewdata .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.netprofitviewdata .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
 }
 .bottomnetprofitdata {
     border-top: 1px solid #000;
-    width: 1216px;
+    width: 1212px;
     margin-left: 26px;
 }
 .weeknumber {

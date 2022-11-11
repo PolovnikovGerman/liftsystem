@@ -112,7 +112,8 @@ class Accounting extends MY_Controller
         // Colorbox
         $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
         $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
-
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
