@@ -1390,9 +1390,9 @@ class Balances_model extends My_Model
             $data['out_purchases'] = $profit_purchases == 0 ? $this->EMPTY_PROFIT : ($profit_purchases < 0 ? MoneyOutput(abs($profit_purchases),0) : '('.MoneyOutput(abs($profit_purchases),0).')');
             $data['out_totalcost'] = $result['totalcost'] == 0 ? $this->NOT_CALC_YET : ($result['totalcost'] < 0 ? MoneyOutput(abs($result['totalcost']),0) : '('.MoneyOutput(abs($result['totalcost']),0).')');
             $data['out_netprofit'] = $result['netprofit'] == 0 ? $this->NOT_CALC_YET : ($result['netprofit'] < 0 ? MoneyOutput(abs($result['netprofit']),0) : '('.MoneyOutput(abs($result['netprofit']),0).')');
+            $data['out_debt'] = $profit_debt == 0 ? $this->EMPTY_PROFIT : ($profit_debt > 0 ? MoneyOutput(abs($profit_debt),0) : '('.MoneyOutput(abs($profit_debt),0).')');
             $data['saved'] = $profit_saved;
             $data['od2'] = $profit_od2;
-            $data['debt'] = $profit_debt;
             $out['data'] = $data;
             // Get data about expenses
             $this->db->select('*');

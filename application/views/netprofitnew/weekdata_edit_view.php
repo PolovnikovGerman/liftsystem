@@ -37,8 +37,6 @@
     <input class="netprofitedit" data-fld="od2" value="<?=$od2?>"/>
 </div>
 <div class="odperc"><?=$out_odperc?></div>
-<div class="retained">
-    <input class="netprofitedit" data-fld="debt" value="<?=$debt?>"/>
-</div>
+<div class="retained"><?=$out_debt?></div>
 <div class="retainedperc"><?=$out_debtperc?></div>
 <div class="includeweek_edit"><?=$run_include?></div>
