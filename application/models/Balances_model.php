@@ -334,7 +334,7 @@ class Balances_model extends My_Model
                 $weekname .= date('M', $dstart);
             }
             $weekname .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
-            $weekname .= ',' . date('Y', $dend);
+            $weekname .= ', ' . date('Y', $dend);
             $row['week'] = $weekname;
             $tq='';
             if ($year >= 2016) {
@@ -421,7 +421,7 @@ class Balances_model extends My_Model
             }
             if ($radio=='amount') {
                 $row['out_operating'] = $profit_operating == 0 ? $this->EMPTY_PROFIT : ($profit_operating < 0 ? MoneyOutput(abs($profit_operating),0) : '('.MoneyOutput($profit_operating,0).')');
-                $row['out_advertising'] = $profit_advertising == 0 ? $this->EMPTY_PROFIT : ($profit_advertising < 0 ? MoneyOutput(abs($profit_advertising),0) : '('.MoneyOutput($profit_advertising).')');
+                $row['out_advertising'] = $profit_advertising == 0 ? $this->EMPTY_PROFIT : ($profit_advertising < 0 ? MoneyOutput(abs($profit_advertising),0) : '('.MoneyOutput($profit_advertising,0).')');
                 $row['out_payroll'] = $profit_payroll == 0 ? $this->EMPTY_PROFIT : ($profit_payroll < 0 ? MoneyOutput(abs($profit_payroll),0) : '('.MoneyOutput(abs($profit_payroll),0).')');
                 $row['out_projects'] = $profit_projects == 0 ? $this->EMPTY_PROFIT : ($profit_projects < 0 ? MoneyOutput(abs($profit_projects),0) : '('.MoneyOutput(abs($profit_projects),0).')');
                 $row['out_w9'] = $profit_w9 == 0 ? $this->EMPTY_PROFIT : ($profit_w9 < 0 ? MoneyOutput(abs($profit_w9),0) : '('.MoneyOutput(abs($profit_w9),0).')');
@@ -1304,13 +1304,13 @@ class Balances_model extends My_Model
             $dstart = $common['datebgn'];
             $dend = $common['dateend'];
             $weekname = '';
-            if (date('M', $dstart) != date('M', $dend)) {
-                $weekname .= date('M', $dstart) . '/' . date('M', $dend);
-            } else {
+            // if (date('M', $dstart) != date('M', $dend)) {
+            //    $weekname .= date('M', $dstart) . '/' . date('M', $dend);
+            //} else {
                 $weekname .= date('M', $dstart);
-            }
+            //}
             $weekname .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
-            $weekname .= ',' . date('y', $dend);
+            // $weekname .= ',' . date('y', $dend);
             $data['week'] = $weekname;
             $runinclude = intval($result['runinclude']);
             $data['runinclude'] = $runinclude;
@@ -1383,7 +1383,7 @@ class Balances_model extends My_Model
                 }
             }
             $data['operating'] = $profit_operating;
-            $data['out_advertising'] = $profit_advertising == 0 ? $this->EMPTY_PROFIT : ($profit_advertising < 0 ? MoneyOutput(abs($profit_advertising),0) : '('.MoneyOutput($profit_advertising).')');
+            $data['out_advertising'] = $profit_advertising == 0 ? $this->EMPTY_PROFIT : ($profit_advertising < 0 ? MoneyOutput(abs($profit_advertising),0) : '('.MoneyOutput($profit_advertising,0).')');
             $data['payroll'] = $profit_payroll;
             $data['out_projects'] = $profit_projects == 0 ? $this->EMPTY_PROFIT : ($profit_projects < 0 ? MoneyOutput(abs($profit_projects),0) : '('.MoneyOutput(abs($profit_projects),0).')');
             $data['out_w9'] = $profit_w9 == 0 ? $this->EMPTY_PROFIT : ($profit_w9 < 0 ? MoneyOutput(abs($profit_w9),0) : '('.MoneyOutput(abs($profit_w9),0).')');

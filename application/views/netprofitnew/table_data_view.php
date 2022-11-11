@@ -10,7 +10,7 @@
             <div class="weekname editdata" data-profit="<?=$datum['profit_id']?>"><?=$datum['week']?></div>
             <div class="sales"><?=$datum['sales'] ?></div>
             <div class="revenue"><?=$datum['out_revenue']?></div>
-            <div class="grossprofit <?= $datum['profit_class'] ?>" data-event="hover" data-css="poreport_detailmessage" data-bgcolor="#FFFFFF" data-bordercolor="#000"
+            <div class="grossprofit <?= $datum['profit_class'] ?>" data-event="click" data-css="poreport_detailmessage" data-bgcolor="#FFFFFF" data-bordercolor="#000"
                  data-textcolor="#000" data-position="down" data-balloon="{ajax} /accounting/netprofit_weekdetails?id=<?=$datum['profit_id']?>">
                 <?= $datum['out_profit'] ?>
             </div>
