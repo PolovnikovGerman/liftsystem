@@ -28,6 +28,9 @@ function init_netprofitpage() {
             init_netprofit_content();
             $("#loader").hide();
             jQuery.balloon.init();
+            $(".netprofitviewdata").scrollpanel({
+                prefix: 'sp-'
+            });
         } else {
             $("#loader").hide();
             show_error(response);
