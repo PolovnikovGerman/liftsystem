@@ -247,10 +247,18 @@
     text-align: center;
     border: 1px solid #000000;
 }
+div.yearbegin {
+    border-bottom: 1px solid #000000;
+}
 .netprofit-table-data div {
     height: 21px;
     line-height: 21px!important;
     text-align: center;
+    font-size: 11px;
+}
+.netprofit-table-data.yearbegin div {
+    height: 20px;
+    line-height: 20px!important;
 }
 .netprofit-table-data .weekname {
     width: 109px;
