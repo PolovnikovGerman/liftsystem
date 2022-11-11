@@ -293,7 +293,7 @@ function init_netprofitdetails_popup() {
         },'json');
     });
     // Change category
-    $("select.purchaselect").unbind('change').change(function(){
+    $("select.purchaseselect").unbind('change').change(function(){
         var category_type = $(this).data('detailtype');
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
