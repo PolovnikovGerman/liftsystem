@@ -482,7 +482,7 @@ function init_netprofit_areacontent() {
         leftmenu_alignment();
     })
     $(".collapsenetprofittableview").unbind('click').click(function () {
-        $(".netprofitviewdata").css('max-height','273px');
+        $(".netprofitviewdata").css('max-height','336px');
         $(".collapsenetprofittableview").hide();
         $(".expandnetprofittableview").show();
         leftmenu_alignment();

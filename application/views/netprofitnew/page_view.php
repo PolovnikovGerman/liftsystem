@@ -109,8 +109,9 @@
         </div>
     </div>
     <div class="netprofitviewdata"></div>
+    <div class="datarow"><div class="bottomnetprofitdata">&nbsp;</div></div>
     <div class="expandnetprofittableview">+ Expand to 26 weeks</div>
-    <div class="collapsenetprofittableview">- Collapse to 13 weeks</div>
+    <div class="collapsenetprofittableview">- Collapse to 16 weeks</div>
     <div class="netprofitchartdata">
         <div class="netprofitchartdata_title">
             <div class="netprofitheadoptionlabel">Brand</div>
