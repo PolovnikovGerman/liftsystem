@@ -23,13 +23,21 @@ function init_netprofitpage() {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("div.netprofitviewdata").empty().html(response.data.content);
+            $("div#netprofitviewdata").empty().html(response.data.content);
+            if ($("#maxnetprofittable").val()=='26') {
+                $("#netprofitviewdata").css('max-height','546px');
+                $(".netprofitviewdata").css('max-height','546px');
+                $(".netprofitviewdata").find('div.sp-viewport').css('height','546px');
+                $(".netprofitviewdata").find('div.sp-scrollbar').css('height','546px');
+                $(".expandnetprofittableview").hide();
+                $(".collapsenetprofittableview").show();
+            }
             $("div.netprofit-running").empty().html(response.data.total_view);
             init_netprofit_content();
             $("#loader").hide();
             jQuery.balloon.init();
             $(".netprofitviewdata").scrollpanel({
-                prefix: 'sp-'
+                'prefix' : 'sp-'
             });
         } else {
             $("#loader").hide();
@@ -219,7 +227,6 @@ function init_netprofitdetails_edit() {
 }
 
 function init_netprofitdetails_popup() {
-    // Close btn
     // Save
     $("div#purchasepopupsavevalue").unbind('click').click(function(response){
         var params=new Array();
@@ -253,19 +260,17 @@ function init_netprofitdetails_popup() {
         params.push({name:'session', value: $("#detailssession").val()});
         params.push({name:'details', value: $(this).data('detail')});
         params.push({name:'category', value: category_type});
-        $.colorbox({
-            opacity: .7,
-            transition: 'fade',
-            ajax: true,
-            width:440,
-            href: '/netprofit/profit_newcategory',
-            data: params,
-            onComplete: function() {
-                // init_check();
-                $.colorbox.resize();
-                init_newnetcategory(detail, category_type);
-            }
-        });
+        var url = "/netprofit/profit_newcategory";
+        $.post(url, params, function (response) {
+            $("#artNextModal").find('div.modal-dialog').css('width','440px');
+            $("#artNextModalLabel").empty().html(response.data.title);
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            });
+            init_newnetcategory(detail, category_type);
+        },'json');
     });
     // Delete Purchase details
     $("div.detailrow").find("div.deedcell").unbind('click').click(function(){
@@ -411,6 +416,9 @@ function init_netprofitdetails_popup() {
 }
 
 function init_newnetcategory(detail, category_type) {
+    $("div#artNextModal").find('button.close').unbind('click').click(function () {
+        $("#artNextModal").modal('hide');
+    })
     $("div.newcategoryname_save").unbind('click').click(function(){
         var params=new Array();
         params.push({name:'session', value: $("#detailssession").val()});
@@ -420,7 +428,7 @@ function init_newnetcategory(detail, category_type) {
         var url="/netprofit/profit_categorysave";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                $.colorbox.close();
+                $("#artNextModal").modal('hide');
                 // Restore table content
                 if (category_type=='Purchase') {
                     $("div.netproofpurchasearea").find("div.tablebody[data-content='purchase']").empty().html(response.data.content);
@@ -480,15 +488,23 @@ function init_charttable_content() {
 
 function init_netprofit_areacontent() {
     $(".expandnetprofittableview").unbind('click').click(function () {
+        $("#netprofitviewdata").css('max-height','546px');
         $(".netprofitviewdata").css('max-height','546px');
+        $(".netprofitviewdata").find('div.sp-viewport').css('height','546px');
+        $(".netprofitviewdata").find('div.sp-scrollbar').css('height','546px');
         $(".expandnetprofittableview").hide();
         $(".collapsenetprofittableview").show();
+        $("#maxnetprofittable").val(26);
         leftmenu_alignment();
     })
     $(".collapsenetprofittableview").unbind('click').click(function () {
+        $("#netprofitviewdata").css('max-height','336px');
         $(".netprofitviewdata").css('max-height','336px');
+        $(".netprofitviewdata").find('div.sp-viewport').css('height','336px');
+        $(".netprofitviewdata").find('div.sp-scrollbar').css('height','336px');
         $(".collapsenetprofittableview").hide();
         $(".expandnetprofittableview").show();
+        $("#maxnetprofittable").val(16);
         leftmenu_alignment();
     });
     $("div.netprofitheadocheck").unbind('click').click(function () {

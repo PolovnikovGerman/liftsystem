@@ -1,3 +1,4 @@
+<div class="netprofitviewdata">
 <?php $numpp=1;?>
 <?php foreach ($data as $datum) { ?>
     <div class="datarow" data-profit="<?=$datum['profit_id']?>">
@@ -39,3 +40,4 @@
     </div>
     <?php $numpp++;?>
 <?php } ?>
+</div>

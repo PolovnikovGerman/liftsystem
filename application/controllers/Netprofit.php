@@ -483,12 +483,18 @@ class Netprofit extends MY_Controller
     }
 
     public function profit_newcategory() {
-        $mdata = array();
-        $error = 'Test';
-        $postdata = $this->input->post();
-        $options = array('category' => $postdata['category'],);
-        $content = $this->load->view('netprofitnew/new_category_view', $options, TRUE);
-        echo $content;
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $options = array('category' => $postdata['category'],);
+            $content = $this->load->view('netprofitnew/new_category_view', $options, TRUE);
+            $mdata['content'] = $content;
+            $mdata['title'] = 'New '.$postdata['category'].' Category';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+        // echo $content;
     }
 
     public function profit_categorysave() {
