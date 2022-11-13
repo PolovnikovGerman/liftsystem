@@ -183,16 +183,34 @@ class Netprofit extends MY_Controller
         }
     }
 
+    public function netprofit_weekdetails() {
+        $profit_id = $this->input->get('id');
+        $details = $this->balances_model->netprofit_weekdetails($profit_id);
+        $content = $this->load->view('netprofitnew/netprofit_weekdetails_view',['details' => $details], TRUE);
+        echo $content;
+    }
+
+
     public function netprofit_charttabledata() {
         if ($this->isAjax()) {
             $mdata=array();
             $postdata=$this->input->post();
             $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($postdata);
+            $brand = ifset($postdata, 'brand', 'ALL');
             $yearstotals['compareweek']=$postdata['compareweek'];
+            $yearstotals['brand'] = $brand;
             $mdata['content']=$this->load->view('netprofitnew/years_totals_view',$yearstotals, TRUE);
             $error='';
         }
         $this->ajaxResponse($mdata,$error);
+    }
+
+    public function onpace_message() {
+        $options = $this->input->get();
+        $brand = ifset($options,'brand','ALL');
+        $details = $this->balances_model->onpace_data($brand);
+        $content = $this->load->view('netprofitnew/onpace_message_view',['details' => $details], TRUE);
+        echo $content;
     }
 
     public function netprofit_expensetable() {

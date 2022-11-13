@@ -55,6 +55,7 @@ function rebuild_charttable() {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.weektotalsdataarea").empty().html(response.data.content);
+            jQuery.balloon.init();
             if ($("div.showhidecuryear").hasClass('hide')) {
             //    $("div.parametervalue.currentyearval").show();
             //    $("div.prognosis.currentyear").show();
