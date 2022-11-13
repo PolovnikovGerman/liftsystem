@@ -224,6 +224,10 @@
     width: 31px;
     border-right: 1px solid #000000;
 }
+#netprofitviewdata {
+    max-height: 336px;
+    overflow: hidden;
+}
 .netprofitviewdata {
     border-right: 1px solid #000000;
     max-height: 336px;

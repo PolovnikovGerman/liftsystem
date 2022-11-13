@@ -109,9 +109,6 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
-        // Colorbox
-        $head['scripts'][]=array('src'=>'/js/colorbox/jquery.colorbox-min.js');
-        $head['styles'][]=array('style'=>'/css/colorbox/colorbox.css');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
         $options = [

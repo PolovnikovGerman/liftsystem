@@ -1,6 +1,7 @@
 <input type="hidden" value="<?=$limitrow?>" id="limitweekshow"/>
 <input type="hidden" id="netprofitviewbrand" value="<?=$brand?>">
 <input type="hidden" id="netprofitviewtype" value="amount"/>
+<input type="hidden" id="maxnetprofittable" value="16"/>
 <div class="netprofitviewarea">
     <div class="netprofitviewtitle">
         <div class="datarow">
@@ -108,7 +109,7 @@
             <div class="netprofit-running"></div>
         </div>
     </div>
-    <div class="netprofitviewdata"></div>
+    <div id="netprofitviewdata"></div>
     <div class="datarow"><div class="bottomnetprofitdata">&nbsp;</div></div>
     <div class="expandnetprofittableview">+ Expand to 26 weeks</div>
     <div class="collapsenetprofittableview">- Collapse to 16 weeks</div>

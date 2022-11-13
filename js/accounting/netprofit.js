@@ -23,13 +23,21 @@ function init_netprofitpage() {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("div.netprofitviewdata").empty().html(response.data.content);
+            $("div#netprofitviewdata").empty().html(response.data.content);
+            if ($("#maxnetprofittable").val()=='26') {
+                $("#netprofitviewdata").css('max-height','546px');
+                $(".netprofitviewdata").css('max-height','546px');
+                $(".netprofitviewdata").find('div.sp-viewport').css('height','546px');
+                $(".netprofitviewdata").find('div.sp-scrollbar').css('height','546px');
+                $(".expandnetprofittableview").hide();
+                $(".collapsenetprofittableview").show();
+            }
             $("div.netprofit-running").empty().html(response.data.total_view);
             init_netprofit_content();
             $("#loader").hide();
             jQuery.balloon.init();
             $(".netprofitviewdata").scrollpanel({
-                prefix: 'sp-'
+                'prefix' : 'sp-'
             });
         } else {
             $("#loader").hide();
@@ -480,15 +488,23 @@ function init_charttable_content() {
 
 function init_netprofit_areacontent() {
     $(".expandnetprofittableview").unbind('click').click(function () {
+        $("#netprofitviewdata").css('max-height','546px');
         $(".netprofitviewdata").css('max-height','546px');
+        $(".netprofitviewdata").find('div.sp-viewport').css('height','546px');
+        $(".netprofitviewdata").find('div.sp-scrollbar').css('height','546px');
         $(".expandnetprofittableview").hide();
         $(".collapsenetprofittableview").show();
+        $("#maxnetprofittable").val(26);
         leftmenu_alignment();
     })
     $(".collapsenetprofittableview").unbind('click').click(function () {
+        $("#netprofitviewdata").css('max-height','336px');
         $(".netprofitviewdata").css('max-height','336px');
+        $(".netprofitviewdata").find('div.sp-viewport').css('height','336px');
+        $(".netprofitviewdata").find('div.sp-scrollbar').css('height','336px');
         $(".collapsenetprofittableview").hide();
         $(".expandnetprofittableview").show();
+        $("#maxnetprofittable").val(16);
         leftmenu_alignment();
     });
     $("div.netprofitheadocheck").unbind('click').click(function () {
