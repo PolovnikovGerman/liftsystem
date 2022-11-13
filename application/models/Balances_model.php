@@ -2232,9 +2232,9 @@ class Balances_model extends My_Model
 
     public function get_netprofit_totalsbyweekdata($options) {
         // Select max and min Year
-        $compareweek=$options['compareweek'];
-        $paceincome=$options['paceincome'];
-        $paceexpense=$options['paceexpense'];
+        $compareweek=ifset($options, 'compareweek',0);
+        $paceincome=ifset($options,'paceincome',1);
+        $paceexpense=ifset($options, 'paceexpense',1);
         if ($compareweek==1) {
             $weekbgn=intval($options['weekbgn']);
             $weekend=intval($options['weekend']);
@@ -2518,7 +2518,30 @@ class Balances_model extends My_Model
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
                         $salespace = round($row['cnt'] * $paceweekkf, 0);
-                        $revenuepace = round($row['revenue'] * $paceweekkf, 2);
+                        $revenuepace = 0;
+                        if (date('m')=='01') {
+                            $revenuepace = round($row['revenue'] * $paceweekkf, 2);
+                        } else {
+                            if ($salespace != 0) {
+                                $revendate = strtotime(date('Y-m').'-01');
+                                $year_start = strtorime(date('Y').'-01-01');
+                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+                                $this->db->from('ts_orders o');
+                                $this->db->where('o.is_canceled',0);
+                                $this->db->where('o.order_date >= ', $year_start);
+                                $this->db->where('o.order_date < ', $revendate);
+                                if (isset($options['brand']) && $options['brand']!=='ALL') {
+                                    if ($options['brand']=='SB') {
+                                        $this->db->where_in('o.brand', ['BT','SB']);
+                                    } else {
+                                        $this->db->where('o.brand', $options['brand']);
+                                    }
+                                }
+                                $revenueres = $this->db->get()->row_array();
+                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
+                            }
+                        }
+                        // Get dat
                         $grosprofitpace = round($row['gross_profit'] * $paceweekkf, 2);
                         $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
                     }
@@ -4761,8 +4784,92 @@ class Balances_model extends My_Model
         ];
 
         return $out;
+    }
 
-
+    public function onpace_data($brand) {
+        $now=getDayOfWeek(date('W'), date('Y'),1);
+        // Get current week number
+        $this->db->select('profit_week');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not NULL');
+        $this->db->where('dateend < ',$now);
+        $this->db->order_by('datebgn','desc');
+        $weekres=$this->db->get()->row_array();
+        if ($weekres['profit_week']>52) {
+            $weekres['profit_week']=52;
+        }
+        $paceweekkf=52/$weekres['profit_week'];
+        $start_date = strtotime(date('Y').'-01-01');
+        $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.order_date < ', $now);
+        if (isset($brand) && $brand!=='ALL') {
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
+        }
+        $ordersres=$this->db->get()->row_array();
+        $salespace = round($ordersres['cnt'] * $paceweekkf,0);
+        $revenuepace = 0;
+        if (date('m')=='01') {
+            $revenuepace = round($ordersres['revenue'] * $paceweekkf,2);
+        } else {
+            if ($salespace != 0) {
+                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+                $this->db->from('ts_orders o');
+                $this->db->where('o.is_canceled',0);
+                $this->db->where('o.order_date >= ', $start_date);
+                $this->db->where('o.order_date < ', $now);
+                if (isset($brand) && $brand!=='ALL') {
+                    if ($brand=='SB') {
+                        $this->db->where_in('o.brand', ['BT','SB']);
+                    } else {
+                        $this->db->where('o.brand', $brand);
+                    }
+                }
+                $revenueres=$this->db->get()->row_array();
+                $revenuepace = round($revenueres['revenue'] / ($revenueres['cnt'] / $salespace),2);
+            }
+        }
+        $details = [];
+        $totalrevenue = 0;
+        for ($i=1; $i<12; $i++) {
+            if ($i >= date('n')) {
+                $d_bgn = (date('Y') - 1).'-'.str_pad($i,2,'0',STR_PAD_LEFT).'-01';
+                $d_end = (date('Y') - 1).'-'.str_pad($i+1,2,'0',STR_PAD_LEFT).'-01';
+                $this->db->select('sum(revenue) as revenue');
+                $this->db->from('ts_orders');
+                $this->db->where('order_date >= ', strtotime($d_bgn));
+                $this->db->where('order_date < ', strtotime($d_end));
+                $monthdat = $this->db->get()->row_array();
+            } else {
+                $d_bgn = date('Y').'-'.str_pad($i,2,'0',STR_PAD_LEFT).'-01';
+                $d_end = date('Y').'-'.str_pad($i+1,2,'0',STR_PAD_LEFT).'-01';
+                $this->db->select('sum(revenue) as revenue');
+                $this->db->from('ts_orders');
+                $this->db->where('order_date >= ', strtotime($d_bgn));
+                $this->db->where('order_date < ', strtotime($d_end));
+                $monthdat = $this->db->get()->row_array();
+            }
+            $totalrevenue += floatval($monthdat['revenue']);
+            $perc = round($totalrevenue/$revenuepace*100,1).'%';
+            $monthdate = strtotime('2013-'.$i.'-01');
+            $details[] = [
+                'month' => date('M', $monthdate),
+                'revenue' => $totalrevenue,
+                'percent' => $perc,
+            ];
+        }
+        $details[] = [
+            'month' => 'Dec',
+            'revenue' => $revenuepace,
+            'percent' => '100%',
+        ];
+        return $details;
     }
 
 }

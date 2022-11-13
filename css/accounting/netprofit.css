@@ -959,3 +959,32 @@ input.netprofitedit {
 .grossprofit_popup_message {
 
 }
+.onpace_popup_message {
+    padding: 9px!important;
+}
+/* On pace message popup */
+.onpacemessage_area {
+
+}
+.onpacemessage_area div {
+    float: left;
+    font-size: 12px;
+}
+.onpacetitle {
+    color: #001072;
+    font-weight: bold;
+    text-align: center;
+    width: 24px;
+}
+.onpacemessage_month {
+    color: #001072;
+    font-weight: bold;
+    text-align: center;
+    width: 37px;
+}
+.onpacemessage_monthval {
+    color: #6b6b6b;
+    font-size: 11px!important;
+    text-align: center;
+    width: 37px;
+}

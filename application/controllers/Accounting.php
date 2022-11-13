@@ -35,7 +35,7 @@ class Accounting extends MY_Controller
     public function index()
     {
         $head = [];
-        $head['title'] = 'Finance';
+        $head['title'] = 'Accounting';
         $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
@@ -2211,13 +2211,6 @@ class Accounting extends MY_Controller
             $mdata['content']=$this->load->view('netprofit/netprofit_tabledata_view',$content_options,TRUE);
             $this->ajaxResponse($mdata,$error);
         }
-    }
-
-    public function netprofit_weekdetails() {
-        $profit_id = $this->input->get('id');
-        $details = $this->balances_model->netprofit_weekdetails($profit_id);
-        $content = $this->load->view('netprofitnew/netprofit_weekdetails_view',['details' => $details], TRUE);
-        echo $content;
     }
 
 

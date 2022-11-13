@@ -11,7 +11,7 @@
             <div class="sales"><?=$datum['sales'] ?></div>
             <div class="revenue"><?=$datum['out_revenue']?></div>
             <div class="grossprofit <?= $datum['profit_class'] ?>" data-event="hover" data-css="grossprofit_popup_message" data-bgcolor="#FFFFFF" data-bordercolor="#000"
-                 data-textcolor="#000" data-position="down" data-balloon="{ajax} /accounting/netprofit_weekdetails?id=<?=$datum['profit_id']?>">
+                 data-textcolor="#000" data-position="down" data-balloon="{ajax} /netprofit/netprofit_weekdetails?id=<?=$datum['profit_id']?>">
                 <?= $datum['out_profit'] ?>
             </div>
             <div class="profitperc"><?=$datum['out_profitperc']?></div>
