@@ -134,6 +134,10 @@ function check_week(profit) {
         if (response.errors=='') {
             $(".includeweek[data-profit='"+profit+"']").empty().html(response.data.weekcheck);
             $("div.netprofit-running").empty().html(response.data.total_view);
+            init_expenses_details('ads');
+            init_expenses_details('upwork');
+            init_expenses_details('w9work');
+            init_expenses_details('discretionary');
         } else {
             show_error(response);
         }

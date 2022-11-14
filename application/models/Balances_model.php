@@ -4300,8 +4300,9 @@ class Balances_model extends My_Model
     public function get_expresyeardetails($expensetype, $year, $brand, $sortfld, $sortdir) {
         $now=getDayOfWeek(date('W'), date('Y'),1);
         // Totals
-        $this->db->select('sum(d.amount) amount');
+        $this->db->select('sum(d.amount*nd.runinclude) amount');
         $this->db->from('ts_netprofit_details d');
+        $this->db->join('netprofit_dat nd','nd.profit_id=d.profit_id and nd.brand=d.brand');
         $this->db->join('netprofit n','n.profit_id=d.profit_id');
         $this->db->where('n.profit_week is not null');
         $this->db->where('d.details_type',$expensetype);
@@ -4325,9 +4326,11 @@ class Balances_model extends My_Model
             $this->db->select("round(sum(d.amount)/{$totals}*100,1) as amount_perc",FALSE);
         }
         $this->db->from('ts_netprofit_details d');
+        $this->db->join('netprofit_dat nd','nd.profit_id=d.profit_id and nd.brand=d.brand');
         $this->db->join('ts_netprofit_categories c', 'c.netprofit_category_id=d.netprofit_category_id','left');
         $this->db->join('netprofit n','n.profit_id=d.profit_id');
         $this->db->where('n.profit_week is not null');
+        $this->db->where('nd.runinclude', 1);
         $this->db->where('d.details_type', $expensetype);
         $this->db->where('n.dateend < ', $now);
         $this->db->where('n.profit_year', $year);
