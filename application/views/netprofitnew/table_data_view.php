@@ -15,14 +15,14 @@
                  data-textcolor="#000" data-position="down" data-balloon="{ajax} /netprofit/netprofit_weekdetails?id=<?=$datum['profit_id']?>">
                 <?= $datum['out_profit'] ?>
             </div>
-            <div class="profitperc"><?=$datum['out_profitperc']?></div>
-            <div class="operating <?= $datum['operating_class'] ?>"><?=$datum['out_operating']?></div>
-            <div class="ads <?=$datum['advertising_class']?>"><?=$datum['out_advertising'] ?></div>
-            <div class="payroll <?= $datum['payroll_class'] ?>"><?= $datum['out_payroll'] ?></div>
-            <div class="upwork <?= $datum['projects_class'] ?>"><?= $datum['out_projects'] ?></div>
-            <div class="w9work <?= $datum['w9work_class'] ?>"><?=$datum['out_w9']?></div>
-            <div class="discretionary <?=$datum['notesclass']?> <?= $datum['purchases_class'] ?>"><?= $datum['out_purchases'] ?></div>
-            <div class="discretionarynote <?=$datum['notesclass']?>">
+            <div class="profitperc "><?=$datum['out_profitperc']?></div>
+            <div class="operating <?=$viewtype=='condensed' ? 'condensed' : ''?> <?= $datum['operating_class'] ?>"><?=$datum['out_operating']?></div>
+            <div class="ads <?=$viewtype=='condensed' ? 'condensed' : ''?> <?=$datum['advertising_class']?>"><?=$datum['out_advertising'] ?></div>
+            <div class="payroll <?=$viewtype=='condensed' ? 'condensed' : ''?> <?= $datum['payroll_class'] ?>"><?= $datum['out_payroll'] ?></div>
+            <div class="upwork <?=$viewtype=='condensed' ? 'condensed' : ''?> <?= $datum['projects_class'] ?>"><?= $datum['out_projects'] ?></div>
+            <div class="w9work <?=$viewtype=='condensed' ? 'condensed' : ''?> <?= $datum['w9work_class'] ?>"><?=$datum['out_w9']?></div>
+            <div class="discretionary <?=$viewtype=='condensed' ? 'condensed' : ''?> <?=$datum['notesclass']?> <?= $datum['purchases_class'] ?>"><?= $datum['out_purchases'] ?></div>
+            <div class="discretionarynote <?=$viewtype=='condensed' ? 'condensed' : ''?> <?=$datum['notesclass']?>">
                 <img src="/img/accounting/list.png" alt="Note"/>
             </div>
             <div class="totalcost <?= $datum['totalcost_class'] ?>"><?= $datum['out_totalcost'] ?></div>

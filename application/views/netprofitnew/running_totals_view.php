@@ -3,12 +3,12 @@
 <div class="revenue"><?=$out_revenue?></div>
 <div class="grossprofit"><?=$out_profit?></div>
 <div class="profitperc"><?=$out_profitperc?></div>
-<div class="operating"><?=$out_operating?></div>
-<div class="ads"><?=$out_advertising?></div>
-<div class="payroll"><?=$out_payroll?></div>
-<div class="upwork"><?=$out_projects?></div>
-<div class="w9work"><?=$out_w9work?></div>
-<div class="discretionary"><?=$out_purchases?></div>
+<div class="operating <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_operating?></div>
+<div class="ads <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_advertising?></div>
+<div class="payroll <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_payroll?></div>
+<div class="upwork <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_projects?></div>
+<div class="w9work <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_w9work?></div>
+<div class="discretionary <?=$viewtype=='condensed' ? 'condensed' : ''?>"><?=$out_purchases?></div>
 <div class="totalcost"><?=$out_totalcost?></div>
 <div class="totalcostperc"><?=$out_totalcostperc?></div>
 <div class="netprofit"><?=$out_netprofit?></div>

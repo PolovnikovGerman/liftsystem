@@ -71,8 +71,9 @@
             </div>
             <div class="netprofitheadochecklabel">% Only</div>
             <div class="netprofitviewdataselect">
-                <select>
-                    <option value="detail">Detailed</option>
+                <select id="netreporttypeview">
+                    <option value="detail" <?=$view=='detail' ? 'selected="selected"' : ''?>>Detailed</option>
+                    <option value="condensed" <?=$view=='condensed' ? 'selected="selected"' : ''?>>Condensed</option>
                 </select>
             </div>
         </div>

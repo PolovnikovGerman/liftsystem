@@ -20,6 +20,7 @@ function init_netprofitpage() {
     params.push({name: 'limitshow', value :$("input#limitweekshow").val()});
     // params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
     params.push({name: 'brand', value: 'ALL'});
+    params.push({name: 'viewtype', value: $("#netreporttypeview").val()});
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
@@ -112,8 +113,10 @@ function init_netprofit_content() {
         check_week(profit);
     });
     $("div.weekname.editdata").unbind('click').click(function(){
-        var profit=$(this).data('profit');
-        edit_profdat(profit);
+        if ($("#netreporttypeview").val()=='detail') {
+            var profit=$(this).data('profit');
+            edit_profdat(profit);
+        }
     });
 }
 
@@ -525,6 +528,10 @@ function init_netprofit_areacontent() {
     $("#weekselectuntil").unbind('change').change(function () {
         init_netprofitpage();
     });
+    $("#netreporttypeview").unbind('change').change(function(){
+        var viewtype = $(this).val();
+        change_netprofittabledata_view(viewtype);
+    })
     // Manage categories
     $("div.expensesdata_managecategories").unbind('click').click(function(){
         var params=new Array();
@@ -609,4 +616,56 @@ function manage_profit_categories() {
             }
         },'json');
     });
+}
+
+function change_netprofittabledata_view(viewtype) {
+    if (viewtype=='detail') {
+        // Title
+        $(".netprofit-table-head").find('div.operating').show();
+        $(".netprofit-table-head").find("div.ads").show();
+        $(".netprofit-table-head").find("div.payroll").show();
+        $(".netprofit-table-head").find("div.upwork").show();
+        $(".netprofit-table-head").find("div.w9work").show();
+        $(".netprofit-table-head").find("div.discretionary").show();
+        // Running
+        $(".netprofit-running").find('div.operating').show();
+        $(".netprofit-running").find("div.ads").show();
+        $(".netprofit-running").find("div.payroll").show();
+        $(".netprofit-running").find("div.upwork").show();
+        $(".netprofit-running").find("div.w9work").show();
+        $(".netprofit-running").find("div.discretionary").show();
+        // Table data
+        $(".netprofitviewdata").find('div.operating').show();
+        $(".netprofitviewdata").find("div.ads").show();
+        $(".netprofitviewdata").find("div.payroll").show();
+        $(".netprofitviewdata").find("div.upwork").show();
+        $(".netprofitviewdata").find("div.w9work").show();
+        $(".netprofitviewdata").find("div.discretionary").show();
+        $(".netprofitviewdata").find('div.discretionarynote').show();
+        $(".bottomnetprofitdata").css('width','1212px');
+    } else {
+        // Title
+        $(".netprofit-table-head").find('div.operating').hide();
+        $(".netprofit-table-head").find("div.ads").hide();
+        $(".netprofit-table-head").find("div.payroll").hide();
+        $(".netprofit-table-head").find("div.upwork").hide();
+        $(".netprofit-table-head").find("div.w9work").hide();
+        $(".netprofit-table-head").find("div.discretionary").hide();
+        // Running
+        $(".netprofit-running").find('div.operating').hide();
+        $(".netprofit-running").find("div.ads").hide();
+        $(".netprofit-running").find("div.payroll").hide();
+        $(".netprofit-running").find("div.upwork").hide();
+        $(".netprofit-running").find("div.w9work").hide();
+        $(".netprofit-running").find("div.discretionary").hide();
+        // Table data
+        $(".netprofitviewdata").find('div.operating').hide();
+        $(".netprofitviewdata").find("div.ads").hide();
+        $(".netprofitviewdata").find("div.payroll").hide();
+        $(".netprofitviewdata").find("div.upwork").hide();
+        $(".netprofitviewdata").find("div.w9work").hide();
+        $(".netprofitviewdata").find("div.discretionary").hide();
+        $(".netprofitviewdata").find('div.discretionarynote').hide();
+        $(".bottomnetprofitdata").css('width', '820px');
+    }
 }
