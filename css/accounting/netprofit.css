@@ -147,6 +147,9 @@
     line-height: 22px;
     text-align: center;
 }
+.netprofit-running div.condensed {
+    display: none;
+}
 .netprofit-running .weekname {
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
@@ -276,6 +279,9 @@ div.yearbegin {
     text-align: center;
     font-size: 11px;
 }
+.netprofit-table-data div.condensed {
+    display: none;
+}
 .netprofit-table-data.yearbegin div {
     height: 20px;
     line-height: 20px!important;
@@ -291,6 +297,7 @@ div.yearbegin {
     width: 66px;
 }
 .netprofit-table-data .grossprofit {
+    cursor: pointer;
     width: 67px;
 }
 .netprofit-table-data .profitperc {

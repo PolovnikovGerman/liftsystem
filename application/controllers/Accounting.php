@@ -63,8 +63,6 @@ class Accounting extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
                 $content_options['financebatchesview'] = $this->_prepare_batches_view($brand);
             } elseif ($row['item_link']=='#netprofitview') {
-                // $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
-                // $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
                 $head['styles'][] = array('style' => '/css/accounting/netprofit.css');
                 $head['scripts'][] = array('src' => '/js/accounting/netprofit.js');
                 $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand);
@@ -3357,7 +3355,8 @@ class Accounting extends MY_Controller
             'weeklists'=>$weeklist,
             'weekyearlist' => $weekyearlist,
             'brand' => $brand,
-            'limitrow' => $this->weekshow_limit
+            'limitrow' => $this->weekshow_limit,
+            'view' => 'detail',
         ];
         $content=$this->load->view('netprofitnew/page_view', $page_options ,TRUE);
         return $content;
