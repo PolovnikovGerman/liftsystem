@@ -35,7 +35,7 @@ class Accounting extends MY_Controller
     public function index()
     {
         $head = [];
-        $head['title'] = 'Finance';
+        $head['title'] = 'Accounting';
         $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
@@ -45,141 +45,40 @@ class Accounting extends MY_Controller
             if ($row['item_link']=='#profitordesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/profitordesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitordesview'] = $this->_prepare_order_profit($brand);
             } elseif ($row['item_link']=='#profitdatesview') {
                 $head['styles'][] = array('style' => '/css/accounting/profitdatesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/profitdatesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['profitdatesview'] = $this->_prepare_profitcalend_content($brand);
             } elseif ($row['item_link']=='#purchaseordersview') {
-//                $head['styles'][]=array('style'=>'/css/fulfillment/pototals.css');
-//                $head['scripts'][]=array('src'=>'/js/fulfillment/pototals.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
-//                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand, $top_menu);
                 $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#openinvoicesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/openinvoicesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/openinvoicesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['openinvoicesview'] = $this->_prepare_openinvoice_content($brand);
             } elseif ($row['item_link']=='#financebatchesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/financebatchesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/financebatchesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['financebatchesview'] = $this->_prepare_batches_view($brand);
             } elseif ($row['item_link']=='#netprofitview') {
-                $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
-                $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
+                // $head['styles'][] = array('style' => '/css/accounting/netprofitview.css');
+                // $head['scripts'][] = array('src' => '/js/accounting/netprofitview.js');
+                $head['styles'][] = array('style' => '/css/accounting/netprofit.css');
+                $head['scripts'][] = array('src' => '/js/accounting/netprofit.js');
                 $content_options['netprofitview'] = $this->_prepare_netprofit_content($brand);
             } elseif ($row['item_link']=='#ownertaxesview') {
                 $head['styles'][] = array('style' => '/css/accounting/ownertaxesview.css');
                 $head['scripts'][] = array('src' => '/js/accounting/ownertaxesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_view($brand);
             } elseif ($row['item_link']=='#expensesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/expensesview.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/expensesview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['expensesview'] = $this->_prepare_expensives_view($brand);
             } elseif ($row['item_link']=='#accreceiv') {
                 $head['styles'][]=array('style'=>'/css/accounting/accreceiv.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/accreceiv.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['accreceivview'] = $this->_prepare_accreceiv_view($brand);
             }
         }
@@ -210,7 +109,8 @@ class Accounting extends MY_Controller
         // Select 2
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
-
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -2135,7 +2035,7 @@ class Accounting extends MY_Controller
         show_404();
     }
 
-    public function netprofitdat() {
+    public function old_netprofitdat() {
         if ($this->isAjax()) {
             $error='';
             $mdata=array();
@@ -2310,90 +2210,6 @@ class Accounting extends MY_Controller
         }
     }
 
-    public function manage_profcategory() {
-        if ($this->isAjax()) {
-            $error='';
-            $mdata=array();
-            $category_type=$this->input->post('category_type');
-            $categories=$this->balances_model->get_profit_categories($category_type, 0);
-            $tableoptions=array(
-                'data'=>$categories,
-            );
-            $tableview=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
-            $options=array(
-                'category_type'=>$category_type,
-                'tableview'=>$tableview,
-            );
-            $mdata['content']=$this->load->view('netprofit/netprofit_categories_view', $options, TRUE);
-            $this->ajaxResponse($mdata,$error);
-        }
-        show_404();
-    }
-
-    public function profcategory_edit() {
-        if ($this->isAjax()) {
-            $error='';
-            $mdata=array();
-            $category_id=$this->input->post('category_id');
-            if ($category_id==0) {
-                $data=array(
-                    'category_id'=>-1,
-                    'category_name'=>'',
-                );
-            } else {
-                $res=$this->balances_model->get_profit_category($category_id);
-                $error=$res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    $data=array(
-                        'category_id'=>$res['data']['netprofit_category_id'],
-                        'category_name'=>$res['data']['category_name'],
-                    );
-                }
-            }
-            if (empty($error)) {
-                $mdata['content']=$this->load->view('netprofit/netprofit_category_edit', $data, TRUE);
-            }
-            $this->ajaxResponse($mdata,$error);
-        }
-        show_404();
-    }
-
-    public function profcategory_save() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $postdata=$this->input->post();
-
-            $res=$this->balances_model->save_profit_category($postdata);
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error='';
-                $category_type=$postdata['category_type'];
-                $categories=$this->balances_model->get_profit_categories($category_type, 0);
-                $tableoptions=array(
-                    'data'=>$categories,
-                );
-                $mdata['content']=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function profcategory_cancel() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error='';
-            $category_type=$this->input->post('category_type');
-            $categories=$this->balances_model->get_profit_categories($category_type, 0);
-            $tableoptions=array(
-                'data'=>$categories,
-            );
-            $mdata['content']=$this->load->view('netprofit/profitcategory_table_view', $tableoptions, TRUE);
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
 
     public function netprofit_orders() {
         $profit_id=$this->input->get('d');
@@ -2448,127 +2264,6 @@ class Accounting extends MY_Controller
         }
     }
 
-    public function netprofitedit() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error='Unknown Period For Edit';
-            $postdata=$this->input->post();
-            $profit_id = ifset($postdata,'profit_id',0);
-            $brand = ifset($postdata,'brand');
-            if ($profit_id>0 && !empty($brand)) {
-                /* Get data about */
-                $res=$this->balances_model->get_netprofit_dataedit($profit_id, $brand);
-                $error=$res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error='';
-                    // Session ID
-                    $session='purchedit'.uniq_link(15);
-
-                    $type=$res['type'];
-                    $data=$res['data'];
-                    $data['session']=$session;
-                    $mdata['weekid']=$res['weekid'];
-                    if ($type=='week') {
-                        $mdata['content']=$this->load->view('netprofit/netprofit_edit_view',$data,TRUE);
-                    } else {
-                        $mdata['content']=$this->load->view('netprofit/netprofit_editmonth_view',$data,TRUE);
-                    }
-                    // Save to session
-                    $sessiondata=array(
-                        'session'=>$session,
-                        'profit_id'=>$profit_id,
-                        'netprofit'=>$res['data'],
-                        'type'=>$type,
-                        'purchase_details'=>$res['purchase_details'],
-                        'w9work_details'=>$res['w9work_details'],
-                        'delrecords'=>array(),
-                    );
-                    usersession($session, $sessiondata);
-                }
-            }
-            $this->ajaxResponse($mdata,$error);
-        }
-    }
-
-    public function netprofit_details_change() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $res=$this->balances_model->netprofit_details_edit($netprofitdata, $postdata, $session_id);
-                    $error=$res['msg'];
-                    if ($res['result']==$this->success_result) {
-                        $error='';
-                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function netprofit_purchase() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $netprofit=$netprofitdata['netprofit'];
-                    $purchase_details=$netprofitdata['purchase_details'];
-                    $purchsession='purchedit'.uniq_link(15);
-                    // Table view
-                    $purch_categories=$this->balances_model->get_profit_categories('Purchase');
-                    $tableoptions=array(
-                        'data'=>$purchase_details,
-                        'category'=>$purch_categories,
-                    );
-                    $purch_tableview=$this->load->view('netprofit/purchase_tabledata_view', $tableoptions, TRUE);
-                    $purchase_totals=0;
-                    foreach ($purchase_details as $drow) {
-                        $purchase_totals+=$drow['amount'];
-                    }
-                    // Get W9 Works
-                    $w9work_details=$netprofitdata['w9work_details'];
-                    $w9work_categories=$this->balances_model->get_profit_categories('W9');
-                    $w9options=array(
-                        'data'=>$w9work_details,
-                        'category'=>$w9work_categories,
-                    );
-                    $w9work_tableview=$this->load->view('netprofit/w9work_tabledata_view', $w9options, TRUE);
-                    $w9work_total=0;
-                    foreach ($w9work_details as $wrow) {
-                        $w9work_total+=$wrow['amount'];
-                    }
-
-                    $options=array(
-                        'session'=>$session_id,
-                        'datebgn'=>$netprofit['datebgn'],
-                        'dateend'=>$netprofit['dateend'],
-                        'weeknote'=>$netprofit['weeknote'],
-                        'profit_purchases'=>$purchase_totals,
-                        'putchase_tableview'=>$purch_tableview,
-                        'w9work_tableview'=>$w9work_tableview,
-                        'profit_w9'=>$w9work_total,
-                    );
-                    $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
-                    $mdata['content']=$this->load->view('netprofit/purchase_details_view', $options, TRUE);
-                    $error='';
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
     public function purchase_newdetails() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2598,94 +2293,6 @@ class Accounting extends MY_Controller
         show_404();
     }
 
-    public function profit_newcategory() {
-        $mdata = array();
-        $error = 'Test';
-        $postdata = $this->input->post();
-        $options = array('category' => $postdata['category'],);
-        $content = $this->load->view('netprofit/new_category_view', $options, TRUE);
-        echo $content;
-    }
-
-    public function purchase_editdetails() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $res=$this->balances_model->purchase_details_edit($netprofitdata, $postdata, $session_id);
-                    $error=$res['msg'];
-                    if ($res['result']==$this->success_result) {
-                        $error='';
-                        $netprofitdata=usersession($session_id);
-                        if ($postdata['category_type']=='Purchase') {
-                            $details=$netprofitdata['purchase_details'];
-                        } else {
-                            $details=$netprofitdata['w9work_details'];
-                        }
-                        $total=0;
-                        foreach ($details as $row) {
-                            $total+=floatval($row['amount']);
-                        }
-                        $mdata['total']=MoneyOutput($total,2);
-                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function purchase_deletedetails() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $detail_id=$postdata['detail_id'];
-                    $category_type=$postdata['category_type'];
-                    $res=$this->balances_model->purchase_details_remove($netprofitdata, $category_type, $detail_id, $session_id);
-                    $error=$res['msg'];
-                    if ($res['result']==$this->success_result) {
-                        $error='';
-                        $netprofitdata=usersession($session_id);
-                        if ($category_type=='Purchase') {
-                            $details=$netprofitdata['purchase_details'];
-                            $categories=$this->balances_model->get_profit_categories('Purchase');
-                            $options=array(
-                                'data'=>$details,
-                                'category'=>$categories,
-                            );
-                            $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $options, TRUE);
-                        } else {
-                            $details=$netprofitdata['w9work_details'];
-                            $categories=$this->balances_model->get_profit_categories('W9');
-                            $options=array(
-                                'data'=>$details,
-                                'category'=>$categories,
-                            );
-                            $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $options, TRUE);
-                        }
-                        $total=0;
-                        foreach ($details as $row) {
-                            $total+=floatval($row['amount']);
-                        }
-                        $mdata['total']=MoneyOutput($total,2);
-                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-    }
-
     public function w9work_newdetails() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -2710,66 +2317,6 @@ class Accounting extends MY_Controller
                         // Table view
                         $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
                     }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function profit_categorysave() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error=$this->restore_data_error;
-            $postdata=$this->input->post();
-            if (isset($postdata['session'])) {
-                $session_id=$postdata['session'];
-                // Restore session data
-                $netprofitdata=usersession($session_id);
-                if (!empty($netprofitdata)) {
-                    $res=$this->balances_model->netprofit_newcategory($netprofitdata,$postdata, $session_id);
-                    $error=$res['msg'];
-                    if ($res['result']==$this->success_result) {
-                        $error='';
-                        $netprofitdata=usersession($session_id);
-                        $categories=$this->balances_model->get_profit_categories($postdata['category_type']);
-                        if ($postdata['category_type']=='Purchase') {
-                            $details=$netprofitdata['purchase_details'];
-                        } else {
-                            $details=$netprofitdata['w9work_details'];
-                        }
-                        $tableoptions=array(
-                            'data'=>$details,
-                            'category'=>$categories,
-                        );
-                        if ($postdata['category_type']=='Purchase') {
-                            $mdata['content']=$this->load->view('netprofit/purchase_tabledata_view', $tableoptions, TRUE);
-                        } else {
-                            $mdata['content']=$this->load->view('netprofit/w9work_tabledata_view', $tableoptions, TRUE);
-                        }
-                    }
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
-
-    public function netprofit_details_save() {
-        if ($this->isAjax()) {
-            $mdata = array();
-            $error = $this->restore_data_error;
-            $postdata = $this->input->post();
-            $session_id = ifset($postdata, 'session', 'testsession');
-            $brand = ifset($postdata,'brand');
-            // Restore session data
-            $netprofitdata = usersession($session_id);
-            if (!empty($netprofitdata) && !empty($brand)) {
-                $res = $this->balances_model->netprofit_details_save($netprofitdata, $this->USR_ID, $session_id, $brand);
-                $error = $res['msg'];
-                if ($res['result'] == $this->success_result) {
-                    $error = '';
-                    $mdata['refresh'] = $res['refresh'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -2883,28 +2430,6 @@ class Accounting extends MY_Controller
         show_404();
     }
 
-    public function netprofit_checkweek() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $error='Unknown period';
-            $postdata = $this->input->post();
-            $type=ifset($postdata, 'type','week');
-            $profit_id=ifset($postdata, 'profit_id',0);
-            $brand = ifset($postdata, 'brand','ALL');
-            //
-            if (!empty($profit_id)) {
-                $res = $this->balances_model->netprofit_check_week($profit_id, $brand, $type);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $mdata['weekcheck']=$res['weekcheck'];
-                    $mdata['weekclass']=$res['weekclass'];
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
 
     public function netprofit_w9purchasetable() {
         if ($this->isAjax()) {
@@ -2941,18 +2466,6 @@ class Accounting extends MY_Controller
             }
             $this->ajaxResponse($mdata,$error);
         }
-    }
-
-    public function netprofit_charttabledata() {
-        if ($this->isAjax()) {
-            $mdata=array();
-            $postdata=$this->input->post();
-            $yearstotals=$this->balances_model->get_netprofit_totalsbyweekdata($postdata);
-            $yearstotals['compareweek']=$postdata['compareweek'];
-            $mdata['content']=$this->load->view('netprofit/chartdata_table_view',$yearstotals, TRUE);
-            $error='';
-        }
-        $this->ajaxResponse($mdata,$error);
     }
 
     public function netprofit_comparetabledata() {
@@ -3838,6 +3351,20 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_netprofit_content($brand) {
+        $weeklist=$this->balances_model->get_weeklist();
+        $weekyearlist=$this->balances_model->get_currentyearweeks();
+        $page_options = [
+            'weeklists'=>$weeklist,
+            'weekyearlist' => $weekyearlist,
+            'brand' => $brand,
+            'limitrow' => $this->weekshow_limit
+        ];
+        $content=$this->load->view('netprofitnew/page_view', $page_options ,TRUE);
+        return $content;
+
+    }
+
+    private function _oldprepare_netprofit_content($brand) {
         $title=$this->load->view('netprofit/admin_netprofitweek_view',array(),TRUE);
         // Get List of weeks
         $weeklist=$this->balances_model->get_weeklist();

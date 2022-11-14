@@ -1193,7 +1193,10 @@ div.oldvesionlabel {
     border-left: none;
 }
 .color_red, .color_red2 {
-    color: #FF0000;
+    color: #FF0000!important;
+}
+.color_blue, .color_blue2 {
+    color: #0000FF!important;
 }
 /* Week totals popup */
 .weekbrandtotals {
