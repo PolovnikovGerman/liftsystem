@@ -7,7 +7,7 @@
     <?php } ?>
     <div class="parametervalue prognosis">Yr to Date</div>
     <?php if ($compareweek==0) { ?>
-        <div class="parametervalue prognosis" style="cursor: pointer" data-event="hover" data-css="onpace_popup_message" data-bgcolor="#FFFFFF" data-bordercolor="#000"
+        <div class="parametervalue prognosis" style="cursor: pointer" data-event="click" data-css="onpace_popup_message" data-bgcolor="#FFFFFF" data-bordercolor="#000"
              data-textcolor="#000" data-position="up" data-balloon="{ajax} /netprofit/onpace_message?brand=<?=$brand?>">
             On Pace
         </div>

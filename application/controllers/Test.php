@@ -1547,4 +1547,21 @@ class Test extends CI_Controller
         }
     }
 
+    public function update_netprofitruns() {
+        $this->db->select('d.profit_id, sum(d.debtinclude) as debtinclude, sum(d.runinclude) as runinclude, max(n.datebgn) as datebgn, max(n.dateend) as dateend');
+        $this->db->from('netprofit_dat d');
+        $this->db->join('netprofit n', 'n.profit_id=d.profit_id');
+        $this->db->where('n.profit_month', NULL);
+        $this->db->group_by('d.profit_id');
+        $datas = $this->db->get()->result_array();
+        foreach ($datas as $data) {
+            echo 'Week '.date('d.m.Y', $data['datebgn']).' - '.date('d.m.Y', $data['dateend']).PHP_EOL;
+            if (intval($data['runinclude']) > 0) {
+                $this->db->where('profit_id', $data['profit_id']);
+                $this->db->set('debtinclude',1);
+                $this->db->set('runinclude',1);
+                $this->db->update('netprofit_dat');
+            }
+        }
+    }
 }

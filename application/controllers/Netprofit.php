@@ -224,8 +224,8 @@ class Netprofit extends MY_Controller
                 $brand = ifset($postdata,'brand','ALL');
                 $year = ifset($postdata,'year', date('Y'));
                 // $year = 2017;
-                $sortfld = ifset($postdata,'sortfld','category_name');
-                $sortdir = ifset($postdata,'sortdir','asc');
+                $sortfld = ifset($postdata,'sortfld','amount_perc');
+                $sortdir = ifset($postdata,'sortdir','desc');
                 if ($expenstype=='ads') {
                     $data=$this->balances_model->get_expresyeardetails('ADS', $year, $brand, $sortfld, $sortdir);
                 } elseif ($expenstype=='w9work') {
@@ -396,7 +396,7 @@ class Netprofit extends MY_Controller
                     $purch_tableview=$this->load->view('netprofitnew/expensive_tabledata_view', $tableoptions, TRUE);
                     $purchase_totals=0;
                     foreach ($purchase_details as $drow) {
-                        $purchase_totals+=$drow['amount'];
+                        $purchase_totals+=floatval($drow['amount']);
                     }
                     // Get W9 Works
                     $w9work_details=$netprofitdata['w9work_details'];
@@ -409,7 +409,7 @@ class Netprofit extends MY_Controller
                     $w9work_tableview=$this->load->view('netprofitnew/expensive_tabledata_view', $w9options, TRUE);
                     $w9work_total=0;
                     foreach ($w9work_details as $wrow) {
-                        $w9work_total+=$wrow['amount'];
+                        $w9work_total+=floatval($wrow['amount']);
                     }
                     $ads_details = $netprofitdata['ads_details'];
                     $ads_categories=$this->balances_model->get_profit_categories('Ads');
@@ -421,7 +421,7 @@ class Netprofit extends MY_Controller
                     $ads_tableview=$this->load->view('netprofitnew/expensive_tabledata_view', $adsoptions, TRUE);
                     $ads_total=0;
                     foreach ($ads_details as $wrow) {
-                        $ads_total+=$wrow['amount'];
+                        $ads_total+=floatval($wrow['amount']);
                     }
 
                     $upwork_details = $netprofitdata['upwork_details'];
@@ -434,7 +434,7 @@ class Netprofit extends MY_Controller
                     $upwork_tableview=$this->load->view('netprofitnew/expensive_tabledata_view', $upworkoptions, TRUE);
                     $upwork_total=0;
                     foreach ($upwork_details as $wrow) {
-                        $upwork_total+=$wrow['amount'];
+                        $upwork_total+=floatval($wrow['amount']);
                     }
 
                     $options=array(
@@ -616,6 +616,7 @@ class Netprofit extends MY_Controller
                         $error=$res['msg'];
                         if ($res['result']==$this->success_result) {
                             $error='';
+                            $netprofitdata=usersession($session_id);
                             if ($expence_type=='Purchase') {
                                 $details=$netprofitdata['purchase_details'];
                                 $categories=$this->balances_model->get_profit_categories('Purchase');
