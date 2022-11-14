@@ -287,6 +287,8 @@ class Netprofit extends MY_Controller
                     }
                     $viewtype = ifset($postdata,'viewtype', 'amount');
                     $runtotal=$this->balances_model->get_netprofit_runs($options, $viewtype);
+                    $view = ifset($postdata,'view','detail');
+                    $runtotal['viewtype'] = $view;
                     $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
                 }
             }

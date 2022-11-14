@@ -128,6 +128,7 @@ function check_week(profit) {
     params.push({name: 'untilweek', value: $("select#weekselectuntil").val()});
     params.push({name: 'viewtype', value: $("#netprofitviewtype").val()});
     params.push({name: 'brand', value: $("#netprofitviewbrand").val()});
+    params.push({name: 'view', value: $("#netreporttypeview").val()});
     var url="/netprofit/netprofit_checkweek"
     $.post(url, params, function(response){
         if (response.errors=='') {
