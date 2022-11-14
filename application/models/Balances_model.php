@@ -242,10 +242,10 @@ class Balances_model extends My_Model
                 $out['out_netprofit']=($prof_net_profit==0 ? $this->EMPTY_PROFIT : '$'.  number_format($prof_net_profit,0,'.',','));
                 $value=$prof_debt;
                 if ($value<0) {
-                    $out['out_debt']='($'.  number_format(abs($prof_debt),0,'.',',').')';
+                    $out['out_debt']='('.MoneyOutput(abs($prof_debt),0).')';
                     $out['out_debtclass']='color_red';
                 } else {
-                    $out['out_debt']=($prof_debt==0 ? $this->EMPTY_PROFIT : '+$'.  number_format($prof_debt,0,'.',','));
+                    $out['out_debt']=($prof_debt==0 ? $this->EMPTY_PROFIT : MoneyOutput($prof_debt,0));
                     $out['out_debtclass']=($prof_debt==0 ? '' : 'color_blue2');
                 }
                 $value=$prof_saved;
@@ -1062,6 +1062,7 @@ class Balances_model extends My_Model
             //    }
             // }
             $this->db->set('runinclude', $newdata);
+            $this->db->set('debtinclude', $newdata);
             $this->db->update('netprofit_dat');
             $out['runincl']=$outinclude;
 
@@ -4170,7 +4171,6 @@ class Balances_model extends My_Model
         // $this->db->set('profit_owners',(floatval($netprofit['profit_owners'])==0 ? NULL : floatval($netprofit['profit_owners'])));
         $this->db->set('od2',(floatval($netprofit['od2'])==0 ? NULL : floatval($netprofit['od2'])));
         $this->db->set('profit_saved',(floatval($netprofit['saved'])==0 ? NULL : floatval($netprofit['saved'])));
-        $this->db->set('runinclude',intval($netprofit['runinclude']));
         // $this->db->set('weeknote', $netprofit['weeknote']);
         $this->db->where('profit_id', $profit_id);
         $this->db->where('brand', $brand);
@@ -4178,6 +4178,11 @@ class Balances_model extends My_Model
         $this->db->set('update_user',$usrid);
         $this->db->where('profit_id', $profit_id);
         $this->db->update('netprofit');
+        // Update ALL Data files
+        $this->db->set('runinclude',intval($netprofit['runinclude']));
+        $this->db->set('debtinclude', intval($netprofit['runinclude']));
+        $this->db->where('profit_id', $profit_id);
+        $this->db->update('netprofit_dat');
         $out['result']=$this->success_result;
         $delrecords=$netprofitdata['delrecords'];
         foreach ($delrecords as $drow) {
@@ -4196,7 +4201,7 @@ class Balances_model extends My_Model
                 $rundat=$this->get_netprofit_runs($total_options);
                 $newrundebt=$rundat['out_debtval'];
                 if ($newrundebt<0) {
-                    $outnewrundebt='($'.number_format(abs(newrundebt),0,'.',',');
+                    $outnewrundebt='($'.number_format(abs($newrundebt),0,'.',',');
                 } else {
                     $outnewrundebt='$'.number_format($newrundebt,0,'.',',');
                 }
