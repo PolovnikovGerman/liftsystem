@@ -26,6 +26,7 @@ function init_page(objid) {
     $(".dbcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
+    console.log('Page '+objid);
     switch (objid) {
         case 'vendorsview':
             $("#vendorsview").show();
@@ -83,6 +84,10 @@ function init_page(objid) {
             $("#shippingview").show();
             init_shipping('BT');
             // Change Brand
+            break;
+        case 'btitems':
+            $("#btitemsview").show();
+            init_btitemslist_view();
             break;
     }
 }
