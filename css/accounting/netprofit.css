@@ -1,0 +1,1001 @@
+.netprofitviewarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 12px;
+}
+.netprofitviewtitle {
+    margin-left: 26px;
+}
+.netprofitviewtitle select {
+    width: 100%;
+    height: 20px;
+}
+.netprofitheadoptionlabel {
+    height: 20px;
+    line-height: 20px!important;
+    margin-right: 10px;
+}
+.netprofitsortselect {
+    width: 109px;
+    margin-right: 25px;
+}
+.netprofitweekselect {
+    width: 154px;
+    margin-right: 8px;
+}
+.netprofitviewdataselect {
+    margin-left: 22px;
+    width: 92px;
+}
+.netprofitheadocheck {
+    width: 19px;
+    height: 20px;
+    line-height: 20px!important;
+    color: #9595a2;
+}
+.netprofitheadocheck.active {
+    color: #0060df;
+}
+.netprofitheadochecklabel {
+    margin-left: 3px;
+    margin-right: 9px;
+    height: 20px;
+    line-height: 20px!important;
+}
+.netprofitheadocheck.first {
+    margin-left: 88px;
+}
+.netprofitheadocheck i {
+    font-size: 19px;
+}
+.netprofitsalesdatalabel {
+    font-weight: 600;
+    color: #00004b;
+    margin-left: 129px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.netprofit-table-head {
+    border: 1px solid #919191;
+    color: #000000;
+    font-weight: 600;
+}
+.netprofit-table-head div {
+    background: #bcbcbc;
+    height: 19px;
+    line-height: 19px;
+    text-align: center;
+    font-size: 11px;
+}
+.netprofit-table-head div.rightpart {
+    background: #39dd50;
+}
+.netprofit-table-head .weekname {
+    width: 110px;
+}
+.netprofit-table-head .sales {
+    width: 38px;
+}
+.netprofit-table-head .revenue {
+    width: 66px;
+}
+.netprofit-table-head .grossprofit {
+    width: 67px;
+}
+.netprofit-table-head .profitperc {
+    width: 35px;
+}
+.netprofit-table-head .operating {
+    width: 62px;
+}
+.netprofit-table-head .ads {
+    width: 61px;
+}
+.netprofit-table-head .payroll {
+    width: 64px;
+}
+.netprofit-table-head .upwork {
+    width: 56px;
+}
+.netprofit-table-head .w9work {
+    width: 64px;
+}
+.netprofit-table-head .discretionary {
+    width: 84px;
+    border-right: 1.5px solid #000000;
+}
+.netprofit-table-head .totalcost {
+    width: 66px;
+}
+.netprofit-table-head .totalcostperc {
+    width: 40px;
+}
+.netprofit-table-head .netprofit {
+    width: 61px;
+}
+.netprofit-table-head .netprofitperc {
+    width: 40px;
+    border-right: 3px solid #000000;
+}
+.netprofit-table-head .invest {
+    width: 51px;
+}
+.netprofit-table-head .investperc {
+    width: 35px;
+}
+.netprofit-table-head .od {
+    width: 52px;
+}
+.netprofit-table-head .odperc {
+    width: 35px;
+}
+.netprofit-table-head .retained {
+    width: 58px;
+}
+.netprofit-table-head .retainedperc {
+    width: 35px;
+}
+.netprofit-table-head .emptyspace {
+    width: 30px;
+}
+.netprofit-running {
+    color: #aaaabc;
+    border-bottom: 1px solid #000000;
+}
+.netprofit-running div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.netprofit-running div.condensed {
+    display: none;
+}
+.netprofit-running .weekname {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    width: 110px;
+}
+.netprofit-running .sales {
+    width: 38px;
+}
+.netprofit-running .revenue {
+    width: 66px;
+}
+.netprofit-running .grossprofit {
+    width: 67px;
+}
+.netprofit-running .profitperc {
+    border-right: 1px solid #000000;
+    width: 35px;
+}
+.netprofit-running .operating {
+    width: 62px;
+}
+.netprofit-running .ads {
+    width: 61px;
+}
+.netprofit-running .payroll {
+    width: 64px;
+}
+.netprofit-running .upwork {
+    width: 56px;
+}
+.netprofit-running .w9work {
+    width: 64px;
+}
+.netprofit-running .discretionary {
+    width: 85px;
+    padding-right: 18px;
+    border-right: 1.5px solid #000000;
+}
+.netprofit-running .totalcost {
+    width: 66px;
+}
+.netprofit-running .totalcostperc {
+    border-right: 1px solid #000000;
+    width: 40px;
+}
+.netprofit-running .netprofit {
+    width: 61px;
+}
+.netprofit-running .netprofitperc {
+    width: 40px;
+    border-right: 3px solid #000000;
+}
+.netprofit-running .invest {
+    width: 51px;
+}
+.netprofit-running .investperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-running .od {
+    width: 52px;
+}
+.netprofit-running .odperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-running .retained {
+    width: 58px;
+}
+.netprofit-running .retainedperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-running .emptyspace {
+    width: 31px;
+    border-right: 1px solid #000000;
+}
+#netprofitviewdata {
+    max-height: 336px;
+    overflow: hidden;
+}
+.netprofitviewdata {
+    border-right: 1px solid #000000;
+    max-height: 336px;
+}
+/* Scrollbar */
+.netprofitviewdata .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.netprofitviewdata .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.netprofitviewdata .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
+.bottomnetprofitdata {
+    border-top: 1px solid #000;
+    width: 1212px;
+    margin-left: 26px;
+}
+.weeknumber {
+    color: #069ec5;
+    height: 21px;
+    line-height: 21px!important;
+    margin-left: 3px;
+    width: 24px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.quoternumber {
+    height: 21px;
+    line-height: 21px!important;
+    margin-left: 3px;
+    width: 24px;
+    text-align: center;
+    border: 1px solid #000000;
+}
+div.yearbegin {
+    border-bottom: 1px solid #000000;
+}
+.netprofit-table-data div {
+    height: 21px;
+    line-height: 21px!important;
+    text-align: center;
+    font-size: 11px;
+}
+.netprofit-table-data div.condensed {
+    display: none;
+}
+.netprofit-table-data.yearbegin div {
+    height: 20px;
+    line-height: 20px!important;
+}
+.netprofit-table-data .weekname {
+    width: 109px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .sales {
+    width: 38px;
+}
+.netprofit-table-data .revenue {
+    width: 66px;
+}
+.netprofit-table-data .grossprofit {
+    cursor: pointer;
+    width: 67px;
+}
+.netprofit-table-data .profitperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .operating {
+    width: 62px;
+}
+.netprofit-table-data .ads {
+    width: 61px;
+}
+.netprofit-table-data .payroll {
+    width: 64px;
+}
+.netprofit-table-data .upwork {
+    width: 56px;
+}
+.netprofit-table-data .w9work {
+    width: 64px;
+}
+.netprofit-table-data .discretionary {
+    width: 66px;
+}
+.netprofit-table-data .discretionarynote {
+    width: 19px;
+    border-right: 1.5px solid #000000;
+}
+.netprofit-table-data .discretionarynote img {
+    width: 11px;
+}
+.netprofit-table-data .totalcost {
+    width: 66px;
+}
+.netprofit-table-data .totalcostperc {
+    width: 40px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .netprofit {
+    width: 61px;
+}
+.netprofit-table-data .netprofitperc {
+    width: 40px;
+    border-right: 3px solid #000000;
+}
+.netprofit-table-data .invest {
+    width: 51px;
+}
+.netprofit-table-data .investperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .od {
+    width: 52px;
+}
+.netprofit-table-data .odperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .retained {
+    width: 58px;
+}
+.netprofit-table-data .retainedperc {
+    width: 35px;
+    border-right: 1px solid #000000;
+}
+.netprofit-table-data .includeweek {
+    width: 20px;
+    border-right: 1px solid #000000;
+}
+.expandnetprofittableview, .collapsenetprofittableview {
+    clear: both;
+    margin-left: 522px;
+    color: #3736fe;
+    font-style: italic;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px!important;
+}
+.collapsenetprofittableview {
+    display: none;
+}
+.netprofitchartdata {
+    clear: both;
+    width: 100%;
+}
+.netprofitchartdata_title {
+    padding-left: 45px;
+    width: 100%;
+}
+.netprofitchartdata_title select {
+    width: 100%;
+    height: 20px;
+}
+.netprofitbrandselect {
+    width: 120px;
+    margin-right: 38px;
+}
+.netprofitheadoptionlabel.compareyear {
+    color: #39dd50;
+}
+.netprofitperiodselect {
+    width: 120px;
+    margin-right: 37px;
+}
+.netprofitcompareperiodselect {
+    display: none;
+}
+.weektotalsdataarea {
+    clear: both;
+    width: 100%;
+    margin-top: 7px;
+}
+.weektotalsdataarea > .weektotalsrow {
+    clear: both;
+    height: 22px;
+    width: 100%;
+}
+.weektotalsdataarea > .weektotalsrow.small {
+    height: 16px;
+}
+.weektotalsdataarea > .weektotalsrow.small > div {
+    line-height: 16px!important;
+    font-size: 11px;
+}
+.weektotalsdataarea > .weektotalsrow.expensivesrow {
+    display: none;
+}
+.weektotalsdataarea > .weektotalsrow > div {
+    color: #010101;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.weektotalsdataarea > .weektotalsrow > .parameterlabel {
+    padding-right: 5px;
+    width: 88px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parameterlabel {
+    border-right: 1px solid #FFFFFF;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.incomplete {
+    color: #ff0000;
+    font-style: italic;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.prognosis {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0000FF;
+}
+.weektotalsdataarea > .weektotalsrow > .parameterlabel.netprofit {
+    font-weight: bold;
+}
+.weektotalsdataarea > .weektotalsrow > .parameterlabel.expensives {
+    color: #ff0000;
+}
+.weektotalsdataarea > .weektotalsrow > .parameterlabel > span.exponsivedata {
+    cursor: pointer;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue {
+    width: 73px;
+    border-right: 1px solid #000000;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.currentyearval {
+    display: block;
+    background: #ededed;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue {
+    border-right: 1px solid #FFFFFF;
+}
+.weektotalsdataarea > .weektotalsrow.small > .parametervalue.showhidecuryear {
+    color: #0000ff;
+    cursor: pointer;
+    text-align: center;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.netprofit {
+    font-weight: bold;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.pcssold {
+    color: #8e8e8e;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.grossprofitperc {
+    color: #0000FF;
+}
+.weektotalsdataarea > .weektotalsrow.bottomborder > .parametervalue {
+    border-bottom: 1px solid #000000;
+    height: 21px;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata {
+    background-color: #d6d6d6;
+    font-size: 13px;
+    font-weight: bold;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    height: 22px;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis {
+    color: #ffffff;
+    width: 146px;
+    background: #413dd6;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.narrow {
+    width: 73px;
+}
+.weektotalsdataarea > .weektotalsrow > .parametervalue.headdata.prognosis.currentyear {
+    display: block;
+}
+
+.netprofitexpensesarea {
+    margin-top: 68px;
+    padding-left: 30px;
+    width: 100%;
+}
+.expensesdataarea {
+    width: 270px;
+    margin-right: 26px;
+}
+.expensesdata_title {
+    height: 25px;
+    line-height: 25px!important;
+    color: #010101;
+    font-weight: 600;
+}
+.expensesdata_title span {
+    font-weight: normal;
+}
+.expensesdata_managecategories {
+    float: right!important;
+    color: #0000ff;
+    cursor: pointer;
+    height: 25px;
+    line-height: 25px!important;
+}
+.expensesdata-table-head {
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 2px solid #000000;
+}
+.expensesdata-table-head div {
+    height: 20px;
+    line-height: 20px!important;
+    text-align: center;
+}
+.expensesdata-table-head .category_name {
+    width: 141px;
+}
+.expensesdata-table-head .amountvalue {
+    width: 76px;
+}
+.expensesdata-table-head .percentvalue {
+    width: 50px;
+}
+.expensesdata-table-data {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.expensesdata-table-data div {
+    height: 20px;
+    line-height: 20px!important;
+}
+.expensesdata-table-data .category_name {
+    width: 141px;
+    border-right: 1px solid #7f7f7f;
+    padding-left: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.expensesdata-table-data .amountvalue {
+    width: 76px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #7f7f7f;
+}
+.expensesdata-table-data .percentvalue {
+    width: 49px;
+    text-align: center;
+}
+.expensesdata-table-data .emptyexpenses {
+    width: 267px;
+    text-align: center;
+    color: #FF0000;
+}
+/* Weekdetails */
+.netprofit_weekdetails_area {
+    width: 307px;
+    margin: -12px;
+    float: left;
+}
+.netprofit_weekdetails_area div {
+    float: left;
+    font-size: 12px;
+}
+.netprofit_weekdetails_area .datarow > div {
+    height: 20px;
+    line-height: 20px!important;
+    text-align: center;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_brandname {
+    width: 108px;
+    text-align: right!important;
+    color: #001072;
+    font-weight: 600;
+    padding-right: 12px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_sales {
+    width: 33px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_revenue {
+    width: 61px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_grossprofit {
+    width: 66px;
+}
+.netprofit_weekdetails_area .datarow .weekdetails_profitperc {
+    width: 38px;
+}
+/* Edit */
+.cell_buttonedit {
+}
+.cell_buttonedit .but-accept, .cell_buttonedit .but-cancel {
+    padding-top: 3px;
+    text-align: center;
+    width: 15px;
+}
+.cell_buttonedit .but-accept img, .cell_buttonedit .but-cancel img{
+    cursor: pointer;
+    width: 90%;
+}
+.cell_week2edt {
+    width: 79px;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+}
+input.netprofitedit {
+    height: 20px;
+    line-height: 20px!important;
+    width: calc(100% - 5px);
+    margin-left: 5px;
+    text-align: center;
+}
+.btneditnetprofit {
+    cursor: pointer;
+}
+.includeweek_edit {
+    width: 20px;
+    border-right: 1px solid #000000;
+}
+/* Expense popup */
+.netproofpurchasearea {
+    clear: both;
+    float: left;
+    background-color: #f2f2f2;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    height: 680px;
+    /* width: 937px; */
+}
+.netproofpurchasearea div {
+    float: left;
+    font-size: 12px;
+    text-align: left;
+    color: #000000;
+}
+.netproofpurchasearea input {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px!important;
+    padding-left: 2px;
+    /* width: 97%; */
+}
+.netproofpurchasearea textarea {
+    font-size: 12px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    resize: none;
+    overflow-y: auto;
+}
+.netproofpurchasearea > .title {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .subtitle {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea {
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea {
+    width: 349px;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 82px;
+    text-align: center;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editnotearea > textarea.weeknoteedit {
+    height: 485px;
+    width: 340px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea {
+    /* margin-top: 20px; */
+    width: 567px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea {
+    /*    border: 1px dotted #000000;
+        height: 314px;*/
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .title {
+    color: #009a07;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    text-align: left;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead {
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > div {
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell {
+    font-weight: normal;
+    color: #0000ff;
+    font-size: 16px;
+    height: 22px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .deedcell > i {
+    cursor: pointer;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .amount {
+    width: 56px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .vendor {
+    width: 154px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .category {
+    width: 154px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablehead > .description {
+    width: 173px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody {
+    border: 1px solid #000000;
+    height: 212px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 560px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow {
+    overflow-x: hidden;
+    width: 100%;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > div {
+    height: 21px;
+    line-height: 21px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell {
+    font-weight: normal;
+    color: #000000;
+    font-size: 16px;
+    height: 19px;
+    width: 22px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .deedcell > i {
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 1px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .amount {
+    border-right: 1px solid;
+    width: 55px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .vendor {
+    border-right: 1px solid;
+    padding-left: 2px;
+    width: 153px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .category {
+    border-right: 1px solid;
+    width: 156px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .tablebody > .detailrow > .description {
+    width: 157px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata {
+    padding-left: 10px;
+    width: 400px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea >  .purchasedataarea > .totaldata > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .totaldata > .label {
+    margin-right: 5px;
+    padding: 0!important;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .savedata {
+    background: transparent url("/img/accounting/save_netprofitpopup_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    height: 27px;
+    margin-top: -17px;
+    text-align: center;
+    width: 67px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.amount,
+.netproofpurchasearea > .editdataarea input.w9workinput.amount {
+    width: 47px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.vendor,
+.netproofpurchasearea > .editdataarea input.w9workinput.vendor {
+    margin-left: 2px;
+    width: 144px;
+}
+.netproofpurchasearea > .editdataarea select.purchaseselect,
+.netproofpurchasearea > .editdataarea select.w9workselect {
+    margin-left: 2px;
+    height: 19px;
+    width: 135px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn {
+    width: 17px;
+}
+.netproofpurchasearea > .editdataarea > .editderailarea > .purchasedataarea > .tablebody > .detailrow > .category > .newcategoryaddbtn > i {
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.netproofpurchasearea > .editdataarea input.purchaseinput.descript,
+.netproofpurchasearea > .editdataarea input.w9workinput.descript {
+    margin-left: 2px;
+    max-width: 165px;
+}
+/* Manage Categories */
+/* Edit manage */
+.netprofitcategoryeditarea {
+    background-color: #ffffff;
+    border-radius: 10px;
+    height: 300px;
+    width: 415px;
+    padding: 10px;
+}
+.netprofitcategoryeditarea div {
+    float: left;
+    color: #000000;
+    font-size: 12px;
+}
+.netprofitcategoryeditarea > .title {
+    height: 21px;
+    line-height: 21px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.netprofitcategoryeditarea > .category_table {
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead {
+    font-weight: bold;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell {
+    height: 17px;
+    padding-top: 5px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .deedcell > i {
+    font-size: 16px;
+    cursor: pointer;
+    color: #0000ff;
+}
+.netprofitcategoryeditarea > .category_table > .tablehead > .category_name {
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody {
+    border: 1px solid #000000;
+    clear: both;
+    height: 241px;
+    overflow-y: auto;
+    width: 407px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow {
+/*    overflow-x: hidden;
+    clear: both;
+    width: 100%;*/
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell {
+    height: 19px;
+    text-align: center;
+    padding-top: 3px;
+    width: 25px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > i {
+    font-size: 16px;
+    color : #5e4316;
+    cursor: pointer;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .category_name {
+    padding-left: 3px;
+    width: 351px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .saveeditnetprofitcategory {
+    color: #00850c;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 12px;
+}
+.netprofitcategoryeditarea > .category_table > .tablebody > .datarow > .deedcell > .canceleditnetprofitcategory {
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 14px;
+    padding-top: 1px;
+    text-align: center;
+    width: 13px;
+}
+.netprofitcategoryeditarea input.profitcategorynameinpt {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    font-size: 11px;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 3px;
+    width: 351px;
+}
+.grossprofit_popup_message {
+
+}
+.onpace_popup_message {
+    padding: 9px!important;
+}
+/* On pace message popup */
+.onpacemessage_area {
+
+}
+.onpacemessage_area div {
+    float: left;
+    font-size: 12px;
+}
+.onpacetitle {
+    color: #001072;
+    font-weight: bold;
+    text-align: center;
+    width: 24px;
+}
+.onpacemessage_month {
+    color: #001072;
+    font-weight: bold;
+    text-align: center;
+    width: 37px;
+}
+.onpacemessage_monthval {
+    color: #6b6b6b;
+    font-size: 11px!important;
+    text-align: center;
+    width: 37px;
+}

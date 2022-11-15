@@ -2808,10 +2808,11 @@ Class Orders_model extends MY_Model
     public function get_profitexport_fields() {
         $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
             'field_order_items', 'field_revenue', 'field_balance', 'field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
-            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system'];
+            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system',
+            'field_credit_card','field_payment_type'];
         $labels=['Date', 'Order#', 'Canceled', 'Customer', 'QTY', 'Colors', 'Item #',
             'Item Name', 'Revenue', 'Balance', 'Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
-            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System'];
+            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System','Credit Card','Payment Type'];
         $data=[];
         $idx=0;
         foreach ($fields as $row) {
@@ -2881,7 +2882,7 @@ Class Orders_model extends MY_Model
             }
             $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue');
             foreach ($select_flds as $select_fld) {
-                if ($select_fld!=='payment_system') {
+                if ($select_fld!=='payment_system' && $select_fld!=='credit_card' && $select_fld!=='payment_type') {
                     $this->db->select("o.{$select_fld}");
                 }
             }
@@ -2950,6 +2951,11 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where('o.brand', $postdata['brand']);
                 }
+            }
+            if (in_array('credit_card', $fields)) {
+                $this->db->select('p.paycardnum');
+                $cartsql = "select order_id, group_concat(cardnum) as paycardnum from ts_order_payments group by order_id ";
+                $this->db->join("({$cartsql}) as p",'p.order_id=o.order_id','left');
             }
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
@@ -3086,6 +3092,23 @@ Class Orders_model extends MY_Model
                         $row['payment_system'] = $stype;
                     }
                 }
+                if (in_array('credit_card', $fields)) {
+                    $row['credit_card'] = trim(str_replace(',','', $row['paycardnum']));
+                    if (in_array('payment_type', $fields)) {
+                        $dat = ifset($row,'credit_card','');
+                        $paysystem = '';
+                        if (substr($dat,0,1)=='4') {
+                            $paysystem = 'Visa';
+                        } elseif (substr($dat,0,1)=='5') {
+                            $paysystem = 'Mastercard';
+                        } elseif (substr($dat, 0,1)=='3') {
+                            $paysystem = 'AmEx';
+                        } elseif (substr($dat,0,1)=='6') {
+                            $paysystem = 'Discover';
+                        }
+                        $row['payment_type']=$paysystem;
+                    }
+                }
                 $datarow=[];
                 foreach ($fields as $frow) {
                     $datarow[$frow]=$row[$frow];
@@ -3161,6 +3184,10 @@ Class Orders_model extends MY_Model
                 array_push($labels, 'Order Type');
             } elseif ($frow=='payment_system') {
                 array_push($labels, 'Payment System');
+            } elseif ($frow=='credit_card') {
+                array_push($labels,'Credit Card #');
+            } elseif ($frow=='payment_type') {
+                array_push($labels,'Payment Type');
             }
         }
         return $labels;
@@ -5664,7 +5691,11 @@ Class Orders_model extends MY_Model
                     $this->db->where('email_type','Leads');
                     $this->db->where('email_subtype','Quote');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $quotes=$this->db->get()->row_array();
                     // count proof requests
                     $this->db->select('count(email_id) as cnt');
@@ -5673,14 +5704,22 @@ Class Orders_model extends MY_Model
                     $this->db->where('unix_timestamp(email_date) < ', $newdate);
                     $this->db->where('email_type','Art_Submit');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $proofreq=$this->db->get()->row_array();
                     // count orders
                     $this->db->select('count(order_id) as cnt');
                     $this->db->from('ts_orders');
                     $this->db->where('order_date >= ', $date);
                     $this->db->where('order_date < ', $newdate);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $this->db->where('is_canceled',0);
                     $orders=$this->db->get()->row_array();
                     if ($orders['cnt']!=0 || $quotes['cnt']!=0 || $proofreq['cnt']!=0) {
@@ -5733,7 +5772,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',0);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $res=$this->db->get()->result_array();
             $ord_500=$ord_1000=$ord_1200=0;
@@ -5752,7 +5795,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',1);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $cancres=$this->db->get()->result_array();
             $canc_500=$canc_1000=$canc_1200=0;
@@ -5830,7 +5877,11 @@ Class Orders_model extends MY_Model
         $this->db->where('h.created_time >= ', $start_time);
         $this->db->where('h.created_time < ', $end_time);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
         $out=[];
@@ -7654,8 +7705,13 @@ Class Orders_model extends MY_Model
         $this->db->select('o.order_id, o.order_num, o.order_date, o.order_confirmation, o.customer_name, o.revenue, b.cnt, b.paysum');
         $this->db->from('ts_orders o');
         $this->db->join('('.$batchsql.') b','b.order_id=o.order_id','left');
-        $this->db->where('order_date >= ', $datebgn);
-        $this->db->where('is_canceled', 0);
+        $this->db->where('o.order_date >= ', $datebgn);
+        $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $res = $this->db->get()->result_array();
 
         $out = [];
@@ -7700,6 +7756,11 @@ Class Orders_model extends MY_Model
         $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
         $res = $this->db->get()->result_array();
         return $res;
