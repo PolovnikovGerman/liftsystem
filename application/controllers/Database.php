@@ -182,8 +182,19 @@ class Database extends MY_Controller
             'start' => str_replace('#','',$menu[0]['item_link'])
         ];
         foreach ($menu as $row) {
-            if ($row['item_link']=='#vendorsview') {
-            } elseif ($row['item_link']=='#masterinventory') {
+            if ($row['item_link']=='#btitems') {
+                //$head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
+                //$head['scripts'][]=array('src'=>'/js/database_center/itemdatalist.js');
+                //$head['styles'][] = array('style' => '/css/database_center/itemlistdetails.css');
+                //$head['scripts'][]=array('src' => '/js/database_center/itemlistdetails.js');
+                $head['styles'][]=array('style'=>'/css/database_center/btitemslist.css');
+                $head['scripts'][] = array('src'=>'/js/database_center/btitemlist.js');
+                $head['styles'][] = array('style' => '/css/database_center/btitemdetails.css');
+                $head['scripts'][]=array('src' => '/js/database_center/btitemdetails.js');
+                $head['styles'][] = array('style' => '/css/page_view/popover.css');
+                $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $content_options['itemsview'] = $this->_prepare_btitemdata_view();
             } elseif ($row['item_link']=='#mastersettings') {
             } elseif ($row['item_link']=='#btsettings') {
                 // Shipping Settings
@@ -1887,5 +1898,42 @@ class Database extends MY_Controller
         return $content;
     }
 
+    private function _prepare_btitemdata_view() {
+        $brand = 'BT';
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $this->load->model('categories_model');
+        $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
+        $activcategory = 0;
+        foreach ($categories as $category) {
+            if ($category['category_active']==1) {
+                $activcategory = $category['category_id'];
+                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+                break;
+            }
+        }
+        if ($activcategory == 0) {
+            $activcategory = $categories[0]['category_id'];
+            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+        }
+        $brandtotal = $this->items_model->get_items_count(['brand' => 'BT']);
+        $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $activcategory]);
+
+        $options = [
+            'perpage' => 250,
+            'order' => 'item_number',
+            'direct' => 'asc',
+            'totals' =>  $cntitems,
+            'brand' => $brand,
+            'vendors' => $this->vendors_model->get_vendors(),
+            'categories' => $categories,
+            'category_id' => $activcategory,
+            'category_label' => $activcategory_label,
+            'brandtotal' => $brandtotal,
+        ];
+        // $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
+        $content = $this->load->view('btitems/itemslist_view', $options, TRUE);
+        return $content;
+    }
 
 }

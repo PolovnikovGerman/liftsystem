@@ -1301,4 +1301,47 @@ Class Items_model extends My_Model
 
     }
 
+    public function count_item_searchres($options) {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
+        $this->db->from('sb_items i');
+        if (ifset($options, 'vendor_id','')!=='') {
+            $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+            $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
+        }
+        if ($options['brand']!=='ALL') {
+            if ($options['brand'] == 'SB') {
+                $this->db->where_in('i.brand', ['SB', 'BT']);
+            } else {
+                $this->db->where('i.brand', $options['brand']);
+            }
+        }
+        if (ifset($options, 'search','')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
+        }
+        if (!empty($search)) {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options,'itemstatus',0)!=0) {
+            if ($options['itemstatus']==1) {
+                $this->db->where('i.item_active',1);
+            } else {
+                $this->db->where('i.item_active',0);
+            }
+        }
+        if (ifset($options,'category',0) > 0) {
+            $this->db->where('i.category_id',$options['category']);
+        }
+        if (ifset($options,'missinfo','0')!=0) {
+            $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+            $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings>0');
+            }
+        }
+        $res = $this->db->get()->result_array();
+        return count($res);
+    }
 }

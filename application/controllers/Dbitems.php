@@ -28,7 +28,7 @@ class Dbitems extends MY_Controller
             $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
             $options['category'] = ifset($postdata,'category', 0);
             $options['missinfo'] = ifset($postdata,'missinfo',0);
-            $totals = $this->items_model->count_searchres($options);
+            $totals = $this->items_model->count_item_searchres($options);
             $mdata['totals'] = $totals;
             $mdata['totals_view'] = QTYOutput($totals).' items';
             $category_label = '';
