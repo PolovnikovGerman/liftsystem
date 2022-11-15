@@ -71,8 +71,9 @@
             </div>
             <div class="netprofitheadochecklabel">% Only</div>
             <div class="netprofitviewdataselect">
-                <select>
-                    <option value="detail">Detailed</option>
+                <select id="netreporttypeview">
+                    <option value="detail" <?=$view=='detail' ? 'selected="selected"' : ''?>>Detailed</option>
+                    <option value="condensed" <?=$view=='condensed' ? 'selected="selected"' : ''?>>Condensed</option>
                 </select>
             </div>
         </div>
@@ -154,7 +155,7 @@
     <div class="netprofitexpensesarea">
         <div class="expensesdataarea ads">
             <div class="datarow">
-                <div class="expensesdata_title">Ads <span id="adstotals"></span></div>
+                <div class="expensesdata_title">Ads <?=date('Y')?> <span id="adstotals"></span></div>
                 <div class="expensesdata_managecategories" data-category="Ads">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -166,7 +167,7 @@
         </div>
         <div class="expensesdataarea upwork">
             <div class="datarow">
-                <div class="expensesdata_title">Upwork <span id="upworktotals"></span></div>
+                <div class="expensesdata_title">Upwork <?=date('Y')?> <span id="upworktotals"></span></div>
                 <div class="expensesdata_managecategories" data-category="Upwork">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -178,7 +179,7 @@
         </div>
         <div class="expensesdataarea w9work">
             <div class="datarow">
-                <div class="expensesdata_title">W9 Work <span id="w9worktotals"></span></div>
+                <div class="expensesdata_title">W9 Work <?=date('Y')?> <span id="w9worktotals"></span></div>
                 <div class="expensesdata_managecategories" data-category="W9">manage categories</div>
             </div>
             <div class="expensesdata-table-head">
@@ -190,7 +191,7 @@
         </div>
         <div class="expensesdataarea discretionary">
             <div class="datarow">
-                <div class="expensesdata_title">Discretionary <span id="discretionarytotals"></span></div>
+                <div class="expensesdata_title">Discretionary <?=date('Y')?> <span id="discretionarytotals"></span></div>
                 <div class="expensesdata_managecategories" data-category="Purchase">manage categories</div>
             </div>
             <div class="expensesdata-table-head">

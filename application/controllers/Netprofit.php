@@ -20,6 +20,7 @@ class Netprofit extends MY_Controller
             $datbgn=$this->config->item('netprofit_start');
             $order_by=$this->input->post('order_by');
             $limitshow=$this->input->post('limitshow');
+            $viewtype = $this->input->post('viewtype');
             // $brand = $this->input->post('brand');
             $brand = 'ALL';
             $order='nd.datebgn';
@@ -173,10 +174,12 @@ class Netprofit extends MY_Controller
                 $options['end']=$res['date'];
             }
             $runtotal=$this->balances_model->get_netprofit_runs($options, $radio);
+            $runtotal['viewtype']=$viewtype;
             $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
             $content_options=array(
                 'data'=>$data,
                 'limitshow'=>$limitshow,
+                'viewtype' => $viewtype,
             );
             $mdata['content']=$this->load->view('netprofitnew/table_data_view',$content_options,TRUE);
             $this->ajaxResponse($mdata,$error);
@@ -284,6 +287,8 @@ class Netprofit extends MY_Controller
                     }
                     $viewtype = ifset($postdata,'viewtype', 'amount');
                     $runtotal=$this->balances_model->get_netprofit_runs($options, $viewtype);
+                    $view = ifset($postdata,'view','detail');
+                    $runtotal['viewtype'] = $view;
                     $mdata['total_view']=$this->load->view('netprofitnew/running_totals_view', $runtotal, TRUE);
                 }
             }
