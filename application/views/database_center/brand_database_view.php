@@ -20,8 +20,8 @@
             <?php } ?>
         </div>
         <div class="maincontent_view">
-            <?php if (isset($vendorsview)) { ?>
-                <div class="dbcontentarea" id="vendorsview" style="display: none;"><?=$vendorsview?></div>
+            <?php if (isset($itemsview)) { ?>
+                <div class="dbcontentarea" id="btitems" style="display: none;"><?=$itemsview?></div>
             <?php } ?>
             <?php if (isset($legacyview)) { ?>
                 <div class="dbcontentarea" id="legacyview" style="display: none; background: #ededed;">
