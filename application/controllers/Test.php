@@ -1466,6 +1466,34 @@ class Test extends CI_Controller
                     $this->db->where('item_img_id', $imgs[0]['item_img_id']);
                     $this->db->delete('sb_item_images');
 
+                }
+            }
+            echo 'Images OK';
+            // Prices
+            if ($item['item_template']=='Stressball') {
+
+                $this->db->select('*');
+                $this->db->from('sb_item_prices');
+                $this->db->where('item_price_itemid', $item_id);
+                $itmprice = $this->db->get()->row_array();
+                if (ifset($itmprice,'item_price_id',0) > 0) {
+                    $this->db->where('item_id', $item_id);
+                    $this->db->delete('sb_promo_price');
+                    foreach ($pricetypes as $pricetype) {
+                        $this->db->set('item_id', $item_id);
+                        $this->db->set('item_qty', $pricetype['base']);
+                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
+                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
+                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
+                        $this->db->insert('sb_promo_price');
+                    }
+                }
+            }
+            echo 'Prices OK'.PHP_EOL;
+        }
+        echo 'Convert finished'.PHP_EOL;
+    }
+
     public function update_netprofitdetails() {
         $this->db->set('category_type','Ads');
         $this->db->set('category_name','Google Ads');
@@ -1535,31 +1563,5 @@ class Test extends CI_Controller
             }
         }
     }
-                }
-            }
-            echo 'Images OK';
-            // Prices
-            if ($item['item_template']=='Stressball') {
 
-                $this->db->select('*');
-                $this->db->from('sb_item_prices');
-                $this->db->where('item_price_itemid', $item_id);
-                $itmprice = $this->db->get()->row_array();
-                if (ifset($itmprice,'item_price_id',0) > 0) {
-                    $this->db->where('item_id', $item_id);
-                    $this->db->delete('sb_promo_price');
-                    foreach ($pricetypes as $pricetype) {
-                        $this->db->set('item_id', $item_id);
-                        $this->db->set('item_qty', $pricetype['base']);
-                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
-                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
-                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
-                        $this->db->insert('sb_promo_price');
-                    }
-                }
-            }
-            echo 'Prices OK'.PHP_EOL;
-        }
-        echo 'Convert finished'.PHP_EOL;
-    }
 }
