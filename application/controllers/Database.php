@@ -365,6 +365,9 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src'=>'/js/adminpage/easySlider1.5.js');
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+        // Cirlce
+        // Cycle
+        $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
         // Item details
         // $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
