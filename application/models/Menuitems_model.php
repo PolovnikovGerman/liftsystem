@@ -667,15 +667,9 @@ Class Menuitems_model extends MY_Model
     public function save_userpermissions($webpages, $user_id) {
         $sbpages = $webpages['sbpages'];
         $srpages = $webpages['srpages'];
-        foreach ($srpages as $row) {
-            log_message('error','ID '.$row['id'].' label '.$row['label'].' Value '.$row['value']);
-        }
         $commpages = $webpages['commpages'];
         foreach ($sbpages as $row) {
             $this->_savemenupermission($row, $user_id);
-            if ($row['id']==52) {
-                $tt=1;
-            }
             $res = $this->_chkuserpermission($row['id'], $user_id);
             $this->db->select('count(up.user_permission_id) as cnt');
             $this->db->from('user_permissions up');
@@ -717,9 +711,6 @@ Class Menuitems_model extends MY_Model
         // Common
         foreach ($commpages as $row) {
             $this->_savemenupermission($row, $user_id);
-            if ($row['id']==52) {
-                $tt=1;
-            }
             $res = $this->_chkuserpermission($row['id'], $user_id);
             $this->db->select('count(up.user_permission_id) as cnt');
             $this->db->from('user_permissions up');
@@ -748,9 +739,6 @@ Class Menuitems_model extends MY_Model
         if (is_array($item['element'])) {
             $elements = $item['element'];
             foreach ($elements as $element) {
-                if ($element['id']==133) {
-                    $tt=1;
-                }
                 $this->_savemenupermission($element, $user_id);
                 if (is_array($element['element'])) {
                     $res = $this->_chkuserpermission($element['id'], $user_id);
@@ -883,17 +871,11 @@ Class Menuitems_model extends MY_Model
         $this->db->where('user_id', $user_id);
         $this->db->where('menu_item_id', $menu_item_id);
         $dat = $this->db->get()->row_array();
-        if ($menu_item_id==213) {
-            log_message('ERROR','Save Database SR '.$dat['cnt'].'!');
-        }
         if ($dat['cnt']==0) {
             $this->db->set('user_id', $user_id);
             $this->db->set('menu_item_id', $menu_item_id);
             $this->db->insert('user_permissions');
             $result = $this->db->insert_id();
-            if ($menu_item_id==213) {
-                log_message('ERROR','Save Database SR '.$result.'!');
-            }
         } else {
             $result = $dat['user_permission_id'];
         }
