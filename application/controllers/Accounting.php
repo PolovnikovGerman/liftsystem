@@ -9,7 +9,7 @@ class Accounting extends MY_Controller
     private $order_totals_perpage=100;
     private $perpage_options =array(100, 250, 500, 1000);
     private $restore_data_error = 'Edit Connection Lost. Please, recall form';
-    private $weekshow_limit=104;
+    private $weekshow_limit=0;
 
     public function __construct()
     {
