@@ -83,6 +83,7 @@ function pageBTItemsListCallback(page_index) {
             // init_itemlist_manage(brand);
             init_itemlist_content();
             jQuery.balloon.init();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }

@@ -42,6 +42,7 @@ function pageReliveItemsCallback(page_index) {
                 $(".itemclearsearch").attr('disabled',false).addClass('active');
             }
             init_relieveritems_content();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
             show_error(response);

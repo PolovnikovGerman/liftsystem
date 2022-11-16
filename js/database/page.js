@@ -89,6 +89,32 @@ function init_page(objid) {
             $("#btitemsview").show();
             init_btitemslist_view();
             break;
+        case 'btcustomers':
+            $("#btcustomers").show();
+            leftmenu_alignment();
+            break;
+        case 'sbpages':
+            $("#sbpages").show();
+            init_sitecontent('SB');
+            break;
+        case 'btpages':
+            $("#btpages").show();
+            init_sitecontent('BT');
+            break;
+        case 'sritems':
+            $("#sritemsview").show();
+            init_relievers_items();
+            break;
+        case 'srcustomers':
+            $("#customersview").show();
+            break;
+        case 'srpages':
+            $("#srpagesview").show();
+            init_sitecontent('SR');
+            break;
+        case 'srsettings':
+            $("#settingsview").show();
+            break;
     }
 }
 

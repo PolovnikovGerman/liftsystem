@@ -181,6 +181,7 @@ class Database extends MY_Controller
             'menu' => $menu,
             'start' => str_replace('#','',$menu[0]['item_link'])
         ];
+        $pagescontent = 0;
         foreach ($menu as $row) {
             if ($row['item_link']=='#btitems') {
                 //$head['styles'][]=array('style'=>'/css/database_center/itemdatalist.css');
@@ -195,7 +196,45 @@ class Database extends MY_Controller
                 $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
                 $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['itemsview'] = $this->_prepare_btitemdata_view();
-            } elseif ($row['item_link']=='#mastersettings') {
+            } elseif ($row['item_link']=='#btcustomers') {
+                $content_options['customersview'] = $this->load->view('customers/page_view', [], TRUE);
+            } elseif ($row['item_link']=='#sbpages') {
+                $pagescontent = 1;
+                $bt_options = [];
+                $bt_options['sbhomeview'] = $this->load->view('content/template_view',['link'=>'sbhomeview'], TRUE);
+                $bt_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
+                $bt_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
+                $bt_options['sbaboutusview'] = $this->load->view('content/template_view',['link'=>'sbaboutusview'], TRUE);
+                $bt_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
+                $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
+                $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
+                $submenu = [];
+                $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
+                $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped'];
+                $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
+                $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us'];
+                $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ'];
+                $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us'];
+                $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms'];
+                $submenu_options = [
+                    'menus' => $submenu,
+                    'brand' => 'SB',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['sbpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
+                $head['styles'][] = array('style' => '/css/content/contentpage.css');
+                $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
+            } elseif ($row['item_link']=='#btpages') {
+                if ($pagescontent==0) {
+                    $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                    $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
+                }
+                $submenu_options = [
+                    'menus' => [],
+                    'brand' => 'BT',
+                ];
+                $bt_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['btpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
             } elseif ($row['item_link']=='#btsettings') {
                 // Shipping Settings
                 $head['styles'][] = array('style' => '/css/settings/shippings.css');
@@ -254,7 +293,61 @@ class Database extends MY_Controller
                 ];
                 $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
                 $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
+            } elseif ($row['item_link']=='#sritems') {
+                $head['styles'][]=array('style'=>'/css/database_center/relivitemlist.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/relivitemlist.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
+                $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
+                $content_options['sritemsview'] = $this->_prepare_sritems_content();
+            } elseif ($row['item_link']=='#srcustomers') {
+                $content_options['customersview'] = $this->load->view('relievercustomers/page_view',[],TRUE);
+            } elseif ($row['item_link']=='#srpages') {
+                $sr_options = [];
+                $sr_options['srhomeview'] = $this->load->view('content/template_view',['link'=>'srhomeview'], TRUE);
+                $sr_options['sraboutusview'] = $this->load->view('content/template_view',['link'=>'sraboutusview'], TRUE);
+                $sr_options['srcontactusview'] = $this->load->view('content/template_view',['link'=>'srcontactusview'], TRUE);
+                /*
+                $sr_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
+                $sr_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
+                $sr_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
+                $sr_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
+                */
+                $submenu = [];
+                $submenu[] = ['item_link' => '#srhomeview', 'item_name' => 'Home Page'];
+                $submenu[] = ['item_link' => '#sraboutusview', 'item_name' => 'About Us'];
+                $submenu[] = ['item_link' => '#srcontactusview', 'item_name' => 'Contact Us'];
+                $submenu[] = ['item_link' => '#srartinfo', 'item_name' => 'Art & Info'];
+                $submenu[] = ['item_link' => '#srhowtoorder', 'item_name' => 'How to Order'];
+                $submenu[] = ['item_link' => '#srcatalog', 'item_name' => 'Catalog'];
+                $submenu[] = ['item_link' => '#srwhyus', 'item_name' => 'Why Us'];
+                $submenu[] = ['item_link' => '#srcustomshappedview', 'item_name' => 'Custom Shaped'];
+                /*
+                $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
+                $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ'];
+                $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms'];
+                */
+                $submenu_options = [
+                    'menus' => $submenu,
+                    'brand' => 'SR',
+                ];
+                $sr_options['submenu'] = $this->load->view('content/submenu_view', $submenu_options, TRUE);
+                $content_options['pagesview'] = $this->load->view('content/page_content_view', $sr_options, TRUE);
+                // Common content
+                $head['styles'][] = array('style' => '/css/content/contentpage.css');
+                $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
+                // Content
+                $head['styles'][] = array('style' => '/css/content/srhomepage.css');
+                $head['scripts'][] = array('src' => '/js/content/srhomepage.js');
+                // Utils
+                $head['scripts'][] = array('src' => '/js/fancybox/jquery.fancybox.js');
+                $head['styles'][] = array('style' => '/css/fancybox/jquery.fancybox.css');
+                $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
+                $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
+            } elseif ($row['item_link']=='#srsettings') {
+                $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
             }
+
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/database/page.js');
@@ -1933,6 +2026,27 @@ class Database extends MY_Controller
         ];
         // $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         $content = $this->load->view('btitems/itemslist_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_sritems_content() {
+        $this->load->model('categories_model');
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
+        $activcategory = $categories[0]['category_id'];
+        $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+        $cntitems = $this->items_model->get_items_count(['brand' => 'SR', 'category_id' => $activcategory]);
+        $vendors = $this->vendors_model->get_vendors();
+        $options = [
+            'categories' => $categories,
+            'totals' => $cntitems,
+            'category_id' => $activcategory,
+            'category_label' => $activcategory_label,
+            'vendors' => $vendors,
+        ];
+
+        $content = $this->load->view('relieveritems/page_view', $options,TRUE);
         return $content;
     }
 

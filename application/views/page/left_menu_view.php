@@ -210,7 +210,7 @@
             <?php if ($menu['item_link']=='/database') { ?>
                 <div class="branmenudevider relievers"></div>
                 <?php if ($activelnk == $menu['item_link']) { ?>
-                    <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SR">
+                    <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
                         <div class="brandmenuicon active"><img src="/img/page_view/noun-list-black.svg"/></div>
                         <div class="brandmenutitle active">Database</div>
                     </div>
