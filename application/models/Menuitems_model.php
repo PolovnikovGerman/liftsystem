@@ -835,11 +835,17 @@ Class Menuitems_model extends MY_Model
         $this->db->where('user_id', $user_id);
         $this->db->where('menu_item_id', $menu_item_id);
         $dat = $this->db->get()->row_array();
+        if ($menu_item_id==213) {
+            log_message('ERROR','Save Database SR '.$dat['cnt'].'!');
+        }
         if ($dat['cnt']==0) {
             $this->db->set('user_id', $user_id);
             $this->db->set('menu_item_id', $menu_item_id);
             $this->db->insert('user_permissions');
             $result = $this->db->insert_id();
+            if ($menu_item_id==213) {
+                log_message('ERROR','Save Database SR '.$result.'!');
+            }
         } else {
             $result = $dat['user_permission_id'];
         }
