@@ -23,15 +23,23 @@
             <?php if (isset($itemsview)) { ?>
                 <div class="dbcontentarea" id="btitemsview" style="display: none;"><?=$itemsview?></div>
             <?php } ?>
+            <?php if (isset($customersview)) { ?>
+                <div class="dbcontentarea" id="btcustomers" style="display: none;"><?=$customersview?></div>
+            <?php } ?>
             <?php if (isset($legacyview)) { ?>
-                <div class="dbcontentarea" id="legacyview" style="display: none; background: #ededed;">
-                    <?=$legacyview?>
-                </div>
+                <div class="dbcontentarea" id="legacyview" style="display: none; background: #ededed;"><?=$legacyview?></div>
+            <?php } ?>
+            <?php if (isset($sbpagesview)) { ?>
+                <div class="dbcontentarea" id="sbpages" style="display: none; background: #ededed;"><?=$sbpagesview?></div>
+            <?php } ?>
+            <?php if (isset($btpagesview)) { ?>
+                <div class="dbcontentarea" id="btpages" style="display: none; background: #ededed;"><?=$btpagesview?></div>
             <?php } ?>
             <?php if (isset($shippingview)) { ?>
-                <div class="dbcontentarea" id="shippingview" style="display: none;">
-                    <?=$shippingview?>
-                </div>
+                <div class="dbcontentarea" id="shippingview" style="display: none;"><?=$shippingview?></div>
+            <?php } ?>
+            <?php if (isset($sritemsview)) { ?>
+                <div class="dbcontentarea" id="sritemsview" style="display: none;"><?=$sritemsview?></div>
             <?php } ?>
         </div>
     </div>

@@ -36,50 +36,64 @@ function init_sitecontent_page(objid, brand) {
     switch (objid) {
         case 'bthomeview':
             init_contentpage('home','BT');
+            leftmenu_alignment();
             break;
         case 'sbhomeview':
             init_contentpage('home','SB');
+            leftmenu_alignment();
             break;
         case 'btcustomshappedview':
             init_contentpage('custom','BT');
+            leftmenu_alignment();
             break;
         case 'sbcustomshappedview':
             init_contentpage('custom', 'SB');
+            leftmenu_alignment();
             break;
         case 'sbfaqview':
             init_contentpage('faq','SB');
+            leftmenu_alignment();
             break;
         case 'btfaqview':
             init_contentpage('faq','BT');
+            leftmenu_alignment();
             break;
         case 'sbserviceview':
             init_contentpage('extraservice','SB');
+            leftmenu_alignment();
             break;
         case 'btserviceview':
             init_contentpage('extraservice','BT');
+            leftmenu_alignment();
             break;
         case 'btaboutusview':
             init_contentpage('about','BT');
+            leftmenu_alignment();
             break;
         case 'sbaboutusview':
             init_contentpage('about','SB');
+            leftmenu_alignment();
             break;
         case 'btcontactusview':
             init_contentpage('contactus','BT');
+            leftmenu_alignment();
             break;
         case 'sbcontactusview':
             init_contentpage('contactus','SB');
+            leftmenu_alignment();
             break;
         case 'bttermsview':
             init_contentpage('terms','BT');
+            leftmenu_alignment();
             break;
         case 'sbtermsview':
             init_contentpage('terms','SB');
+            leftmenu_alignment();
             break;
         case 'srhomeview':
             init_contentpage('home','SR');
+            leftmenu_alignment();
             break;
-
     }
 }
 
