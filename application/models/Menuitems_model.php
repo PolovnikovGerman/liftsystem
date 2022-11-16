@@ -666,7 +666,7 @@ Class Menuitems_model extends MY_Model
 
     public function save_userpermissions($webpages, $user_id) {
         $sbpages = $webpages['sbpages'];
-        $srpages = $webpages['sbpages'];
+        $srpages = $webpages['srpages'];
         foreach ($srpages as $row) {
             log_message('error','ID '.$row['id'].' label '.$row['label'].' Value '.$row['value']);
         }
