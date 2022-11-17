@@ -788,4 +788,24 @@ class Netprofit extends MY_Controller
         show_404();
     }
 
+    public function netprofit_orders() {
+        $profit_id=$this->input->get('d');
+        // $brand = $this->input->get('brand');
+        $netprofit=$this->balances_model->get_netprofit_details($profit_id);
+        if (!isset($netprofit['profit_id'])) {
+            $out_msg='Orders Data Not Found';
+        } else {
+            $this->load->model('orders_model');
+            $orddata=$this->orders_model->get_projorders_netproof($netprofit['datebgn'],$netprofit['dateend']);
+            $listoptions=array(
+                'list'=>$orddata['data'],
+                'profit'=>$netprofit,
+                'totals'=>$orddata['totals'],
+            );
+            $out_msg=$this->load->view('netprofitnew/orders_list_view',$listoptions,TRUE);
+        }
+        /* Get Orders List */
+        echo $out_msg;
+    }
+
 }
