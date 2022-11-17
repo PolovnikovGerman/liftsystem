@@ -292,13 +292,16 @@ div.yearbegin {
 }
 .netprofit-table-data .sales {
     width: 38px;
+    cursor: pointer;
 }
 .netprofit-table-data .revenue {
     width: 66px;
 }
 .netprofit-table-data .grossprofit {
-    cursor: pointer;
     width: 67px;
+}
+.netprofit-table-data .grossprofit.projprof {
+    cursor: pointer;
 }
 .netprofit-table-data .profitperc {
     width: 35px;
@@ -589,7 +592,7 @@ div.yearbegin {
 /* Weekdetails */
 .netprofit_weekdetails_area {
     width: 307px;
-    margin: -12px;
+    margin: -12px -12px -12px 18px;
     float: left;
 }
 .netprofit_weekdetails_area div {
@@ -998,4 +1001,163 @@ input.netprofitedit {
     font-size: 11px!important;
     text-align: center;
     width: 37px;
+}
+/* Order list popup */
+.profitorders_tooltip {
+    width: 805px;
+    max-width: 805px!important;
+    background: #ffffff;
+    padding: 10px;
+    color: #000;
+}
+.orderslistarea {
+    clear: both;
+    float: left;
+    font-size: 12px;
+    width: 785px;
+}
+.orderslist_title {
+    clear: both;
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.orderlistdata_head {
+    background: none repeat scroll 0 0 #bcbcbc;
+    clear: both;
+    color: #fff;
+    float: left;
+    font-weight: bold;
+    height: 28px;
+    line-height: 26px;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+}
+.orderlistdata_orderdate {
+    float: left;
+    width: 60px;
+}
+.orderlistdata_orderdate_cell {
+    float: left;
+    width: 60px;
+    text-align: center;
+}
+.orderlistdata_ordernum {
+    float: left;
+    width: 60px;
+}
+.orderlistdata_ordernum_cell {
+    float: left;
+    text-align: center;
+    width: 60px;
+}
+.orderlistdata_customer {
+    float: left;
+    width: 159px;
+}
+.orderlistdata_customer_cell {
+    float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 154px;
+}
+.orderlistdata_qty {
+    float: left;
+    width: 60px;
+}
+.orderlistdata_qtytotal_cell {
+    float: left;
+    padding-right: 3px;
+    text-align: right;
+    width: 52px;
+}
+.orderlistdata_item {
+    float: left;
+    width: 128px;
+}
+.orderlistdata_item_cell {
+    float: left;
+    margin-left: 5px;
+    overflow: hidden;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 118px;
+}
+.orderlistdata_item_cell.customitem {
+    font-weight: bold;
+}
+.orderlistdata_revenue {
+    float: left;
+    width: 63px;
+}
+.orderlistdata_revenue_cell {
+    float: left;
+    width: 63px;
+}
+.orderlistdata_profdat { float: left; width: 75px;}
+.orderlistdata_profdat_cell {
+    float: left;
+    width: 75px;
+}
+.orderlistdata_artstate { float: left; width: 97px;}
+.orderlistdata_artstate_cell {
+    float: left;
+    width: 97px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.orderlistdata_artstatediff {
+    float: left;
+    /* line-height: 14px; */
+    width: 78px;
+}
+.orderlistdata_artstatediff_cell {
+    float: left;
+    width: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.orderlistdata_artstage_cell {
+    float: left;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 172px;
+}
+.orderlistdata {
+    clear: both;
+    float: left;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 660px;
+    height: auto;
+}
+.orderlistdata_row {
+    clear: both;
+    float: left;
+    height: 18px;
+    line-height: 16px;
+    text-align: left;
+    vertical-align: middle;
+    width: 100%;
+}
+.orderlistdata_total {
+    background: none repeat scroll 0 0 #bcbcbc;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-weight: bold;
+    height: 28px;
+    line-height: 26px;
+    text-align: left;
+    vertical-align: middle;
+    width: 100%;
 }

@@ -9,7 +9,7 @@ class Accounting extends MY_Controller
     private $order_totals_perpage=100;
     private $perpage_options =array(100, 250, 500, 1000);
     private $restore_data_error = 'Edit Connection Lost. Please, recall form';
-    private $weekshow_limit=104;
+    private $weekshow_limit=0;
 
     public function __construct()
     {
@@ -2208,25 +2208,6 @@ class Accounting extends MY_Controller
         }
     }
 
-
-    public function netprofit_orders() {
-        $profit_id=$this->input->get('d');
-        $brand = $this->input->get('brand');
-        $netprofit=$this->balances_model->get_netprofit_details($profit_id);
-        if (!isset($netprofit['profit_id'])) {
-            $out_msg='Orders Data Not Found';
-        } else {
-            $orddata=$this->orders_model->get_projorders_netproof($netprofit['datebgn'],$netprofit['dateend'], $brand);
-            $listoptions=array(
-                'list'=>$orddata['data'],
-                'profit'=>$netprofit,
-                'totals'=>$orddata['totals'],
-            );
-            $out_msg=$this->load->view('netprofit/orders_list_view',$listoptions,TRUE);
-        }
-        /* Get Orders List */
-        echo $out_msg;
-    }
 
     public function get_weektotals() {
         if ($this->isAjax()) {
