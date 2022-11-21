@@ -7974,7 +7974,7 @@ Class Orders_model extends MY_Model
         // Get Not placed
         $this->db->select('a.order_proj_status as status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
@@ -8024,7 +8024,7 @@ Class Orders_model extends MY_Model
     public function purchase_fulltotals($brand) {
         $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
@@ -8039,7 +8039,7 @@ Class Orders_model extends MY_Model
 
         $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         if ($brand!=='ALL') {
             if ($brand=='SB') {
                 $this->db->where_in('o.brand', ['BT','SB']);
@@ -8071,7 +8071,7 @@ Class Orders_model extends MY_Model
         $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
         $this->db->select('o.customer_name as customer');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id'); 
         $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
         $this->db->where_in('a.order_proj_status',$stagesrc);
         $this->db->where('o.profit_perc is null');
