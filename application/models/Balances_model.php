@@ -20,91 +20,199 @@ class Balances_model extends My_Model
     }
 
     public function get_calcdata($sort, $direction, $brand) {
-        if ($brand=='ALL') {
-            $this->db->select('description, max(calc_id) as calc_id, sum(monthsum) as monthly, sum(weeksum) as weekly');
-            $this->db->select('sum(coalesce(monthsum,0)/4+coalesce(weeksum,0)) as quarta, sum(coalesce(monthsum,0)*12+coalesce(weeksum,0)*52) as yearly');
-            $this->db->from('calcdata');
-            $this->db->group_by('description');
+
+        $this->db->select('calc_id,description,monthsum as monthly, weeksum as weekly, yearsum as annually');
+        $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly');
+        $this->db->select('method, date_day, date_type');
+        $this->db->from('calcdata');
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['BT','SB']);
         } else {
-            $this->db->select('calc_id,description,monthsum as monthly, weeksum as weekly');
-            $this->db->select('(coalesce(monthsum,0)/4+coalesce(weeksum,0)) as quarta, coalesce(monthsum,0)*12+coalesce(weeksum,0)*52 as yearly');
-            $this->db->from('calcdata');
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
-                $this->db->where('brand', $brand);
-            }
+            $this->db->where('brand', $brand);
         }
-        $this->db->order_by($sort, $direction);
         $res=$this->db->get()->result_array();
-        // ,
+        if ($sort=='method') {
+            $this->db->order_by($sort, $direction);
+        }
+
         $total=0;
         foreach ($res as $row) {
             $total+=$row['yearly'];
         }
 
         $out=array();
-        $sums=array('month'=>0,'week'=>0,'quart'=>0, 'year'=>0);
+        $sums=[
+            'week' => $this->empty_html_content,
+            'month' => $this->empty_html_content,
+            'year' => $this->empty_html_content,
+        ];
+        if ($total != 0) {
+            $sums['week'] = MoneyOutput($total / (12 * 4),2);
+            $sums['month'] = MoneyOutput($total / 12,2);
+            $sums['year'] = MoneyOutput($total, 2);
+        }
         foreach ($res as $row) {
             $row['out_month']=($row['monthly']=='' ? $this->empty_html_content : MoneyOutput($row['monthly']));
             $row['out_week']=($row['weekly']=='' ? $this->empty_html_content : MoneyOutput($row['weekly']));
+            $row['out_year'] = ($row['annually']=='' ? $this->empty_html_content : MoneyOutput($row['annually']));
             // $quarta=floatval($row['monthsum'])/4+floatval($row['weeksum']);
-            $row['out_quarta']=(floatval($row['quarta'])==0 ? '&nbsp;' : MoneyOutput($row['quarta']));
-            $row['out_year']=(floatval($row['yearly'])==0 ? '&nbsp;' : MoneyOutput($row['yearly']));
+            // $row['out_quarta']=(floatval($row['quarta'])==0 ? '&nbsp;' : MoneyOutput($row['quarta']));
+            // $row['out_year']=(floatval($row['yearly'])==0 ? '&nbsp;' : MoneyOutput($row['yearly']));
+            $row['out_weektotal'] = empty($row['yearly']) ? $this->empty_html_content : MoneyOutput($row['yearly']/(12*4));
+            $row['out_yeartotal'] = empty($row['yearly']) ? $this->empty_html_content : MoneyOutput($row['yearly']);
             $row['expense_perc']=0;
             if ($total>0) {
                 $row['expense_perc']=round($row['yearly']/$total*100,1);
             }
+            // calc date
+            $row['out_date'] = $this->empty_html_content;
+            $row['sortdate'] = 0;
+            if (!empty($row['date_day'])) {
+                if ($row['date_type']=='year') {
+                    $datesort = strtotime(date('Y').'-'.date('m-d', $row['date_day']));
+                    $row['out_date'] = date('M j', $row['date_day']);
+                } elseif ($row['date_type']=='month') {
+                    $datesort = strtotime(date('Y-m').'-'.$row['date_day']);
+                    $row['out_date'] = date('j s', $datesort);
+                } else {
+                    if ($row['date_day']=='1') {
+                        $datesort = strtotime('monday this week');
+                    } elseif ($row['date_day']=='2') {
+                        $datesort = strtotime('tuesday this week');
+                    } elseif ($row['date_day']=='3') {
+                        $datesort = strtotime('wednesday this week');
+                    } elseif ($row['date_day']=='4') {
+                        $datesort = strtotime('thursday this week');
+                    } elseif ($row['date_day']=='5') {
+                        $datesort = strtotime('friday this week');
+                    } elseif ($row['date_day']=='6') {
+                        $datesort = strtotime('saturday this week');
+                    } else {
+                        $datesort = strtotime('sunday this week');
+                    }
+                    $row['out_date'] = date('D', $datesort);
+                }
+                $row['sortdate'] = $datesort;
+            }
             $out[]=$row;
-            $sums['month']+=floatval($row['monthly']);
-            $sums['week']+=floatval($row['weekly']);
-            $sums['quart']+=floatval($row['quarta']);
-            $sums['year']+=floatval($row['yearly']);
         }
-
-        $sums['month']=($sums['month']==0 ? $this->empty_html_content : MoneyOutput($sums['month'],2));
-        $sums['week']=($sums['week']==0 ? $this->empty_html_content : MoneyOutput($sums['week'],2));
-        $sums['quart']=($sums['quart']==0 ? $this->empty_html_content : MoneyOutput($sums['quart'],2));
-        $sums['year']=($sums['year']==0 ? $this->empty_html_content : MoneyOutput($sums['year'],2));
-
+        if ($sort=='percent') {
+            if ($direction=='desc') {
+                usort($out, function($a,$b) {
+                    return ($b['expense_perc']*100 - $a['expense_perc']*100);
+                });
+            } else {
+                usort($out, function($a,$b) {
+                    return ($a['expense_perc']*100 - $b['expense_perc']*100);
+                });
+            }
+        } elseif ($sort=='date') {
+            if ($direction=='desc') {
+                usort($out, function($a,$b) {
+                    return ($b['sortdate'] - $a['sortdate']);
+                });
+            } else {
+                usort($out, function($a,$b) {
+                    return ($a['sortdate'] - $b['sortdate']);
+                });
+            }
+        }
         return array('body'=>$out,'sums'=>$sums);
     }
 
     public function get_calcrow_data($calc_id) {
         /* Totals */
+        $out=['result' => $this->error_result, 'msg' => 'Expense Chart Not Found'];
         if ($calc_id==0) {
+            $out['result'] = $this->success_result;
             $res=array(
                 'calc_id'=>0,
-                'description'=>'',
-                'monthsum'=>0,
-                'weeksum'=>'',
-                'quartasum'=>'',
                 'yearsum'=>'',
-                'expense_perc'=>0,
+                'monthsum'=>'',
+                'weeksum'=>'',
+                'description'=>'',
+                'method' => '',
+                'expense_perc'=>'',
+                'weektotal' => '',
+                'yeartotal' => '',
+                'date_day' => '',
+                'date_type' => 'year',
             );
+            $out['data'] = $res;
         } else {
-            $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52 as yearly',FALSE);
+            $this->db->select('*');
             $this->db->from('calcdata');
+            $this->db->where('calc_id',$calc_id);
+            $res=$this->db->get()->row_array();
+            if (ifset($res, 'calc_id',0) > 0) {
+                $out['result'] = $this->success_result;
+                $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly',FALSE);
+                $this->db->from('calcdata');
+                if ($res['brand']=='SB' || $res['brand']=='BT') {
+                    $this->db->where_in('brand',['SB', 'BT']);
+                } else {
+                    $this->db->where('brand', $res['brand']);
+                }
+                $totres=$this->db->get()->result_array();
+                $totals=0;
+                foreach ($totres as $row) {
+                    $totals+=$row['yearly'];
+                }
+                $monthdat=floatval($res['monthsum']);
+                $weekdat=floatval($res['weeksum']);
+                $yeardat = floatval($res['yearsum']);
+                $weektotal = $monthdat * 12 + $weekdat * 52 + $yeardat;
+
+                $quarta=round($weektotal/12/4,2);
+                if ($res['date_type']=='year' && !empty($res['date_day'])) {
+                    $res['date_day'] = date('M, d', $res['date_day']);
+                }
+                // $yearsum=$monthdat*12+$weeksum*52;
+                $res['weektotal']=($quarta==0 ? $this->empty_html_content : MoneyOutput($quarta,2));
+                $res['yeartotal']=($weektotal==0 ? $this->empty_html_content : MoneyOutput($weektotal,2));
+                $res['expense_perc']=($totals==0 ? 0 : round($weektotal/$totals*100,1));
+                $out['data'] = $res;
+            }
+
+
+        }
+        return $out;
+    }
+
+    public function calcrow_amount_update($calc_id, $options) {
+        $out=['result' => $this->success_result, 'msg' => 'Total not Count'];
+        if (floatval($options['amount'])==0) {
+            $out['weektotal'] = '';
+            $out['yeartotal'] = '';
+            $out['percentval'] = '';
+        } else {
+            $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly',FALSE);
+            $this->db->from('calcdata');
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $options['brand']);
+            }
+            $this->db->where('calc_id != ', $calc_id);
             $totres=$this->db->get()->result_array();
             $totals=0;
             foreach ($totres as $row) {
                 $totals+=$row['yearly'];
             }
-            $this->db->select('*');
-            $this->db->from('calcdata');
-            $this->db->where('calc_id',$calc_id);
-            $res=$this->db->get()->row_array();
-            if (isset($res['calc_id'])) {
-                $monthdat=floatval($res['monthsum']);
-                $weeksum=floatval($res['weeksum']);
-                $quarta=$monthdat/4+$weeksum;
-                $yearsum=$monthdat*12+$weeksum*52;
-                $res['quartasum']=($quarta==0 ? $this->empty_html_content : MoneyOutput($quarta,2));
-                $res['yearsum']=($yearsum==0 ? $this->empty_html_content : MoneyOutput($yearsum,2));
-                $res['expense_perc']=($totals==0 ? 0 : round($yearsum/$totals*100,1));
+            $weektotal = 0;
+            if ($options['date_type']=='year') {
+                $weektotal = $options['amount'];
+            } elseif ($options['date_type']=='month') {
+                $weektotal = $options['amount'] * 12;
+            } else {
+                $weektotal = $options['amount'] * 52;
             }
+            $totals+=$weektotal;
+            $out['yeartotal'] = MoneyOutput($weektotal,2);
+            $out['weektotal'] = MoneyOutput($weektotal/12/4,2);
+            $out['percentval'] = round($weektotal/$totals*100,1).'%';
         }
-        return $res;
+        return $out;
     }
 
     public function save_calcdata($options) {
@@ -112,9 +220,19 @@ class Balances_model extends My_Model
         if (empty($options['description'])) {
             $res['msg']='Empty Description';
         } else {
+            if ($options['date_type']=='year' && !empty($options['date_day'])) {
+                // Transform
+                $incomdat = explode(',', $options['date_day']);
+                $datstr = date('Y').'-'.trim($incomdat[0]).'-'.str_pad(trim($incomdat[1]),2,'0',STR_PAD_LEFT);
+                $options['date_day'] = strtotime($datstr);
+            }
             $this->db->set('description',$options['description']);
             $this->db->set('monthsum',(floatval($options['monthsum'])==0 ? NULL : floatval($options['monthsum'])));
             $this->db->set('weeksum',(floatval($options['weeksum'])==0 ? NULL : floatval($options['weeksum'])));
+            $this->db->set('yearsum', floatval($options['yearsum'])==0 ? NULL : floatval($options['yearsum']));
+            $this->db->set('date_type', $options['date_type']);
+            $this->db->set('date_day', empty($options['date_day']) ? NULL : $options['date_day']);
+            $this->db->set('method', empty($options['method']) ? NULL : $options['method']);
             if ($options['calc_id']==0) {
                 $this->db->set('brand', $options['brand']);
                 $this->db->insert('calcdata');
