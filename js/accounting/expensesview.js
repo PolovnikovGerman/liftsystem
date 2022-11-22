@@ -53,12 +53,12 @@ function init_calc_management() {
         var calc = $(this).parent('div.expensivesviewtablerow').parent('div.datarow').data('calc');
         edit_calc(calc);
     })
-    $("div.calc-actions.calc-delete").unbind('click').click(function(){
-        var calc = $(this).data('calcid');
+    $("i.removeexpensive").unbind('click').click(function(){
+        var calc = $(this).data('calc');
         delete_calcrow(calc);
     })
-    $("div.sortcalc").unbind('click').click(function(){
-        change_sort(this);
+    $("select#expensivesviewsort").unbind('change').change(function(){
+        init_calc();
     })
 }
 
@@ -287,17 +287,14 @@ function savecalcrow() {
 
 
 function delete_calcrow(calc_id) {
-    var descr=$("#calcrow"+calc_id+" div.calc-descrdata").text();
+    var descr=$(".datarow[data-calc='"+calc_id+"']").find('div.expensive-description').text();
     if (confirm('Do you realy want to delete '+descr+'?')) {
         var url="/accounting/calcdelete";
         $.post(url,{'calc_id':calc_id},function(response){
             if (response.errors=='') {
                 init_calc();
             } else {
-                alert(response.errors);
-                if(response.data.url !== undefined) {
-                    window.location.href=response.data.url;
-                }
+                show_error(response);
             }
         },'json');
     }
