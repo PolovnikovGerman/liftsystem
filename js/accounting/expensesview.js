@@ -53,23 +53,6 @@ function init_calc_management() {
         var calc = $(this).parent('div.expensivesviewtablerow').parent('div.datarow').data('calc');
         edit_calc(calc);
     })
-    /* Events focus-blur */
-    $("input#monthsum").unbind('focus').focus(function() {
-        var weeksum=$("input#weeksum").val();
-        if(weeksum=='') {
-            $("input#monthsum").prop('readonly',false);
-        } else {
-            $("input#monthsum").prop('readonly','readonly');
-        }
-    });
-    $("input#weeksum").unbind('focus').focus(function() {
-        var monthsum=$("input#monthsum").val();
-        if(monthsum=='') {
-            $("input#weeksum").prop('readonly',false);
-        } else {
-            $("input#weeksum").prop('readonly','readonly');
-        }
-    });
     $("div.calc-actions.calc-delete").unbind('click').click(function(){
         var calc = $(this).data('calcid');
         delete_calcrow(calc);
@@ -87,6 +70,9 @@ function edit_calc(calc) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.datarow[data-calc='"+calc+"']").find('div.expensivesviewtablerow').empty().html(response.data.content);
+            $("div.calc-edit").unbind('click');
+            $("div.expensivesview-addnewbtn").unbind('click');
+            $(".removeexpensive").unbind('click');
             init_edit_calc();
         } else {
             show_error(response);
@@ -105,6 +91,9 @@ function add_calcrow() {
             // $(".expensivesviewtable").find('div.datarow:first').prepend
             $("div#newcalcrow").show().empty().html(response.data.content);
             $("#yearsum_inpt").focus();
+            $("div.calc-edit").unbind('click');
+            $("div.expensivesview-addnewbtn").unbind('click');
+            $(".removeexpensive").unbind('click');
             init_edit_calc();
         } else {
             show_error(response);
@@ -187,6 +176,55 @@ function init_edit_calc() {
             format: 'M, d'
         });
     }
+    // Update year / month / week sums
+    $("#yearsum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $("#monthsum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $("#weeksum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function update_editform_expense(response, calc_id, init_type) {
@@ -214,6 +252,18 @@ function update_editform_expense(response, calc_id, init_type) {
         $("#monthsum_inpt").focus();
     } else {
         $("#weeksum_inpt").focus();
+    }
+}
+
+function update_editform_expensetotals(response, calc_id) {
+    if (calc_id=='0') {
+        $("#newcalcrow").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $("#newcalcrow").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $("#newcalcrow").find(".expensive-percent").empty().html(response.data.percentval);
+    } else {
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-percent").empty().html(response.data.percentval);
     }
 }
 

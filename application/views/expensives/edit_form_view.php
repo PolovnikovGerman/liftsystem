@@ -40,10 +40,10 @@
         <select id="method_inpt">
             <option value=""></option>
             <option value="Invoiced" <?=$method=='Invoiced' ? 'selected="selected"' : ''?>>Invoiced</option>
-            <option value="Bank">Bank</option>
-            <option value="CapOne">CapOne</option>
-            <option value="Chase Visa">Chase Visa</option>
-            <option value="Amex Star">Amex Star</option>
+            <option value="Bank" <?=$method=='Bank' ? 'selected="selected"' : ''?>>Bank</option>
+            <option value="CapOne" <?=$method=='CapOne' ? 'selected="selected"' : ''?>>CapOne</option>
+            <option value="Chase Visa" <?=$method=='Chase Visa' ? 'selected="selected"' : ''?>>Chase Visa</option>
+            <option value="Amex Star" <?=$method=='Amex Star' ? 'selected="selected"' : ''?>>Amex Star</option>
         </select>
     </div>
     <div class="expensive-description">

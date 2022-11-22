@@ -1801,6 +1801,32 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function calc_edit_amount() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $error = 'Empty Expense Type';
+            if (ifset($postdata, 'date_type','')!=='') {
+                $calc_id=$this->input->post('calc_id');
+                $options = [];
+                $options['date_type'] = ifset($postdata, 'date_type', 'year');
+                $options['brand'] = ifset($postdata, 'brand', 'SB');
+                $options['amount'] = ifset($postdata, 'amount', 0);
+                $calcres=$this->balances_model->calcrow_amount_update($calc_id, $options);
+                $error = $calcres['msg'];
+                if ($calcres['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['weektotal'] = $calcres['weektotal'];
+                    $mdata['yeartotal'] = $calcres['yeartotal'];
+                    $mdata['percentval'] = $calcres['percentval'];
+                }
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function calcsave() {
         if ($this->isAjax()) {
             $mdata=array();

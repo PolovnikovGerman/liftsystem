@@ -140,19 +140,24 @@ class Balances_model extends My_Model
             );
             $out['data'] = $res;
         } else {
-            $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly',FALSE);
-            $this->db->from('calcdata');
-            $totres=$this->db->get()->result_array();
-            $totals=0;
-            foreach ($totres as $row) {
-                $totals+=$row['yearly'];
-            }
             $this->db->select('*');
             $this->db->from('calcdata');
             $this->db->where('calc_id',$calc_id);
             $res=$this->db->get()->row_array();
             if (ifset($res, 'calc_id',0) > 0) {
                 $out['result'] = $this->success_result;
+                $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly',FALSE);
+                $this->db->from('calcdata');
+                if ($res['brand']=='SB' || $res['brand']=='BT') {
+                    $this->db->where_in('brand',['SB', 'BT']);
+                } else {
+                    $this->db->where('brand', $res['brand']);
+                }
+                $totres=$this->db->get()->result_array();
+                $totals=0;
+                foreach ($totres as $row) {
+                    $totals+=$row['yearly'];
+                }
                 $monthdat=floatval($res['monthsum']);
                 $weekdat=floatval($res['weeksum']);
                 $yeardat = floatval($res['yearsum']);
@@ -174,6 +179,42 @@ class Balances_model extends My_Model
         return $out;
     }
 
+    public function calcrow_amount_update($calc_id, $options) {
+        $out=['result' => $this->success_result, 'msg' => 'Total not Count'];
+        if (floatval($options['amount'])==0) {
+            $out['weektotal'] = '';
+            $out['yeartotal'] = '';
+            $out['percentval'] = '';
+        } else {
+            $this->db->select('coalesce(monthsum,0)*12+coalesce(weeksum,0)*52+coalesce(yearsum,0) as yearly',FALSE);
+            $this->db->from('calcdata');
+            if ($options['brand']=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $options['brand']);
+            }
+            $this->db->where('calc_id != ', $calc_id);
+            $totres=$this->db->get()->result_array();
+            $totals=0;
+            foreach ($totres as $row) {
+                $totals+=$row['yearly'];
+            }
+            $weektotal = 0;
+            if ($options['date_type']=='year') {
+                $weektotal = $options['amount'];
+            } elseif ($options['date_type']=='month') {
+                $weektotal = $options['amount'] * 12;
+            } else {
+                $weektotal = $options['amount'] * 52;
+            }
+            $totals+=$weektotal;
+            $out['yeartotal'] = MoneyOutput($weektotal,2);
+            $out['weektotal'] = MoneyOutput($weektotal/12/4,2);
+            $out['percentval'] = round($weektotal/$totals*100,1).'%';
+        }
+        return $out;
+    }
+
     public function save_calcdata($options) {
         $res = ['result'=>$this->error_result, 'msg' => 'Data not saved'];
         if (empty($options['description'])) {
@@ -181,7 +222,9 @@ class Balances_model extends My_Model
         } else {
             if ($options['date_type']=='year' && !empty($options['date_day'])) {
                 // Transform
-                $options['date_day'] = strtotime(date('Y').'-'.str_replace(', ','-', $options['date_day']));
+                $incomdat = explode(',', $options['date_day']);
+                $datstr = date('Y').'-'.trim($incomdat[0]).'-'.str_pad(trim($incomdat[1]),2,'0',STR_PAD_LEFT);
+                $options['date_day'] = strtotime($datstr);
             }
             $this->db->set('description',$options['description']);
             $this->db->set('monthsum',(floatval($options['monthsum'])==0 ? NULL : floatval($options['monthsum'])));

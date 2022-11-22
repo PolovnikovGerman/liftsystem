@@ -4,8 +4,8 @@
     <?php foreach ($datas as $data) { ?>
         <div class="datarow" data-calc="<?=$data['calc_id']?>">
             <div class="expensivesviewtablerow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
-                <div class="expensive-deeds" data-calc="<?=$data['calc_id']?>">
-                    <i class="fa fa-trash-o"></i>
+                <div class="expensive-deeds">
+                    <i class="fa fa-trash-o removeexpensive" data-calc="<?=$data['calc_id']?>"></i>
                 </div>
                 <div class="expensive-annually calc-edit"><?=$data['out_year']?></div>
                 <div class="expensive-monthly calc-edit"><?=$data['out_month']?></div>
