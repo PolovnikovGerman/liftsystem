@@ -1760,6 +1760,7 @@ class Accounting extends MY_Controller
                 $calcdata = $calcres['data'];
                 $calcdata['date_edit'] = $this->load->view('expensives/dateday_edit_view', $calcdata, TRUE);
                 $mdata['content']=$this->load->view('expensives/edit_form_view',$calcdata,TRUE);
+                $mdata['datetype'] = $calcdata['date_type'];
             }
             $this->ajaxResponse($mdata,$error);
         }

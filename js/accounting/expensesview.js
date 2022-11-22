@@ -70,6 +70,13 @@ function edit_calc(calc) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.datarow[data-calc='"+calc+"']").find('div.expensivesviewtablerow').empty().html(response.data.content);
+            if (response.data.datetype=='year') {
+                $("#yearsum_inpt").focus();
+            } else if (response.data.datetype=='month') {
+                $("#monthsum_inpt").focus();
+            } else {
+                $("#weeksum_inpt").focus();
+            }
             $("div.calc-edit").unbind('click');
             $("div.expensivesview-addnewbtn").unbind('click');
             $(".removeexpensive").unbind('click');
