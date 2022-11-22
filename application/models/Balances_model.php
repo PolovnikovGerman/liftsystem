@@ -73,7 +73,7 @@ class Balances_model extends My_Model
                     $row['out_date'] = date('M j', $row['date_day']);
                 } elseif ($row['date_type']=='month') {
                     $datesort = strtotime(date('Y-m').'-'.$row['date_day']);
-                    $row['out_date'] = date('j s', $datesort);
+                    $row['out_date'] = date('jS', $datesort);
                 } else {
                     if ($row['date_day']=='1') {
                         $datesort = strtotime('monday this week');
