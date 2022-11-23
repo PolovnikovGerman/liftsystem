@@ -180,7 +180,7 @@ function init_edit_calc() {
         $("input#dateday_inpt").datepicker({
             autoclose: true,
             todayHighlight: true,
-            format: 'M, d'
+            format: 'M d'
         });
     }
     // Update year / month / week sums

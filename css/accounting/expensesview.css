@@ -17,7 +17,7 @@
     background: #7c0000;
     cursor: pointer;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 12px;
     padding: 4px;
 }
 .expensivesviewsort {
@@ -52,7 +52,7 @@
 }
 .expensivesviewtablehead .expensive-annually {
     border-right: 1px solid #ffffff;
-    width: 67px;
+    width: 73px;
 }
 .expensivesviewtablehead .expensive-monthly {
     border-right: 1px solid #ffffff;
@@ -91,7 +91,7 @@
 /* Datarow */
 .expensivesviewtable {
     border-left: 1px solid #000000;
-    height: 536px;
+    height: 528px;
 }
 /* Scrollbar */
 .expensivesviewtable .sp-scrollbar {
@@ -140,7 +140,7 @@
     border-right: 1px solid #c5c5c5;
     text-align: right;
     padding-right: 4px;
-    width: 67px;
+    width: 73px;
 }
 .expensivesviewtablerow .expensive-annually i, .expensivesviewtablerow .expensive-monthly i, .expensivesviewtablerow .expensive-weekly i {
     text-align: left;
@@ -151,16 +151,16 @@
     color: #4a4a4a;
 }
 .expensivesviewtablerow .expensive-annually input {
-    width: 48px;
+    width: 57px;
 }
 .expensivesviewtablerow .expensive-monthly {
     border-right: 1px solid #c5c5c5;
     text-align: right;
     padding-right: 4px;
-    width: 69px;
+    width: 73px;
 }
 .expensivesviewtablerow .expensive-monthly input {
-    width: 50px;
+    width: 56px;
 }
 .expensivesviewtablerow .expensive-weekly {
     border-right: 1px solid #000000;
@@ -169,7 +169,7 @@
     width: 65px;
 }
 .expensivesviewtablerow .expensive-weekly input {
-    width: 46px;
+    width: 48px;
 }
 .expensivesviewtablerow .expensive-date {
     border-right: 1px solid #c5c5c5;
@@ -218,6 +218,13 @@
     text-align: right;
     padding-right: 6px;
     width: 75px;
+}
+.expensivesviewtablerow .expensive-edit-radio {
+    width: 14px;
+    text-align: center;
+}
+.expensivesviewtablerow .expensive-edit-inputval {
+    width: calc(100% - 14px);
 }
 .expensive-total-light {
     background: #cd3c3c;
