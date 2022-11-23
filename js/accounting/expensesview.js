@@ -96,7 +96,7 @@ function add_calcrow() {
         if (response.errors=='') {
             // $("div.newcalcrow").empty().removeClass('newcalcrow').html(response.data.content);
             // $(".expensivesviewtable").find('div.datarow:first').prepend
-            $("div#newcalcrow").show().empty().html(response.data.content);
+            $("div#newcalcrow").show().empty().html('<div class="expensivesviewtablerow whitedatarow">'+response.data.content+'</div>');
             $("#yearsum_inpt").focus();
             $("div.calc-edit").unbind('click');
             $("div.expensivesview-addnewbtn").unbind('click');
