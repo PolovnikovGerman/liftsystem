@@ -1,41 +1,4 @@
 <div class="expensivesviewtable">
-<!--    <div class="datarow">-->
-<!--        <input type="hidden" id="date_type" value="year"/>-->
-<!--        <div class="expensivesviewtablerow greydatarow">-->
-<!--            <div class="expensive-deeds">-->
-<!--                <div class="expensive-savedata">-->
-<!--                    <i class="fa fa-check-circle"></i>-->
-<!--                </div>-->
-<!--                <div class="expensive-cancel">-->
-<!--                    <i class="fa fa-times-circle"></i>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="expensive-annually">-->
-<!--                <div class="expensive-edit-radio"><i class="fa fa-circle checked"></i></div>-->
-<!--                <div class="expensive-edit-inputval"><input type="text" value="$15000.00"/></div>-->
-<!--            </div>-->
-<!--            <div class="expensive-monthly">-->
-<!--                <div class="expensive-edit-radio"><i class="fa fa-circle-o"></i></div>-->
-<!--                <div class="expensive-edit-inputval"><input type="text" readonly/></div>-->
-<!--            </div>-->
-<!--            <div class="expensive-weekly">-->
-<!--                <div class="expensive-edit-radio"><i class="fa fa-circle-o"></i></div>-->
-<!--                <div class="expensive-edit-inputval"><input type="text" readonly/></div>-->
-<!--            </div>-->
-<!--            <div class="expensive-date">Aug 15</div>-->
-<!--            <div class="expensive-method">-->
-<!--                <select>-->
-<!--                    <option>Amex Star</option>-->
-<!--                </select>-->
-<!--            </div>-->
-<!--            <div class="expensive-description">-->
-<!--                <input type="text" value="Clifton Rent + Extras"/>-->
-<!--            </div>-->
-<!--            <div class="expensive-quoter expensive-total-dark">$2,050.00</div>-->
-<!--            <div class="expensive-yearly expensive-total-dark">$98,400.00</div>-->
-<!--            <div class="expensive-percent expensive-total-dark">66.9%</div>-->
-<!--        </div>-->
-<!--    </div>-->
     <div class="datarow" id="newcalcrow" style="display: none;"></div>
     <?php $numpp = 1; ?>
     <?php foreach ($datas as $data) { ?>
@@ -50,11 +13,31 @@
                 <div class="expensive-date calc-edit"><?=$data['out_date']?></div>
                 <div class="expensive-method calc-edit"><?=$data['method']?></div>
                 <div class="expensive-description calc-edit"><?=$data['description']?></div>
-                <div class="expensive-quoter expensive-total-light"><?=$data['out_weektotal']?></div>
-                <div class="expensive-yearly expensive-total-light"><?=$data['out_yeartotal']?></div>
-                <div class="expensive-percent expensive-total-light"><?=empty($data['expense_perc']) ? '&nbsp;' : $data['expense_perc'].'%'?></div>
+                <div class="expensive-quoter <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?>"><?=$data['out_weektotal']?></div>
+                <div class="expensive-yearly <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?>"><?=$data['out_yeartotal']?></div>
+                <div class="expensive-percent <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?> <?=$expand==1 ? 'expandcell' : ''?>"><?=empty($data['expense_perc']) ? '&nbsp;' : $data['expense_perc'].'%'?></div>
             </div>
         </div>
         <?php $numpp++;?>
+    <?php } ?>
+    <?php if ($numpp < 23) { ?>
+        <?php for ($i=$numpp; $i<23;$i++) { ?>
+            <div class="datarow">
+                <div class="expensivesviewtablerow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
+                    <div class="expensive-deeds">&nbsp;</div>
+                    <div class="expensive-annually">&nbsp;</div>
+                    <div class="expensive-monthly">&nbsp;</div>
+                    <div class="expensive-weekly">&nbsp;</div>
+                    <div class="expensive-date">&nbsp;</div>
+                    <div class="expensive-method">&nbsp;</div>
+                    <div class="expensive-description">&nbsp;</div>
+                    <div class="expensive-quoter <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?>">&nbsp;</div>
+                    <div class="expensive-yearly <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?>">&nbsp;</div>
+                    <div class="expensive-percent <?=$numpp%2==0 ? 'expensive-total-light' : 'expensive-total-dark'?> expandcell">&nbsp;</div>
+                </div>
+                <?php $numpp++;?>
+            </div>
+        <?php } ?>
+
     <?php } ?>
 </div>

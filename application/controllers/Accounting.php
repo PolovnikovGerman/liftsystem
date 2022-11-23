@@ -1739,7 +1739,11 @@ class Accounting extends MY_Controller
             if (count($calc_data)==0) {
                 $mdata['content']=$this->load->view('expensives/tabledata_empty_view',array('brand' => $brand),TRUE);
             } else {
-                $mdata['content']=$this->load->view('expensives/tabledata_view',array('datas'=>$calc['body'], 'brand' => $brand),TRUE);
+                $expand = 0;
+                if (count($calc_data)<23) {
+                    $expand = 1;
+                }
+                $mdata['content']=$this->load->view('expensives/tabledata_view',array('datas'=>$calc['body'],  'brand' => $brand, 'expand' => $expand),TRUE);
             }
             $mdata['total_month']=$calc['sums']['month'];
             $mdata['total_week']=$calc['sums']['week'];
