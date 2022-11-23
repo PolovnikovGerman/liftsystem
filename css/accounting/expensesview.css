@@ -1,240 +1,287 @@
-.calculator {
-    clear: both;
-    float: left;
-    margin-top: 15px;
-    /* margin-left: 250px; */
-    margin-left: 122px;
-    /* width: 590px; */
-    width: 784px;
+.expensivesviewarea {
+    width: 1000px;
+    padding: 15px;
+    font-size: 12px;
 }
-.calculatortitle {
-    /* width: 577px; */
-    width: 790px;
+.expensivesviewtitle {
+    height: 23px;
+    line-height: 23px!important;
+    font-size: 17px;
+    font-weight: 600;
+    margin-right: 25px;
+    margin-bottom: 12px;
 }
-.calculatortitle > div {
-    border-bottom: 1px solid #fff;
+.expensivesview-addnewbtn {
+    border: 1.5px solid #000000;
+    border-radius: 5px;
+    background: #7c0000;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 12px;
+    padding: 4px;
+}
+.expensivesviewsort {
+    float: right!important;
+    margin-right: 25px;
+}
+.expensivesviewsort span {
+    height: 23px;
+    line-height: 23px!important;
+    margin-right: 7px;
+}
+.expensivesviewsort select {
+    height: 23px;
+    line-height: 23px!important;
+    width: 105px;
+    padding-left: 5px;
+}
+.expensivesviewtablehead {
+    border: 1px solid #000000;
+}
+.expensivesviewtablehead div {
+    background: #7c0000;
+    color: #ffffff;
     font-size: 13px;
-    color: #fff;
-    font-weight: bold;
     text-align: center;
-    height: 40px;
-    line-height: 40px;
+    height: 24px;
+    line-height: 24px!important;
 }
-.calculatortitle .sortcalclnk {
-    margin-left: 3px;
-    width: 16px;
-    margin-top: 10px;
+.expensivesviewtablehead .expensive-deeds {
+    border-right: 1px solid #ffffff;
+    width: 32px;
 }
-.calc_cell-00 {
-    background: url("/img/accounting/calc_head00.png") no-repeat scroll 0 0 transparent;
-    float: left;
-    width: 20px;
+.expensivesviewtablehead .expensive-annually {
+    border-right: 1px solid #ffffff;
+    width: 73px;
 }
-.calc_cell-01 {
-    background: url("/img/accounting/calc_head02.png") repeat-x;
-    border-right: 1px solid #eecfd0;
-    width: 351px;
+.expensivesviewtablehead .expensive-monthly {
+    border-right: 1px solid #ffffff;
+    width: 73px;
 }
-.calc_cell-02 {
-    position: relative;
-    background: url("/img/accounting/calc_head02.png") repeat-x;
-    width: 84px;
-    border-right: 1px solid #eecfd0;
-}
-.calc_cell-03 {
-    background: url("/img/accounting/calc_head02.png") repeat-x;
-    width: 78px;
-    border-right: 1px solid #eecfd0;
-}
-.calc_cell-04 {
-    background: rgba(0, 0, 0, 0) url("/img/accounting/calc_head02.png") repeat-x scroll 0 0;
-    border-right: 1px solid #eecfd0;
-    width: 87px;
-}
-.calc_cell-05 {
-    background: rgba(0, 0, 0, 0) url("/img/accounting/calc_head02.png") repeat-x scroll 0 0;
+.expensivesviewtablehead .expensive-weekly {
+    border-right: 1px solid #ffffff;
     width: 65px;
 }
-.calc_cell-last {
-    background: url("/img/accounting/calc_head_last.png") no-repeat scroll 0 0 transparent;
-    width: 21px;
-}
-.calc-content {
-    clear: both;
-    float: left;
-    font-size: 12px;
-    color: #000000;
-    text-align: right;
-    height: 566px;
-    /* width: 574px; */
-    width: 781px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    /* border-bottom: 1px solid #fff; */
-    border-left: 1px solid #c8c7c7;
-}
-.calculatorfoot {
-    clear: both;
-    width: 791px;
-}
-.calculatorfoot > div {
-    font-size: 13px;
-    color: #fff;
-    font-weight: bold;
-    text-align: center;
-    height: 42px;
-    line-height: 42px;
-}
-.calc-grandtotal-start {
-    background: url("/img/accounting/calc_foot_start.png") no-repeat;
-    width: 20px;
-}
-.calc-grandtotal {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
-    width: 351px;
-    border-right: 1px solid #eecfd0;
-}
-.calc-totalmonthly {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
-    width: 84px;
-    border-right: 1px solid #eecfd0;
-}
-.calc-totalweekly {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
-    width: 78px;
-    border-right: 1px solid #eecfd0;
-}
-.calc-totalquart {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
-    width: 78px;
-    border-right: 1px solid #eecfd0;
-}
-.calc-totalyear {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
-    border-right: 1px solid #eecfd0;
-    width: 87px;
-}
-.calc-totalpercent {
-    background: url("/img/accounting/calc_foot02.png") repeat-x transparent;
+.expensivesviewtablehead .expensive-date {
+    background: #414141;
+    border-right: 1px solid #ffffff;
     width: 68px;
 }
-.calc-grandtotal-end {
-    background: url("/img/accounting/calc_foot_finish.png") no-repeat;
-    width: 20px;
+.expensivesviewtablehead .expensive-method {
+    background: #414141;
+    border-right: 1px solid #ffffff;
+    width: 80px;
 }
-.calcdatarow {
-    clear: both;
-    width: 781px;
+.expensivesviewtablehead .expensive-description {
+    background: #414141;
+    border-right: 1px solid #ffffff;
+    width: 296px;
 }
-.calcdatarow > div {
-    height: 27px;
-    line-height: 27px;
+.expensivesviewtablehead .expensive-quoter {
+    border-right: 1px solid #ffffff;
+    width: 85px;
 }
-.calc-descrdata, .calc-descrdata-edit {
-    width: 339px;
-    border-right: 1px solid #716f6f;
-    border-left: 1px solid #c8c7c7;
-    padding-right: 10px;
+.expensivesviewtablehead .expensive-yearly {
+    border-right: 1px solid #ffffff;
+    width: 97px;
 }
-.calc-descrdata.calc-edit {
+.expensivesviewtablehead .expensive-percent {
+    width: 85px;
+}
+/* Datarow */
+.expensivesviewtable {
+    border-left: 1px solid #000000;
+    height: 528px;
+}
+/* Scrollbar */
+.expensivesviewtable .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
     cursor: pointer;
 }
-.calc-montdata {
-    width: 83px;
-    border-right: 1px solid #716f6f;
-    padding-right: 10px;
+.expensivesviewtable .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
 }
-.calc-weekdata {
-    width: 79px;
-    border-right: 1px solid #716f6f;
-    padding-right: 10px;
+.expensivesviewtable .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
 }
-.calc-quartadat {
-    width: 77px;
-    border-right: 1px solid #fff;
-    padding-right: 10px;
-    background-color: #9a1e1e;
-    color: #fff;
+/* End scroll bar */
+.expensivesviewtablerow div {
+    height: 24px;
+    line-height: 24px!important;
 }
-.calc-quartadat.grey {
-    background-color: #a74040;
+.expensivesviewtablerow input, .expensivesviewtablerow select {
+    border: 1px solid #bfbfbf;
+    background: #ffffff;
+    height: 19px;
 }
-.calc-yeardat {
-    width: 88px;
-    border-right: 1px solid #fff;
-    padding-right: 10px;
-    background-color: #9a1e1e;
-    color: #fff;
-}
-.calc-yeardat.grey {
-    background-color: #a74040;
-}
-.calc-expenseperc {
-    float: left;
-    width: 78px;
-    /* border-right: 1px solid #fff; */
+.expensivesviewtablerow .expensive-deeds {
+    border-right: 1px solid #000000;
     text-align: center;
-    background-color: #9a1e1e;
-    color: #fff;
+    width: 32px;
 }
-.calc-expenseperc.grey {
-    background-color: #a74040;
-}
-.newcalcrow {
+.expensivesviewtablerow .expensive-deeds i {
     font-size: 13px;
-    height: 17px;
-    padding-top: 2px;
-    text-align: center;
-}
-.newcalcrow:hover {
     cursor: pointer;
 }
-.calc-actions {
-    float: left;
-    width: 31px;
-}
-.applycalc {
-    float: left;
-    width: 15px;
-    padding-top: 3px;
+.expensivesviewtablerow .expensive-savedata,
+.expensivesviewtablerow .expensive-cancel {
     text-align: center;
+    width: 15.5px;
 }
-.applycalc img {
+.expensivesviewtablerow .expensive-savedata i {
+    color: #3b9806;
+}
+.expensivesviewtablerow .expensive-cancel i {
+    color: #d30a0a;
+}
+.expensivesviewtablerow .expensive-annually {
+    border-right: 1px solid #c5c5c5;
+    text-align: right;
+    padding-right: 4px;
+    width: 73px;
+}
+.expensivesviewtablerow .expensive-annually i, .expensivesviewtablerow .expensive-monthly i, .expensivesviewtablerow .expensive-weekly i {
+    text-align: left;
+    /* margin-right: 3px; */
+    color: #cdcdcd;
+}
+.expensivesviewtablerow .expensive-annually i.checked, .expensivesviewtablerow .expensive-monthly i.checked, .expensivesviewtablerow .expensive-weekly i.checked {
+    color: #4a4a4a;
+}
+.expensivesviewtablerow .expensive-annually input {
+    width: 57px;
+}
+.expensivesviewtablerow .expensive-monthly {
+    border-right: 1px solid #c5c5c5;
+    text-align: right;
+    padding-right: 4px;
+    width: 73px;
+}
+.expensivesviewtablerow .expensive-monthly input {
+    width: 56px;
+}
+.expensivesviewtablerow .expensive-weekly {
+    border-right: 1px solid #000000;
+    text-align: right;
+    padding-right: 4px;
+    width: 65px;
+}
+.expensivesviewtablerow .expensive-weekly input {
+    width: 48px;
+}
+.expensivesviewtablerow .expensive-date {
+    border-right: 1px solid #c5c5c5;
+    text-align: center;
+    width: 68px;
+}
+.expensivesviewtablerow .expensive-date input, .expensivesviewtablerow .expensive-date select {
+    width: 60px;
+}
+.expensivesviewtablerow .expensive-method {
+    border-right: 1px solid #000000;
+    text-align: center;
+    width: 80px;
+}
+.expensivesviewtablerow .expensive-method select {
+    width: 74px;
+}
+.expensivesviewtablerow .expensive-description {
+    border-right: 1px solid #000000;
+    text-align: right;
+    padding-right: 8px;
+    width: 296px;
+}
+.expensivesviewtablerow .expensive-description input {
+    margin-left: 4px;
+    padding-right: 4px;
+    text-align: right;
+    width: 287px;
+}
+.expensivesviewtablerow .expensive-quoter {
+    border-right: 1px solid #ffffff;
+    color: #ffffff;
+    text-align: right;
+    padding-right: 6px;
+    width: 85px;
+}
+.expensivesviewtablerow .expensive-yearly {
+    border-right: 1px solid #ffffff;
+    color: #ffffff;
+    text-align: right;
+    padding-right: 6px;
+    width: 97px;
+}
+.expensivesviewtablerow .expensive-percent {
+    color: #ffffff;
+    text-align: right;
+    padding-right: 6px;
+    width: 75px;
+}
+.expensivesviewtablerow .expensive-percent.expandcell {
+    border-right: 1px solid #000000;
+    width: 86px;
+    padding-right: 16px;
+}
+.expensivesviewtablerow .expensive-edit-radio {
     width: 14px;
-    height: 14px;
-}
-.cancelcalc {
-    float: left;
-    width: 15px;
-    padding-top: 3px;
     text-align: center;
 }
-.cancelcalc img {
-    width: 14px;
-    height: 14px;
+.expensivesviewtablerow .expensive-edit-inputval {
+    width: calc(100% - 14px);
 }
-.calc-delete {
+.expensivesviewtablerow .expensive-emptydata {
+    border-right: 1px solid #000;
+    width: 955px;
+    text-align: center;
+    color: #FF0000;
+}
+.expensive-total-light {
+    background: #cd3c3c;
+}
+.expensive-total-dark {
+    background: #af1b1b;
+}
+.expensivesviewfooter {
+    border: 1px solid #000000;
+}
+.expensivesviewfooter div {
+    background: #7c0000;
+    color: #ffffff;
+    height: 36px;
+    /* line-height: 18px; */
     text-align: center;
 }
-.calc-delete:hover {
-    cursor: pointer;
+.expensivesviewfooter .expensive-grandtotal {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+    padding-top: 15px;
+    padding-right: 45px;
+    border-right: 1px solid #ffffff;
+    width: 687px;
 }
-input.calcdescript {
-    background-color: #fff;
-    font-size: 13px;
-    height: 21px;
-    margin-right: 5px;
-    width: 324px;
+.expensivesviewfooter .expensive-quoter {
+    border-right: 1px solid #ffffff;
+    width: 85px;
 }
-input.calcmonthdata {
-    background-color: #fff;
-    font-size: 13px;
-    width: 54px;
-    height: 21px;
+.expensivesviewfooter .expensive-yearly {
+    border-right: 1px solid #ffffff;
+    width: 97px;
 }
-input.calcweekdata {
-    background-color: #fff;
-    font-size: 13px;
-    width: 54px;
-    height: 21px;
+.expensivesviewfooter .expensive-percent {
+    width: 85px;
+}
+.expensivesviewfooter .expensive-quoter span, .expensivesviewfooter .expensive-yearly span, .expensivesviewfooter .expensive-percent span {
+    color: #ff5252;
+    font-size: 11px;
+}
+.expensive-totalamount {
+    height: 18px!important;
+    line-height: 18px!important;
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
 }
