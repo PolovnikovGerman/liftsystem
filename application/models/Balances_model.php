@@ -165,7 +165,7 @@ class Balances_model extends My_Model
 
                 $quarta=round($weektotal/12/4,2);
                 if ($res['date_type']=='year' && !empty($res['date_day'])) {
-                    $res['date_day'] = date('M, d', $res['date_day']);
+                    $res['date_day'] = date('M d', $res['date_day']);
                 }
                 // $yearsum=$monthdat*12+$weeksum*52;
                 $res['weektotal']=($quarta==0 ? $this->empty_html_content : MoneyOutput($quarta,2));
@@ -222,7 +222,7 @@ class Balances_model extends My_Model
         } else {
             if ($options['date_type']=='year' && !empty($options['date_day'])) {
                 // Transform
-                $incomdat = explode(',', $options['date_day']);
+                $incomdat = explode(' ', $options['date_day']);
                 $datstr = date('Y').'-'.trim($incomdat[0]).'-'.str_pad(trim($incomdat[1]),2,'0',STR_PAD_LEFT);
                 $options['date_day'] = strtotime($datstr);
             }

@@ -1,4 +1,41 @@
 <div class="expensivesviewtable">
+<!--    <div class="datarow">-->
+<!--        <input type="hidden" id="date_type" value="year"/>-->
+<!--        <div class="expensivesviewtablerow greydatarow">-->
+<!--            <div class="expensive-deeds">-->
+<!--                <div class="expensive-savedata">-->
+<!--                    <i class="fa fa-check-circle"></i>-->
+<!--                </div>-->
+<!--                <div class="expensive-cancel">-->
+<!--                    <i class="fa fa-times-circle"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="expensive-annually">-->
+<!--                <div class="expensive-edit-radio"><i class="fa fa-circle checked"></i></div>-->
+<!--                <div class="expensive-edit-inputval"><input type="text" value="$15000.00"/></div>-->
+<!--            </div>-->
+<!--            <div class="expensive-monthly">-->
+<!--                <div class="expensive-edit-radio"><i class="fa fa-circle-o"></i></div>-->
+<!--                <div class="expensive-edit-inputval"><input type="text" readonly/></div>-->
+<!--            </div>-->
+<!--            <div class="expensive-weekly">-->
+<!--                <div class="expensive-edit-radio"><i class="fa fa-circle-o"></i></div>-->
+<!--                <div class="expensive-edit-inputval"><input type="text" readonly/></div>-->
+<!--            </div>-->
+<!--            <div class="expensive-date">Aug 15</div>-->
+<!--            <div class="expensive-method">-->
+<!--                <select>-->
+<!--                    <option>Amex Star</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="expensive-description">-->
+<!--                <input type="text" value="Clifton Rent + Extras"/>-->
+<!--            </div>-->
+<!--            <div class="expensive-quoter expensive-total-dark">$2,050.00</div>-->
+<!--            <div class="expensive-yearly expensive-total-dark">$98,400.00</div>-->
+<!--            <div class="expensive-percent expensive-total-dark">66.9%</div>-->
+<!--        </div>-->
+<!--    </div>-->
     <div class="datarow" id="newcalcrow" style="display: none;"></div>
     <?php $numpp = 1; ?>
     <?php foreach ($datas as $data) { ?>
@@ -21,31 +58,3 @@
         <?php $numpp++;?>
     <?php } ?>
 </div>
-<!--<div class="datarow">-->
-<!--    <input type="hidden" id="date_type" value="year"/>-->
-<!--    <div class="expensivesviewtablerow greydatarow">-->
-<!--        <div class="expensive-deeds">-->
-<!--            <div class="expensive-savedata">-->
-<!--                <i class="fa fa-check-circle"></i>-->
-<!--            </div>-->
-<!--            <div class="expensive-cancel">-->
-<!--                <i class="fa fa-times-circle"></i>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="expensive-annually"><i class="fa fa-circle checked"></i><input type="text" value="$15000.00"/></div>-->
-<!--        <div class="expensive-monthly"><i class="fa fa-circle-o"></i><input type="text" readonly/></div>-->
-<!--        <div class="expensive-weekly"><i class="fa fa-circle-o"></i><input type="text" readonly/></div>-->
-<!--        <div class="expensive-date">Aug 15</div>-->
-<!--        <div class="expensive-method">-->
-<!--            <select>-->
-<!--                <option>Amex Star</option>-->
-<!--            </select>-->
-<!--        </div>-->
-<!--        <div class="expensive-description">-->
-<!--            <input type="text" value="Clifton Rent + Extras"/>-->
-<!--        </div>-->
-<!--        <div class="expensive-quoter expensive-total-dark">$2,050.00</div>-->
-<!--        <div class="expensive-yearly expensive-total-dark">$98,400.00</div>-->
-<!--        <div class="expensive-percent expensive-total-dark">66.9%</div>-->
-<!--    </div>-->
-<!--</div>-->

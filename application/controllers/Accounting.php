@@ -1780,19 +1780,21 @@ class Accounting extends MY_Controller
                     'date_day' => '',
                 ];
                 $mdata['daydatecontent'] = $this->load->view('expensives/dateday_edit_view', $calcdata, TRUE);
-                if ($date_type=='year') {
-                    $mdata['yearcontent'] = '<i class="fa fa-circle checked" data-amount="year"></i><input id="yearsum_inpt" type="text" value=""/>';
-                    $mdata['monthcontent'] = '<i class="fa fa-circle-o" data-amount="month"></i></i><input id="monthsum_inpt" readonly type="text" value=""/>';
-                    $mdata['weekcontent'] = '<i class="fa fa-circle-o" data-amount="month"></i></i><input id="weeksum_inpt" readonly type="text" value=""/>';
-                } elseif ($date_type=='month') {
-                    $mdata['yearcontent'] = '<i class="fa fa-circle-o" data-amount="year"></i><input id="yearsum_inpt" readonly type="text" value=""/>';
-                    $mdata['monthcontent'] = '<i class="fa fa-circle checked" data-amount="month"></i></i><input id="monthsum_inpt" type="text" value=""/>';
-                    $mdata['weekcontent'] = '<i class="fa fa-circle-o" data-amount="week"></i></i><input id="weeksum_inpt" readonly type="text" value=""/>';
-                } else {
-                    $mdata['yearcontent'] = '<i class="fa fa-circle-o" data-amount="year"></i><input id="yearsum_inpt" readonly type="text" value=""/>';
-                    $mdata['monthcontent'] = '<i class="fa fa-circle-o" data-amount="month"></i></i><input id="monthsum_inpt" readonly type="text" value=""/>';
-                    $mdata['weekcontent'] = '<i class="fa fa-circle checked" data-amount="week"></i></i><input id="weeksum_inpt" type="text" value=""/>';
-                }
+                $yearinpt_options = [
+                    'checked' => $date_type=='year' ? 1 : 0,
+                    'datetype' => 'year',
+                ];
+                $mdata['yearcontent'] = $this->load->view('expensives/weekedit_input_view', $yearinpt_options, TRUE);
+                $monthinpt_options = [
+                    'checked' => $date_type=='month' ? 1 : 0,
+                    'datetype' => 'month',
+                ];
+                $mdata['monthcontent'] = $this->load->view('expensives/weekedit_input_view', $monthinpt_options, TRUE);
+                $weekinpt_options = [
+                    'checked' => $date_type=='week' ? 1 : 0,
+                    'datetype' => 'week',
+                ];
+                $mdata['weekcontent'] = $this->load->view('expensives/weekedit_input_view', $weekinpt_options, TRUE);
                 $mdata['weektotal'] = '';
                 $mdata['yeartotal'] = '';
                 $mdata['percentval'] = '';
