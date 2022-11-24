@@ -17,6 +17,7 @@ function init_master_inventorydata() {
             $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
             init_master_inventorytabledat();
+            leftmenu_alignment();
         } else {
             show_error(response)
         }

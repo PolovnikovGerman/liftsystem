@@ -185,12 +185,10 @@ function pageVendorCallbackMobile(page_index) {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
             init_vendor_content();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     },'json');
 }
@@ -209,12 +207,10 @@ function pageVendorCallbackDesktop(page_index) {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
             init_vendor_content();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     },'json');
 }

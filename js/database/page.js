@@ -36,6 +36,14 @@ function init_page(objid) {
             $("#mastervendors").show();
             init_vendorpage();
             break;
+        case 'masterinventory':
+            $("#inventoryview").show();
+            init_master_inventory();
+            break;
+        case 'mastersettings':
+            $("#settingsview").show();
+            init_master_settings();
+            break;
         case 'legacyview':
             $("#legacyview").show();
             init_legacy_view();
