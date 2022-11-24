@@ -9,6 +9,7 @@ class Database extends MY_Controller
     private $STRESSBALL_TEMPLATE='Stressball';
     private $OTHER_TEMPLATE='Other Item';
     private $MAX_PROMOPRICES = 10;
+    protected $PERPAGE=1000;
 
 
     public function __construct()
@@ -105,11 +106,6 @@ class Database extends MY_Controller
         if (count($main_menu)>1) {
             $brand_menu = 1;
         }
-//        $menu_options = [
-//            'menus' => $main_menu,
-//            'start' => $pagelnk,
-//        ];
-//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
         // Add main page management
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
@@ -120,11 +116,32 @@ class Database extends MY_Controller
         ];
         foreach ($menu as $row) {
             if ($row['item_link']=='#mastervendors') {  // vendorsview
-                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
-                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+//                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
+//                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
+//                $content_options['vendorsview'] = $this->_prepare_vendors_view();
+                $head['styles'][]=array('style'=>'/css/database_center/vendorsview.css');
+                $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
+                $head['scripts'][] = array('src' => '/js/database_center/vendoraddress.js');
+                $head['gmaps']=1;
                 $content_options['vendorsview'] = $this->_prepare_vendors_view();
             } elseif ($row['item_link']=='#masterinventory') {
+                // $head['styles'][]=array('style'=>'/css/database_center/inventory_adaptive.css');
+                $head['styles'][]=array('style'=>'/css/database_center/master_inventory.css');
+                // $head['scripts'][]=array('src'=>'/js/database_center/inventory_adaptive.js');
+                $head['scripts'][]=array('src'=>'/js/database_center/master_inventory.js');
+                $content_options['inventoryview'] = $this->_prepare_inventory_view();
             } elseif ($row['item_link']=='#mastersettings') {
+                $head['scripts'][] = array('src' => '/js/database_center/master_settings.js');
+                $head['styles'][] = array('style' => '/css/settings/countriesview.css');
+                $head['scripts'][] = array('src' => '/js/settings/countriesview.js');
+                $head['styles'][] = array('style' => '/css/settings/calendars.css');
+                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
+                $head['styles'][] = array('style' => '/css/database_center/master_settings.css');
+                // Datepicker
+                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+                $content_options['settingsview'] = $this->_prepare_mastersettings_view();
             }
         }
         // Add main page management
@@ -145,7 +162,15 @@ class Database extends MY_Controller
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'gmaps' => ifset($head, 'gmaps', 0),
+        ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
@@ -1955,16 +1980,26 @@ class Database extends MY_Controller
     }
 
     private function _prepare_vendors_view() {
+//        $this->load->model('vendors_model');
+//        $totals=$this->vendors_model->get_count_vendors();
+//        $options=array(
+//            'perpage'=> 250,
+//            'order'=>'vendor_name',
+//            'direc'=>'asc',
+//            'total'=>$totals,
+//            'curpage'=>0,
+//        );
+//        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
         $this->load->model('vendors_model');
-        $totals=$this->vendors_model->get_count_vendors();
+        $totals=$this->vendors_model->get_count_vendors(['status' => 1]);
         $options=array(
-            'perpage'=> 250,
+            'perpage'=> 100,
             'order'=>'vendor_name',
             'direc'=>'asc',
             'total'=>$totals,
             'curpage'=>0,
         );
-        $content=$this->load->view('fulfillment/vendors_view', $options, TRUE);
+        $content = $this->load->view('vendorcenter/page_view', $options, TRUE);
         return $content;
     }
 
@@ -2050,6 +2085,55 @@ class Database extends MY_Controller
         ];
 
         $content = $this->load->view('relieveritems/page_view', $options,TRUE);
+        return $content;
+    }
+
+    private function _prepare_inventory_view() {
+        $this->load->model('inventory_model');
+        $invtypes = $this->inventory_model->get_inventory_types();
+        $idx=0;
+        $totalval = 0;
+        foreach ($invtypes as $invtype) {
+            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+            $totalval+=$stock;
+            $invtypes[$idx]['value'] = $stock;
+            $idx++;
+        }
+        $options = [
+            'invtypes' => $invtypes,
+            'active_type' => $invtypes[0]['inventory_type_id'],
+            'export_type' => $invtypes[0]['type_short'],
+            'total' => $totalval,
+            'eventtype' => 'purchasing',
+        ];
+        $content = $this->load->view('masterinvent/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_mastersettings_view() {
+        $this->load->model('calendars_model');
+        $totals = $this->calendars_model->count_calendars('ALL');
+        $orderby='calendar_id';
+        $direc='asc';
+
+        $options=array(
+            'total'=>$totals,
+            'perpage'=>$this->PERPAGE,
+            'orderby'=>$orderby,
+            'direct'=>$direc,
+        );
+        $calendar_view=$this->load->view('settings/calendars_view',$options,TRUE);
+        $this->load->model('shipping_model');
+        $search_templates=$this->shipping_model->get_country_search_templates();
+        $options = [
+            'search_templ' => $search_templates,
+        ];
+        $countries_view=$this->load->view('settings/countries_view', $options,TRUE);
+        $setting_options = [
+            'calendar_view' => $calendar_view,
+            'countries_view' => $countries_view,
+        ];
+        $content = $this->load->view('database_center/master_settings_view', $setting_options, TRUE);
         return $content;
     }
 
