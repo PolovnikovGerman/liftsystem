@@ -184,6 +184,9 @@ function pageVendorCallbackMobile(page_index) {
         if (response.errors=='') {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
+            $("#vendorinfo").find("div.dataarea").scrollpanel({
+                'prefix' : 'sp-'
+            });
             init_vendor_content();
             leftmenu_alignment();
         } else {

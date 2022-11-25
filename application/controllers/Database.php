@@ -162,6 +162,9 @@ class Database extends MY_Controller
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Item details
         $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
