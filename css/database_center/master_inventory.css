@@ -300,16 +300,32 @@
 .masterinventtablebody {
     background: #ffffff;
     color: #000000;
-    width: 100%;
-    max-height: 990px;
+    width: 1032px; /* 100%; */
+    max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
 }
+/* Scrollbar */
+.masterinventtablebody .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.masterinventtablebody .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.masterinventtablebody .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
 .inventorydatarow {
     width: 100%;
+}
+.inventorydatarow.expand {
+    width: 1032px;
 }
 .inventorydatarow > div {
     text-align: center;

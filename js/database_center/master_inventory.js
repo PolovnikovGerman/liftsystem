@@ -11,7 +11,10 @@ function init_master_inventorydata() {
     var url="/masterinventory/get_inventory_list";
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".masterinventtablebody").empty().html(response.data.content);
+            $("#masterinventtablebody").empty().html(response.data.content);
+            $(".masterinventtablebody").scrollpanel({
+                'prefix' : 'sp-'
+            });
             $(".inventtotalinstock").empty().html(response.data.instock);
             $(".inventtotalavailable").empty().html(response.data.available);
             $(".inventtotalmaximum").empty().html(response.data.maximum);
