@@ -22,7 +22,11 @@ class Masterinventory extends MY_Controller
             if (count($data['list'])==0) {
                 $mdata['content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);
             } else {
-                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list'],'showmax' => $showmax],TRUE);
+                $expand=0;
+                if (count($data['list'])<=39) {
+                    $expand = 1;
+                }
+                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list'],'showmax' => $showmax, 'expand' => $expand],TRUE);
             }
             $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
             $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);

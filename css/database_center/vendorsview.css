@@ -196,14 +196,36 @@
 .vendordataview .dataarea {
     width: 1066px;
     /* width: 100%; */
-    max-height: 645px;
-    overflow-y: auto;
+    max-height: 624px;
+    /* overflow-y: auto; */
+    /* overflow-x: hidden; */
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     margin-bottom: 10px;
 }
-.vendordataview .dataarea .datarow {
+/* Scrollbar */
+.vendordataview .dataarea .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.vendordataview .dataarea .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.vendordataview .dataarea .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
+
+.vendordataview .dataarea .datarow.expand {
+    width: 1064px;
+}
+.vendordataview .dataarea .datarow.error {
+    text-align: center;
+    height: 25px;
+    line-height: 25px!important;
+    color: #FF0000;
 }
 .vendordataview .dataarea .datarow div {
     height: 25px;
@@ -297,7 +319,10 @@
     text-overflow: ellipsis;
 }
 .vendordataview .dataarea .datarow .itemqty {
-    width: 77px;
+    width: 84px;
     border-right: none!important;
     text-align: center;
+}
+.vendordataview .dataarea .datarow .itemqty.expand {
+    width: 94px;
 }

@@ -49,5 +49,5 @@
         <div class="phone">Phone</div>
         <div class="itemqty">Our Items</div>
     </div>
-    <div class="dataarea" id="vendorinfo"></div>
+    <div id="vendorinfo"></div>
 </div>

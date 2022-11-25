@@ -301,7 +301,11 @@ class Vendors extends MY_Controller
             if (count($vendors)==0) {
                 $content=$this->load->view('vendorcenter/emptydata_view', array(), TRUE);
             } else {
-                $content=$this->load->view('vendorcenter/datalist_view',array('vendors'=>$vendors),TRUE);
+                $expand=0;
+                if (count($vendors) < 24) {
+                    $expand = 1;
+                }
+                $content=$this->load->view('vendorcenter/datalist_view',array('vendors'=>$vendors, 'expand' => $expand),TRUE);
             }
             $mdata['content']=$content;
             $this->ajaxResponse($mdata, $error);

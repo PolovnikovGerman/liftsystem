@@ -1,7 +1,8 @@
 <?php $coloridx=0;?>
+<div class="masterinventtablebody">
 <?php  foreach ($lists as $list) {?>
     <?php if ($list['item_flag']==1) { ?>
-        <div class="inventorydatarow masteritem">
+        <div class="inventorydatarow masteritem <?=$expand==1 ? 'expand' : ''?>">
             <div class="masterinventstatus"><?=$list['status']?></div>
     <?php } else { ?>
         <div class="inventorydatarow itemcolor <?=$coloridx%2==0 ? 'whitedatarow' : 'greydatarow'?>">
@@ -50,3 +51,4 @@
         <?php } ?>
     </div>
 <?php } ?>
+</div>
