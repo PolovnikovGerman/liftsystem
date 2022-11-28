@@ -1317,6 +1317,7 @@ Class Items_model extends My_Model
         }
         if (ifset($options, 'search','')!=='') {
             $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($options['search'])."%'";
+            $this->db->where($where);
         }
         if (!empty($search)) {
             $where="lower(concat(i.item_number,i.item_name)) like '%".strtolower($search)."%'";

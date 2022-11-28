@@ -186,25 +186,24 @@ class Database extends MY_Controller
 
     public function btchannelitems() {
         $head = [];
-        $head['title'] = 'Bluetrack/Stressballs';
-        $pagelnk = '#dbbrand';
         $brand = $this->menuitems_model->get_current_brand();
+        if ($brand=='SR') {
+            $head['title'] = 'StressRelievers';
+        } else {
+            $head['title'] = 'Bluetrack/Stressballs';
+        }
+        $pagelnk = '#dbbrand';
+
         $main_menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $master_menu = 0;
         if (count($main_menu) > 1) {
             $master_menu = 1;
         }
-//        $menu_options = [
-//            'menus' => $main_menu,
-//            'start' => $pagelnk,
-//        ];
-//        $page_menu = $this->load->view('database_center/main_menu_view', $menu_options, TRUE);
+
         // Add main page management
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
 
         $content_options=[
-            // 'page_menu' => $page_menu,
-            //'start_menu' => $pagelnk,
             'menus' => $main_menu,
             'menu' => $menu,
             'start' => str_replace('#','',$menu[0]['item_link'])
@@ -394,10 +393,10 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
         $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Cirlce
-        // Cycle
         $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
-        // Item details
-        // $head['styles'][]=array('style'=>'/css/database/itemdetails.css');
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+
         $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];

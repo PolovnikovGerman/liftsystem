@@ -30,7 +30,7 @@ class Dbitems extends MY_Controller
             $options['missinfo'] = ifset($postdata,'missinfo',0);
             $totals = $this->items_model->count_item_searchres($options);
             $mdata['totals'] = $totals;
-            $mdata['totals_view'] = QTYOutput($totals).' items';
+            $mdata['totals_view'] = QTYOutput($totals).' item(s)';
             $category_label = '';
             if ($options['category'] > 0) {
                 $this->load->model('categories_model');
@@ -66,13 +66,17 @@ class Dbitems extends MY_Controller
             $options['brand'] = 'BT';
             $res = $this->items_model->get_itemlists($options);
             // $this->load->model('categories_model');
-            $pageoptions = [
-                'datas' => $res,
-                // 'categories' => $this->categories_model->get_categories_list(),
-                'brand' => 'BT',
-            ];
+            // $pageoptions = [
+            //    'datas' => $res,
+            //    'categories' => $this->categories_model->get_categories_list(),
+            //    'brand' => 'BT',
+            // ];
             // $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
-            $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res], TRUE);
+            $expand = 1;
+            if (count($res) > 17) {
+                $expand = 0;
+            }
+            $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res, 'expand' => $expand, ], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -415,7 +419,11 @@ class Dbitems extends MY_Controller
             if (count($res)==0) {
                 $mdata['content'] = $this->load->view('relieveritems/emptydata_table_view', [], TRUE);
             } else {
-                $mdata['content'] = $this->load->view('relieveritems/data_table_view', ['items' => $res], TRUE);
+                $expand = 1;
+                if (count($res) > 17 ) {
+                    $expand = 0;
+                }
+                $mdata['content'] = $this->load->view('relieveritems/data_table_view', ['items' => $res, 'expand' => $expand], TRUE);
             }
 
             $this->ajaxResponse($mdata, $error);

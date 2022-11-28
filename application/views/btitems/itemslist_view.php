@@ -93,7 +93,7 @@
             <div class="suplier">Suplier</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
-        <div class="tabledataarea" id="btitemdata">
+        <div class="" id="btitemdata">
         </div>
     </div>
 </div>

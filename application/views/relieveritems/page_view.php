@@ -73,7 +73,7 @@
             <div class="itemname">Item Name</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
-        <div class="tabledataarea" id="relieversitemdata">
+        <div id="relieversitemdata">
         </div>
     </div>
 </div>
