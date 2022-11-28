@@ -207,7 +207,7 @@ Class Cronjob extends CI_Controller
             }
             // $this->db->where('order_num >= ',$min_ordernum);
             $res = $this->db->get()->row_array();
-            if ($res['cnt'] > 0) {
+            if ($res['cnt'] == 0) {
                 $message_body = $this->load->view('messages/artorder_empty_view', array(), TRUE);
             } else {
                 /* Begin analize */
