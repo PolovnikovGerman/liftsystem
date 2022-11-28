@@ -176,11 +176,27 @@
 .reliversitemdataview .tabledataarea {
     clear: both;
     width: 1249px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     max-height: 427px;
+}
+/* Scrollbar */
+.reliversitemdataview .tabledataarea .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataarea .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.reliversitemdataview .tabledataarea .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
 }
 .reliversitemdataview .tabledataarea .tabrow {
     width: 100%;
+}
+.reliversitemdataview .tabledataarea .tabrow.expand {
+    width: 1249px;
 }
 .reliversitemdataview .tabledataarea .tabrow div {
     color: #000000;

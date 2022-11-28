@@ -80,7 +80,9 @@ function pageBTItemsListCallback(page_index) {
             $("#loader").hide();
             $('#btitemdata').empty().html(response.data.content);
             $('#btitemspagenum').val(page_index);
-            // init_itemlist_manage(brand);
+            $('#btitemdata').find("div.tabledataarea").scrollpanel({
+                'prefix' : 'sp-'
+            });
             init_itemlist_content();
             jQuery.balloon.init();
             leftmenu_alignment();

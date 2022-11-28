@@ -211,11 +211,27 @@
 .itemlistview .tabledataarea {
     clear: both;
     width: 1271px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     max-height: 427px;
+}
+/* Scrollbar */
+.itemlistview .tabledataarea .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.itemlistview .tabledataarea .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.itemlistview .tabledataarea .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
 }
 .itemlistview .tabledataarea .tabrow {
     width: 100%;
+}
+.itemlistview .tabledataarea .tabrow.expand {
+    width: 1271px;
 }
 .itemlistview .tabledataarea .tabrow div {
     color: #000000;

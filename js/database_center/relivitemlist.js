@@ -41,6 +41,9 @@ function pageReliveItemsCallback(page_index) {
             } else {
                 $(".itemclearsearch").attr('disabled',false).addClass('active');
             }
+            $('#relieversitemdata').find("div.tabledataarea").scrollpanel({
+                'prefix' : 'sp-'
+            });
             init_relieveritems_content();
             leftmenu_alignment();
         } else {
