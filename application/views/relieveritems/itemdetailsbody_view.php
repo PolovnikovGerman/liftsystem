@@ -15,8 +15,12 @@
             </div>
             <?=$itemprices?>
         </div>
-        <?=$customview?>
-        <?=$metaview?>
-        <div class="itemshippingarea"><?=$shipping?></div>
+        <div class="relievers_customisation">
+            <?=$customview?>
+        </div>
+        <div class="relievers_metasearch">
+            <?=$metaview?>
+            <div class="itemshippingarea"><?=$shipping?></div>
+        </div>
     </div>
 </div>
