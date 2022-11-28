@@ -1730,19 +1730,24 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $sort=$this->input->post('sort','yearly');
-            $direction=$this->input->post('direction','desc');
-            $brand = $this->input->post('brand');
+            $postdata = $this->input->post();
+            $sort = ifset($postdata, 'sort','percent');
+            $direction = ifset($postdata, 'direction', 'desc');
+            $brand = ifset($postdata,'brand','SB');
             $calc=$this->balances_model->get_calcdata($sort,$direction, $brand);
             $calc_data=$calc['body'];
             if (count($calc_data)==0) {
-                $mdata['content']=$this->load->view('accounting/calcdata_empty_view',array('brand' => $brand),TRUE);
+                $mdata['content']=$this->load->view('expensives/tabledata_empty_view',array('brand' => $brand),TRUE);
             } else {
-                $mdata['content']=$this->load->view('accounting/calcdata_view',array('data'=>$calc['body'], 'brand' => $brand),TRUE);
+                $expand = 0;
+                if (count($calc_data)<23) {
+                    $expand = 1;
+                }
+                $mdata['content']=$this->load->view('expensives/tabledata_view',array('datas'=>$calc['body'],  'brand' => $brand, 'expand' => $expand),TRUE);
             }
             $mdata['total_month']=$calc['sums']['month'];
             $mdata['total_week']=$calc['sums']['week'];
-            $mdata['total_quart']=$calc['sums']['quart'];
+            // $mdata['total_quart']=$calc['sums']['quart'];
             $mdata['total_year']=$calc['sums']['year'];
             $this->ajaxResponse($mdata,$error);
         }
@@ -1751,15 +1756,80 @@ class Accounting extends MY_Controller
     public function calcrow() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $calc_id=$this->input->post('calc_id');
-            $calcdata=$this->balances_model->get_calcrow_data($calc_id);
-            if (!isset($calcdata['calc_id'])) {
-                $error='Unknow calc data';
-            } else {
-                $mdata['content']=$this->load->view('accounting/calcrow_form_view',$calcdata,TRUE);
+            $calcres=$this->balances_model->get_calcrow_data($calc_id);
+            $error = $calcres['msg'];
+            if ($calcres['result']==$this->success_result) {
+                $error='';
+                $calcdata = $calcres['data'];
+                $calcdata['date_edit'] = $this->load->view('expensives/dateday_edit_view', $calcdata, TRUE);
+                $mdata['content']=$this->load->view('expensives/edit_form_view',$calcdata,TRUE);
+                $mdata['datetype'] = $calcdata['date_type'];
             }
             $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function calc_edit_type() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $error = 'Empty Expense Type';
+            if (ifset($postdata, 'date_type','')!=='') {
+                $error = '';
+                $date_type = $postdata['date_type'];
+                $calcdata = [
+                    'date_type' => $postdata['date_type'],
+                    'date_day' => '',
+                ];
+                $mdata['daydatecontent'] = $this->load->view('expensives/dateday_edit_view', $calcdata, TRUE);
+                $yearinpt_options = [
+                    'checked' => $date_type=='year' ? 1 : 0,
+                    'datetype' => 'year',
+                ];
+                $mdata['yearcontent'] = $this->load->view('expensives/weekedit_input_view', $yearinpt_options, TRUE);
+                $monthinpt_options = [
+                    'checked' => $date_type=='month' ? 1 : 0,
+                    'datetype' => 'month',
+                ];
+                $mdata['monthcontent'] = $this->load->view('expensives/weekedit_input_view', $monthinpt_options, TRUE);
+                $weekinpt_options = [
+                    'checked' => $date_type=='week' ? 1 : 0,
+                    'datetype' => 'week',
+                ];
+                $mdata['weekcontent'] = $this->load->view('expensives/weekedit_input_view', $weekinpt_options, TRUE);
+                $mdata['weektotal'] = '';
+                $mdata['yeartotal'] = '';
+                $mdata['percentval'] = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function calc_edit_amount() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $error = 'Empty Expense Type';
+            if (ifset($postdata, 'date_type','')!=='') {
+                $calc_id=$this->input->post('calc_id');
+                $options = [];
+                $options['date_type'] = ifset($postdata, 'date_type', 'year');
+                $options['brand'] = ifset($postdata, 'brand', 'SB');
+                $options['amount'] = ifset($postdata, 'amount', 0);
+                $calcres=$this->balances_model->calcrow_amount_update($calc_id, $options);
+                $error = $calcres['msg'];
+                if ($calcres['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['weektotal'] = $calcres['weektotal'];
+                    $mdata['yeartotal'] = $calcres['yeartotal'];
+                    $mdata['percentval'] = $calcres['percentval'];
+                }
+
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -1771,10 +1841,14 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $options=array();
             $options['calc_id']=ifset($postdata, 'calc_id','0');
+            $options['date_type'] = ifset($postdata,'date_type');
+            $options['yearsum'] = ifset($postdata,'yearsum',0);
+            $options['monthsum']=ifset($postdata, 'monthsum','');
+            $options['weeksum']=ifset($postdata, 'weeksum','');
+            $options['method'] = ifset($postdata,'method','');
+            $options['date_day'] = ifset($postdata, 'date_day','');
             $options['description']=ifset($postdata, 'descr','');
-            $options['monthsum']=ifset($postdata, 'month','');
-            $options['weeksum']=ifset($postdata, 'week','');
-            $brand = ifset($postdata, 'brand');
+            $brand = ifset($postdata, 'brand','');
             if (!empty($brand)) {
                 $options['brand']=$brand;
                 $res=$this->balances_model->save_calcdata($options);
@@ -3452,7 +3526,8 @@ class Accounting extends MY_Controller
             'calcsort'=>'yearly',
             'brand' => $brand,
         ];
-        return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
+        return $this->load->view('expensives/page_view', $options, TRUE);
+        // return $this->load->view('accounting/opercalc_form_view',$options,TRUE);
     }
 
     private function _prepare_purchaseorders_view($brand) {

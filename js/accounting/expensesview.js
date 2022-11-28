@@ -1,81 +1,64 @@
 function init_opercalc() {
     init_calc();
-    // Change Brand
-    $("#expensesviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#expensesviewbrand").val(brand);
-        $("#expensesviewbrandmenu").find("div.brandchoseval").each(function(){
-            var curbrand=$(this).data('brand');
-            if (curbrand==brand) {
-                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#expensesviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
-            } else {
-                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#expensesviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
-            }
-        });
-        init_calc();
-    });
 }
 
 function init_calc() {
-    var url='/accounting/opercalcdata';
     var params = new Array();
-    params.push({name: 'sort', value: $("input#calcsort").val()});
-    params.push({name: 'direction', value: $("input#calcdirec").val()});
-    params.push({name: 'brand', value: $("#expensesviewbrand").val()});
+    var sortval = $("#expensivesviewsort").val();
+    var sortfld = 'percent';
+    var sortdir = 'desc';
+    if (sortval=='perc_asc') {
+        sortdir = 'asc';
+    } else if (sortval=='date_desc') {
+        sortfld = 'date';
+    } else if (sortval=='method_desc') {
+        sortfld = 'method';
+    } else if (sortval=='date_asc') {
+        sortfld = 'date';
+        sortdir = 'asc';
+    } else if (sortval=='method_asc') {
+        sortfld = 'method';
+        sortdir = 'asc';
+    }
+    params.push({name: 'sort', value: sortfld});
+    params.push({name: 'direction', value: sortdir});
+    params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+    var url='/accounting/opercalcdata';
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("div.calc-content").empty().html(response.data.content);
-            $("div.calc-totalmonthly").empty().html(response.data.total_month);
-            $("div.calc-totalweekly").empty().html(response.data.total_week);
-            $("div.calc-totalquart").empty().html(response.data.total_quart);
-            $("div.calc-totalyear").empty().html(response.data.total_year)
+            $("#expensivesviewtable").empty().html(response.data.content);
+            $("#expanse-month-total").empty().html(response.data.total_month);
+            $("#expanse-quoter-total").empty().html(response.data.total_week);
+            // $("div.calc-totalquart").empty().html(response.data.total_quart);
+            $("#expanse-year-total").empty().html(response.data.total_year);
+            $(".expensivesviewtable").scrollpanel({
+                'prefix' : 'sp-'
+            });
             $("#loader").hide();
             leftmenu_alignment();
             init_calc_management();
         } else {
             $("#loader").hide();
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     }, 'json');
 }
 
 function init_calc_management() {
-    $("div.newcalcrow").unbind('click').click(function(){
+    $("div.expensivesview-addnewbtn").unbind('click').click(function(){
         add_calcrow();
     })
     $("div.calc-edit").unbind('click').click(function(){
-        var calc = $(this).data('calcid');
+        var calc = $(this).parent('div.expensivesviewtablerow').parent('div.datarow').data('calc');
         edit_calc(calc);
     })
-    /* Events focus-blur */
-    $("input#monthsum").unbind('focus').focus(function() {
-        var weeksum=$("input#weeksum").val();
-        if(weeksum=='') {
-            $("input#monthsum").prop('readonly',false);
-        } else {
-            $("input#monthsum").prop('readonly','readonly');
-        }
-    });
-    $("input#weeksum").unbind('focus').focus(function() {
-        var monthsum=$("input#monthsum").val();
-        if(monthsum=='') {
-            $("input#weeksum").prop('readonly',false);
-        } else {
-            $("input#weeksum").prop('readonly','readonly');
-        }
-    });
-    $("div.calc-actions.calc-delete").unbind('click').click(function(){
-        var calc = $(this).data('calcid');
+    $("i.removeexpensive").unbind('click').click(function(){
+        var calc = $(this).data('calc');
         delete_calcrow(calc);
     })
-    $("div.sortcalc").unbind('click').click(function(){
-        change_sort(this);
+    $("select#expensivesviewsort").unbind('change').change(function(){
+        init_calc();
     })
 }
 
@@ -86,12 +69,20 @@ function edit_calc(calc) {
     params.push({name: 'brand', value: $("#expensesviewbrand").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("div#calcrow"+calc).empty().removeClass('newcalcrow').html(response.data.content);
-        } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
+            $("div.datarow[data-calc='"+calc+"']").find('div.expensivesviewtablerow').empty().html(response.data.content);
+            if (response.data.datetype=='year') {
+                $("#yearsum_inpt").focus();
+            } else if (response.data.datetype=='month') {
+                $("#monthsum_inpt").focus();
+            } else {
+                $("#weeksum_inpt").focus();
             }
+            $("div.calc-edit").unbind('click');
+            $("div.expensivesview-addnewbtn").unbind('click');
+            $(".removeexpensive").unbind('click');
+            init_edit_calc();
+        } else {
+            show_error(response);
         }
     }, 'json');
 }
@@ -100,17 +91,187 @@ function add_calcrow() {
     var url='/accounting/calcrow';
     var params = new Array();
     params.push({name: 'calc_id', value: 0});
-    params.push({name: 'brand', value: $("#expensesviewbrand").val()});
+    params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("div.newcalcrow").empty().removeClass('newcalcrow').html(response.data.content);
+            // $("div.newcalcrow").empty().removeClass('newcalcrow').html(response.data.content);
+            // $(".expensivesviewtable").find('div.datarow:first').prepend
+            $("div#newcalcrow").show().empty().html('<div class="expensivesviewtablerow whitedatarow">'+response.data.content+'</div>');
+            $("#yearsum_inpt").focus();
+            $("div.calc-edit").unbind('click');
+            $("div.expensivesview-addnewbtn").unbind('click');
+            $(".removeexpensive").unbind('click');
+            init_edit_calc();
         } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     }, 'json');
+}
+
+function init_edit_calc() {
+    $(".expensive-savedata").find('i').unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'calc_id', value: $(this).data('calc')});
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'descr', value: $("input#description_inpt").val()});
+        params.push({name: 'yearsum', value: $("#yearsum_inpt").val()});
+        params.push({name: 'monthsum', value: $("input#monthsum_inpt").val()});
+        params.push({name: 'weeksum', value: $("input#weeksum_inpt").val()});
+        params.push({name: 'method', value: $("#method_inpt").val()});
+        params.push({name: 'date_day', value: $("#dateday_inpt").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        var url="/accounting/calcsave";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("div#newcalcrow").empty().hide();
+                init_calc();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".expensive-cancel").find('i').unbind('click').click(function(){
+        $("div#newcalcrow").empty().hide();
+        init_calc();
+    });
+    $(".expensive-annually").find('i').unbind('click').click(function () {
+        $("#date_type").val('year');
+        var calc_id = $("#expensive").val();
+        var url='/accounting/calc_edit_type';
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expense(response, calc_id, 'year');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".expensive-monthly").find('i').unbind('click').click(function(){
+        $("#date_type").val('month');
+        var calc_id = $("#expensive").val();
+        var url='/accounting/calc_edit_type';
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expense(response, calc_id, 'month');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".expensive-weekly").find('i').unbind('click').click(function(){
+        $("#date_type").val('week');
+        var calc_id = $("#expensive").val();
+        var url='/accounting/calc_edit_type';
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expense(response, calc_id, 'week');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("input#dateday_inpt").length > 0) {
+        $("input#dateday_inpt").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'M d'
+        });
+    }
+    // Update year / month / week sums
+    $("#yearsum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $("#monthsum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $("#weeksum_inpt").unbind('change').change(function(){
+        var calc_id = $("#expensive").val();
+        var params = new Array();
+        params.push({name: 'date_type', value: $("#date_type").val()});
+        params.push({name: 'calc_id', value: $("#expensive").val()});
+        params.push({name: 'brand', value: $("#expensivesviewbrand").val()});
+        params.push({name: 'amount', value: $(this).val()});
+        var url="/accounting/calc_edit_amount";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                update_editform_expensetotals(response, calc_id);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function update_editform_expense(response, calc_id, init_type) {
+    if (calc_id=='0') {
+        $("#newcalcrow").find(".expensive-annually").empty().html(response.data.yearcontent);
+        $("#newcalcrow").find(".expensive-monthly").empty().html(response.data.monthcontent);
+        $("#newcalcrow").find(".expensive-weekly").empty().html(response.data.weekcontent);
+        $("#newcalcrow").find(".expensive-date").empty().html(response.data.daydatecontent);
+        $("#newcalcrow").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $("#newcalcrow").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $("#newcalcrow").find(".expensive-percent").empty().html(response.data.percentval);
+    } else {
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-annually").empty().html(response.data.yearcontent);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-monthly").empty().html(response.data.monthcontent);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-weekly").empty().html(response.data.weekcontent);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-date").empty().html(response.data.daydatecontent);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-percent").empty().html(response.data.percentval);
+    }
+    init_edit_calc();
+    if (init_type=='year') {
+        $("#yearsum_inpt").focus();
+    } else if (init_type=='month') {
+        $("#monthsum_inpt").focus();
+    } else {
+        $("#weeksum_inpt").focus();
+    }
+}
+
+function update_editform_expensetotals(response, calc_id) {
+    if (calc_id=='0') {
+        $("#newcalcrow").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $("#newcalcrow").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $("#newcalcrow").find(".expensive-percent").empty().html(response.data.percentval);
+    } else {
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-quoter").empty().html(response.data.weektotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-yearly").empty().html(response.data.yeartotal);
+        $(".datarow[data-calc='"+calc_id+"']").find(".expensive-percent").empty().html(response.data.percentval);
+    }
 }
 
 function savecalcrow() {
@@ -125,27 +286,22 @@ function savecalcrow() {
         if (response.errors == '') {
             init_calc();
         } else {
-            alert(response.errors);
-            if (response.data.url !== undefined) {
-                window.location.href = response.data.url;
-            }
+            show_error(response);
         }
     }, 'json');
 
 }
 
+
 function delete_calcrow(calc_id) {
-    var descr=$("#calcrow"+calc_id+" div.calc-descrdata").text();
+    var descr=$(".datarow[data-calc='"+calc_id+"']").find('div.expensive-description').text();
     if (confirm('Do you realy want to delete '+descr+'?')) {
         var url="/accounting/calcdelete";
         $.post(url,{'calc_id':calc_id},function(response){
             if (response.errors=='') {
                 init_calc();
             } else {
-                alert(response.errors);
-                if(response.data.url !== undefined) {
-                    window.location.href=response.data.url;
-                }
+                show_error(response);
             }
         },'json');
     }

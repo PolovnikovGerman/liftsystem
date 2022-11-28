@@ -3208,10 +3208,16 @@ Class Orders_model extends MY_Model
         if (isset($res['max_date'])) {
             $res['max_month']=date('m',$res['max_date']);
             $res['max_year']=date('Y',$res['max_date']);
+        } else {
+            $res['max_month']=date('m');
+            $res['max_year']=date('Y');
         }
         if (isset($res['min_date'])) {
             $res['min_month']=date('m',$res['min_date']);
             $res['min_year']=date('Y',$res['min_date']);
+        } else {
+            $res['min_month']=date('m');
+            $res['min_year']=date('Y');
         }
         return $res;
     }
