@@ -454,8 +454,9 @@ class Netprofit extends MY_Controller
                         'upwork_tableview' => $upwork_tableview,
                         'profit_upwork' => $upwork_total,
                     );
+                    $mdata['title'] = $netprofit['week_title'];
                     // $mdata['title'] = '<b>W9 Work &amp; Purchases</b> for Week of '.date('m/d/Y', $netprofit['datebgn']).' - '.date('m/d/Y', $netprofit['dateend']);
-                    $mdata['title'] = '<b>W9 Work &amp; Purchases</b>';
+                    // $mdata['title'] = '<b>W9 Work &amp; Purchases</b>';
                     $mdata['content']=$this->load->view('netprofitnew/expensives_details_view', $options, TRUE);
                     $error='';
                 }

@@ -1411,6 +1411,18 @@ class Balances_model extends My_Model
             $weekname .= date('M', $dstart);
             $weekname .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
             $data['week'] = $weekname;
+            // Prepare Full name
+
+            $week_name = '';
+            if (date('M', $dstart) != date('M', $dend)) {
+                $week_name .= date('M', $dstart) . '/' . date('M', $dend);
+            } else {
+                $week_name .= date('M', $dstart);
+            }
+            $week_name .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
+            $week_name .= ', ' . date('Y', $dend);
+            $data['week_title'] = $week_name.' - Purchase Breakdown';
+
             $runinclude = intval($result['runinclude']);
             $data['runinclude'] = $runinclude;
             $data['run_include']='<i class="fa fa-square-o" aria-hidden="true"></i>';
