@@ -202,7 +202,7 @@ $config['normal_price_base']=array(
     25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
 );
 
-$config['perpage_orders'] = ['100','150','200','250'];
+$config['perpage_orders'] = ['250','500','1000'];
 $config['leads_perpage'] = 250;
 $config['quotes_perpage'] = 250;
 $config['item_specialchars'] = [
