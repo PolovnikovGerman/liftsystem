@@ -2199,7 +2199,7 @@ class Balances_model extends My_Model
         // $now=strtotime('monday this week');
         // Changed 12/02/2022
         // $now=getDayOfWeek(date('W'), date('Y'),1);
-        $now = strtotime(date('Y-m-d')); // or your date as well
+        $now = strtotime(date('Y-m-d').' 23:59:59'); // or your date as well
         // Get current week number
         $this->db->select('profit_week');
         $this->db->from('netprofit');
