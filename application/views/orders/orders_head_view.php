@@ -25,7 +25,7 @@
             </select>
             <select class="leadord_filterselect perpage" id="leadorderperpage">
                 <?php foreach ($perpage as $row) { ?>
-                    <option value="<?=$row?>"><?=$row?> records/per page</option>
+                    <option value="<?=$row?>" <?=$row==$default_perpage ? 'selected' : ''?>><?=$row?> records/per page</option>
                 <?php } ?>
             </select>
         </div>
