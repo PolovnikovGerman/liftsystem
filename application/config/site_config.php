@@ -134,7 +134,7 @@ $config['max_lock_time']=180;
 $config['loctimeout']=130;
 $config['loctimeout_local']=6000; //1200;
 // Default Inventory Vendor && Payment Method
-$config['inventory_vendor']=151;
+$config['inventory_vendor']=getenv('INVENTORY_VENDOR');
 $config['inventory_paymethod']=5;
 // Minimal # of weeks
 $config['min_stockperc']=33;
