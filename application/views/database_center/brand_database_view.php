@@ -41,6 +41,10 @@
             <?php if (isset($sritemsview)) { ?>
                 <div class="dbcontentarea" id="sritemsview" style="display: none;"><?=$sritemsview?></div>
             <?php } ?>
+            <div class="dbcontentarea" id="itemdetailsview" style="display: none;">
+                <div class="left_maincontent"></div>
+                <div class="right_maincontent"></div>
+            </div>
         </div>
     </div>
 </div>

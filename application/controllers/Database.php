@@ -270,6 +270,7 @@ class Database extends MY_Controller
             } elseif ($row['item_link']=='#legacyview') {
                 $legacylnk = '#legacyview';
                 $head['scripts'][]=array('src'=>'/js/database/legacy.js');
+                $head['styles'][] = array('style' => '/css/database/itemdetails.css');
                 $legacymenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $legacylnk, $brand);
                 $legacy_options = [];
                 foreach ($legacymenu as $smenu) {
