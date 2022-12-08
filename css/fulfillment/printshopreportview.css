@@ -289,6 +289,7 @@ and open the template in the editor.
     clear: both;
     height: 530px;
     margin-bottom: 15px;
+    margin-top: -2px;
     overflow-x: hidden;
     overflow-y: scroll;
     width: 1029px;
@@ -296,6 +297,8 @@ and open the template in the editor.
 .printshopcontent > .summaryrow {
     overflow-x: hidden;
     width: 1061px;
+    line-height: 24px!important;
+    height: 24px;
 }
 .printshopcontent > .summaryrow > div {
     color: #FFFFFF;
@@ -405,7 +408,7 @@ i.addnewprintshopincome {
     width: 63px;
 }
 .printshopcontent >  .summaryrow > .misprintcost {
-    width: 54px;
+    width: 55px;
 }
 
 .printshopcontent > .orderreporttablebody > div {

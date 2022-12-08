@@ -1416,7 +1416,7 @@ Class Printshop_model extends MY_Model
             $this->db->where('oa.printshop_date < ', $finish);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            // $this->db->where('o.brand', $options['brand']);
             if ($options['brand']=='SB') {
                 $this->db->where_in('o.brand', ['BT','SB']);
             } else {
