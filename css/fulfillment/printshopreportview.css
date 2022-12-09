@@ -297,16 +297,14 @@ and open the template in the editor.
 .printshopcontent > .summaryrow {
     overflow-x: hidden;
     width: 1061px;
-    line-height: 24px!important;
-    height: 24px;
 }
 .printshopcontent > .summaryrow > div {
     color: #FFFFFF;
     background: #717171 none repeat-x scroll 0 0;
     font-size: 11px;
     font-weight: bold;
-    height: 23px;
-    line-height: 23px;
+    height: 26px;
+    line-height: 24px;
     float: left;
     text-align: center;
 }
