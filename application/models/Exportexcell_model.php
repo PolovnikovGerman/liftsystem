@@ -140,6 +140,8 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('T1','Plate Cost');
         $sheet->setCellValue('U1','Total Cost');
         $sheet->setCellValue('V1','Misprint Cost');
+        $sheet->setCellValue('W1','Profit $$');
+        $sheet->setCellValue('X1','Profit %');
         $j=2;
         foreach ($data as $row) {
             $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
@@ -165,6 +167,8 @@ class Exportexcell_model extends CI_Model
             $sheet->setCellValue('T'.$j, $row['platescost']);
             $sheet->setCellValue('U'.$j, $row['totalitemcost']);
             $sheet->setCellValue('V'.$j, $row['misprintcost']);
+            $sheet->setCellValue('W'.$j, $row['profit']);
+            $sheet->setCellValue('X'.$j, $row['profit_perc']);
             $j++;
         }
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx
