@@ -6573,7 +6573,9 @@ Class Leadorder_model extends My_Model {
             } elseif ($key=='credit_applink') {
                 $neworder[$key]='';
             } elseif ($key=='order_cog') {
-                $neworder[$key]=NULL;
+                $neworder[$key] = NULL;
+            } elseif ($key=='cc_fee') {
+                $neworder[$key] = 0;
             } elseif ($key=='profit_perc') {
                 $neworder[$key]=NULL;
             } elseif ($key=='profit') {
