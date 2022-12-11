@@ -1,3 +1,13 @@
+.maincontentmenu > .subtitle {
+    width: calc(100% - 34px);
+    font-size: 12px;
+    margin-top: 0;
+    margin-left: 0px;
+    color: #fff;
+    text-align: right;
+    height: 14px;
+    line-height: 14px!important;
+}
 .maincontentmenuarea {
 /*    width: calc(100% - 25px)!important;
     margin-left: 25px!important; */
@@ -12,6 +22,9 @@
 .maincontentmenu {
     margin-right: 5px!important;
     width: calc(100% - 15px)!important;
+}
+.mastermenusection {
+    float: right!important;
 }
 .right_maincontent {
     width: 100%!important;
