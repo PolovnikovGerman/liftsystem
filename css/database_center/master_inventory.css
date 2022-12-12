@@ -164,7 +164,7 @@
 .mastinvent_databody {
     background: #252525;
     /* width: 1050px; */
-    width: 1006px;
+    width: 1028px;
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
@@ -306,7 +306,7 @@
 .masterinventtablebody {
     background: #ffffff;
     color: #000000;
-    width: 994px; /* 100%; */
+    width: 1014px; /* 100%; */
     max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -441,16 +441,16 @@
     border-right: 1px solid #000000;
     font-weight: 600;
 }
-.inventorydatarow .masterinventhistory {
+.inventorydatarow .masterinventhistory, .inventorydatarow .masterinventhistorystock {
     width: 20px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.inventorydatarow .masterinventhistory i {
+.inventorydatarow .masterinventhistory i, .inventorydatarow .masterinventhistorystock i{
     color: #bebebe;
     cursor: pointer;
 }
-.inventorydatarow .masterinventhistory i:hover {
+.inventorydatarow .masterinventhistory i:hover, .inventorydatarow .masterinventhistorystock i:hover {
     color: #1700c2;
 }
 .inventorydatarow .masterinventinstock.severevalstock,
