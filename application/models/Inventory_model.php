@@ -5,6 +5,7 @@ class Inventory_model extends MY_Model
 
     private $outstockclass='severevalstock';
     private $outstoklabel='Out of Stock';
+    private $emptystockclass = 'emptyvalstock';
     private $lowstockclass='lowinstock';
     private $donotreorder = 'Do Not Reorder';
     private $bt_label = 'Bluetrack Legacy';
@@ -111,10 +112,12 @@ class Inventory_model extends MY_Model
                     $outstock = QTYOutput($instock);
                     if ($stockclass==$this->outstockclass && empty($stockperc)) {
                         $outstock=$this->outstoklabel;
+                        $stockclass = $this->emptystockclass;
                     }
                     $outavail = QTYOutput($available);
                     if ($stockclass==$this->outstockclass && empty($stockperc)) {
                         $outavail=$this->outstoklabel;
+                        $stockclass = $this->emptystockclass;
                     }
                     $totalclass='';
                     if (empty($available)) {
