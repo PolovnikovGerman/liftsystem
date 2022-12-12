@@ -1421,7 +1421,7 @@ class Test extends CI_Controller
     public function transformbtitems() {
         $this->load->config('siteart_config');
         $pricetypes = $this->config->item('price_types');
-        $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image');
+        $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image, cartoon_width, cartoon_heigh, cartoon_depth,cartoon_qty');
         $this->db->from('sb_items');
         $this->db->where('brand','BT');
         $this->db->order_by('item_number');
@@ -1463,15 +1463,13 @@ class Test extends CI_Controller
                     $this->db->where('item_id', $item_id);
                     $this->db->update('sb_items');
                     // Delete first image
-                    $this->db->where('item_img_id', $imgs[0]['item_img_id']);
-                    $this->db->delete('sb_item_images');
-
+                    // $this->db->where('item_img_id', $imgs[0]['item_img_id']);
+                    // $this->db->delete('sb_item_images');
                 }
             }
             echo 'Images OK';
             // Prices
             if ($item['item_template']=='Stressball') {
-
                 $this->db->select('*');
                 $this->db->from('sb_item_prices');
                 $this->db->where('item_price_itemid', $item_id);
@@ -1490,6 +1488,15 @@ class Test extends CI_Controller
                 }
             }
             echo 'Prices OK'.PHP_EOL;
+            // Add box
+            $this->db->where('item_id', $item['item_id']);
+            $this->db->delete('sb_item_shipping');
+            $this->db->set('item_id', $item['item_id']);
+            $this->db->set('box_qty', $item['cartoon_qty']);
+            $this->db->set('box_width', $item['cartoon_width']);
+            $this->db->set('box_length', $item['cartoon_depth']);
+            $this->db->set('box_height', $item['cartoon_heigh']);
+            $this->db->inser('sb_item_shipping');
         }
         echo 'Convert finished'.PHP_EOL;
     }
