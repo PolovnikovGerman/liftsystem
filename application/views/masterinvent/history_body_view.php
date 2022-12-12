@@ -26,7 +26,7 @@
             <?php $numrow++; ?>
         <?php } ?>
     </div>
-    <div class="datarow">
-        <div class="inventoryhistory_view_prices" data-item="<?=$item['inventory_color_id']?>">[View Price History]</div>
-    </div>
+<!--    <div class="datarow">-->
+<!--        <div class="inventoryhistory_view_prices" data-item="--><?php //=$item['inventory_color_id']?><!--">[View Price History]</div>-->
+<!--    </div>-->
 </div>
