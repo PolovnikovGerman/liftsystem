@@ -104,8 +104,7 @@ Class Orders_model extends MY_Model
             }
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-                // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
-                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',o.order_confirmation,' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
+                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('o.order_cog is null');
@@ -2623,7 +2622,7 @@ Class Orders_model extends MY_Model
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
                 // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
-                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',o.order_confirmation,' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
+                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('order_cog is null');
@@ -3826,12 +3825,12 @@ Class Orders_model extends MY_Model
             }
         }
         $out['total_orders']=($total_orders==0 ? '&nbsp;' : QTYOutput($total_orders));
-        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue));
-        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit));
+        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue,0));
+        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit,0));
         $out['avg_profit_perc']=($avg_profit_perc==0 ? '&nbsp;' : number_format($avg_profit_perc,1,'.',',').'%');
         $out['profit_class']=orderProfitClass(round($avg_profit_perc),0);
-        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit));
-        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue));
+        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit,0));
+        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue,0));
         // Out number
         $out['num_orders']=$total_orders;
         $out['num_avgrevenue']=$avg_revenue;
@@ -3995,16 +3994,16 @@ Class Orders_model extends MY_Model
         $revenue=round($totals['revenue']*$kf,2);
         $profit=round($totals['profit']*$kf,2);
 
-        $out['total_orders']=($total_orders==0 ? '&nbsp;' : number_format($total_orders,0,'.',','));
-        $out['profit']=($profit==0 ? '&nbsp;' : '$'.number_format($profit,0,'.',','));
-        $out['revenue']=($revenue==0 ? '&nbsp;' : '$'.number_format($revenue,0,'.',','));
+        $out['total_orders']=($total_orders==0 ? '&nbsp;' : QTYOutput($total_orders));
+        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit,0));
+        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue,0));
         $avg_revenue=$avg_profit=0;
         if ($total_orders>0) {
             $avg_revenue=($revenue/$total_orders);
             $avg_profit=($profit/$total_orders);
         }
-        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : '$'.number_format($avg_revenue,2,'.',','));
-        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : '$'.number_format($avg_profit,2,'.',','));
+        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue,0));
+        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit,0));
         // Profit %
         $avg_profit_perc=0;
         if ($revenue>0) {
@@ -4052,17 +4051,17 @@ Class Orders_model extends MY_Model
                 'goal_profit'=>$profit,
             );
         }
-        $out['goal_orders']=($goalres['goal_orders']==0 ? '&nbsp;' : number_format($goalres['goal_orders'],0,'.',','));
-        $out['goal_revenue']=($goalres['goal_revenue']==0 ? '&nbsp;' : '$'.number_format($goalres['goal_revenue'],0,'.',','));
-        $out['goal_profit']=($goalres['goal_profit']==0 ? '&nbsp;' : '$'.number_format($goalres['goal_profit'],0,'.',','));
+        $out['goal_orders']=($goalres['goal_orders']==0 ? '&nbsp;' : QTYOutput($goalres['goal_orders'],0));
+        $out['goal_revenue']=($goalres['goal_revenue']==0 ? '&nbsp;' : MoneyOutput($goalres['goal_revenue'],0));
+        $out['goal_profit']=($goalres['goal_profit']==0 ? '&nbsp;' : MoneyOutput($goalres['goal_profit'],0));
         // Calc other params
         $goal_avgrevenue=$goal_avgprofit=0;
         if ($goalres['goal_orders']>0) {
             $goal_avgrevenue=($goalres['goal_revenue']/$goalres['goal_orders']);
             $goal_avgprofit=($goalres['goal_profit']/$goalres['goal_orders']);
         }
-        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : '$'.number_format($goal_avgrevenue,2,'.',','));
-        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : '$'.number_format($goal_avgprofit,2,'.',','));
+        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : MoneyOutput($goal_avgrevenue,0));
+        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : MoneyOutput($goal_avgprofit,0));
         // Profit %
         $goal_avgprofit_perc=0;
         if ($goalres['goal_revenue']>0) {
@@ -4077,15 +4076,15 @@ Class Orders_model extends MY_Model
             $remprofit=round(($goalres['goal_profit']-$totals['profit'])/$bankdays,0);
 
             if ($remprofit<0) {
-                $rem_profit='&ndash;$'.number_format(abs($remprofit),0,'.',',');
+                $rem_profit='&ndash;'.MoneyOutput(abs($remprofit),0);
             } else {
-                $rem_profit='$'.number_format($remprofit,0,'.',',');
+                $rem_profit=MoneyOutput($remprofit,0);
             }
             $remrevenue=round(($goalres['goal_revenue']-$totals['revenue'])/$bankdays,0);
             if ($remrevenue<0) {
-                $rem_revenue='&ndash;$'.number_format(abs($remrevenue),0,'.',',');
+                $rem_revenue='&ndash;'.MoneyOutput(abs($remrevenue),0);
             } else {
-                $rem_revenue='$'.number_format($remrevenue,0,'.',',');
+                $rem_revenue=MoneyOutput($remrevenue,0);
             }
         }
         $out['reminder_orders']=$rem_orders;

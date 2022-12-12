@@ -132,7 +132,7 @@ Class Leadorder_model extends My_Model {
         if (isset($options['search'])) {
             $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
             // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($options['search']));
-            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',o.order_confirmation,' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.revenue,'')))",strtoupper($options['search']));
+            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($options['search']));
         }
         if (isset($options['begin'])) {
             $this->db->where('o.order_date >= ',$options['begin']);
@@ -6637,7 +6637,9 @@ Class Leadorder_model extends My_Model {
             } elseif ($key=='credit_applink') {
                 $neworder[$key]='';
             } elseif ($key=='order_cog') {
-                $neworder[$key]=NULL;
+                $neworder[$key] = NULL;
+            } elseif ($key=='cc_fee') {
+                $neworder[$key] = 0;
             } elseif ($key=='profit_perc') {
                 $neworder[$key]=NULL;
             } elseif ($key=='profit') {

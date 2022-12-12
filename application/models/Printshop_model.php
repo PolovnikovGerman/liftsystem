@@ -1416,7 +1416,7 @@ Class Printshop_model extends MY_Model
             $this->db->where('oa.printshop_date < ', $finish);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            $this->db->where('o.brand', $options['brand']);
+            // $this->db->where('o.brand', $options['brand']);
             if ($options['brand']=='SB') {
                 $this->db->where_in('o.brand', ['BT','SB']);
             } else {
@@ -1435,7 +1435,7 @@ Class Printshop_model extends MY_Model
     // Get Data with Order Reports
     public function get_orderreport_data($options) {
         // Get Cost - Blue and Orange plates
-        $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num');
+        $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num, o.profit, o.profit_perc');
         $this->db->select('(oa.price+oa.extracost) as priceea');
         $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
         $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
