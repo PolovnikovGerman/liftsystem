@@ -118,7 +118,7 @@
 }
 .inventsectionhead {
     color: #000000;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     height: 20px;
     line-height: 20px!important;
@@ -154,6 +154,7 @@
 .mastinvent_left_sectiondata.active > .inventsectionhead,
 .mastinvent_left_sectiondata.rawsbtype > .inventsectionhead {
     color: #ffffff;
+    font-size: 16px;
 }
 .mastinvent_left_sectiondata.active > .inventsectionvalue,
 .mastinvent_left_sectiondata.rawsbtype > .inventsectionvalue {
@@ -336,7 +337,7 @@
     text-align: center;
     height: 25px;
     line-height: 25px;
-    font-size: 14px;
+    font-size: 12px;
 }
 .inventorydatarow.masteritem {
     background: #6e6e6e;
@@ -406,7 +407,7 @@
 }
 .inventorydatarow .masterinventpercent {
     /* width: 3.9%; */
-    font-size: 13px;
+    /* font-size: 13px; */
     width: 42px;
     border-right: 1px solid #000000;
 }
@@ -450,7 +451,7 @@
 }
 .inventorydatarow .masterinventinstock.severevalstock,
 .inventorydatarow .masterinventavailab.severevalstock {
-    font-size: 11px!important;
+    font-size: 10px!important;
     font-weight: 600;
     background: #FF0000;
     color: #ffffff;
