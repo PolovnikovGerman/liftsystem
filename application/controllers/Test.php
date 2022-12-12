@@ -1496,7 +1496,7 @@ class Test extends CI_Controller
             $this->db->set('box_width', $item['cartoon_width']);
             $this->db->set('box_length', $item['cartoon_depth']);
             $this->db->set('box_height', $item['cartoon_heigh']);
-            $this->db->inser('sb_item_shipping');
+            $this->db->insert('sb_item_shipping');
         }
         echo 'Convert finished'.PHP_EOL;
     }
