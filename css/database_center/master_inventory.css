@@ -374,6 +374,10 @@
     width: 80px;
     border-right: 1px solid #000000;
 }
+.inventorydatarow.masteritem  .masterinventnumber, .inventorydatarow.masteritem  .masterinventdescrip {
+    font-size: 13px;
+    font-weight: 600;
+}
 .inventorydatarow .masterinventnumber i {
     font-size: 15px;
     cursor: pointer;
