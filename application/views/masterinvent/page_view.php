@@ -93,12 +93,13 @@
                     <div class="masterinventinstock">In Stock</div>
                     <div class="masterinventreserv">Reserved</div>
                     <div class="masterinventavailab">Available</div>
+                    <div class="masterinventhistory">&nbsp;</div>
                     <div class="masterinventunit">Unit</div>
                     <div class="masterinventonorder">On Order</div>
                     <div class="masterinventonmax">&nbsp;</div>
                     <div class="masterinventavgprice">Avg Price</div>
                     <div class="masterinventtotalval">Total Value</div>
-                    <div class="masterinventdetails">Details</div>
+<!--                    <div class="masterinventdetails">Details</div>-->
                 </div>
             </div>
             <div class="datarow">

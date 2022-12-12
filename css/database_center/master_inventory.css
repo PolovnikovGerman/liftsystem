@@ -15,7 +15,7 @@
     font-size: 24px;
     font-weight: bold;
     /* width: 426px; */
-    width: 402px;
+    width: 315px;
 }
 .invtypebutton {
     background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
@@ -96,7 +96,7 @@
     padding-right: 7px;
 }
 .mastinvent_left_menu {
-    width: 267px;
+    width: 227px;
 }
 .mastinvent_left_section {
     width: 100%;
@@ -108,7 +108,7 @@
 .mastinvent_left_sectiondata {
     background: #ebebeb;
     border: 1px solid #000000;
-    width: 256px;
+    width: 206px;
     padding: 6px 10px;
     cursor: pointer;
     margin-bottom: 15px;
@@ -121,13 +121,14 @@
     font-size: 16px;
     font-weight: 600;
     height: 20px;
-    line-height: 20px;
+    line-height: 20px!important;
     margin-bottom: 4px;
+    text-align: center;
 }
 .inventsectionvalue {
     border: 1px solid #000000;
     background: #6e6e6e;
-    width: 233px;
+    width: 186px;
 }
 .inventsectionvalue > div {
     height: 22px;
@@ -161,7 +162,8 @@
 }
 .mastinvent_databody {
     background: #252525;
-    width: 1050px;
+    /* width: 1050px; */
+    width: 1006px;
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
@@ -278,6 +280,9 @@
 .masterinventtablehead .masterinventavailab {
     width: 69px;
 }
+.masterinventtablehead .masterinventhistory {
+    width: 20px;
+}
 .masterinventtablehead .masterinventunit {
     width: 30px;
 }
@@ -300,7 +305,7 @@
 .masterinventtablebody {
     background: #ffffff;
     color: #000000;
-    width: 1032px; /* 100%; */
+    width: 994px; /* 100%; */
     max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -431,6 +436,18 @@
     border-right: 1px solid #000000;
     font-weight: 600;
 }
+.inventorydatarow .masterinventhistory {
+    width: 20px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventhistory i {
+    color: #bebebe;
+    cursor: pointer;
+}
+.inventorydatarow .masterinventhistory i:hover {
+    color: #1700c2;
+}
 .inventorydatarow .masterinventinstock.severevalstock,
 .inventorydatarow .masterinventavailab.severevalstock {
     font-size: 11px!important;
@@ -476,7 +493,7 @@
     /* width: 11.2%; */
     width: 101px;
     text-align: right;
-    border-right: 2px solid #000000;
+    /* border-right: 2px solid #000000; */
     padding-right: 6px;
 }
 .inventorydatarow .masterinventavgprice.emptytotal,
@@ -1184,6 +1201,9 @@ textarea.colorpantonesinpt {
     resize: none;
     margin-bottom: 10px;
 }
+.colorparamlabel.mfgprice {
+    width: 273px;
+}
 .colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
     width: 90px;
 }
@@ -1198,13 +1218,19 @@ input.colormaxvalueinpt {
     width: 172px;
 }
 .colorvendorslabel {
-    width: 120px;
+    width: 248px;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+}
+.colorvendorspricelabel {
+    margin-left: 13px;
     font-size: 14px;
     height: 24px;
     line-height: 24px;
 }
 .colorvendorsdata {
-    margin-left: 82px;
+    margin-left: 95px;
     width: 352px;
 }
 .colorvendorsdata > .datarow {

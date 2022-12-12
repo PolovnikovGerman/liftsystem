@@ -107,7 +107,7 @@ function init_master_inventorytabledat() {
             $(this).removeClass('activeinvent');
         }
     );
-    $(".inventorydatarow.itemcolor").find("div.masterinventavgprice").unbind('click').click(function () {
+    $(".inventorydatarow.itemcolor").find("div.masterinventhistory").unbind('click').click(function () {
         var item=$(this).data('item');
         var params = new Array();
         params.push({name: 'itemcolor', value: item});
