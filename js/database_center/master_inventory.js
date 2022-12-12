@@ -124,6 +124,26 @@ function init_master_inventorytabledat() {
             }
         },'json');
     });
+    $(".inventorydatarow.itemcolor").find("div.masterinventhistorystock").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'itemcolor', value: $(this).data('item')});
+        var url='/masterinventory/get_color_history';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // Close Color data
+                $("#modalEditInventPrice").modal('hide');
+                // Show History window
+                $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
+                $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
+                $("#modalEditInventHistory").modal({keyboard: false, show: true});
+                // $('body').addClass('modal-open');
+                init_colorhistory_popup();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
     $(".masterinventseq.itemedit").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'item', value: $(this).data('item')});

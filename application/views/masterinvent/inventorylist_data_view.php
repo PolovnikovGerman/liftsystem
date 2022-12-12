@@ -30,13 +30,14 @@
         <div class="masterinventinstock <?=$list['stockclass']?>"><?=$list['instock']?></div>
         <div class="masterinventreserv"><?=empty($list['reserved']) ? '&nbsp;' : QTYOutput($list['reserved'])?></div>
         <div class="masterinventavailab <?=$list['stockclass']?>"><?=$list['available']?></div>
-        <div class="masterinventhistory" data-item="<?=$list['id']?>"><?= $list['item_flag']==1 ?  '&nbsp;' :  '<i class="fa fa-question-circle" aria-hidden="true"></i>' ?></div>
+        <div class="masterinventhistorystock" data-item="<?=$list['id']?>"><?= $list['item_flag']==1 ?  '&nbsp;' :  '<i class="fa fa-question-circle" aria-hidden="true"></i>' ?></div>
         <div class="masterinventunit"><?=$list['unit']?></div>
         <div class="masterinventonorder" style="display: <?=$showmax==1 ? 'none' : 'block'?>">
             <?=empty($list['onorder']) ? '&nbsp;' : QTYOutput($list['onorder'])?>
         </div>
         <div class="masterinventonmax" style="display: <?=$showmax==1 ? 'block' : 'none'?>">&nbsp;</div>
         <div class="masterinventavgprice <?=$list['totalclass']?>" data-item="<?=$list['id']?>"><?=MoneyOutput($list['price'],3)?></div>
+        <div class="masterinventhistory" data-item="<?=$list['id']?>"><?= $list['item_flag']==1 ?  '&nbsp;' :  '<i class="fa fa-question-circle" aria-hidden="true"></i>' ?></div>
         <div class="masterinventtotalval <?=$list['totalclass']?>"><?=MoneyOutput($list['total'])?></div>
 <!--        --><?php //if ($list['item_flag']==1) { ?>
 <!--            &nbsp;-->

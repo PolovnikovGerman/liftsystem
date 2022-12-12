@@ -98,6 +98,7 @@
                     <div class="masterinventonorder">On Order</div>
                     <div class="masterinventonmax">&nbsp;</div>
                     <div class="masterinventavgprice">Avg Price</div>
+                    <div class="masterinventhistory">&nbsp;</div>
                     <div class="masterinventtotalval">Total Value</div>
 <!--                    <div class="masterinventdetails">Details</div>-->
                 </div>
