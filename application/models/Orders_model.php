@@ -8134,7 +8134,7 @@ Class Orders_model extends MY_Model
                 $res['item_number'] = $itemdat['item_number'];
                 $res['item_qty'] = $itemdat['item_qty'];
                 $res['item_price'] = $itemdat['item_price'];
-                if ($res['imprinting']==1) {
+                if ($itemdat['imprint_type']==1) {
                     $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1))+($itemdat['setup_price']*$itemdat['imprint']);
                 }
                 $res['shipping_price'] = $itemdat['shipping_cost'];
