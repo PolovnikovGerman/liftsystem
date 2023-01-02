@@ -6452,22 +6452,22 @@ Class Orders_model extends MY_Model
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }
-                        if ($item['imprint_type']==2) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                            // Setup
-                        } elseif ($item['imprint_type']==3) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                        } else {
+//                        if ($item['imprint_type']==2) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                            // Setup
+//                        } elseif ($item['imprint_type']==3) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                        } else {
                             $this->db->set('order_item_id', $item_id);
                             $this->db->set('imprint_item', 1);
                             $this->db->set('imprint_qty', $item['item_qty']);
@@ -6483,16 +6483,16 @@ Class Orders_model extends MY_Model
                                 if ($numpp == 0) {
                                     $this->db->set('imprint_price', 0.00);
                                 } else {
-                                    if ($item['imprint_type']==3) {
-                                        $this->db->set('imprint_price', 0.00);
-                                    } else {
+                                    // if ($item['imprint_type']==3) {
+                                    //    $this->db->set('imprint_price', 0.00);
+                                    // } else {
                                         $this->db->set('imprint_price', $item['imprint_price']);
-                                    }
+                                    // }
                                 }
                             }
                             $this->db->set('order_item_id', $item_id);
                             $this->db->insert('ts_order_imprints');
-                        }
+                        // }
                         $numpp++;
                         if ($numcolors == 2) {
                             $this->db->set('order_item_id', $item_id);
@@ -8104,4 +8104,121 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function orderonline_details($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown order'];
+        $this->db->select("o.*,concat(coalesce(o.shipping_street1,''),' ',coalesce(o.shipping_street2,'')) as ship_street,sc.country_name as ship_cnt, sc.country_iso_code_2 as ship_cntcode");
+        $this->db->select("concat(coalesce(o.billing_street1,''),' ',coalesce(o.billing_street2,'')) as bil_street, bc.country_name as bil_cnt,pp.payment_card_name");
+        // $this->db->select('i.item_name as item_name, i.item_number as item_number');
+        $this->db->select('ss.shipping_method_name, ss.ups_code as shipping_method_code, disc.coupon_description as coupon_name');
+        $this->db->from('sb_orders o');
+        $this->db->join('sb_countries sc', 'sc.country_id=o.shipping_country_id', 'left');
+        $this->db->join('sb_countries bc', 'bc.country_id=o.billing_country_id', 'left');
+        $this->db->join('sb_payment_cards pp', 'pp.payment_card_id=o.payment_card_type', 'left');
+        // $this->db->join('sb_items i', 'i.item_id=o.order_item_id', 'left');
+        $this->db->join('sb_shipping_methods ss', 'ss.shipping_method_id=o.shipping_method', 'left');
+        $this->db->join('sb_coupons disc', 'disc.coupon_id=o.coupon_id', 'left');
+        $this->db->where('o.order_id', $order_id);
+        $res = $this->db->get()->row_array();
+
+        if (isset($res['order_id'])) {
+            // Get items data
+            $this->db->select('si.*');
+            $this->db->select('i.item_name as item_name, i.item_number as item_number');
+            $this->db->from('sb_order_items si');
+            $this->db->join('sb_items i', 'i.item_id=si.item_id');
+            $this->db->where('order_id', $order_id);
+            $itemdat = $this->db->get()->row_array();
+            if (isset($itemdat['order_item_id'])) {
+                $res['item_name'] = $itemdat['item_name'];
+                $res['item_number'] = $itemdat['item_number'];
+                $res['item_qty'] = $itemdat['item_qty'];
+                $res['item_price'] = $itemdat['item_price'];
+                if ($itemdat['imprint_type']==1 || $itemdat['imprint_type']==2) {
+                    $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1))+($itemdat['setup_price']*$itemdat['imprint']);
+                } elseif ($itemdat['imprint_type']==3) {
+                    $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1));
+                }
+                $res['shipping_price'] = $itemdat['shipping_cost'];
+                $res['rush_price'] = $itemdat['rush_cost'];
+                $res['shipping_date'] = $itemdat['shipping_date'];
+                $res['arrive_date'] = $itemdat['arrive_date'];
+            }
+            /* Handle results */
+            $this->db->select('*');
+            $this->db->from('sb_order_colors');
+            $this->db->where('order_color_orderid', $res['order_id']);
+            $colors = $this->db->get()->result_array();
+            $res['order_colors'] = '';
+            $order_itmcolors = array();
+            foreach ($colors as $crow) {
+                $res['order_colors'] .= ' ' . $crow['order_color_qty'] . ' ' . $crow['order_color_itemcolor'] . ',';
+                $order_itmcolors[] = $crow;
+            }
+            if (strlen($res['order_colors']) > 0) {
+                $res['order_colors'] = substr($res['order_colors'], 0, -1);
+            }
+            $res['order_itmcolors'] = $order_itmcolors;
+            /* Shipping Address */
+            $ship_adr = '';
+            $ship_adrhtml = '';
+            // $ship_adr.=' '.$res['contact_first_name'].' '.$res['contact_last_name'].PHP_EOL;
+            $ship_adr .= ' ' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . PHP_EOL;
+            // $ship_adrhtml.='<p>'.$res['contact_first_name'].' '.$res['contact_last_name'].'</p>';
+            $ship_adrhtml .= '<p>' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . '</p>';
+            if ($res['shipping_company'] != '' && $res['shipping_company'] != 'Company (optional)') {
+                $ship_adr .= ' ' . $res['shipping_company'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['shipping_company'] . '</p>';
+            }
+            $ship_adr .= ' ' . $res['shipping_street1'] . PHP_EOL;
+            $ship_adrhtml .= '<p>' . $res['shipping_street1'] . '</p>';
+            if ($res['shipping_street2'] != '') {
+                $ship_adr .= ' ' . $res['shipping_street2'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['shipping_street2'] . '</p>';
+            }
+            $ship_adr .= ' ' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . PHP_EOL;
+            $ship_adrhtml .= '<p>' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . '</p>';
+            if (!empty($res['ship_cnt']) && $res['ship_cnt'] != 'United States') {
+                $ship_adr .= ' ' . $res['ship_cnt'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['ship_cnt'] . '</p>';
+            }
+            $res['shipping_address'] = $ship_adr;
+            $res['shipping_address_html'] = $ship_adrhtml;
+            /* Billing Address */
+            $bil_adr = '';
+            $bil_adrhtml = '';
+            $bil_adr .= ' ' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . '</p>';
+            if ($res['customer_company'] != '') {
+                $bil_adr .= ' ' . $res['customer_company'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['customer_company'] . '</p>';
+            }
+            $bil_adr .= ' ' . $res['billing_street1'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['billing_street1'] . '</p>';
+            if ($res['billing_street2']) {
+                $bil_adr .= ' ' . $res['billing_street2'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['billing_street2'] . '</p>';
+            }
+            $bil_adr .= ' ' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . '</p>';
+            if (!empty($res['bil_cnt']) && $res['bil_cnt'] != 'United States') {
+                $bil_adr .= ' ' . $res['bil_cnt'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['bil_cnt'] . '</p>';
+            }
+            $res['billing_address'] = $bil_adr;
+            $res['billing_address_html'] = $bil_adrhtml;
+            if ($res['is_virtual']) {
+                $res['item_name'] = $res['virtual_item'];
+                $res['item_number'] = '';
+            }
+            $res['payment_exp'] = $res['payment_card_month'] . '/' . $res['payment_card_year'];
+            $pure_price = round($res['item_qty'] * $res['item_price'], 2);
+            $res['pure_price'] = number_format($pure_price, 2);
+            $res['total'] = number_format($res['order_total'], 2);
+            /* Get Order num */
+            $out['result'] = $this->success_result;
+            $out['data'] = $res;
+        }
+        return $out;
+    }
 }
