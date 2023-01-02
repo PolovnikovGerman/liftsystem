@@ -6452,22 +6452,22 @@ Class Orders_model extends MY_Model
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }
-                        if ($item['imprint_type']==2) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                            // Setup
-                        } elseif ($item['imprint_type']==3) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                        } else {
+//                        if ($item['imprint_type']==2) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                            // Setup
+//                        } elseif ($item['imprint_type']==3) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                        } else {
                             $this->db->set('order_item_id', $item_id);
                             $this->db->set('imprint_item', 1);
                             $this->db->set('imprint_qty', $item['item_qty']);
@@ -6483,16 +6483,16 @@ Class Orders_model extends MY_Model
                                 if ($numpp == 0) {
                                     $this->db->set('imprint_price', 0.00);
                                 } else {
-                                    if ($item['imprint_type']==3) {
-                                        $this->db->set('imprint_price', 0.00);
-                                    } else {
+                                    // if ($item['imprint_type']==3) {
+                                    //    $this->db->set('imprint_price', 0.00);
+                                    // } else {
                                         $this->db->set('imprint_price', $item['imprint_price']);
-                                    }
+                                    // }
                                 }
                             }
                             $this->db->set('order_item_id', $item_id);
                             $this->db->insert('ts_order_imprints');
-                        }
+                        // }
                         $numpp++;
                         if ($numcolors == 2) {
                             $this->db->set('order_item_id', $item_id);
@@ -8134,8 +8134,10 @@ Class Orders_model extends MY_Model
                 $res['item_number'] = $itemdat['item_number'];
                 $res['item_qty'] = $itemdat['item_qty'];
                 $res['item_price'] = $itemdat['item_price'];
-                if ($itemdat['imprint_type']==1) {
+                if ($itemdat['imprint_type']==1 || $itemdat['imprint_type']==2) {
                     $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1))+($itemdat['setup_price']*$itemdat['imprint']);
+                } elseif ($itemdat['imprint_type']==3) {
+                    $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1));
                 }
                 $res['shipping_price'] = $itemdat['shipping_cost'];
                 $res['rush_price'] = $itemdat['rush_cost'];
