@@ -4596,7 +4596,12 @@ Class Leadorder_model extends My_Model {
             } else {
                 $res['result']=$order_id=$this->db->insert_id();
                 $this->load->model('orders_model');
-                $neworder_num=$this->orders_model->get_last_ordernum();
+                if ($data['brand']=='SR') {
+                    $neworder_num=$this->orders_model->get_srorder_number();
+                } else {
+                    $neworder_num=$this->orders_model->get_last_ordernum();
+                }
+
                 // $this->db->set('order_num',$neworder_num+1);
                 $this->db->set('order_num',$neworder_num);
                 $this->db->where('order_id', $order_id);

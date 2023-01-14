@@ -240,6 +240,7 @@ class Leads extends My_Controller {
                 } else {
                     $options=array(
                         'data'=>$leaddat,
+                        'brand' => $brand,
                     );
                     $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
                 }
@@ -292,6 +293,12 @@ class Leads extends My_Controller {
                 $this->load->model('leads_model');
                 $minlead=$this->leads_model->get_lead_mindate($brand);
                 $minorder=$this->orders_model->get_order_mindate($brand);
+                if (empty($minlead)) {
+                    $minlead = time();
+                }
+                if (empty($minorder)) {
+                    $minorder = time();
+                }
                 $out_options=[];
                 $user_id = ifset($postdata,'user_id');
                 $show_feature=ifset($postdata, 'showfeature',0);

@@ -415,12 +415,18 @@ Class Leads_model extends MY_Model
         return $res;
     }
 
-    public function get_leadnum() {
+    public function get_leadnum($brand) {
         $this->db->select('max(lead_number) as last_num');
         $this->db->from('ts_leads');
+        if ($brand=='SB') {
+            $this->db->where_in('brand',['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if (!$res['last_num']) {
-            $outval=$this->init_number;
+            // $outval=$this->init_number;
+            $outval=1;
         } else {
             $outval=$res['last_num']+1;
         }
@@ -489,7 +495,7 @@ Class Leads_model extends MY_Model
                 $this->db->set('create_user',$usr_id);
                 $this->db->set('update_usr',$usr_id);
                 $this->db->set('create_date',date('Y-m-d H:i:s'));
-                $leadnum=$this->get_leadnum();
+                $leadnum=$this->get_leadnum($leadpost['brand']);
                 $this->db->set('lead_number',$leadnum);
                 $this->db->insert('ts_leads');
                 $lead_id=$this->db->insert_id();
@@ -595,7 +601,7 @@ Class Leads_model extends MY_Model
             $item_num=$itemdata['item_number'];
         }
         // Get Proof Num
-        $proof_num=$this->get_new_proofnum();
+        $proof_num=$this->get_new_proofnum($leadpost['brand']);
         $this->db->set('email_type','Art_Submit');
         $this->db->set('proof_num',$proof_num);
         $this->db->set('proof_updated',  time());
@@ -660,10 +666,15 @@ Class Leads_model extends MY_Model
         return $out;
     }
     /* New Proof Number */
-    private function get_new_proofnum() {
+    private function get_new_proofnum($brand) {
         $this->db->select('max(proof_num) as proof');
         $this->db->from('ts_emails');
         $this->db->where('email_type', 'Art_Submit');
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
         $res=$this->db->get()->row_array();
         if (!isset($res['proof']) || $res['proof']=='') {
             $part1=0;
