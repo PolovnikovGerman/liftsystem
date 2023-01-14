@@ -40,7 +40,7 @@ class Leadmanagement extends MY_Controller
                 $dead_av = 0;
                 $lead_data['lead_id'] = 0;
                 $lead_data['lead_type'] = 2;
-                $lead_data['lead_number'] = $this->leads_model->get_leadnum();
+                $lead_data['lead_number'] = $this->leads_model->get_leadnum($brand);
                 $lead_data['brand'] = $brand;
                 $lead_history = array();
                 $lead_usr = array();
@@ -162,7 +162,12 @@ class Leadmanagement extends MY_Controller
                 'session_attach' => $attachsess,
             );
             $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
-            $mdata['title'] = 'Lead L'.$lead_data['lead_number'].' Details';
+            if ($brand=='SR') {
+                $mdata['title'] = 'Lead D'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
+            } else {
+                $mdata['title'] = 'Lead L'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
+            }
+
             $this->ajaxResponse($mdata,$error);
         }
     }

@@ -1011,6 +1011,12 @@ Class Orders_model extends MY_Model
         return $this->db->insert_id();
     }
 
+    public function get_srorder_number() {
+        $this->db->set('order_date', time());
+        $this->db->insert('sr_ordernum');
+        return $this->db->insert_id();
+    }
+
     public function change_goal_value($data, $field, $newval) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
         if (!isset($data[$field])) {
