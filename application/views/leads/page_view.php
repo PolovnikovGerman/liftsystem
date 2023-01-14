@@ -36,6 +36,9 @@
             <?php if (isset($checkoutattemptsview)) { ?>
                 <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>
             <?php } ?>
+            <?php if (isset($leadquotesview)) { ?>
+                <div class="leadscontentarea" id="leadquotesview" style="display: none;"><?=$leadquotesview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>
