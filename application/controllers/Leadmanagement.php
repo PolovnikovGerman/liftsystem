@@ -55,6 +55,7 @@ class Leadmanagement extends MY_Controller
                         $dead_av=0;
                     }*/
                 }
+                $brand = ifset($lead_data,'brand');
                 $lead_history=$this->leads_model->get_lead_history($lead_id);
                 $lead_usr=$this->leads_model->get_lead_users($lead_id);
                 $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
