@@ -155,14 +155,14 @@
                     <div class="details-title" style="padding-left:3px;">Ships:</div>
                     <div class="details-input" style="margin-left:6px;">
                         <input type="text" readonly="readonly" style="width:114px;" name="shipping_date"
-                               id="shipping_date" value="<?= date('m/d/y', strtotime($order['shipping_date'])) ?>"/>
+                               id="shipping_date" value="<?= date('m/d/y', $order['shipping_date']) ?>"/>
                     </div>
                 </div>
                 <div class="arrive">
                     <div class="details-title" style="margin-left:-3px;">Arrive:</div>
                     <div class="details-input" style="margin-left:6px;">
                         <input type="text" style="width:114px;" readonly="readonly" name="arrive_date" id="arrive_date"
-                               value="<?= date('m/d/y', strtotime($order['arrive_date'])) ?>"/>
+                               value="<?= date('m/d/y', $order['arrive_date']) ?>"/>
                     </div>
                 </div>
             </div>
