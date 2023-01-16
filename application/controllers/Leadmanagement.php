@@ -82,13 +82,12 @@ class Leadmanagement extends MY_Controller
             }
             // $leadrepl=1;
             if ($lead_data['lead_type']==$this->LEAD_CLOSED || $lead_data['lead_type']==$this->LEAD_DEAD) {
-                // $leadrepl=0;
-                $replic=$this->load->view('leads/lead_replicalock_view',array('repl'=>$lead_replic),TRUE);
+                $replic=$this->load->view('leadpopup/replicalock_view',array('repl'=>$lead_replic),TRUE);
             } else {
                 if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin' || $this->USR_ID==$lead_data['create_user']) {
-                    $replic=$this->load->view('leads/lead_replicaselect_view',array('repl'=>$lead_replic),TRUE);
+                    $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic),TRUE);
                 } else {
-                    $replic=$this->load->view('leads/lead_replicareadonly_view',array('repl'=>$lead_replic),TRUE);
+                    $replic=$this->load->view('leadpopup/replicareadonly_view',array('repl'=>$lead_replic),TRUE);
                 }
             }
             // Save User Lead into session
@@ -109,7 +108,7 @@ class Leadmanagement extends MY_Controller
                 $lead_data['other_item_label']='Type Custom Items Here:';
             }
 
-            $history=$this->load->view('leads/lead_history_view',array('data'=>$lead_history,'cnt'=>count($lead_history)),TRUE);
+            $history=$this->load->view('leadpopup/history_view',array('data'=>$lead_history,'cnt'=>count($lead_history)),TRUE);
             $lead_tasks['edit']=$save_av;
 
             // $tasks=$this->load->view('leads/lead_tasks_view',$lead_tasks,TRUE);
@@ -119,21 +118,21 @@ class Leadmanagement extends MY_Controller
             if (count($qdat)==0) {
                 $questions='';
             } else {
-                $questions=$this->load->view('leads/lead_questions_view',array('quests'=>$qdat),TRUE);
+                $questions=$this->load->view('leadpopup/questions_view',array('quests'=>$qdat),TRUE);
             }
 
             $qdat=$this->quotes_model->get_lead_quotes($lead_id);
             if (count($qdat)==0) {
                 $quotes='';
             } else {
-                $quotes=$this->load->view('leads/lead_quotes_view',array('quotes'=>$qdat),TRUE);
+                $quotes=$this->load->view('leadpopup/quotes_view',array('quotes'=>$qdat),TRUE);
             }
 
             $qdat=$this->artproof_model->get_lead_proofs($lead_id);
             if (count($qdat)==0) {
                 $onlineproofs='';
             } else {
-                $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
+                $onlineproofs=$this->load->view('leadpopup/proofs_view',array('proofs'=>$qdat),TRUE);
             }
             $dead_option='';
             if ($dead_av==1) {
@@ -145,7 +144,7 @@ class Leadmanagement extends MY_Controller
             /* Get Available Items */
             $items_list=$this->leads_model->items_list($lead_data['brand']);
             // Attachs
-            $leadattach_view = $this->load->view('leads/lead_attach_view',array('attachs'=>$leads_attach),TRUE);
+            $leadattach_view = $this->load->view('leadpopup/attach_view',array('attachs'=>$leads_attach),TRUE);
             // $itemslist=$this->m
             $options=array(
                 'data'=>$lead_data,
@@ -161,12 +160,17 @@ class Leadmanagement extends MY_Controller
                 'attachs' => $leadattach_view,
                 'session_id'=>$session_id,
                 'session_attach' => $attachsess,
+                'brand' => $brand,
+                'enable' => $save_av==1 ? '' : 'disabled="disabled"',
+                'read' => $save_av==1 ? '' : 'readonly="readonly"',
+                'display' => $save_av==1 ? '' :'hide',
             );
-            $mdata['content']=$this->load->view('leads/lead_editform_view',$options,TRUE);
+            $mdata['title'] = $this->load->view('leadpopup/head_view', $options, TRUE);
+            $mdata['content']=$this->load->view('leadpopup/content_view',$options,TRUE);
             if ($brand=='SR') {
-                $mdata['title'] = 'Lead D'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
+                //$mdata['title'] = 'Lead D'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
             } else {
-                $mdata['title'] = 'Lead L'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
+                // $mdata['title'] = 'Lead L'.str_pad($lead_data['lead_number'],5,'0',STR_PAD_LEFT).' Details';
             }
 
             $this->ajaxResponse($mdata,$error);

@@ -100,7 +100,8 @@ class Leads extends My_Controller {
         $head['scripts'][] = array('src' => '/js/leads/page.js');
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
         // Lead popup
-        $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
+        // $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
+        $head['styles'][] = array('style' => '/css/leads/leadpopup.css');
         $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
