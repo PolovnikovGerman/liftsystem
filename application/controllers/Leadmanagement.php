@@ -783,4 +783,38 @@ class Leadmanagement extends MY_Controller
         }
     }
 
+    public function lead_addquote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $leadpost=$this->input->post();
+            /* Get Tasks & user array */
+            $lead_tasks=array();
+            $session_id=$leadpost['session_id'];
+            $lead_replic=usersession($session_id);
+            $lead_usr=array();
+            foreach ($lead_replic as $row) {
+                array_push($lead_usr, $row['user_id']);
+            }
+            $usr_id=$this->USR_ID;
+            $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
+            $error=$res['msg'];
+            if ($res['result']!=$this->error_result) {
+                $error = '';
+                $lead_id=$res['result'];
+                $mdata['lead_id']=$res['result'];
+                // Get new value of Lead
+                $lead_data=$this->leads_model->get_lead($lead_id);
+                usersession('leaddata',$lead_data);
+                $this->load->model('leadquote_model');
+                $quotedat=$this->leadquote_model->add_leadquote($lead_data, $usr_id, $this->USER_NAME);
+                $error=$quotedat['msg'];
+                if ($quotedat['result']==$this->success_result) {
+                    $error = '';
+
+                }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
 }
