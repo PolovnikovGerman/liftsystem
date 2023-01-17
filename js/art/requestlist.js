@@ -342,34 +342,36 @@ function profedit_lead(lead_id) {
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             // POPUP
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("select#lead_item").select2({
-                dropdownParent: $('#pageModal'),
-                matcher: matchStart
-            }).on("change", function(e){
-                var newid = $(this).val();
-                var url=mainurl+"/lead_itemchange"
-                // var item_id=$("select#lead_item").val();
-                $.post(url, {'item_id': newid}, function(response){
-                    if (response.errors=='') {
-                        // $("input#lead_item").val(response.data.item_name);
-                        if (response.data.other==1) {
-                            $("div.item_otheritemarea").show();
-                            $("div.item_otheritem_label").empty().html(response.data.other_label);
-                        } else {
-                            $("div.item_otheritemarea").hide();
-                            $("textarea#other_item_name").val('');
-                        }
-                    } else {
-                        show_error(response);
-                    }
-                }, 'json');
-
-            });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_lead_cloneemail();
             init_leadpopupedit();
+            // $("select#lead_item").select2({
+            //     dropdownParent: $('#pageModal'),
+            //     matcher: matchStart
+            // }).on("change", function(e){
+            //     var newid = $(this).val();
+            //     var url=mainurl+"/lead_itemchange"
+            //     // var item_id=$("select#lead_item").val();
+            //     $.post(url, {'item_id': newid}, function(response){
+            //         if (response.errors=='') {
+            //             // $("input#lead_item").val(response.data.item_name);
+            //             if (response.data.other==1) {
+            //                 $("div.item_otheritemarea").show();
+            //                 $("div.item_otheritem_label").empty().html(response.data.other_label);
+            //             } else {
+            //                 $("div.item_otheritemarea").hide();
+            //                 $("textarea#other_item_name").val('');
+            //             }
+            //         } else {
+            //             show_error(response);
+            //         }
+            //     }, 'json');
+            //
+            // });
+            // init_leadpopupedit();
         } else {
             show_error(response);
         }

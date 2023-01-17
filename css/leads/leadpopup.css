@@ -28,6 +28,11 @@
     margin-top: -1px;
     padding: 0 15px 0px 15px;
 }
+#leadformModal .modal-footer {
+    background: #4444ef;
+    color: #ffffff;
+    padding: 10px 15px;
+}
 .lead_popup_content {
     background: url('/img/leads/lead_popupbg.png?r=233') no-repeat transparent;
     clear: both;
@@ -45,11 +50,10 @@
     margin-top: 7px;
 }
 .lead_popupform_row input {
-    font-size: 14px;
     color: #000000!important;
     background-color: #ffffff!important;
     padding-left: 5px;
-    height: 19px;
+    height: 22px;
     font-size: 14px!important;
     text-align: left!important;
 }
@@ -221,12 +225,24 @@ input.lead_needby {
     width: 47px;
     font-weight: bold;
 }
+.lead_popup_mailclone {
+    float: left;
+    height: 22px;
+    width: 22px;
+    cursor: pointer;
+    background: #000000;
+    color: #ffffff;
+    text-align: center;
+}
+.lead_popup_mailclone i {
+    font-size: 12px;
+}
 .lead_popup_mailinpt {
     float: left;
-    width: 210px;
+    width: 190px;
 }
 input.lead_email {
-    width: 198px;
+    width: 188px;
 }
 .lead_popup_qtytitle {
     float: left;
@@ -602,15 +618,12 @@ textarea.lead_othertask {
     width: 126px;
     color: #c1bbbb;
     font-size: 14px;
-}
-.lead_duplicate:hover {
+    height: 26px;
+    line-height: 26px;
     cursor: pointer;
 }
 .savelead {
-    float:left;
-    margin-left: 831px;
-    margin-top: -25px;
-    width: 140px;
+    float: right;
 }
 table.historytable {
     border: none;

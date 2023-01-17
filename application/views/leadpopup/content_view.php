@@ -42,8 +42,11 @@
         </div>
         <div class="lead_popup_usrcontacts">
             <div class="lead_popup_mailtitle">Email:</div>
+            <div class="lead_popup_mailclone">
+                <i class="fa fa-clone" aria-hidden="true"></i>
+            </div>
             <div class="lead_popup_mailinpt">
-                <input class="lead_email" <?=$read?> name="lead_mail" id="lead_mail" value="<?= $data['lead_mail'] ?>"/>
+                <input class="lead_email js-copytextarea" <?=$read?> name="lead_mail" id="lead_mail" value="<?= $data['lead_mail'] ?>"/>
             </div>
         </div>
         <div class="lead_popup_values">

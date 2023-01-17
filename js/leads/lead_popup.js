@@ -6,14 +6,12 @@ function show_new_lead(lead_id,type, brand) {
     params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // Init clone email
+            init_lead_cloneemail();
             init_leadpopupedit();
             // Save Button
             $("a.saveleaddat").unbind('dblclick');
@@ -42,14 +40,16 @@ function add_lead(brand) {
     var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id, brand: brand}, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            // $("#pageModalLabel").empty().html(response.data.title);
+            // $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#pageModal").find('div.modal-dialog').css('width','970px');
+            // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // init_leadpopupedit();
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -64,8 +64,9 @@ function edit_lead(lead_id) {
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            // $("#pageModal").find('div.modal-dialog').css('width','970px');
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -98,8 +99,10 @@ function init_leadpopupedit() {
     if (itemid!='') {
         if (parseInt(itemid)<1) {
             $("div.item_otheritemarea").show();
+            $("div.lead_history").removeClass('expandhistory');
         } else {
             $("div.item_otheritemarea").hide();
+            $("div.lead_history").addClass('expandhistory');
         }
     }
     $("select#lead_item").searchable();
@@ -262,6 +265,10 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+    // Add new Custom Quote
+    $(".quotesaddnew").unbind('click').click(function () {
+        addnewcustomquote();
+    });
 }
 
 function delete_lead_attachment(attachid) {
@@ -406,17 +413,10 @@ function restore_leadform() {
     var url=mainurl+"/restore_ledform";
     $.post(url, {}, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#pageModal").find('button.close').unbind('click').click(function(){
-                $("#pageModal").modal('hide');
-            });
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -432,9 +432,11 @@ function lead_itemchange(item_id) {
             if (response.data.other==1) {
                 $("div.item_otheritemarea").show();
                 $("div.item_otheritem_label").empty().html(response.data.other_label);
+                $("div.lead_history").removeClass('expandhistory');
             } else {
                 $("div.item_otheritemarea").hide();
                 $("textarea#other_item_name").val('');
+                $("div.lead_history").addClass('expandhistory');
             }
         } else {
             show_error(response);
@@ -455,10 +457,10 @@ function duplicatelead() {
             if (response.errors=='') {
                 // $("#pageModal").modal('hide');
                 initLeaddataPagination();
-                $("#pageModalLabel").empty().html(response.data.title);
-                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#pageModal").find('div.modal-dialog').css('width','970px');
-                // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#leadformModalLabel").empty().html(response.data.title);
+                $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+                $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+                init_lead_cloneemail();
                 init_leadpopupedit();
             } else {
                 show_error(response);
@@ -480,21 +482,7 @@ function save_lead() {
            initLeaddataPagination();
            initProofPagination();
            $("#loader").hide();
-           $("#pageModal").modal('hide');
-           /* Read currrent tab */
-            // var curtab;
-            // if ($("ul.tabNavigation a.selected").length!=0) {
-            //     curtab=$("ul.tabNavigation a.selected").prop('id');
-            // } else {
-            //     curtab=$("ul.tabNavigation a.selectedleft").prop('id');
-            // }
-            // if (curtab=='requestlistlnk') {
-            //     initProofPagination();
-            // } else if (curtab=='leadslnk') {
-            //     initLeaddataPagination();
-            // } else if (curtab=='onlineprooflnk') {
-            //     initProofPagination();
-            // }
+           $("#leadformModal").modal('hide');
        } else {
            if (option==true) {
                 $("input[type=checkbox]").attr('disabled',true);
@@ -503,4 +491,28 @@ function save_lead() {
            show_error(response);
        }
    }, 'json');
+}
+
+function init_lead_cloneemail() {
+
+    var copyTextareaBtn = document.querySelector('.lead_popup_mailclone');
+
+    copyTextareaBtn.addEventListener('click', function(event) {
+        var copyTextarea = document.querySelector('.js-copytextarea');
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            alert('Email address copied to clipboard');
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    });
+
+}
+
+function addnewcustomquote() {
+
 }
