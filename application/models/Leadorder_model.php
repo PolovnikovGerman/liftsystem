@@ -4584,7 +4584,11 @@ Class Leadorder_model extends My_Model {
         $this->db->set('discount_val', floatval($data['discount_val']));
         $this->db->set('discount_descript', $data['discount_descript']);
         if ($order_id==0) {
-            $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
+            if ($data['brand']=='SR') {
+                $confirm=uniq_link(5,'digits').'-'.strtoupper(uniq_link(2,'chars'));
+            } else {
+                $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
+            }
             $this->db->set('order_confirmation', $confirm);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
