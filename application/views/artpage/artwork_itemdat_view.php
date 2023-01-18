@@ -5,7 +5,7 @@
 <div class="artpopup_orderrow">
     <div class="artpopup_orderlabel">Request:</div>
     <div class="artpopup_orderproof">
-        <?=($proof_num=='' ? '&nbsp;' : 'pr'.$proof_num)?>
+        <?=($proof_num=='' ? '&nbsp;' : ($brand=='SR' ? 'rp' : 'pr').$proof_num)?>
     </div>
 </div>
 <div class="artpopup_orderemp">&nbsp;</div>

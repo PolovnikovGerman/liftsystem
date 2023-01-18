@@ -133,7 +133,7 @@ class Leadmanagement extends MY_Controller
             if (count($qdat)==0) {
                 $onlineproofs='';
             } else {
-                $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
+                $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat, 'brand' => $brand),TRUE);
             }
             $dead_option='';
             if ($dead_av==1) {
@@ -381,7 +381,7 @@ class Leadmanagement extends MY_Controller
                 if (count($qdat)==0) {
                     $onlineproofs='';
                 } else {
-                    $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
+                    $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat, 'brand' => $lead_data['brand']),TRUE);
                 }
                 $dead_option='';
                 if ($dead_av==1) {
@@ -535,7 +535,7 @@ class Leadmanagement extends MY_Controller
                     if (count($qdat)==0) {
                         $onlineproofs='';
                     } else {
-                        $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat),TRUE);
+                        $onlineproofs=$this->load->view('leads/lead_proofs_view',array('proofs'=>$qdat, 'brand' => $lead['brand']),TRUE);
                     }
 
                     $lead['other_item_label']='';
