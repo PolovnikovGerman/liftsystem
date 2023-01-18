@@ -1,9 +1,9 @@
-<input type="hidden" id="lead_id" name="lead_id" value="<?=$data['lead_id']?>"/>
 <input type="hidden" id="lead_item_id" value="<?=$data['lead_item_id']?>"/>
-<input type="hidden" id="brand" name="brand" value="<?=$data['brand']?>"/>
 <input type="hidden" id="session" value="<?=$session_id?>"/>
 <input type="hidden" id="session_attach" value="<?=$session_attach?>"/>
 <form id="leadeditform">
+    <input type="hidden" id="lead_id" name="lead_id" value="<?=$data['lead_id']?>"/>
+    <input type="hidden" id="brand" name="brand" value="<?=$data['brand']?>"/>
     <div class="lead_popupform_row">
         <div class="lead_popup_usrdatas">
             <div class="lead_popup_usrdat_title">Company:</div>
@@ -81,6 +81,10 @@
                     <div class="quotesdataarea"></div>
                 </div>
             </div>
+            <div id="quotepopupdetails" class="quotepopupdetails">
+
+            </div>
+            <div class="quotepopupclose" style="display: none;"><img src="/img/vendors/close_popup.png"/></div>
             <div class="specificnotearea">
                 <div class="lead_popup_notetitle">Notes: <span>(specific concerns, dates, things to remember)</span></div>
                 <div class="lead_popup_noteinpt">

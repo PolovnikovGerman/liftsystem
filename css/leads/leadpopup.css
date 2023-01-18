@@ -744,3 +744,82 @@ img.leadcalendbtn:hover {
     max-width: 700px;
     margin-top: -162px;
 }
+/* Lead quote content */
+.quotepopupdetails {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 620px;
+    right: -4px;
+    top: 81px;
+}
+.quotepopupclose {
+    cursor: pointer;
+    float: right!important;
+    position: relative;
+    z-index: 7;
+    right: -15px;
+}
+.quotecontentarea {
+    float: left;
+    width: 612px;
+    height: 689px;
+    background: #696969;
+    border-radius: 7px;
+    padding: 9px;
+}
+.quotecontentarea div {
+    float: left;
+    color: #000000;
+}
+.quotecontentarea input, .quotecontentarea select  {
+    color: #000000;
+}
+.quotetemplatetitle {
+    height: 22px;
+    line-height: 22px;
+    margin-right: 5px;
+    font-size: 13px;
+}
+.quotetemplateinpt select {
+    width: 122px;
+    padding-left: 9px;
+    font-size: 13px;
+    height: 22px;
+    background: #e5e5e5;
+}
+.quoteactionsarea {
+    margin-left: 108px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 7px;
+    padding-left: 10px;
+}
+.quoteactionsarea > div {
+    text-align: center;
+    color: #010192;
+    font-size: 13px;
+    height: 25px;
+    line-height: 22px;
+    opacity: 0.5;
+    /* padding: 1.5px 0; */
+}
+.quoteactionsarea > div.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.quoteactionaddorder {
+    padding: 1.5px 6px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionduplicate {
+    padding: 1.5px 6px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionsend {
+    padding: 1.5px 4px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionpdfdoc {
+    padding: 1.5px 10px;
+}

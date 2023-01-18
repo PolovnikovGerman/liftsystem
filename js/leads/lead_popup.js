@@ -519,34 +519,19 @@ function addnewcustomquote() {
     if (confirm(msg)==true) {
         var url=mainurl+"/lead_addquote";
         var dat=$("form#leadeditform").serializeArray();
+        // var dat = new Array();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
         dat.push({name: 'session_attach', value: $("#session_attach").val()});
-        $("#loader").show();
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: dat,
-            dataType: "json",
-            timeout: 5000,
-            success: function(response) {
-                if (response.errors=='') {
-                    $("#loader").hide();
-                    // show_artdata(response.data.email_id, response.data.lead_id,'new');
-                } else {
-                    $("#loader").hide();
-                    show_error(response);
-                }
-            },
-            error: function(x, t, m) {
-                if(t==="timeout") {
-                    $("#loader").hide();
-                    alert('Request Time Out. Try again');
-                } else {
-                    $("#loader").hide();
-                    alert(m);
-                }
+        dat.push({name: 'lead_type', value: $("#lead_type").val()});
+        $.post(url, dat, function (response) {
+            if (response.errors=='') {
+                $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                $("#quotepopupdetails").show();
+                $(".quotepopupclose").show();
+            } else {
+                show_error(response);
             }
-        });
+        },'json');
     }
 }

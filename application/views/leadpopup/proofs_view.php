@@ -2,7 +2,7 @@
     <div class="lead_onlineproofrow">
         <div class="lead_quotedate"><?=$row['email_date']?></div>
         <div class="lead_quoteseparat">-</div>
-        <div class="lead_quoteprofnum" data-leadid="<?=$row['email_id']?>">pr<?=$row['proof_num']?></div>
+        <div class="lead_quoteprofnum" data-leadid="<?=$row['email_id']?>"><?=$brand=='SR' ? 'rp' : 'pr' ?><?=$row['proof_num']?></div>
         <div class="lead_quoteseparat">-</div>
         <div class="lead_quoteqty"><?=$row['email_qty']?></div>
         <div class="lead_proofitem"><?=$row['email_item_name']?></div>
