@@ -827,6 +827,7 @@ class Leadmanagement extends MY_Controller
                     $options = [
                         'data' => $quotedata,
                         'templlists' => $templlists,
+                        'edit_mode' => 1,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }

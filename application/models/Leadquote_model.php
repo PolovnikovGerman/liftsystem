@@ -6,6 +6,8 @@ class Leadquote_model extends MY_Model
     private $bluehealthtemplate = 'Bluetrack Health';
     private $proformatemplate = 'Proforma Invoice';
     private $suppliertemplate = 'Supplier';
+    private $sbnumber = 11000;
+    private $srnumber = 7500;
     function __construct() {
         parent::__construct();
     }
@@ -70,7 +72,11 @@ class Leadquote_model extends MY_Model
         $this->db->where('brand', $brand);
         $res = $this->db->get()->row_array();
         if ($res['cnt']==0) {
-            $newnumber = 1;
+            if ($brand=='SR') {
+                $newnumber = $this->srnumber;
+            } else {
+                $newnumber = $this->sbnumber;
+            }
         } else {
             $newnumber = $res['numb']+1;
         }
