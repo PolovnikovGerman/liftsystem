@@ -45,30 +45,54 @@
         <div class="leadquotediscountarea">
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <input placeholder="Misc Charge"/>
+                    <input class="quotediscountinpt" placeholder="Misc Charge"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <input/>
+                    <input class="quotediscountinpt" placeholder="$0.00"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <input placeholder="Misc Charge"/>
+                    <input class="quotediscountinpt" placeholder="Misc Charge"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <input/>
+                    <input class="quotediscountinpt" placeholder="$0.00"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotediscountlabel">Discount:</div>
                 <div class="quotediscounttitle">
-                    <input placeholder="Courtesy Discount"/>
+                    <input class="quotediscountinpt" placeholder="Courtesy Discount"/>
                 </div>
                 <div class="quotediscountvalue">
-                    <input/>
+                    <input class="quotediscountinpt" placeholder="$0.00"/>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="datarow">
+        <div class="quoteitemsubtotal">
+            <div class="quoteitemsubtotaltitle">Item Sub-total:</div>
+            <div class="quoteitemsubtotalvalue">$111.50</div>
+        </div>
+    </div>
+    <div class="datarow">
+        <div class="quotesectionlabel">SHIPPING ADDRESS:</div>
+    </div>
+    <div class="datarow">
+        <div class="quoteshipaddressarea">
+            <div class="quoteshipcountryarea">
+                <select class="quoteshipcountry">
+                    <option value="US">United States</option>
+                </select>
+            </div>
+            <div class="quoteshipaddressother">
+                <div class="datarow">
+                    <input class="quoteshipadrother">
+                </div>
+            </div>
+        </div>
+        <div class="quoterushdataarea"></div>
     </div>
 
 </div>
