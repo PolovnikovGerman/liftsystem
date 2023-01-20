@@ -1137,4 +1137,16 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function fix_leadnumbers() {
+        $this->load->model('leads_model');
+        $this->db->select('lead_number, count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->group_by('lead_number');
+        $this->db->having('cnt > ',1);
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            echo 'Lead # '.$result['lead_number'].' Count '.$result['cnt'].PHP_EOL;
+        }
+    }
 }
