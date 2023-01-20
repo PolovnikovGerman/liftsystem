@@ -82,17 +82,133 @@
     <div class="datarow">
         <div class="quoteshipaddressarea">
             <div class="quoteshipcountryarea">
-                <select class="quoteshipcountry">
+                <select class="quoteaddressinpt quotecountry">
                     <option value="US">United States</option>
                 </select>
             </div>
             <div class="quoteshipaddressother">
                 <div class="datarow">
-                    <input class="quoteshipadrother">
+                    <input class="quoteaddressinpt quoteshipadrother" placeholder="Contact Name">
+                </div>
+                <div class="datarow">
+                    <input class="quoteaddressinpt quoteshipadrother" placeholder="Company">
+                </div>
+                <div class="datarow">
+                    <input class="quoteaddressinpt quoteshipadrother" placeholder="Address Line 1">
+                </div>
+                <div class="datarow">
+                    <input class="quoteaddressinpt quoteshipadrother" placeholder="Address Line 2">
+                </div>
+            </div>
+            <div class="quoteshipaddresszip">
+                <div class="datarow">
+                    <div class="quoteshipaddreszipcode">
+                        <input class="quoteaddressinpt quotepostal" placeholder="Zip"/>
+                    </div>
+                    <div class="quoteshipaddrescity">
+                        <input class="quoteaddressinpt quotetown" placeholder="City"/>
+                    </div>
+                    <div class="quoteshipaddresdistrict">
+                        <select class="quoteaddressinpt quotestate">
+                            <option value="CA">CA</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="quoterushdataarea"></div>
+        <div class="quoterushdataarea">
+            <div class="datarow">
+                <div class="quoteleadtimelabel">Lead Time:</div>
+                <div class="quoteleadtime">
+                    <select class="quoteleadtimeselect">
+                        <option value="Standard">Standard 5 days</option>
+                        <option value="3 day Rush">3 day Rush</option>
+                        <option value="1 day Rush">1 day Rush</option>
+                    </select>
+                </div>
+                <div class="quoteleadrush">
+                    <input class="quoteleadrushcost"/>
+                </div>
+            </div>
+            <div class="datarow">
+                <div class="quoteshippingcostaea">&nbsp;</div>
+                <div class="quoteshipcost">
+                    <input class="quoteshipcostvalue"/>
+                </div>
+            </div>
+            <div class="datarow">
+                <div class="quotetaxarea">
+                    <div class="datarow">
+                        <div class="quotetaxlabelveiw">Out of State</div>
+                        <div class="quotetaxemptyview">- No sales tax collected</div>
+                    </div>
+                </div>
+                <div class="quotetaxinput">
+                    <div class="quotetaxlabel">Sales Tax</div>
+                    <div class="quotetaxvalue">
+                        <input class="quotesalestaxvalue" value="0.00">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
+    <div class="datarow">
+        <div class="quotebillingaddressarea">
+            <div class="datarow">
+                <div class="quotesectionlabel">BILLING ADDRESS:</div>
+            </div>
+            <div class="quotebillcountryarea">
+                <select class="quotebillcountry">
+                    <option value="US">United States</option>
+                </select>
+            </div>
+            <div class="quotebilladdressother">
+                <div class="datarow">
+                    <input class="quotebilladrother" placeholder="Contact Name">
+                </div>
+                <div class="datarow">
+                    <input class="quotebilladrother" placeholder="Company">
+                </div>
+                <div class="datarow">
+                    <input class="quotebilladrother" placeholder="Address Line 1">
+                </div>
+                <div class="datarow">
+                    <input class="quotebilladrother" placeholder="Address Line 2">
+                </div>
+                <div class="datarow">
+                    <div class="quotebilladdreszipcode">
+                        <input class="quotebilladdrespostal" placeholder="Zip"/>
+                    </div>
+                    <div class="quotebilladdrescity">
+                        <input class="quotebilladdrestown" placeholder="City"/>
+                    </div>
+                    <div class="quotebilladdresdistrict">
+                        <select class="quotebilladdresstate">
+                            <option value="CA">CA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="quotenotesarea">
+            <div class="datarow">
+                <div class="quotesectionlabel">NOTE TO INCLUDE ON QUOTE:</div>
+            </div>
+            <div class="datarow">
+                <textarea class="quotenote"></textarea>
+            </div>
+            <div class="datarow">
+                <div class="quotesectionlabel">REP CONTACT INFO:</div>
+            </div>
+            <div class="datarow">
+                <textarea class="quotenote"><?=$data['quote_repcontact']?></textarea>
+            </div>
+        </div>
+        <div class="quotetotalarea">
+            <div class="quotetotals">
+                <div class="quotetotallabel">Total:</div>
+                <div class="quotetotalvalue">$111,111.52</div>
+            </div>
+        </div>
+    </div>
 </div>
