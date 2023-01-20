@@ -288,3 +288,4 @@ if ($config['test_server']==1) {
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
+$config['default_country'] = 223;

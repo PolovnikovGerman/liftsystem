@@ -83,7 +83,9 @@
         <div class="quoteshipaddressarea">
             <div class="quoteshipcountryarea">
                 <select class="quoteaddressinpt quotecountry">
-                    <option value="US">United States</option>
+                    <?php foreach ($countries as $country) { ?>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                    <?php } ?>
                 </select>
             </div>
             <div class="quoteshipaddressother">
@@ -127,13 +129,13 @@
                     </select>
                 </div>
                 <div class="quoteleadrush">
-                    <input class="quoteleadrushcost"/>
+                    <input class="quoteleadshipcostinpt quoteleadrushcost"/>
                 </div>
             </div>
             <div class="datarow">
-                <div class="quoteshippingcostaea">&nbsp;</div>
+                <div class="quoteshippingcostarea">&nbsp;</div>
                 <div class="quoteshipcost">
-                    <input class="quoteshipcostvalue"/>
+                    <input class="quoteleadshipcostinpt quoteshipcostvalue"/>
                 </div>
             </div>
             <div class="datarow">
@@ -146,7 +148,7 @@
                 <div class="quotetaxinput">
                     <div class="quotetaxlabel">Sales Tax</div>
                     <div class="quotetaxvalue">
-                        <input class="quotesalestaxvalue" value="0.00">
+                        <input class="quoteleadshipcostinpt quotesalestaxvalue" value="0.00">
                     </div>
                 </div>
             </div>
@@ -158,32 +160,34 @@
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
             <div class="quotebillcountryarea">
-                <select class="quotebillcountry">
-                    <option value="US">United States</option>
+                <select class="quoteaddressinpt quotecountry">
+                    <?php foreach ($countries as $country) { ?>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                    <?php } ?>
                 </select>
             </div>
             <div class="quotebilladdressother">
                 <div class="datarow">
-                    <input class="quotebilladrother" placeholder="Contact Name">
+                    <input class="quoteaddressinpt quotebilladdrother" placeholder="Contact Name">
                 </div>
                 <div class="datarow">
-                    <input class="quotebilladrother" placeholder="Company">
+                    <input class="quoteaddressinpt quotebilladdrother" placeholder="Company">
                 </div>
                 <div class="datarow">
-                    <input class="quotebilladrother" placeholder="Address Line 1">
+                    <input class="quoteaddressinpt quotebilladdrother" placeholder="Address Line 1">
                 </div>
                 <div class="datarow">
-                    <input class="quotebilladrother" placeholder="Address Line 2">
+                    <input class="quoteaddressinpt quotebilladdrother" placeholder="Address Line 2">
                 </div>
                 <div class="datarow">
                     <div class="quotebilladdreszipcode">
-                        <input class="quotebilladdrespostal" placeholder="Zip"/>
+                        <input class="quoteaddressinpt quotepostal" placeholder="Zip"/>
                     </div>
                     <div class="quotebilladdrescity">
-                        <input class="quotebilladdrestown" placeholder="City"/>
+                        <input class="quoteaddressinpt quotetown" placeholder="City"/>
                     </div>
                     <div class="quotebilladdresdistrict">
-                        <select class="quotebilladdresstate">
+                        <select class="quoteaddressinpt quotestate">
                             <option value="CA">CA</option>
                         </select>
                     </div>

@@ -822,11 +822,17 @@ class Leadmanagement extends MY_Controller
                             'Proforma Invoice',
                         ];
                     }
+                    $this->load->model('shipping_model');
+                    $cnt_options=array(
+                        'orderby'=>'sort, country_name',
+                    );
+                    $countries = $this->shipping_model->get_countries_list($cnt_options);
                     // Prepare content
                     $quotedata = $qres['data'];
                     $options = [
                         'data' => $quotedata,
                         'templlists' => $templlists,
+                        'countries' => $countries,
                         'edit_mode' => 1,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
