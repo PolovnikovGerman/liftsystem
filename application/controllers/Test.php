@@ -1161,10 +1161,10 @@ class Test extends CI_Controller
                     $this->db->set('lead_number', $newleadnum);
                     $this->db->set('update_date', $lead['update_date']);
                     $this->db->update('ts_leads');
-                    echo 'ID '.$lead['lea_id'].' New Number '.$newleadnum.' Update '.$lead['update_date'].PHP_EOL;
+                    echo 'ID '.$lead['lead_id'].' New Number '.$newleadnum.' Update '.$lead['update_date'].PHP_EOL;
                 }
             }
-            die();
+            // die();
         }
     }
 }
