@@ -418,10 +418,10 @@ Class Leads_model extends MY_Model
     public function get_leadnum($brand) {
         $this->db->select('max(lead_number) as last_num');
         $this->db->from('ts_leads');
-        if ($brand=='SB') {
-            $this->db->where_in('brand',['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('brand', $brand);
+        } else {
+            $this->db->where_in('brand',['SB','BT']);
         }
         $res=$this->db->get()->row_array();
         if (!$res['last_num']) {
@@ -670,10 +670,10 @@ Class Leads_model extends MY_Model
         $this->db->select('max(proof_num) as proof');
         $this->db->from('ts_emails');
         $this->db->where('email_type', 'Art_Submit');
-        if ($brand=='SB') {
-            $this->db->where_in('brand', ['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('brand', $brand);
+        } else {
+            $this->db->where_in('brand', ['SB','BT']);
         }
         $res=$this->db->get()->row_array();
         if (!isset($res['proof']) || $res['proof']=='') {
