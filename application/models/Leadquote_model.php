@@ -22,6 +22,9 @@ class Leadquote_model extends MY_Model
             $response['result'] = $this->success_result;
             // Items
             $quote_items = [];
+            if (!empty($lead_data['lead_item_id'])) {
+
+            }
             $outdat = [
                 'brand' => $lead_data['brand'],
                 'quote_number' => $newnum,
@@ -58,7 +61,7 @@ class Leadquote_model extends MY_Model
                 'billing_state' => '',
                 'quote_note' => '',
                 'quote_repcontact' => $usrdat['email_signature'],
-                'quote_itemcount' => 0,
+                'quote_itemcount' => count($quote_items),
                 'quote_items' => $quote_items,
             ];
             $response['data'] = $outdat;
