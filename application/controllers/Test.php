@@ -1137,4 +1137,34 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function fix_leadnumbers() {
+        $this->load->model('leads_model');
+        $this->db->select('lead_number, count(lead_id) as cnt');
+        $this->db->from('ts_leads');
+        $this->db->group_by('lead_number');
+        $this->db->having('cnt > ',1);
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            echo 'Lead # '.$result['lead_number'].' Count '.$result['cnt'].PHP_EOL;
+            $this->db->select('lead_id, update_date, brand');
+            $this->db->from('ts_leads');
+            $this->db->where('lead_number', $result['lead_number']);
+            $this->db->order_by('lead_id');
+            $leads = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($leads as $lead) {
+                $numpp++;
+                if ($numpp > 1) {
+                    $newleadnum = $this->leads_model->get_leadnum($lead['brand']);
+                    $this->db->where('lead_id', $lead['lead_id']);
+                    $this->db->set('lead_number', $newleadnum);
+                    $this->db->set('update_date', $lead['update_date']);
+                    $this->db->update('ts_leads');
+                    echo 'ID '.$lead['lead_id'].' New Number '.$newleadnum.' Update '.$lead['update_date'].PHP_EOL;
+                }
+            }
+            // die();
+        }
+    }
 }
