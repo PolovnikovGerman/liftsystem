@@ -8862,13 +8862,14 @@ Class Leadorder_model extends My_Model {
         $dateHeight = 9;
 
         if ($brand=='SR') {
-            $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg.eps';
+            $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg-2.eps';
             $ponumYPos = 33.7;
+            $ponumXPos = 70;
         } else {
             $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
             $ponumYPos = 28.7;
+            $ponumXPos = 90;
         }
-        $ponumXPos = 90;
         $ponumWidth = 0;
         $ponumHeight = 9;
 
@@ -8958,7 +8959,7 @@ Class Leadorder_model extends My_Model {
         if (!empty($options['customer_code'])) {
             $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
             if ($brand=='SR') {
-                $pdf->SetXY(127,34);
+                $pdf->SetXY(117,34);
             } else {
                 $pdf->SetXY(127,29);
             }
