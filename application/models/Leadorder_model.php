@@ -8827,14 +8827,17 @@ Class Leadorder_model extends My_Model {
         // Prepare
         if ($brand=='SR') {
             $logoFile = FCPATH."/img/invoicesr/sr-logos-2.eps";
+            $logoWidth = 187.844;
+            $logoHeight = 22.855;
+            $logoYPos = 5;
         } else {
             $logoFile = FCPATH."/img/invoice/logos-2.eps";
+            $logoWidth = 105.655;
+            $logoHeight = 12.855;
+            $logoYPos = 10;
         }
 
         $logoXPos = 5;
-        $logoYPos = 10;
-        $logoWidth = 105.655;
-        $logoHeight = 12.855;
         $logoType = 'JPG';
         if ($brand=='SR') {
             $invnumImg = FCPATH.'/img/invoicesr/sr-invoice_num.eps';
@@ -8920,16 +8923,20 @@ Class Leadorder_model extends My_Model {
         $pdf->Cell(35.8,16,$options['order_num'],0,0,'C');
 
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('','',12.046857);
-        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(5,39.88, 'Call Us at');
 
         if ($brand=='SR') {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 32.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 38.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,44.88, 'Call Us at');
             $pdf->SetTextColor(0,0,75);
-            $pdf->Text(23,39.88, '1-800-370-3020');
-            $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
+            $pdf->Text(23,44.88, '1-800-370-3020');
+            // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 27.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,39.88, 'Call Us at');
             $pdf->SetTextColor(0,0,255);
             $pdf->Text(23,39.88, '1-800-790-6090');
             $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
