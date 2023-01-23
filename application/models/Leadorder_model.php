@@ -8123,6 +8123,7 @@ Class Leadorder_model extends My_Model {
             'payments_detail' => $payments_details,
             'balance'=>  MoneyOutput($balance),
             'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
+            'brand' => $order['brand'],
         );
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
@@ -8822,27 +8823,48 @@ Class Leadorder_model extends My_Model {
     private function _invoice_pdfdoc_create($options, $file_out) {
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
+        $brand = ifset($options,'brand', 'SB');
         // Prepare
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoXPos = 5;
-        $logoYPos = 10;
-        $logoWidth = 105.655;
-        $logoHeight = 12.855;
-        $logoType = 'JPG';
+        if ($brand=='SR') {
+            $logoFile = FCPATH."/img/invoicesr/sr-logos-2.eps";
+            $logoWidth = 187.844;
+            $logoHeight = 22.855;
+            $logoYPos = 5;
+        } else {
+            $logoFile = FCPATH."/img/invoice/logos-2.eps";
+            $logoWidth = 105.655;
+            $logoHeight = 12.855;
+            $logoYPos = 10;
+        }
 
-        $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
+        $logoXPos = 5;
+        $logoType = 'JPG';
+        if ($brand=='SR') {
+            $invnumImg = FCPATH.'/img/invoicesr/sr-invoice_num.eps';
+        } else {
+            $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
+        }
         $invnumXPos = 120;
         $invnumYPos = 10;
         $invnumWidth = 0;
         $invnumHeigth = 16.5;
 
-        $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+        if ($brand=='SR') {
+            $dateImage = FCPATH.'/img/invoicesr/sr-date_bg-3.eps';
+        } else {
+            $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+        }
+
         $dateXPos = 158;
         $dateYPos = 28.7;
         $dateWidth = 0;
         $dateHeight = 9;
 
-        $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+        if ($brand=='SR') {
+            $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg.eps';
+        } else {
+            $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+        }
         $ponumXPos = 90;
         $ponumYPos = 28.7;
         $ponumWidth = 0;
@@ -8893,17 +8915,32 @@ Class Leadorder_model extends My_Model {
         $pdf->ImageEps($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth);
         $pdf->SetXY(167, 10.8);
         $pdf->SetFont('','B',16.564429);
-        $pdf->SetTextColor(0, 0, 255);
+        if ($brand=='SR') {
+            $pdf->SetTextColor(0,0,75);
+        } else {
+            $pdf->SetTextColor(0, 0, 255);
+        }
         $pdf->Cell(35.8,16,$options['order_num'],0,0,'C');
 
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('','',12.046857);
-        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(5,39.88, 'Call Us at');
-        $pdf->SetTextColor(0,0,255);
-        $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+
+        if ($brand=='SR') {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 32.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 38.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,44.88, 'Call Us at');
+            $pdf->SetTextColor(0,0,75);
+            $pdf->Text(23,44.88, '1-800-370-3020');
+            // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
+        } else {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 27.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,39.88, 'Call Us at');
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Text(23,39.88, '1-800-790-6090');
+            $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+        }
         $pdf->SetTextColor(65, 65, 65);
         $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
         $pdf->SetTextColor(0,0,0);
