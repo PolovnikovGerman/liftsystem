@@ -2795,6 +2795,71 @@ Class Artwork_model extends MY_Model
                     }
                 }
             }
+            // If Exist Uploaded logo
+            if (!empty($data['uploadlogo'])) {
+                $logo_src='&nbsp;';
+                $logo_vect='&nbsp;';
+                $usrtxt='';
+                $logosrc_path='';
+                $logovec_path='';
+                $preload_path_fl=$this->config->item('upload_path_preload');
+                $preload_path_sh=$this->config->item('pathpreload');
+                $logopath='';
+                $repeat_text='';
+                $imagesourceclass=$imagesourceview='';
+                $newart_id=($idxloc*(-1));
+                // if ($art_type=='Logo') {
+                    // if ($art_type == 'Logo') {
+                        $redraw = 1;
+                    // } else {
+                    //    $redraw = 0;
+                    // }
+                    $logopath = $data['uploadlogo'];
+                    /* Make Filename */
+                    $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
+                    $file_det = extract_filename($file_name);
+                    if (in_array($file_det['ext'], $this->logo_imageext)) {
+                        $imagesourceclass = 'viewsource';
+                        $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+                    }
+                    $logosrc_path = $preload_path_sh . $file_name;
+                    if ($artdata['order_id']) {
+                        $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    } else {
+                        $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    }
+                // }
+                $rush=$artdata['rush'];
+                $location=array(
+                    'artwork_art_id'=>$newart_id,
+                    'artwork_id'=>$artwork_id,
+                    'art_type'=>$art_type,
+                    'art_ordnum'=>$numpp,
+                    'logo_src'=>$logo_src,
+                    'logo_srcpath'=>$logosrc_path,
+                    'redraw_time'=>'',
+                    'logo_vectorized'=>$logo_vect,
+                    'logo_vectorizedpath'=>$logovec_path,
+                    'vectorized_time'=>'',
+                    'redrawvect'=>$redraw,
+                    'rush'=>$rush,
+                    'customer_text'=>$usrtxt,
+                    'font'=>'',
+                    'redraw_message'=>'',
+                    'redo'=>'',
+                    'art_numcolors'=>'',
+                    'art_color1'=>'',
+                    'art_color2'=>'',
+                    'art_color3'=>'',
+                    'art_color4'=>'',
+                    'art_location'=>'',
+                    'repeat_text'=>$repeat_text,
+                    'deleted' =>'',
+                    'imagesourceclass'=>$imagesourceclass,
+                    'imagesourceview'=>$imagesourceview,
+                );
+                $artdata['locations'][]=$location;
+            }
             // Save
             usersession($artsession,$artdata);
             $out['result'] = $this->success_result;
